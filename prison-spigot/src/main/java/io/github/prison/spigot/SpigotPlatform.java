@@ -50,32 +50,37 @@ class SpigotPlatform implements Platform {
 
     @Override
     public World getWorld(String name) {
-        return null;
+        if (Bukkit.getWorld(name) == null) return null; // Avoid NPE
+        return new SpigotWorld(Bukkit.getWorld(name));
     }
 
     @Override
     public Player getPlayer(String name) {
-        return null;
+        if (Bukkit.getPlayer(name) == null) return null; // Avoid NPE
+        return new SpigotPlayer(Bukkit.getPlayer(name));
     }
 
     @Override
     public Player getPlayer(UUID uuid) {
-        return null;
+        if (Bukkit.getPlayer(uuid) == null) return null; // Avoid NPE
+        return new SpigotPlayer(Bukkit.getPlayer(uuid));
     }
 
     @Override
     public List<Player> getOnlinePlayers() {
-        return null;
+        List<Player> players = new ArrayList<>();
+        for (org.bukkit.entity.Player player : Bukkit.getOnlinePlayers()) players.add(getPlayer(player.getUniqueId()));
+        return players;
     }
 
     @Override
     public String getPluginVersion() {
-        return null;
+        return plugin.getDescription().getVersion();
     }
 
     @Override
     public File getPluginDirectory() {
-        return null;
+        return plugin.getDataFolder();
     }
 
     @Override

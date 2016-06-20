@@ -59,6 +59,8 @@ public class Prison {
         this.commandHandler = new CommandHandler();
 
         commandHandler.registerCommands(this);
+
+        platform.log("&7Started &3Prison v%s&7 on platform &3%s.", platform.getPluginVersion(), platform.getClass().getName());
     }
 
     @Command(identifier = "prison", description = "The base command for Prison.", onlyPlayers = false)
