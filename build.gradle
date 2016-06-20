@@ -52,7 +52,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    group = 'io.github.sirfaizdat'
+    group = 'io.github.prison'
     version = '3.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
