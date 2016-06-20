@@ -1,0 +1,3 @@
+name: Prison
+main: io.github.sirfaizdat.prison.spigot.SpigotPrison
+version: "${version}"
