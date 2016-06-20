@@ -1,3 +1,5 @@
 name: Prison
-main: io.github.sirfaizdat.prison.spigot.SpigotPrison
+main: io.github.prison.prison.spigot.SpigotPrison
 version: "${version}"
+description: Prison is an all-in-one plugin for the Minecraft prison game mode.
+website: http://mc-prison.github.io
