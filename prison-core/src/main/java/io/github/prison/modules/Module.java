@@ -16,49 +16,51 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
-
-import io.github.prison.modules.ModuleManager;
+package io.github.prison.modules;
 
 /**
- * Entry point for implementations.
+ * Represents a module, which is a part of Prison that can be enabled and
+ * disabled independently from the rest of the modules.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class Prison {
+public abstract class Module {
 
-    // Singleton
+    private String name;
+    private boolean enabled;
 
-    private static Prison instance = null;
-
-    public static Prison getInstance() {
-        if (instance == null) instance = new Prison();
-        return instance;
-    }
-
-    // Fields
-
-    private Platform platform;
-    private ModuleManager moduleManager;
-
-    // Public methods
-
-    /**
-     * Initializes prison-core.
-     * In the implementations, this should be called when the plugin is enabled.
-     */
-    public void init(Platform platform) {
-        this.platform = platform;
-        this.moduleManager = new ModuleManager();
+    public Module(String name) {
+        this.name = name;
     }
 
     /**
-     * Finalizes and unregisters instances in prison-core.
-     * In the implementations, this should be called when the plugin is disabled.
+     * Called when the module is to be enabled.
      */
-    public void deinit() {
-        moduleManager.unregisterAll();
+    public void enable() {
+    }
+
+    /**
+     * Called when a module is to be disabled.
+     */
+    public void disable() {
+    }
+
+    /**
+     * Called when the plugin reloads.
+     */
+    public void reload() {}
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

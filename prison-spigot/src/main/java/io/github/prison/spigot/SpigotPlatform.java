@@ -18,24 +18,53 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Prison;
-import org.bukkit.plugin.java.JavaPlugin;
+import io.github.prison.Platform;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.World;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * The plugin class for the Spigot implementation.
- *
  * @author SirFaizdat
  */
-public class SpigotPrison extends JavaPlugin {
+public class SpigotPlatform implements Platform {
 
-    @Override
-    public void onEnable() {
-        Prison.getInstance().init(new SpigotPlatform(this));
+    private SpigotPrison plugin;
+
+    public SpigotPlatform(SpigotPrison plugin) {
+        this.plugin = plugin;
     }
 
     @Override
-    public void onDisable() {
-        Prison.getInstance().deinit();
+    public World getWorld(String name) {
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public List<Player> getOnlinePlayers() {
+        return null;
+    }
+
+    @Override
+    public String getPluginVersion() {
+        return null;
+    }
+
+    @Override
+    public File getPluginDirectory() {
+        return null;
     }
 
 }
