@@ -18,6 +18,10 @@
 
 package io.github.prison;
 
+import io.github.prison.commands.Command;
+import io.github.prison.commands.CommandHandler;
+import io.github.prison.commands.PluginCommand;
+import io.github.prison.internal.CommandSender;
 import io.github.prison.modules.ModuleManager;
 
 /**
@@ -41,6 +45,7 @@ public class Prison {
 
     private Platform platform;
     private ModuleManager moduleManager;
+    private CommandHandler commandHandler;
 
     // Public methods
 
@@ -51,6 +56,14 @@ public class Prison {
     public void init(Platform platform) {
         this.platform = platform;
         this.moduleManager = new ModuleManager();
+        this.commandHandler = new CommandHandler();
+
+        commandHandler.registerCommands(this);
+    }
+
+    @Command(identifier = "prison", description = "The base command for Prison.", onlyPlayers = false)
+    public void onPrisonTyped(CommandSender sender) {
+        sender.sendMessage("&cHooray!");
     }
 
     /**
@@ -59,6 +72,26 @@ public class Prison {
      */
     public void deinit() {
         moduleManager.unregisterAll();
+    }
+
+    // Getters
+
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+
+    public PluginCommand getCommand(String label) {
+        for (PluginCommand command : platform.getCommands())
+            if (command.getLabel().equalsIgnoreCase(label)) return command;
+        return null;
     }
 
 }

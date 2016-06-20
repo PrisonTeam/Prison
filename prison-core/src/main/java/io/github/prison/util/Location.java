@@ -46,6 +46,8 @@ public class Location {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.pitch = 0.0f;
+        this.yaw = 0.0f;
     }
 
     public World getWorld() {
@@ -94,6 +96,18 @@ public class Location {
 
     public void setYaw(float yaw) {
         this.yaw = yaw;
+    }
+
+    public int getBlockX() {
+        return Math.toIntExact(Math.round(getX()));
+    }
+
+    public int getBlockY() {
+        return Math.toIntExact(Math.round(getY()));
+    }
+
+    public int getBlockZ() {
+        return Math.toIntExact(Math.round(getZ()));
     }
 
     @Override

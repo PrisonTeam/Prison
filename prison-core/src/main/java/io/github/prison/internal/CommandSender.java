@@ -62,4 +62,10 @@ public interface CommandSender {
      */
     void sendMessage(String[] messages);
 
+    /**
+     * Send a raw JSON message to the sender.
+     * @param json The JSON message. Must be in proper format.
+     */
+    void sendRaw(String json);
+
 }

@@ -19,7 +19,11 @@
 package io.github.prison.spigot;
 
 import io.github.prison.Prison;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.lang.reflect.Field;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -28,14 +32,30 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class SpigotPrison extends JavaPlugin {
 
+    CommandMap commandMap;
+
     @Override
     public void onEnable() {
+        initCommandMap();
         Prison.getInstance().init(new SpigotPlatform(this));
     }
 
     @Override
     public void onDisable() {
         Prison.getInstance().deinit();
+    }
+
+    private void initCommandMap() {
+        final Field bukkitCommandMap;
+        try {
+            bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+
+            bukkitCommandMap.setAccessible(true);
+            commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Prison.getInstance().getPlatform().log("&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
+            e.printStackTrace();
+        }
     }
 
 }

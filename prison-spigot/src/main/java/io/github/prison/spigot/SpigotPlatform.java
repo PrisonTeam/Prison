@@ -19,21 +19,32 @@
 package io.github.prison.spigot;
 
 import io.github.prison.Platform;
+import io.github.prison.Prison;
+import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
+import io.github.prison.util.TextUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * @author SirFaizdat
  */
-public class SpigotPlatform implements Platform {
+class SpigotPlatform implements Platform {
 
     private SpigotPrison plugin;
+    private List<PluginCommand> commands = new ArrayList<>();
 
-    public SpigotPlatform(SpigotPrison plugin) {
+    SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
     }
 
@@ -65,6 +76,36 @@ public class SpigotPlatform implements Platform {
     @Override
     public File getPluginDirectory() {
         return null;
+    }
+
+    @Override
+    public void registerCommand(PluginCommand command) {
+        // Rather than putting commands into plugin.yml, we automatically inject them into the command map. Neat, eh?
+        plugin.commandMap.register(command.getLabel(), "prison", new Command(command.getLabel(), command.getDescription(), command.getUsage(), Collections.emptyList()) {
+
+            @Override
+            public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+                if (sender instanceof org.bukkit.entity.Player)
+                    return Prison.getInstance().getCommandHandler().onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender), command, commandLabel, args);
+                return Prison.getInstance().getCommandHandler().onCommand(new SpigotCommandSender(sender), command, commandLabel, args);
+            }
+
+        });
+        commands.add(command);
+    }
+
+    @Override
+    public List<PluginCommand> getCommands() {
+        return commands;
+    }
+
+    @Override
+    public void log(String message, Object... format) {
+        message = TextUtil.parse("&8[&3Prison&8]&r " + message, format);
+
+        ConsoleCommandSender sender = Bukkit.getConsoleSender();
+        if (sender == null) Bukkit.getLogger().info(ChatColor.stripColor(message));
+        else sender.sendMessage(message);
     }
 
 }

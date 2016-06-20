@@ -18,6 +18,7 @@
 
 package io.github.prison;
 
+import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
 
@@ -63,5 +64,25 @@ public interface Platform {
      * This directory must have already been created by the implementation.
      */
     File getPluginDirectory();
+
+    /**
+     * Registers a command with the server implementation.
+     *
+     * @param command The {@link PluginCommand} to register.
+     */
+    void registerCommand(PluginCommand command);
+
+    /**
+     * Returns a list of all registered commands.
+     */
+    List<PluginCommand> getCommands();
+
+    /**
+     * Log a colored message to the console (if supported).
+     *
+     * @param message The message. May include color codes, amp-prefixed.
+     * @param format  The objects inserted via {@link String#format(String, Object...)}.
+     */
+    void log(String message, Object... format);
 
 }

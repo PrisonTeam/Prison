@@ -14,7 +14,6 @@
     <orderEntry type="library" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="module" module-name="prison-core_main" />
     <orderEntry type="library" name="Gradle: org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Gradle: com.sk89q:worldedit:6.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.10" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.6.2" level="project" />
     <orderEntry type="library" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
