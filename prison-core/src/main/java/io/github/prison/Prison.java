@@ -19,16 +19,9 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import io.github.prison.chat.FancyMessage;
-import io.github.prison.commands.Command;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
-import io.github.prison.internal.CommandSender;
-import io.github.prison.internal.Player;
-import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.modules.ModuleManager;
-import io.github.prison.util.ChatColor;
 
 /**
  * Entry point for implementations.
@@ -61,29 +54,18 @@ public class Prison {
      * In the implementations, this should be called when the plugin is enabled.
      */
     public void init(Platform platform) {
+        long startTime = System.currentTimeMillis();
+        platform.log("&7> &dENABLE START &7 <");
+
         this.platform = platform;
+        platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
+
         this.eventBus = new EventBus();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
 
-        commandHandler.registerCommands(this);
-        eventBus.register(this);
-        platform.getScheduler().runTaskTimer(() -> platform.log("Hello"), 5, 5);
-
-        platform.log("&7Started &3Prison v%s&7 on platform &3%s.", platform.getPluginVersion(), platform.getClass().getName());
-    }
-
-    @Command(identifier = "prison", description = "The base command for Prison.", onlyPlayers = false)
-    public void onPrisonTyped(CommandSender sender) {
-        if (sender instanceof Player)
-            new FancyMessage("Hooray!").color(ChatColor.RED).tooltip("Hovering!").send(sender);
-        else
-            sender.sendMessage("&cHooray!");
-    }
-
-    @Subscribe
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        e.getPlayer().sendMessage("&cHello, &3world!");
+        platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
+        platform.log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
     }
 
     /**
