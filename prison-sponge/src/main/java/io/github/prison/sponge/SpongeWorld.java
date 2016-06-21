@@ -18,19 +18,19 @@
 
 package io.github.prison.sponge;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.trait.BlockTrait;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
 import io.github.prison.util.Block;
 import io.github.prison.util.Location;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockState;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.trait.BlockTrait;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author SirFaizdat
@@ -50,11 +50,7 @@ public class SpongeWorld implements World {
 
     @Override
     public List<Player> getPlayers() {
-        List<Player> players = new ArrayList<>();
-        for(org.spongepowered.api.entity.living.player.Player player : Sponge.getServer().getOnlinePlayers()) {
-            players.add(new SpongePlayer(player));
-        }
-        return players;
+        return Sponge.getServer().getOnlinePlayers().stream().map(SpongePlayer::new).collect(Collectors.toList());
     }
 
     @Override
