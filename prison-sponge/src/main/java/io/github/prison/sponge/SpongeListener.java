@@ -18,38 +18,35 @@
 
 package io.github.prison.sponge;
 
-import com.google.inject.Inject;
-
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import org.spongepowered.api.plugin.Plugin;
-
-import java.util.logging.Logger;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import io.github.prison.Prison;
 
 /**
  * @author Camouflage100
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
+public class SpongeListener {
 
-    @Inject
-    Logger logger;
-    SpongeScheduler scheduler;
+    private SpongePrison spongePrison;
 
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
-        this.scheduler = new SpongeScheduler();
-        Prison.getInstance().init(new SpongePlatform(this));
-        new SpongeListener(this).init();
+    public SpongeListener(SpongePrison spongePrison) {
+        this.spongePrison = spongePrison;
+    }
+
+    public void init() {
+        Sponge.getGame().getEventManager().registerListeners(this.spongePrison, this);
     }
 
     @Listener
-    public void onServerStop(GameStoppingServerEvent event) {
-        this.scheduler.cancelAll();
-        Prison.getInstance().deinit();
+    public void onPlayerJoin(ClientConnectionEvent.Join e) {
+        Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerJoinEvent(new SpongePlayer(e.getTargetEntity())));
+    }
+
+    @Listener
+    public void onPlayerQuit(ClientConnectionEvent.Disconnect e) {
+        Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerQuitEvent(new SpongePlayer(e.getTargetEntity())));
     }
 
 }
