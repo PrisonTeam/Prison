@@ -139,7 +139,7 @@ class SpongePlatform implements Platform {
 
     @Override
     public Scheduler getScheduler() {
-        return new SpongeScheduler();
+        return plugin.scheduler;
     }
 
     @Override

@@ -70,8 +70,9 @@ public interface PermissionIntegration extends Integration {
 
     /**
      * Add a group to a player in the player's current world.
+     *
      * @param player The {@link Player} to change the group of.
-     * @param group The gr
+     * @param group  The group to change the player to.
      */
     void addGroup(Player player, String group);
 
@@ -83,5 +84,13 @@ public interface PermissionIntegration extends Integration {
      * @param group  The group to remove the player from.
      */
     void removeGroup(Player player, String world, String group);
+
+    /**
+     * Remove a group to a player in the player's current world.
+     *
+     * @param player The {@link Player} to change the group of.
+     * @param group  The group to remove the player from.
+     */
+    void removeGroup(Player player, String group);
 
 }

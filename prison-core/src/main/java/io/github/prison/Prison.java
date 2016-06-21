@@ -19,12 +19,16 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import io.github.prison.chat.FancyMessage;
 import io.github.prison.commands.Command;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.CommandSender;
-import io.github.prison.modules.Module;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.modules.ModuleManager;
+import io.github.prison.util.ChatColor;
 
 /**
  * Entry point for implementations.
@@ -63,13 +67,23 @@ public class Prison {
         this.commandHandler = new CommandHandler();
 
         commandHandler.registerCommands(this);
+        eventBus.register(this);
+        platform.getScheduler().runTaskTimer(() -> platform.log("Hello"), 5, 5);
 
         platform.log("&7Started &3Prison v%s&7 on platform &3%s.", platform.getPluginVersion(), platform.getClass().getName());
     }
 
     @Command(identifier = "prison", description = "The base command for Prison.", onlyPlayers = false)
     public void onPrisonTyped(CommandSender sender) {
-        sender.sendMessage("&cHooray!");
+        if (sender instanceof Player)
+            new FancyMessage("Hooray!").color(ChatColor.RED).tooltip("Hovering!").send(sender);
+        else
+            sender.sendMessage("&cHooray!");
+    }
+
+    @Subscribe
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        e.getPlayer().sendMessage("&cHello, &3world!");
     }
 
     /**

@@ -41,7 +41,7 @@ public class SpongePrison {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        this.scheduler = new SpongeScheduler();
+        this.scheduler = new SpongeScheduler(this);
         Prison.getInstance().init(new SpongePlatform(this));
         new SpongeListener(this).init();
     }

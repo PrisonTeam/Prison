@@ -29,10 +29,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpongeScheduler implements io.github.prison.Scheduler {
 
+    private SpongePrison plugin;
     private Scheduler scheduler;
     private Task.Builder taskBuilder;
 
-    public SpongeScheduler() {
+    public SpongeScheduler(SpongePrison plugin) {
+        this.plugin = plugin;
         this.scheduler = Sponge.getScheduler();
         this.taskBuilder = scheduler.createTaskBuilder();
     }
@@ -40,28 +42,28 @@ public class SpongeScheduler implements io.github.prison.Scheduler {
     @Override
     public int runTaskLater(Runnable run, long delay) {
         int id = (int) (Math.random() * Math.random());
-        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).name(String.valueOf(id));
+        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).name(String.valueOf(id)).submit(plugin);
         return id;
     }
 
     @Override
     public int runTaskLaterAsync(Runnable run, long delay) {
         int id = (int) (Math.random() * Math.random());
-        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).name(String.valueOf(id)).async();
+        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).name(String.valueOf(id)).async().submit(plugin);
         return id;
     }
 
     @Override
     public int runTaskTimer(Runnable run, long delay, long interval) {
         int id = (int) (Math.random() * Math.random());
-        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).interval(interval, TimeUnit.SECONDS).name(String.valueOf(id));
+        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).interval(interval, TimeUnit.SECONDS).name(String.valueOf(id)).submit(plugin);
         return id;
     }
 
     @Override
     public int runTaskTimerAsync(Runnable run, long delay, long interval) {
         int id = (int) (Math.random() * Math.random());
-        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).interval(interval, TimeUnit.SECONDS).async();
+        taskBuilder.execute(run).delay(delay, TimeUnit.SECONDS).interval(interval, TimeUnit.SECONDS).async().submit(plugin);
         return id;
     }
 
