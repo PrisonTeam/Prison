@@ -18,12 +18,12 @@
 
 package io.github.prison.sponge;
 
-import io.github.prison.internal.CommandSender;
-import io.github.prison.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
+
+import io.github.prison.internal.CommandSender;
+import io.github.prison.internal.Player;
 
 /**
  * @author SirFaizdat
@@ -63,7 +63,15 @@ public class SpongeCommandSender implements CommandSender {
 
     @Override
     public void sendRaw(String json) {
-        Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "tellraw " + getName() + " " + json);
+        // If the commandSource is a Player, send them json properly
+        if (commandSource instanceof Player) {
+            ((Player) commandSource).sendRaw(json);
+        }
+
+        // Else if it's not, send them an inefficient way
+        else {
+            Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "tellraw " + getName() + " " + json);
+        }
     }
 
 }
