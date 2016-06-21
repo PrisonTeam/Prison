@@ -47,10 +47,21 @@ public class ModuleManager {
     public void registerModule(Module module) {
         if (getModule(module.getName()) != null) return; // Already added
         modules.add(module);
+
+        long startTime = System.currentTimeMillis();
+        Prison.getInstance().getPlatform().log("&7> &d%s ENABLE START &7 <", module.getName());
+
         module.enable();
         validateVersion(module);
+
         // If the status is still null, then nothing went wrong during the enable.
         if (getStatus(module.getName()) == null) setStatus(module.getName(), "&aEnabled");
+
+        // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
+        if (getStatus(module.getName()).startsWith("&c"))
+            Prison.getInstance().getPlatform().log("&7> &c%s ENABLE FAILED &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
+        else
+            Prison.getInstance().getPlatform().log("&7> &d%s ENABLE COMPLETE &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
     }
 
     private void validateVersion(Module module) {
