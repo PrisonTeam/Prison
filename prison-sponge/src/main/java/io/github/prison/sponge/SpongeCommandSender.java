@@ -18,7 +18,6 @@
 
 package io.github.prison.sponge;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -63,14 +62,8 @@ public class SpongeCommandSender implements CommandSender {
 
     @Override
     public void sendRaw(String json) {
-        // If the commandSource is a Player, send them json properly
         if (commandSource instanceof Player) {
             ((Player) commandSource).sendRaw(json);
-        }
-
-        // Else if it's not, send them an inefficient way
-        else {
-            Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "tellraw " + getName() + " " + json);
         }
     }
 

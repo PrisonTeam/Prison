@@ -18,8 +18,6 @@
 
 package io.github.prison.spigot;
 
-import org.bukkit.Bukkit;
-
 import io.github.prison.internal.CommandSender;
 import io.github.prison.internal.Player;
 import io.github.prison.util.TextUtil;
@@ -62,14 +60,8 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override
     public void sendRaw(String json) {
-        // If the bukkitSender is a Player, send them json properly
         if (bukkitSender instanceof Player) {
             ((Player) bukkitSender).sendRaw(json);
-        }
-
-        // Else if it's not, send them an inefficient way
-        else {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + getName() + " " + json);
         }
     }
 
