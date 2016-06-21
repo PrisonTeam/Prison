@@ -16,40 +16,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'org.spongepowered.plugin' version '0.6'
-}
+package io.github.prison.sponge;
 
-group 'io.github.sirfaizdat'
-version '3.0.0-SNAPSHOT'
-description 'An all-in-one Prison plugin.'
+import com.google.inject.Inject;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.plugin.Plugin;
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+import java.util.logging.Logger;
+
+/**
+ * @author Camouflage100
+ */
+@Plugin(id = "prison-sponge")
+public class SpongePrison {
+
+    @Inject
+    private Logger logger;
+
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+        logger.info("Enabled Prison v" + Sponge.getPluginManager().getPlugin("prison-sponge").get().getVersion().get());
     }
-}
 
-dependencies {
-    compile project(':prison-core')
-    compile 'org.spongepowered:spongeapi:4.1.0'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
 }
-
-sponge {
-    plugin {
-        meta {
-            name = 'Prison'
-        }
-    }
-}
-
-shadowJar {
-    dependencies {
-        include(dependency(':prison-core'))
-    }
-}
-
-build.dependsOn(shadowJar)

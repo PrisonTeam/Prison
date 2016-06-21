@@ -23,6 +23,7 @@ import io.github.prison.commands.Command;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.CommandSender;
+import io.github.prison.modules.Module;
 import io.github.prison.modules.ModuleManager;
 
 /**
