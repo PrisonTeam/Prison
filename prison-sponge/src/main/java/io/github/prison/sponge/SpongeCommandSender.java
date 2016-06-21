@@ -26,6 +26,7 @@ import io.github.prison.internal.Player;
 
 /**
  * @author SirFaizdat
+ * @author Camouflage100
  */
 public class SpongeCommandSender implements CommandSender {
 
