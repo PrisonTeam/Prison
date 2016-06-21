@@ -23,6 +23,7 @@ import io.github.prison.modules.Module;
 
 /**
  * @author SirFaizdat
+ * @author Camouflage100
  */
 public class CellsModule extends Module {
 
@@ -33,6 +34,7 @@ public class CellsModule extends Module {
 
     @Override
     public void enable() {
+        Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands());
     }
 
 }
