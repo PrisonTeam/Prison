@@ -1,0 +1,5 @@
+name: PrisonCells
+version: 3.0.0-SNAPSHOT
+main: io.github.prison.cells.plugins.CellsSpigot
+description: The cells module for Prison.
+depend: [Prison]

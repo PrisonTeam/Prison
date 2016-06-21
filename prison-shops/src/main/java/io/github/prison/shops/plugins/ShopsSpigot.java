@@ -16,12 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'prison'
-include 'prison-core'
-include 'prison-spigot'
-include 'prison-sponge'
-include 'prison-mines'
-include 'prison-ranks'
-include 'prison-shops'
-include 'prison-cells'
+package io.github.prison.shops.plugins;
 
+import io.github.prison.shops.ShopsModule;
+import org.bukkit.plugin.java.JavaPlugin;
+
+/**
+ * @author SirFaizdat
+ */
+public class ShopsSpigot extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        new ShopsModule(getDescription().getVersion());
+    }
+
+}
