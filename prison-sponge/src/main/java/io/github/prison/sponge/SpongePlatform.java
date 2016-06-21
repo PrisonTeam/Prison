@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import io.github.prison.Platform;
 import io.github.prison.Prison;
@@ -71,9 +72,7 @@ class SpongePlatform implements Platform {
 
     @Override
     public List<Player> getOnlinePlayers() {
-        List<Player> players = new ArrayList<>();
-        for (org.spongepowered.api.entity.living.player.Player player : Sponge.getServer().getOnlinePlayers())
-            players.add(getPlayer(player.getUniqueId()));
+        List<Player> players = Sponge.getServer().getOnlinePlayers().stream().map(player -> getPlayer(player.getUniqueId())).collect(Collectors.toList());
         return players;
     }
 
@@ -144,7 +143,7 @@ class SpongePlatform implements Platform {
 
     @Override
     public void log(String message, Object... format) {
-        Text msg = TextSerializers.FORMATTING_CODE.deserialize(String.format(message, format));
+        Text msg = TextSerializers.FORMATTING_CODE.deserialize(String.format("&8[&3Prison&8]&r " + message, format));
         Sponge.getServer().getConsole().sendMessage(msg);
     }
 }

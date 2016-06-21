@@ -19,11 +19,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
-jar {
-    baseName 'PrisonMines'
-    version = null
-}
-
 shadowJar {
     dependencies {
         include(dependency(':prison-core'))

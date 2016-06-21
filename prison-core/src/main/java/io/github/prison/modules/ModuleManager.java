@@ -18,6 +18,8 @@
 
 package io.github.prison.modules;
 
+import io.github.prison.Prison;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +48,17 @@ public class ModuleManager {
         if (getModule(module.getName()) != null) return; // Already added
         modules.add(module);
         module.enable();
-        // If hte status is still null, then nothing went wrong during the enable.
+        validateVersion(module);
+        // If the status is still null, then nothing went wrong during the enable.
         if (getStatus(module.getName()) == null) setStatus(module.getName(), "&aEnabled");
+    }
+
+    private void validateVersion(Module module) {
+        if (module.getVersion().equals(Prison.getInstance().getPlatform().getPluginVersion()))
+            return; // Version matches, no need to continue
+
+        setStatus(module.getName(), "&6Version mismatch (update module)");
+        Prison.getInstance().getPlatform().log("&6Warning: &7Version mismatch! Please update &6%s &7to version &6%s&7.", module.getPackageName(), Prison.getInstance().getPlatform().getPluginVersion());
     }
 
     /**
@@ -61,6 +72,7 @@ public class ModuleManager {
 
     /**
      * Unregister all modules.
+     *
      * @see #unregisterModule(Module)
      */
     public void unregisterAll() {

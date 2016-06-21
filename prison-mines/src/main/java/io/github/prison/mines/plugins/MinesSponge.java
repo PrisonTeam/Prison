@@ -19,20 +19,28 @@
 package io.github.prison.mines.plugins;
 
 import io.github.prison.mines.MinesModule;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
 /**
+ * If this module is installed on a Sponge server, this class will be ran.
+ * All we do here is invoke the MinesModule constructor, which does the rest of the work.
+ *
  * @author SirFaizdat
  */
-@Plugin(id = "prison-mines", name = "PrisonMines", version = "3.0.0-SNAPSHOT", description = "The mines module for Prison.", dependencies = {@Dependency(id = "prison-sponge")})
+@Plugin(id = "prison-mines", name = "PrisonMines", version = "3.0-SNAPSHOT", description = "The mines module for Prison.", dependencies = {@Dependency(id = "prison-sponge")})
 public class MinesSponge {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        new MinesModule();
+        new MinesModule(getVersion());
+    }
+
+    private String getVersion() {
+        return Sponge.getPluginManager().getPlugin("prison-mines").get().getVersion().get();
     }
 
 }

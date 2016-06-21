@@ -27,11 +27,12 @@ package io.github.prison.modules;
  */
 public abstract class Module {
 
-    private String name;
+    private String name, version;
     private boolean enabled;
 
-    public Module(String name) {
+    public Module(String name, String version) {
         this.name = name;
+        this.version = version;
     }
 
     /**
@@ -53,6 +54,17 @@ public abstract class Module {
 
     public String getName() {
         return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * The package name is the word "Prison" followed by the module name.
+     */
+    public String getPackageName() {
+        return "Prison" + name;
     }
 
     public boolean isEnabled() {

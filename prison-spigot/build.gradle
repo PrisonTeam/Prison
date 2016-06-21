@@ -35,12 +35,12 @@ dependencies {
 }
 
 processResources {
-    from (sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs) {
         expand 'version': project.version
         include 'plugin.yml'
     }
 
-    from (sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs) {
         exclude 'plugin.yml'
     }
 }

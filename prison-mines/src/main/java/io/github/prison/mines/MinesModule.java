@@ -26,13 +26,14 @@ import io.github.prison.modules.Module;
  */
 public class MinesModule extends Module {
 
-    public MinesModule() {
-        super("Mine");
+    public MinesModule(String version) {
+        super("Mines", version);
         Prison.getInstance().getModuleManager().registerModule(this);
     }
 
     @Override
     public void enable() {
         Prison.getInstance().getPlatform().log("Hello from mines.");
+        Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand());
     }
 }

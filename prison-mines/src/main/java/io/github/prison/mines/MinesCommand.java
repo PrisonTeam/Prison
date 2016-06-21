@@ -16,23 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.mines.plugins;
+package io.github.prison.mines;
 
-import io.github.prison.mines.MinesModule;
-import org.bukkit.plugin.java.JavaPlugin;
+import io.github.prison.commands.Command;
+import io.github.prison.internal.CommandSender;
 
 /**
- * If this module is installed on a Spigot server, this class will be ran.
- * All we do here is invoke the MinesModule constructor, which does the rest of the work.
- *
  * @author SirFaizdat
  */
-public class MinesSpigot extends JavaPlugin {
+public class MinesCommand {
 
-    @Override
-    public void onEnable() {
-        new MinesModule(getDescription().getVersion());
+    @Command(identifier = "mines", description = "Create and manage mines.", onlyPlayers = false)
+    public void baseCommand(CommandSender sender) {
+        sender.sendMessage("This command has not yet been implemented.");
     }
-
 
 }
