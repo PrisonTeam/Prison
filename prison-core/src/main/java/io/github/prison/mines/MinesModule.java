@@ -16,34 +16,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.sponge;
+package io.github.prison.mines;
 
-import com.google.inject.Inject;
-import io.github.prison.Prison;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import org.spongepowered.api.plugin.Plugin;
-
-import java.util.logging.Logger;
+import io.github.prison.modules.Module;
 
 /**
- * @author Camouflage100
+ * @author SirFaizdat
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
+public class MinesModule extends Module {
 
-    @Inject
-    Logger logger;
-
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
-        Prison.getInstance().init(new SpongePlatform(this));
+    public MinesModule() {
+        super("Mines");
     }
 
-    @Listener
-    public void onServerStop(GameStoppingServerEvent event) {
-        Prison.getInstance().deinit();
+    @Override
+    public void enable() {
+
     }
 
 }

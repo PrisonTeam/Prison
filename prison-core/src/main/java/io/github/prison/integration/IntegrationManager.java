@@ -16,34 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.sponge;
-
-import com.google.inject.Inject;
-import io.github.prison.Prison;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import org.spongepowered.api.plugin.Plugin;
-
-import java.util.logging.Logger;
+package io.github.prison.integration;
 
 /**
- * @author Camouflage100
+ * Manages integrations for various types of plugins.
+ *
+ * @author SirFaizdat
+ * @since 3.0
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
-
-    @Inject
-    Logger logger;
-
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
-        Prison.getInstance().init(new SpongePlatform(this));
-    }
-
-    @Listener
-    public void onServerStop(GameStoppingServerEvent event) {
-        Prison.getInstance().deinit();
-    }
-
+public class IntegrationManager {
 }
