@@ -9,6 +9,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines.iml" group="prison-mines" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_main.iml" group="prison-mines" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_test.iml" group="prison-mines" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks.iml" group="prison-ranks" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_main.iml" group="prison-ranks" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_test.iml" group="prison-ranks" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot.iml" group="prison-spigot" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot_main.iml" group="prison-spigot" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot_test.iml" group="prison-spigot" />

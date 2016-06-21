@@ -16,10 +16,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'prison'
-include 'prison-core'
-include 'prison-spigot'
-include 'prison-sponge'
-include 'prison-mines'
-include 'prison-ranks'
+package io.github.prison.ranks;
 
+import io.github.prison.Prison;
+import io.github.prison.modules.Module;
+
+/**
+ * @author SirFaizdat
+ */
+public class RanksModule extends Module {
+
+    public RanksModule(String version) {
+        super("Ranks", version);
+        Prison.getInstance().getModuleManager().registerModule(this);
+    }
+
+    @Override
+    public void enable() {
+    }
+
+}

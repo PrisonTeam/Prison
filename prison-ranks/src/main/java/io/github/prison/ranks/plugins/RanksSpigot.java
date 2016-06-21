@@ -16,10 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'prison'
-include 'prison-core'
-include 'prison-spigot'
-include 'prison-sponge'
-include 'prison-mines'
-include 'prison-ranks'
+package io.github.prison.ranks.plugins;
 
+import io.github.prison.ranks.RanksModule;
+import org.bukkit.plugin.java.JavaPlugin;
+
+/**
+ * @author SirFaizdat
+ */
+public class RanksSpigot extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        new RanksModule(getDescription().getVersion());
+    }
+
+}
