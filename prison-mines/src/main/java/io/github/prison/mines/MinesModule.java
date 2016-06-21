@@ -33,7 +33,6 @@ public class MinesModule extends Module {
 
     @Override
     public void enable() {
-        Prison.getInstance().getPlatform().log("Hello from mines.");
         Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand());
     }
 }

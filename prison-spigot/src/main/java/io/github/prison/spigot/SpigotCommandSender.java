@@ -21,6 +21,7 @@ package io.github.prison.spigot;
 import io.github.prison.internal.CommandSender;
 import io.github.prison.util.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 
 /**
  * @author SirFaizdat
@@ -40,7 +41,7 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override
     public boolean doesSupportColors() {
-        return true; // May want to perform a real check later
+        return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override
     public void sendMessage(String[] messages) {
-        for(String s : messages) sendMessage(s);
+        for (String s : messages) sendMessage(s);
     }
 
     @Override

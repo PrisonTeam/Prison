@@ -64,6 +64,8 @@ public class Prison {
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
 
+        this.commandHandler.registerCommands(new PrisonCommand());
+
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform.log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
     }

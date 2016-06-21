@@ -47,21 +47,7 @@ public class ModuleManager {
     public void registerModule(Module module) {
         if (getModule(module.getName()) != null) return; // Already added
         modules.add(module);
-
-        long startTime = System.currentTimeMillis();
-        Prison.getInstance().getPlatform().log("&7> &d%s ENABLE START &7 <", module.getName());
-
-        module.enable();
-        validateVersion(module);
-
-        // If the status is still null, then nothing went wrong during the enable.
-        if (getStatus(module.getName()) == null) setStatus(module.getName(), "&aEnabled");
-
-        // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
-        if (getStatus(module.getName()).startsWith("&c"))
-            Prison.getInstance().getPlatform().log("&7> &c%s ENABLE FAILED &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
-        else
-            Prison.getInstance().getPlatform().log("&7> &d%s ENABLE COMPLETE &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
+        enableModule(module);
     }
 
     private void validateVersion(Module module) {
@@ -72,13 +58,40 @@ public class ModuleManager {
         Prison.getInstance().getPlatform().log("&6Warning: &7Version mismatch! Please update &6%s &7to version &6%s&7.", module.getPackageName(), Prison.getInstance().getPlatform().getPluginVersion());
     }
 
+    public boolean enableModule(Module module) {
+        long startTime = System.currentTimeMillis();
+        Prison.getInstance().getPlatform().log("&7> &d%s ENABLE START &7 <", module.getName());
+
+        module.enable();
+        module.setEnabled(true);
+        validateVersion(module);
+
+        // If the status is still null, then nothing went wrong during the enable.
+        if (getStatus(module.getName()) == null) setStatus(module.getName(), "&aEnabled");
+
+        // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
+        if (getStatus(module.getName()).startsWith("&c")) {
+            Prison.getInstance().getPlatform().log("&7> &c%s ENABLE FAILED &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
+            return false;
+        }
+
+        Prison.getInstance().getPlatform().log("&7> &d%s ENABLE COMPLETE &5(%dms) &7<", module.getName(), (System.currentTimeMillis() - startTime));
+        return true;
+    }
+
     /**
      * Unregister a module. This will disable it and then remove it from the list.
      */
     public void unregisterModule(Module module) {
-        module.disable();
-        setStatus(module.getName(), "&cDisabled (unregistered)");
+        disableModule(module);
+        moduleStates.remove(module.getName());
         modules.remove(getModule(module.getName())); // Using the getter so that we know the thing being removed is in the list
+    }
+
+    public void disableModule(Module module) {
+        module.disable();
+        module.setEnabled(false);
+        setStatus(module.getName(), "&cDisabled");
     }
 
     /**
@@ -87,7 +100,7 @@ public class ModuleManager {
      * @see #unregisterModule(Module)
      */
     public void unregisterAll() {
-        modules.forEach(Module::disable);
+        modules.forEach(this::disableModule);
         modules.clear();
     }
 
@@ -96,6 +109,14 @@ public class ModuleManager {
      */
     public Module getModule(String name) {
         for (Module module : modules) if (module.getName().equalsIgnoreCase(name)) return module;
+        return null;
+    }
+
+    /**
+     * Returns the {@link Module} with the specified package name.
+     */
+    public Module getModuleByPackageName(String name) {
+        for (Module module : modules) if (module.getPackageName().equalsIgnoreCase(name)) return module;
         return null;
     }
 

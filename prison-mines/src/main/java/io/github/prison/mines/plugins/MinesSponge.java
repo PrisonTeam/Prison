@@ -31,7 +31,7 @@ import org.spongepowered.api.plugin.Plugin;
  *
  * @author SirFaizdat
  */
-@Plugin(id = "prison-mines", name = "PrisonMines", version = "3.0-SNAPSHOT", description = "The mines module for Prison.", dependencies = {@Dependency(id = "prison-sponge")})
+@Plugin(id = "prison-mines", name = "PrisonMines", version = "3.0.0-SNAPSHOT", description = "The mines module for Prison.", dependencies = {@Dependency(id = "prison-sponge")})
 public class MinesSponge {
 
     @Listener
