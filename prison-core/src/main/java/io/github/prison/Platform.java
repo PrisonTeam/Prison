@@ -78,6 +78,11 @@ public interface Platform {
     List<PluginCommand> getCommands();
 
     /**
+     * Returns the {@link Scheduler}, which can be used to schedule tasks.
+     */
+    Scheduler getScheduler();
+
+    /**
      * Log a colored message to the console (if supported).
      *
      * @param message The message. May include color codes, amp-prefixed.

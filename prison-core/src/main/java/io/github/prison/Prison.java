@@ -18,6 +18,7 @@
 
 package io.github.prison;
 
+import com.google.common.eventbus.EventBus;
 import io.github.prison.commands.Command;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
@@ -46,6 +47,7 @@ public class Prison {
     private Platform platform;
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
+    private EventBus eventBus;
 
     // Public methods
 
@@ -55,6 +57,7 @@ public class Prison {
      */
     public void init(Platform platform) {
         this.platform = platform;
+        this.eventBus = new EventBus();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
 
@@ -80,6 +83,10 @@ public class Prison {
 
     public Platform getPlatform() {
         return platform;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public ModuleManager getModuleManager() {

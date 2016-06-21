@@ -33,15 +33,19 @@ import java.lang.reflect.Field;
 public class SpigotPrison extends JavaPlugin {
 
     CommandMap commandMap;
+    SpigotScheduler scheduler;
 
     @Override
     public void onEnable() {
         initCommandMap();
+        this.scheduler = new SpigotScheduler(this);
         Prison.getInstance().init(new SpigotPlatform(this));
+        new SpigotListener(this).init();
     }
 
     @Override
     public void onDisable() {
+        this.scheduler.cancelAll();
         Prison.getInstance().deinit();
     }
 

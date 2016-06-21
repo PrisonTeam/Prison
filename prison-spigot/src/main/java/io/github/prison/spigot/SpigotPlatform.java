@@ -20,6 +20,7 @@ package io.github.prison.spigot;
 
 import io.github.prison.Platform;
 import io.github.prison.Prison;
+import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
@@ -102,6 +103,11 @@ class SpigotPlatform implements Platform {
     @Override
     public List<PluginCommand> getCommands() {
         return commands;
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        return plugin.scheduler;
     }
 
     @Override
