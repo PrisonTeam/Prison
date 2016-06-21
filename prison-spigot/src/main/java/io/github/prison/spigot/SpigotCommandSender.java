@@ -19,9 +19,8 @@
 package io.github.prison.spigot;
 
 import io.github.prison.internal.CommandSender;
+import io.github.prison.internal.Player;
 import io.github.prison.util.TextUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 
 /**
  * @author SirFaizdat
@@ -41,7 +40,7 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override
     public boolean doesSupportColors() {
-        return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
+        return true; // May want to perform a real check later
     }
 
     @Override
@@ -56,13 +55,14 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override
     public void sendMessage(String[] messages) {
-        for (String s : messages) sendMessage(s);
+        for(String s : messages) sendMessage(s);
     }
 
     @Override
     public void sendRaw(String json) {
-        // I know, I know, this is bad practice - but it beats using *shudders* NMS code.
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + getName() + " " + json);
+        if (bukkitSender instanceof Player) {
+            ((Player) bukkitSender).sendRaw(json);
+        }
     }
 
 }
