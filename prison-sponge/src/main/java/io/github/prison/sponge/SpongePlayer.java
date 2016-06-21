@@ -18,12 +18,13 @@
 
 package io.github.prison.sponge;
 
-import io.github.prison.internal.Player;
-import io.github.prison.util.Location;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
+
+import io.github.prison.internal.Player;
+import io.github.prison.util.Location;
 
 /**
  * @author SirFaizdat
@@ -49,12 +50,13 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
 
     @Override
     public Location getLocation() {
-        // TODO Pitch and yaw
         return new Location(
                 new SpongeWorld(spongePlayer.getWorld()),
                 spongePlayer.getLocation().getX(),
                 spongePlayer.getLocation().getY(),
-                spongePlayer.getLocation().getZ()
+                spongePlayer.getLocation().getZ(),
+                (float) ((spongePlayer.getRotation().getY()) * -1),
+                (float) ((spongePlayer.getRotation().getX() + 90) % 360)
         );
     }
 
