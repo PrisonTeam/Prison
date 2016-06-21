@@ -16,22 +16,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.mines;
+package io.github.prison.mines.plugins;
 
-import io.github.prison.modules.Module;
+import io.github.prison.mines.MinesModule;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.plugin.Plugin;
 
 /**
  * @author SirFaizdat
  */
-public class MinesModule extends Module {
-
-    public MinesModule() {
-        super("Mines");
-    }
+public class MinesSpigot extends JavaPlugin {
 
     @Override
-    public void enable() {
-
+    public void onEnable() {
+        new MinesModule();
     }
+
 
 }

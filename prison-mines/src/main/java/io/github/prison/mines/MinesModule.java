@@ -16,41 +16,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id 'org.spongepowered.plugin' version '0.6'
-}
+package io.github.prison.mines;
 
-group 'io.github.sirfaizdat'
-version '3.0.0-SNAPSHOT'
-description 'An all-in-one Prison plugin.'
+import io.github.prison.Prison;
+import io.github.prison.modules.Module;
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+/**
+ * @author SirFaizdat
+ */
+public class MinesModule extends Module {
+
+    public MinesModule() {
+        super("Mine");
+        Prison.getInstance().getModuleManager().registerModule(this);
+    }
+
+    @Override
+    public void enable() {
+        Prison.getInstance().getPlatform().log("Hello from mines.");
     }
 }
-
-dependencies {
-    compile project(':prison-core')
-    compile 'org.spongepowered:spongeapi:4.1.0'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
-
-sponge {
-    plugin {
-        meta {
-            name = 'Prison'
-        }
-    }
-}
-
-shadowJar {
-    dependencies {
-        include(dependency(':prison-core'))
-    }
-    baseName 'Prison'
-}
-
-build.dependsOn(shadowJar)

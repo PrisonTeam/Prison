@@ -49,6 +49,7 @@ shadowJar {
     dependencies {
         include(dependency(':prison-core'))
     }
+    baseName 'Prison'
 }
 
 build.dependsOn(shadowJar)

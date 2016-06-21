@@ -64,7 +64,7 @@ public class ModuleManager {
      * @see #unregisterModule(Module)
      */
     public void unregisterAll() {
-        for (Module module : modules) unregisterModule(module);
+        modules.forEach(Module::disable);
         modules.clear();
     }
 
