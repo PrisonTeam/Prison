@@ -96,6 +96,7 @@ public class CellListener {
             if (!user.hasAccess(cell.getCellId()) ||
                     !user.getCellPermissions(cell.getCellId()).contains(CellPermission.CAN_ACCESS_DOOR)) {
                 e.setCanceled(true);
+
                 return; // TODO Show a message? Perhaps a title?
             }
 
