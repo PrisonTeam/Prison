@@ -18,6 +18,7 @@
 
 package io.github.prison.sponge;
 
+import io.github.prison.Capability;
 import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.Scheduler;
@@ -157,4 +158,12 @@ class SpongePlatform implements Platform {
         Text msg = TextSerializers.FORMATTING_CODE.deserialize(String.format("&8[&3Prison&8]&r " + message, format));
         Sponge.getServer().getConsole().sendMessage(msg);
     }
+
+    @Override
+    public Map<Capability, Boolean> getCapabilities() {
+        Map<Capability, Boolean> capabilities = new HashMap<>();
+        capabilities.put(Capability.GUI, true);
+        return capabilities;
+    }
+
 }

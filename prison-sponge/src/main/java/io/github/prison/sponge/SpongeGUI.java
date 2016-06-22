@@ -40,6 +40,7 @@ import java.util.Map;
 /**
  * @author SirFaizdat
  */
+@Deprecated
 public class SpongeGUI implements GUI {
 
     private String title;

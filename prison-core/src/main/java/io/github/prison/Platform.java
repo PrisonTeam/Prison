@@ -26,6 +26,7 @@ import io.github.prison.util.Location;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -108,5 +109,10 @@ public interface Platform {
      * @param format  The objects inserted via {@link String#format(String, Object...)}.
      */
     void log(String message, Object... format);
+
+    /**
+     * Returns a map of capabilities and whether or not this platform has them.
+     */
+    Map<Capability, Boolean> getCapabilities();
 
 }

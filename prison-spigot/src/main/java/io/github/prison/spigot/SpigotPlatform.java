@@ -18,9 +18,7 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Platform;
-import io.github.prison.Prison;
-import io.github.prison.Scheduler;
+import io.github.prison.*;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
@@ -29,24 +27,17 @@ import io.github.prison.util.Location;
 import io.github.prison.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
-import javax.rmi.CORBA.Util;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author SirFaizdat
@@ -123,7 +114,7 @@ class SpigotPlatform implements Platform {
 
     @Override
     public GUI createGUI(String title, int numRows) {
-        return new SpigotGUI(title, numRows);
+        throw new IncapableException(Capability.GUI);
     }
 
     public void toggleDoor(Location doorLocation) {
@@ -151,9 +142,11 @@ class SpigotPlatform implements Platform {
         else sender.sendMessage(message);
     }
 
-    private boolean isDoor(Material block) {
-        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR || block == Material.JUNGLE_DOOR
-                || block == Material.WOOD_DOOR || block == Material.SPRUCE_DOOR;
+    @Override
+    public Map<Capability, Boolean> getCapabilities() {
+        Map<Capability, Boolean> capabilities = new HashMap<>();
+        capabilities.put(Capability.GUI, true);
+        return capabilities;
     }
 
 }
