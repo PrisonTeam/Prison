@@ -162,7 +162,7 @@ class SpongePlatform implements Platform {
     @Override
     public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
-        capabilities.put(Capability.GUI, true);
+        capabilities.put(Capability.GUI, false);
         return capabilities;
     }
 
