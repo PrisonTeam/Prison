@@ -25,6 +25,7 @@ import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.Button;
 import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.modules.ModuleManager;
+import io.github.prison.selection.SelectionManager;
 import io.github.prison.util.Block;
 
 /**
@@ -49,6 +50,7 @@ public class Prison {
     private Platform platform;
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
+    private SelectionManager selectionManager;
     private EventBus eventBus;
 
     // Public methods
@@ -67,6 +69,7 @@ public class Prison {
         this.eventBus = new EventBus();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
+        this.selectionManager = new SelectionManager();
 
         this.commandHandler.registerCommands(new PrisonCommand());
         this.eventBus.register(new PrisonListener());
@@ -99,6 +102,10 @@ public class Prison {
 
     public CommandHandler getCommandHandler() {
         return commandHandler;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
     }
 
     public PluginCommand getCommand(String label) {

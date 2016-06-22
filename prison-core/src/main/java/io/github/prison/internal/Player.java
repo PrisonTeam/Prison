@@ -41,6 +41,11 @@ public interface Player extends CommandSender {
     void setDisplayName(String newDisplayName);
 
     /**
+     * Adds an {@link ItemStack} to the player's inventory.
+     */
+    void give(ItemStack itemStack);
+
+    /**
      * Returns the player's current {@link Location}.
      */
     Location getLocation();

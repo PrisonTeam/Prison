@@ -18,9 +18,12 @@
 
 package io.github.prison.sponge;
 
+import io.github.prison.internal.ItemStack;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import io.github.prison.internal.Player;
@@ -46,6 +49,17 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
     @Override
     public void setDisplayName(String newDisplayName) {
         spongePlayer.getDisplayNameData().set(Keys.DISPLAY_NAME, Text.of(newDisplayName));
+    }
+
+    @Override
+    public void give(ItemStack itemStack) {
+        org.spongepowered.api.item.inventory.ItemStack spongeStack = org.spongepowered.api.item.inventory.ItemStack.builder()
+                .itemType(Sponge.getGame().getRegistry().getType(ItemType.class, itemStack.getMaterial().getId()).get())
+                .quantity(itemStack.getAmount())
+                .build();
+        spongeStack.offer(Keys.DISPLAY_NAME, TextSerializers.FORMATTING_CODE.deserialize(itemStack.getName()));
+
+        spongePlayer.getInventory().offer(spongeStack);
     }
 
     @Override

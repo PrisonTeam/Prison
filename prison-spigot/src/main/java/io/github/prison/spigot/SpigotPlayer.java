@@ -18,10 +18,12 @@
 
 package io.github.prison.spigot;
 
+import io.github.prison.internal.ItemStack;
 import io.github.prison.internal.Player;
 import io.github.prison.util.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * @author SirFaizdat
@@ -43,6 +45,16 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     @Override
     public void setDisplayName(String newDisplayName) {
         bukkitPlayer.setDisplayName(newDisplayName);
+    }
+
+    @Override
+    public void give(ItemStack itemStack) {
+        org.bukkit.inventory.ItemStack bStack = new org.bukkit.inventory.ItemStack(itemStack.getMaterial().getLegacyId(), itemStack.getAmount());
+        ItemMeta meta = bStack.getItemMeta();
+        meta.setDisplayName(itemStack.getName());
+        bStack.setItemMeta(meta);
+
+        bukkitPlayer.getInventory().addItem(bStack);
     }
 
     @Override
