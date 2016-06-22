@@ -18,21 +18,22 @@
 
 package io.github.prison;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
 import io.github.prison.util.Location;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * Represents a platform that Prison has been implemented for.
  *
  * @author SirFaizdat
+ * @author Camouflage100
  * @since 3.0
  */
 public interface Platform {
@@ -114,5 +115,23 @@ public interface Platform {
      * Returns a map of capabilities and whether or not this platform has them.
      */
     Map<Capability, Boolean> getCapabilities();
+
+    /**
+     * Send a title to a player
+     *
+     * @param player The player that you want to send the title to
+     * @param title The text of the title
+     * @param subtitle The text of the subtitle
+     * @param fade The length of the fade
+     */
+    void showTitle(Player player, String title, String subtitle, int fade);
+
+    /**
+     * Send an actionbar to a player
+     *
+     * @param player The player that you want to send the actionbar to
+     * @param text The text of the actionbar
+     */
+    void showActionBar(Player player, String text);
 
 }

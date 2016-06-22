@@ -63,7 +63,6 @@ public class SpongeListener {
 
         if (p.isPresent()) {
             Prison.getInstance().getEventBus().post(new BlockPlaceEvent(
-                    e.isCancelled(),
                     Block.getBlock(cause.last(Player.class).get().getItemInHand().get().getItem().getId()),
                     (new SpongePlayer(cause.last(Player.class).get()))
             ));

@@ -18,18 +18,9 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Capability;
-import io.github.prison.Platform;
-import io.github.prison.Prison;
-import io.github.prison.Scheduler;
-import io.github.prison.commands.PluginCommand;
-import io.github.prison.gui.GUI;
-import io.github.prison.internal.Player;
-import io.github.prison.internal.World;
-import io.github.prison.util.Location;
-import io.github.prison.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -40,7 +31,24 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import io.github.prison.Capability;
+import io.github.prison.Platform;
+import io.github.prison.Prison;
+import io.github.prison.Scheduler;
+import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.GUI;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.World;
+import io.github.prison.util.Location;
+import io.github.prison.util.TextUtil;
 
 /**
  * @author SirFaizdat
@@ -74,9 +82,7 @@ class SpigotPlatform implements Platform {
 
     @Override
     public List<Player> getOnlinePlayers() {
-        List<Player> players = new ArrayList<>();
-        for (org.bukkit.entity.Player player : Bukkit.getOnlinePlayers()) players.add(getPlayer(player.getUniqueId()));
-        return players;
+        return Bukkit.getOnlinePlayers().stream().map(player -> getPlayer(player.getUniqueId())).collect(Collectors.toList());
     }
 
     @Override
@@ -91,7 +97,6 @@ class SpigotPlatform implements Platform {
 
     @Override
     public void registerCommand(PluginCommand command) {
-        // Rather than putting commands into plugin.yml, we automatically inject them into the command map. Neat, eh?
         plugin.commandMap.register(command.getLabel(), "prison", new Command(command.getLabel(), command.getDescription(), command.getUsage(), Collections.emptyList()) {
 
             @Override
@@ -143,6 +148,22 @@ class SpigotPlatform implements Platform {
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) Bukkit.getLogger().info(ChatColor.stripColor(message));
         else sender.sendMessage(message);
+    }
+
+    @Override
+    public void showTitle(Player player, String title, String subtitle, int fade) {
+        org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
+        play.sendTitle(title, subtitle);
+    }
+
+    @Override
+    public void showActionBar(Player player, String text) {
+        org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
+    }
+
+    private boolean isDoor(Material block) {
+        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR || block == Material.JUNGLE_DOOR
+                || block == Material.WOOD_DOOR || block == Material.SPRUCE_DOOR;
     }
 
     @Override
