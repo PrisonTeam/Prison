@@ -20,6 +20,8 @@ package io.github.prison.internal;
 
 import io.github.prison.util.Location;
 
+import java.util.UUID;
+
 /**
  * Represents a player on the Minecraft server.
  *
@@ -27,6 +29,11 @@ import io.github.prison.util.Location;
  * @since 3.0
  */
 public interface Player extends CommandSender {
+
+    /**
+     * Returns the unique identifier for this player.
+     */
+    UUID getUUID();
 
     /**
      * Returns the player's display name (nickname), which may include colors.

@@ -29,6 +29,8 @@ import org.spongepowered.api.world.World;
 import io.github.prison.internal.Player;
 import io.github.prison.util.Location;
 
+import java.util.UUID;
+
 /**
  * @author SirFaizdat
  */
@@ -39,6 +41,11 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
     public SpongePlayer(org.spongepowered.api.entity.living.player.Player player) {
         super(player);
         this.spongePlayer = player;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return spongePlayer.getUniqueId();
     }
 
     @Override

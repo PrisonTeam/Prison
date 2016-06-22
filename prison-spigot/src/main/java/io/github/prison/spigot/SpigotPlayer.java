@@ -25,6 +25,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.UUID;
+
 /**
  * @author SirFaizdat
  */
@@ -35,6 +37,11 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     public SpigotPlayer(org.bukkit.entity.Player bukkitPlayer) {
         super(bukkitPlayer);
         this.bukkitPlayer = bukkitPlayer;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return bukkitPlayer.getUniqueId();
     }
 
     @Override
