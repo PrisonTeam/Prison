@@ -18,8 +18,16 @@
 
 package io.github.prison.cells;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.prison.Prison;
 import io.github.prison.modules.Module;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author SirFaizdat
@@ -32,9 +40,51 @@ public class CellsModule extends Module {
         Prison.getInstance().getModuleManager().registerModule(this);
     }
 
+    private File cellsDirectory;
+    private Gson gson;
+    private List<Cell> cells;
+
     @Override
     public void enable() {
+        cellsDirectory = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "cells");
+        if (!cellsDirectory.exists()) cellsDirectory.mkdir();
+        cells = new ArrayList<>();
+
+        initGson();
+        loadAll();
+
         Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands());
+    }
+
+    private void initGson() {
+        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    }
+
+    private void loadAll() {
+        File[] files = cellsDirectory.listFiles((dir, name) -> name.endsWith(".cell.json"));
+        for (File file : files) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                Cell cell = gson.fromJson(json, Cell.class);
+                cells.add(cell);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cError while loading cell file %s.", file.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Cell getCell(int cellId) {
+        for (Cell cell : cells) if (cell.getCellId() == cellId) return cell;
+        return null;
+    }
+
+    public List<Cell> getCells() {
+        return cells;
+    }
+
+    public File getCellsDirectory() {
+        return cellsDirectory;
     }
 
 }
