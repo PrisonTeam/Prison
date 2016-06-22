@@ -105,7 +105,7 @@ public class ConfigurationLoader {
     }
 
     private void readConfiguration(String json) throws IOException {
-        config = gson.fromJson(json, Configuration.class);
+        config = gson.fromJson(json, clazz);
     }
 
     private boolean isOutdated(String json) {

@@ -64,7 +64,7 @@ public class Prison {
         this.platform = platform;
         platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
 
-        this.messagesLoader = new ConfigurationLoader(platform.getPluginDirectory(), "messages.json", Messages.class, Configuration.VERSION);
+        this.messagesLoader = new ConfigurationLoader(platform.getPluginDirectory(), "messages.json", Messages.class, Messages.VERSION);
         this.messagesLoader.loadConfiguration();
 
         this.configurationLoader = new ConfigurationLoader(platform.getPluginDirectory(), "config.json", Configuration.class, Configuration.VERSION);

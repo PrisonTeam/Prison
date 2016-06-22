@@ -20,6 +20,7 @@ package io.github.prison.spigot;
 
 import io.github.prison.Prison;
 import io.github.prison.internal.ItemStack;
+import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.util.Block;
 import io.github.prison.util.Location;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -71,11 +73,11 @@ public class SpigotListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         // TODO Accept air events (block is null when air is clicked...)
-        if(e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) return;
+        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) return;
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if(e.getHand() != EquipmentSlot.HAND) return;
+        if (e.getHand() != EquipmentSlot.HAND) return;
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
         Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerInteractEvent(
@@ -92,6 +94,13 @@ public class SpigotListener implements Listener {
         int amount = bis.getAmount();
         Block block = Block.getBlock(bis.getType().getId());
         return new ItemStack(name, amount, block);
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
+        PlayerChatEvent event = new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage());
+        Prison.getInstance().getEventBus().post(event);
+        if (event.isCancelled()) e.setCancelled(true);
     }
 
 }

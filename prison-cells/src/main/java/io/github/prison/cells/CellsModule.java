@@ -20,6 +20,7 @@ package io.github.prison.cells;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.prison.ConfigurationLoader;
 import io.github.prison.Prison;
 import io.github.prison.modules.Module;
 
@@ -46,6 +47,8 @@ public class CellsModule extends Module {
     private Gson gson;
     private List<Cell> cells;
     private List<CellUser> users;
+    private CellCreationQueue queue;
+    private ConfigurationLoader messagesLoader;
 
     @Override
     public void enable() {
@@ -55,6 +58,9 @@ public class CellsModule extends Module {
         usersDirectory = new File(cellsDirectory, "users");
         if (!usersDirectory.exists()) usersDirectory.mkdir();
 
+        this.messagesLoader = new ConfigurationLoader(cellsDirectory, "messages.json", Messages.class, Messages.VERSION);
+        this.messagesLoader.loadConfiguration();
+
         cells = new ArrayList<>();
         users = new ArrayList<>();
 
@@ -62,7 +68,10 @@ public class CellsModule extends Module {
         loadAllCells();
         loadAllUsers();
 
+        this.queue = new CellCreationQueue(this);
+
         new UserListener(this).init();
+        new CellListener(this).init();
 
         Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands(this));
     }
@@ -129,7 +138,7 @@ public class CellsModule extends Module {
     }
 
     public CellUser getUser(UUID uuid) {
-        for(CellUser user : users) if(user.getUUID().equals(uuid)) return user;
+        for (CellUser user : users) if (user.getUUID().equals(uuid)) return user;
         return null;
     }
 
@@ -139,11 +148,19 @@ public class CellsModule extends Module {
 
     public int getNextCellId() {
         int highestId = 0;
-        for(Cell cell : cells) {
-            if(cell.getCellId() > highestId) highestId = cell.getCellId();
+        for (Cell cell : cells) {
+            if (cell.getCellId() > highestId) highestId = cell.getCellId();
         }
 
         return highestId + 1;
+    }
+
+    public CellCreationQueue getQueue() {
+        return queue;
+    }
+
+    public Messages getMessages() {
+        return (Messages) messagesLoader.getConfig();
     }
 
     public File getCellsDirectory() {

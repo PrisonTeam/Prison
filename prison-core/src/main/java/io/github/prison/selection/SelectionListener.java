@@ -37,11 +37,15 @@ public class SelectionListener {
 
         if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
             // Set first position
-            Prison.getInstance().getSelectionManager().getSelection(e.getPlayer()).setMin(e.getClicked());
+            Selection sel = Prison.getInstance().getSelectionManager().getSelection(e.getPlayer());
+            sel.setMin(e.getClicked());
+            Prison.getInstance().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer().sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
         } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
-            Prison.getInstance().getSelectionManager().getSelection(e.getPlayer()).setMax(e.getClicked());
+            Selection sel = Prison.getInstance().getSelectionManager().getSelection(e.getPlayer());
+            sel.setMax(e.getClicked());
+            Prison.getInstance().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer().sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
         }
     }

@@ -61,14 +61,15 @@ public class CellsCommands {
     @Command(identifier = "cells create", description = "Create a new cell", permissions = {"prison.cells.createcell"})
     public void createCommand(Player sender) {
         Selection sel = Prison.getInstance().getSelectionManager().getSelection(sender);
-        if(sel == null) {
+        if (!sel.isComplete()) {
             sender.sendMessage(Prison.getInstance().getMessages().selectionNeeded);
+            Prison.getInstance().getSelectionManager().bestowSelectionTool(sender);
             return;
         }
 
         Cell cell = new Cell(cellsModule.getNextCellId(), new Bounds(sel.getMin(), sel.getMax()), cellsModule.getUser(sender.getUUID()));
-        cellsModule.saveCell(cell);
-        sender.sendMessage("");
+        cellsModule.getQueue().setQueuedCell(sender, cell);
+        sender.sendMessage("&3Success! &7Now, punch the door of the cell, or type \"cancel\" to cancel the creation of the cell.");
     }
 
     @Command(identifier = "cells delete", description = "Delete a cell", onlyPlayers = false, permissions = {"prison.cells.deletecell"})

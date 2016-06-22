@@ -16,46 +16,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.selection;
+package io.github.prison.internal.events;
 
-import io.github.prison.util.Location;
+import io.github.prison.internal.Player;
 
 /**
- * Represents an individual selection.
+ * A platform-independent event, posted when a player chats a message.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class Selection {
+public class PlayerChatEvent {
 
-    private Location min, max;
+    private Player player;
+    private String message;
+    private boolean cancelled;
 
-    public Selection() {
+    public PlayerChatEvent(Player player, String message) {
+        this.player = player;
+        this.message = message;
     }
 
-    public Selection(Location min, Location max) {
-        this.min = min;
-        this.max = max;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Location getMin() {
-        return min;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMin(Location min) {
-        this.min = min;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
-    public Location getMax() {
-        return max;
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
-
-    public void setMax(Location max) {
-        this.max = max;
-    }
-
-    public boolean isComplete() {
-        return min != null && max != null;
-    }
-
 }

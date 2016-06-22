@@ -16,46 +16,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.selection;
+package io.github.prison.cells;
 
-import io.github.prison.util.Location;
+import com.google.common.eventbus.Subscribe;
+import io.github.prison.Prison;
+import io.github.prison.internal.events.PlayerChatEvent;
 
 /**
- * Represents an individual selection.
- *
  * @author SirFaizdat
- * @since 3.0
  */
-public class Selection {
+public class CellListener {
 
-    private Location min, max;
+    private CellsModule cellsModule;
 
-    public Selection() {
+    public CellListener(CellsModule cellsModule) {
+        this.cellsModule = cellsModule;
     }
 
-    public Selection(Location min, Location max) {
-        this.min = min;
-        this.max = max;
+    public void init() {
+        Prison.getInstance().getEventBus().register(this);
     }
 
-    public Location getMin() {
-        return min;
-    }
-
-    public void setMin(Location min) {
-        this.min = min;
-    }
-
-    public Location getMax() {
-        return max;
-    }
-
-    public void setMax(Location max) {
-        this.max = max;
-    }
-
-    public boolean isComplete() {
-        return min != null && max != null;
+    @Subscribe
+    public void onPlayerChat(PlayerChatEvent e) {
+        if(!cellsModule.getQueue().isQueued(e.getPlayer())) return;
+        if (e.getMessage().toLowerCase().equals("cancel")) {
+            e.setCancelled(true);
+            cellsModule.getQueue().cancel(e.getPlayer());
+            e.getPlayer().sendMessage(cellsModule.getMessages().creationCanceled);
+        }
     }
 
 }

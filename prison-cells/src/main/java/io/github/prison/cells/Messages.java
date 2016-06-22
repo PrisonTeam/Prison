@@ -16,46 +16,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.selection;
+package io.github.prison.cells;
 
-import io.github.prison.util.Location;
+import io.github.prison.Configurable;
 
 /**
- * Represents an individual selection.
+ * Represents Cells' messages file. Contains all of the keys and their default values.
+ * Every time a new value is added to a production version (i.e. public release),
+ * the VERSION constant must be incremented by one to ensure the file will be regenerated.
  *
  * @author SirFaizdat
- * @since 3.0
  */
-public class Selection {
+public class Messages implements Configurable {
 
-    private Location min, max;
+    public static final int VERSION = 1; // For everyone to reference
+    public int version = VERSION; // For the configuration file to store
 
-    public Selection() {
+    // Entries
+
+    public String creationCanceled = "&cCanceled &7the creation of the cell.";
+
+    @Override
+    public int getVersion() {
+        return version;
     }
-
-    public Selection(Location min, Location max) {
-        this.min = min;
-        this.max = max;
-    }
-
-    public Location getMin() {
-        return min;
-    }
-
-    public void setMin(Location min) {
-        this.min = min;
-    }
-
-    public Location getMax() {
-        return max;
-    }
-
-    public void setMax(Location max) {
-        this.max = max;
-    }
-
-    public boolean isComplete() {
-        return min != null && max != null;
-    }
-
 }
