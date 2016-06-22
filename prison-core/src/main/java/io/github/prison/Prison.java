@@ -19,9 +19,13 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.Button;
+import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.modules.ModuleManager;
+import io.github.prison.util.Block;
 
 /**
  * Entry point for implementations.
@@ -65,6 +69,7 @@ public class Prison {
         this.commandHandler = new CommandHandler();
 
         this.commandHandler.registerCommands(new PrisonCommand());
+        this.eventBus.register(new PrisonListener());
 
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform.log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));

@@ -19,6 +19,7 @@
 package io.github.prison;
 
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
 
@@ -81,6 +82,14 @@ public interface Platform {
      * Returns the {@link Scheduler}, which can be used to schedule tasks.
      */
     Scheduler getScheduler();
+
+    /**
+     * Creates a new {@link GUI} to show to players.
+     * @param title The title of the GUI.
+     * @param numRows The number of rows in the GUI; must be divisible by 9.
+     * @return The {@link GUI}, ready for use.
+     */
+    GUI createGUI(String title, int numRows);
 
     /**
      * Log a colored message to the console (if supported).

@@ -22,6 +22,7 @@ import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
 import io.github.prison.util.TextUtil;
@@ -108,6 +109,11 @@ class SpigotPlatform implements Platform {
     @Override
     public Scheduler getScheduler() {
         return plugin.scheduler;
+    }
+
+    @Override
+    public GUI createGUI(String title, int numRows) {
+        return new SpigotGUI(title, numRows);
     }
 
     @Override

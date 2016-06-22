@@ -39,6 +39,7 @@ public class SpigotPrison extends JavaPlugin {
     public void onEnable() {
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
+        GUIListener.getInstance().init(this);
         Prison.getInstance().init(new SpigotPlatform(this));
         new SpigotListener(this).init();
     }

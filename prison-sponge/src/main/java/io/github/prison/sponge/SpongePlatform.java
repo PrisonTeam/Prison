@@ -18,6 +18,7 @@
 
 package io.github.prison.sponge;
 
+import io.github.prison.gui.GUI;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandException;
@@ -139,6 +140,11 @@ class SpongePlatform implements Platform {
     @Override
     public Scheduler getScheduler() {
         return plugin.scheduler;
+    }
+
+    @Override
+    public GUI createGUI(String title, int numRows) {
+        return new SpongeGUI(title, numRows);
     }
 
     @Override
