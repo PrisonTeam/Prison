@@ -19,14 +19,10 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
-import io.github.prison.gui.Button;
-import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.modules.ModuleManager;
 import io.github.prison.selection.SelectionManager;
-import io.github.prison.util.Block;
 
 /**
  * Entry point for implementations.
@@ -66,6 +62,9 @@ public class Prison {
         this.platform = platform;
         platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
 
+        MessagesLoader.getInstance().loadMessages();
+        ConfigurationLoader.getInstance().loadConfiguration();
+
         this.eventBus = new EventBus();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
@@ -90,6 +89,14 @@ public class Prison {
 
     public Platform getPlatform() {
         return platform;
+    }
+
+    public Configuration getConfig() {
+        return ConfigurationLoader.getInstance().getConfiguration();
+    }
+
+    public Messages getMessages() {
+        return MessagesLoader.getInstance().getMessages();
     }
 
     public EventBus getEventBus() {
