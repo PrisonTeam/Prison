@@ -20,11 +20,14 @@ package io.github.prison.sponge;
 
 import com.google.inject.Inject;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import io.github.prison.Prison;
@@ -38,6 +41,12 @@ public class SpongePrison {
     @Inject
     Logger logger;
     SpongeScheduler scheduler;
+
+    @Listener
+    public void onServerStarting(GameStartingServerEvent event) {
+        File file = Sponge.getPluginManager().getPlugin("prison-sponge").get().getAssetDirectory().get().toFile();
+        if(!file.exists()) file.mkdir();
+    }
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
