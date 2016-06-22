@@ -37,10 +37,9 @@ public class Cell {
     public Cell() {
     }
 
-    public Cell(int cellId, Bounds bounds, Location doorLocation, CellUser owner) {
+    public Cell(int cellId, Bounds bounds, CellUser owner) {
         this.cellId = cellId;
         this.bounds = bounds;
-        this.doorLocation = doorLocation;
         this.owner = owner;
     }
 

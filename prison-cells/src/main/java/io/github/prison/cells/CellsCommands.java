@@ -18,20 +18,28 @@
 
 package io.github.prison.cells;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.Command;
 import io.github.prison.internal.CommandSender;
+import io.github.prison.internal.Player;
+import io.github.prison.selection.Selection;
+import io.github.prison.util.Bounds;
 
 /**
  * @author Camouflage100
  */
 public class CellsCommands {
+
+    private CellsModule cellsModule;
+
+    public CellsCommands(CellsModule cellsModule) {
+        this.cellsModule = cellsModule;
+    }
+
+
     ///////////////////////////
     ////// USER COMMANDS //////
     ///////////////////////////
-
-    @Command(identifier = "cells", description = "Base command of the Cells module", onlyPlayers = false)
-    public void cellsCommand(CommandSender sender) {
-    }
 
     @Command(identifier = "cells list", description = "List your or all cells", onlyPlayers = false, permissions = {"prison.cells.list"})
     public void listCommand(CommandSender sender) {
@@ -50,8 +58,17 @@ public class CellsCommands {
     ////// ADMIN COMMANDS //////
     ////////////////////////////
 
-    @Command(identifier = "cells create", description = "Create a new cell", onlyPlayers = false, permissions = {"prison.cells.createcell"})
-    public void createCommand(CommandSender sender) {
+    @Command(identifier = "cells create", description = "Create a new cell", permissions = {"prison.cells.createcell"})
+    public void createCommand(Player sender) {
+        Selection sel = Prison.getInstance().getSelectionManager().getSelection(sender);
+        if(sel == null) {
+            sender.sendMessage(Prison.getInstance().getMessages().selectionNeeded);
+            return;
+        }
+
+        Cell cell = new Cell(cellsModule.getNextCellId(), new Bounds(sel.getMin(), sel.getMax()), cellsModule.getUser(sender.getUUID()));
+        cellsModule.saveCell(cell);
+        sender.sendMessage("");
     }
 
     @Command(identifier = "cells delete", description = "Delete a cell", onlyPlayers = false, permissions = {"prison.cells.deletecell"})

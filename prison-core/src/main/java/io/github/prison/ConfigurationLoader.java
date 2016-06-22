@@ -24,10 +24,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.nio.file.Files;
-
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,18 +39,22 @@ import java.util.Date;
  */
 public class ConfigurationLoader {
 
-    private static ConfigurationLoader instance;
-    private Configuration configuration;
-    private File configFile = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "config.json");
+
+    private Class<? extends Configurable> clazz;
+    private Configurable config;
+    private int targetVersion;
+    private File rootFolder;
+    private File configFile;
+    private String fileName;
     private Gson gson;
 
-    public static ConfigurationLoader getInstance() {
-        if (instance == null) instance = new ConfigurationLoader();
-        return instance;
-    }
-
-    public ConfigurationLoader() {
+    public ConfigurationLoader(File rootFolder, String fileName, Class<? extends Configurable> clazz, int targetVersion) {
         gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        this.clazz = clazz;
+        this.targetVersion = targetVersion;
+        this.rootFolder = rootFolder;
+        this.fileName = fileName;
+        this.configFile = new File(rootFolder, fileName);
     }
 
     /**
@@ -61,7 +64,11 @@ public class ConfigurationLoader {
         try {
             // If it doesn't exist, create it
             if (!configFile.exists()) {
-                configuration = new Configuration();
+                try {
+                    config = clazz.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
                 writeConfiguration();
                 return;
             }
@@ -69,22 +76,22 @@ public class ConfigurationLoader {
             // It does exist, so let's load it.
             String json = new String(Files.readAllBytes(Paths.get(configFile.getPath())));
 
-            if(isOutdated(json)) {
+            if (isOutdated(json)) {
                 duplicateConfigFile();
-                Prison.getInstance().getPlatform().log("&c&lAlert: &7Your configuration file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
+                Prison.getInstance().getPlatform().log("&c&lAlert: &7Your " + fileName + " file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
                 return;
             }
 
             readConfiguration(json);
         } catch (IOException e) {
-            Prison.getInstance().getPlatform().log("&c&lError: &7Failed to load the configuration file.");
+            Prison.getInstance().getPlatform().log("&c&lError: &7Failed to load the " + fileName + " file.");
             e.printStackTrace();
         }
 
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public Configurable getConfig() {
+        return config;
     }
 
     // -------------------------------------------- //
@@ -93,12 +100,12 @@ public class ConfigurationLoader {
 
     private void writeConfiguration() throws IOException {
         configFile.createNewFile();
-        String json = gson.toJson(configuration);
+        String json = gson.toJson(config);
         Files.write(configFile.toPath(), json.getBytes());
     }
 
     private void readConfiguration(String json) throws IOException {
-        configuration = gson.fromJson(json, Configuration.class);
+        config = gson.fromJson(json, Configuration.class);
     }
 
     private boolean isOutdated(String json) {
@@ -106,7 +113,7 @@ public class ConfigurationLoader {
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(json);
             int version = Math.toIntExact((long) obj.get("version"));
-            return version != Configuration.VERSION;
+            return version != targetVersion;
         } catch (ParseException e) {
             e.printStackTrace();
             return false;
@@ -115,13 +122,18 @@ public class ConfigurationLoader {
 
     private void duplicateConfigFile() throws IOException {
         // Rename the old config file to old-config-timestamp.json
-        String fileName = "old-config-" + new SimpleDateFormat("yyyyMMdd-hhmm'.json'").format(new Date());
-        File newConfigFile = new File(Prison.getInstance().getPlatform().getPluginDirectory(), fileName);
+        String fileName = "old-" + this.fileName.split("\\.")[0] + "-" + new SimpleDateFormat("yyyyMMdd-hhmm'.json'").format(new Date());
+        File newConfigFile = new File(rootFolder, fileName);
         configFile.renameTo(newConfigFile);
 
         // Now, write a new config file
-        configFile = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "config.json");
-        configuration = new Configuration();
+        configFile = new File(rootFolder, this.fileName);
+        try {
+            config = clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            return;
+        }
         writeConfiguration();
     }
 

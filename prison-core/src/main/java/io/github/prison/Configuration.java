@@ -18,9 +18,6 @@
 
 package io.github.prison;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Represents Prison's configuration. Contains all of the keys and their default values.
  * Every time a new value is added to a production version (i.e. public release),
@@ -29,11 +26,16 @@ import java.util.List;
  * @author SirFaizdat
  * @since 3.0
  */
-public class Configuration {
+public class Configuration implements Configurable {
 
-    public static final int VERSION = 1; // For everyone to reference
+    public static final int VERSION = 2; // For everyone to reference
     public int version = VERSION; // For the configuration file to store
 
     // Entries
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
 
 }

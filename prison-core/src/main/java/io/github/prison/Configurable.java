@@ -19,24 +19,13 @@
 package io.github.prison;
 
 /**
- * Represents Prison's messages file. Contains all of the keys and their default values.
- * Every time a new value is added to a production version (i.e. public release),
- * the VERSION constant must be incremented by one to ensure the file will be regenerated.
+ * Represents a class that holds configuration keys.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class Messages implements Configurable {
+public interface Configurable {
 
-    public static final int VERSION = 2; // For everyone to reference
-    public int version = VERSION; // For the configuration file to store
+    int getVersion();
 
-    // Entries
-
-    public String selectionNeeded = "&cError: &7You must create a selection first!";
-
-    @Override
-    public int getVersion() {
-        return version;
-    }
 }

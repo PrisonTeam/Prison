@@ -47,6 +47,8 @@ public class Prison {
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
+    private ConfigurationLoader configurationLoader;
+    private ConfigurationLoader messagesLoader;
     private EventBus eventBus;
 
     // Public methods
@@ -62,8 +64,11 @@ public class Prison {
         this.platform = platform;
         platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
 
-        MessagesLoader.getInstance().loadMessages();
-        ConfigurationLoader.getInstance().loadConfiguration();
+        this.messagesLoader = new ConfigurationLoader(platform.getPluginDirectory(), "messages.json", Messages.class, Configuration.VERSION);
+        this.messagesLoader.loadConfiguration();
+
+        this.configurationLoader = new ConfigurationLoader(platform.getPluginDirectory(), "config.json", Configuration.class, Configuration.VERSION);
+        this.configurationLoader.loadConfiguration();
 
         this.eventBus = new EventBus();
         this.moduleManager = new ModuleManager();
@@ -92,11 +97,11 @@ public class Prison {
     }
 
     public Configuration getConfig() {
-        return ConfigurationLoader.getInstance().getConfiguration();
+        return (Configuration) configurationLoader.getConfig();
     }
 
     public Messages getMessages() {
-        return MessagesLoader.getInstance().getMessages();
+        return (Messages) messagesLoader.getConfig();
     }
 
     public EventBus getEventBus() {

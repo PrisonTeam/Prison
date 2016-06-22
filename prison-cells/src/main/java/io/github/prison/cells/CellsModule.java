@@ -64,7 +64,7 @@ public class CellsModule extends Module {
 
         new UserListener(this).init();
 
-        Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands());
+        Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands(this));
     }
 
     private void initGson() {
@@ -135,6 +135,15 @@ public class CellsModule extends Module {
 
     public List<CellUser> getUsers() {
         return users;
+    }
+
+    public int getNextCellId() {
+        int highestId = 0;
+        for(Cell cell : cells) {
+            if(cell.getCellId() > highestId) highestId = cell.getCellId();
+        }
+
+        return highestId + 1;
     }
 
     public File getCellsDirectory() {
