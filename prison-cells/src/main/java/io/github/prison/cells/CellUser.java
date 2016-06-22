@@ -27,6 +27,7 @@ import java.util.*;
  */
 public class CellUser {
 
+    private UUID uuid;
     private Map<Integer, List<CellPermission>> cells;
 
     public CellUser() {
@@ -55,6 +56,10 @@ public class CellUser {
 
     public boolean hasAccess(int cellId) {
         return cells.containsKey(cellId);
+    }
+
+    public UUID getUUID() {
+        return uuid;
     }
 
 }

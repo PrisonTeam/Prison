@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author SirFaizdat
@@ -41,17 +42,25 @@ public class CellsModule extends Module {
     }
 
     private File cellsDirectory;
+    private File usersDirectory;
     private Gson gson;
     private List<Cell> cells;
+    private List<CellUser> users;
 
     @Override
     public void enable() {
         cellsDirectory = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "cells");
         if (!cellsDirectory.exists()) cellsDirectory.mkdir();
+
+        usersDirectory = new File(cellsDirectory, "users");
+        if (!usersDirectory.exists()) usersDirectory.mkdir();
+
         cells = new ArrayList<>();
+        users = new ArrayList<>();
 
         initGson();
-        loadAll();
+        loadAllCells();
+        loadAllUsers();
 
         Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands());
     }
@@ -60,7 +69,7 @@ public class CellsModule extends Module {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     }
 
-    private void loadAll() {
+    private void loadAllCells() {
         File[] files = cellsDirectory.listFiles((dir, name) -> name.endsWith(".cell.json"));
         for (File file : files) {
             try {
@@ -69,6 +78,20 @@ public class CellsModule extends Module {
                 cells.add(cell);
             } catch (IOException e) {
                 Prison.getInstance().getPlatform().log("&cError while loading cell file %s.", file.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadAllUsers() {
+        File[] files = usersDirectory.listFiles((dir, name) -> name.endsWith(".user.json"));
+        for (File file : files) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                CellUser cellUser = gson.fromJson(json, CellUser.class);
+                users.add(cellUser);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cError while loading cell user file %s.", file.getName());
                 e.printStackTrace();
             }
         }
@@ -83,8 +106,20 @@ public class CellsModule extends Module {
         return cells;
     }
 
+    public CellUser getUser(UUID uuid) {
+        for(CellUser user : users) if(user.getUUID().equals(uuid)) return user;
+        return null;
+    }
+
+    public List<CellUser> getUsers() {
+        return users;
+    }
+
     public File getCellsDirectory() {
         return cellsDirectory;
     }
 
+    public File getUsersDirectory() {
+        return usersDirectory;
+    }
 }

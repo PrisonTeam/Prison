@@ -33,6 +33,9 @@ public class Cell {
     private Bounds bounds;
     private Location doorLocation;
 
+    public Cell() {
+    }
+
     public Cell(int cellId, Bounds bounds, Location doorLocation) {
         this.cellId = cellId;
         this.bounds = bounds;
