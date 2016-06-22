@@ -32,25 +32,47 @@ public class Cell {
     private int cellId;
     private Bounds bounds;
     private Location doorLocation;
+    private CellUser owner;
 
     public Cell() {
     }
 
-    public Cell(int cellId, Bounds bounds, Location doorLocation) {
+    public Cell(int cellId, Bounds bounds, Location doorLocation, CellUser owner) {
         this.cellId = cellId;
         this.bounds = bounds;
         this.doorLocation = doorLocation;
+        this.owner = owner;
     }
 
     public int getCellId() {
         return cellId;
     }
 
+    public void setCellId(int cellId) {
+        this.cellId = cellId;
+    }
+
     public Bounds getBounds() {
         return bounds;
     }
 
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds;
+    }
+
     public Location getDoorLocation() {
         return doorLocation;
+    }
+
+    public void setDoorLocation(Location doorLocation) {
+        this.doorLocation = doorLocation;
+    }
+
+    public CellUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(CellUser owner) {
+        this.owner = owner;
     }
 }

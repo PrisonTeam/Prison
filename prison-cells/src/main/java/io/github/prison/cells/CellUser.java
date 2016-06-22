@@ -31,11 +31,15 @@ public class CellUser {
     private Map<Integer, List<CellPermission>> cells;
 
     public CellUser() {
-        cells = new HashMap<>();
+    }
+
+    public CellUser(UUID uuid) {
+        this.uuid = uuid;
+        this.cells = new HashMap<>();
     }
 
     public void addCell(int cellId) {
-        cells.put(cellId, Collections.emptyList());
+        cells.put(cellId, new ArrayList<>());
     }
 
     public void addPermission(int cellId, CellPermission permission) {

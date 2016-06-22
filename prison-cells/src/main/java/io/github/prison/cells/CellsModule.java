@@ -62,6 +62,8 @@ public class CellsModule extends Module {
         loadAllCells();
         loadAllUsers();
 
+        new UserListener(this).init();
+
         Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands());
     }
 
@@ -97,6 +99,16 @@ public class CellsModule extends Module {
         }
     }
 
+    public void saveCell(Cell cell) {
+        String json = gson.toJson(cell);
+        try {
+            Files.write(new File(cellsDirectory, cell.getCellId() + ".cell.json").toPath(), json.getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cError while saving cell %s.", cell.getCellId());
+            e.printStackTrace();
+        }
+    }
+
     public Cell getCell(int cellId) {
         for (Cell cell : cells) if (cell.getCellId() == cellId) return cell;
         return null;
@@ -104,6 +116,16 @@ public class CellsModule extends Module {
 
     public List<Cell> getCells() {
         return cells;
+    }
+
+    public void saveCellUser(CellUser cellUser) {
+        String json = gson.toJson(cellUser);
+        try {
+            Files.write(new File(usersDirectory, cellUser.getUUID().toString() + ".user.json").toPath(), json.getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cError while saving cell user %s.", cellUser.getUUID());
+            e.printStackTrace();
+        }
     }
 
     public CellUser getUser(UUID uuid) {
