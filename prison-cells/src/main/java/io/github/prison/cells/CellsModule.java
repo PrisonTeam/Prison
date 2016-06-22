@@ -22,7 +22,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.prison.ConfigurationLoader;
 import io.github.prison.Prison;
+import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.modules.Module;
+import io.github.prison.util.Location;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +79,11 @@ public class CellsModule extends Module {
     }
 
     private void initGson() {
-        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(Location.class, new LocationAdapter())
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
     }
 
     private void loadAllCells() {
@@ -120,6 +126,11 @@ public class CellsModule extends Module {
 
     public Cell getCell(int cellId) {
         for (Cell cell : cells) if (cell.getCellId() == cellId) return cell;
+        return null;
+    }
+
+    public Cell getCellByDoor(Location location) {
+        for(Cell cell : cells) if (location.toCoordinates().equals(cell.getDoorLocation().toCoordinates())) return cell;
         return null;
     }
 

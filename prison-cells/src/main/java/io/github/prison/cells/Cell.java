@@ -21,6 +21,8 @@ package io.github.prison.cells;
 import io.github.prison.util.Bounds;
 import io.github.prison.util.Location;
 
+import java.util.UUID;
+
 /**
  * Represents a single cell.
  * All values are serializable.
@@ -32,12 +34,12 @@ public class Cell {
     private int cellId;
     private Bounds bounds;
     private Location doorLocation;
-    private CellUser owner;
+    private UUID owner;
 
     public Cell() {
     }
 
-    public Cell(int cellId, Bounds bounds, CellUser owner) {
+    public Cell(int cellId, Bounds bounds, UUID owner) {
         this.cellId = cellId;
         this.bounds = bounds;
         this.owner = owner;
@@ -67,11 +69,12 @@ public class Cell {
         this.doorLocation = doorLocation;
     }
 
-    public CellUser getOwner() {
+    public UUID getOwner() {
         return owner;
     }
 
-    public void setOwner(CellUser owner) {
+    public void setOwner(UUID owner) {
         this.owner = owner;
     }
+
 }

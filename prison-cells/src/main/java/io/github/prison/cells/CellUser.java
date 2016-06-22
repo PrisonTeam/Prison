@@ -62,8 +62,38 @@ public class CellUser {
         return cells.containsKey(cellId);
     }
 
+    public List<CellPermission> getCellPermissions(int cellId) {
+        return cells.get(cellId);
+    }
+
     public UUID getUUID() {
         return uuid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CellUser)) return false;
+
+        CellUser cellUser = (CellUser) o;
+
+        if (uuid != null ? !uuid.equals(cellUser.uuid) : cellUser.uuid != null) return false;
+        return cells != null ? cells.equals(cellUser.cells) : cellUser.cells == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (cells != null ? cells.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CellUser{" +
+                "uuid=" + uuid +
+                ", cells=" + cells +
+                '}';
+    }
 }

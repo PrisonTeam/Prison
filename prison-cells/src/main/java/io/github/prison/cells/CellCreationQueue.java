@@ -64,8 +64,10 @@ public class CellCreationQueue {
      */
     public void complete(Player player) {
         if (!isQueued(player)) return;
-        cellsModule.saveCell(getQueuedCell(player));
+        Cell cell = getQueuedCell(player);
+        cellsModule.saveCell(cell);
         queue.remove(player.getName());
+        player.sendMessage(String.format(cellsModule.getMessages().cellCreationSuccess, cell.getCellId()));
     }
 
     /**

@@ -693,6 +693,11 @@ public enum Block {
         return null;
     }
 
+    public static boolean isDoor(Block block) {
+        return block == ACACIA_DOOR_BLOCK || block == BIRCH_DOOR_BLOCK || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK || block == JUNGLE_DOOR_BLOCK
+                || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;
+    }
+
     public int getLegacyId() {
         return legacyId;
     }

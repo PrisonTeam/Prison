@@ -18,30 +18,23 @@
 
 package io.github.prison.sponge;
 
-import io.github.prison.gui.GUI;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandCallable;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandManager;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
+import io.github.prison.util.Location;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.*;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author SirFaizdat
@@ -145,6 +138,18 @@ class SpongePlatform implements Platform {
     @Override
     public GUI createGUI(String title, int numRows) {
         return new SpongeGUI(title, numRows);
+    }
+
+    @Override
+    public void toggleDoor(Location doorLocation) {
+        org.spongepowered.api.world.Location<org.spongepowered.api.world.World> loc = new org.spongepowered.api.world.Location<>(
+                Sponge.getServer().getWorld(doorLocation.getWorld().getName()).get(),
+                doorLocation.getX(),
+                doorLocation.getY(),
+                doorLocation.getZ()
+        );
+
+        loc.offer(Keys.OPEN, !loc.get(Keys.OPEN).orElse(false));
     }
 
     @Override

@@ -29,12 +29,14 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 1; // For everyone to reference
+    public static final int VERSION = 3; // For everyone to reference
     public int version = VERSION; // For the configuration file to store
 
     // Entries
 
     public String creationCanceled = "&cCanceled &7the creation of the cell.";
+    public String cellCreationSuccess = "&7Successfully created &3cell #%d&7.";
+    public String mustBeDoor = "&7The block you punch &cmust be a door&7.";
 
     @Override
     public int getVersion() {

@@ -67,7 +67,7 @@ public class CellsCommands {
             return;
         }
 
-        Cell cell = new Cell(cellsModule.getNextCellId(), new Bounds(sel.getMin(), sel.getMax()), cellsModule.getUser(sender.getUUID()));
+        Cell cell = new Cell(cellsModule.getNextCellId(), new Bounds(sel.getMin(), sel.getMax()), sender.getUUID());
         cellsModule.getQueue().setQueuedCell(sender, cell);
         sender.sendMessage("&3Success! &7Now, punch the door of the cell, or type \"cancel\" to cancel the creation of the cell.");
     }

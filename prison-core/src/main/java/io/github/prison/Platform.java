@@ -22,6 +22,7 @@ import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
+import io.github.prison.util.Location;
 
 import java.io.File;
 import java.util.List;
@@ -85,11 +86,20 @@ public interface Platform {
 
     /**
      * Creates a new {@link GUI} to show to players.
-     * @param title The title of the GUI.
+     *
+     * @param title   The title of the GUI.
      * @param numRows The number of rows in the GUI; must be divisible by 9.
      * @return The {@link GUI}, ready for use.
      */
     GUI createGUI(String title, int numRows);
+
+    /**
+     * If an iron door is open, this method closes it.
+     * If an iron door is closed, this method opens it.
+     *
+     * @param doorLocation The {@link Location} of the door.
+     */
+    void toggleDoor(Location doorLocation);
 
     /**
      * Log a colored message to the console (if supported).

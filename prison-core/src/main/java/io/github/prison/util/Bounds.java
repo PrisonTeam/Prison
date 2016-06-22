@@ -28,6 +28,9 @@ public class Bounds {
 
     private Location min, max;
 
+    public Bounds() {
+    }
+
     public Bounds(Location min, Location max) {
         this.min = min;
         this.max = max;

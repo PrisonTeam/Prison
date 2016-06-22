@@ -25,13 +25,23 @@ import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.World;
+import io.github.prison.util.Location;
 import io.github.prison.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Openable;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,6 +126,22 @@ class SpigotPlatform implements Platform {
         return new SpigotGUI(title, numRows);
     }
 
+    public void toggleDoor(Location doorLocation) {
+        org.bukkit.Location bLoc = new org.bukkit.Location(
+                Bukkit.getWorld(doorLocation.getWorld().getName()),
+                doorLocation.getX(),
+                doorLocation.getY(),
+                doorLocation.getZ()
+        );
+        Block block = bLoc.getWorld().getBlockAt(bLoc).getRelative(BlockFace.DOWN);
+
+        BlockState state = block.getState();
+        Openable openable = (Openable) state.getData();
+        openable.setOpen(!openable.isOpen());
+        state.setData((MaterialData) openable);
+        state.update();
+    }
+
     @Override
     public void log(String message, Object... format) {
         message = TextUtil.parse("&8[&3Prison&8]&r " + message, format);
@@ -123,6 +149,11 @@ class SpigotPlatform implements Platform {
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) Bukkit.getLogger().info(ChatColor.stripColor(message));
         else sender.sendMessage(message);
+    }
+
+    private boolean isDoor(Material block) {
+        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR || block == Material.JUNGLE_DOOR
+                || block == Material.WOOD_DOOR || block == Material.SPRUCE_DOOR;
     }
 
 }
