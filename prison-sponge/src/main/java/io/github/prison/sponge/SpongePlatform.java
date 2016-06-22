@@ -18,10 +18,7 @@
 
 package io.github.prison.sponge;
 
-import io.github.prison.Capability;
-import io.github.prison.Platform;
-import io.github.prison.Prison;
-import io.github.prison.Scheduler;
+import io.github.prison.*;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
@@ -138,7 +135,7 @@ class SpongePlatform implements Platform {
 
     @Override
     public GUI createGUI(String title, int numRows) {
-        return new SpongeGUI(title, numRows);
+        throw new IncapableException(Capability.GUI);
     }
 
     @Override

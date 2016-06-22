@@ -18,7 +18,10 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.*;
+import io.github.prison.Capability;
+import io.github.prison.Platform;
+import io.github.prison.Prison;
+import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
@@ -114,7 +117,7 @@ class SpigotPlatform implements Platform {
 
     @Override
     public GUI createGUI(String title, int numRows) {
-        throw new IncapableException(Capability.GUI);
+        return new SpigotGUI(title, numRows);
     }
 
     public void toggleDoor(Location doorLocation) {
