@@ -19,10 +19,17 @@
 package io.github.prison.sponge;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
+import java.util.Optional;
+
 import io.github.prison.Prison;
+import io.github.prison.internal.events.BlockPlaceEvent;
+import io.github.prison.util.Block;
 
 /**
  * @author Camouflage100
@@ -47,6 +54,20 @@ public class SpongeListener {
     @Listener
     public void onPlayerQuit(ClientConnectionEvent.Disconnect e) {
         Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerQuitEvent(new SpongePlayer(e.getTargetEntity())));
+    }
+
+    @Listener
+    public void onBlockPlaced(ChangeBlockEvent.Place e) {
+        Cause cause = e.getCause();
+        Optional<Player> p = cause.first(Player.class);
+
+        if (p.isPresent()) {
+            Prison.getInstance().getEventBus().post(new BlockPlaceEvent(
+                    e.isCancelled(),
+                    Block.getBlock(cause.last(Player.class).get().getItemInHand().get().getItem().getId()),
+                    (new SpongePlayer(cause.last(Player.class).get()))
+            ));
+        }
     }
 
 }

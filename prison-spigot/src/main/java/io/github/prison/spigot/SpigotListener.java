@@ -18,12 +18,15 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Prison;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import io.github.prison.Prison;
+import io.github.prison.util.Block;
 
 /**
  * Posts Prison's internal events.
@@ -50,6 +53,15 @@ public class SpigotListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerQuitEvent(new SpigotPlayer(e.getPlayer())));
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.BlockPlaceEvent(
+                e.isCancelled(),
+                Block.getBlock(e.getBlock().getTypeId()),
+                (new SpigotPlayer(e.getPlayer()))
+        ));
     }
 
 }
