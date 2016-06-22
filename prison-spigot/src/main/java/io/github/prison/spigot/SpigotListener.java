@@ -63,11 +63,11 @@ public class SpigotListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.BlockPlaceEvent(
-                e.isCancelled(),
+        io.github.prison.internal.events.BlockPlaceEvent event = new io.github.prison.internal.events.BlockPlaceEvent(
                 Block.getBlock(e.getBlock().getTypeId()),
-                (new SpigotPlayer(e.getPlayer()))
-        ));
+                (new SpigotPlayer(e.getPlayer())));
+        Prison.getInstance().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
     }
 
     @EventHandler
@@ -80,12 +80,13 @@ public class SpigotListener implements Listener {
         if (e.getHand() != EquipmentSlot.HAND) return;
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
-        Prison.getInstance().getEventBus().post(new io.github.prison.internal.events.PlayerInteractEvent(
+        io.github.prison.internal.events.PlayerInteractEvent event = new io.github.prison.internal.events.PlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
                 bukkitItemStackToPrisonItemStack(e.getPlayer().getInventory().getItemInMainHand()),
                 io.github.prison.internal.events.PlayerInteractEvent.Action.valueOf(e.getAction().name()),
-                new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(), block.getZ())
-        ));
+                new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(), block.getZ()));
+        Prison.getInstance().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
     }
 
     private ItemStack bukkitItemStackToPrisonItemStack(org.bukkit.inventory.ItemStack bis) {
@@ -100,7 +101,7 @@ public class SpigotListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event = new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage());
         Prison.getInstance().getEventBus().post(event);
-        if (event.isCancelled()) e.setCancelled(true);
+        e.setCancelled(event.isCanceled());
     }
 
 }

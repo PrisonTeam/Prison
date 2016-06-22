@@ -26,11 +26,11 @@ import io.github.prison.internal.Player;
  * @author SirFaizdat
  * @since 3.0
  */
-public class PlayerChatEvent {
+public class PlayerChatEvent implements Cancelable {
 
     private Player player;
     private String message;
-    private boolean cancelled;
+    private boolean canceled = false;
 
     public PlayerChatEvent(Player player, String message) {
         this.player = player;
@@ -45,11 +45,13 @@ public class PlayerChatEvent {
         return message;
     }
 
-    public boolean isCancelled() {
-        return cancelled;
+    @Override
+    public boolean isCanceled() {
+        return canceled;
     }
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    @Override
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 }

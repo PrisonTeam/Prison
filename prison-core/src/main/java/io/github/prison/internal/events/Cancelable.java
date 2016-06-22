@@ -18,42 +18,16 @@
 
 package io.github.prison.internal.events;
 
-import io.github.prison.internal.Player;
-import io.github.prison.util.Block;
-
 /**
- * Platform-independent event, which is posted when a player places a block.
+ * Represents an event whose outcome is cancelable.
  *
- * @author Camouflage100
+ * @author SirFaizdat
  * @since 3.0
  */
-public class BlockPlaceEvent implements Cancelable {
+public interface Cancelable {
 
-    private Block block;
-    private Player player;
-    private boolean canceled = false;
+    boolean isCanceled();
 
-    public BlockPlaceEvent(Block block, Player player) {
-        this.block = block;
-        this.player = player;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
-
-    public Block getBlock() {
-        return block;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
+    void setCanceled(boolean canceled);
 
 }

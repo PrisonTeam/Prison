@@ -41,7 +41,7 @@ public class CellListener {
     public void onPlayerChat(PlayerChatEvent e) {
         if(!cellsModule.getQueue().isQueued(e.getPlayer())) return;
         if (e.getMessage().toLowerCase().equals("cancel")) {
-            e.setCancelled(true);
+            e.setCanceled(true);
             cellsModule.getQueue().cancel(e.getPlayer());
             e.getPlayer().sendMessage(cellsModule.getMessages().creationCanceled);
         }

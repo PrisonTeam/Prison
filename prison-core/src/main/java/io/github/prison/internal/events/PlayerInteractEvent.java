@@ -28,12 +28,13 @@ import io.github.prison.util.Location;
  * @author SirFaizdat
  * @since 3.0
  */
-public class PlayerInteractEvent {
+public class PlayerInteractEvent implements Cancelable {
 
     private Player player;
     private ItemStack itemInHand;
     private Action action;
     private Location clicked;
+    private boolean canceled = false;
 
     public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action, Location clicked) {
         this.player = player;
@@ -56,6 +57,16 @@ public class PlayerInteractEvent {
 
     public Location getClicked() {
         return clicked;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
     public enum Action {
