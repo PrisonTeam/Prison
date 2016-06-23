@@ -18,7 +18,12 @@
 
 package io.github.prison.cells;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a player, who has some form of access to at least one cell.
@@ -68,6 +73,10 @@ public class CellUser {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    public Set<Integer> getOwnedCells() {
+        return cells.keySet();
     }
 
     @Override

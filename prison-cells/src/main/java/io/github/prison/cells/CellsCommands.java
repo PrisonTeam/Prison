@@ -19,11 +19,15 @@
 package io.github.prison.cells;
 
 import io.github.prison.Prison;
+import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
 import io.github.prison.internal.CommandSender;
 import io.github.prison.internal.Player;
 import io.github.prison.selection.Selection;
 import io.github.prison.util.Bounds;
+import io.github.prison.util.TextUtil;
+
+import static io.github.prison.cells.CellPermission.CAN_ACCESS_DOOR;
 
 /**
  * @author Camouflage100
@@ -45,12 +49,47 @@ public class CellsCommands {
     public void listCommand(CommandSender sender) {
     }
 
-    @Command(identifier = "cells autoclaim", description = "Autoclaim a cell", onlyPlayers = false, permissions = {"prison.cells.autoclaim"})
-    public void autoclaimCommand(CommandSender sender) {
+    @Command(identifier = "cells autoclaim", description = "Autoclaim a cell", permissions = {"prison.cells.autoclaim"})
+    public void autoclaimCommand(Player sender) {
+        CellUser cUser = new CellUser(sender.getUUID());
+        cUser.addCell(12);
     }
 
-    @Command(identifier = "cells home", description = "Go to a home cell", onlyPlayers = false, permissions = {"prison.cells.home"})
-    public void homeCommand(CommandSender sender) {
+    @Command(identifier = "cells home", description = "Go to a home cell", permissions = {"prison.cells.home"})
+    public void homeCommand(Player sender, @Arg(name = "cell_id", def = "-1") int id) {
+        CellUser cUser = new CellUser(sender.getUUID());
+
+        if (cUser.getOwnedCells().size() == 1) {
+            int cid = cUser.getOwnedCells().iterator().next();
+            sender.teleport(cellsModule.getCell(cid).getDoorLocation());
+            sender.sendMessage(TextUtil.parse("&7Teleported to cell #" + id));
+        } else {
+            if (id != -1) {
+                if (cUser.getCellPermissions(id) != null) {
+                    for (CellPermission p : cUser.getCellPermissions(id)) {
+                        if (p.equals(CAN_ACCESS_DOOR)) {
+                            sender.teleport(cellsModule.getCell(id).getDoorLocation());
+                            sender.sendMessage(TextUtil.parse("&7Teleported to cell #" + id));
+                            return;
+                        }
+                    }
+
+                    sender.sendMessage(TextUtil.parse(
+                            "&cError: &7You do not have permission to open that cell's door!"
+                    ));
+                } else {
+                    sender.sendMessage(TextUtil.parse("&cError: &7That is not a valid cell!"));
+                }
+            } else {
+                sender.sendMessage("&7========== &d/cells home &7==========");
+                sender.sendMessage("&7Please choose a cell:");
+                for (Cell cell : cellsModule.getCells()) {
+                    cUser.getCellPermissions(cell.getCellId()).stream().filter(p -> p.equals(CAN_ACCESS_DOOR)).forEachOrdered(p -> sender.sendMessage("&c    #" + cell.getCellId() + " - Owner: " + Prison.getInstance().getPlatform().getPlayer(cellsModule.getCell(cell.getCellId()).getOwner()).getName()));
+                }
+                sender.sendMessage("&7========== &d/cells home &7==========");
+            }
+        }
+
     }
 
 
