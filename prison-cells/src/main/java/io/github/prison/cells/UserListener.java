@@ -44,9 +44,6 @@ public class UserListener {
                 cellsModule.saveCellUser(new CellUser(e.getPlayer().getUUID()));
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
-            user.addCell(12);
-            user.addPermission(12, CellPermission.BUILD);
-            user.addPermission(12, CellPermission.CAN_ACCESS_CHESTS);
             cellsModule.saveCellUser(user);
         } catch(Exception e1) {
             e1.printStackTrace();

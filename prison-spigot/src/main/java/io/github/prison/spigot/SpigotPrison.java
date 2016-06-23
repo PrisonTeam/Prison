@@ -19,6 +19,9 @@
 package io.github.prison.spigot;
 
 import io.github.prison.Prison;
+import io.github.prison.spigot.compat.Compatibility;
+import io.github.prison.spigot.compat.Spigot18;
+import io.github.prison.spigot.compat.Spigot19;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +37,7 @@ public class SpigotPrison extends JavaPlugin {
 
     CommandMap commandMap;
     SpigotScheduler scheduler;
+    Compatibility compatibility;
 
     @Override
     public void onLoad() {
@@ -43,6 +47,7 @@ public class SpigotPrison extends JavaPlugin {
     @Override
     public void onEnable() {
         initCommandMap();
+        initCompatibility();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.getInstance().init(this);
         Prison.getInstance().init(new SpigotPlatform(this));
@@ -66,6 +71,14 @@ public class SpigotPrison extends JavaPlugin {
             Prison.getInstance().getPlatform().log("&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
             e.printStackTrace();
         }
+    }
+
+    private void initCompatibility() {
+        String minorVersion = Bukkit.getVersion().split("\\.")[1];
+        int minorVersionInt = Integer.parseInt(minorVersion);
+        if(minorVersionInt <= 8) compatibility = new Spigot18();
+        else if(minorVersionInt >= 9) compatibility = new Spigot19();
+        getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }
 
 }

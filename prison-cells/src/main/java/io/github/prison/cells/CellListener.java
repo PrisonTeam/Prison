@@ -66,6 +66,8 @@ public class CellListener {
                 return; // Must be door
             }
 
+            if(!isTopHalf(clickedBlockLoc)) clickedBlockLoc.setY(clickedBlockLoc.getY() + 1);
+
             Cell cell = cellsModule.getQueue().getQueuedCell(e.getPlayer());
             cell.setDoorLocation(clickedBlockLoc);
             cellsModule.getQueue().setQueuedCell(e.getPlayer(), cell);
@@ -73,6 +75,13 @@ public class CellListener {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+    // If the block below the door is not a door, then the door block is not the top half
+    private boolean isTopHalf(Location loc) {
+        Location locBelow = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1, loc.getZ());
+        Block blockBelow  = loc.getWorld().getBlockAt(locBelow);
+        return Block.isDoor(blockBelow);
     }
 
     @Subscribe

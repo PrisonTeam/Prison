@@ -21,6 +21,7 @@ package io.github.prison.spigot;
 import io.github.prison.Prison;
 import io.github.prison.internal.ItemStack;
 import io.github.prison.internal.events.PlayerChatEvent;
+import io.github.prison.spigot.compat.Compatibility;
 import io.github.prison.util.Block;
 import io.github.prison.util.Location;
 import org.bukkit.Bukkit;
@@ -32,7 +33,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.EquipmentSlot;
 
 /**
  * Posts Prison's internal events.
@@ -77,12 +77,12 @@ public class SpigotListener implements Listener {
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if (e.getHand() != EquipmentSlot.HAND) return;
+        if (spigotPrison.compatibility.getHand(e) != Compatibility.EquipmentSlot.HAND) return;
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
         io.github.prison.internal.events.PlayerInteractEvent event = new io.github.prison.internal.events.PlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
-                bukkitItemStackToPrisonItemStack(e.getPlayer().getInventory().getItemInMainHand()),
+                bukkitItemStackToPrisonItemStack(spigotPrison.compatibility.getItemInMainHand(e)),
                 io.github.prison.internal.events.PlayerInteractEvent.Action.valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(), block.getZ()));
         Prison.getInstance().getEventBus().post(event);

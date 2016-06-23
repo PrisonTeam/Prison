@@ -18,6 +18,7 @@
 
 package io.github.prison.cells;
 
+import io.github.prison.Prison;
 import io.github.prison.internal.Player;
 
 import java.util.HashMap;
@@ -66,6 +67,14 @@ public class CellCreationQueue {
         if (!isQueued(player)) return;
         Cell cell = getQueuedCell(player);
         cellsModule.saveCell(cell);
+
+        // Give the creator all permissions
+        CellUser user = cellsModule.getUser(player.getUUID());
+        user.addPermission(cell.getCellId(), CellPermission.BUILD);
+        user.addPermission(cell.getCellId(), CellPermission.CAN_ACCESS_CHESTS);
+        user.addPermission(cell.getCellId(), CellPermission.CAN_ACCESS_DOOR);
+        cellsModule.saveCellUser(user);
+
         queue.remove(player.getName());
         player.sendMessage(String.format(cellsModule.getMessages().cellCreationSuccess, cell.getCellId()));
     }

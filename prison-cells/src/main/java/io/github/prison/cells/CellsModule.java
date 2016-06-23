@@ -21,6 +21,7 @@ package io.github.prison.cells;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.prison.ConfigurationLoader;
+import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.modules.Module;
@@ -115,6 +116,8 @@ public class CellsModule extends Module {
     }
 
     public void saveCell(Cell cell) {
+        if(getCell(cell.getCellId()) == null) cells.add(cell);
+
         String json = gson.toJson(cell);
         try {
             Files.write(new File(cellsDirectory, cell.getCellId() + ".cell.json").toPath(), json.getBytes());
@@ -139,6 +142,8 @@ public class CellsModule extends Module {
     }
 
     public void saveCellUser(CellUser cellUser) {
+        if(getUser(cellUser.getUUID()) == null) users.add(cellUser);
+
         String json = gson.toJson(cellUser);
         try {
             Files.write(new File(usersDirectory, cellUser.getUUID().toString() + ".user.json").toPath(), json.getBytes());
@@ -149,7 +154,7 @@ public class CellsModule extends Module {
     }
 
     public CellUser getUser(UUID uuid) {
-        for (CellUser user : users) if (user.getUUID().equals(uuid)) return user;
+        for (CellUser user : users) if (user.getUUID().compareTo(uuid) == 0) return user;
         return null;
     }
 
