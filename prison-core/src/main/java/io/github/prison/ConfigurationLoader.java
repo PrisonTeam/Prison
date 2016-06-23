@@ -32,13 +32,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Loads the configuration from its file.
+ * Loads a {@link Configurable} from a file.
+ * The loader will also check the target version of the configurable with its serialized version.
+ * If the version does not match, the file will be duplicated and regenerated with the correct values.
  *
  * @author SirFaizdat
  * @since 3.0
  */
 public class ConfigurationLoader {
-
 
     private Class<? extends Configurable> clazz;
     private Configurable config;
@@ -48,6 +49,15 @@ public class ConfigurationLoader {
     private String fileName;
     private Gson gson;
 
+    /**
+     * Instantiates a new configuration loader.
+     *
+     * @param rootFolder    The directory which will contain the configuration file.
+     * @param fileName      The name of the configuration file (ex. config.json).
+     * @param clazz         The {@link Configurable} class.
+     * @param targetVersion The target version. If the version in the configuration file does not match this,
+     *                      the file will be regenerated.
+     */
     public ConfigurationLoader(File rootFolder, String fileName, Class<? extends Configurable> clazz, int targetVersion) {
         gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.clazz = clazz;
@@ -58,7 +68,7 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Load the configuration from the config.json file in the plugin's folder.
+     * Load the Configurable from the file provided.
      */
     public void loadConfiguration() {
         try {

@@ -16,29 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
-
 /**
- * Thrown when a module attempts to perform an action which the platform is incapable of.
+ * Since Prison is cross-platform (and cross-version), the Minecraft server interfaces
+ * provided by mods like Bukkit and Sponge are not provided for us. Instead, we must make our own
+ * and have the implementations implement them with the different mods.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class IncapableException extends RuntimeException {
-
-    private Capability capability;
-
-    public IncapableException(Capability capability) {
-        this.capability = capability;
-    }
-
-    /**
-     * Returns the capability that the implementation lacks.
-     *
-     * @return The {@link Capability}.
-     */
-    public Capability getCapability() {
-        return capability;
-    }
-
-}
+package io.github.prison.internal;

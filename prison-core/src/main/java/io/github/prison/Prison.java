@@ -26,6 +26,10 @@ import io.github.prison.selection.SelectionManager;
 
 /**
  * Entry point for implementations.
+ * <p>
+ * An instance of Prison can be retrieved using the static {@link Prison#getInstance()} method,
+ * however in order to use the core libraries, you must call {@link Prison#init(Platform)} with a
+ * valid {@link Platform} implementation.
  *
  * @author SirFaizdat
  * @since 3.0
@@ -36,6 +40,14 @@ public class Prison {
 
     private static Prison instance = null;
 
+    /**
+     * Gets the current instance of this class.
+     * <p>
+     * An instance will always be available, but you must call the {@link Prison#init(Platform)} method
+     * before you perform any other action.
+     *
+     * @return an instance of Prison.
+     */
     public static Prison getInstance() {
         if (instance == null) instance = new Prison();
         return instance;
@@ -56,6 +68,7 @@ public class Prison {
     /**
      * Initializes prison-core.
      * In the implementations, this should be called when the plugin is enabled.
+     * After this is called, every getter in this class will return a value.
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
@@ -76,7 +89,6 @@ public class Prison {
         this.selectionManager = new SelectionManager();
 
         this.commandHandler.registerCommands(new PrisonCommand());
-        this.eventBus.register(new PrisonListener());
 
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform.log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
@@ -92,34 +104,81 @@ public class Prison {
 
     // Getters
 
+    /**
+     * Returns the Platform in use, which contains methods for interacting with the
+     * Minecraft server on whichever implementation is currently being used.
+     *
+     * @return the {@link Platform}.
+     */
     public Platform getPlatform() {
         return platform;
     }
 
+    /**
+     * Returns the configuration class, which contains each configuration option in a
+     * public variable. It is loaded and saved via a {@link ConfigurationLoader}.
+     *
+     * @return the {@link Configuration}.
+     */
     public Configuration getConfig() {
         return (Configuration) configurationLoader.getConfig();
     }
 
+    /**
+     * Returns the messages class, which contains each localization option in a public
+     * variable. It is loaded and saved via a {@link ConfigurationLoader}.
+     *
+     * @return the {@link Messages}.
+     */
     public Messages getMessages() {
         return (Messages) messagesLoader.getConfig();
     }
 
+    /**
+     * Returns the event bus, where event listeners can be registered and events can be posted.
+     *
+     * @return The {@link EventBus}.
+     */
     public EventBus getEventBus() {
         return eventBus;
     }
 
+    /**
+     * Returns the module manager, which stores instances of all registered {@link io.github.prison.modules.Module}s
+     * and manages their state.
+     *
+     * @return The {@link ModuleManager}.
+     */
     public ModuleManager getModuleManager() {
         return moduleManager;
     }
 
+    /**
+     * Returns the command handler, where command methods can be registered using the {@link CommandHandler#registerCommands(Object)} method.
+     *
+     * @return The {@link CommandHandler}.
+     */
     public CommandHandler getCommandHandler() {
         return commandHandler;
     }
 
+    /**
+     * Returns the selection manager, which stores each player's current selection using Prison's selection wand.
+     *
+     * @return The {@link SelectionManager}.
+     */
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
 
+    /**
+     * This method is mainly for the use of the command library.
+     * It retrieves a list of commands from the platform, and then queries the list
+     * for a command with a certain label.
+     *
+     * @param label The command's label.
+     * @return The {@link PluginCommand}, or null if no command exists by that label.
+     */
     public PluginCommand getCommand(String label) {
         for (PluginCommand command : platform.getCommands())
             if (command.getLabel().equalsIgnoreCase(label)) return command;

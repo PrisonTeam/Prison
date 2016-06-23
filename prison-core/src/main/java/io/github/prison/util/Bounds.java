@@ -36,22 +36,51 @@ public class Bounds {
         this.max = max;
     }
 
+    /**
+     * Returns the width of the area.
+     * This will always be positive.
+     *
+     * @return A double.
+     */
     public double getWidth() {
         return Math.max(min.getX(), max.getX()) - Math.min(min.getX(), max.getX());
     }
 
+    /**
+     * Returns the height of the area.
+     * This will always be positive.
+     *
+     * @return A double.
+     */
     public double getHeight() {
         return Math.max(min.getY(), max.getY()) - Math.min(min.getY(), max.getY());
     }
 
+    /**
+     * Returns the length of the area.
+     * This will always be positive.
+     *
+     * @return A double.
+     */
     public double getLength() {
         return Math.max(min.getZ(), max.getZ()) - Math.min(min.getZ(), max.getZ());
     }
 
+    /**
+     * Returns the area, which is the width, height, and length multiplied together.
+     *
+     * @return A double.
+     */
     public double getArea() {
         return getWidth() * getHeight() * getLength();
     }
 
+    /**
+     * Returns whether or not a single point is within these boundaries.
+     *
+     * @param location The {@link Location} to check.
+     * @return true if the location is within the bounds, false otherwise.
+     */
     public boolean within(Location location) {
         double minX = Math.min(min.getX(), max.getX());
         double minY = Math.min(min.getY(), max.getY());
@@ -95,10 +124,7 @@ public class Bounds {
         if (!(o instanceof Bounds)) return false;
 
         Bounds bounds = (Bounds) o;
-
-        if (min != null ? !min.equals(bounds.min) : bounds.min != null) return false;
-        return max != null ? max.equals(bounds.max) : bounds.max == null;
-
+        return min != null ? min.equals(bounds.min) : bounds.min == null && (max != null ? max.equals(bounds.max) : bounds.max == null);
     }
 
     @Override

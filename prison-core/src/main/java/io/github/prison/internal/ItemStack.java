@@ -20,7 +20,6 @@ package io.github.prison.internal;
 
 import io.github.prison.util.Block;
 import io.github.prison.util.ChatColor;
-import io.github.prison.util.TextUtil;
 
 /**
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
@@ -69,10 +68,9 @@ public class ItemStack {
         ItemStack itemStack = (ItemStack) o;
 
         String myName = ChatColor.stripColor(name);  // Remove colors from my name
-        String theirName = ChatColor.stripColor(TextUtil.parse(itemStack.getName()));  // Remove colors from their name
+        String theirName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', itemStack.getName()));  // Remove colors from their name
 
-        if (!myName.equals(theirName)) return false;
-        return material == itemStack.material;
+        return myName.equals(theirName) && material == itemStack.material;
 
     }
 

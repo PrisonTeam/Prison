@@ -26,6 +26,11 @@ package io.github.prison;
  */
 public interface Configurable {
 
+    /**
+     * Returns the deserialized version of the file.
+     *
+     * @return The version, in integer form.
+     */
     int getVersion();
 
 }

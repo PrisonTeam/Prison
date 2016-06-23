@@ -54,6 +54,11 @@ public class Selection {
         this.max = max;
     }
 
+    /**
+     * Returns whether or not both the minimum and maximum locations are set.
+     *
+     * @return true if they are, false otherwise.
+     */
     public boolean isComplete() {
         return min != null && max != null;
     }

@@ -157,6 +157,11 @@ public class Location {
                 '}';
     }
 
+    /**
+     * Returns the values in coordinate (x, y, z) format.
+     *
+     * @return The {@link String} containing coordinates.
+     */
     public String toCoordinates() {
         return "(" + x + ", " + y + ", " + z + ")";
     }

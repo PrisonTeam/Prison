@@ -19,7 +19,10 @@
 package io.github.prison.gui;
 
 /**
+ * Similar to {@link Runnable}, but the run method is provided with the {@link GUI}.
+ *
  * @author SirFaizdat
+ * @since 3.0
  */
 public interface Action {
 

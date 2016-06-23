@@ -19,22 +19,43 @@
 package io.github.prison.util;
 
 /**
+ * Utilities for manipulating strings.
+ *
  * @author SirFaizdat
+ * @since 3.0
  */
 public class TextUtil {
 
     private TextUtil() {}
 
+    /**
+     * @deprecated Implementations handle chat coloring.
+     */
+    @Deprecated
     public static String parse(String message, Object... format) {
         return ChatColor.translateAlternateColorCodes('&', String.format(message, format));
     }
 
+    /**
+     * If a String does not end with a period/dot ("."), it will be appended.
+     *
+     * @param msg   The message to append a dot to.
+     * @param color The color code of the dot at the end.
+     * @return The edited string.
+     */
     public static String dotIfNotPresent(String msg, String color) {
         return color + (msg.endsWith(".") ? "" : ".");
     }
 
-    public static String[] packAndSplit(String message, String delimeter) {
-        return message.replaceAll(" ", "").split(delimeter);
+    /**
+     * Removes all spaces from a string, and splits it at a delimiter.
+     *
+     * @param message   The message to pack and split.
+     * @param delimiter The String to split at.
+     * @return The String array.
+     */
+    public static String[] packAndSplit(String message, String delimiter) {
+        return message.replaceAll(" ", "").split(delimiter);
     }
 
 }

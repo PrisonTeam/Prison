@@ -58,6 +58,12 @@ public class ModuleManager {
         Prison.getInstance().getPlatform().log("&6Warning: &7Version mismatch! Please update &6%s &7to version &6%s&7.", module.getPackageName(), Prison.getInstance().getPlatform().getPluginVersion());
     }
 
+    /**
+     * Enable an already loaded module.
+     *
+     * @param module The {@link Module} to enable.
+     * @return true if the enable succeeded, false otherwise.
+     */
     public boolean enableModule(Module module) {
         long startTime = System.currentTimeMillis();
         Prison.getInstance().getPlatform().log("&7> &d%s ENABLE START &7 <", module.getName());
@@ -81,6 +87,8 @@ public class ModuleManager {
 
     /**
      * Unregister a module. This will disable it and then remove it from the list.
+     *
+     * @param module The {@link Module} to enable.
      */
     public void unregisterModule(Module module) {
         disableModule(module);
@@ -88,6 +96,11 @@ public class ModuleManager {
         modules.remove(getModule(module.getName())); // Using the getter so that we know the thing being removed is in the list
     }
 
+    /**
+     * Disable an already loaded module.
+     *
+     * @param module The {@link Module} to disable.
+     */
     public void disableModule(Module module) {
         module.disable();
         module.setEnabled(false);
