@@ -19,6 +19,7 @@
 package io.github.prison.cells;
 
 import com.google.common.eventbus.Subscribe;
+
 import io.github.prison.Prison;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.internal.events.PlayerInteractEvent;
@@ -53,7 +54,8 @@ public class CellListener {
     @Subscribe
     public void onPlayerHitDoor(PlayerInteractEvent e) {
         try {
-            if (e.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) return; // Must be punch
+            if (e.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
+                return; // Must be punch
             if (!cellsModule.getQueue().isQueued(e.getPlayer())) return; // Must be queued
 
             e.setCanceled(true);
@@ -76,7 +78,8 @@ public class CellListener {
     @Subscribe
     public void onPlayerRightClickDoor(PlayerInteractEvent e) {
         try {
-            if (e.getAction() != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return; // Must be right-click
+            if (e.getAction() != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+                return; // Must be right-click
             if (cellsModule.getUser(e.getPlayer().getUUID()) == null) return; // Must be a cell user
 
             Location clickedBlockLoc = e.getClicked();
@@ -89,14 +92,19 @@ public class CellListener {
                 clickedBlockLoc.setY(clickedBlockLoc.getBlockY() + 1);
                 cell = cellsModule.getCellByDoor(clickedBlockLoc);
 
-                if(cell == null) return; // Or maybe not
+                if (cell == null) return; // Or maybe not
             }
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
             if (!user.hasAccess(cell.getCellId()) ||
                     !user.getCellPermissions(cell.getCellId()).contains(CellPermission.CAN_ACCESS_DOOR)) {
                 e.setCanceled(true);
-                return; // TODO Show a message? Perhaps a title?
+                Prison.getInstance().getPlatform().showTitle(
+                        e.getPlayer(), "Access Denied!",
+                        "You're not allowed to open " + Prison.getInstance().getPlatform().getPlayer(cell.getOwner()).getName() + "'s cell door!",
+                        2
+                );
+                return;
             }
 
             // At this point, we've ensured the user can open the door.
