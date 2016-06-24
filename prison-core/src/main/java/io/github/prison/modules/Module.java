@@ -18,6 +18,10 @@
 
 package io.github.prison.modules;
 
+import io.github.prison.Prison;
+
+import java.io.File;
+
 /**
  * Represents a module, which is a part of Prison that can be enabled and
  * disabled independently from the rest of the modules.
@@ -28,11 +32,14 @@ package io.github.prison.modules;
 public abstract class Module {
 
     private String name, version;
+    private File dataFolder;
     private boolean enabled;
 
     public Module(String name, String version) {
         this.name = name;
         this.version = version;
+        this.dataFolder = new File(Prison.getInstance().getPlatform().getPluginDirectory(), name);
+        if(!this.dataFolder.exists()) this.dataFolder.mkdir();
     }
 
     /**
@@ -75,4 +82,14 @@ public abstract class Module {
         this.enabled = enabled;
     }
 
+    /**
+     * Returns this module's data folder, where all data can be stored.
+     * It is located in the Prison data folder, and has the name of the module.
+     * It is automatically generated.
+     *
+     * @return The {@link File} representing the data folder.
+     */
+    public File getDataFolder() {
+        return dataFolder;
+    }
 }

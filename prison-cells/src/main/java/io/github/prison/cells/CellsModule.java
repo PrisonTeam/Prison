@@ -55,13 +55,13 @@ public class CellsModule extends Module {
 
     @Override
     public void enable() {
-        cellsDirectory = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "cells");
+        cellsDirectory = new File(getDataFolder(), "cells");
         if (!cellsDirectory.exists()) cellsDirectory.mkdir();
 
-        usersDirectory = new File(cellsDirectory, "users");
+        usersDirectory = new File(getDataFolder(), "users");
         if (!usersDirectory.exists()) usersDirectory.mkdir();
 
-        this.messagesLoader = new ConfigurationLoader(cellsDirectory, "messages.json", Messages.class, Messages.VERSION);
+        this.messagesLoader = new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class, Messages.VERSION);
         this.messagesLoader.loadConfiguration();
 
         cells = new ArrayList<>();
