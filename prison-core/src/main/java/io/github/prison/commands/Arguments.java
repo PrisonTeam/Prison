@@ -18,6 +18,8 @@
 
 package io.github.prison.commands;
 
+import io.github.prison.Prison;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -43,7 +45,7 @@ public class Arguments {
             int endIndex = flag.getArguments().size() + flagIndex;
 
             if (endIndex > largs.size())
-                throw new CommandError("The flag -" + flag.getIdentifier() + " does not have the required parameters.");
+                throw new CommandError(String.format(Prison.getInstance().getMessages().missingFlagArgument, flag.getIdentifier()));
 
             flagCounter.put(flag, 0);
 

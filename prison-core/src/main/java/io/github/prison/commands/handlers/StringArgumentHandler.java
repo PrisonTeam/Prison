@@ -18,14 +18,15 @@
 
 package io.github.prison.commands.handlers;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.*;
 import io.github.prison.commands.VerifyError;
 import io.github.prison.internal.CommandSender;
 
 public class StringArgumentHandler extends ArgumentHandler<String> {
     public StringArgumentHandler() {
-        setMessage("min_error", "The parameter [%p] must be more than %1 characters.");
-        setMessage("max_error", "The parameter [%p] can't be more than %1 characters.");
+        setMessage("min_error", Prison.getInstance().getMessages().tooFewCharacters);
+        setMessage("max_error", Prison.getInstance().getMessages().tooManyCharacters);
 
         addVerifier("min", new ArgumentVerifier<String>() {
             @Override

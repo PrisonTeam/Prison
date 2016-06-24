@@ -18,6 +18,7 @@
 
 package io.github.prison.commands;
 
+import io.github.prison.Prison;
 import io.github.prison.internal.CommandSender;
 
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class CommandArgument implements ExecutableArgument {
         String arg;
         if (!args.hasNext()) {
             if (def.equals(" "))
-                throw new CommandError("The argument [" + name + "] is not defined (it has no default value)", true);
+                throw new CommandError(String.format(Prison.getInstance().getMessages().missingArgument, name), true);
 
             arg = def;
         } else

@@ -18,13 +18,14 @@
 
 package io.github.prison.commands.handlers;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.CommandArgument;
 import io.github.prison.commands.TransformError;
 import io.github.prison.internal.CommandSender;
 
 public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
     public IntegerArgumentHandler() {
-        setMessage("parse_error", "The parameter [%p] is not an integer");
+        setMessage("parse_error", Prison.getInstance().getMessages().numberParseError);
     }
 
     @Override

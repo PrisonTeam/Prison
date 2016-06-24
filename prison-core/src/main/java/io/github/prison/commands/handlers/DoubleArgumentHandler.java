@@ -18,17 +18,19 @@
 
 package io.github.prison.commands.handlers;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.CommandArgument;
 import io.github.prison.commands.TransformError;
 import io.github.prison.internal.CommandSender;
 
 public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {
-        setMessage("parse_error", "The parameter [%p] is not a number");
+        setMessage("parse_error", Prison.getInstance().getMessages().numberParseError);
     }
 
     @Override
     public Double transform(CommandSender sender, CommandArgument argument, String value) throws TransformError {
+        value = value.replace("$", "");
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {

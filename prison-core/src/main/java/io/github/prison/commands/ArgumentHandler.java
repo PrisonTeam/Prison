@@ -18,6 +18,7 @@
 
 package io.github.prison.commands;
 
+import io.github.prison.Prison;
 import io.github.prison.internal.CommandSender;
 
 import java.lang.*;
@@ -33,9 +34,9 @@ public abstract class ArgumentHandler<T> {
 
     public ArgumentHandler() {
         //Default messages
-        setMessage("include_error", "[%p] has an invalid value.");
-        setMessage("exclude_error", "[%p] has an invalid value.");
-        setMessage("cant_as_console", "You can't do this as console.");
+        setMessage("include_error", Prison.getInstance().getMessages().includeError);
+        setMessage("exclude_error", Prison.getInstance().getMessages().excludeError);
+        setMessage("cant_as_console", Prison.getInstance().getMessages().cantAsConsole);
 
         //Default verifiers
         addVerifier("include", new ArgumentVerifier<T>() {

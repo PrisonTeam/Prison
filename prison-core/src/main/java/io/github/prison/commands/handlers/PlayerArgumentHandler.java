@@ -25,7 +25,7 @@ import io.github.prison.internal.Player;
 
 public class PlayerArgumentHandler extends ArgumentHandler<Player> {
     public PlayerArgumentHandler() {
-        setMessage("player_not_online", "The player %1 is not online");
+        setMessage("player_not_online", Prison.getInstance().getMessages().playerNotOnline);
 
         addVariable("sender", "The command executor", new ArgumentVariable<Player>() {
             @Override

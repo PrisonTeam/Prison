@@ -18,6 +18,7 @@
 
 package io.github.prison.commands.handlers;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.ArgumentHandler;
 import io.github.prison.commands.CommandArgument;
 import io.github.prison.commands.TransformError;
@@ -27,9 +28,7 @@ import io.github.prison.util.Block;
 public class BlockArgumentHandler extends ArgumentHandler<Block> {
 
     public BlockArgumentHandler() {
-        setMessage("parse_error", "The parameter [%p] is not a valid block.");
-        setMessage("include_error", "There is no block named %1");
-        setMessage("exclude_error", "There is no block named %1");
+        setMessage("parse_error", Prison.getInstance().getMessages().blockParseError);
     }
 
     @Override

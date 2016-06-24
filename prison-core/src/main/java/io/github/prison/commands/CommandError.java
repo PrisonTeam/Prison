@@ -18,8 +18,6 @@
 
 package io.github.prison.commands;
 
-import io.github.prison.util.TextUtil;
-
 public class CommandError extends Exception {
     private static final long serialVersionUID = 1L;
 
@@ -35,8 +33,7 @@ public class CommandError extends Exception {
     }
 
     public String getColorizedMessage() {
-        String msg = getMessage();
-        return TextUtil.parse(TextUtil.dotIfNotPresent("&c&lOops! &7%s", msg), "&7");
+        return getMessage();
     }
 
     public boolean showUsage() {

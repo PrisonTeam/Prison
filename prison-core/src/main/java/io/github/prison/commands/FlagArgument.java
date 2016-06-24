@@ -18,6 +18,7 @@
 
 package io.github.prison.commands;
 
+import io.github.prison.Prison;
 import io.github.prison.internal.CommandSender;
 
 public class FlagArgument extends CommandArgument {
@@ -39,7 +40,7 @@ public class FlagArgument extends CommandArgument {
         if (!args.flagExists(flag))
             arg = getDefault();
         else if (!args.hasNext(flag))
-            throw new CommandError("The argument s [" + getName() + "] to the flag -" + flag.getIdentifier() + " is not defined");
+            throw new CommandError(String.format(Prison.getInstance().getMessages().undefinedFlagArgument, getName(), flag.getIdentifier()));
         else
             arg = CommandUtil.escapeArgumentVariable(args.nextFlagArgument(flag));
 

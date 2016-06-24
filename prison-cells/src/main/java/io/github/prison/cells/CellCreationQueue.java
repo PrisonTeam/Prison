@@ -28,7 +28,6 @@ import java.util.Map;
  * This queue stores incomplete cells correlated with the players who are setting them up.
  *
  * @author SirFaizdat
- * @since 3.0
  */
 public class CellCreationQueue {
 

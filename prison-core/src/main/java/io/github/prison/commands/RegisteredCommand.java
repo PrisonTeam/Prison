@@ -18,6 +18,7 @@
 
 package io.github.prison.commands;
 
+import io.github.prison.Prison;
 import io.github.prison.internal.CommandSender;
 import io.github.prison.util.ChatColor;
 
@@ -64,7 +65,7 @@ public class RegisteredCommand {
 
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
-            sender.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+            sender.sendMessage(Prison.getInstance().getMessages().noPermission);
             return;
         }
 
@@ -129,7 +130,7 @@ public class RegisteredCommand {
                     throw e;
             }
         } catch (Exception e) {
-            sender.sendMessage(ChatColor.RED + "An internal error occurred while attempting to perform this command.");
+            sender.sendMessage(Prison.getInstance().getMessages().internalErrorOccurred);
             e.printStackTrace();
         }
     }

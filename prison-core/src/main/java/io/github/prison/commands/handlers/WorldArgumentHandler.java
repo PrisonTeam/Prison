@@ -26,7 +26,7 @@ import io.github.prison.internal.World;
 
 public class WorldArgumentHandler extends ArgumentHandler<World> {
     public WorldArgumentHandler() {
-        setMessage("world_not_found", "The world \"%1\" was not found");
+        setMessage("world_not_found", Prison.getInstance().getMessages().worldNotFound);
 
         addVariable("sender", "The command executor", new ArgumentVariable<World>() {
             @Override

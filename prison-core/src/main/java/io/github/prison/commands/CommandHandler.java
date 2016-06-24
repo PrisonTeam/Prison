@@ -244,7 +244,7 @@ public class CommandHandler {
         }
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Sorry, but only players can execute this command.");
+            sender.sendMessage(Prison.getInstance().getMessages().cantAsConsole);
             return true;
         }
 

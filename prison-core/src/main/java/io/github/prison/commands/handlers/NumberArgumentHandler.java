@@ -18,6 +18,7 @@
 
 package io.github.prison.commands.handlers;
 
+import io.github.prison.Prison;
 import io.github.prison.commands.*;
 import io.github.prison.commands.VerifyError;
 import io.github.prison.internal.CommandSender;
@@ -25,9 +26,9 @@ import io.github.prison.internal.CommandSender;
 public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHandler<T> {
 
     public NumberArgumentHandler() {
-        setMessage("min_error", "The parameter [%p] must be equal or greater than %1");
-        setMessage("max_error", "The parameter [%p] must be equal or less than %1");
-        setMessage("range_error", "The parameter [%p] must be equal or greater than %1 and less than or equal to %2");
+        setMessage("min_error", Prison.getInstance().getMessages().numberTooLow);
+        setMessage("max_error", Prison.getInstance().getMessages().numberTooHigh);
+        setMessage("range_error", Prison.getInstance().getMessages().numberRangeError);
 
         addVerifier("min", new ArgumentVerifier<T>() {
             @Override
