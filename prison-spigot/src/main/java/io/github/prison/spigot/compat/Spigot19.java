@@ -18,6 +18,8 @@
 
 package io.github.prison.spigot.compat;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,6 +38,11 @@ public class Spigot19 implements Compatibility {
     @Override
     public ItemStack getItemInMainHand(PlayerInteractEvent e) {
         return e.getPlayer().getInventory().getItemInMainHand();
+    }
+
+    @Override
+    public void playIronDoorSound(Location loc) {
+        loc.getWorld().playEffect(loc, Effect.IRON_DOOR_TOGGLE, null);
     }
 
 }

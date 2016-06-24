@@ -18,6 +18,7 @@
 
 package io.github.prison.spigot.compat;
 
+import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,6 +33,8 @@ public interface Compatibility {
     EquipmentSlot getHand(PlayerInteractEvent e);
 
     ItemStack getItemInMainHand(PlayerInteractEvent e);
+
+    void playIronDoorSound(Location loc);
 
     enum EquipmentSlot {
         HAND,
