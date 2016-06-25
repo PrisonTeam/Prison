@@ -19,8 +19,8 @@
 package io.github.prison.cells;
 
 import com.google.common.eventbus.Subscribe;
-
 import io.github.prison.Prison;
+import io.github.prison.cells.events.CellDoorEvent;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.internal.events.PlayerInteractEvent;
 import io.github.prison.util.Block;
@@ -66,7 +66,7 @@ public class CellListener {
                 return; // Must be door
             }
 
-            if(!isTopHalf(clickedBlockLoc)) clickedBlockLoc.setY(clickedBlockLoc.getY() + 1);
+            if (!isTopHalf(clickedBlockLoc)) clickedBlockLoc.setY(clickedBlockLoc.getY() + 1);
 
             Cell cell = cellsModule.getQueue().getQueuedCell(e.getPlayer());
             cell.setDoorLocation(clickedBlockLoc);
@@ -80,7 +80,7 @@ public class CellListener {
     // If the block below the door is not a door, then the door block is not the top half
     private boolean isTopHalf(Location loc) {
         Location locBelow = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1, loc.getZ());
-        Block blockBelow  = loc.getWorld().getBlockAt(locBelow);
+        Block blockBelow = loc.getWorld().getBlockAt(locBelow);
         return Block.isDoor(blockBelow);
     }
 
@@ -115,6 +115,10 @@ public class CellListener {
                 );
                 return;
             }
+
+            CellDoorEvent event = new CellDoorEvent(cell, e.getPlayer());
+            Prison.getInstance().getEventBus().post(event);
+            if (event.isCanceled()) return; // The event was canceled somewhere, don't open the door.
 
             // At this point, we've ensured the user can open the door.
             // If it's an iron door, we'll open/close for them

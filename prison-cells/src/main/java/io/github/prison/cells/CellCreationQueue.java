@@ -19,6 +19,7 @@
 package io.github.prison.cells;
 
 import io.github.prison.Prison;
+import io.github.prison.cells.events.CellCreationEvent;
 import io.github.prison.internal.Player;
 
 import java.util.HashMap;
@@ -65,6 +66,14 @@ public class CellCreationQueue {
     public void complete(Player player) {
         if (!isQueued(player)) return;
         Cell cell = getQueuedCell(player);
+
+        CellCreationEvent event = new CellCreationEvent(cell);
+        Prison.getInstance().getEventBus().post(event);
+        if(event.isCanceled()) {
+            cancel(player);
+            return;
+        }
+
         cellsModule.saveCell(cell);
 
         // Give the creator all permissions
