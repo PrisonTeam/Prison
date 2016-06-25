@@ -25,9 +25,9 @@ package io.github.prison.cells;
  */
 public enum CellPermission {
 
-    CAN_ACCESS_DOOR("Open/Close Doors"),
-    CAN_ACCESS_CHESTS("Access Chests"),
-    BUILD("Build/Break Blocks");
+    CAN_ACCESS_DOOR("open or close Doors"),
+    CAN_ACCESS_CHESTS("access chests"),
+    BUILD("build or break Blocks");
 
     private String userFriendlyName;
 
