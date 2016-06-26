@@ -36,7 +36,7 @@ public class RentalTimer {
     public void init() {
         Prison.getInstance().getPlatform().getScheduler().runTaskTimerAsync(() -> {
             // Only runs if the current time equals the rental end time
-            cellsModule.getCells().stream().filter(cell -> System.currentTimeMillis() == cell.getRentalEnds()).forEach(cell -> {
+            cellsModule.getCells().stream().filter(cell -> cell.getRentalBegan() != 0 && cell.getRentalEnds() != 0 && System.currentTimeMillis() >= cell.getRentalEnds()).forEach(cell -> {
                 cellsModule.expireRental(cell);
             });
         }, 5, 5);

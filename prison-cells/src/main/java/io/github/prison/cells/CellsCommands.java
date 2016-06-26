@@ -50,9 +50,9 @@ public class CellsCommands {
     }
 
     @Command(identifier = "cells autoclaim", description = "Autoclaim a cell", permissions = {"prison.cells.autoclaim"})
-    public void autoclaimCommand(Player sender) {
+    public void autoclaimCommand(Player sender, @Arg(name = "cell_id", def = "-1") int id) {
         CellUser cUser = new CellUser(sender.getUUID());
-        cUser.addCell(12);
+        cellsModule.rentCell(cellsModule.getCell(id), cUser, 20 * 1000);
     }
 
     @Command(identifier = "cells home", description = "Go to a home cell", permissions = {"prison.cells.home"})
