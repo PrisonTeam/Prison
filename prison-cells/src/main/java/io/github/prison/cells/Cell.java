@@ -35,6 +35,8 @@ public class Cell {
     private Bounds bounds;
     private Location doorLocation;
     private UUID owner;
+    private long rentalBegan = 0L;
+    private long rentalEnds = 0L;
 
     public Cell() {
     }
@@ -75,6 +77,22 @@ public class Cell {
 
     public void setOwner(UUID owner) {
         this.owner = owner;
+    }
+
+    public long getRentalBegan() {
+        return rentalBegan;
+    }
+
+    public void setRentalBegan(long rentalBegan) {
+        this.rentalBegan = rentalBegan;
+    }
+
+    public long getRentalEnds() {
+        return rentalEnds;
+    }
+
+    public void setRentalEnds(long rentalEnds) {
+        this.rentalEnds = rentalEnds;
     }
 
 }

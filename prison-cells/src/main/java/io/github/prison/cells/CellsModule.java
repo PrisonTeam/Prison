@@ -76,6 +76,7 @@ public class CellsModule extends Module {
 
         new UserListener(this).init();
         new CellListener(this).init();
+        new RentalTimer(this).init();
 
         Prison.getInstance().getCommandHandler().registerCommands(new CellsCommands(this));
     }
@@ -126,6 +127,52 @@ public class CellsModule extends Module {
             Prison.getInstance().getPlatform().log("&cError while saving cell %s.", cell.getCellId());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Rent a cell.
+     *
+     * @param cell     The {@link Cell} being rented.
+     * @param user     The {@link CellUser} renting the cell.
+     * @param duration The duration of this rental, in milliseconds.
+     */
+    public void rentCell(Cell cell, CellUser user, long duration) {
+        cell.setRentalBegan(System.currentTimeMillis());
+        cell.setRentalEnds(cell.getRentalBegan() + duration);
+        cell.setOwner(user.getUUID());
+
+        user.addPermission(cell.getCellId(), CellPermission.BUILD);
+        user.addPermission(cell.getCellId(), CellPermission.CAN_ACCESS_CHESTS);
+        user.addPermission(cell.getCellId(), CellPermission.CAN_ACCESS_DOOR);
+
+        saveCell(cell);
+        saveCellUser(user);
+    }
+
+    /**
+     * Expire the cell's current rental.
+     *
+     * @param cell The {@link Cell} to reset the rental of.
+     */
+    public void expireRental(Cell cell) {
+        cell.setRentalBegan(0L);
+        cell.setRentalEnds(0L);
+
+        // Remove owner rights
+        CellUser user = getUser(cell.getOwner());
+        user.removePermission(cell.getCellId(), CellPermission.BUILD);
+        user.removePermission(cell.getCellId(), CellPermission.CAN_ACCESS_CHESTS);
+        user.removePermission(cell.getCellId(), CellPermission.CAN_ACCESS_DOOR);
+        saveCellUser(user);
+        cell.setOwner(null);
+
+        // Remove rights of other users
+        users.stream().filter(cellUser -> cellUser.hasAccess(cell.getCellId())).forEach(cellUser -> {
+            cellUser.removePermissions(cell.getCellId());
+            saveCellUser(cellUser);
+        });
+
+        saveCell(cell);
     }
 
     public Cell getCell(int cellId) {

@@ -63,6 +63,14 @@ public class CellUser {
         cells.put(cellId, cellPermissions);
     }
 
+    public void removePermissions(int cellId) {
+        List<CellPermission> cellPermissions = cells.get(cellId);
+        if(!cells.containsKey(cellId)) cellPermissions = new ArrayList<>();
+
+        cellPermissions.clear();
+        cells.put(cellId, cellPermissions);
+    }
+
     public boolean hasAccess(int cellId) {
         return cells.containsKey(cellId);
     }
