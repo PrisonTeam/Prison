@@ -117,7 +117,7 @@ public class CellsModule extends Module {
     }
 
     public void saveCell(Cell cell) {
-        if(getCell(cell.getCellId()) == null) cells.add(cell);
+        if (getCell(cell.getCellId()) == null) cells.add(cell);
 
         String json = gson.toJson(cell);
         try {
@@ -134,7 +134,13 @@ public class CellsModule extends Module {
     }
 
     public Cell getCellByDoor(Location location) {
-        for(Cell cell : cells) if (location.toCoordinates().equals(cell.getDoorLocation().toCoordinates())) return cell;
+        for (Cell cell : cells)
+            if (location.toCoordinates().equals(cell.getDoorLocation().toCoordinates())) return cell;
+        return null;
+    }
+
+    public Cell getCellByLocation(Location location) {
+        for (Cell cell : cells) if (cell.getBounds().within(location)) return cell;
         return null;
     }
 
@@ -143,7 +149,7 @@ public class CellsModule extends Module {
     }
 
     public void saveCellUser(CellUser cellUser) {
-        if(getUser(cellUser.getUUID()) == null) users.add(cellUser);
+        if (getUser(cellUser.getUUID()) == null) users.add(cellUser);
 
         String json = gson.toJson(cellUser);
         try {

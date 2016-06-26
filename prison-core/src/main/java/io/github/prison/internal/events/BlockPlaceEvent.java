@@ -20,6 +20,7 @@ package io.github.prison.internal.events;
 
 import io.github.prison.internal.Player;
 import io.github.prison.util.Block;
+import io.github.prison.util.Location;
 
 /**
  * Platform-independent event, which is posted when a player places a block.
@@ -30,11 +31,13 @@ import io.github.prison.util.Block;
 public class BlockPlaceEvent implements Cancelable {
 
     private Block block;
+    private Location blockLocation;
     private Player player;
     private boolean canceled = false;
 
-    public BlockPlaceEvent(Block block, Player player) {
+    public BlockPlaceEvent(Block block, Location blockLocation, Player player) {
         this.block = block;
+        this.blockLocation = blockLocation;
         this.player = player;
     }
 
@@ -50,6 +53,10 @@ public class BlockPlaceEvent implements Cancelable {
 
     public Block getBlock() {
         return block;
+    }
+
+    public Location getBlockLocation() {
+        return blockLocation;
     }
 
     public Player getPlayer() {

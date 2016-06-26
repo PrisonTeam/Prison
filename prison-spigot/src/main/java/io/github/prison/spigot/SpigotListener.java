@@ -63,8 +63,10 @@ public class SpigotListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
+        org.bukkit.Location block = e.getBlockPlaced().getLocation();
         io.github.prison.internal.events.BlockPlaceEvent event = new io.github.prison.internal.events.BlockPlaceEvent(
                 Block.getBlock(e.getBlock().getTypeId()),
+                new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(), block.getZ()),
                 (new SpigotPlayer(e.getPlayer())));
         Prison.getInstance().getEventBus().post(event);
         e.setCancelled(event.isCanceled());

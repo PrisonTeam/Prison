@@ -25,6 +25,8 @@ import io.github.prison.cells.CellPermission;
 import io.github.prison.cells.CellUser;
 import io.github.prison.cells.CellsModule;
 import io.github.prison.cells.events.CellDoorEvent;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.events.BlockPlaceEvent;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.internal.events.PlayerInteractEvent;
 import io.github.prison.util.Block;
@@ -129,6 +131,22 @@ public class CellListener {
             Prison.getInstance().getPlatform().toggleDoor(clickedBlockLoc);
         } catch (Exception e1) {
             e1.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void onPlayerAttemptBuild(BlockPlaceEvent e) {
+        Player placer = e.getPlayer();
+        CellUser user = cellsModule.getUser(placer.getUUID());
+        if (user == null) return;
+
+        Location loc = e.getBlockLocation();
+        Cell cell = cellsModule.getCellByLocation(loc);
+        if (cell == null) return;
+
+        if (!user.hasAccess(cell.getCellId()) || !user.getCellPermissions(cell.getCellId()).contains(CellPermission.BUILD)) {
+            placer.sendMessage(String.format(cellsModule.getMessages().noPermission, CellPermission.BUILD.getUserFriendlyName()));
+            e.setCanceled(true);
         }
     }
 
