@@ -150,4 +150,22 @@ public class CellListener {
         }
     }
 
+    @Subscribe
+    public void onPlayerAttemptChest(PlayerInteractEvent e) {
+        Player placer = e.getPlayer();
+        CellUser user = cellsModule.getUser(placer.getUUID());
+        if (user == null) return;
+
+        Location loc = e.getClicked();
+        if (e.getClicked().getWorld().getBlockAt(loc) != Block.CHEST) return; // Must be chest
+
+        Cell cell = cellsModule.getCellByLocation(loc);
+        if (cell == null) return;
+
+        if (!user.hasAccess(cell.getCellId()) || !user.getCellPermissions(cell.getCellId()).contains(CellPermission.CAN_ACCESS_CHESTS)) {
+            placer.sendMessage(String.format(cellsModule.getMessages().noPermission, CellPermission.CAN_ACCESS_CHESTS.getUserFriendlyName()));
+            e.setCanceled(true);
+        }
+    }
+
 }
