@@ -21,9 +21,10 @@ package io.github.prison.cells;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.prison.ConfigurationLoader;
-import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
+import io.github.prison.cells.listeners.CellListener;
+import io.github.prison.cells.listeners.UserListener;
 import io.github.prison.modules.Module;
 import io.github.prison.util.Location;
 

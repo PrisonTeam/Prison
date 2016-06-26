@@ -16,10 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.cells;
+package io.github.prison.cells.listeners;
 
 import com.google.common.eventbus.Subscribe;
 import io.github.prison.Prison;
+import io.github.prison.cells.CellUser;
+import io.github.prison.cells.CellsModule;
 import io.github.prison.internal.events.PlayerJoinEvent;
 
 /**
