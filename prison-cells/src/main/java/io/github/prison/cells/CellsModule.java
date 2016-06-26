@@ -166,6 +166,8 @@ public class CellsModule extends Module {
         saveCellUser(user);
         cell.setOwner(null);
 
+        Prison.getInstance().getPlatform().getPlayer(user.getUUID()).sendMessage(getMessages().rentalExpired);
+
         // Remove rights of other users
         users.stream().filter(cellUser -> cellUser.hasAccess(cell.getCellId())).forEach(cellUser -> {
             cellUser.removePermissions(cell.getCellId());
