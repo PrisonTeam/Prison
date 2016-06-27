@@ -24,6 +24,8 @@ import io.github.prison.commands.PluginCommand;
 import io.github.prison.modules.ModuleManager;
 import io.github.prison.selection.SelectionManager;
 
+import java.io.File;
+
 /**
  * Entry point for implementations.
  * <p>
@@ -56,6 +58,7 @@ public class Prison {
     // Fields
 
     private Platform platform;
+    private File dataFolder;
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
@@ -77,10 +80,13 @@ public class Prison {
         this.platform = platform;
         platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
 
-        this.messagesLoader = new ConfigurationLoader(platform.getPluginDirectory(), "messages.json", Messages.class, Messages.VERSION);
+        this.dataFolder = new File(platform.getPluginDirectory(), "Core");
+        if (!this.dataFolder.exists()) this.dataFolder.mkdir();
+
+        this.messagesLoader = new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class, Messages.VERSION);
         this.messagesLoader.loadConfiguration();
 
-        this.configurationLoader = new ConfigurationLoader(platform.getPluginDirectory(), "config.json", Configuration.class, Configuration.VERSION);
+        this.configurationLoader = new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class, Configuration.VERSION);
         this.configurationLoader.loadConfiguration();
 
         this.eventBus = new EventBus();
@@ -112,6 +118,16 @@ public class Prison {
      */
     public Platform getPlatform() {
         return platform;
+    }
+
+    /**
+     * Returns the core data folder, which is located at "/plugins/Prison/Core".
+     * This contains the core config.json and messages.json files, as well as other global data.
+     *
+     * @return the {@link File}.
+     */
+    public File getDataFolder() {
+        return dataFolder;
     }
 
     /**
