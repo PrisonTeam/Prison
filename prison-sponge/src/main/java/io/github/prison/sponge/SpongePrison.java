@@ -18,47 +18,12 @@
 
 package io.github.prison.sponge;
 
-import com.google.inject.Inject;
-
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
-
-import java.io.File;
-import java.util.logging.Logger;
-
-import io.github.prison.Prison;
 
 /**
  * @author Camouflage100
  */
 @Plugin(id = "prison-sponge")
 public class SpongePrison {
-
-    @Inject
-    Logger logger;
-    SpongeScheduler scheduler;
-
-    @Listener
-    public void onServerStarting(GameStartingServerEvent event) {
-        File file = Sponge.getPluginManager().getPlugin("prison-sponge").get().getAssetDirectory().get().toFile();
-        if(!file.exists()) file.mkdir();
-    }
-
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
-        this.scheduler = new SpongeScheduler(this);
-        Prison.getInstance().init(new SpongePlatform(this));
-        new SpongeListener(this).init();
-    }
-
-    @Listener
-    public void onServerStop(GameStoppingServerEvent event) {
-        this.scheduler.cancelAll();
-        Prison.getInstance().deinit();
-    }
 
 }
