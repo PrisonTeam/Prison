@@ -20,8 +20,10 @@ package io.github.prison.cells;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.prison.ConfigurationLoader;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
+import io.github.prison.cells.listeners.CellListener;
 import io.github.prison.cells.listeners.UserListener;
 import io.github.prison.modules.Module;
 import io.github.prison.util.Location;
@@ -44,6 +46,7 @@ public class CellsModule extends Module {
     private File cellDirectory;
     private Gson gson;
     private CellCreator cellCreator;
+    private ConfigurationLoader messagesLoader;
 
     public CellsModule(String version) {
         super("Cells", version);
@@ -53,6 +56,7 @@ public class CellsModule extends Module {
     @Override
     public void enable() {
         initGson();
+        initMessages();
 
         this.users = new ArrayList<>();
         this.userDirectory = new File(getDataFolder(), "users");
@@ -66,6 +70,8 @@ public class CellsModule extends Module {
         this.cellCreator = new CellCreator(this);
 
         new UserListener(this).init();
+        new CellListener(this).init();
+        Prison.getInstance().getCommandHandler().registerCommands(new CellCommand(this));
     }
 
     /**
@@ -139,6 +145,10 @@ public class CellsModule extends Module {
         return cellCreator;
     }
 
+    public Messages getMessages() {
+        return (Messages) messagesLoader.getConfig();
+    }
+
     ///
     /// Private Methods
     /// Lasciate ogne speranza, voi ch'intrate!
@@ -150,6 +160,11 @@ public class CellsModule extends Module {
                 .disableHtmlEscaping()
                 .registerTypeAdapter(Location.class, new LocationAdapter())
                 .create();
+    }
+
+    private void initMessages() {
+        this.messagesLoader = new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class, Messages.VERSION);
+        this.messagesLoader.loadConfiguration();
     }
 
     private void loadUsers() {

@@ -23,6 +23,7 @@ import io.github.prison.util.Location;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Stores the instances of the in-progress cells before they are complete.
@@ -32,7 +33,7 @@ import java.util.Map;
 public class CellCreator {
 
     private CellsModule cellsModule;
-    private Map<Player, Cell> cellMap;
+    private Map<UUID, Cell> cellMap;
 
     public CellCreator(CellsModule cellsModule) {
         this.cellsModule = cellsModule;
@@ -46,7 +47,7 @@ public class CellCreator {
      * @param cell    The {@link Cell} being created.
      */
     public void commence(Player creator, Cell cell) {
-        cellMap.put(creator, cell);
+        cellMap.put(creator.getUUID(), cell);
     }
 
     /**
@@ -57,8 +58,9 @@ public class CellCreator {
      */
     public void addDoorLocation(Player player, Location doorLocation) {
         Cell cell = getCell(player);
+        if(cell == null) return;
         cell.setDoorLocation(doorLocation);
-        cellMap.put(player, cell);
+        cellMap.put(player.getUUID(), cell);
     }
 
     /**
@@ -66,15 +68,19 @@ public class CellCreator {
      * and then remove it from this cell creator.
      *
      * @param player The {@link Player} that created the cell.
+     * @return the ID of the new cell.
      * @see CellsModule#saveCell(Cell)
      */
-    public void complete(Player player) {
-        cellsModule.saveCell(getCell(player));
-        cellMap.remove(player);
+    public int complete(Player player) {
+        Cell cell = getCell(player);
+        cellsModule.saveCell(cell);
+        cellMap.remove(player.getUUID());
+
+        return cell.getId();
     }
 
     public Cell getCell(Player player) {
-        return cellMap.get(player);
+        return cellMap.get(player.getUUID());
     }
 
 }
