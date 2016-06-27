@@ -103,6 +103,7 @@ public class SpigotListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event = new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage());
         Prison.getInstance().getEventBus().post(event);
+        e.setMessage(event.getMessage());
         e.setCancelled(event.isCanceled());
     }
 
