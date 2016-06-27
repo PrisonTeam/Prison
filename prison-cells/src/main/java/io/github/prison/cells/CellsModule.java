@@ -39,8 +39,11 @@ import java.util.UUID;
 public class CellsModule extends Module {
 
     private List<CellUser> users;
+    private List<Cell> cells;
     private File userDirectory;
+    private File cellDirectory;
     private Gson gson;
+    private CellCreator cellCreator;
 
     public CellsModule(String version) {
         super("Cells", version);
@@ -56,6 +59,12 @@ public class CellsModule extends Module {
         loadUsers();
         checkOnlineUsers();
 
+        this.cells = new ArrayList<>();
+        this.cellDirectory = new File(getDataFolder(), "cells");
+        loadCells();
+
+        this.cellCreator = new CellCreator(this);
+
         new UserListener(this).init();
     }
 
@@ -70,7 +79,7 @@ public class CellsModule extends Module {
     }
 
     /**
-     * Store the edited user object in the list, and saves it to a file.
+     * Stores the edited user object in the list, and saves it to a file.
      *
      * @param user the {@link CellUser}.
      */
@@ -87,6 +96,53 @@ public class CellsModule extends Module {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Retrieve a cell by its ID.
+     *
+     * @param id The ID of the cell.
+     * @return the {@link Cell}, or null if one couldn't be found with the specified ID.
+     */
+    public Cell getCell(int id) {
+        return cells.stream().filter(cell -> cell.getId() == id).findFirst().orElse(null);
+    }
+
+    /**
+     * Stores the edited cell object in the list, and saves it to a file.
+     *
+     * @param cell the {@link Cell}.
+     */
+    public void saveCell(Cell cell) {
+        // Replace the old object and insert the new one
+        if (getCell(cell.getId()) != null) cells.remove(getCell(cell.getId()));
+        cells.add(cell);
+
+        File file = new File(cellDirectory, cell.getId() + ".cell.json");
+        try {
+            Files.write(file.toPath(), gson.toJson(cell).getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cThe cell file %s could not be saved. Here's the stack trace:", file.getName());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Returns the next available cell ID.
+     *
+     * @return the integer.
+     */
+    public int getNextCellId() {
+        return cells.size() + 1;
+    }
+
+    public CellCreator getCellCreator() {
+        return cellCreator;
+    }
+
+    ///
+    /// Private Methods
+    /// Lasciate ogne speranza, voi ch'intrate!
+    ///
 
     private void initGson() {
         this.gson = new GsonBuilder()
@@ -120,6 +176,25 @@ public class CellsModule extends Module {
         Prison.getInstance().getPlatform().getOnlinePlayers().stream()
                 .filter(player -> getUser(player.getUUID()) == null)
                 .forEach(player -> saveUser(new CellUser(player.getUUID())));
+    }
+
+    private void loadCells() {
+        if (!cellDirectory.exists()) {
+            cellDirectory.mkdir();
+            return; // No need to continue, if the directory didn't exist then there are no files (obviously)
+        }
+
+        File[] cellFiles = cellDirectory.listFiles((dir, name) -> name.endsWith(".cell.json"));
+        for (File file : cellFiles) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                Cell cell = gson.fromJson(json, Cell.class);
+                cells.add(cell);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cThe cell file %s could not be loaded. Here's the stack trace:", file.getName());
+                e.printStackTrace();
+            }
+        }
     }
 
 }
