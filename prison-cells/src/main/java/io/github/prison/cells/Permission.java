@@ -18,17 +18,25 @@
 
 package io.github.prison.cells;
 
-import io.github.prison.Prison;
-import io.github.prison.modules.Module;
-
 /**
+ * Represents the permission to perform a certain action within a cell.
+ *
  * @author SirFaizdat
  */
-public class CellsModule extends Module {
+public enum Permission {
 
-    public CellsModule(String version) {
-        super("Cells", version);
-        Prison.getInstance().getModuleManager().registerModule(this);
+    OPEN_DOOR("open doors"),
+    OPEN_CHEST("open chests"),
+    BUILD_BLOCKS("place/break blocks");
+
+    private String userFriendlyName;
+
+    Permission(String userFriendlyName) {
+        this.userFriendlyName = userFriendlyName;
+    }
+
+    public String getUserFriendlyName() {
+        return userFriendlyName;
     }
 
 }
