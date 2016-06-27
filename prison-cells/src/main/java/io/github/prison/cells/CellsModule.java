@@ -18,17 +18,108 @@
 
 package io.github.prison.cells;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.prison.Prison;
+import io.github.prison.adapters.LocationAdapter;
+import io.github.prison.cells.listeners.UserListener;
 import io.github.prison.modules.Module;
+import io.github.prison.util.Location;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author SirFaizdat
  */
 public class CellsModule extends Module {
 
+    private List<CellUser> users;
+    private File userDirectory;
+    private Gson gson;
+
     public CellsModule(String version) {
         super("Cells", version);
         Prison.getInstance().getModuleManager().registerModule(this);
+    }
+
+    @Override
+    public void enable() {
+        initGson();
+
+        this.users = new ArrayList<>();
+        this.userDirectory = new File(getDataFolder(), "users");
+        loadUsers();
+        checkOnlineUsers();
+
+        new UserListener(this).init();
+    }
+
+    /**
+     * Retrieve a user by its UUID.
+     *
+     * @param uuid The user's UUID.
+     * @return the {@link CellUser}, or null if one couldn't be found by the specified UUID.
+     */
+    public CellUser getUser(UUID uuid) {
+        return users.stream().filter(cellUser -> cellUser.getUUID() == uuid).findFirst().orElse(null);
+    }
+
+    /**
+     * Store the edited user object in the list, and saves it to a file.
+     *
+     * @param user the {@link CellUser}.
+     */
+    public void saveUser(CellUser user) {
+        // Replace the old object and insert the new one
+        if (getUser(user.getUUID()) != null) users.remove(getUser(user.getUUID()));
+        users.add(user);
+
+        File file = new File(userDirectory, user.getUUID().toString() + ".user.json");
+        try {
+            Files.write(file.toPath(), gson.toJson(user).getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cThe user file %s could not be saved. Here's the stack trace:", file.getName());
+            e.printStackTrace();
+        }
+    }
+
+    private void initGson() {
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(Location.class, new LocationAdapter())
+                .create();
+    }
+
+    private void loadUsers() {
+        if (!userDirectory.exists()) {
+            userDirectory.mkdir();
+            return; // No need to continue, we already know there are no files
+        }
+
+        File[] userFiles = userDirectory.listFiles((dir, name) -> name.endsWith(".user.json"));
+        for (File file : userFiles) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                CellUser user = gson.fromJson(json, CellUser.class);
+                users.add(user);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cThe user file %s could not be loaded. Here's the stack trace:", file.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Reload safety, if anyone online doesn't have a user file, it's created.
+    private void checkOnlineUsers() {
+        Prison.getInstance().getPlatform().getOnlinePlayers().stream()
+                .filter(player -> getUser(player.getUUID()) == null)
+                .forEach(player -> saveUser(new CellUser(player.getUUID())));
     }
 
 }
