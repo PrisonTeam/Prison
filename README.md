@@ -1,7 +1,7 @@
-![Prison](https://i.imgsafe.org/874e61d951.png)
+![Prison](http://i.imgsafe.org/21ac1df7ef.png)
 
-[![https://github.com/MC-Prison/Prison/wiki/User%20Documentation](https://i.imgsafe.org/8b43909359.png)](User Documentation)
-[![https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation](https://i.imgsafe.org/8b43918c13.png)](Developer Documentation)
+[![User Documentation](https://i.imgsafe.org/8b43909359.png)](https://github.com/MC-Prison/Prison/wiki/User%20Documentation)
+[![Developer Documentation](https://i.imgsafe.org/8b43918c13.png)](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)
 
 1. [What is Prison?](#what-is-prison)
 2. [Why should I use Prison?](#why-should-i-use-prison)
