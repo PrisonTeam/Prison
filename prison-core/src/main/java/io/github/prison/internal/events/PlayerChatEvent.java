@@ -30,11 +30,13 @@ public class PlayerChatEvent implements Cancelable {
 
     private Player player;
     private String message;
+    private String format;
     private boolean canceled = false;
 
-    public PlayerChatEvent(Player player, String message) {
+    public PlayerChatEvent(Player player, String message, String format) {
         this.player = player;
         this.message = message;
+        this.format = format;
     }
 
     public Player getPlayer() {
@@ -47,6 +49,14 @@ public class PlayerChatEvent implements Cancelable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     @Override

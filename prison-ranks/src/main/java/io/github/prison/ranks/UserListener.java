@@ -19,7 +19,6 @@
 package io.github.prison.ranks;
 
 import com.google.common.eventbus.Subscribe;
-
 import io.github.prison.Prison;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.internal.events.PlayerJoinEvent;
@@ -62,7 +61,8 @@ public class UserListener {
     @Subscribe
     public void onPlayerChat(PlayerChatEvent e) {
         try {
-        //TODO: Set the tag of the player.
+            String tag = ranksModule.getUser(e.getPlayer().getUUID()).getRank().getTag();
+            e.setFormat(e.getFormat().replace("{PRISON-RANK-TAG}", tag));
         } catch (Exception e1) {
             e1.printStackTrace();
         }
