@@ -54,6 +54,15 @@ public interface CommandSender {
     void sendMessage(String message);
 
     /**
+     * Sends an error message to the command sender.
+     * If the command sender supports colors, color codes will automatically be parsed and shown.
+     * If not, color codes will simply be stripped from the message.
+     *
+     * @param error The message to send. May include color codes, amp-prefixed.
+     */
+    void sendError(String error);
+
+    /**
      * Sends multiple messages to the command sender.
      * Each message will be shown on its own line.
      *

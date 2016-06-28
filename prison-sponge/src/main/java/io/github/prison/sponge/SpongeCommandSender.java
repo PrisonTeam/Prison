@@ -16,60 +16,60 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.spigot;
+package io.github.prison.sponge;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import io.github.prison.internal.CommandSender;
 import io.github.prison.internal.Player;
-import io.github.prison.util.TextUtil;
 
 /**
  * @author SirFaizdat
+ * @author Camouflage100
  */
-public class SpigotCommandSender implements CommandSender {
+public class SpongeCommandSender implements CommandSender {
 
-    private org.bukkit.command.CommandSender bukkitSender;
+    private CommandSource commandSource;
 
-    public SpigotCommandSender(org.bukkit.command.CommandSender sender) {
-        this.bukkitSender = sender;
+    public SpongeCommandSender(CommandSource commandSource) {
+        this.commandSource = commandSource;
     }
 
     @Override
     public String getName() {
-        return bukkitSender.getName();
+        return commandSource.getName();
     }
 
     @Override
     public boolean doesSupportColors() {
-        return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
+        return true;
     }
 
     @Override
     public boolean hasPermission(String perm) {
-        return bukkitSender.hasPermission(perm);
+        return commandSource.hasPermission(perm);
     }
 
     @Override
     public void sendMessage(String message) {
-        bukkitSender.sendMessage(TextUtil.parse(message));
+        commandSource.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(message));
     }
 
     @Override
     public void sendError(String error) {
-        bukkitSender.sendMessage(TextUtil.parse("&cError &8&l| &7" + error + "&7!"));
+        commandSource.sendMessage(TextSerializers.FORMATTING_CODE.deserialize("&cError &8&l| &7" + error + "&7!"));
     }
 
     @Override
     public void sendMessage(String[] messages) {
-        for(String s : messages) sendMessage(s);
+        for(String message : messages) sendMessage(message);
     }
 
     @Override
     public void sendRaw(String json) {
-        if (bukkitSender instanceof Player) {
-            ((Player) bukkitSender).sendRaw(json);
+        if (commandSource instanceof Player) {
+            ((Player) commandSource).sendRaw(json);
         }
     }
 

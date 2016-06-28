@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="09d24567-a3ba-4149-bfb7-62eb89c049ed" name="MC-Prison" url="https://mc-prison.tech">
+        <fileTransfer host="s1.mc-prison.tech" port="20" password="df9fdf9bdf93df9adf99df9b" username="Camouflage100.11">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="20" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
