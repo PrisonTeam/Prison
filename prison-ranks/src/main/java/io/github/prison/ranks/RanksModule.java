@@ -18,13 +18,33 @@
 
 package io.github.prison.ranks;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import io.github.prison.ConfigurationLoader;
 import io.github.prison.Prison;
+import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.modules.Module;
+import io.github.prison.util.Location;
 
 /**
- * @author SirFaizdat
+ * @author Camouflage100
  */
 public class RanksModule extends Module {
+
+    private File ranksDirectory;
+    private File usersDirectory;
+    private Gson gson;
+    private List<Rank> ranks;
+    private List<RankUser> users;
+    private ConfigurationLoader messagesLoader;
 
     public RanksModule(String version) {
         super("Ranks", version);
@@ -33,6 +53,187 @@ public class RanksModule extends Module {
 
     @Override
     public void enable() {
+        File ranksModuleDir = new File(Prison.getInstance().getPlatform().getPluginDirectory(), "Ranks");
+        if (!ranksModuleDir.exists()) ranksModuleDir.mkdir();
+
+        ranksDirectory = new File(ranksModuleDir, "ranks");
+        if (!ranksDirectory.exists()) ranksDirectory.mkdir();
+
+        usersDirectory = new File(ranksModuleDir, "users");
+        if (!usersDirectory.exists()) usersDirectory.mkdir();
+
+        this.messagesLoader = new ConfigurationLoader(ranksModuleDir, "messages.json", Messages.class, Messages.VERSION);
+        this.messagesLoader.loadConfiguration();
+
+        ranks = new ArrayList<>();
+        users = new ArrayList<>();
+
+        initGson();
+        loadAllRanks();
+        loadAllUsers();
+
+        new UserListener(this).init();
+
+        Prison.getInstance().getCommandHandler().registerCommands(new RankCommands(this));
+    }
+
+    @Override
+    public void disable() {
+        getRanks().forEach(this::saveRank);
+    }
+
+    private void initGson() {
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(Location.class, new LocationAdapter())
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
+    }
+
+    protected void loadAllRanks() {
+        File[] files = ranksDirectory.listFiles((dir, name) -> name.endsWith(".rank.json"));
+        for (File file : files) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                Rank cell = gson.fromJson(json, Rank.class);
+                ranks.add(cell);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cError while loading rank file %s.", file.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void unloadRank(Rank rank) {
+        if (ranks.contains(rank)) {
+            ranks.remove(rank);
+        }
+    }
+
+    public void saveRank(Rank rank) {
+        if (getRank(rank.getRankId()) == null) ranks.add(rank);
+
+        String json = gson.toJson(rank);
+        try {
+            Files.write(new File(ranksDirectory, rank.getRankId() + ".rank.json").toPath(), json.getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cError while saving rank %s.", rank.getRankId());
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAllUsers() {
+        File[] files = usersDirectory.listFiles((dir, name) -> name.endsWith(".user.json"));
+        for (File file : files) {
+            try {
+                String json = new String(Files.readAllBytes(file.toPath()));
+                RankUser user = gson.fromJson(json, RankUser.class);
+                users.add(user);
+            } catch (IOException e) {
+                Prison.getInstance().getPlatform().log("&cError while loading user file %s.", file.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void saveRankUser(RankUser user) {
+        if (getUser(user.getUuid()) == null) users.add(user);
+        String json = gson.toJson(user);
+        try {
+            File f = new File(usersDirectory, user.getUuid() + ".user.json");
+            Files.write(f.toPath(), json.getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform().log("&cError while saving user %s.", user.getUuid());
+            e.printStackTrace();
+        }
+    }
+
+    public Rank getRank(int id) {
+        for (Rank rank : ranks) if (rank.getRankId() == id) return rank;
+        return null;
+    }
+
+    public Rank getRankByName(String name) {
+        for (Rank rank : ranks) if (rank.getName().compareTo(name) == 0) return rank;
+        return null;
+    }
+
+    public List<Rank> getRanks() {
+        return ranks;
+    }
+
+    public int getNextLadder() {
+        int highestId = 0;
+        for (Rank rank : ranks) {
+            if (rank.getRankLadder() > highestId) highestId = rank.getRankLadder();
+        }
+
+        return highestId + 1;
+    }
+
+    public Messages getMessages() {
+        return (Messages) messagesLoader.getConfig();
+    }
+
+    public File getRanksDirectory() {
+        return ranksDirectory;
+    }
+
+    public File getUsersDirectory() {
+        return usersDirectory;
+    }
+
+    public Rank getBottomRank() {
+        for (int i = 0; i != -1; i++) {
+            if (getRank(i) != null) return getRank(i);
+        }
+        return null;
+    }
+
+    public Rank getTopRank() {
+        Rank topRank = getBottomRank();
+        for (Rank rank : getRanks()) {
+            if (rank.getRankLadder() > topRank.getRankLadder()) {
+                topRank = rank;
+            }
+        }
+        return topRank;
+    }
+
+    public Rank getRankByLadder(int id) {
+        for (Rank rank : getRanks())  if (rank.getRankLadder() == id) return rank;
+        return null;
+    }
+    public Rank getRankByLadder(boolean up, Rank rank) {
+        if (getTopRank() == rank) {
+            return getTopRank();
+        } else if (getBottomRank() == rank) {
+            return getBottomRank();
+        } else if (!up) {
+            Rank rankBefore = null;
+
+            for (Rank rank1 : getRanks()) {
+                if (rank1.getRankLadder() == rank.getRankLadder())
+                    return rankBefore;
+
+                rankBefore = rank1;
+            }
+
+        } else {
+            //TODO: Make this better?
+            for (int i = rank.getRankLadder(); i > -1; i++) {
+                if (getRankByLadder(i) != null) {
+                    return getRankByLadder(i);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public RankUser getUser(UUID uuid) {
+        for (RankUser user : users) if (user.getUuid().compareTo(uuid) == 0) return user;
+        return null;
     }
 
 }
