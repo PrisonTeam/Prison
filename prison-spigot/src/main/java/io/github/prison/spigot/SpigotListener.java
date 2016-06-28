@@ -23,6 +23,7 @@ import io.github.prison.internal.ItemStack;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.spigot.compat.Compatibility;
 import io.github.prison.util.Block;
+import io.github.prison.util.ChatColor;
 import io.github.prison.util.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -103,7 +104,7 @@ public class SpigotListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event = new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
         Prison.getInstance().getEventBus().post(event);
-        e.setFormat(event.getFormat());
+        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
         e.setMessage(event.getMessage());
         e.setCancelled(event.isCanceled());
     }
