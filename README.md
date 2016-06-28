@@ -1,4 +1,4 @@
-![Prison](https://i.imgsafe.org/874e61d951.png)
+![Prison](http://i.imgsafe.org/21ac1df7ef.png)
 
 [![User Documentation](https://i.imgsafe.org/8b43909359.png)](https://github.com/MC-Prison/Prison/wiki/User%20Documentation)
 [![Developer Documentation](https://i.imgsafe.org/8b43918c13.png)](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)
