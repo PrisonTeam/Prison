@@ -30,7 +30,7 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 10; // For everyone to reference
+    public static final int VERSION = 11; // For everyone to reference
     public int version = VERSION; // For the configuration file to store
 
     // Entries
@@ -44,6 +44,7 @@ public class Messages implements Configurable {
     public static String commandCheckRank = "&d%s's&7 current rank is '&d%s&7'!";
     public static String commandSetRank = "&7Successfully set &d%s's &7rank from &d%s &7to &d%s&7!";
     public static String commandPromote = "&7Successfully promoted &d%s&7 from &d%s&7 to &d%s&7!";
+    public static String commandSetTag = "&7Successfully set the tag of &d%s&7 to &d%s&7!";
 
 
     @Override

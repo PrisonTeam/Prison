@@ -38,12 +38,23 @@ public class RankCommands {
         this.ranksModule = ranksModule;
     }
 
+    @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"})
+    public void setTagCommand(CommandSender sender, @Arg(name = "rankname") String name, @Arg(name = "tag") String tag) {
+        if (ranksModule.getRankByName(name) == null) {
+            sender.sendMessage(String.format(Messages.errorInvalidRank, name));
+            return;
+        }
+        Rank rank = ranksModule.getRankByName(name);
+        rank.setTag(tag);
+
+        sender.sendMessage(String.format(Messages.commandSetTag, rank.getName(), rank.getTag()));
+    }
 
     @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"})
-    public void addRank(CommandSender sender, @Arg(name = "rankid") int id,
+    public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
                         @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
                         @Arg(name = "tag") String tag) {
-        //TODO: Implemend the code for this? lol
+        //TODO: Implement the code for this? lol
     }
 
     @Command(identifier = "ranks reload", description = "Reload ranks", permissions = {"prison.ranks.reload"})
@@ -143,17 +154,18 @@ public class RankCommands {
 
     @Command(identifier = "ranks promote", description = "Promote a player's rank", permissions = {"prison.ranks.promote"})
     public void promoteRankCommand(CommandSender sender, @Arg(name = "player") String name) {
+        //TODO: Fix fix this
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
 
         if (targ != null) {
             RankUser targRank = ranksModule.getUser(targ.getUUID());
-
             Rank currentRank = targRank.getRank();
 
-            if (currentRank == ranksModule.getTopRank()) {
+            if (currentRank == ranksModule.getTopRank()){
                 sender.sendMessage(String.format(Messages.errorPlayerTopRank, targ.getName()));
                 return;
             }
+
             Rank newRank = ranksModule.getRankByLadder(true, currentRank);
 
             RankPromoteEvent event = new RankPromoteEvent(targ, currentRank, newRank);
@@ -165,8 +177,8 @@ public class RankCommands {
             sender.sendMessage(String.format(
                     Messages.commandPromote, targ.getName(),
                     currentRank.getName(),
-                    newRank.getName())
-            );
+                    newRank.getName()
+            ));
         } else {
             sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
         }

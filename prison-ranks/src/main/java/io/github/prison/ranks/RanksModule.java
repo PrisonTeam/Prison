@@ -138,6 +138,7 @@ public class RanksModule extends Module {
 
     public void saveRankUser(RankUser user) {
         if (getUser(user.getUuid()) == null) users.add(user);
+        user.setRank(getRank(user.getRank().getRankId()));
         String json = gson.toJson(user);
         try {
             File f = new File(usersDirectory, user.getUuid() + ".user.json");
@@ -221,7 +222,7 @@ public class RanksModule extends Module {
 
         } else {
             //TODO: Make this better?
-            for (int i = rank.getRankLadder(); i > -1; i++) {
+            for (int i = rank.getRankLadder() + 1; i > 0; i++) {
                 if (getRankByLadder(i) != null) {
                     return getRankByLadder(i);
                 }
