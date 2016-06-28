@@ -16,14 +16,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.sponge;
+package io.github.prison.cells;
 
-import org.spongepowered.api.plugin.Plugin;
+import io.github.prison.Configurable;
 
 /**
- * @author Camouflage100
+ * See the Messages class in prison-core to learn how to use this.
+ *
+ * @author SirFaizdat
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
+public class Messages implements Configurable {
 
+    public static final int VERSION = 0;
+    public int version = VERSION;
+
+    public String selectDoor = io.github.prison.Messages.INFO_PREFIX + "Now, punch the cell's door.";
+    public String cellCreated = io.github.prison.Messages.INFO_PREFIX + "Successfully created &3cell #%d&7.";
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
 }

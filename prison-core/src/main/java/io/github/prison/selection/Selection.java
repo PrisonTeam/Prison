@@ -18,6 +18,7 @@
 
 package io.github.prison.selection;
 
+import io.github.prison.util.Bounds;
 import io.github.prison.util.Location;
 
 /**
@@ -61,6 +62,10 @@ public class Selection {
      */
     public boolean isComplete() {
         return min != null && max != null;
+    }
+
+    public Bounds asBounds() {
+        return new Bounds(min, max);
     }
 
 }

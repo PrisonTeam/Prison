@@ -16,14 +16,45 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.sponge;
+package io.github.prison.cells;
 
-import org.spongepowered.api.plugin.Plugin;
+import io.github.prison.util.Bounds;
+import io.github.prison.util.Location;
 
 /**
- * @author Camouflage100
+ * @author SirFaizdat
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
+public class Cell {
+
+    private int id;
+    private Bounds bounds;
+    private Location doorLocation;
+
+    /**
+     * For serialization purposes.
+     */
+    public Cell() {
+    }
+
+    public Cell(int id, Bounds bounds) {
+        this.id = id;
+        this.bounds = bounds;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Bounds getBounds() {
+        return bounds;
+    }
+
+    public Location getDoorLocation() {
+        return doorLocation;
+    }
+
+    public void setDoorLocation(Location doorLocation) {
+        this.doorLocation = doorLocation;
+    }
 
 }

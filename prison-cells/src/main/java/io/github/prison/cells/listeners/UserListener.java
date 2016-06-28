@@ -16,14 +16,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.sponge;
+package io.github.prison.cells.listeners;
 
-import org.spongepowered.api.plugin.Plugin;
+import com.google.common.eventbus.Subscribe;
+import io.github.prison.Prison;
+import io.github.prison.cells.CellUser;
+import io.github.prison.cells.CellsModule;
+import io.github.prison.internal.events.PlayerJoinEvent;
 
 /**
- * @author Camouflage100
+ * @author SirFaizdat
  */
-@Plugin(id = "prison-sponge")
-public class SpongePrison {
+public class UserListener {
+
+    private CellsModule cellsModule;
+
+    public UserListener(CellsModule cellsModule) {
+        this.cellsModule = cellsModule;
+    }
+
+    public void init() {
+        Prison.getInstance().getEventBus().register(this);
+    }
+
+    @Subscribe
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (cellsModule.getUser(e.getPlayer().getUUID()) == null)
+            cellsModule.saveUser(new CellUser(e.getPlayer().getUUID()));
+    }
 
 }
