@@ -202,13 +202,13 @@ public class RanksModule extends Module {
     }
 
     public Rank getRankByLadder(int id) {
-        for (Rank rank : getRanks())  if (rank.getRankLadder() == id) return rank;
+        for (Rank rank : getRanks()) if (rank.getRankLadder() == id) return rank;
         return null;
     }
+
     public Rank getRankByLadder(boolean up, Rank rank) {
         if (!up) {
             Rank rankBefore = null;
-            String blah = "test";
 
             for (Rank rank1 : getRanks()) {
                 if (rank1.getRankLadder() == rank.getRankLadder())
