@@ -90,8 +90,10 @@ public class RankCommands {
             targRank = ranksModule.getUser(targ.getUUID());
 
         if (targ != null) {
-            if (targRank.getRank() == null)
+            if (targRank.getRank() == null) {
                 targRank.setRank(ranksModule.getBottomRank());
+                ranksModule.saveRankUser(targRank);
+            }
 
             sender.sendMessage(String.format(
                     Messages.commandCheckRank,
@@ -158,6 +160,7 @@ public class RankCommands {
             Prison.getInstance().getEventBus().post(event);
             if (event.isCanceled()) return;
             targRank.setRank(newRank);
+            ranksModule.saveRankUser(targRank);
 
             sender.sendMessage(String.format(
                     Messages.commandPromote, targ.getName(),
