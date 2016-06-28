@@ -53,28 +53,32 @@ public class RankCommands {
         }
 
         ranksModule.loadAllRanks();
-        sender.sendMessage("&7Reloaded all ranks!");
+        sender.sendMessage(Messages.commandReload);
     }
 
 
     @Command(identifier = "ranks list", description = "List the ranks that are currently added", permissions = {"prison.ranks.list"})
     public void ranksListCommand(CommandSender sender) {
         if (ranksModule.getRanks().size() == 0) {
-            sender.sendError("No ranks currently added");
+            sender.sendMessage(Messages.errorNoRanksLoaded);
         } else {
-            sender.sendMessage("&7========== &d/ranks list &7==========");
+            sender.sendMessage(Messages.commandListHeadFood);
             for (Rank rank : ranksModule.getRanks()) {
 
                 String tag;
                 if (rank.getTag() == null) tag = "n/a";
                 else tag = TextUtil.parse(rank.getTag());
 
-                sender.sendMessage(
-                        "&7Name: &d" + rank.getName() + " &7- Id: &d" + rank.getRankId() + " &7- Ladder: &d" + rank.getRankLadder() +
-                                " &7- Tag: &d" + tag + " &7- Cost: &d" + rank.getCost()
-                );
+                sender.sendMessage(String.format(
+                        Messages.commandList,
+                        rank.getName(),
+                        rank.getRankId(),
+                        rank.getRankLadder(),
+                        tag,
+                        rank.getCost()
+                ));
             }
-            sender.sendMessage("&7========== &d/ranks list &7==========");
+            sender.sendMessage(Messages.commandListHeadFood);
         }
     }
 
@@ -83,19 +87,19 @@ public class RankCommands {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
         RankUser targRank = null;
         if (targ != null)
-        targRank = ranksModule.getUser(targ.getUUID());
+            targRank = ranksModule.getUser(targ.getUUID());
 
         if (targ != null) {
             if (targRank.getRank() == null)
                 targRank.setRank(ranksModule.getBottomRank());
 
-            sender.sendMessage(TextUtil.parse(
-                    "&d%s's&7 current rank is '&d%s&7'!",
+            sender.sendMessage(String.format(
+                    Messages.commandCheckRank,
                     targ.getName(),
                     ranksModule.getUser(targ.getUUID()).getRank().getName()
             ));
         } else {
-            sender.sendError("Player " + name + " could not be found");
+            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
         }
     }
 
@@ -120,14 +124,18 @@ public class RankCommands {
                 Prison.getInstance().getEventBus().post(event);
                 if (event.isCanceled()) return;
 
-                sender.sendMessage("&7Successfully set &d" + targ.getName() + "'s &7rank from " +
-                        "&d" + oldRank.getName() + " &7to &d" + newRank.getName() + "&7!");
+                sender.sendMessage(String.format(
+                        Messages.commandSetRank,
+                        targ.getName(),
+                        oldRank.getName(),
+                        newRank.getName()
+                ));
             } else {
-                sender.sendError(rank + " is not a valid rank");
+                sender.sendMessage(String.format(Messages.errorInvalidRank, rank));
             }
 
         } else {
-            sender.sendError("Player " + name + " could not be found");
+            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
         }
     }
 
@@ -141,7 +149,7 @@ public class RankCommands {
             Rank currentRank = targRank.getRank();
 
             if (currentRank == ranksModule.getTopRank()) {
-                sender.sendError(TextUtil.parse("&d%s&7 is already the top rank", targ.getName()));
+                sender.sendMessage(String.format(Messages.errorPlayerTopRank, targ.getName()));
                 return;
             }
             Rank newRank = ranksModule.getRankByLadder(true, currentRank);
@@ -151,14 +159,13 @@ public class RankCommands {
             if (event.isCanceled()) return;
             targRank.setRank(newRank);
 
-            sender.sendMessage(TextUtil.parse(
-                    "&7Successfully promoted &d%s&7 from &d%s&7 to &d%s&7!",
-                    targ.getName(),
+            sender.sendMessage(String.format(
+                    Messages.commandPromote, targ.getName(),
                     currentRank.getName(),
-                    newRank.getName()
-            ));
+                    newRank.getName())
+            );
         } else {
-            sender.sendError("Player &d" + name + "&7 could not be found");
+            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
         }
     }
 }
