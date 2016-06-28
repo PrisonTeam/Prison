@@ -42,6 +42,10 @@ public class SpongeCommandSender implements CommandSender {
     }
 
     @Override
+    public void dispatchCommand(String command) {
+    }
+
+    @Override
     public boolean doesSupportColors() {
         return true;
     }
