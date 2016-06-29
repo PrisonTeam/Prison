@@ -81,7 +81,7 @@ public class CellsModule extends Module {
      * @return the {@link CellUser}, or null if one couldn't be found by the specified UUID.
      */
     public CellUser getUser(UUID uuid) {
-        return users.stream().filter(cellUser -> cellUser.getUUID() == uuid).findFirst().orElse(null);
+        return users.stream().filter(cellUser -> cellUser.getUUID().getMostSignificantBits() == uuid.getMostSignificantBits()).findFirst().orElse(null);
     }
 
     /**
@@ -126,6 +126,7 @@ public class CellsModule extends Module {
 
     /**
      * Retrieve a cell by a location within its bounds.
+     *
      * @param loc The location of the block to check.
      * @return The {@link Cell} with this location within, or null if there isn't one.
      * @see io.github.prison.util.Bounds#within(Location)

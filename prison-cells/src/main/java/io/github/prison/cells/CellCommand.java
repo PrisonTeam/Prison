@@ -18,7 +18,6 @@
 
 package io.github.prison.cells;
 
-import com.google.common.eventbus.Subscribe;
 import io.github.prison.Prison;
 import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
@@ -59,13 +58,13 @@ public class CellCommand {
     )
     public void rentCell(Player sender, @Arg(name = "cell_id") int id) {
         Cell cell = cellsModule.getCell(id);
-        if(cell == null) {
+        if (cell == null) {
             sender.sendMessage(String.format(cellsModule.getMessages().cellDoesNotExist, id));
             return;
         }
 
         CellUser user = cellsModule.getUser(sender.getUUID());
-        if(user == null) user = new CellUser(sender.getUUID());
+        if (user == null) user = new CellUser(sender.getUUID());
 
         user.addPermission(id, Permission.BUILD_BLOCKS);
         user.addPermission(id, Permission.OPEN_CHEST);
