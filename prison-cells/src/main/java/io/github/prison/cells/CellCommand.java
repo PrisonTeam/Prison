@@ -18,7 +18,9 @@
 
 package io.github.prison.cells;
 
+import com.google.common.eventbus.Subscribe;
 import io.github.prison.Prison;
+import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
 import io.github.prison.internal.Player;
 import io.github.prison.selection.Selection;
@@ -40,7 +42,7 @@ public class CellCommand {
     )
     public void createCell(Player sender) {
         Selection sel = Prison.getInstance().getSelectionManager().getSelection(sender);
-        if(!sel.isComplete()) {
+        if (!sel.isComplete()) {
             sender.sendMessage(Prison.getInstance().getMessages().selectionNeeded);
             Prison.getInstance().getSelectionManager().bestowSelectionTool(sender);
             return;
@@ -49,6 +51,27 @@ public class CellCommand {
         Cell cell = new Cell(cellsModule.getNextCellId(), sel.asBounds());
         cellsModule.getCellCreator().commence(sender, cell);
         sender.sendMessage(cellsModule.getMessages().selectDoor);
+    }
+
+    @Command(
+            identifier = "cells rent",
+            description = "Rent a cell"
+    )
+    public void rentCell(Player sender, @Arg(name = "cell_id") int id) {
+        Cell cell = cellsModule.getCell(id);
+        if(cell == null) {
+            sender.sendMessage(String.format(cellsModule.getMessages().cellDoesNotExist, id));
+            return;
+        }
+
+        CellUser user = cellsModule.getUser(sender.getUUID());
+        if(user == null) user = new CellUser(sender.getUUID());
+
+        user.addPermission(id, Permission.BUILD_BLOCKS);
+        user.addPermission(id, Permission.OPEN_CHEST);
+        user.addPermission(id, Permission.OPEN_DOOR);
+        cellsModule.saveUser(user);
+        sender.sendMessage("Cell rented."); // will have a localized message when the actual rental command is here
     }
 
 }

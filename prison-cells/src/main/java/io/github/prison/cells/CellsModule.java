@@ -125,6 +125,16 @@ public class CellsModule extends Module {
     }
 
     /**
+     * Retrieve a cell by a location within its bounds.
+     * @param loc The location of the block to check.
+     * @return The {@link Cell} with this location within, or null if there isn't one.
+     * @see io.github.prison.util.Bounds#within(Location)
+     */
+    public Cell getCellByLocationWithin(Location loc) {
+        return cells.stream().filter(cell -> cell.getBounds().within(loc)).findFirst().orElse(null);
+    }
+
+    /**
      * Stores the edited cell object in the list, and saves it to a file.
      *
      * @param cell the {@link Cell}.

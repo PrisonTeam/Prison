@@ -73,11 +73,31 @@ public class CellListener {
 
             if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.OPEN_DOOR)) {
                 e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess, Permission.OPEN_DOOR.getUserFriendlyName()));
+                e.setCanceled(true);
                 return;
             }
 
             // So they have access. Let's be kind and open the door for them.
             Prison.getInstance().getPlatform().toggleDoor(e.getClicked());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void enforceChestPermission(PlayerInteractEvent e) {
+        try {
+            if (e.getClicked().getWorld().getBlockAt(e.getClicked()) != Block.CHEST) return;
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) return;
+
+            CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
+            Cell cell = cellsModule.getCellByLocationWithin(e.getClicked());
+            if (cell == null) return;
+
+            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.OPEN_CHEST)) {
+                e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess, Permission.OPEN_CHEST.getUserFriendlyName()));
+                e.setCanceled(true);
+            }
         } catch (Exception e1) {
             e1.printStackTrace();
         }
