@@ -27,6 +27,7 @@ import io.github.prison.cells.Permission;
 import io.github.prison.internal.events.BlockPlaceEvent;
 import io.github.prison.internal.events.PlayerInteractEvent;
 import io.github.prison.util.Block;
+import io.github.prison.util.Location;
 
 /**
  * @author SirFaizdat
@@ -48,7 +49,7 @@ public class CellListener {
         try {
             if (e.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) return;
 
-            Block block = e.getClicked().getWorld().getBlockAt(e.getClicked());
+            Block block = e.getClicked().getWorld().getBlockAt(adjustToTopHalf(e.getClicked()));
             if (!Block.isDoor(block)) return; // Must be a door
 
             if (cellsModule.getCellCreator().getCell(e.getPlayer()) == null) return; // Player isn't creating a cell
@@ -62,6 +63,13 @@ public class CellListener {
         }
     }
 
+    private Location adjustToTopHalf(Location loc) {
+        Location oneBelow = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
+        if (!Block.isDoor(loc.getWorld().getBlockAt(oneBelow)))
+            return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + 1, loc.getBlockZ());
+        return loc;
+    }
+
     @Subscribe
     public void enforceDoorPermission(PlayerInteractEvent e) {
         try {
@@ -69,7 +77,8 @@ public class CellListener {
             if (cellsModule.getUser(e.getPlayer().getUUID()) == null) return;
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
-            Cell cell = cellsModule.getCellByDoorLocation(e.getClicked());
+            Location adjustedLoc = adjustToTopHalf(e.getClicked());
+            Cell cell = cellsModule.getCellByDoorLocation(adjustedLoc);
             if (cell == null) return;
 
             if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.OPEN_DOOR)) {
@@ -79,7 +88,7 @@ public class CellListener {
             }
 
             // So they have access. Let's be kind and open the door for them.
-            Prison.getInstance().getPlatform().toggleDoor(e.getClicked());
+            Prison.getInstance().getPlatform().toggleDoor(adjustedLoc);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
