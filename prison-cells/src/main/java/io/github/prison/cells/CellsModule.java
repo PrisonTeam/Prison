@@ -114,6 +114,17 @@ public class CellsModule extends Module {
     }
 
     /**
+     * Retrieve a cell by its door location.
+     * The door location must be the top half of the door.
+     *
+     * @param loc The location of the door.
+     * @return The {@link Cell} with this door location, or null if there isn't one.
+     */
+    public Cell getCellByDoorLocation(Location loc) {
+        return cells.stream().filter(cell -> cell.getDoorLocation().equals(loc)).findFirst().orElse(null);
+    }
+
+    /**
      * Stores the edited cell object in the list, and saves it to a file.
      *
      * @param cell the {@link Cell}.

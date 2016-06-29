@@ -20,7 +20,10 @@ package io.github.prison.cells.listeners;
 
 import com.google.common.eventbus.Subscribe;
 import io.github.prison.Prison;
+import io.github.prison.cells.Cell;
+import io.github.prison.cells.CellUser;
 import io.github.prison.cells.CellsModule;
+import io.github.prison.cells.Permission;
 import io.github.prison.internal.events.PlayerInteractEvent;
 import io.github.prison.util.Block;
 
@@ -47,13 +50,35 @@ public class CellListener {
             Block block = e.getClicked().getWorld().getBlockAt(e.getClicked());
             if (!Block.isDoor(block)) return; // Must be a door
 
-            if(cellsModule.getCellCreator().getCell(e.getPlayer()) == null) return; // Player isn't creating a cell
+            if (cellsModule.getCellCreator().getCell(e.getPlayer()) == null) return; // Player isn't creating a cell
             e.setCanceled(true);
 
             cellsModule.getCellCreator().addDoorLocation(e.getPlayer(), e.getClicked());
             int cellId = cellsModule.getCellCreator().complete(e.getPlayer());
             e.getPlayer().sendMessage(String.format(cellsModule.getMessages().cellCreated, cellId));
-        } catch(Exception e1) {
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void enforceDoorPermission(PlayerInteractEvent e) {
+        try {
+            if (e.getAction() != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) return;
+
+            CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
+            Cell cell = cellsModule.getCellByDoorLocation(e.getClicked());
+            if (cell == null) return;
+
+            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.OPEN_DOOR)) {
+                e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess, Permission.OPEN_DOOR.getUserFriendlyName()));
+                return;
+            }
+
+            // So they have access. Let's be kind and open the door for them.
+            Prison.getInstance().getPlatform().toggleDoor(e.getClicked());
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
     }

@@ -125,7 +125,7 @@ public class Location {
         if (Double.compare(location.z, z) != 0) return false;
         if (Float.compare(location.pitch, pitch) != 0) return false;
         if (Float.compare(location.yaw, yaw) != 0) return false;
-        return world != null ? world.equals(location.world) : location.world == null;
+        return world != null ? world.getName().equals(location.world.getName()) : location.world == null;
 
     }
 

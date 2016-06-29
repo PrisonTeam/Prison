@@ -27,11 +27,12 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 0;
+    public static final int VERSION = 1;
     public int version = VERSION;
 
     public String selectDoor = io.github.prison.Messages.INFO_PREFIX + "Now, punch the cell's door.";
     public String cellCreated = io.github.prison.Messages.INFO_PREFIX + "Successfully created &3cell #%d&7.";
+    public String noAccess = io.github.prison.Messages.WARNING_PREFIX + "You don't have permission to %s in this cell.";
 
     @Override
     public int getVersion() {
