@@ -28,8 +28,9 @@ what you are doing! You have been
 WARNED.
 
 Output files will be in
-[subproject]/build/libs, suffixed
-with "-dist". Have fun!
+[subproject]/build/libs.
+The runnable JAR is usually
+named Prison[ModuleName].jar.
 ================================
 """
 
