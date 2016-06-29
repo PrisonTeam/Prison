@@ -18,7 +18,6 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Prison;
 import io.github.prison.internal.ItemStack;
 import io.github.prison.internal.Player;
 import io.github.prison.util.ChatColor;
@@ -27,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -61,6 +61,12 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         org.bukkit.inventory.ItemStack bStack = new org.bukkit.inventory.ItemStack(itemStack.getMaterial().getLegacyId(), itemStack.getAmount());
         ItemMeta meta = bStack.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemStack.getName()));
+
+        String[] colorLore = new String[itemStack.getLore().size()];
+        for (int i = 0; i < colorLore.length; i++)
+            colorLore[i] = ChatColor.translateAlternateColorCodes('&', itemStack.getLore().get(i));
+        meta.setLore(Arrays.asList(colorLore));
+
         bStack.setItemMeta(meta);
 
         bukkitPlayer.getInventory().addItem(bStack);

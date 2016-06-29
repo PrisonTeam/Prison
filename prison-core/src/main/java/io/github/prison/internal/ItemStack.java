@@ -21,6 +21,10 @@ package io.github.prison.internal;
 import io.github.prison.util.Block;
 import io.github.prison.util.ChatColor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
  *
@@ -32,11 +36,13 @@ public class ItemStack {
     String name;
     int amount;
     Block material;
+    private List<String> lore;
 
-    public ItemStack(String name, int amount, Block material) {
+    public ItemStack(String name, int amount, Block material, String... lore) {
         this.name = name;
         this.amount = amount;
         this.material = material;
+        this.lore = new ArrayList<>(Arrays.asList(lore));
     }
 
     /**
@@ -58,6 +64,10 @@ public class ItemStack {
      */
     public Block getMaterial() {
         return material;
+    }
+
+    public List<String> getLore() {
+        return lore;
     }
 
     @Override

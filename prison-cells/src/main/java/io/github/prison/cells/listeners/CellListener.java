@@ -55,7 +55,7 @@ public class CellListener {
             if (cellsModule.getCellCreator().getCell(e.getPlayer()) == null) return; // Player isn't creating a cell
             e.setCanceled(true);
 
-            cellsModule.getCellCreator().addDoorLocation(e.getPlayer(), e.getClicked());
+            cellsModule.getCellCreator().addDoorLocation(e.getPlayer(), adjustToTopHalf(e.getClicked()));
             int cellId = cellsModule.getCellCreator().complete(e.getPlayer());
             e.getPlayer().sendMessage(String.format(cellsModule.getMessages().cellCreated, cellId));
         } catch (Exception e1) {
