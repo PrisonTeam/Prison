@@ -24,6 +24,7 @@ import io.github.prison.cells.Cell;
 import io.github.prison.cells.CellUser;
 import io.github.prison.cells.CellsModule;
 import io.github.prison.cells.Permission;
+import io.github.prison.internal.events.BlockPlaceEvent;
 import io.github.prison.internal.events.PlayerInteractEvent;
 import io.github.prison.util.Block;
 
@@ -96,6 +97,24 @@ public class CellListener {
 
             if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.OPEN_CHEST)) {
                 e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess, Permission.OPEN_CHEST.getUserFriendlyName()));
+                e.setCanceled(true);
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void enforceBuildPermission(BlockPlaceEvent e) {
+        try {
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) return;
+
+            CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
+            Cell cell = cellsModule.getCellByLocationWithin(e.getBlockLocation());
+            if (cell == null) return;
+
+            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId()).contains(Permission.BUILD_BLOCKS)) {
+                e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess, Permission.BUILD_BLOCKS.getUserFriendlyName()));
                 e.setCanceled(true);
             }
         } catch (Exception e1) {
