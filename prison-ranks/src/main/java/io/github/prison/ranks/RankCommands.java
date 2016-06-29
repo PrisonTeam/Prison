@@ -38,6 +38,14 @@ public class RankCommands {
         this.ranksModule = ranksModule;
     }
 
+    @Command(identifier = "ranks", description = "User Use: Displays ranks - Admin Use: Displays help command")
+    public void ranksCommand(CommandSender sender) {
+        if (!sender.hasPermission("prison.ranks.list.admin"))
+            sender.dispatchCommand("ranks list");
+        else
+            sender.dispatchCommand("ranks help");
+    }
+
     @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"})
     public void setTagCommand(CommandSender sender, @Arg(name = "rankname") String name, @Arg(name = "tag") String tag) {
         if (ranksModule.getRankByName(name) == null) {
@@ -52,8 +60,8 @@ public class RankCommands {
 
     @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"})
     public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
-                        @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
-                        @Arg(name = "tag") String tag) {
+                               @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
+                               @Arg(name = "tag") String tag) {
         //TODO: Implement the code for this? lol
     }
 
@@ -68,7 +76,7 @@ public class RankCommands {
     }
 
 
-    @Command(identifier = "ranks list", description = "List the ranks that are currently added", permissions = {"prison.ranks.list"})
+    @Command(identifier = "ranks list", description = "List the ranks that are currently added")
     public void ranksListCommand(CommandSender sender) {
         if (ranksModule.getRanks().size() == 0) {
             sender.sendMessage(Messages.errorNoRanksLoaded);
@@ -80,14 +88,22 @@ public class RankCommands {
                 if (rank.getTag() == null) tag = "n/a";
                 else tag = TextUtil.parse(rank.getTag());
 
-                sender.sendMessage(String.format(
-                        Messages.commandList,
-                        rank.getName(),
-                        rank.getRankId(),
-                        rank.getRankLadder(),
-                        tag,
-                        rank.getCost()
-                ));
+                if (sender.hasPermission("prison.ranks.list.admin"))
+                    sender.sendMessage(String.format(
+                            Messages.commandListAdmin,
+                            rank.getName(),
+                            rank.getRankId(),
+                            rank.getRankLadder(),
+                            tag,
+                            rank.getCost()
+                    ));
+
+                else
+                    sender.sendMessage(String.format(
+                            Messages.commandListUser,
+                            rank.getName(),
+                            rank.getCost()
+                    ));
             }
             sender.sendMessage(Messages.commandListHeadFood);
         }
@@ -161,7 +177,7 @@ public class RankCommands {
             RankUser targRank = ranksModule.getUser(targ.getUUID());
             Rank currentRank = targRank.getRank();
 
-            if (currentRank == ranksModule.getTopRank()){
+            if (currentRank == ranksModule.getTopRank()) {
                 sender.sendMessage(String.format(Messages.errorPlayerTopRank, targ.getName()));
                 return;
             }

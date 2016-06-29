@@ -202,15 +202,12 @@ public class RanksModule extends Module {
     }
 
     public Rank getRankByLadder(int id) {
-        for (Rank rank : getRanks())  if (rank.getRankLadder() == id) return rank;
+        for (Rank rank : getRanks()) if (rank.getRankLadder() == id) return rank;
         return null;
     }
+
     public Rank getRankByLadder(boolean up, Rank rank) {
-        if (getTopRank() == rank) {
-            return getTopRank();
-        } else if (getBottomRank() == rank) {
-            return getBottomRank();
-        } else if (!up) {
+        if (!up) {
             Rank rankBefore = null;
 
             for (Rank rank1 : getRanks()) {
@@ -219,9 +216,7 @@ public class RanksModule extends Module {
 
                 rankBefore = rank1;
             }
-
         } else {
-            //TODO: Make this better?
             for (int i = rank.getRankLadder() + 1; i > 0; i++) {
                 if (getRankByLadder(i) != null) {
                     return getRankByLadder(i);

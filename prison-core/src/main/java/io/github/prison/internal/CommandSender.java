@@ -32,6 +32,11 @@ public interface CommandSender {
     String getName();
 
     /**
+     * Force a commandSender to send a command
+     */
+    void dispatchCommand(String command);
+
+    /**
      * Returns true if the command sender can show colors to the viewer.
      * This is not always the case, especially when using command blocks and online consoles.
      */

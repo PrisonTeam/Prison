@@ -42,6 +42,11 @@ public class SpigotCommandSender implements CommandSender {
     }
 
     @Override
+    public void dispatchCommand(String command) {
+        Bukkit.getServer().dispatchCommand(bukkitSender, command);
+    }
+
+    @Override
     public boolean doesSupportColors() {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
