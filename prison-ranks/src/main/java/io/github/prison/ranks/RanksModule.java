@@ -32,6 +32,8 @@ import io.github.prison.ConfigurationLoader;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.modules.Module;
+import io.github.prison.ranks.listeners.SignListener;
+import io.github.prison.ranks.listeners.UserListener;
 import io.github.prison.util.Location;
 
 /**
@@ -73,6 +75,7 @@ public class RanksModule extends Module {
         loadAllUsers();
 
         new UserListener(this).init();
+        new SignListener(this).init();
 
         Prison.getInstance().getCommandHandler().registerCommands(new RankCommands(this));
     }

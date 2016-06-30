@@ -18,6 +18,9 @@
 
 package io.github.prison.ranks;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import io.github.prison.Prison;
 import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
@@ -27,9 +30,6 @@ import io.github.prison.ranks.events.RankDemoteEvent;
 import io.github.prison.ranks.events.RankPromoteEvent;
 import io.github.prison.ranks.events.RankSetEvent;
 import io.github.prison.util.TextUtil;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 /**
  * @author Camouflage100
@@ -250,6 +250,12 @@ public class RankCommands {
     @Command(identifier = "rankup", description = "Rankup :D")
     public void rankupCommand(Player sender) {
         RankUser targRank = ranksModule.getUser(sender.getUUID());
+
+        if (targRank.getRank() == ranksModule.getTopRank()) {
+            sender.sendMessage(Messages.errorTopRank);
+            return;
+        }
+
         Rank nextRank = ranksModule.getRankByLadder(true, targRank.getRank());
 
         //Check for balance

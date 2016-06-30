@@ -18,11 +18,12 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.internal.Sign;
-import io.github.prison.util.Location;
 import org.apache.commons.lang.Validate;
 
 import java.util.List;
+
+import io.github.prison.internal.Sign;
+import io.github.prison.util.Location;
 
 /**
  * @author SirFaizdat
@@ -50,11 +51,13 @@ public class SpigotSign implements Sign {
     public void setLines(List<String> lines) {
         for(int i = 0; i < 4; i++)
             bSign.setLine(i, lines.get(i));
+        bSign.update();
     }
 
     @Override
     public void setLine(int line, String value) {
         Validate.isTrue(line >= 0 && line < 4, "line must be 0 <= line < 4");
         bSign.setLine(line, value);
+        bSign.update();
     }
 }

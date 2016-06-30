@@ -16,13 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.ranks;
+package io.github.prison.ranks.listeners;
 
 import com.google.common.eventbus.Subscribe;
+
 import io.github.prison.Prison;
 import io.github.prison.internal.events.PlayerChatEvent;
 import io.github.prison.internal.events.PlayerJoinEvent;
 import io.github.prison.internal.events.PlayerQuitEvent;
+import io.github.prison.ranks.RankUser;
+import io.github.prison.ranks.RanksModule;
 
 /**
  * @author Camouflage100
