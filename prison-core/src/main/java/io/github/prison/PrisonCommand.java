@@ -113,7 +113,7 @@ public class PrisonCommand {
             sender.sendMessage(stringBuilder.toString());
         }
 
-        sender.sendMessage("&7============= &d/prison patreons &7=============");
+        sender.sendMessage("&7============= &d/prison patrons &7=============");
     }
 
     // Get a module by name or by package name
