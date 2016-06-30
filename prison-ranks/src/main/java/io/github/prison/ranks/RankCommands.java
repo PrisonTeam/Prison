@@ -23,6 +23,7 @@ import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
 import io.github.prison.internal.CommandSender;
 import io.github.prison.internal.Player;
+import io.github.prison.ranks.events.RankDemoteEvent;
 import io.github.prison.ranks.events.RankPromoteEvent;
 import io.github.prison.ranks.events.RankSetEvent;
 import io.github.prison.util.TextUtil;
@@ -170,7 +171,6 @@ public class RankCommands {
 
     @Command(identifier = "ranks promote", description = "Promote a player's rank", permissions = {"prison.ranks.promote"})
     public void promoteRankCommand(CommandSender sender, @Arg(name = "player") String name) {
-        //TODO: Fix fix this
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
 
         if (targ != null) {
@@ -192,6 +192,37 @@ public class RankCommands {
 
             sender.sendMessage(String.format(
                     Messages.commandPromote, targ.getName(),
+                    currentRank.getName(),
+                    newRank.getName()
+            ));
+        } else {
+            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
+        }
+    }
+
+    @Command(identifier = "ranks demote", description = "Demote a player's rank", permissions = {"prison.ranks.demote"})
+    public void demoteRankCommand(CommandSender sender, @Arg(name = "player") String name) {
+        Player targ = Prison.getInstance().getPlatform().getPlayer(name);
+
+        if (targ != null) {
+            RankUser targRank = ranksModule.getUser(targ.getUUID());
+            Rank currentRank = targRank.getRank();
+
+            if (currentRank == ranksModule.getBottomRank()) {
+                sender.sendMessage(String.format(Messages.errorPlayerBottomRank, targ.getName()));
+                return;
+            }
+
+            Rank newRank = ranksModule.getRankByLadder(true, currentRank);
+
+            RankDemoteEvent event = new RankDemoteEvent(targ, currentRank, newRank);
+            Prison.getInstance().getEventBus().post(event);
+            if (event.isCanceled()) return;
+            targRank.setRank(newRank);
+            ranksModule.saveRankUser(targRank);
+
+            sender.sendMessage(String.format(
+                    Messages.commandDemote, targ.getName(),
                     currentRank.getName(),
                     newRank.getName()
             ));
