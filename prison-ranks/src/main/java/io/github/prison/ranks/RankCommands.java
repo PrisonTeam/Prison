@@ -68,10 +68,10 @@ public class RankCommands {
                                @Arg(name = "tag") String tag) {
 
         if (ranksModule.getRank(id) != null) {
-            sender.sendMessage(String.format(Messages.errorRankExisits, id));
+            sender.sendMessage(String.format(Messages.errorRankExists, id));
             return;
         } else if (ranksModule.getRankByName(name) != null) {
-            sender.sendMessage(String.format(Messages.errorRankExisits, name));
+            sender.sendMessage(String.format(Messages.errorRankExists, name));
             return;
         }
 
