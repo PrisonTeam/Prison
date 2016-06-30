@@ -30,7 +30,7 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 16; // For everyone to referenced%s&7!";
+    public static final int VERSION = 18; // For everyone to referenced;
     public int version = VERSION; // For the configuration file to store
     private static String error = "&cError &8&l| &7";
 
@@ -41,6 +41,7 @@ public class Messages implements Configurable {
     public static String errorInvalidRank = error + "&d%s&7 is not a valid rank!";
     public static String errorNoRanksLoaded = error + "No currently loaded ranks!";
     public static String errorRankExisits = error + "&d%s&7 already exists!";
+    public static String errorNotEnoughMoney = error + "&d%s&7 costs &d%s&7, but you only have &d%s&7!";
     public static String commandReload = "&7Reloaded all ranks!";
     public static String commandListHeadFood = "&7============= &d/ranks list &7=============";
     public static String commandListAdmin = "&7Name: &d%s &7- Id: &d%s &7- Ladder: &d%s &7- Tag: &d%s &7- Cost: &d%s";
@@ -51,6 +52,7 @@ public class Messages implements Configurable {
     public static String commandDemote = "&7Successfully demoted &d%s&7 from &d%s&7 to &d%s&7!";
     public static String commandSetTag = "&7Successfully set the tag of &d%s&7 to &d%s&7!";
     public static String commandCreateRank = "&7Successfully create rank &d%s&7!";
+    public static String commandRankup = "&7You've ranked up to &d%s&7!";
 
     @Override
     public int getVersion() {
