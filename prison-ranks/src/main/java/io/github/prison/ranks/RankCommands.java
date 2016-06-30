@@ -63,7 +63,17 @@ public class RankCommands {
     public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
                                @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
                                @Arg(name = "tag") String tag) {
-        //TODO: Implement the code for this? lol
+
+        if (ranksModule.getRank(id) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExisits, id));
+            return;
+        } else if (ranksModule.getRankByName(name) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExisits, name));
+            return;
+        }
+
+        ranksModule.getRanks().add(new Rank(id, cost, ranksModule.getNextLadder(), name, tag));
+        sender.sendMessage(String.format(Messages.commandCreateRank, name));
     }
 
     @Command(identifier = "ranks reload", description = "Reload ranks", permissions = {"prison.ranks.reload"})
