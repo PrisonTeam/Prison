@@ -158,7 +158,7 @@ public class RanksModule extends Module {
     }
 
     public Rank getRankByName(String name) {
-        for (Rank rank : ranks) if (rank.getName().compareTo(name) == 0) return rank;
+        for (Rank rank : ranks) if (rank.getName().toLowerCase().compareTo(name.toLowerCase()) == 0) return rank;
         return null;
     }
 

@@ -30,7 +30,7 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 19; // For everyone to referenced;
+    public static final int VERSION = 20; // For everyone to referenced;
     public int version = VERSION; // For the configuration file to store
     private static String error = "&cError &8&l| &7";
 
@@ -53,6 +53,7 @@ public class Messages implements Configurable {
     public static String commandDemote = "&7Successfully demoted &d%s&7 from &d%s&7 to &d%s&7!";
     public static String commandSetTag = "&7Successfully set the tag of &d%s&7 to &d%s&7!";
     public static String commandCreateRank = "&7Successfully create rank &d%s&7!";
+    public static String commandSetRankCost = "&7Successfully set rank &d%s's&7 cost to &d%s&7!";
     public static String commandRankup = "&7You've ranked up to &d%s&7!";
 
     @Override

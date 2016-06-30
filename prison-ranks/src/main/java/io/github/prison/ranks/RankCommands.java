@@ -79,17 +79,6 @@ public class RankCommands {
         sender.sendMessage(String.format(Messages.commandCreateRank, name));
     }
 
-    @Command(identifier = "ranks reload", description = "Reload ranks", permissions = {"prison.ranks.reload"}, onlyPlayers = false)
-    public void reloadRanks(CommandSender sender) {
-        for (Rank rank : ranksModule.getRanks()) {
-            ranksModule.unloadRank(rank);
-        }
-
-        ranksModule.loadAllRanks();
-        sender.sendMessage(Messages.commandReload);
-    }
-
-
     @Command(identifier = "ranks list", description = "List the ranks that are currently added", onlyPlayers = false)
     public void ranksListCommand(CommandSender sender) {
         if (ranksModule.getRanks().size() == 0) {
@@ -246,6 +235,17 @@ public class RankCommands {
         }
     }
 
+    @Command(identifier = "ranks setcost", description = "set the cost of a rank", permissions = {"prison.ranks.setcost"}, onlyPlayers = false)
+    public void setCostCommand(CommandSender sender, @Arg(name = "rankname") String rankName, @Arg(name = "cost") double cost) {
+
+        if (ranksModule.getRankByName(rankName) == null) {
+            sender.sendMessage(String.format(Messages.errorInvalidRank, rankName));
+            return;
+        }
+
+        ranksModule.getRankByName(rankName).setCost(cost);
+        sender.sendMessage(String.format(Messages.commandSetRankCost, ranksModule.getRankByName(rankName).getName(), cost));
+    }
 
     @Command(identifier = "rankup", description = "Rankup :D")
     public void rankupCommand(Player sender) {
