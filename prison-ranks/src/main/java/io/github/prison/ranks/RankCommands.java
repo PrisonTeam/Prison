@@ -42,7 +42,7 @@ public class RankCommands {
         this.ranksModule = ranksModule;
     }
 
-    @Command(identifier = "ranks", description = "User Use: Displays ranks - Admin Use: Displays help command")
+    @Command(identifier = "ranks", description = "User Use: Displays ranks - Admin Use: Displays help command", onlyPlayers = false)
     public void ranksCommand(CommandSender sender) {
         if (!sender.hasPermission("prison.ranks.list.admin"))
             sender.dispatchCommand("ranks list");
@@ -50,7 +50,7 @@ public class RankCommands {
             sender.dispatchCommand("ranks help");
     }
 
-    @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"})
+    @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"}, onlyPlayers = false)
     public void setTagCommand(CommandSender sender, @Arg(name = "rankname") String name, @Arg(name = "tag") String tag) {
         if (ranksModule.getRankByName(name) == null) {
             sender.sendMessage(String.format(Messages.errorInvalidRank, name));
@@ -62,14 +62,24 @@ public class RankCommands {
         sender.sendMessage(String.format(Messages.commandSetTag, rank.getName(), rank.getTag()));
     }
 
-    @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"})
+    @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"}, onlyPlayers = false)
     public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
                                @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
                                @Arg(name = "tag") String tag) {
-        //TODO: Implement the code for this? lol
+
+        if (ranksModule.getRank(id) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExisits, id));
+            return;
+        } else if (ranksModule.getRankByName(name) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExisits, name));
+            return;
+        }
+
+        ranksModule.getRanks().add(new Rank(id, cost, ranksModule.getNextLadder(), name, tag));
+        sender.sendMessage(String.format(Messages.commandCreateRank, name));
     }
 
-    @Command(identifier = "ranks reload", description = "Reload ranks", permissions = {"prison.ranks.reload"})
+    @Command(identifier = "ranks reload", description = "Reload ranks", permissions = {"prison.ranks.reload"}, onlyPlayers = false)
     public void reloadRanks(CommandSender sender) {
         for (Rank rank : ranksModule.getRanks()) {
             ranksModule.unloadRank(rank);
@@ -80,7 +90,7 @@ public class RankCommands {
     }
 
 
-    @Command(identifier = "ranks list", description = "List the ranks that are currently added")
+    @Command(identifier = "ranks list", description = "List the ranks that are currently added", onlyPlayers = false)
     public void ranksListCommand(CommandSender sender) {
         if (ranksModule.getRanks().size() == 0) {
             sender.sendMessage(Messages.errorNoRanksLoaded);
@@ -115,7 +125,7 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks checkrank", description = "Check the rank of a user", permissions = {"prison.ranks.checkrank"})
+    @Command(identifier = "ranks checkrank", description = "Check the rank of a user", permissions = {"prison.ranks.checkrank"}, onlyPlayers = false)
     public void checkRankCommand(CommandSender sender, @Arg(name = "player") String name) {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
         RankUser targRank = null;
@@ -138,7 +148,7 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks setrank", description = "Set the rank of a player", permissions = {"prison.ranks.setrank"})
+    @Command(identifier = "ranks setrank", description = "Set the rank of a player", permissions = {"prison.ranks.setrank"}, onlyPlayers = false)
     public void setRankCommand(CommandSender sender, @Arg(name = "player") String name, @Arg(name = "rank") String rank) {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
 
@@ -174,7 +184,7 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks promote", description = "Promote a player's rank", permissions = {"prison.ranks.promote"})
+    @Command(identifier = "ranks promote", description = "Promote a player's rank", permissions = {"prison.ranks.promote"}, onlyPlayers = false)
     public void promoteRankCommand(CommandSender sender, @Arg(name = "player") String name) {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
 
@@ -205,7 +215,7 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks demote", description = "Demote a player's rank", permissions = {"prison.ranks.demote"})
+    @Command(identifier = "ranks demote", description = "Demote a player's rank", permissions = {"prison.ranks.demote"}, onlyPlayers = false)
     public void demoteRankCommand(CommandSender sender, @Arg(name = "player") String name) {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
 
@@ -233,6 +243,23 @@ public class RankCommands {
             ));
         } else {
             sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
+        }
+    }
+
+
+    @Command(identifier = "rankup", description = "Rankup :D")
+    public void rankupCommand(Player sender) {
+        RankUser targRank = ranksModule.getUser(sender.getUUID());
+        Rank nextRank = ranksModule.getRankByLadder(true, targRank.getRank());
+
+        //Check for balance
+        if (true) {
+            //take the player's money away
+            targRank.setRank(nextRank);
+            sender.sendMessage(String.format(Messages.commandRankup, targRank.getRank().getName()));
+        } else {
+            // arg3 is player's balance
+            sender.sendMessage(String.format(Messages.errorNotEnoughMoney, nextRank.getName(), nextRank.getCost(), ""));
         }
     }
 }

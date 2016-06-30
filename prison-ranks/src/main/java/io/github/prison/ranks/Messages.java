@@ -21,24 +21,27 @@ package io.github.prison.ranks;
 import io.github.prison.Configurable;
 
 /**
- * Represents Ranks' messages file. Contains all of the keys and their default values.
- * Every time a new value is added to a production version (i.e. public release),
- * the VERSION constant must be incremented by one to ensure the file will be regenerated.
+ * Represents Ranks' messages file. Contains all of the keys and their default values. Every time a
+ * new value is added to a production version (i.e. public release), the VERSION constant must be
+ * incremented by one to ensure the file will be regenerated.
  *
  * @author SirFaizdat
  * @author Camouoflage100
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 13; // For everyone to reference
+    public static final int VERSION = 18; // For everyone to referenced;
     public int version = VERSION; // For the configuration file to store
+    private static String error = "&cError &8&l| &7";
 
     // Entries
-    public static String errorPlayerNotFound = "&cError &8&l| &7Player &d%s&7 not found!";
-    public static String errorPlayerTopRank = "&cError &8&l| &7Player &d%s&7 is already the top rank!";
-    public static String errorPlayerBottomRank = "&cError &8&l| &7Player &d%s&7 is already the bottom rank!";
-    public static String errorInvalidRank = "&cError &8&l| &d%s&7 is not a valid rank!";
-    public static String errorNoRanksLoaded = "&cError &8&l| &7No currently loaded ranks!";
+    public static String errorPlayerNotFound = error + "Player &d%s&7 not found!";
+    public static String errorPlayerTopRank = error + "Player &d%s&7 is already the top rank!";
+    public static String errorPlayerBottomRank = error + "Player &d%s&7 is already the bottom rank!";
+    public static String errorInvalidRank = error + "&d%s&7 is not a valid rank!";
+    public static String errorNoRanksLoaded = error + "No currently loaded ranks!";
+    public static String errorRankExisits = error + "&d%s&7 already exists!";
+    public static String errorNotEnoughMoney = error + "&d%s&7 costs &d%s&7, but you only have &d%s&7!";
     public static String commandReload = "&7Reloaded all ranks!";
     public static String commandListHeadFood = "&7============= &d/ranks list &7=============";
     public static String commandListAdmin = "&7Name: &d%s &7- Id: &d%s &7- Ladder: &d%s &7- Tag: &d%s &7- Cost: &d%s";
@@ -48,7 +51,8 @@ public class Messages implements Configurable {
     public static String commandPromote = "&7Successfully promoted &d%s&7 from &d%s&7 to &d%s&7!";
     public static String commandDemote = "&7Successfully demoted &d%s&7 from &d%s&7 to &d%s&7!";
     public static String commandSetTag = "&7Successfully set the tag of &d%s&7 to &d%s&7!";
-
+    public static String commandCreateRank = "&7Successfully create rank &d%s&7!";
+    public static String commandRankup = "&7You've ranked up to &d%s&7!";
 
     @Override
     public int getVersion() {

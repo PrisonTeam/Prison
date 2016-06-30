@@ -19,19 +19,18 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
+
+import java.io.File;
+
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.modules.ModuleManager;
 import io.github.prison.selection.SelectionManager;
 
-import java.io.File;
-
 /**
- * Entry point for implementations.
- * <p>
- * An instance of Prison can be retrieved using the static {@link Prison#getInstance()} method,
- * however in order to use the core libraries, you must call {@link Prison#init(Platform)} with a
- * valid {@link Platform} implementation.
+ * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
+ * {@link Prison#getInstance()} method, however in order to use the core libraries, you must call
+ * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
  * @author SirFaizdat
  * @since 3.0
@@ -41,12 +40,21 @@ public class Prison {
     // Singleton
 
     private static Prison instance = null;
+    private Platform platform;
+
+    // Fields
+    private File dataFolder;
+    private ModuleManager moduleManager;
+    private CommandHandler commandHandler;
+    private SelectionManager selectionManager;
+    private ConfigurationLoader configurationLoader;
+    private ConfigurationLoader messagesLoader;
+    private EventBus eventBus;
+    private Patrons patrons;
 
     /**
-     * Gets the current instance of this class.
-     * <p>
-     * An instance will always be available, but you must call the {@link Prison#init(Platform)} method
-     * before you perform any other action.
+     * Gets the current instance of this class. <p> An instance will always be available, but you
+     * must call the {@link Prison#init(Platform)} method before you perform any other action.
      *
      * @return an instance of Prison.
      */
@@ -55,23 +63,11 @@ public class Prison {
         return instance;
     }
 
-    // Fields
-
-    private Platform platform;
-    private File dataFolder;
-    private ModuleManager moduleManager;
-    private CommandHandler commandHandler;
-    private SelectionManager selectionManager;
-    private ConfigurationLoader configurationLoader;
-    private ConfigurationLoader messagesLoader;
-    private EventBus eventBus;
-
     // Public methods
 
     /**
-     * Initializes prison-core.
-     * In the implementations, this should be called when the plugin is enabled.
-     * After this is called, every getter in this class will return a value.
+     * Initializes prison-core. In the implementations, this should be called when the plugin is
+     * enabled. After this is called, every getter in this class will return a value.
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
@@ -96,13 +92,16 @@ public class Prison {
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
+        patrons = new Patrons();
+        getPlatform().getScheduler().runTaskTimer(() -> patrons.getPatrons(), 0, 3600);
+
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform.log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
     }
 
     /**
-     * Finalizes and unregisters instances in prison-core.
-     * In the implementations, this should be called when the plugin is disabled.
+     * Finalizes and unregisters instances in prison-core. In the implementations, this should be
+     * called when the plugin is disabled.
      */
     public void deinit() {
         moduleManager.unregisterAll();
@@ -111,8 +110,8 @@ public class Prison {
     // Getters
 
     /**
-     * Returns the Platform in use, which contains methods for interacting with the
-     * Minecraft server on whichever implementation is currently being used.
+     * Returns the Platform in use, which contains methods for interacting with the Minecraft server
+     * on whichever implementation is currently being used.
      *
      * @return the {@link Platform}.
      */
@@ -121,8 +120,8 @@ public class Prison {
     }
 
     /**
-     * Returns the core data folder, which is located at "/plugins/Prison/Core".
-     * This contains the core config.json and messages.json files, as well as other global data.
+     * Returns the core data folder, which is located at "/plugins/Prison/Core". This contains the
+     * core config.json and messages.json files, as well as other global data.
      *
      * @return the {@link File}.
      */
@@ -131,8 +130,8 @@ public class Prison {
     }
 
     /**
-     * Returns the configuration class, which contains each configuration option in a
-     * public variable. It is loaded and saved via a {@link ConfigurationLoader}.
+     * Returns the configuration class, which contains each configuration option in a public
+     * variable. It is loaded and saved via a {@link ConfigurationLoader}.
      *
      * @return the {@link Configuration}.
      */
@@ -141,8 +140,8 @@ public class Prison {
     }
 
     /**
-     * Returns the messages class, which contains each localization option in a public
-     * variable. It is loaded and saved via a {@link ConfigurationLoader}.
+     * Returns the messages class, which contains each localization option in a public variable. It
+     * is loaded and saved via a {@link ConfigurationLoader}.
      *
      * @return the {@link Messages}.
      */
@@ -160,8 +159,8 @@ public class Prison {
     }
 
     /**
-     * Returns the module manager, which stores instances of all registered {@link io.github.prison.modules.Module}s
-     * and manages their state.
+     * Returns the module manager, which stores instances of all registered {@link
+     * io.github.prison.modules.Module}s and manages their state.
      *
      * @return The {@link ModuleManager}.
      */
@@ -170,7 +169,8 @@ public class Prison {
     }
 
     /**
-     * Returns the command handler, where command methods can be registered using the {@link CommandHandler#registerCommands(Object)} method.
+     * Returns the command handler, where command methods can be registered using the {@link
+     * CommandHandler#registerCommands(Object)} method.
      *
      * @return The {@link CommandHandler}.
      */
@@ -179,7 +179,8 @@ public class Prison {
     }
 
     /**
-     * Returns the selection manager, which stores each player's current selection using Prison's selection wand.
+     * Returns the selection manager, which stores each player's current selection using Prison's
+     * selection wand.
      *
      * @return The {@link SelectionManager}.
      */
@@ -188,9 +189,8 @@ public class Prison {
     }
 
     /**
-     * This method is mainly for the use of the command library.
-     * It retrieves a list of commands from the platform, and then queries the list
-     * for a command with a certain label.
+     * This method is mainly for the use of the command library. It retrieves a list of commands
+     * from the platform, and then queries the list for a command with a certain label.
      *
      * @param label The command's label.
      * @return The {@link PluginCommand}, or null if no command exists by that label.
@@ -201,4 +201,7 @@ public class Prison {
         return null;
     }
 
+    public Patrons getPatrons() {
+        return this.patrons;
+    }
 }

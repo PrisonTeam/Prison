@@ -18,8 +18,12 @@
 
 package io.github.prison;
 
+import java.util.List;
+
 import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
+import io.github.prison.commands.FlagArg;
+import io.github.prison.commands.Flags;
 import io.github.prison.internal.CommandSender;
 import io.github.prison.modules.Module;
 
@@ -85,6 +89,31 @@ public class PrisonCommand {
 
         Prison.getInstance().getModuleManager().disableModule(module);
         sender.sendMessage("&7The module &3" + moduleName + " &7has been disabled.");
+    }
+
+    @Command(identifier = "prison patrons", description = "View the list of all of our patrons qualified to be in the list")
+    @Flags(identifier = {"r"}, description = {"Refresh the patrons list"})
+    public void patronsCommand(CommandSender sender, @FlagArg("r") boolean refresh) {
+        if (refresh) {
+            Prison.getInstance().getPatrons().getPatrons();
+            sender.sendMessage("&7Patrons list refreshed");
+            return;
+        }
+
+        sender.sendMessage("&7============= &d/prison patrons &7=============");
+        List<String> patrons = Patrons.get();
+
+        if (patrons.size() == 0) {
+            sender.sendMessage("&7We sadly have no patrons :(");
+        } else {
+            sender.sendMessage("&7We have &d" + patrons.size() + "&7 patrons! ");
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String patron : patrons) stringBuilder.append("&d").append(patron).append("&7, ");
+            sender.sendMessage(stringBuilder.toString());
+        }
+
+        sender.sendMessage("&7============= &d/prison patrons &7=============");
     }
 
     // Get a module by name or by package name
