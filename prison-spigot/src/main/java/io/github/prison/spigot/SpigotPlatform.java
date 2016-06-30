@@ -25,6 +25,7 @@ import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
+import io.github.prison.internal.Sign;
 import io.github.prison.internal.World;
 import io.github.prison.util.Location;
 import io.github.prison.util.TextUtil;
@@ -78,6 +79,12 @@ class SpigotPlatform implements Platform {
     @Override
     public List<Player> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream().map(player -> getPlayer(player.getUniqueId())).collect(Collectors.toList());
+    }
+
+    @Override
+    public Sign getSign(Location location) {
+        org.bukkit.block.Sign sign = (org.bukkit.block.Sign) new org.bukkit.Location(Bukkit.getWorld(location.getWorld().getName()), location.getX(), location.getY(), location.getZ()).getBlock().getState();
+        return new SpigotSign(sign);
     }
 
     @Override

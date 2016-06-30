@@ -28,6 +28,9 @@ import io.github.prison.ranks.events.RankPromoteEvent;
 import io.github.prison.ranks.events.RankSetEvent;
 import io.github.prison.util.TextUtil;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * @author Camouflage100
  */
@@ -89,6 +92,8 @@ public class RankCommands {
                 if (rank.getTag() == null) tag = "n/a";
                 else tag = TextUtil.parse(rank.getTag());
 
+                String formattedCost = NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(rank.getCost());
+
                 if (sender.hasPermission("prison.ranks.list.admin"))
                     sender.sendMessage(String.format(
                             Messages.commandListAdmin,
@@ -96,14 +101,14 @@ public class RankCommands {
                             rank.getRankId(),
                             rank.getRankLadder(),
                             tag,
-                            rank.getCost()
+                            formattedCost
                     ));
 
                 else
                     sender.sendMessage(String.format(
                             Messages.commandListUser,
                             rank.getName(),
-                            rank.getCost()
+                            formattedCost
                     ));
             }
             sender.sendMessage(Messages.commandListHeadFood);

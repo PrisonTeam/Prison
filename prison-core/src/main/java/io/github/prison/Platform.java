@@ -18,16 +18,17 @@
 
 package io.github.prison;
 
+import io.github.prison.commands.PluginCommand;
+import io.github.prison.gui.GUI;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.Sign;
+import io.github.prison.internal.World;
+import io.github.prison.util.Location;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import io.github.prison.commands.PluginCommand;
-import io.github.prison.gui.GUI;
-import io.github.prison.internal.Player;
-import io.github.prison.internal.World;
-import io.github.prison.util.Location;
 
 /**
  * Represents a platform that Prison has been implemented for.
@@ -57,6 +58,14 @@ public interface Platform {
      * Returns a list of all online players.
      */
     List<Player> getOnlinePlayers();
+
+    /**
+     * Returns a sign in the world.
+     *
+     * @param location The {@link Location} of the sign.
+     * @return the {@link Sign}.
+     */
+    Sign getSign(Location location);
 
     /**
      * Returns the plugin's version.
@@ -119,10 +128,10 @@ public interface Platform {
     /**
      * Send a title to a player
      *
-     * @param player The player that you want to send the title to
-     * @param title The text of the title
+     * @param player   The player that you want to send the title to
+     * @param title    The text of the title
      * @param subtitle The text of the subtitle
-     * @param fade The length of the fade
+     * @param fade     The length of the fade
      */
     void showTitle(Player player, String title, String subtitle, int fade);
 
@@ -130,7 +139,7 @@ public interface Platform {
      * Send an actionbar to a player
      *
      * @param player The player that you want to send the actionbar to
-     * @param text The text of the actionbar
+     * @param text   The text of the actionbar
      */
     void showActionBar(Player player, String text);
 
