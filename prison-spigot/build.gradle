@@ -23,12 +23,15 @@ repositories {
     mavenCentral()
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url = "http://nexus.theyeticave.net/content/repositories/pub_releases" }
     jcenter()
 }
 
 dependencies {
     compile project(':prison-core')
     compile group: 'org.spigotmc', name: 'spigot-api', version: '1.9.4-R0.1-SNAPSHOT'
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+    compile group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 

@@ -19,6 +19,7 @@
 package io.github.prison;
 
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.economy.Economy;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.Sign;
@@ -66,6 +67,14 @@ public interface Platform {
      * @return the {@link Sign}.
      */
     Sign getSign(Location location);
+
+    /**
+     * Returns the server's economy.
+     * If there is no economy, then {@link Capability#ECONOMY} will be false for the platform.
+     *
+     * @return the {@link Economy} instance if the server supports it, or null if there is no supported server economy plugin.
+     */
+    Economy getEconomy();
 
     /**
      * Returns the plugin's version.

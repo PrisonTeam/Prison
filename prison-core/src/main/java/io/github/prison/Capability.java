@@ -30,6 +30,10 @@ public enum Capability {
     /**
      * The capability of showing GUIs to players.
      */
-    GUI
+    GUI,
+    /**
+     * The presence of a server economy.
+     */
+    ECONOMY
 
 }

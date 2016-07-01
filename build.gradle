@@ -64,11 +64,16 @@ subprojects {
         maven { url "http://maven.sk89q.com/repo/" }
     }
 
+    configurations {
+        deployerJars
+    }
+
     dependencies {
         compile 'org.apache.commons:commons-lang3:3.4'
         compile 'com.google.guava:guava:19.0'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
         testCompile 'junit:junit:4.12'
+        deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
     }
 
     shadowJar {
@@ -79,4 +84,11 @@ subprojects {
         version = null
     }
 
+    uploadArchives {
+        repositories.mavenDeployer {
+            repository(id: 'repo.mc-prison.tech', url: 'ftp://s1.mc-prison.tech/web/repo.mc-prison.tech/public_html') {
+                authentication(userName: 'SirFaizdat', password: 'Pshv9695HE')
+            }
+        }
+    }
 }

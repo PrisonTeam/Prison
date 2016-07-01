@@ -23,15 +23,17 @@ import io.github.prison.Platform;
 import io.github.prison.Prison;
 import io.github.prison.Scheduler;
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.economy.Economy;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
 import io.github.prison.internal.Sign;
 import io.github.prison.internal.World;
+import io.github.prison.spigot.economies.EssentialsEconomy;
+import io.github.prison.spigot.economies.VaultEconomy;
 import io.github.prison.util.Location;
 import io.github.prison.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -85,6 +87,13 @@ class SpigotPlatform implements Platform {
     public Sign getSign(Location location) {
         org.bukkit.block.Sign sign = (org.bukkit.block.Sign) new org.bukkit.Location(Bukkit.getWorld(location.getWorld().getName()), location.getX(), location.getY(), location.getZ()).getBlock().getState();
         return new SpigotSign(sign);
+    }
+
+    @Override
+    public Economy getEconomy() {
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) return new EssentialsEconomy();
+        else if(Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) return new VaultEconomy();
+        else return null;
     }
 
     @Override
