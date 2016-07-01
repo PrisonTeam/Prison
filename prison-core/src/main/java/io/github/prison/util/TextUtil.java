@@ -18,6 +18,9 @@
 
 package io.github.prison.util;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * Utilities for manipulating strings.
  *
@@ -26,7 +29,8 @@ package io.github.prison.util;
  */
 public class TextUtil {
 
-    private TextUtil() {}
+    private TextUtil() {
+    }
 
     /**
      * @deprecated Implementations handle chat coloring.
@@ -56,6 +60,11 @@ public class TextUtil {
      */
     public static String[] packAndSplit(String message, String delimiter) {
         return message.replaceAll(" ", "").split(delimiter);
+    }
+
+
+    public static String formatNumber(double format) {
+        return NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(format);
     }
 
 }

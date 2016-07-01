@@ -18,9 +18,6 @@
 
 package io.github.prison.ranks;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import io.github.prison.Prison;
 import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
@@ -29,6 +26,7 @@ import io.github.prison.internal.Player;
 import io.github.prison.ranks.events.RankDemoteEvent;
 import io.github.prison.ranks.events.RankPromoteEvent;
 import io.github.prison.ranks.events.RankSetEvent;
+import io.github.prison.ranks.events.RankupEvent;
 import io.github.prison.util.TextUtil;
 
 /**
@@ -50,35 +48,6 @@ public class RankCommands {
             sender.dispatchCommand("ranks help");
     }
 
-    @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"}, onlyPlayers = false)
-    public void setTagCommand(CommandSender sender, @Arg(name = "rankname") String name, @Arg(name = "tag") String tag) {
-        if (ranksModule.getRankByName(name) == null) {
-            sender.sendMessage(String.format(Messages.errorInvalidRank, name));
-            return;
-        }
-        Rank rank = ranksModule.getRankByName(name);
-        rank.setTag(tag);
-
-        sender.sendMessage(String.format(Messages.commandSetTag, rank.getName(), rank.getTag()));
-    }
-
-    @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"}, onlyPlayers = false)
-    public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
-                               @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
-                               @Arg(name = "tag") String tag) {
-
-        if (ranksModule.getRank(id) != null) {
-            sender.sendMessage(String.format(Messages.errorRankExists, id));
-            return;
-        } else if (ranksModule.getRankByName(name) != null) {
-            sender.sendMessage(String.format(Messages.errorRankExists, name));
-            return;
-        }
-
-        ranksModule.getRanks().add(new Rank(id, cost, ranksModule.getNextLadder(), name, tag));
-        sender.sendMessage(String.format(Messages.commandCreateRank, name));
-    }
-
     @Command(identifier = "ranks list", description = "List the ranks that are currently added", onlyPlayers = false)
     public void ranksListCommand(CommandSender sender) {
         if (ranksModule.getRanks().size() == 0) {
@@ -89,9 +58,9 @@ public class RankCommands {
 
                 String tag;
                 if (rank.getTag() == null) tag = "n/a";
-                else tag = TextUtil.parse(rank.getTag());
+                else tag = rank.getTag();
 
-                String formattedCost = NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(rank.getCost());
+                String formattedCost = TextUtil.formatNumber(rank.getCost());
 
                 if (sender.hasPermission("prison.ranks.list.admin"))
                     sender.sendMessage(String.format(
@@ -114,27 +83,33 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks checkrank", description = "Check the rank of a user", permissions = {"prison.ranks.checkrank"}, onlyPlayers = false)
-    public void checkRankCommand(CommandSender sender, @Arg(name = "player") String name) {
-        Player targ = Prison.getInstance().getPlatform().getPlayer(name);
-        RankUser targRank = null;
-        if (targ != null)
-            targRank = ranksModule.getUser(targ.getUUID());
+    @Command(identifier = "ranks newrank", description = "Make a new rank", permissions = {"prison.ranks.newrank"}, onlyPlayers = false)
+    public void addRankCommand(CommandSender sender, @Arg(name = "rankid") int id,
+                               @Arg(name = "rankname") String name, @Arg(name = "cost") double cost,
+                               @Arg(name = "tag") String tag) {
 
-        if (targ != null) {
-            if (targRank.getRank() == null) {
-                targRank.setRank(ranksModule.getBottomRank());
-                ranksModule.saveRankUser(targRank);
-            }
-
-            sender.sendMessage(String.format(
-                    Messages.commandCheckRank,
-                    targ.getName(),
-                    ranksModule.getUser(targ.getUUID()).getRank().getName()
-            ));
-        } else {
-            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
+        if (ranksModule.getRank(id) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExists, id));
+            return;
+        } else if (ranksModule.getRankByName(name) != null) {
+            sender.sendMessage(String.format(Messages.errorRankExists, name));
+            return;
         }
+
+        ranksModule.getRanks().add(new Rank(id, cost, ranksModule.getNextLadder(), name, tag));
+        sender.sendMessage(String.format(Messages.commandCreateRank, name));
+    }
+
+    @Command(identifier = "ranks settag", description = "Change the tag of a rank", permissions = {"prison.ranks.settag"}, onlyPlayers = false)
+    public void setTagCommand(CommandSender sender, @Arg(name = "rankname") String name, @Arg(name = "tag") String tag) {
+        if (ranksModule.getRankByName(name) == null) {
+            sender.sendMessage(String.format(Messages.errorInvalidRank, name));
+            return;
+        }
+        Rank rank = ranksModule.getRankByName(name);
+        rank.setTag(tag);
+
+        sender.sendMessage(String.format(Messages.commandSetTag, rank.getName(), rank.getTag()));
     }
 
     @Command(identifier = "ranks setrank", description = "Set the rank of a player", permissions = {"prison.ranks.setrank"}, onlyPlayers = false)
@@ -168,6 +143,41 @@ public class RankCommands {
                 sender.sendMessage(String.format(Messages.errorInvalidRank, rank));
             }
 
+        } else {
+            sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
+        }
+    }
+
+    @Command(identifier = "ranks setcost", description = "set the cost of a rank", permissions = {"prison.ranks.setcost"}, onlyPlayers = false)
+    public void setCostCommand(CommandSender sender, @Arg(name = "rankname") String rankName, @Arg(name = "cost") double cost) {
+
+        if (ranksModule.getRankByName(rankName) == null) {
+            sender.sendMessage(String.format(Messages.errorInvalidRank, rankName));
+            return;
+        }
+
+        ranksModule.getRankByName(rankName).setCost(cost);
+        sender.sendMessage(String.format(Messages.commandSetRankCost, ranksModule.getRankByName(rankName).getName(), TextUtil.formatNumber(cost)));
+    }
+
+    @Command(identifier = "ranks checkrank", description = "Check the rank of a user", permissions = {"prison.ranks.checkrank"}, onlyPlayers = false)
+    public void checkRankCommand(CommandSender sender, @Arg(name = "player") String name) {
+        Player targ = Prison.getInstance().getPlatform().getPlayer(name);
+        RankUser targRank = null;
+        if (targ != null)
+            targRank = ranksModule.getUser(targ.getUUID());
+
+        if (targ != null) {
+            if (targRank.getRank() == null) {
+                targRank.setRank(ranksModule.getBottomRank());
+                ranksModule.saveRankUser(targRank);
+            }
+
+            sender.sendMessage(String.format(
+                    Messages.commandCheckRank,
+                    targ.getName(),
+                    ranksModule.getUser(targ.getUUID()).getRank().getName()
+            ));
         } else {
             sender.sendMessage(String.format(Messages.errorPlayerNotFound, name));
         }
@@ -235,18 +245,6 @@ public class RankCommands {
         }
     }
 
-    @Command(identifier = "ranks setcost", description = "set the cost of a rank", permissions = {"prison.ranks.setcost"}, onlyPlayers = false)
-    public void setCostCommand(CommandSender sender, @Arg(name = "rankname") String rankName, @Arg(name = "cost") double cost) {
-
-        if (ranksModule.getRankByName(rankName) == null) {
-            sender.sendMessage(String.format(Messages.errorInvalidRank, rankName));
-            return;
-        }
-
-        ranksModule.getRankByName(rankName).setCost(cost);
-        sender.sendMessage(String.format(Messages.commandSetRankCost, ranksModule.getRankByName(rankName).getName(), cost));
-    }
-
     @Command(identifier = "rankup", description = "Rankup :D")
     public void rankupCommand(Player sender) {
         RankUser targRank = ranksModule.getUser(sender.getUUID());
@@ -258,14 +256,23 @@ public class RankCommands {
 
         Rank nextRank = ranksModule.getRankByLadder(true, targRank.getRank());
 
-        //Check for balance
-        if (true) {
-            //take the player's money away
+        if (Prison.getInstance().getPlatform().getEconomy().canAfford(sender, nextRank.getCost())) {
+
+            RankupEvent event = new RankupEvent(sender, targRank.getRank(), nextRank);
+            Prison.getInstance().getEventBus().post(event);
+            if (event.isCanceled()) return;
+
+            Prison.getInstance().getPlatform().getEconomy().removeBalance(sender, nextRank.getCost());
+
             targRank.setRank(nextRank);
             sender.sendMessage(String.format(Messages.commandRankup, targRank.getRank().getName()));
         } else {
-            // arg3 is player's balance
-            sender.sendMessage(String.format(Messages.errorNotEnoughMoney, nextRank.getName(), nextRank.getCost(), ""));
+            sender.sendMessage(String.format(
+                    Messages.errorNotEnoughMoney,
+                    nextRank.getName(),
+                    TextUtil.formatNumber(nextRank.getCost()),
+                    TextUtil.formatNumber(Prison.getInstance().getPlatform().getEconomy().getBalance(sender))
+            ));
         }
     }
 }

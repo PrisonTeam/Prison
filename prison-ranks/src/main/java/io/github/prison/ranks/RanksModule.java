@@ -107,12 +107,6 @@ public class RanksModule extends Module {
         }
     }
 
-    public void unloadRank(Rank rank) {
-        if (ranks.contains(rank)) {
-            ranks.remove(rank);
-        }
-    }
-
     public void saveRank(Rank rank) {
         if (getRank(rank.getRankId()) == null) ranks.add(rank);
 
@@ -152,17 +146,8 @@ public class RanksModule extends Module {
         }
     }
 
-    public Rank getRank(int id) {
-        for (Rank rank : ranks) if (rank.getRankId() == id) return rank;
-        return null;
-    }
-
-    public Rank getRankByName(String name) {
-        for (Rank rank : ranks) if (rank.getName().toLowerCase().compareTo(name.toLowerCase()) == 0) return rank;
-        return null;
-    }
-
     public List<Rank> getRanks() {
+        ranks.sort((o1, o2) -> String.valueOf(o1.getRankLadder()).compareTo(String.valueOf(o2.getRankLadder())));
         return ranks;
     }
 
@@ -185,6 +170,16 @@ public class RanksModule extends Module {
 
     public File getUsersDirectory() {
         return usersDirectory;
+    }
+
+    public Rank getRank(int id) {
+        for (Rank rank : ranks) if (rank.getRankId() == id) return rank;
+        return null;
+    }
+
+    public Rank getRankByName(String name) {
+        for (Rank rank : ranks) if (rank.getName().toLowerCase().compareTo(name.toLowerCase()) == 0) return rank;
+        return null;
     }
 
     public Rank getBottomRank() {

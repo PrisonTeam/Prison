@@ -30,8 +30,8 @@ import io.github.prison.Configurable;
  */
 public class Messages implements Configurable {
 
-    public static final int VERSION = 19; // For everyone to referenced;
-    public int version = VERSION; // For the configuration file to store
+    public static final int VERSION = 19;
+    public int version = VERSION;
     private static String error = "&cError &8&l| &7";
 
     // Entries
