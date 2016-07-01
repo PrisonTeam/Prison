@@ -16,40 +16,50 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison.ranks;
+package io.github.prison.ranks.events;
 
-import java.util.UUID;
+import io.github.prison.internal.Player;
+import io.github.prison.internal.events.Cancelable;
+import io.github.prison.ranks.Rank;
 
 /**
  * @author Camouflage100
  */
-public class RankUser {
+public class RankupEvent implements Cancelable {
 
-    private UUID uuid;
-    private Rank rank;
+    private Player player;
+    private Rank oldRank;
+    private Rank newRank;
 
-    public RankUser() {
+    public RankupEvent(Player player, Rank oldRank, Rank newRank) {
+        this.player = player;
+        this.oldRank = oldRank;
+        this.newRank = newRank;
     }
 
-    public RankUser(UUID uuid) {
-        this.uuid = uuid;
-        this.rank = null;
+    @Override
+    public boolean isCanceled() {
+        return false;
     }
 
-    public RankUser(UUID uuid, Rank rank) {
-        this.uuid = uuid;
-        this.rank = rank;
+    @Override
+    public void setCanceled(boolean canceled) {
+
     }
 
-    public Rank getRank() {
-        return rank;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
+    public Rank getOldRank() {
+        return oldRank;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public Rank getNewRank() {
+        return newRank;
+    }
+
+    public void setNewRank(Rank newRank) {
+        this.newRank = newRank;
     }
 }

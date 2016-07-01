@@ -78,7 +78,6 @@ public class Rank {
         this.tag = tag;
     }
 
-
     public double getCost() {
         return cost;
     }

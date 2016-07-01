@@ -55,12 +55,10 @@ public class SignListener {
                         e.getPlayer().dispatchCommand("rankup");
 
 
-                    if (sign.getLines()[0].equalsIgnoreCase("ranks")
+                    if (sign.getLines()[0].equalsIgnoreCase(ranksModule.getName())
                             && sign.getLines()[1].equalsIgnoreCase("rankup")
                             && e.getPlayer().hasPermission("prison.ranks.ranksign"))
                         makeSign(sign);
-
-
                 }
             }
         } catch (Exception e1) {
