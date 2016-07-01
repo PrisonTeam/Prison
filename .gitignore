@@ -107,6 +107,8 @@ local.properties
 *.war
 *.ear
 
+!/prison-spigot/lib/**/*.jar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 ### NetBeans template
@@ -119,7 +121,6 @@ nbactions.xml
 .nb-gradle/
 ### Gradle template
 .gradle
-build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
