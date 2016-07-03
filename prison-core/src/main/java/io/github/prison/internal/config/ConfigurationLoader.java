@@ -16,10 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
+package io.github.prison.internal.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.prison.Prison;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

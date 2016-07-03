@@ -18,7 +18,7 @@
 
 package io.github.prison.cells;
 
-import io.github.prison.Configurable;
+import io.github.prison.internal.config.Configurable;
 
 /**
  * See the Messages class in prison-core to learn how to use this.

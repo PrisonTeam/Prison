@@ -18,7 +18,7 @@
 
 package io.github.prison.ranks;
 
-import io.github.prison.Configurable;
+import io.github.prison.internal.config.Configurable;
 
 /**
  * Represents Ranks' messages file. Contains all of the keys and their default values. Every time a

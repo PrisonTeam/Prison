@@ -24,8 +24,11 @@ import java.io.File;
 
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
+import io.github.prison.internal.Platform;
+import io.github.prison.internal.config.ConfigurationLoader;
 import io.github.prison.modules.ModuleManager;
 import io.github.prison.selection.SelectionManager;
+import io.github.prison.util.Patrons;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static

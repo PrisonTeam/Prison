@@ -18,7 +18,7 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Scheduler;
+import io.github.prison.internal.Scheduler;
 import org.bukkit.scheduler.BukkitScheduler;
 
 /**

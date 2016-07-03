@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
+package io.github.prison.internal;
 
 /**
  * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own thread.

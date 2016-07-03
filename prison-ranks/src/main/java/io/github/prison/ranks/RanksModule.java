@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.github.prison.ConfigurationLoader;
+import io.github.prison.internal.config.ConfigurationLoader;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.modules.Module;

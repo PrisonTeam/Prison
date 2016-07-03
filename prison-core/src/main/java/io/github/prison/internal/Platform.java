@@ -16,14 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
+package io.github.prison.internal;
 
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.economy.Economy;
 import io.github.prison.gui.GUI;
 import io.github.prison.internal.Player;
+import io.github.prison.internal.Scheduler;
 import io.github.prison.internal.Sign;
 import io.github.prison.internal.World;
+import io.github.prison.modules.Capability;
 import io.github.prison.util.Location;
 
 import java.io.File;

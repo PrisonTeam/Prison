@@ -18,6 +18,8 @@
 
 package io.github.prison;
 
+import io.github.prison.internal.config.Configurable;
+
 /**
  * Represents Prison's messages file. Contains all of the keys and their default values.
  * Every time a new value is added to a production version (i.e. public release),

@@ -18,10 +18,10 @@
 
 package io.github.prison.spigot;
 
-import io.github.prison.Capability;
-import io.github.prison.Platform;
+import io.github.prison.modules.Capability;
+import io.github.prison.internal.Platform;
 import io.github.prison.Prison;
-import io.github.prison.Scheduler;
+import io.github.prison.internal.Scheduler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.economy.Economy;
 import io.github.prison.gui.GUI;

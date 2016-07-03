@@ -20,7 +20,7 @@ package io.github.prison.cells;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.prison.ConfigurationLoader;
+import io.github.prison.internal.config.ConfigurationLoader;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
 import io.github.prison.cells.listeners.CellListener;

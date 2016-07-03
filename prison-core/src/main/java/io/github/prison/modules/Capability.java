@@ -16,29 +16,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.prison;
+package io.github.prison.modules;
 
 /**
- * Thrown when a module attempts to perform an action which the platform is incapable of.
+ * Different platforms have different features implemented.
+ * Capabilities tell Prison which features are available on a platform.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class IncapableException extends RuntimeException {
-
-    private Capability capability;
-
-    public IncapableException(Capability capability) {
-        this.capability = capability;
-    }
+public enum Capability {
 
     /**
-     * Returns the capability that the implementation lacks.
-     *
-     * @return The {@link Capability}.
+     * The capability of showing GUIs to players.
      */
-    public Capability getCapability() {
-        return capability;
-    }
+    GUI,
+    /**
+     * The presence of a server economy.
+     */
+    ECONOMY
 
 }
