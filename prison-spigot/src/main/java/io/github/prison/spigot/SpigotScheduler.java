@@ -55,6 +55,11 @@ public class SpigotScheduler implements Scheduler {
     }
 
     @Override
+    public void cancelTask(int taskId) {
+        scheduler.cancelTask(taskId);
+    }
+
+    @Override
     public void cancelAll() {
         scheduler.cancelTasks(plugin);
     }

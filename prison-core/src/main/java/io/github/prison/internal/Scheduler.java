@@ -65,6 +65,13 @@ public interface Scheduler {
     int runTaskTimerAsync(Runnable run, long delay, long interval);
 
     /**
+     * Cancel a certain task.
+     *
+     * @param taskId The task's ID.
+     */
+    void cancelTask(int taskId);
+
+    /**
      * Cancels all tasks registered through this scheduler.
      */
     void cancelAll();

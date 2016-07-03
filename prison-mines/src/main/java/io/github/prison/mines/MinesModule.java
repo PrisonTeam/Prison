@@ -41,6 +41,10 @@ public class MinesModule extends Module {
     private File minesDirectory;
     private List<Mine> mines;
     private Gson gson;
+
+    private ResetManager resetManager;
+    private ResetTimer resetTimer;
+
     private Config config;
     private ConfigurationLoader configurationLoader;
 
@@ -59,7 +63,15 @@ public class MinesModule extends Module {
         if (!this.minesDirectory.exists()) this.minesDirectory.mkdir();
         loadAll();
 
+        this.resetManager = new ResetManager(this);
+        this.resetTimer = new ResetTimer(this);
+
         Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand());
+    }
+
+    @Override
+    public void disable() {
+        this.resetTimer.cancelAll();
     }
 
     /**
@@ -95,6 +107,18 @@ public class MinesModule extends Module {
 
     public Config getConfig() {
         return (Config) configurationLoader.getConfig();
+    }
+
+    public List<Mine> getMines() {
+        return mines;
+    }
+
+    public ResetManager getResetManager() {
+        return resetManager;
+    }
+
+    public ResetTimer getResetTimer() {
+        return resetTimer;
     }
 
     ///
