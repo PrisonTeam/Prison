@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.prison.Prison;
 import io.github.prison.adapters.LocationAdapter;
+import io.github.prison.internal.config.ConfigurationLoader;
 import io.github.prison.modules.Module;
 import io.github.prison.util.Location;
 
@@ -40,6 +41,8 @@ public class MinesModule extends Module {
     private File minesDirectory;
     private List<Mine> mines;
     private Gson gson;
+    private Config config;
+    private ConfigurationLoader configurationLoader;
 
     public MinesModule(String version) {
         super("Mines", version);
@@ -49,6 +52,8 @@ public class MinesModule extends Module {
     @Override
     public void enable() {
         initGson();
+
+        this.configurationLoader = new ConfigurationLoader(getDataFolder(), "config.json", Config.class, Config.VERSION);
 
         this.minesDirectory = new File(getDataFolder(), "mines");
         if (!this.minesDirectory.exists()) this.minesDirectory.mkdir();
@@ -86,6 +91,10 @@ public class MinesModule extends Module {
             Prison.getInstance().getPlatform().log("&cFailed to save mine %s. Stack trace:", mine.getName());
             e.printStackTrace();
         }
+    }
+
+    public Config getConfig() {
+        return (Config) configurationLoader.getConfig();
     }
 
     ///

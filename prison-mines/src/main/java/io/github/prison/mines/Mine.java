@@ -30,6 +30,8 @@ public class Mine {
 
     private String name;
     private Bounds bounds;
+    private boolean isSync = true; // Sync mines reset all together
+    private long resetTimeSeconds = 300L;
 
     public Mine(String name, Bounds bounds) {
         this.name = name;
@@ -46,6 +48,22 @@ public class Mine {
 
     public void setBounds(Bounds bounds) {
         this.bounds = bounds;
+    }
+
+    public boolean isSync() {
+        return isSync;
+    }
+
+    public void setSync(boolean sync) {
+        isSync = sync;
+    }
+
+    public long getResetTimeSeconds() {
+        return resetTimeSeconds;
+    }
+
+    public void setResetTimeSeconds(long resetTimeSeconds) {
+        this.resetTimeSeconds = resetTimeSeconds;
     }
 
 }
