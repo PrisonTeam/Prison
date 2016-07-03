@@ -20,12 +20,9 @@ package io.github.prison.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.github.prison.Prison;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -59,27 +56,17 @@ public class Patrons {
     }
 
     public void getPatrons() {
-        InputStream is = null;
         try {
-            is = new URL("https://mc-prison.tech/api/patrons.php").openStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            assert is != null;
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            try (InputStream is = new URL("https://mc-prison.tech/api/patrons.php").openStream()) {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 
-            Type type = new TypeToken<List<String>>() {
-            }.getType();
+                Type type = new TypeToken<List<String>>() {
+                }.getType();
 
-            patrons = new Gson().fromJson(readPage(rd), type);
-
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                patrons = new Gson().fromJson(readPage(rd), type);
             }
+        } catch (Exception e) {
+            Prison.getInstance().getPlatform().log("&cError connecting to %s: %s", "https://mc-prison.tech/api/patrons.php", e.getMessage());
         }
     }
 
