@@ -18,6 +18,9 @@
 
 package io.github.prison.mines;
 
+import io.github.prison.util.Block;
+import io.github.prison.util.Location;
+
 /**
  * @author SirFaizdat
  */
@@ -32,6 +35,21 @@ public class ResetManager {
     }
 
     public void reset(Mine mine) {
+        int minX = mine.getBounds().getMin().getBlockX();
+        int minY = mine.getBounds().getMin().getBlockY();
+        int minZ = mine.getBounds().getMin().getBlockZ();
+        int maxX = mine.getBounds().getMax().getBlockX();
+        int maxY = mine.getBounds().getMax().getBlockY();
+        int maxZ = mine.getBounds().getMax().getBlockZ();
+
+        // Temporarily reset all the mine blocks to bricks
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    mine.getBounds().getMax().getWorld().setBlockAt(new Location(mine.getBounds().getMax().getWorld(), x, y, z), Block.BRICK);
+                }
+            }
+        }
     }
 
 }
