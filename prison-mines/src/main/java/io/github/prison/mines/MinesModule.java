@@ -45,8 +45,7 @@ public class MinesModule extends Module {
     private ResetManager resetManager;
     private ResetTimer resetTimer;
 
-    private Config config;
-    private ConfigurationLoader configurationLoader;
+    private ConfigurationLoader configurationLoader, messagesLoader;
 
     public MinesModule(String version) {
         super("Mines", version);
@@ -58,6 +57,7 @@ public class MinesModule extends Module {
         initGson();
 
         this.configurationLoader = new ConfigurationLoader(getDataFolder(), "config.json", Config.class, Config.VERSION);
+        this.messagesLoader = new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class, Messages.VERSION);
 
         this.minesDirectory = new File(getDataFolder(), "mines");
         if (!this.minesDirectory.exists()) this.minesDirectory.mkdir();
@@ -66,7 +66,7 @@ public class MinesModule extends Module {
         this.resetManager = new ResetManager(this);
         this.resetTimer = new ResetTimer(this);
 
-        Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand());
+        Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand(this));
     }
 
     @Override
@@ -107,6 +107,10 @@ public class MinesModule extends Module {
 
     public Config getConfig() {
         return (Config) configurationLoader.getConfig();
+    }
+
+    public Messages getMessages() {
+        return (Messages) messagesLoader.getConfig();
     }
 
     public List<Mine> getMines() {

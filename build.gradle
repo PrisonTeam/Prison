@@ -71,7 +71,7 @@ subprojects {
     dependencies {
         compile 'org.apache.commons:commons-lang3:3.4'
         compile 'com.google.guava:guava:19.0'
-        compile group: 'com.google.code', name: 'gson', version: "2.7"
+        compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
         testCompile 'junit:junit:4.12'
     }
@@ -79,6 +79,7 @@ subprojects {
     shadowJar {
         dependencies {
             include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
+            include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
         }
         classifier ''
         version = null

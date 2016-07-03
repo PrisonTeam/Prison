@@ -18,17 +18,41 @@
 
 package io.github.prison.mines;
 
+import io.github.prison.Prison;
+import io.github.prison.commands.Arg;
 import io.github.prison.commands.Command;
 import io.github.prison.internal.CommandSender;
+import io.github.prison.internal.Player;
+import io.github.prison.selection.Selection;
 
 /**
  * @author SirFaizdat
  */
 public class MinesCommand {
 
+    private MinesModule minesModule;
+
+    public MinesCommand(MinesModule minesModule) {
+        this.minesModule = minesModule;
+    }
+
     @Command(identifier = "mines", description = "Create and manage mines.", onlyPlayers = false)
     public void baseCommand(CommandSender sender) {
         sender.sendMessage("This command has not yet been implemented.");
+    }
+
+    @Command(identifier = "mines create", description = "Create a new mine from your current selection.")
+    public void createCommand(Player player, @Arg(name = "name") String name) {
+        Selection sel = Prison.getInstance().getSelectionManager().getSelection(player);
+        if (!sel.isComplete()) {
+            player.sendMessage(Prison.getInstance().getMessages().selectionNeeded);
+            return;
+        }
+
+        Mine mine = new Mine(name, sel.asBounds());
+        this.minesModule.saveMine(mine);
+        this.minesModule.getResetTimer().registerIndividualMine(mine);
+        player.sendMessage(String.format(this.minesModule.getMessages().mineCreated, name));
     }
 
 }
