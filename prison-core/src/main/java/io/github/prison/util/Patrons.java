@@ -24,6 +24,7 @@ import io.github.prison.Prison;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -57,7 +58,13 @@ public class Patrons {
 
     public void getPatrons() {
         try {
-            try (InputStream is = new URL("https://mc-prison.tech/api/patrons.php").openStream()) {
+            // Needs a user agent since this is HTTPS
+            URL website = new URL("https://mc-prison.tech/api/patrons.php");
+            HttpURLConnection con = (HttpURLConnection) (website.openConnection());
+            System.setProperty("http.agent", "");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.100 Safari/534.30");
+
+            try (InputStream is = con.getInputStream()) {
                 BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 
                 Type type = new TypeToken<List<String>>() {
