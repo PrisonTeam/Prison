@@ -19,16 +19,16 @@
 package io.github.prison;
 
 import com.google.common.eventbus.EventBus;
-
-import java.io.File;
-
 import io.github.prison.commands.CommandHandler;
 import io.github.prison.commands.PluginCommand;
 import io.github.prison.internal.Platform;
 import io.github.prison.internal.config.ConfigurationLoader;
 import io.github.prison.modules.ModuleManager;
 import io.github.prison.selection.SelectionManager;
+import io.github.prison.util.EventExceptionHandler;
 import io.github.prison.util.Patrons;
+
+import java.io.File;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -88,7 +88,7 @@ public class Prison {
         this.configurationLoader = new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class, Configuration.VERSION);
         this.configurationLoader.loadConfiguration();
 
-        this.eventBus = new EventBus();
+        this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
@@ -204,6 +204,11 @@ public class Prison {
         return null;
     }
 
+    /**
+     * Returns a patrons object, which contains a list of Patreon patrons.
+     *
+     * @return The {@link Patrons} class.
+     */
     public Patrons getPatrons() {
         return this.patrons;
     }
