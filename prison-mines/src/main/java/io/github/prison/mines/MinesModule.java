@@ -58,13 +58,16 @@ public class MinesModule extends Module {
 
         this.configurationLoader = new ConfigurationLoader(getDataFolder(), "config.json", Config.class, Config.VERSION);
         this.messagesLoader = new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class, Messages.VERSION);
+        this.configurationLoader.loadConfiguration();
+        this.messagesLoader.loadConfiguration();
+
+        this.resetManager = new ResetManager(this);
+        this.resetTimer = new ResetTimer(this);
+        this.resetTimer.startAll();
 
         this.minesDirectory = new File(getDataFolder(), "mines");
         if (!this.minesDirectory.exists()) this.minesDirectory.mkdir();
         loadAll();
-
-        this.resetManager = new ResetManager(this);
-        this.resetTimer = new ResetTimer(this);
 
         Prison.getInstance().getCommandHandler().registerCommands(new MinesCommand(this));
     }
@@ -142,6 +145,10 @@ public class MinesModule extends Module {
                 String json = new String(Files.readAllBytes(file.toPath()));
                 Mine mine = gson.fromJson(json, Mine.class);
                 mines.add(mine);
+
+                if(!mine.isSync())
+                    resetTimer.registerIndividualMine(mine);
+
             } catch (IOException e) {
                 Prison.getInstance().getPlatform().log("&cError while loading mine %s. Stack trace;", file.getName());
                 e.printStackTrace();

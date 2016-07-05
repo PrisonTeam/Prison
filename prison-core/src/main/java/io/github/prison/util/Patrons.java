@@ -37,12 +37,14 @@ public class Patrons {
     public static Patrons instance;
     private List<String> patrons;
 
-    // I'm a yummy chicken nugget
-
     public Patrons() {
         instance = this;
         patrons = new ArrayList<>();
         getPatrons();
+    }
+
+    public static List<String> get() {
+        return instance.patrons;
     }
 
     private String readPage(Reader rd) {
@@ -77,9 +79,5 @@ public class Patrons {
         } catch (Exception e) {
             Prison.getInstance().getPlatform().log("&cError connecting to %s: %s", "https://mc-prison.tech/api/patrons.php", e.getMessage());
         }
-    }
-
-    public static List<String> get() {
-        return instance.patrons;
     }
 }

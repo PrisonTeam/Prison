@@ -66,6 +66,7 @@ public class ResetTimer {
                 mine.getResetTimeSeconds()
         );
         individualTaskIds.put(mine.getName(), taskId);
+        System.out.println("Registered individual mine " + mine.getName());
     }
 
     /**
@@ -91,6 +92,7 @@ public class ResetTimer {
     }
 
     private void reset(Mine mine) {
+        System.out.println("Resetting individual mine " + mine.getName());
         minesModule.getResetManager().reset(mine);
     }
 

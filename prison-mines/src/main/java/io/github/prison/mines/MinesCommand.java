@@ -36,11 +36,6 @@ public class MinesCommand {
         this.minesModule = minesModule;
     }
 
-    @Command(identifier = "mines", description = "Create and manage mines.", onlyPlayers = false)
-    public void baseCommand(CommandSender sender) {
-        sender.sendMessage("This command has not yet been implemented.");
-    }
-
     @Command(identifier = "mines create", description = "Create a new mine from your current selection.")
     public void createCommand(Player player, @Arg(name = "name") String name) {
         Selection sel = Prison.getInstance().getSelectionManager().getSelection(player);
