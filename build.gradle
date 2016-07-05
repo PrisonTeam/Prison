@@ -76,13 +76,4 @@ subprojects {
         testCompile 'junit:junit:4.12'
     }
 
-    shadowJar {
-        dependencies {
-            include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
-            include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
-        }
-        classifier ''
-        version = null
-    }
-
 }

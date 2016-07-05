@@ -24,6 +24,8 @@ shadowJar {
         include(dependency(':prison-core'))
     }
     baseName 'PrisonCells'
+    classifier ''
+    version = null
 }
 
 build.dependsOn(shadowJar)
