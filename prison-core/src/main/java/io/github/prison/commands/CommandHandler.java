@@ -34,6 +34,8 @@ import java.util.Map;
 
 public class CommandHandler {
 
+    // TODO unregisterCommands method, to fix argument duplication on module re-enable
+
     private Prison plugin;
     private Map<Class<?>, ArgumentHandler<?>> argumentHandlers = new HashMap<Class<?>, ArgumentHandler<?>>();
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();

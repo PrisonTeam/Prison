@@ -73,7 +73,7 @@ public class ModuleManager {
         validateVersion(module);
 
         // If the status is still null, then nothing went wrong during the enable.
-        if (getStatus(module.getName()) == null) setStatus(module.getName(), "&aEnabled");
+        if (getStatus(module.getName()) == null || getStatus(module.getName()).contains("Disabled")) setStatus(module.getName(), "&aEnabled");
 
         // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
         if (getStatus(module.getName()).startsWith("&c")) {
