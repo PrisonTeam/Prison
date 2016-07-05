@@ -26,7 +26,9 @@ import java.util.Locale;
  *
  * @author SirFaizdat
  * @since 3.0
+ * @deprecated Use the {@link Text} class instead, it has more features and a better name.
  */
+@Deprecated
 public class TextUtil {
 
     private TextUtil() {
