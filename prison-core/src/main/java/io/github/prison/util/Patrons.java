@@ -37,6 +37,8 @@ public class Patrons {
     public static Patrons instance;
     private List<String> patrons;
 
+    // I'm a yummy chicken nugget
+
     public Patrons() {
         instance = this;
         patrons = new ArrayList<>();
