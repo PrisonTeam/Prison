@@ -20,7 +20,7 @@ plugins {
     id 'org.spongepowered.plugin' version '0.6'
 }
 
-group 'io.github.sirfaizdat'
+group 'tech.mcprison'
 version '3.0.0-SNAPSHOT'
 description 'An all-in-one Prison plugin.'
 

@@ -1,5 +1,5 @@
 name: PrisonShops
 version: 3.0.0-SNAPSHOT
-main: io.github.prison.shops.plugins.ShopsSpigot
+main: ShopsSpigot
 description: The shops module for Prison.
 depend: [Prison]

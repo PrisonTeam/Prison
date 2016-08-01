@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group 'io.github.sirfaizdat'
+group 'tech.mcprison'
 version '3.0.0-SNAPSHOT'
 
 repositories {
