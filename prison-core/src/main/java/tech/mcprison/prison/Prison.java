@@ -27,7 +27,6 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
-import tech.mcprison.prison.util.Patrons;
 
 import java.io.File;
 
@@ -54,7 +53,6 @@ public class Prison {
     private ConfigurationLoader configurationLoader;
     private ConfigurationLoader messagesLoader;
     private EventBus eventBus;
-    private Patrons patrons;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available, but you
@@ -101,9 +99,6 @@ public class Prison {
         this.selectionManager = new SelectionManager();
 
         this.commandHandler.registerCommands(new PrisonCommand());
-
-        patrons = new Patrons();
-        getPlatform().getScheduler().runTaskTimer(() -> patrons.getPatrons(), 0, 3600);
 
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform
@@ -213,12 +208,4 @@ public class Prison {
         return null;
     }
 
-    /**
-     * Returns a patrons object, which contains a list of Patreon patrons.
-     *
-     * @return The {@link Patrons} class.
-     */
-    public Patrons getPatrons() {
-        return this.patrons;
-    }
 }

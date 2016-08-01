@@ -20,13 +20,8 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.FlagArg;
-import tech.mcprison.prison.commands.Flags;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.util.Patrons;
-
-import java.util.List;
 
 /**
  * @author SirFaizdat
@@ -100,6 +95,7 @@ public class PrisonCommand {
         sender.sendMessage("&7The module &3" + moduleName + " &7has been disabled.");
     }
 
+    /*
     @Command(identifier = "prison patrons", description = "View the list of all of our patrons qualified to be in the list")
     @Flags(identifier = {"r"}, description = {"Refresh the patrons list"})
     public void patronsCommand(CommandSender sender, @FlagArg("r") boolean refresh) {
@@ -125,6 +121,7 @@ public class PrisonCommand {
 
         sender.sendMessage("&7============= &d/prison patrons &7=============");
     }
+    */
 
     // Get a module by name or by package name
     private Module getModule(String name) {
