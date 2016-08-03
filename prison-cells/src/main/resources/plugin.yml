@@ -1,5 +1,5 @@
 name: PrisonCells
 version: 3.0.0-SNAPSHOT
-main: CellsSpigot
+main: tech.mcprison.prison.cells.plugins.CellsSpigot
 description: The cells module for Prison.
 depend: [Prison]

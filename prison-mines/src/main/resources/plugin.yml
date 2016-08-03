@@ -1,5 +1,5 @@
 name: PrisonMines
 version: 3.0.0-SNAPSHOT
-main: MinesSpigot
+main: tech.mcprison.prison.mines.plugins.MinesSpigot
 description: The mines module for Prison.
 depend: [Prison]
