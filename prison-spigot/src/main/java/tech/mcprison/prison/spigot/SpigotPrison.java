@@ -19,7 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandMap;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -35,7 +35,8 @@ import java.lang.reflect.Field;
  */
 public class SpigotPrison extends JavaPlugin {
 
-    CommandMap commandMap;
+    Field commandMap;
+    Field knownCommands;
     SpigotScheduler scheduler;
     Compatibility compatibility;
 
@@ -59,13 +60,12 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initCommandMap() {
-        final Field bukkitCommandMap;
         try {
-            bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-
-            bukkitCommandMap.setAccessible(true);
-            commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            commandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            commandMap.setAccessible(true);
+            knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
+            knownCommands.setAccessible(true);
+        } catch (NoSuchFieldException e) {
             Prison.getInstance().getPlatform().log(
                 "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
             e.printStackTrace();

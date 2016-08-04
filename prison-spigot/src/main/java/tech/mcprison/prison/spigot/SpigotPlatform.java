@@ -27,6 +27,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import tech.mcprison.prison.Prison;
@@ -104,22 +105,38 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public void registerCommand(PluginCommand command) {
-        plugin.commandMap.register(command.getLabel(), "prison",
-            new Command(command.getLabel(), command.getDescription(), command.getUsage(),
-                Collections.emptyList()) {
+        try {
+            ((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
+                .register(command.getLabel(), "prison",
+                    new Command(command.getLabel(), command.getDescription(), command.getUsage(),
+                        Collections.emptyList()) {
 
-                @Override
-                public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-                    if (sender instanceof org.bukkit.entity.Player)
-                        return Prison.getInstance().getCommandHandler()
-                            .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender), command,
-                                commandLabel, args);
-                    return Prison.getInstance().getCommandHandler()
-                        .onCommand(new SpigotCommandSender(sender), command, commandLabel, args);
-                }
+                        @Override public boolean execute(CommandSender sender, String commandLabel,
+                            String[] args) {
+                            if (sender instanceof org.bukkit.entity.Player)
+                                return Prison.getInstance().getCommandHandler()
+                                    .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
+                                        command, commandLabel, args);
+                            return Prison.getInstance().getCommandHandler()
+                                .onCommand(new SpigotCommandSender(sender), command, commandLabel,
+                                    args);
+                        }
 
-            });
-        commands.add(command);
+                    });
+            commands.add(command);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked") @Override public void unregisterCommand(String command) {
+        try {
+            ((Map<String, Command>) plugin.knownCommands
+                .get(plugin.commandMap.get(Bukkit.getServer()))).remove(command);
+            this.commands.removeIf(pluginCommand -> pluginCommand.getLabel().equals(command));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace(); // This should only happen if something's wrong up there.
+        }
     }
 
     @Override public List<PluginCommand> getCommands() {

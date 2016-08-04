@@ -93,6 +93,14 @@ public interface Platform {
     void registerCommand(PluginCommand command);
 
     /**
+     * Unregisters a registered command.
+     * This does not support command aliases, because those are currently not definable anyway.
+     *
+     * @param command The command to unregister, without the preceding '/'.
+     */
+    void unregisterCommand(String command);
+
+    /**
      * Returns a list of all registered commands.
      */
     List<PluginCommand> getCommands();

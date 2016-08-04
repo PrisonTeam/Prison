@@ -26,7 +26,11 @@ import tech.mcprison.prison.modules.Module;
 public class MinesModule extends Module {
 
     public MinesModule(String version) {
-        super("Cells", version);
+        super("Mines", version);
+    }
+
+    @Override public void enable() {
+
     }
 
 }

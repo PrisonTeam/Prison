@@ -86,6 +86,8 @@ public class RanksModule extends Module {
 
     @Override public void disable() {
         getRanks().forEach(this::saveRank);
+        Prison.getInstance().getPlatform().unregisterCommand("ranks");
+        Prison.getInstance().getPlatform().unregisterCommand("rankup");
     }
 
     private void initGson() {

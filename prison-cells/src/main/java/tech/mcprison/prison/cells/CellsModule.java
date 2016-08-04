@@ -74,6 +74,10 @@ public class CellsModule extends Module {
         Prison.getInstance().getCommandHandler().registerCommands(new CellCommand(this));
     }
 
+    @Override public void disable() {
+        Prison.getInstance().getPlatform().unregisterCommand("cells");
+    }
+
     /**
      * Retrieve a user by its UUID.
      *
