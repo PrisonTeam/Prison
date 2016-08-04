@@ -65,15 +65,15 @@ public class PrisonCommand {
         }
 
         if (module.isEnabled()) {
-            sender.sendMessage("&7The module &c" + moduleName + " &7is already enabled.");
+            sender.sendMessage("&7The module &c" + module.getName() + " &7is already enabled.");
             return;
         }
 
         boolean result = Prison.getInstance().getModuleManager().enableModule(module);
         if (result)
-            sender.sendMessage("&7The module &3" + moduleName + " &7has been enabled.");
+            sender.sendMessage("&7The module &3" + module.getName() + " &7has been enabled.");
         else
-            sender.sendMessage("&7Failed to enable the module &c" + moduleName
+            sender.sendMessage("&7Failed to enable the module &c" + module.getName()
                 + "&7. &8Check the console for details.");
     }
 
@@ -92,7 +92,7 @@ public class PrisonCommand {
         }
 
         Prison.getInstance().getModuleManager().disableModule(module);
-        sender.sendMessage("&7The module &3" + moduleName + " &7has been disabled.");
+        sender.sendMessage("&7The module &3" + module.getName() + " &7has been disabled.");
     }
 
     /*
