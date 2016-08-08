@@ -79,30 +79,43 @@ public class Prison {
         this.platform = platform;
         platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
 
-        this.dataFolder = new File(platform.getPluginDirectory(), "Core");
-        if (!this.dataFolder.exists())
-            this.dataFolder.mkdir();
-
-        this.messagesLoader =
-            new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
-                Messages.VERSION);
-        this.messagesLoader.loadConfiguration();
-
-        this.configurationLoader =
-            new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
-                Configuration.VERSION);
-        this.configurationLoader.loadConfiguration();
-
-        this.eventBus = new EventBus(new EventExceptionHandler());
-        this.moduleManager = new ModuleManager();
-        this.commandHandler = new CommandHandler();
-        this.selectionManager = new SelectionManager();
+        initDataFolder();
+        initMessages();
+        initConfig();
+        initManagers();
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
         platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
         platform
             .log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
+    }
+
+    private void initDataFolder() {
+        this.dataFolder = new File(platform.getPluginDirectory(), "Core");
+        if (!this.dataFolder.exists())
+            this.dataFolder.mkdir();
+    }
+
+    private void initMessages() {
+        this.messagesLoader =
+            new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
+                Messages.VERSION);
+        this.messagesLoader.loadConfiguration();
+    }
+
+    private void initConfig() {
+        this.configurationLoader =
+            new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
+                Configuration.VERSION);
+        this.configurationLoader.loadConfiguration();
+    }
+
+    private void initManagers() {
+        this.eventBus = new EventBus(new EventExceptionHandler());
+        this.moduleManager = new ModuleManager();
+        this.commandHandler = new CommandHandler();
+        this.selectionManager = new SelectionManager();
     }
 
     /**

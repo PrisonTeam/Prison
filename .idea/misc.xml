@@ -2,12 +2,13 @@
 <project version="4">
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
-    <list size="5">
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="com.google.common.eventbus.Subscribe" />
       <item index="1" class="java.lang.String" itemvalue="io.github.prison.commands.Command" />
       <item index="2" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />
       <item index="3" class="java.lang.String" itemvalue="org.spongepowered.api.event.Listener" />
       <item index="4" class="java.lang.String" itemvalue="org.spongepowered.api.plugin.Plugin" />
+      <item index="5" class="java.lang.String" itemvalue="tech.mcprison.prison.commands.Command" />
     </list>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
