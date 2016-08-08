@@ -16,26 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.cells;
+package tech.mcprison.prison.internal.config;
 
-/**
- * Represents the permission to perform a certain action within a cell.
- *
- * @author SirFaizdat
- */
-public enum Permission {
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
-    IS_OWNER("own the cell"), OPEN_DOOR("open doors"), OPEN_CHEST("open chests"), BUILD_BLOCKS(
-        "place/break blocks");
+public class AnnotationExclusionStrategy implements ExclusionStrategy {
 
-    private String userFriendlyName;
-
-    Permission(String userFriendlyName) {
-        this.userFriendlyName = userFriendlyName;
+    @Override public boolean shouldSkipField(FieldAttributes f) {
+        return f.getAnnotation(Exclude.class) != null;
     }
 
-    public String getUserFriendlyName() {
-        return userFriendlyName;
+    @Override public boolean shouldSkipClass(Class<?> clazz) {
+        return false;
     }
-
 }

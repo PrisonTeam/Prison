@@ -88,8 +88,8 @@ public class CellListener {
             if (cell == null)
                 return;
 
-            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId())
-                .contains(Permission.OPEN_DOOR)) {
+            if (!user.hasAccess(cell.getId()) || !user
+                .hasPermission(cell.getId(), Permission.OPEN_DOOR)) {
                 e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess,
                     Permission.OPEN_DOOR.getUserFriendlyName()));
                 e.setCanceled(true);
@@ -115,8 +115,8 @@ public class CellListener {
             if (cell == null)
                 return;
 
-            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId())
-                .contains(Permission.OPEN_CHEST)) {
+            if (!user.hasAccess(cell.getId()) || !user
+                .hasPermission(cell.getId(), Permission.OPEN_CHEST)) {
                 e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess,
                     Permission.OPEN_CHEST.getUserFriendlyName()));
                 e.setCanceled(true);
@@ -136,8 +136,8 @@ public class CellListener {
             if (cell == null)
                 return;
 
-            if (!user.hasAccess(cell.getId()) || !user.getPermissions(cell.getId())
-                .contains(Permission.BUILD_BLOCKS)) {
+            if (!user.hasAccess(cell.getId()) || !user
+                .hasPermission(cell.getId(), Permission.BUILD_BLOCKS)) {
                 e.getPlayer().sendMessage(String.format(cellsModule.getMessages().noAccess,
                     Permission.BUILD_BLOCKS.getUserFriendlyName()));
                 e.setCanceled(true);

@@ -57,16 +57,20 @@ public class CellCommand {
             return;
         }
 
+        cell.setRentedAtMillis(System.currentTimeMillis());
+        cell.setRentalExpiresAtMillis(
+            System.currentTimeMillis() + 60000); // 60000 = 1 day, TODO make this configurable
+        cell.setRentedBy(sender.getUUID());
+        cellsModule.saveCell(cell);
+
         CellUser user = cellsModule.getUser(sender.getUUID());
         if (user == null)
             user = new CellUser(sender.getUUID());
 
-        user.addPermission(id, Permission.BUILD_BLOCKS);
-        user.addPermission(id, Permission.OPEN_CHEST);
-        user.addPermission(id, Permission.OPEN_DOOR);
+        user.addPermission(cell.getId(), Permission.IS_OWNER);
         cellsModule.saveUser(user);
         sender.sendMessage(
-            "Cell rented."); // will have a localized message when the actual rental command is here
+            String.format(cellsModule.getMessages().cellRented, cell.getId(), "1 minute"));
     }
 
 }

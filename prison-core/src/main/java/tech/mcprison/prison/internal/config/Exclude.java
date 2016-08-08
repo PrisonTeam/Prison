@@ -16,26 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.cells;
+package tech.mcprison.prison.internal.config;
 
-/**
- * Represents the permission to perform a certain action within a cell.
- *
- * @author SirFaizdat
- */
-public enum Permission {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    IS_OWNER("own the cell"), OPEN_DOOR("open doors"), OPEN_CHEST("open chests"), BUILD_BLOCKS(
-        "place/break blocks");
-
-    private String userFriendlyName;
-
-    Permission(String userFriendlyName) {
-        this.userFriendlyName = userFriendlyName;
-    }
-
-    public String getUserFriendlyName() {
-        return userFriendlyName;
-    }
-
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface Exclude {
 }

@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison;
 
-import tech.mcprison.prison.internal.config.Configurable;
+import tech.mcprison.prison.internal.config.MessageConfigurable;
 
 /**
  * Represents Prison's messages file. Contains all of the keys and their default values.
@@ -28,13 +28,9 @@ import tech.mcprison.prison.internal.config.Configurable;
  * @author SirFaizdat
  * @since 3.0
  */
-public class Messages implements Configurable {
+public class Messages extends MessageConfigurable {
 
     public static final int VERSION = 5; // For everyone to reference
-    public static final String INFO_PREFIX = "&3Info &8&l| &7";
-    public static final String WARNING_PREFIX = "&6Warning &8&l| &7";
-    public static final String ERROR_PREFIX = "&cError &8&l| &7";
-
     public int version = VERSION; // For the configuration file to store
 
     // Entries

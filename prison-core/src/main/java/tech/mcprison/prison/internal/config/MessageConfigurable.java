@@ -16,26 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.cells;
+package tech.mcprison.prison.internal.config;
 
 /**
- * Represents the permission to perform a certain action within a cell.
+ * A {@link Configurable} with the prefixes as protected class members for easy access.
  *
  * @author SirFaizdat
+ * @since 3.0
  */
-public enum Permission {
+public abstract class MessageConfigurable implements Configurable {
 
-    IS_OWNER("own the cell"), OPEN_DOOR("open doors"), OPEN_CHEST("open chests"), BUILD_BLOCKS(
-        "place/break blocks");
-
-    private String userFriendlyName;
-
-    Permission(String userFriendlyName) {
-        this.userFriendlyName = userFriendlyName;
-    }
-
-    public String getUserFriendlyName() {
-        return userFriendlyName;
-    }
+    // Naming conventions are a bit off, but I tried to maintain backwards-compatibility
+    @Exclude protected String INFO_PREFIX = "&3Info &8&l| &7";
+    @Exclude protected String WARNING_PREFIX = "&6Warning &8&l| &7";
+    @Exclude protected String ERROR_PREFIX = "&cError &8&l| &7";
 
 }

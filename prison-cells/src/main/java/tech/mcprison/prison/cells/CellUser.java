@@ -64,7 +64,8 @@ public class CellUser {
      * @return true if the user has the permission, false otherwise
      */
     public boolean hasPermission(int cellId, Permission permission) {
-        return cells.get(cellId).contains(permission);
+        return getPermissions(cellId).contains(Permission.IS_OWNER) || getPermissions(cellId)
+            .contains(permission);
     }
 
     /**
@@ -88,6 +89,8 @@ public class CellUser {
      */
     public void addPermission(int cellId, Permission permission) {
         List<Permission> permissions = getPermissions(cellId);
+        if (permissions.contains(permission))
+            return;
         permissions.add(permission);
         cells.put(cellId, permissions);
     }
@@ -102,6 +105,15 @@ public class CellUser {
         List<Permission> permissions = getPermissions(cellId);
         permissions.remove(permission);
         cells.put(cellId, permissions);
+    }
+
+    /**
+     * Removes all this user's permissions in a certain cell.
+     *
+     * @param cellId The ID of the cell.
+     */
+    public void removePermissions(int cellId) {
+        cells.put(cellId, new ArrayList<>());
     }
 
     /**

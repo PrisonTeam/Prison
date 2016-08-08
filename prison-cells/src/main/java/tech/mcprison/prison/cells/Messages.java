@@ -18,26 +18,25 @@
 
 package tech.mcprison.prison.cells;
 
-import tech.mcprison.prison.internal.config.Configurable;
+import tech.mcprison.prison.internal.config.MessageConfigurable;
 
 /**
  * See the Messages class in prison-core to learn how to use this.
  *
  * @author SirFaizdat
  */
-public class Messages implements Configurable {
+public class Messages extends MessageConfigurable {
 
     public static final int VERSION = 1;
     public int version = VERSION;
 
-    public String selectDoor =
-        tech.mcprison.prison.Messages.INFO_PREFIX + "Now, punch the cell's door.";
-    public String cellCreated =
-        tech.mcprison.prison.Messages.INFO_PREFIX + "Successfully created &3cell #%d&7.";
-    public String noAccess = tech.mcprison.prison.Messages.WARNING_PREFIX
-        + "You don't have permission to %s in this cell.";
-    public String cellDoesNotExist =
-        tech.mcprison.prison.Messages.ERROR_PREFIX + "There is no cell with the ID #%d.";
+    public String selectDoor = INFO_PREFIX + "Now, punch the cell's door.";
+    public String cellCreated = INFO_PREFIX + "Successfully created &3cell #%d&7.";
+    public String cellRented = INFO_PREFIX + "You have rented &3cell #%d&7 for &3%s&7.";
+
+    public String cellRentalExpired = WARNING_PREFIX + "Your rental of &6cell #%d&7 has expired.";
+    public String noAccess = WARNING_PREFIX + "You don't have permission to %s in this cell.";
+    public String cellDoesNotExist = ERROR_PREFIX + "There is no cell with the ID #%d.";
 
     @Override public int getVersion() {
         return version;

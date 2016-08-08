@@ -61,7 +61,8 @@ public class ConfigurationLoader {
      */
     public ConfigurationLoader(File rootFolder, String fileName,
         Class<? extends Configurable> clazz, int targetVersion) {
-        gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy())
+            .setPrettyPrinting().disableHtmlEscaping().create();
         this.clazz = clazz;
         this.targetVersion = targetVersion;
         this.rootFolder = rootFolder;

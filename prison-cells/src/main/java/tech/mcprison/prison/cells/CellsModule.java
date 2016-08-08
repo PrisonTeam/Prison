@@ -71,6 +71,7 @@ public class CellsModule extends Module {
 
         new UserListener(this).init();
         new CellListener(this).init();
+        new CellRentalTask(this).run();
         Prison.getInstance().getCommandHandler().registerCommands(new CellCommand(this));
     }
 
@@ -181,6 +182,10 @@ public class CellsModule extends Module {
 
     public Messages getMessages() {
         return (Messages) messagesLoader.getConfig();
+    }
+
+    public List<Cell> getCells() {
+        return cells;
     }
 
     ///

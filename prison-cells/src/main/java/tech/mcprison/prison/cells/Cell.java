@@ -21,6 +21,8 @@ package tech.mcprison.prison.cells;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
+import java.util.UUID;
+
 /**
  * @author SirFaizdat
  */
@@ -29,6 +31,9 @@ public class Cell {
     private int id;
     private Bounds bounds;
     private Location doorLocation;
+    private long rentedAtMillis = 0L;
+    private long rentalExpiresAtMillis = 0L;
+    private UUID rentedBy = null;
 
     /**
      * For serialization purposes.
@@ -55,6 +60,30 @@ public class Cell {
 
     public void setDoorLocation(Location doorLocation) {
         this.doorLocation = doorLocation;
+    }
+
+    public long getRentedAtMillis() {
+        return rentedAtMillis;
+    }
+
+    public void setRentedAtMillis(long rentedAtMillis) {
+        this.rentedAtMillis = rentedAtMillis;
+    }
+
+    public long getRentalExpiresAtMillis() {
+        return rentalExpiresAtMillis;
+    }
+
+    public void setRentalExpiresAtMillis(long rentalExpiresAtMillis) {
+        this.rentalExpiresAtMillis = rentalExpiresAtMillis;
+    }
+
+    public UUID getRentedBy() {
+        return rentedBy;
+    }
+
+    public void setRentedBy(UUID rentedBy) {
+        this.rentedBy = rentedBy;
     }
 
 }
