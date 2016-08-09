@@ -103,7 +103,8 @@ public class CellCommand {
         // Get the CellUser of the sender
         CellUser senderUser = cellsModule.getUser(sender.getUUID());
         if (senderUser == null)
-            throw new IllegalStateException("User must be present"); // This shouldn't even happen
+            throw new IllegalStateException(
+                "User must be present"); // This shouldn't even happen, unless it does, but I'll find out soon enough
 
         // Get the cell that the sender owns
         // We always assume that the sender owns just one cell, because that's all that's possible
@@ -130,6 +131,7 @@ public class CellCommand {
 
         // Add the permission
         receiverUser.addPermission(cell.getId(), perm);
+        cellsModule.saveUser(receiverUser);
 
         // Alert both parties
         sender.sendMessage(String
