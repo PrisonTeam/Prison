@@ -146,6 +146,18 @@ public class CellsModule extends Module {
     }
 
     /**
+     * Retrieve a cell by its current owner.
+     *
+     * @param owner The {@link CellUser} that owns the cell (i.e. has the {@link Permission#IS_OWNER} permission).
+     * @return The {@link Cell} owned by that user, or null if there isn't one.
+     */
+    public Cell getCellByOwner(CellUser owner) {
+        return cells.stream().filter(
+            cell -> cell.getRentedBy().getLeastSignificantBits() == owner.getUUID()
+                .getLeastSignificantBits()).findFirst().orElse(null);
+    }
+
+    /**
      * Stores the edited cell object in the list, and saves it to a file.
      *
      * @param cell the {@link Cell}.
@@ -165,6 +177,18 @@ public class CellsModule extends Module {
                     file.getName());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Removes all permissions from all users for a cell.
+     *
+     * @param cellId The cell ID.
+     */
+    public void resetCell(int cellId) {
+        users.stream().filter(cellUser -> cellUser.hasAccess(cellId)).forEach(cellUser -> {
+            cellUser.removePermissions(cellId);
+            saveUser(cellUser);
+        });
     }
 
     /**

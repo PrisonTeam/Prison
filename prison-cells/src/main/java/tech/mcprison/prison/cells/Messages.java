@@ -27,16 +27,24 @@ import tech.mcprison.prison.internal.config.MessageConfigurable;
  */
 public class Messages extends MessageConfigurable {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 0;
     public int version = VERSION;
 
     public String selectDoor = INFO_PREFIX + "Now, punch the cell's door.";
     public String cellCreated = INFO_PREFIX + "Successfully created &3cell #%d&7.";
     public String cellRented = INFO_PREFIX + "You have rented &3cell #%d&7 for &3%s&7.";
+    public String permissionGranted =
+        INFO_PREFIX + "You have granted &3%s&7 permission to &3%s&7 in your cell.";
+    public String permissionGrantedOther =
+        INFO_PREFIX + "You have been granted permission to %3%s&7 in &3%s's cell&7.";
 
     public String cellRentalExpired = WARNING_PREFIX + "Your rental of &6cell #%d&7 has expired.";
     public String noAccess = WARNING_PREFIX + "You don't have permission to %s in this cell.";
     public String cellDoesNotExist = ERROR_PREFIX + "There is no cell with the ID #%d.";
+    public String doesNotOwnCell = ERROR_PREFIX + "You don't own a cell.";
+    public String onlyTheOwnerMay =
+        ERROR_PREFIX + "Only the owner of the cell is allowed to &c%s&7.";
+    public String playerDoesNotExist = ERROR_PREFIX + "That player does not exist.";
 
     @Override public int getVersion() {
         return version;

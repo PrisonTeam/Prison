@@ -40,16 +40,16 @@ public class CellRentalTask {
                 if (cell.getRentalExpiresAtMillis() > 0) {
                     if (System.currentTimeMillis() >= cell.getRentalExpiresAtMillis()) {
                         // The cell is expired
-                        scheduleSyncRentalExpirationTask(cell);
+                        expireOwnership(cell);
                     }
                 }
             }), 1, 1); // each 1 second
     }
 
-    private void scheduleSyncRentalExpirationTask(Cell cell) {
-        CellUser cellUser = cellsModule.getUser(cell.getRentedBy());
-        cellUser.removePermissions(cell.getId());
-        cellsModule.saveUser(cellUser);
+    private void expireOwnership(Cell cell) {
+        CellUser cellUser = cellsModule.getUser(cell.getRentedBy()); // old owner
+
+        cellsModule.resetCell(cell.getId());
 
         cell.setRentedBy(null);
         cell.setRentalExpiresAtMillis(0L);

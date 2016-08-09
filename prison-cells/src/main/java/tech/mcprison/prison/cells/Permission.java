@@ -34,6 +34,20 @@ public enum Permission {
         this.userFriendlyName = userFriendlyName;
     }
 
+    /**
+     * Retrieves a permission by its enum constant name, case-insensitive.
+     *
+     * @param name The name to look for.
+     * @return The {@link Permission} enum constant, or null.
+     */
+    public static Permission byName(String name) {
+        for (Permission permission : values()) {
+            if (permission.name().equalsIgnoreCase(name))
+                return permission;
+        }
+        return null;
+    }
+
     public String getUserFriendlyName() {
         return userFriendlyName;
     }
