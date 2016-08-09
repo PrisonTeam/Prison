@@ -49,14 +49,16 @@ public class SignListener {
                 if (isSign(clicked)) {
                     Sign sign = Prison.getInstance().getPlatform().getSign(e.getClicked());
 
-                    if (sign.getLines()[0].contains(ChatColor.GOLD + "[Rankup]"))
+                    if (sign.getLines()[0].contains(ChatColor.GOLD + "[Rankup]")) {
                         e.getPlayer().dispatchCommand("rankup");
+                    }
 
 
                     if (sign.getLines()[0].equalsIgnoreCase(ranksModule.getName()) && sign
                         .getLines()[1].equalsIgnoreCase("rankup") && e.getPlayer()
-                        .hasPermission("prison.ranks.ranksign"))
+                        .hasPermission("prison.ranks.ranksign")) {
                         makeSign(sign);
+                    }
                 }
             }
         } catch (Exception e1) {

@@ -32,8 +32,9 @@ public class SelectionListener {
     }
 
     @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
-        if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL))
+        if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL)) {
             return;
+        }
         e.setCanceled(true);
 
         if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {

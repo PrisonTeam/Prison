@@ -77,13 +77,15 @@ public class SpigotListener implements Listener {
 
     @EventHandler public void onPlayerInteract(PlayerInteractEvent e) {
         // TODO Accept air events (block is null when air is clicked...)
-        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR)
+        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) {
             return;
+        }
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if (spigotPrison.compatibility.getHand(e) != Compatibility.EquipmentSlot.HAND)
+        if (spigotPrison.compatibility.getHand(e) != Compatibility.EquipmentSlot.HAND) {
             return;
+        }
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
         tech.mcprison.prison.internal.events.PlayerInteractEvent event =

@@ -61,8 +61,9 @@ public class Prison {
      * @return an instance of Prison.
      */
     public static Prison getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new Prison();
+        }
         return instance;
     }
 
@@ -93,8 +94,9 @@ public class Prison {
 
     private void initDataFolder() {
         this.dataFolder = new File(platform.getPluginDirectory(), "Core");
-        if (!this.dataFolder.exists())
+        if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
+        }
     }
 
     private void initMessages() {
@@ -215,9 +217,11 @@ public class Prison {
      * @return The {@link PluginCommand}, or null if no command exists by that label.
      */
     public PluginCommand getCommand(String label) {
-        for (PluginCommand command : platform.getCommands())
-            if (command.getLabel().equalsIgnoreCase(label))
+        for (PluginCommand command : platform.getCommands()) {
+            if (command.getLabel().equalsIgnoreCase(label)) {
                 return command;
+            }
+        }
         return null;
     }
 

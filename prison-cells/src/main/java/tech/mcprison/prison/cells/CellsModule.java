@@ -97,8 +97,9 @@ public class CellsModule extends Module {
      */
     public void saveUser(CellUser user) {
         // Replace the old object and insert the new one
-        if (getUser(user.getUUID()) != null)
+        if (getUser(user.getUUID()) != null) {
             users.remove(getUser(user.getUUID()));
+        }
         users.add(user);
 
         File file = new File(userDirectory, user.getUUID().toString() + ".user.json");
@@ -164,8 +165,9 @@ public class CellsModule extends Module {
      */
     public void saveCell(Cell cell) {
         // Replace the old object and insert the new one
-        if (getCell(cell.getId()) != null)
+        if (getCell(cell.getId()) != null) {
             cells.remove(getCell(cell.getId()));
+        }
         cells.add(cell);
 
         File file = new File(cellDirectory, cell.getId() + ".cell.json");

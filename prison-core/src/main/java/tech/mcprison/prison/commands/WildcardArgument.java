@@ -41,9 +41,9 @@ public class WildcardArgument extends CommandArgument {
         if (!args.hasNext()) {
             Object o =
                 getHandler().handle(sender, this, getDefault().equals(" ") ? "" : getDefault());
-            if (join)
+            if (join) {
                 return o;
-            else {
+            } else {
                 Object array = Array.newInstance(getArgumentClass(), 1);
                 Array.set(array, 0, o);
                 return array;
@@ -62,9 +62,10 @@ public class WildcardArgument extends CommandArgument {
         } else {
             Object array = Array.newInstance(getArgumentClass(), args.over());
 
-            for (int i = 0; i < args.over(); i++)
+            for (int i = 0; i < args.over(); i++) {
                 Array.set(array, i, getHandler()
                     .handle(sender, this, CommandUtil.escapeArgumentVariable(args.nextArgument())));
+            }
 
             return array;
         }

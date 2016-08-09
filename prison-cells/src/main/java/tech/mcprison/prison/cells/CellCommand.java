@@ -69,8 +69,9 @@ public class CellCommand {
 
         // Edit the user to make it the owner
         CellUser user = cellsModule.getUser(sender.getUUID());
-        if (user == null)
+        if (user == null) {
             user = new CellUser(sender.getUUID());
+        }
         user.addPermission(cell.getId(), Permission.IS_OWNER);
         cellsModule.saveUser(user);
 
@@ -102,9 +103,10 @@ public class CellCommand {
 
         // Get the CellUser of the sender
         CellUser senderUser = cellsModule.getUser(sender.getUUID());
-        if (senderUser == null)
+        if (senderUser == null) {
             throw new IllegalStateException(
                 "User must be present"); // This shouldn't even happen, unless it does, but I'll find out soon enough
+        }
 
         // Get the cell that the sender owns
         // We always assume that the sender owns just one cell, because that's all that's possible
@@ -157,9 +159,10 @@ public class CellCommand {
 
         // Get the CellUser of the sender
         CellUser senderUser = cellsModule.getUser(sender.getUUID());
-        if (senderUser == null)
+        if (senderUser == null) {
             throw new IllegalStateException(
                 "User must be present"); // This shouldn't even happen, unless it does, but I'll find out soon enough
+        }
 
         // Get the cell that the sender owns
         // We always assume that the sender owns just one cell, because that's all that's possible

@@ -42,10 +42,11 @@ public class RankCommands {
 
     @Command(identifier = "ranks", description = "User Use: Displays ranks - Admin Use: Displays help command", onlyPlayers = false)
     public void ranksCommand(CommandSender sender) {
-        if (!sender.hasPermission("prison.ranks.list.admin"))
+        if (!sender.hasPermission("prison.ranks.list.admin")) {
             sender.dispatchCommand("ranks list");
-        else
+        } else {
             sender.dispatchCommand("ranks help");
+        }
     }
 
     @Command(identifier = "ranks list", description = "List the ranks that are currently added", onlyPlayers = false)
@@ -57,21 +58,22 @@ public class RankCommands {
             for (Rank rank : ranksModule.getRanks()) {
 
                 String tag;
-                if (rank.getTag() == null)
+                if (rank.getTag() == null) {
                     tag = "n/a";
-                else
+                } else {
                     tag = rank.getTag();
+                }
 
                 String formattedCost = TextUtil.formatNumber(rank.getCost());
 
-                if (sender.hasPermission("prison.ranks.list.admin"))
+                if (sender.hasPermission("prison.ranks.list.admin")) {
                     sender.sendMessage(String
                         .format(Messages.commandListAdmin, rank.getName(), rank.getRankId(),
                             rank.getRankLadder(), tag, formattedCost));
-
-                else
+                } else {
                     sender.sendMessage(
                         String.format(Messages.commandListUser, rank.getName(), formattedCost));
+                }
             }
             sender.sendMessage(Messages.commandListHeadFood);
         }
@@ -121,8 +123,9 @@ public class RankCommands {
             Rank newRank = null;
 
             for (Rank rank1 : ranksModule.getRanks()) {
-                if (rank1.getName().equalsIgnoreCase(String.valueOf(rank)))
+                if (rank1.getName().equalsIgnoreCase(String.valueOf(rank))) {
                     newRank = rank1;
+                }
             }
 
             if (newRank != null) {
@@ -130,8 +133,9 @@ public class RankCommands {
 
                 RankSetEvent event = new RankSetEvent(targ, oldRank, newRank);
                 Prison.getInstance().getEventBus().post(event);
-                if (event.isCanceled())
+                if (event.isCanceled()) {
                     return;
+                }
 
                 sender.sendMessage(String
                     .format(Messages.commandSetRank, targ.getName(), oldRank.getName(),
@@ -166,8 +170,9 @@ public class RankCommands {
     public void checkRankCommand(CommandSender sender, @Arg(name = "player") String name) {
         Player targ = Prison.getInstance().getPlatform().getPlayer(name);
         RankUser targRank = null;
-        if (targ != null)
+        if (targ != null) {
             targRank = ranksModule.getUser(targ.getUUID());
+        }
 
         if (targ != null) {
             if (targRank.getRank() == null) {
@@ -200,8 +205,9 @@ public class RankCommands {
 
             RankPromoteEvent event = new RankPromoteEvent(targ, currentRank, newRank);
             Prison.getInstance().getEventBus().post(event);
-            if (event.isCanceled())
+            if (event.isCanceled()) {
                 return;
+            }
             targRank.setRank(newRank);
             ranksModule.saveRankUser(targRank);
 
@@ -231,8 +237,9 @@ public class RankCommands {
 
             RankDemoteEvent event = new RankDemoteEvent(targ, currentRank, newRank);
             Prison.getInstance().getEventBus().post(event);
-            if (event.isCanceled())
+            if (event.isCanceled()) {
                 return;
+            }
             targRank.setRank(newRank);
             ranksModule.saveRankUser(targRank);
 
@@ -259,8 +266,9 @@ public class RankCommands {
 
             RankupEvent event = new RankupEvent(sender, targRank.getRank(), nextRank);
             Prison.getInstance().getEventBus().post(event);
-            if (event.isCanceled())
+            if (event.isCanceled()) {
                 return;
+            }
 
             Prison.getInstance().getPlatform().getEconomy()
                 .removeBalance(sender, nextRank.getCost());

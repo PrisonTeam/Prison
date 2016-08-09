@@ -46,8 +46,9 @@ public class SpigotSign implements Sign {
     }
 
     @Override public void setLines(List<String> lines) {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
             bSign.setLine(i, lines.get(i));
+        }
         bSign.update();
     }
 

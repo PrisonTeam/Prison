@@ -410,30 +410,38 @@ public enum Block {
     }
 
     public static Block getBlock(int legacyId) {
-        for (Block block : values())
-            if (block.getLegacyId() == legacyId)
+        for (Block block : values()) {
+            if (block.getLegacyId() == legacyId) {
                 return block;
+            }
+        }
         return null;
     }
 
     public static Block getBlock(String id) {
-        for (Block block : values())
-            if (block.getId().equalsIgnoreCase(id))
+        for (Block block : values()) {
+            if (block.getId().equalsIgnoreCase(id)) {
                 return block;
+            }
+        }
         return null;
     }
 
     public static Block getBlockByName(String name) {
-        for (Block block : values())
-            if (block.name().equalsIgnoreCase(name))
+        for (Block block : values()) {
+            if (block.name().equalsIgnoreCase(name)) {
                 return block;
+            }
+        }
         return null;
     }
 
     public static Block getBlockWithData(int id, short data) {
-        for (Block block : values())
-            if (block.getLegacyId() == id && block.getData() == data)
+        for (Block block : values()) {
+            if (block.getLegacyId() == id && block.getData() == data) {
                 return block;
+            }
+        }
         return null;
     }
 

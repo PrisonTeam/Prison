@@ -50,6 +50,7 @@ buildscript {
 subprojects {
 
     apply plugin: 'java'
+    apply plugin: 'checkstyle'
     apply plugin: 'maven'
     apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -58,6 +59,8 @@ subprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    checkstyle.configFile = new File(rootProject.projectDir, "config/checkstyle/checkstyle.xml")
 
     repositories {
         mavenCentral()
@@ -75,5 +78,12 @@ subprojects {
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
         testCompile 'junit:junit:4.12'
     }
+
+    checkstyle {
+        toolVersion = "7.1"
+    }
+
+    build.dependsOn(checkstyleMain)
+    build.dependsOn(checkstyleTest)
 
 }

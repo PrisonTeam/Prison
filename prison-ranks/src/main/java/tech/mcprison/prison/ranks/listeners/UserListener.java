@@ -43,9 +43,10 @@ public class UserListener {
 
     @Subscribe public void onPlayerJoin(PlayerJoinEvent e) {
         try {
-            if (ranksModule.getUser(e.getPlayer().getUUID()) == null)
+            if (ranksModule.getUser(e.getPlayer().getUUID()) == null) {
                 ranksModule.saveRankUser(
                     new RankUser(e.getPlayer().getUUID(), ranksModule.getBottomRank()));
+            }
         } catch (Exception e1) {
             e1.printStackTrace();
         }

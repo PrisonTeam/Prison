@@ -39,8 +39,9 @@ public class GUIListener implements Listener {
     private List<GUI> inventories = new ArrayList<>();
 
     public static GUIListener getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new GUIListener();
+        }
         return instance;
     }
 
@@ -62,19 +63,23 @@ public class GUIListener implements Listener {
                 b[0] = inv.getButtons().get(e.getSlot());
             });
 
-        if (b[0] == null)
+        if (b[0] == null) {
             return;
+        }
         e.setCancelled(true);
-        if (b[0].isCloseOnClick())
+        if (b[0].isCloseOnClick()) {
             e.getWhoClicked().closeInventory();
+        }
         b[0].getAction().run(gui[0]);
     }
 
     @EventHandler public void closeInventory(InventoryCloseEvent e) {
         Iterator<GUI> i = inventories.iterator();
-        while (i.hasNext())
-            if (i.next().getTitle().equals(e.getInventory().getTitle()))
+        while (i.hasNext()) {
+            if (i.next().getTitle().equals(e.getInventory().getTitle())) {
                 i.remove(); // Remove it if found
+            }
+        }
     }
 
 }

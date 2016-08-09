@@ -38,14 +38,15 @@ public class FlagArgument extends CommandArgument {
 
     @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
         String arg;
-        if (!args.flagExists(flag))
+        if (!args.flagExists(flag)) {
             arg = getDefault();
-        else if (!args.hasNext(flag))
+        } else if (!args.hasNext(flag)) {
             throw new CommandError(String
                 .format(Prison.getInstance().getMessages().undefinedFlagArgument, getName(),
                     flag.getIdentifier()));
-        else
+        } else {
             arg = CommandUtil.escapeArgumentVariable(args.nextFlagArgument(flag));
+        }
 
         return getHandler().handle(sender, this, arg);
     }

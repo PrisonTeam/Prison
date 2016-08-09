@@ -40,33 +40,38 @@ public class VaultEconomy implements Economy {
     }
 
     @Override public double getBalance(Player player) {
-        if (economy == null)
+        if (economy == null) {
             return 0;
+        }
         return economy.getBalance(player.getName());
     }
 
     @Override public void setBalance(Player player, double amount) {
-        if (economy == null)
+        if (economy == null) {
             return;
+        }
         economy.bankWithdraw(player.getName(), getBalance(player));
         economy.bankDeposit(player.getName(), amount);
     }
 
     @Override public void addBalance(Player player, double amount) {
-        if (economy == null)
+        if (economy == null) {
             return;
+        }
         economy.bankDeposit(player.getName(), amount);
     }
 
     @Override public void removeBalance(Player player, double amount) {
-        if (economy == null)
+        if (economy == null) {
             return;
+        }
         economy.bankWithdraw(player.getName(), amount);
     }
 
     @Override public boolean canAfford(Player player, double amount) {
-        if (economy == null)
+        if (economy == null) {
             return false;
+        }
         return economy.bankHas(player.getName(), amount).transactionSuccess();
     }
 

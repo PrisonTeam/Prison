@@ -77,11 +77,12 @@ public class Text {
      */
     public static String replaceLast(String text, String toReplace, String replacement) {
         int pos = text.lastIndexOf(toReplace);
-        if (pos > -1)
+        if (pos > -1) {
             return text.substring(0, pos) + replacement + text
                 .substring(pos + toReplace.length(), text.length());
-        else
+        } else {
             return text;
+        }
     }
 
     /**
@@ -93,8 +94,9 @@ public class Text {
      */
     public static String implode(String[] text, String glue) {
         StringBuilder builder = new StringBuilder();
-        for (String t : text)
+        for (String t : text) {
             builder.append(t).append(glue);
+        }
         return replaceLast(builder.toString(), glue, "");
     }
 
@@ -130,15 +132,17 @@ public class Text {
      * @return The translated string.
      */
     public static String translateColorCodes(String text, char prefix) {
-        if (prefix == 167)
+        if (prefix == 167) {
             return text; // No need to translate, it's already been translated
+        }
         char[] b = text.toCharArray();
 
-        for (int i = 0; i < b.length - 1; ++i)
+        for (int i = 0; i < b.length - 1; ++i) {
             if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
                 b[i] = 167; // Section symbol
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
+        }
 
         return new String(b);
     }

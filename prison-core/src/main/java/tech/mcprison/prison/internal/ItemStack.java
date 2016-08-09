@@ -71,10 +71,12 @@ public class ItemStack {
     }
 
     @Override public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ItemStack))
+        }
+        if (!(o instanceof ItemStack)) {
             return false;
+        }
 
         ItemStack itemStack = (ItemStack) o;
 

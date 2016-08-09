@@ -32,13 +32,15 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
                 String[] verifyArgs, String value, String valueRaw) throws VerifyError {
-                if (verifyArgs.length != 1)
+                if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
+                }
 
                 try {
                     int min = Integer.parseInt(verifyArgs[0]);
-                    if (value.length() < min)
+                    if (value.length() < min) {
                         throw new VerifyError(argument.getMessage("min_error", verifyArgs[0]));
+                    }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -50,13 +52,15 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
                 String[] verifyArgs, String value, String valueRaw) throws VerifyError {
-                if (verifyArgs.length != 1)
+                if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
+                }
 
                 try {
                     int max = Integer.parseInt(verifyArgs[0]);
-                    if (value.length() > max)
+                    if (value.length() > max) {
                         throw new VerifyError(argument.getMessage("max_error", verifyArgs[0]));
+                    }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }

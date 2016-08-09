@@ -43,8 +43,9 @@ public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializ
     @Override
     public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
-        if (!json.isJsonObject())
+        if (!json.isJsonObject()) {
             return null;
+        }
         JsonObject object = json.getAsJsonObject();
 
         String worldName = object.getAsJsonPrimitive(WORLD).getAsString();

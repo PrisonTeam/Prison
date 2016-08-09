@@ -44,12 +44,13 @@ public abstract class ArgumentHandler<T> {
                 String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
                 for (String include : verifyArgs) {
                     try {
-                        if (transform(sender, argument, include) != value)
+                        if (transform(sender, argument, include) != value) {
                             throw new java.lang.VerifyError(
                                 argument.getMessage("include_error", valueRaw));
+                        }
                     } catch (TransformError e) {
                         throw (IllegalArgumentException) new IllegalArgumentException(
-                            "Could not transform the verify argument " + include).initCause(e);
+                            "Could not transform the verify argument " + include, e);
                     }
                 }
             }
@@ -61,12 +62,13 @@ public abstract class ArgumentHandler<T> {
                 String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
                 for (String exclude : verifyArgs) {
                     try {
-                        if (transform(sender, argument, exclude) == value)
+                        if (transform(sender, argument, exclude) == value) {
                             throw new java.lang.VerifyError(
                                 argument.getMessage("exclude_error", valueRaw));
+                        }
                     } catch (TransformError e) {
                         throw (IllegalArgumentException) new IllegalArgumentException(
-                            "Could not transform the verify argument " + exclude).initCause(e);
+                            "Could not transform the verify argument " + exclude, e);
                     }
                 }
             }
@@ -75,17 +77,19 @@ public abstract class ArgumentHandler<T> {
 
     public final void addVariable(String varName, String userFriendlyName,
         ArgumentVariable<T> var) {
-        if (verifierExists(varName))
+        if (verifierExists(varName)) {
             throw new IllegalArgumentException(
                 "A variable with the name " + varName + " does already exist.");
+        }
 
         vars.put(varName, new Variable(userFriendlyName, var));
     }
 
     public final void addVerifier(String name, ArgumentVerifier<T> verify) {
-        if (verifierExists(name))
+        if (verifierExists(name)) {
             throw new IllegalArgumentException(
                 "A verifier with the name " + name + " does already exist.");
+        }
 
         verifiers.put(name, verify);
     }
@@ -111,29 +115,33 @@ public abstract class ArgumentHandler<T> {
     }
 
     final T handle(CommandSender sender, CommandArgument argument, String arg) throws CommandError {
-        if (arg == null)
+        if (arg == null) {
             return null;
+        }
 
         T transformed;
 
         if (arg.startsWith("?")) {
             String varName = arg.substring(1, arg.length());
             ArgumentVariable<T> var = getVariable(varName);
-            if (var == null)
+            if (var == null) {
                 throw new IllegalArgumentException(
                     "The ArgumentVariable '" + varName + "' is not registered.");
+            }
 
             transformed = var.var(sender, argument, varName);
         } else if (arg.matches("^\\\\+\\?.*$")) {
             arg = arg.substring(1, arg.length());
             transformed = transform(sender, argument, arg);
-        } else
+        } else {
             transformed = transform(sender, argument, arg);
+        }
 
         for (Entry<String, String[]> verifier : argument.getVerifyArguments().entrySet()) {
             ArgumentVerifier<T> v = this.verifiers.get(verifier.getKey());
-            if (v == null)
+            if (v == null) {
                 throw new VerifierNotRegistered(verifier.getKey());
+            }
 
             v.verify(sender, argument, verifier.getKey(), verifier.getValue(), transformed, arg);
         }

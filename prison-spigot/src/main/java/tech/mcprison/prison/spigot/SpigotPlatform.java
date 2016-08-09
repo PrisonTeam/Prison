@@ -58,20 +58,23 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public World getWorld(String name) {
-        if (Bukkit.getWorld(name) == null)
+        if (Bukkit.getWorld(name) == null) {
             return null; // Avoid NPE
+        }
         return new SpigotWorld(Bukkit.getWorld(name));
     }
 
     @Override public Player getPlayer(String name) {
-        if (Bukkit.getPlayer(name) == null)
+        if (Bukkit.getPlayer(name) == null) {
             return null; // Avoid NPE
+        }
         return new SpigotPlayer(Bukkit.getPlayer(name));
     }
 
     @Override public Player getPlayer(UUID uuid) {
-        if (Bukkit.getPlayer(uuid) == null)
+        if (Bukkit.getPlayer(uuid) == null) {
             return null; // Avoid NPE
+        }
         return new SpigotPlayer(Bukkit.getPlayer(uuid));
     }
 
@@ -88,12 +91,13 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public Economy getEconomy() {
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials"))
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
             return new EssentialsEconomy();
-        else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault"))
+        } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
             return new VaultEconomy();
-        else
+        } else {
             return null;
+        }
     }
 
     @Override public String getPluginVersion() {
@@ -113,10 +117,11 @@ class SpigotPlatform implements Platform {
 
                         @Override public boolean execute(CommandSender sender, String commandLabel,
                             String[] args) {
-                            if (sender instanceof org.bukkit.entity.Player)
+                            if (sender instanceof org.bukkit.entity.Player) {
                                 return Prison.getInstance().getCommandHandler()
                                     .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
                                         command, commandLabel, args);
+                            }
                             return Prison.getInstance().getCommandHandler()
                                 .onCommand(new SpigotCommandSender(sender), command, commandLabel,
                                     args);
@@ -156,8 +161,9 @@ class SpigotPlatform implements Platform {
             new org.bukkit.Location(Bukkit.getWorld(doorLocation.getWorld().getName()),
                 doorLocation.getX(), doorLocation.getY(), doorLocation.getZ());
         Block block = bLoc.getWorld().getBlockAt(bLoc).getRelative(BlockFace.DOWN);
-        if (!isDoor(block.getType()))
+        if (!isDoor(block.getType())) {
             return;
+        }
 
         BlockState state = block.getState();
         Openable openable = (Openable) state.getData();
@@ -171,10 +177,11 @@ class SpigotPlatform implements Platform {
         message = TextUtil.parse("&8[&3Prison&8]&r " + message, format);
 
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
-        if (sender == null)
+        if (sender == null) {
             Bukkit.getLogger().info(ChatColor.stripColor(message));
-        else
+        } else {
             sender.sendMessage(message);
+        }
     }
 
     @Override public void showTitle(Player player, String title, String subtitle, int fade) {

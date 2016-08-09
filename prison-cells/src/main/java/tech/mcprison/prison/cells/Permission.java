@@ -42,8 +42,9 @@ public enum Permission {
      */
     public static Permission byName(String name) {
         for (Permission permission : values()) {
-            if (permission.name().equalsIgnoreCase(name))
+            if (permission.name().equalsIgnoreCase(name)) {
                 return permission;
+            }
         }
         return null;
     }

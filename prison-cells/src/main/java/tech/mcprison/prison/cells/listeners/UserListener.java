@@ -40,8 +40,9 @@ public class UserListener {
     }
 
     @Subscribe public void onPlayerJoin(PlayerJoinEvent e) {
-        if (cellsModule.getUser(e.getPlayer().getUUID()) == null)
+        if (cellsModule.getUser(e.getPlayer().getUUID()) == null) {
             cellsModule.saveUser(new CellUser(e.getPlayer().getUUID()));
+        }
     }
 
 }

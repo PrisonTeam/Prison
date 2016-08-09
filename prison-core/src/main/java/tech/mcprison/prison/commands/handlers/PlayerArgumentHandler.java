@@ -31,8 +31,9 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
             @Override
             public Player var(CommandSender sender, CommandArgument argument, String varName)
                 throws CommandError {
-                if (!(sender instanceof Player))
+                if (!(sender instanceof Player)) {
                     throw new CommandError(argument.getMessage("cant_as_console"));
+                }
 
                 return ((Player) sender);
             }
@@ -42,8 +43,9 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
     @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         Player p = Prison.getInstance().getPlatform().getPlayer(value);
-        if (p == null)
+        if (p == null) {
             throw new TransformError(argument.getMessage("player_not_online", value));
+        }
         return p;
     }
 }

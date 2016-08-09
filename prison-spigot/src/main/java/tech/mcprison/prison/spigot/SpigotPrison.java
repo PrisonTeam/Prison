@@ -41,8 +41,9 @@ public class SpigotPrison extends JavaPlugin {
     Compatibility compatibility;
 
     @Override public void onLoad() {
-        if (!getDataFolder().exists())
+        if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
+        }
     }
 
     @Override public void onEnable() {
@@ -75,10 +76,11 @@ public class SpigotPrison extends JavaPlugin {
     private void initCompatibility() {
         String minorVersion = Bukkit.getVersion().split("\\.")[1];
         int minorVersionInt = Integer.parseInt(minorVersion);
-        if (minorVersionInt <= 8)
+        if (minorVersionInt <= 8) {
             compatibility = new Spigot18();
-        else if (minorVersionInt >= 9)
+        } else if (minorVersionInt >= 9) {
             compatibility = new Spigot19();
+        }
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }
 

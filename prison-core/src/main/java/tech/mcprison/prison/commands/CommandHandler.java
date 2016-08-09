@@ -42,9 +42,11 @@ public class CommandHandler {
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
     private PermissionHandler permissionHandler = (sender, permissions) -> {
-        for (String perm : permissions)
-            if (!sender.hasPermission(perm))
+        for (String perm : permissions) {
+            if (!sender.hasPermission(perm)) {
                 return false;
+            }
+        }
         return true;
     };
 
@@ -56,9 +58,10 @@ public class CommandHandler {
             } else if (def.startsWith("?")) {
                 String varName = def.substring(1);
                 def = argument.getHandler().getVariableUserFriendlyName(varName);
-                if (def == null)
+                if (def == null) {
                     throw new IllegalArgumentException(
                         "The ArgumentVariable '" + varName + "' is not registered.");
+                }
                 def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
             } else {
                 def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
@@ -124,8 +127,9 @@ public class CommandHandler {
 
             usage.insert(0, "/");
 
-            if (!command.isSet())
+            if (!command.isSet()) {
                 return usage.toString();
+            }
 
             usage.append(ChatColor.AQUA);
 
@@ -187,9 +191,10 @@ public class CommandHandler {
 
     public <T> void registerArgumentHandler(Class<? extends T> clazz,
         ArgumentHandler<T> argHandler) {
-        if (argumentHandlers.get(clazz) != null)
+        if (argumentHandlers.get(clazz) != null) {
             throw new IllegalArgumentException(
                 "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
+        }
 
         argHandler.handler = this;
         argumentHandlers.put(clazz, argHandler);
@@ -198,12 +203,14 @@ public class CommandHandler {
     public void registerCommands(Object commands) {
         for (Method method : commands.getClass().getDeclaredMethods()) {
             Command commandAnno = method.getAnnotation(Command.class);
-            if (commandAnno == null)
+            if (commandAnno == null) {
                 continue;
+            }
 
             String[] identifiers = commandAnno.identifier().split(" ");
-            if (identifiers.length == 0)
+            if (identifiers.length == 0) {
                 throw new RegisterCommandMethodException(method, "Invalid identifiers");
+            }
 
             PluginCommand rootPcommand = plugin.getCommand(identifiers[0]);
 

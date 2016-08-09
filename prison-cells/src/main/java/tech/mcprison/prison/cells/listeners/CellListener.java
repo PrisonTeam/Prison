@@ -46,15 +46,18 @@ public class CellListener {
 
     @Subscribe public void onPlayerHitDoor(PlayerInteractEvent e) {
         try {
-            if (e.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
+            if (e.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
                 return;
+            }
 
             Block block = e.getClicked().getWorld().getBlockAt(adjustToTopHalf(e.getClicked()));
-            if (!Block.isDoor(block))
+            if (!Block.isDoor(block)) {
                 return; // Must be a door
+            }
 
-            if (cellsModule.getCellCreationQueue().getCell(e.getPlayer()) == null)
+            if (cellsModule.getCellCreationQueue().getCell(e.getPlayer()) == null) {
                 return; // Player isn't creating a cell
+            }
             e.setCanceled(true);
 
             cellsModule.getCellCreationQueue()
@@ -69,24 +72,28 @@ public class CellListener {
     private Location adjustToTopHalf(Location loc) {
         Location oneBelow =
             new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
-        if (!Block.isDoor(loc.getWorld().getBlockAt(oneBelow)))
+        if (!Block.isDoor(loc.getWorld().getBlockAt(oneBelow))) {
             return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + 1,
                 loc.getBlockZ());
+        }
         return loc;
     }
 
     @Subscribe public void enforceDoorPermission(PlayerInteractEvent e) {
         try {
-            if (e.getAction() != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+            if (e.getAction() != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
                 return;
-            if (cellsModule.getUser(e.getPlayer().getUUID()) == null)
+            }
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) {
                 return;
+            }
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
             Location adjustedLoc = adjustToTopHalf(e.getClicked());
             Cell cell = cellsModule.getCellByDoorLocation(adjustedLoc);
-            if (cell == null)
+            if (cell == null) {
                 return;
+            }
 
             if (!user.hasAccess(cell.getId()) || !user
                 .hasPermission(cell.getId(), Permission.OPEN_DOOR)) {
@@ -105,15 +112,18 @@ public class CellListener {
 
     @Subscribe public void enforceChestPermission(PlayerInteractEvent e) {
         try {
-            if (e.getClicked().getWorld().getBlockAt(e.getClicked()) != Block.CHEST)
+            if (e.getClicked().getWorld().getBlockAt(e.getClicked()) != Block.CHEST) {
                 return;
-            if (cellsModule.getUser(e.getPlayer().getUUID()) == null)
+            }
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) {
                 return;
+            }
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
             Cell cell = cellsModule.getCellByLocationWithin(e.getClicked());
-            if (cell == null)
+            if (cell == null) {
                 return;
+            }
 
             if (!user.hasAccess(cell.getId()) || !user
                 .hasPermission(cell.getId(), Permission.OPEN_CHEST)) {
@@ -128,13 +138,15 @@ public class CellListener {
 
     @Subscribe public void enforceBuildPermission(BlockPlaceEvent e) {
         try {
-            if (cellsModule.getUser(e.getPlayer().getUUID()) == null)
+            if (cellsModule.getUser(e.getPlayer().getUUID()) == null) {
                 return;
+            }
 
             CellUser user = cellsModule.getUser(e.getPlayer().getUUID());
             Cell cell = cellsModule.getCellByLocationWithin(e.getBlockLocation());
-            if (cell == null)
+            if (cell == null) {
                 return;
+            }
 
             if (!user.hasAccess(cell.getId()) || !user
                 .hasPermission(cell.getId(), Permission.BUILD_BLOCKS)) {

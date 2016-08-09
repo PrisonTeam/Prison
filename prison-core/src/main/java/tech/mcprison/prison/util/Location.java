@@ -114,23 +114,30 @@ public class Location {
     }
 
     @Override public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Location))
+        }
+        if (!(o instanceof Location)) {
             return false;
+        }
 
         Location location = (Location) o;
 
-        if (Double.compare(location.x, x) != 0)
+        if (Double.compare(location.x, x) != 0) {
             return false;
-        if (Double.compare(location.y, y) != 0)
+        }
+        if (Double.compare(location.y, y) != 0) {
             return false;
-        if (Double.compare(location.z, z) != 0)
+        }
+        if (Double.compare(location.z, z) != 0) {
             return false;
-        if (Float.compare(location.pitch, pitch) != 0)
+        }
+        if (Float.compare(location.pitch, pitch) != 0) {
             return false;
-        if (Float.compare(location.yaw, yaw) != 0)
+        }
+        if (Float.compare(location.yaw, yaw) != 0) {
             return false;
+        }
         return world != null ?
             world.getName().equals(location.world.getName()) :
             location.world == null;

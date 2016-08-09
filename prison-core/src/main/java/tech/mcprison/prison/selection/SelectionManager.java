@@ -50,8 +50,9 @@ public class SelectionManager {
     }
 
     public Selection getSelection(Player player) {
-        if (!selectionMap.containsKey(player.getName()))
+        if (!selectionMap.containsKey(player.getName())) {
             selectionMap.put(player.getName(), new Selection());
+        }
         return selectionMap.get(player.getName());
     }
 

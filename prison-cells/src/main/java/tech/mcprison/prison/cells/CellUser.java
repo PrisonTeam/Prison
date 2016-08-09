@@ -89,8 +89,9 @@ public class CellUser {
      */
     public void addPermission(int cellId, Permission permission) {
         List<Permission> permissions = getPermissions(cellId);
-        if (permissions.contains(permission))
+        if (permissions.contains(permission)) {
             return;
+        }
         permissions.add(permission);
         cells.put(cellId, permissions);
     }

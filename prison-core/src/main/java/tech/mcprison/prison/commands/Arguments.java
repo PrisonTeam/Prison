@@ -37,17 +37,19 @@ public class Arguments {
             Flag flag = entry.getValue();
 
             int flagIndex = largs.indexOf("-" + flag.getIdentifier());
-            if (flagIndex == -1)
+            if (flagIndex == -1) {
                 continue;
+            }
 
             largs.remove(flagIndex);
 
             int endIndex = flag.getArguments().size() + flagIndex;
 
-            if (endIndex > largs.size())
+            if (endIndex > largs.size()) {
                 throw new CommandError(String
                     .format(Prison.getInstance().getMessages().missingFlagArgument,
                         flag.getIdentifier()));
+            }
 
             flagCounter.put(flag, 0);
 
@@ -73,8 +75,9 @@ public class Arguments {
 
     public boolean hasNext(Flag flag) {
         Integer c = flagCounter.get(flag);
-        if (c == null)
+        if (c == null) {
             return false;
+        }
 
         return c < size(flag);
     }
@@ -88,8 +91,9 @@ public class Arguments {
     public String nextFlagArgument(Flag flag) {
         List<String> args = flags.get(flag);
 
-        if (args == null)
+        if (args == null) {
             return null;
+        }
 
         return args.get(flagCounter.put(flag, flagCounter.get(flag) + 1));
     }
@@ -109,8 +113,9 @@ public class Arguments {
     public int size(Flag flag) {
         List<String> args = flags.get(flag);
 
-        if (args == null)
+        if (args == null) {
             return 0;
+        }
 
         return args.size();
     }

@@ -360,20 +360,20 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     }
     /*
 
-	/**
-	 * If the text is a translatable key, and it has replaceable values, this function can be used to set the replacements that will be used in the message.
-	 * @param replacements The replacements, in order, that will be used in the language-specific message.
-	 * @return This builder instance.
-	 */   /* ------------
+    /**
+     * If the text is a translatable key, and it has replaceable values, this function can be used to set the replacements that will be used in the message.
+     * @param replacements The replacements, in order, that will be used in the language-specific message.
+     * @return This builder instance.
+     */   /* ------------
     public FancyMessage translationReplacements(final Iterable<? extends CharSequence> replacements){
-		for(CharSequence str : replacements){
-			latest().translationReplacements.add(new JsonString(str));
-		}
-		
-		return this;
-	}
-	
-	*/
+        for(CharSequence str : replacements){
+            latest().translationReplacements.add(new JsonString(str));
+        }
+        
+        return this;
+    }
+    
+    */
 
     /**
      * Set the behavior of the current editing component to display the specified lines of formatted text when the client hovers over the text.
@@ -559,10 +559,11 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     }
 
     private void send(CommandSender sender, String jsonString) {
-        if (!(sender instanceof Player))
+        if (!(sender instanceof Player)) {
             sender.sendMessage(toOldMessageFormat());
-        else
+        } else {
             sender.sendRaw(jsonString);
+        }
     }
 
     /**
@@ -641,7 +642,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     public Map<String, Object> serialize() {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("messageParts", messageParts);
-        //		map.put("JSON", toJSONString());
+        //        map.put("JSON", toJSONString());
         return map;
     }
 

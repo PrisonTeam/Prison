@@ -60,8 +60,9 @@ public class SpigotCommandSender implements CommandSender {
     }
 
     @Override public void sendMessage(String[] messages) {
-        for (String s : messages)
+        for (String s : messages) {
             sendMessage(s);
+        }
     }
 
     @Override public void sendRaw(String json) {

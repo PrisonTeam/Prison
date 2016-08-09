@@ -115,10 +115,12 @@ public class Bounds {
     }
 
     @Override public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Bounds))
+        }
+        if (!(o instanceof Bounds)) {
             return false;
+        }
 
         Bounds bounds = (Bounds) o;
         return min != null ?

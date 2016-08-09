@@ -32,8 +32,9 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
             @Override
             public World var(CommandSender sender, CommandArgument argument, String varName)
                 throws CommandError {
-                if (!(sender instanceof Player))
+                if (!(sender instanceof Player)) {
                     throw new CommandError(argument.getMessage("cant_as_console"));
+                }
 
                 return ((Player) sender).getLocation().getWorld();
             }
@@ -43,8 +44,9 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
     @Override public World transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         World world = Prison.getInstance().getPlatform().getWorld(value);
-        if (world == null)
+        if (world == null) {
             throw new TransformError(argument.getMessage("world_not_found", value));
+        }
         return world;
     }
 }

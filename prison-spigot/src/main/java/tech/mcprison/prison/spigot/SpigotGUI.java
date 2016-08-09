@@ -58,8 +58,9 @@ public class SpigotGUI implements GUI {
     @Override public GUI build() {
         bukkitInventory = Bukkit.getServer()
             .createInventory(null, numRows * 9, ChatColor.translateAlternateColorCodes('&', title));
-        for (Map.Entry<Integer, Button> button : buttons.entrySet())
+        for (Map.Entry<Integer, Button> button : buttons.entrySet()) {
             bukkitInventory.setItem(button.getKey(), buttonToItemStack(button.getValue()));
+        }
 
         return this;
     }

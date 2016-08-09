@@ -61,8 +61,9 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemStack.getName()));
 
         String[] colorLore = new String[itemStack.getLore().size()];
-        for (int i = 0; i < colorLore.length; i++)
+        for (int i = 0; i < colorLore.length; i++) {
             colorLore[i] = ChatColor.translateAlternateColorCodes('&', itemStack.getLore().get(i));
+        }
         meta.setLore(Arrays.asList(colorLore));
 
         bStack.setItemMeta(meta);

@@ -41,15 +41,17 @@ public class BlockArgumentHandler extends ArgumentHandler<Block> {
         } catch (NumberFormatException ignored) {
         }
 
-        if (m != null)
+        if (m != null) {
             return m;
+        }
 
         // Now try new block IDs
 
         m = Block.getBlock(value);
 
-        if (m != null)
+        if (m != null) {
             return m;
+        }
 
         // Now try id:data format
         if (value.contains(":")) {
@@ -64,8 +66,9 @@ public class BlockArgumentHandler extends ArgumentHandler<Block> {
             m = Block.getBlockWithData(id, data);
         }
 
-        if (m != null)
+        if (m != null) {
             return m;
+        }
 
         // No more checks, just fail
 

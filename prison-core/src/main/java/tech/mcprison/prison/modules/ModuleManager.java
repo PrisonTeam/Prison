@@ -45,15 +45,17 @@ public class ModuleManager {
      * Register a new module.
      */
     public void registerModule(Module module) {
-        if (getModule(module.getName()) != null)
+        if (getModule(module.getName()) != null) {
             return; // Already added
+        }
         modules.add(module);
         enableModule(module);
     }
 
     private void validateVersion(Module module) {
-        if (module.getVersion().equals(Prison.getInstance().getPlatform().getPluginVersion()))
+        if (module.getVersion().equals(Prison.getInstance().getPlatform().getPluginVersion())) {
             return; // Version matches, no need to continue
+        }
 
         setStatus(module.getName(), "&6Version mismatch (update module)");
         Prison.getInstance().getPlatform()
@@ -76,8 +78,10 @@ public class ModuleManager {
         validateVersion(module);
 
         // If the status is still null, then nothing went wrong during the enable.
-        if (getStatus(module.getName()) == null || getStatus(module.getName()).contains("Disabled"))
+        if (getStatus(module.getName()) == null || getStatus(module.getName())
+            .contains("Disabled")) {
             setStatus(module.getName(), "&aEnabled");
+        }
 
         // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
         if (getStatus(module.getName()).startsWith("&c")) {
@@ -130,9 +134,11 @@ public class ModuleManager {
      * Returns the {@link Module} with the specified name.
      */
     public Module getModule(String name) {
-        for (Module module : modules)
-            if (module.getName().equalsIgnoreCase(name))
+        for (Module module : modules) {
+            if (module.getName().equalsIgnoreCase(name)) {
                 return module;
+            }
+        }
         return null;
     }
 
@@ -140,9 +146,11 @@ public class ModuleManager {
      * Returns the {@link Module} with the specified package name.
      */
     public Module getModuleByPackageName(String name) {
-        for (Module module : modules)
-            if (module.getPackageName().equalsIgnoreCase(name))
+        for (Module module : modules) {
+            if (module.getPackageName().equalsIgnoreCase(name)) {
                 return module;
+            }
+        }
         return null;
     }
 

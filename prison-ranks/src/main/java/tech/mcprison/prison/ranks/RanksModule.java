@@ -55,16 +55,19 @@ public class RanksModule extends Module {
     @Override public void enable() {
         File ranksModuleDir =
             new File(Prison.getInstance().getPlatform().getPluginDirectory(), "Ranks");
-        if (!ranksModuleDir.exists())
+        if (!ranksModuleDir.exists()) {
             ranksModuleDir.mkdir();
+        }
 
         ranksDirectory = new File(ranksModuleDir, "ranks");
-        if (!ranksDirectory.exists())
+        if (!ranksDirectory.exists()) {
             ranksDirectory.mkdir();
+        }
 
         usersDirectory = new File(ranksModuleDir, "users");
-        if (!usersDirectory.exists())
+        if (!usersDirectory.exists()) {
             usersDirectory.mkdir();
+        }
 
         this.messagesLoader =
             new ConfigurationLoader(ranksModuleDir, "messages.json", Messages.class,
@@ -111,8 +114,9 @@ public class RanksModule extends Module {
     }
 
     public void saveRank(Rank rank) {
-        if (getRank(rank.getRankId()) == null)
+        if (getRank(rank.getRankId()) == null) {
             ranks.add(rank);
+        }
 
         String json = gson.toJson(rank);
         try {
@@ -141,8 +145,9 @@ public class RanksModule extends Module {
     }
 
     public void saveRankUser(RankUser user) {
-        if (getUser(user.getUuid()) == null)
+        if (getUser(user.getUuid()) == null) {
             users.add(user);
+        }
         user.setRank(getRank(user.getRank().getRankId()));
         String json = gson.toJson(user);
         try {
@@ -163,8 +168,9 @@ public class RanksModule extends Module {
     public int getNextLadder() {
         int highestId = 0;
         for (Rank rank : ranks) {
-            if (rank.getRankLadder() > highestId)
+            if (rank.getRankLadder() > highestId) {
                 highestId = rank.getRankLadder();
+            }
         }
 
         return highestId + 1;
@@ -183,23 +189,28 @@ public class RanksModule extends Module {
     }
 
     public Rank getRank(int id) {
-        for (Rank rank : ranks)
-            if (rank.getRankId() == id)
+        for (Rank rank : ranks) {
+            if (rank.getRankId() == id) {
                 return rank;
+            }
+        }
         return null;
     }
 
     public Rank getRankByName(String name) {
-        for (Rank rank : ranks)
-            if (rank.getName().toLowerCase().compareTo(name.toLowerCase()) == 0)
+        for (Rank rank : ranks) {
+            if (rank.getName().toLowerCase().compareTo(name.toLowerCase()) == 0) {
                 return rank;
+            }
+        }
         return null;
     }
 
     public Rank getBottomRank() {
         for (int i = 0; i != -1; i++) {
-            if (getRank(i) != null)
+            if (getRank(i) != null) {
                 return getRank(i);
+            }
         }
         return null;
     }
@@ -215,9 +226,11 @@ public class RanksModule extends Module {
     }
 
     public Rank getRankByLadder(int id) {
-        for (Rank rank : getRanks())
-            if (rank.getRankLadder() == id)
+        for (Rank rank : getRanks()) {
+            if (rank.getRankLadder() == id) {
                 return rank;
+            }
+        }
         return null;
     }
 
@@ -226,8 +239,9 @@ public class RanksModule extends Module {
             Rank rankBefore = null;
 
             for (Rank rank1 : getRanks()) {
-                if (rank1.getRankLadder() == rank.getRankLadder())
+                if (rank1.getRankLadder() == rank.getRankLadder()) {
                     return rankBefore;
+                }
 
                 rankBefore = rank1;
             }
@@ -243,9 +257,11 @@ public class RanksModule extends Module {
     }
 
     public RankUser getUser(UUID uuid) {
-        for (RankUser user : users)
-            if (user.getUuid().compareTo(uuid) == 0)
+        for (RankUser user : users) {
+            if (user.getUuid().compareTo(uuid) == 0) {
                 return user;
+            }
+        }
         return null;
     }
 

@@ -58,8 +58,9 @@ public class CellCreationQueue {
      */
     public void addDoorLocation(Player player, Location doorLocation) {
         Cell cell = getCell(player);
-        if (cell == null)
+        if (cell == null) {
             return;
+        }
         cell.setDoorLocation(doorLocation);
         cellMap.put(player.getUUID(), cell);
     }

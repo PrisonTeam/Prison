@@ -47,11 +47,12 @@ public class PrisonCommand {
         sender.sendMessage("&8To enable a module, use /prison modules enable.");
         sender.sendMessage("&8To disable a module, use /prison modules disable.");
         sender.sendMessage("");  // blank line
-        for (Module module : Prison.getInstance().getModuleManager().getModules())
+        for (Module module : Prison.getInstance().getModuleManager().getModules()) {
             sender.sendMessage(
                 "&7• &3" + module.getName() + " &8(" + module.getPackageName() + ") &3v" + module
                     .getVersion() + " &8- " + Prison.getInstance().getModuleManager()
                     .getStatus(module.getName()));
+        }
         sender.sendMessage("&7========== &d/prison modules &7==========");
     }
 
@@ -70,11 +71,12 @@ public class PrisonCommand {
         }
 
         boolean result = Prison.getInstance().getModuleManager().enableModule(module);
-        if (result)
+        if (result) {
             sender.sendMessage("&7The module &3" + module.getName() + " &7has been enabled.");
-        else
+        } else {
             sender.sendMessage("&7Failed to enable the module &c" + module.getName()
                 + "&7. &8Check the console for details.");
+        }
     }
 
     @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
@@ -130,8 +132,9 @@ public class PrisonCommand {
         if (module == null) {
             module = Prison.getInstance().getModuleManager()
                 .getModuleByPackageName(name); // Try it by package name next
-            if (module == null)
+            if (module == null) {
                 return null;
+            }
         }
         return module;
     }

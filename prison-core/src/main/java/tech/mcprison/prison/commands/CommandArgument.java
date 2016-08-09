@@ -54,13 +54,15 @@ public class CommandArgument implements ExecutableArgument {
     @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
         String arg;
         if (!args.hasNext()) {
-            if (def.equals(" "))
+            if (def.equals(" ")) {
                 throw new CommandError(
                     String.format(Prison.getInstance().getMessages().missingArgument, name), true);
+            }
 
             arg = def;
-        } else
+        } else {
             arg = CommandUtil.escapeArgumentVariable(args.nextArgument());
+        }
 
         return handler.handle(sender, this, arg);
     }
@@ -98,13 +100,15 @@ public class CommandArgument implements ExecutableArgument {
     public String getMessage(String node, String... vars) {
         String msg = overrideMessages.get(node);
 
-        if (msg != null)
+        if (msg != null) {
             return formatMessage(msg, vars);
+        }
 
         msg = handler.getMessage(node);
 
-        if (msg != null)
+        if (msg != null) {
             return formatMessage(msg, vars);
+        }
 
         throw new IllegalArgumentException("The node \"" + node + "\" is not available.");
     }
