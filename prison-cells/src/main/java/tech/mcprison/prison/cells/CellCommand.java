@@ -138,7 +138,7 @@ public class CellCommand {
             .format(cellsModule.getMessages().permissionGranted, player.getName(),
                 perm.getUserFriendlyName()));
 
-        sender.sendMessage(String
+        player.sendMessage(String
             .format(cellsModule.getMessages().permissionGrantedOther, perm.getUserFriendlyName(),
                 sender.getName()));
     }
@@ -146,12 +146,73 @@ public class CellCommand {
     @Command(identifier = "cells disallow", description = "Remove a permission from a player in your cell.")
     public void disallowCell(Player sender, @Arg(name = "player") Player player,
         @Arg(name = "permission", description = "list") String permissionString) {
-        // TODO This command
+        // Get the permission
+        Permission perm = Permission.byName(permissionString);
+
+        // If the permission does not exist, tell the user the permissions
+        if (permissionString.equals("list") || perm == null) {
+            listPermissions(sender);
+            return;
+        }
+
+        // Get the CellUser of the sender
+        CellUser senderUser = cellsModule.getUser(sender.getUUID());
+        if (senderUser == null)
+            throw new IllegalStateException(
+                "User must be present"); // This shouldn't even happen, unless it does, but I'll find out soon enough
+
+        // Get the cell that the sender owns
+        // We always assume that the sender owns just one cell, because that's all that's possible
+        // In the future, if more than one cell is allowed, then this will have to be adapted to allow for that
+        Cell cell = cellsModule.getCellByOwner(senderUser);
+        if (cell == null) {
+            sender.sendMessage(cellsModule.getMessages().doesNotOwnCell);
+            return;
+        }
+
+        // Only the owner may bestow permissions upon other players
+        if (!senderUser.hasPermission(cell.getId(), Permission.IS_OWNER)) {
+            sender.sendMessage(
+                String.format(cellsModule.getMessages().onlyTheOwnerMay, "edit permissions"));
+            return;
+        }
+
+        // Get the CellUser of the receiver of the permissions
+        CellUser receiverUser = cellsModule.getUser(player.getUUID());
+        if (receiverUser == null) {
+            sender.sendMessage(cellsModule.getMessages().playerDoesNotExist);
+            return;
+        }
+
+        // Remove the permission
+        receiverUser.removePermission(cell.getId(), perm);
+        cellsModule.saveUser(receiverUser);
+
+        // Alert both parties
+        sender.sendMessage(String
+            .format(cellsModule.getMessages().permissionGranted, player.getName(),
+                perm.getUserFriendlyName()));
+
+        sender.sendMessage(String
+            .format(cellsModule.getMessages().permissionGrantedOther, perm.getUserFriendlyName(),
+                sender.getName()));
     }
 
     @Command(identifier = "cells drop", description = "Remove your current cell rental. No refunds!")
     public void dropCell(Player sender) {
         // TODO This command
+    }
+
+    private void listPermissions(Player sender) {
+        StringBuilder builder = new StringBuilder("&3Permissions: ");
+
+        for (Permission permission : Permission.values()) {
+            builder.append(
+                "&7" + permission.name() + " &8(" + permission.getUserFriendlyName() + "), ");
+        }
+
+        String list = builder.substring(0, builder.length() - 2);
+        sender.sendMessage(list);
     }
 
 }

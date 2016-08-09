@@ -35,6 +35,8 @@ public class Messages extends MessageConfigurable {
     public String cellRented = INFO_PREFIX + "You have rented &3cell #%d&7 for &3%s&7.";
     public String permissionGranted =
         INFO_PREFIX + "You have granted &3%s&7 permission to &3%s&7 in your cell.";
+    public String permissionUngranted =
+        INFO_PREFIX + "You have removed &3%s&7's permission to &3%s&7 in your cell.";
     public String permissionGrantedOther =
         INFO_PREFIX + "You have been granted permission to %3%s&7 in &3%s's cell&7.";
 
