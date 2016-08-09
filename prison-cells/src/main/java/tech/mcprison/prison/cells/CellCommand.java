@@ -118,7 +118,7 @@ public class CellCommand {
         // Only the owner may bestow permissions upon other players
         if (!senderUser.hasPermission(cell.getId(), Permission.IS_OWNER)) {
             sender.sendMessage(
-                String.format(cellsModule.getMessages().onlyTheOwnerMay, "bestow permissions"));
+                String.format(cellsModule.getMessages().onlyTheOwnerMay, "edit permissions"));
             return;
         }
 
@@ -141,6 +141,17 @@ public class CellCommand {
         sender.sendMessage(String
             .format(cellsModule.getMessages().permissionGrantedOther, perm.getUserFriendlyName(),
                 sender.getName()));
+    }
+
+    @Command(identifier = "cells disallow", description = "Remove a permission from a player in your cell.")
+    public void disallowCell(Player sender, @Arg(name = "player") Player player,
+        @Arg(name = "permission", description = "list") String permissionString) {
+        // TODO This command
+    }
+
+    @Command(identifier = "cells drop", description = "Remove your current cell rental. No refunds!")
+    public void dropCell(Player sender) {
+        // TODO This command
     }
 
 }
