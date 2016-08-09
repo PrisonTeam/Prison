@@ -30,12 +30,12 @@ import java.util.UUID;
  *
  * @author SirFaizdat
  */
-public class CellCreator {
+public class CellCreationQueue {
 
     private CellsModule cellsModule;
     private Map<UUID, Cell> cellMap;
 
-    public CellCreator(CellsModule cellsModule) {
+    public CellCreationQueue(CellsModule cellsModule) {
         this.cellsModule = cellsModule;
         this.cellMap = new HashMap<>();
     }

@@ -53,13 +53,13 @@ public class CellListener {
             if (!Block.isDoor(block))
                 return; // Must be a door
 
-            if (cellsModule.getCellCreator().getCell(e.getPlayer()) == null)
+            if (cellsModule.getCellCreationQueue().getCell(e.getPlayer()) == null)
                 return; // Player isn't creating a cell
             e.setCanceled(true);
 
-            cellsModule.getCellCreator()
+            cellsModule.getCellCreationQueue()
                 .addDoorLocation(e.getPlayer(), adjustToTopHalf(e.getClicked()));
-            int cellId = cellsModule.getCellCreator().complete(e.getPlayer());
+            int cellId = cellsModule.getCellCreationQueue().complete(e.getPlayer());
             e.getPlayer().sendMessage(String.format(cellsModule.getMessages().cellCreated, cellId));
         } catch (Exception e1) {
             e1.printStackTrace();

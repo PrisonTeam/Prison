@@ -47,7 +47,7 @@ public class CellCommand {
 
         // Create the cell creation task, and alert the user to select the door
         Cell cell = new Cell(cellsModule.getNextCellId(), sel.asBounds());
-        cellsModule.getCellCreator().commence(sender, cell);
+        cellsModule.getCellCreationQueue().commence(sender, cell);
         sender.sendMessage(cellsModule.getMessages().selectDoor);
     }
 

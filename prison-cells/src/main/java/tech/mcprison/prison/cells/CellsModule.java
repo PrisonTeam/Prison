@@ -46,7 +46,7 @@ public class CellsModule extends Module {
     private File userDirectory;
     private File cellDirectory;
     private Gson gson;
-    private CellCreator cellCreator;
+    private CellCreationQueue cellCreationQueue;
     private ConfigurationLoader messagesLoader;
 
     public CellsModule(String version) {
@@ -67,7 +67,7 @@ public class CellsModule extends Module {
         this.cellDirectory = new File(getDataFolder(), "cells");
         loadCells();
 
-        this.cellCreator = new CellCreator(this);
+        this.cellCreationQueue = new CellCreationQueue(this);
 
         new UserListener(this).init();
         new CellListener(this).init();
@@ -200,8 +200,8 @@ public class CellsModule extends Module {
         return cells.size() + 1;
     }
 
-    public CellCreator getCellCreator() {
-        return cellCreator;
+    public CellCreationQueue getCellCreationQueue() {
+        return cellCreationQueue;
     }
 
     public Messages getMessages() {
