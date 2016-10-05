@@ -1,14 +1,8 @@
 If you are making a bug report, fill out the form below. If you are making a suggestion or something other than a bug report, then you may remove this boilerplate text.
 
-### Which of the following are you submitting this issue for?
+### Which module are you submitting this issue for?
 
-To select an option, replace `- [ ]` with `- [x]`.
-
-- [ ] Prison Core
-- [ ] Prison Mines
-- [ ] Prison Ranks
-- [ ] Prison Cells
-- [ ] Prison Shops
+Example: Core, mines, ranks, shops, cells, Spigot, Sponge, etc.
 
 ### Describe the issue you are experiencing.
 Include details such as what you did, what happened, and what you think should have happened.
