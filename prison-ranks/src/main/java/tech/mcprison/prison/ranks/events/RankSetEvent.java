@@ -18,8 +18,8 @@
 
 package tech.mcprison.prison.ranks.events;
 
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.events.Cancelable;
+import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.platform.events.Cancelable;
 import tech.mcprison.prison.ranks.Rank;
 
 /**

@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.config;
+package tech.mcprison.prison.platform.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

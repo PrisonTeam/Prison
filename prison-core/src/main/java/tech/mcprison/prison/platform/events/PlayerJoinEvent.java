@@ -16,12 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.config;
+package tech.mcprison.prison.platform.events;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import tech.mcprison.prison.platform.Player;
 
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface Exclude {
+/**
+ * Platform-independent event, which is posted when a player joins the server.
+ *
+ * @author SirFaizdat
+ * @since 3.0
+ */
+public class PlayerJoinEvent {
+
+    private Player player;
+
+    public PlayerJoinEvent(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
 }

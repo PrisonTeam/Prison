@@ -16,12 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package tech.mcprison.prison.platform.config;
+
 /**
- * Since Prison is cross-platform (and cross-version), the Minecraft server interfaces
- * provided by mods like Bukkit and Sponge are not provided for us. Instead, we must make our own
- * and have the implementations implement them with the different mods.
+ * A {@link Configurable} with the prefixes as protected class members for easy access.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-package tech.mcprison.prison.internal;
+public abstract class MessageConfigurable implements Configurable {
+
+    // Naming conventions are a bit off, but I tried to maintain backwards-compatibility
+    @Exclude protected String INFO_PREFIX = "&3Info &8&l| &7";
+    @Exclude protected String WARNING_PREFIX = "&6Warning &8&l| &7";
+    @Exclude protected String ERROR_PREFIX = "&cError &8&l| &7";
+
+}

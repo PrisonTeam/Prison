@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.util;
 
-import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.platform.World;
 
 /**
  * Represents a location in a Minecraft world.

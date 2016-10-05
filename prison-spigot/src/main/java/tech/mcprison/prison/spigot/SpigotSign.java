@@ -19,7 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import org.apache.commons.lang.Validate;
-import tech.mcprison.prison.internal.Sign;
+import tech.mcprison.prison.platform.Sign;
 import tech.mcprison.prison.util.Location;
 
 import java.util.List;

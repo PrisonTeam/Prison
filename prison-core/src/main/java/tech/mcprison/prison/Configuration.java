@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison;
 
-import tech.mcprison.prison.internal.config.Configurable;
+import tech.mcprison.prison.platform.config.Configurable;
 
 /**
  * Represents Prison's configuration. Contains all of the keys and their default values.

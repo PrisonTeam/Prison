@@ -22,7 +22,7 @@ import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cells.CellUser;
 import tech.mcprison.prison.cells.CellsModule;
-import tech.mcprison.prison.internal.events.PlayerJoinEvent;
+import tech.mcprison.prison.platform.events.PlayerJoinEvent;
 
 /**
  * @author SirFaizdat

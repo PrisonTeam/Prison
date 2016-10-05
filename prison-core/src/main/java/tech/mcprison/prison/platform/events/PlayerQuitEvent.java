@@ -16,29 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.modules;
+package tech.mcprison.prison.platform.events;
+
+import tech.mcprison.prison.platform.Player;
 
 /**
- * Thrown when a module attempts to perform an action which the platform is incapable of.
+ * Platform-independent event, which is posted when a player leaves the server.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class IncapableException extends RuntimeException {
+public class PlayerQuitEvent {
 
-    private Capability capability;
+    private Player player;
 
-    public IncapableException(Capability capability) {
-        this.capability = capability;
+    public PlayerQuitEvent(Player player) {
+        this.player = player;
     }
 
-    /**
-     * Returns the capability that the implementation lacks.
-     *
-     * @return The {@link Capability}.
-     */
-    public Capability getCapability() {
-        return capability;
+    public Player getPlayer() {
+        return player;
     }
 
 }

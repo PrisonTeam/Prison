@@ -21,7 +21,7 @@ package tech.mcprison.prison.commands.handlers;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.*;
 import tech.mcprison.prison.commands.VerifyError;
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 
 public class StringArgumentHandler extends ArgumentHandler<String> {
     public StringArgumentHandler() {

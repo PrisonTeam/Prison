@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal;
+package tech.mcprison.prison.platform;
 
 /**
  * Represents any entity that may send commands and receive output.

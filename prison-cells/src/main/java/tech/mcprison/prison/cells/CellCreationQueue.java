@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.cells;
 
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.util.Location;
 
 import java.util.HashMap;

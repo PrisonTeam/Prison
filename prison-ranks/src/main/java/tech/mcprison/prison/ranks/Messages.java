@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.ranks;
 
-import tech.mcprison.prison.internal.config.Configurable;
+import tech.mcprison.prison.platform.config.Configurable;
 
 /**
  * Represents Ranks' messages file. Contains all of the keys and their default values. Every time a

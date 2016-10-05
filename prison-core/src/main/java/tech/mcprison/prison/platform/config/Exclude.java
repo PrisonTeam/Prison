@@ -16,21 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.config;
+package tech.mcprison.prison.platform.config;
 
-/**
- * Represents a class that holds configuration keys.
- *
- * @author SirFaizdat
- * @since 3.0
- */
-public interface Configurable {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    /**
-     * Returns the deserialized version of the file.
-     *
-     * @return The version, in integer form.
-     */
-    int getVersion();
-
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface Exclude {
 }

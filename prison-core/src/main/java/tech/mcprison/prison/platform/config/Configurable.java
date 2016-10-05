@@ -16,26 +16,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
-
-import tech.mcprison.prison.internal.Player;
+package tech.mcprison.prison.platform.config;
 
 /**
- * Platform-independent event, which is posted when a player leaves the server.
+ * Represents a class that holds configuration keys.
  *
  * @author SirFaizdat
  * @since 3.0
  */
-public class PlayerQuitEvent {
+public interface Configurable {
 
-    private Player player;
-
-    public PlayerQuitEvent(Player player) {
-        this.player = player;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
+    /**
+     * Returns the deserialized version of the file.
+     *
+     * @return The version, in integer form.
+     */
+    int getVersion();
 
 }

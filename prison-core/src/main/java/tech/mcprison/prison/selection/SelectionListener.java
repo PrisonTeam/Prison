@@ -20,7 +20,7 @@ package tech.mcprison.prison.selection;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.events.PlayerInteractEvent;
+import tech.mcprison.prison.platform.events.PlayerInteractEvent;
 
 /**
  * @author SirFaizdat

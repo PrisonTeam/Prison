@@ -16,18 +16,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.config;
+package tech.mcprison.prison.platform;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
+/**
+ * Different platforms have different features implemented.
+ * Capabilities tell Prison which features are available on a platform.
+ *
+ * @author SirFaizdat
+ * @since 3.0
+ */
+public enum Capability {
 
-public class AnnotationExclusionStrategy implements ExclusionStrategy {
+    /**
+     * The capability of showing GUIs to players.
+     */
+    GUI, /**
+     * The presence of a server economy.
+     */
+    ECONOMY
 
-    @Override public boolean shouldSkipField(FieldAttributes f) {
-        return f.getAnnotation(Exclude.class) != null;
-    }
-
-    @Override public boolean shouldSkipClass(Class<?> clazz) {
-        return false;
-    }
 }

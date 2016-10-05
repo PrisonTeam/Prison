@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal;
+package tech.mcprison.prison.platform;
 
 import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.ChatColor;

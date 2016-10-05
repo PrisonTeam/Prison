@@ -21,7 +21,7 @@ package tech.mcprison.prison.spigot.economies;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import tech.mcprison.prison.economy.Economy;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.Player;
 
 /**
  * @author SirFaizdat

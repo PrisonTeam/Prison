@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.commands;
 
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 
 import java.lang.reflect.Array;
 

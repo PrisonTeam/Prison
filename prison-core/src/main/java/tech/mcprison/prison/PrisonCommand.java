@@ -20,7 +20,7 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 import tech.mcprison.prison.modules.Module;
 
 /**

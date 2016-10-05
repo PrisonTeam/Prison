@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal;
+package tech.mcprison.prison.platform;
 
 /**
  * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own thread.

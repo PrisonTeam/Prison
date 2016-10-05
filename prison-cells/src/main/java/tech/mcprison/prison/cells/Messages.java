@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.cells;
 
-import tech.mcprison.prison.internal.config.MessageConfigurable;
+import tech.mcprison.prison.platform.config.MessageConfigurable;
 
 /**
  * See the Messages class in prison-core to learn how to use this.

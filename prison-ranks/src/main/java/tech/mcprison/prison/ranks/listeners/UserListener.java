@@ -20,9 +20,9 @@ package tech.mcprison.prison.ranks.listeners;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.events.PlayerChatEvent;
-import tech.mcprison.prison.internal.events.PlayerJoinEvent;
-import tech.mcprison.prison.internal.events.PlayerQuitEvent;
+import tech.mcprison.prison.platform.events.PlayerChatEvent;
+import tech.mcprison.prison.platform.events.PlayerJoinEvent;
+import tech.mcprison.prison.platform.events.PlayerQuitEvent;
 import tech.mcprison.prison.ranks.RankUser;
 import tech.mcprison.prison.ranks.RanksModule;
 

@@ -21,7 +21,7 @@ package tech.mcprison.prison.commands.handlers;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.CommandArgument;
 import tech.mcprison.prison.commands.TransformError;
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 
 public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {

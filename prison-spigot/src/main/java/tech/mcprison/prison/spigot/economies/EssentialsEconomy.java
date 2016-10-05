@@ -21,7 +21,7 @@ package tech.mcprison.prison.spigot.economies;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import tech.mcprison.prison.economy.Economy;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.Player;
 
 import java.math.BigDecimal;
 

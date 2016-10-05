@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.commands;
 
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 
 public interface PermissionHandler {
     public boolean hasPermission(CommandSender sender, String[] permissions);

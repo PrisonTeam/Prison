@@ -21,7 +21,7 @@ package tech.mcprison.prison.cells;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.selection.Selection;
 
 /**

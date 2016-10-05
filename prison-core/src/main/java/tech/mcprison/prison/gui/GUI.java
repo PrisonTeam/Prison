@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.gui;
 
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.Player;
 
 import java.util.Map;
 

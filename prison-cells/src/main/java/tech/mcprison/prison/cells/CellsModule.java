@@ -24,7 +24,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.adapters.LocationAdapter;
 import tech.mcprison.prison.cells.listeners.CellListener;
 import tech.mcprison.prison.cells.listeners.UserListener;
-import tech.mcprison.prison.internal.config.ConfigurationLoader;
+import tech.mcprison.prison.platform.config.ConfigurationLoader;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;

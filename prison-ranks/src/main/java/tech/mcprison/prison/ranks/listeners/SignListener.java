@@ -20,8 +20,8 @@ package tech.mcprison.prison.ranks.listeners;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.Sign;
-import tech.mcprison.prison.internal.events.PlayerInteractEvent;
+import tech.mcprison.prison.platform.Sign;
+import tech.mcprison.prison.platform.events.PlayerInteractEvent;
 import tech.mcprison.prison.ranks.RanksModule;
 import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.ChatColor;

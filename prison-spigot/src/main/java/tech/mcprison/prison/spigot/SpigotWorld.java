@@ -20,8 +20,8 @@ package tech.mcprison.prison.spigot;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.platform.World;
 import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.Location;
 

@@ -16,11 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.commands;
-
-
-import tech.mcprison.prison.platform.CommandSender;
-
-public interface ExecutableArgument {
-    public Object execute(CommandSender sender, Arguments args) throws CommandError;
-}
+/**
+ * Since Prison is cross-platform (and cross-version), the Minecraft server interfaces
+ * provided by mods like Bukkit and Sponge are not provided for us. Instead, we must make our own
+ * and have the implementations implement them with the different mods.
+ *
+ * @author SirFaizdat
+ * @since 3.0
+ */
+package tech.mcprison.prison.platform;

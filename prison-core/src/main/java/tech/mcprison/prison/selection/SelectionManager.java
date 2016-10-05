@@ -18,8 +18,8 @@
 
 package tech.mcprison.prison.selection;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.ItemStack;
+import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.util.Block;
 
 import java.util.HashMap;

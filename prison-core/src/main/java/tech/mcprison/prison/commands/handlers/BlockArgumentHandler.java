@@ -22,7 +22,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.ArgumentHandler;
 import tech.mcprison.prison.commands.CommandArgument;
 import tech.mcprison.prison.commands.TransformError;
-import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.platform.CommandSender;
 import tech.mcprison.prison.util.Block;
 
 public class BlockArgumentHandler extends ArgumentHandler<Block> {

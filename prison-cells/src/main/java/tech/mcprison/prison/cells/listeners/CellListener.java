@@ -24,8 +24,8 @@ import tech.mcprison.prison.cells.Cell;
 import tech.mcprison.prison.cells.CellUser;
 import tech.mcprison.prison.cells.CellsModule;
 import tech.mcprison.prison.cells.Permission;
-import tech.mcprison.prison.internal.events.BlockPlaceEvent;
-import tech.mcprison.prison.internal.events.PlayerInteractEvent;
+import tech.mcprison.prison.platform.events.BlockPlaceEvent;
+import tech.mcprison.prison.platform.events.PlayerInteractEvent;
 import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.Location;
 

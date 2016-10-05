@@ -16,18 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.platform.config;
 
-/**
- * Represents an event whose outcome is cancelable.
- *
- * @author SirFaizdat
- * @since 3.0
- */
-public interface Cancelable {
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
-    boolean isCanceled();
+public class AnnotationExclusionStrategy implements ExclusionStrategy {
 
-    void setCanceled(boolean canceled);
+    @Override public boolean shouldSkipField(FieldAttributes f) {
+        return f.getAnnotation(Exclude.class) != null;
+    }
 
+    @Override public boolean shouldSkipClass(Class<?> clazz) {
+        return false;
+    }
 }

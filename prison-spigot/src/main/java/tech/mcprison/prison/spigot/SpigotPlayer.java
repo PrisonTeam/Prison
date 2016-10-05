@@ -21,8 +21,8 @@ package tech.mcprison.prison.spigot;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.platform.ItemStack;
+import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 
