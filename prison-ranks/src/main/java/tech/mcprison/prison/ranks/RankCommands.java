@@ -27,7 +27,7 @@ import tech.mcprison.prison.ranks.events.RankDemoteEvent;
 import tech.mcprison.prison.ranks.events.RankPromoteEvent;
 import tech.mcprison.prison.ranks.events.RankSetEvent;
 import tech.mcprison.prison.ranks.events.RankupEvent;
-import tech.mcprison.prison.util.TextUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Camouflage100
@@ -64,7 +64,7 @@ public class RankCommands {
                     tag = rank.getTag();
                 }
 
-                String formattedCost = TextUtil.formatNumber(rank.getCost());
+                String formattedCost = Text.numberToDollars(rank.getCost());
 
                 if (sender.hasPermission("prison.ranks.list.admin")) {
                     sender.sendMessage(String
@@ -162,7 +162,7 @@ public class RankCommands {
         ranksModule.getRankByName(rankName).setCost(cost);
         sender.sendMessage(String
             .format(Messages.commandSetRankCost, ranksModule.getRankByName(rankName).getName(),
-                TextUtil.formatNumber(cost)));
+                Text.numberToDollars(cost)));
     }
 
     @Command(identifier = "ranks checkrank", description = "Check the rank of a user", permissions = {
@@ -277,7 +277,7 @@ public class RankCommands {
             sender.sendMessage(String.format(Messages.commandRankup, targRank.getRank().getName()));
         } else {
             sender.sendMessage(String.format(Messages.errorNotEnoughMoney, nextRank.getName(),
-                TextUtil.formatNumber(nextRank.getCost()), TextUtil.formatNumber(
+                Text.numberToDollars(nextRank.getCost()), Text.numberToDollars(
                     Prison.getInstance().getPlatform().getEconomy().getBalance(sender))));
         }
     }

@@ -35,11 +35,10 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.platform.*;
-import tech.mcprison.prison.platform.Capability;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.TextUtil;
+import tech.mcprison.prison.util.Text;
 
 import java.io.File;
 import java.util.*;
@@ -174,7 +173,7 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public void log(String message, Object... format) {
-        message = TextUtil.parse("&8[&3Prison&8]&r " + message, format);
+        message = Text.translateAmpColorCodes(String.format("&8[&3Prison&8]&r " + message, format));
 
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) {

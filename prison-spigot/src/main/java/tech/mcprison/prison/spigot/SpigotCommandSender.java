@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import tech.mcprison.prison.platform.CommandSender;
 import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.util.TextUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author SirFaizdat
@@ -52,11 +52,11 @@ public class SpigotCommandSender implements CommandSender {
     }
 
     @Override public void sendMessage(String message) {
-        bukkitSender.sendMessage(TextUtil.parse(message));
+        bukkitSender.sendMessage(Text.translateAmpColorCodes(message));
     }
 
     @Override public void sendError(String error) {
-        bukkitSender.sendMessage(TextUtil.parse("&cError &8&l| &7" + error + "&7!"));
+        bukkitSender.sendMessage(Text.translateAmpColorCodes("&cError &8&l| &7" + error + "&7!"));
     }
 
     @Override public void sendMessage(String[] messages) {
