@@ -14,8 +14,10 @@ git:
 env:
   matrix:
     - GRADLE_OPTS="-Xms1g -Xmx3g"
+before_install:
+  - chmod +x gradlew
 install: true
-script: "gradle build --refresh-dependencies"
+script: "./gradlew build --refresh-dependencies"
 addons:
   apt:
     packages:
