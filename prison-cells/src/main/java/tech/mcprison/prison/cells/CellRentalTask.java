@@ -20,6 +20,9 @@ package tech.mcprison.prison.cells;
 
 import tech.mcprison.prison.Prison;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Checks to see which cells have expired rentals.
  *
@@ -35,15 +38,23 @@ public class CellRentalTask {
     }
 
     public void run() {
+
+        // We create a new list here because otherwise there's a concurrent modification exception
+        List<Cell> toExpire = new ArrayList<>();
+
         Prison.getInstance().getPlatform().getScheduler()
             .runTaskTimer(() -> cellsModule.getCells().forEach(cell -> {
                 if (cell.getRentalExpiresAtMillis() > 0) {
                     if (System.currentTimeMillis() >= cell.getRentalExpiresAtMillis()) {
                         // The cell is expired
-                        expireOwnership(cell);
+                        toExpire.add(cell);
                     }
                 }
             }), 1, 1); // each 1 second
+
+        toExpire.forEach(this::expireOwnership);
+        toExpire.clear();
+
     }
 
     private void expireOwnership(Cell cell) {
