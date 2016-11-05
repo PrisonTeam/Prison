@@ -83,12 +83,20 @@ public class CellsModule extends Module {
         Arrays.stream(saves).forEach(this::loadCell);
     }
 
-    private void loadCell(File save) {
+    /**
+     * Loads a cell from a file, and stores a reference to it.
+     *
+     * @param save The .cells.json {@link File} that it is stored in.
+     * @return The cell object, or null if it could not be found/loaded.
+     */
+    public Cell loadCell(File save) {
         try {
             String json = new String(Files.readAllBytes(save.toPath()));
 
             Cell cell = gson.fromJson(json, Cell.class);
             cells.add(cell);
+
+            return cell;
 
         } catch (IOException e) {
             Prison.getInstance().getPlatform()
@@ -96,6 +104,43 @@ public class CellsModule extends Module {
             e.printStackTrace();
             Prison.getInstance().getPlatform().log("&eThe file will be skipped.");
         }
+
+        return null;
+    }
+
+    /**
+     * Save a cell to a file. The file is named like in the format &lt;cell id&gt;.cell.json
+     * If the file does not exist, it will be created. Otherwise, it will be overwritten.
+     *
+     * @param cell The {@link Cell} to save.
+     */
+    public void saveCell(Cell cell) {
+        String json = gson.toJson(cell, Cell.class);
+
+        try {
+            Files.write(new File(cellDirectory, cell.getId() + ".cell.json").toPath(),
+                json.getBytes());
+        } catch (IOException e) {
+            Prison.getInstance().getPlatform()
+                .log("&cFailed to write cell save file %s.cell.json.", cell.getId());
+            e.printStackTrace();
+        }
+    }
+
+    // Getters
+
+    public List<Cell> getCells() {
+        return cells;
+    }
+
+    /**
+     * Gets a cell by its ID.
+     *
+     * @param id The ID of the cell to get.
+     * @return The cell, or null if no cell exists by the specified ID.
+     */
+    public Cell getCell(long id) {
+        return cells.stream().filter(cell -> cell.getId() == id).findFirst().orElse(null);
     }
 
 }
