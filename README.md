@@ -1,4 +1,4 @@
-![Prison](https://mc-prison.tech/assets/img/Banner.png)
+![Prison](https://static.mc-prison.tech/assets/images/banner.png)
 
 [![User Documentation](https://img.shields.io/badge/documentation-users-green.svg)](https://github.com/MC-Prison/Prison/wiki/User%20Documentation)
 [![Developer Documentation](https://img.shields.io/badge/documentation-developers-orange.svg)](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)
