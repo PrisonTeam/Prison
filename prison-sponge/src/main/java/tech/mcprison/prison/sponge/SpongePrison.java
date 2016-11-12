@@ -18,11 +18,29 @@
 
 package tech.mcprison.prison.sponge;
 
+import com.google.inject.Inject;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import java.util.logging.Logger;
+
 /**
- * @author Camouflage100
+ * @author SirFaizdat
  */
-@Plugin(id = "prison-sponge") public class SpongePrison {
+@Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", url = "http://mc-prison.tech")
+public class SpongePrison {
+
+    @Inject
+    private Logger logger;
+
+    @Listener
+    public void onServerStart(GameStartedServerEvent e) {
+
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
 
 }
