@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * if we wanted to see exception data, which is quite nice, don't you think?
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class EventExceptionHandler implements SubscriberExceptionHandler {
 

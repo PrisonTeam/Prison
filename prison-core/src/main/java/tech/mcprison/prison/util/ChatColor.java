@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  *
  * @author Spigot team
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public enum ChatColor {
     /**

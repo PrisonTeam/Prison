@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Standardized output to the console and to players.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class Output {
 

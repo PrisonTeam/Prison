@@ -27,7 +27,7 @@ import java.util.List;
  * Represents a world on the Minecraft server.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public interface World {
 

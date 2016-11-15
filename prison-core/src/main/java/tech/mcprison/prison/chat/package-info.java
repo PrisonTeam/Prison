@@ -24,6 +24,6 @@
  * @author Faizaan A. Datoo
  * @author mkremins
  * @author Glen Husman
- * @since 3.0
+ * @since API 30
  */
 package tech.mcprison.prison.chat;

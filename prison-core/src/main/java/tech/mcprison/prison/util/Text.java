@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * Provides utilities for manipulating text.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class Text {
 

@@ -26,7 +26,7 @@ import tech.mcprison.prison.platform.config.Configurable;
  * the VERSION constant must be incremented by one to ensure the configuration will be regenerated.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class Configuration implements Configurable {
 

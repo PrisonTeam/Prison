@@ -22,7 +22,7 @@ package tech.mcprison.prison.util;
  * Represents the area between two {@link Location}s.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class Bounds {
 

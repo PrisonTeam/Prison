@@ -19,6 +19,9 @@
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
+// Matches API level set in Prison.API_LEVEL
+version = 30
+
 shadowJar {
     dependencies {
         include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))

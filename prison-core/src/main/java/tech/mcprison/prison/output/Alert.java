@@ -30,7 +30,7 @@ import java.util.List;
  * The alerts system ensures server operators see important Prison messages when they log on.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class Alert {
 

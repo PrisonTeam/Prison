@@ -30,7 +30,7 @@ import java.util.Map;
  * Keeps track of each module and each module's status.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class ModuleManager {
 

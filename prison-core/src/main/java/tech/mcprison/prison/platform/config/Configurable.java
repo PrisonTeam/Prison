@@ -22,7 +22,7 @@ package tech.mcprison.prison.platform.config;
  * Represents a class that holds configuration keys.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public interface Configurable {
 

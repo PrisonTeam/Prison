@@ -39,7 +39,7 @@ import java.util.Date;
  * If the version does not match, the file will be duplicated and regenerated with the correct values.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class ConfigurationLoader {
 

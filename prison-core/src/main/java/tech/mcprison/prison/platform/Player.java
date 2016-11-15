@@ -26,7 +26,7 @@ import java.util.UUID;
  * Represents a player on the Minecraft server.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public interface Player extends CommandSender {
 

@@ -27,7 +27,7 @@ import java.io.File;
  * disabled independently from the rest of the modules.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public abstract class Module {
 

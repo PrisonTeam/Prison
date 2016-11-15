@@ -22,7 +22,7 @@ package tech.mcprison.prison.util;
  * All of the blocks in the game.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public enum Block {
 

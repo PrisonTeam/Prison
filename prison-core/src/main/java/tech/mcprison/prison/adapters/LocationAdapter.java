@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
  * A serializer and deserializer for locations.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
 

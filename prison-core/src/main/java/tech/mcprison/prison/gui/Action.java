@@ -22,7 +22,7 @@ package tech.mcprison.prison.gui;
  * Similar to {@link Runnable}, but the run method is provided with the {@link GUI}.
  *
  * @author Faizaan A. Datoo
- * @since 3.0
+ * @since API 30
  */
 public interface Action {
 
