@@ -33,9 +33,9 @@ public abstract class ArgumentHandler<T> {
 
     public ArgumentHandler() {
         //Default messages
-        setMessage("include_error", Prison.getInstance().getMessages().includeError);
-        setMessage("exclude_error", Prison.getInstance().getMessages().excludeError);
-        setMessage("cant_as_console", Prison.getInstance().getMessages().cantAsConsole);
+        setMessage("include_error", Prison.get().getMessages().includeError);
+        setMessage("exclude_error", Prison.get().getMessages().excludeError);
+        setMessage("cant_as_console", Prison.get().getMessages().cantAsConsole);
 
         //Default verifiers
         addVerifier("include", new ArgumentVerifier<T>() {

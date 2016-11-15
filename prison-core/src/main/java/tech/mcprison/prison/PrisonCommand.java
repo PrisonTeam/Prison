@@ -34,9 +34,9 @@ public class PrisonCommand {
     @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
         sender.sendMessage("&7========== &d/prison version &7==========");
-        sender.sendMessage("&7Version: &3" + Prison.getInstance().getPlatform().getPluginVersion());
+        sender.sendMessage("&7Version: &3" + Prison.get().getPlatform().getPluginVersion());
         sender.sendMessage(
-            "&7Platform: &3" + Prison.getInstance().getPlatform().getClass().getName());
+            "&7Platform: &3" + Prison.get().getPlatform().getClass().getName());
         sender.sendMessage("&7Integrations:");
         sender.sendMessage("&7    Permissions: &cNone");
         sender.sendMessage("&7    Economy: &cNone");
@@ -50,10 +50,10 @@ public class PrisonCommand {
         sender.sendMessage("&8To enable a module, use /prison modules enable.");
         sender.sendMessage("&8To disable a module, use /prison modules disable.");
         sender.sendMessage("");  // blank line
-        for (Module module : Prison.getInstance().getModuleManager().getModules()) {
+        for (Module module : Prison.get().getModuleManager().getModules()) {
             sender.sendMessage(
                 "&7• &3" + module.getName() + " &8(" + module.getPackageName() + ") &3v" + module
-                    .getVersion() + " &8- " + Prison.getInstance().getModuleManager()
+                    .getVersion() + " &8- " + Prison.get().getModuleManager()
                     .getStatus(module.getName()));
         }
         sender.sendMessage("&7========== &d/prison modules &7==========");
@@ -73,7 +73,7 @@ public class PrisonCommand {
             return;
         }
 
-        boolean result = Prison.getInstance().getModuleManager().enableModule(module);
+        boolean result = Prison.get().getModuleManager().enableModule(module);
         if (result) {
             sender.sendMessage("&7The module &3" + module.getName() + " &7has been enabled.");
         } else {
@@ -96,7 +96,7 @@ public class PrisonCommand {
             return;
         }
 
-        Prison.getInstance().getModuleManager().disableModule(module);
+        Prison.get().getModuleManager().disableModule(module);
         sender.sendMessage("&7The module &3" + module.getName() + " &7has been disabled.");
     }
 
@@ -105,7 +105,7 @@ public class PrisonCommand {
     @Flags(identifier = {"r"}, description = {"Refresh the patrons list"})
     public void patronsCommand(CommandSender sender, @FlagArg("r") boolean refresh) {
         if (refresh) {
-            Prison.getInstance().getPatrons().getPatrons();
+            Prison.get().getPatrons().getPatrons();
             sender.sendMessage("&7Patrons list refreshed");
             return;
         }
@@ -133,7 +133,7 @@ public class PrisonCommand {
     public void alertsCommand(CommandSender sender, @FlagArg("c") boolean clear) {
         if (clear) {
             Alert.get().clearAlerts();
-            sender.sendMessage(Prison.getInstance().getMessages().alertsCleared);
+            sender.sendMessage(Prison.get().getMessages().alertsCleared);
             return;
         }
         Alert.get().listAlerts().forEach(sender::sendMessage);
@@ -143,9 +143,9 @@ public class PrisonCommand {
     // Get a module by name or by package name
     private Module getModule(String name) {
         Module module =
-            Prison.getInstance().getModuleManager().getModule(name); // Try it by name first
+            Prison.get().getModuleManager().getModule(name); // Try it by name first
         if (module == null) {
-            module = Prison.getInstance().getModuleManager()
+            module = Prison.get().getModuleManager()
                 .getModuleByPackageName(name); // Try it by package name next
             if (module == null) {
                 return null;

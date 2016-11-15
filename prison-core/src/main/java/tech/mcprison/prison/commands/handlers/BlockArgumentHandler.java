@@ -28,7 +28,7 @@ import tech.mcprison.prison.util.Block;
 public class BlockArgumentHandler extends ArgumentHandler<Block> {
 
     public BlockArgumentHandler() {
-        setMessage("parse_error", Prison.getInstance().getMessages().blockParseError);
+        setMessage("parse_error", Prison.get().getMessages().blockParseError);
     }
 
     @Override public Block transform(CommandSender sender, CommandArgument argument, String value)

@@ -25,7 +25,7 @@ import tech.mcprison.prison.platform.CommandSender;
 
 public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
     public IntegerArgumentHandler() {
-        setMessage("parse_error", Prison.getInstance().getMessages().numberParseError);
+        setMessage("parse_error", Prison.get().getMessages().numberParseError);
     }
 
     @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)

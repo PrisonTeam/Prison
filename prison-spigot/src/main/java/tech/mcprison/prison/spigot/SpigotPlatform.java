@@ -117,11 +117,11 @@ class SpigotPlatform implements Platform {
                         @Override public boolean execute(CommandSender sender, String commandLabel,
                             String[] args) {
                             if (sender instanceof org.bukkit.entity.Player) {
-                                return Prison.getInstance().getCommandHandler()
+                                return Prison.get().getCommandHandler()
                                     .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
                                         command, commandLabel, args);
                             }
-                            return Prison.getInstance().getCommandHandler()
+                            return Prison.get().getCommandHandler()
                                 .onCommand(new SpigotCommandSender(sender), command, commandLabel,
                                     args);
                         }

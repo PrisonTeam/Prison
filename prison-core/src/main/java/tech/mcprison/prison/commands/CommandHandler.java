@@ -158,7 +158,7 @@ public class CommandHandler {
     private String helpSuffix = "help";
 
     public CommandHandler() {
-        this.plugin = Prison.getInstance();
+        this.plugin = Prison.get();
 
         registerArgumentHandler(String.class, new StringArgumentHandler());
         registerArgumentHandler(int.class, new IntegerArgumentHandler());
@@ -260,7 +260,7 @@ public class CommandHandler {
         }
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
-            sender.sendMessage(Prison.getInstance().getMessages().cantAsConsole);
+            sender.sendMessage(Prison.get().getMessages().cantAsConsole);
             return true;
         }
 

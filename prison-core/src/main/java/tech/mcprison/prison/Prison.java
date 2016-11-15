@@ -34,7 +34,7 @@ import java.io.File;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
- * {@link Prison#getInstance()} method, however in order to use the core libraries, you must call
+ * {@link Prison#get()} method, however in order to use the core libraries, you must call
  * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
  * @author Faizaan A. Datoo
@@ -56,15 +56,13 @@ public class Prison {
     private ConfigurationLoader messagesLoader;
     private EventBus eventBus;
 
-    // TODO Change getInstance() to get()
-
     /**
      * Gets the current instance of this class. <p> An instance will always be available, but you
      * must call the {@link Prison#init(Platform)} method before you perform any other action.
      *
      * @return an instance of Prison.
      */
-    public static Prison getInstance() {
+    public static Prison get() {
         if (instance == null) {
             instance = new Prison();
         }

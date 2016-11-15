@@ -25,7 +25,7 @@ import tech.mcprison.prison.platform.CommandSender;
 
 public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {
-        setMessage("parse_error", Prison.getInstance().getMessages().numberParseError);
+        setMessage("parse_error", Prison.get().getMessages().numberParseError);
     }
 
     @Override public Double transform(CommandSender sender, CommandArgument argument, String value)

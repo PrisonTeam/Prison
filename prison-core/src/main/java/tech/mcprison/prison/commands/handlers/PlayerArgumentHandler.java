@@ -25,7 +25,7 @@ import tech.mcprison.prison.platform.Player;
 
 public class PlayerArgumentHandler extends ArgumentHandler<Player> {
     public PlayerArgumentHandler() {
-        setMessage("player_not_online", Prison.getInstance().getMessages().playerNotOnline);
+        setMessage("player_not_online", Prison.get().getMessages().playerNotOnline);
 
         addVariable("sender", "The command executor", new ArgumentVariable<Player>() {
             @Override
@@ -42,7 +42,7 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
 
     @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        Player p = Prison.getInstance().getPlatform().getPlayer(value);
+        Player p = Prison.get().getPlatform().getPlayer(value);
         if (p == null) {
             throw new TransformError(argument.getMessage("player_not_online", value));
         }

@@ -42,7 +42,7 @@ public class FlagArgument extends CommandArgument {
             arg = getDefault();
         } else if (!args.hasNext(flag)) {
             throw new CommandError(String
-                .format(Prison.getInstance().getMessages().undefinedFlagArgument, getName(),
+                .format(Prison.get().getMessages().undefinedFlagArgument, getName(),
                     flag.getIdentifier()));
         } else {
             arg = CommandUtil.escapeArgumentVariable(args.nextFlagArgument(flag));

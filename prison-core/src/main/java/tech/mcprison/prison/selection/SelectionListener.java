@@ -28,7 +28,7 @@ import tech.mcprison.prison.platform.events.PlayerInteractEvent;
 public class SelectionListener {
 
     public void init() {
-        Prison.getInstance().getEventBus().register(this);
+        Prison.get().getEventBus().register(this);
     }
 
     @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
@@ -39,16 +39,16 @@ public class SelectionListener {
 
         if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
             // Set first position
-            Selection sel = Prison.getInstance().getSelectionManager().getSelection(e.getPlayer());
+            Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMin(e.getClicked());
-            Prison.getInstance().getSelectionManager().setSelection(e.getPlayer(), sel);
+            Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
                 .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
         } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
-            Selection sel = Prison.getInstance().getSelectionManager().getSelection(e.getPlayer());
+            Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMax(e.getClicked());
-            Prison.getInstance().getSelectionManager().setSelection(e.getPlayer(), sel);
+            Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
                 .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
         }

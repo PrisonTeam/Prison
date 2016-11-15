@@ -49,7 +49,7 @@ public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializ
         JsonObject object = json.getAsJsonObject();
 
         String worldName = object.getAsJsonPrimitive(WORLD).getAsString();
-        World world = Prison.getInstance().getPlatform().getWorld(worldName);
+        World world = Prison.get().getPlatform().getWorld(worldName);
 
         double x = object.getAsJsonPrimitive(X).getAsDouble();
         double y = object.getAsJsonPrimitive(Y).getAsDouble();

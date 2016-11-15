@@ -52,7 +52,7 @@ public class SpigotGUI implements GUI {
             org.bukkit.entity.Player bPlayer = Bukkit.getServer().getPlayer(player.getName());
             bPlayer.openInventory(bukkitInventory);
         }
-        GUIListener.getInstance().registerInventory(this);
+        GUIListener.get().registerInventory(this);
     }
 
     @Override public GUI build() {

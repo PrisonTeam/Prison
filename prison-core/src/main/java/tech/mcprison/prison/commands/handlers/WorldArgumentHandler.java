@@ -26,7 +26,7 @@ import tech.mcprison.prison.platform.World;
 
 public class WorldArgumentHandler extends ArgumentHandler<World> {
     public WorldArgumentHandler() {
-        setMessage("world_not_found", Prison.getInstance().getMessages().worldNotFound);
+        setMessage("world_not_found", Prison.get().getMessages().worldNotFound);
 
         addVariable("sender", "The command executor", new ArgumentVariable<World>() {
             @Override
@@ -43,7 +43,7 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
 
     @Override public World transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        World world = Prison.getInstance().getPlatform().getWorld(value);
+        World world = Prison.get().getPlatform().getWorld(value);
         if (world == null) {
             throw new TransformError(argument.getMessage("world_not_found", value));
         }

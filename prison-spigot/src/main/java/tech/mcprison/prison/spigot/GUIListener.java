@@ -38,7 +38,7 @@ public class GUIListener implements Listener {
     private static GUIListener instance;
     private List<GUI> inventories = new ArrayList<>();
 
-    public static GUIListener getInstance() {
+    public static GUIListener get() {
         if (instance == null) {
             instance = new GUIListener();
         }

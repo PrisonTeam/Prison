@@ -25,8 +25,8 @@ import tech.mcprison.prison.platform.CommandSender;
 
 public class StringArgumentHandler extends ArgumentHandler<String> {
     public StringArgumentHandler() {
-        setMessage("min_error", Prison.getInstance().getMessages().tooFewCharacters);
-        setMessage("max_error", Prison.getInstance().getMessages().tooManyCharacters);
+        setMessage("min_error", Prison.get().getMessages().tooFewCharacters);
+        setMessage("max_error", Prison.get().getMessages().tooManyCharacters);
 
         addVerifier("min", new ArgumentVerifier<String>() {
             @Override

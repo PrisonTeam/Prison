@@ -47,7 +47,7 @@ public class Arguments {
 
             if (endIndex > largs.size()) {
                 throw new CommandError(String
-                    .format(Prison.getInstance().getMessages().missingFlagArgument,
+                    .format(Prison.get().getMessages().missingFlagArgument,
                         flag.getIdentifier()));
             }
 

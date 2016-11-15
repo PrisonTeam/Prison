@@ -53,13 +53,13 @@ public class SpigotListener implements Listener {
     }
 
     @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
-        Prison.getInstance().getEventBus().post(
+        Prison.get().getEventBus().post(
             new tech.mcprison.prison.platform.events.PlayerJoinEvent(
                 new SpigotPlayer(e.getPlayer())));
     }
 
     @EventHandler public void onPlayerQuit(PlayerQuitEvent e) {
-        Prison.getInstance().getEventBus().post(
+        Prison.get().getEventBus().post(
             new tech.mcprison.prison.platform.events.PlayerQuitEvent(
                 new SpigotPlayer(e.getPlayer())));
     }
@@ -71,7 +71,7 @@ public class SpigotListener implements Listener {
                 Block.getBlock(e.getBlock().getTypeId()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
-        Prison.getInstance().getEventBus().post(event);
+        Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
     }
 
@@ -96,7 +96,7 @@ public class SpigotListener implements Listener {
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()));
-        Prison.getInstance().getEventBus().post(event);
+        Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
     }
 
@@ -113,7 +113,7 @@ public class SpigotListener implements Listener {
     @EventHandler public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event =
             new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
-        Prison.getInstance().getEventBus().post(event);
+        Prison.get().getEventBus().post(event);
         e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
         e.setMessage(event.getMessage());
         e.setCancelled(event.isCanceled());

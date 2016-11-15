@@ -26,9 +26,9 @@ import tech.mcprison.prison.platform.CommandSender;
 public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHandler<T> {
 
     public NumberArgumentHandler() {
-        setMessage("min_error", Prison.getInstance().getMessages().numberTooLow);
-        setMessage("max_error", Prison.getInstance().getMessages().numberTooHigh);
-        setMessage("range_error", Prison.getInstance().getMessages().numberRangeError);
+        setMessage("min_error", Prison.get().getMessages().numberTooLow);
+        setMessage("max_error", Prison.get().getMessages().numberTooHigh);
+        setMessage("range_error", Prison.get().getMessages().numberRangeError);
 
         addVerifier("min", new ArgumentVerifier<T>() {
             @Override

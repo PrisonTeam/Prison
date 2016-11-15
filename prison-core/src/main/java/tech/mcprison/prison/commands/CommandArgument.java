@@ -56,7 +56,7 @@ public class CommandArgument implements ExecutableArgument {
         if (!args.hasNext()) {
             if (def.equals(" ")) {
                 throw new CommandError(
-                    String.format(Prison.getInstance().getMessages().missingArgument, name), true);
+                    String.format(Prison.get().getMessages().missingArgument, name), true);
             }
 
             arg = def;

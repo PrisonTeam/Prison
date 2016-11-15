@@ -65,7 +65,7 @@ public class RegisteredCommand {
 
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
-            sender.sendMessage(Prison.getInstance().getMessages().noPermission);
+            sender.sendMessage(Prison.get().getMessages().noPermission);
             return;
         }
 
@@ -134,7 +134,7 @@ public class RegisteredCommand {
                 }
             }
         } catch (Exception e) {
-            sender.sendMessage(Prison.getInstance().getMessages().internalErrorOccurred);
+            sender.sendMessage(Prison.get().getMessages().internalErrorOccurred);
             e.printStackTrace();
         }
     }

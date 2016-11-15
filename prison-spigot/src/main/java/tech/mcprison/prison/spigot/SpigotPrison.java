@@ -50,14 +50,14 @@ public class SpigotPrison extends JavaPlugin {
         initCommandMap();
         initCompatibility();
         this.scheduler = new SpigotScheduler(this);
-        GUIListener.getInstance().init(this);
-        Prison.getInstance().init(new SpigotPlatform(this));
+        GUIListener.get().init(this);
+        Prison.get().init(new SpigotPlatform(this));
         new SpigotListener(this).init();
     }
 
     @Override public void onDisable() {
         this.scheduler.cancelAll();
-        Prison.getInstance().deinit();
+        Prison.get().deinit();
     }
 
     private void initCommandMap() {

@@ -38,7 +38,7 @@ public abstract class Module {
     public Module(String name, String version) {
         this.name = name;
         this.version = version;
-        this.dataFolder = new File(Prison.getInstance().getPlatform().getPluginDirectory(), name);
+        this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }

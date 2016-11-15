@@ -44,7 +44,7 @@ public class Alert {
     private Alert() {
         instance = this;
         this.alerts = new ArrayList<>();
-        Prison.getInstance().getEventBus().register(this);
+        Prison.get().getEventBus().register(this);
     }
 
     // Methods
@@ -75,7 +75,7 @@ public class Alert {
         if (alerts.size() > 0) {
             if (e.getPlayer().hasPermission("prison.alerts")) {
                 e.getPlayer().sendMessage(
-                    String.format(Prison.getInstance().getMessages().alertsPresent, alerts.size()));
+                    String.format(Prison.get().getMessages().alertsPresent, alerts.size()));
             }
         }
     }

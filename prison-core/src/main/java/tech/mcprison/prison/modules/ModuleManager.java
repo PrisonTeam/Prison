@@ -54,14 +54,14 @@ public class ModuleManager {
     }
 
     private void validateVersion(Module module) {
-        if (module.getVersion().equals(Prison.getInstance().getPlatform().getPluginVersion())) {
+        if (module.getVersion().equals(Prison.get().getPlatform().getPluginVersion())) {
             return; // Version matches, no need to continue
         }
 
         setStatus(module.getName(), "&6Version mismatch (update module)");
         Output.get().logWarn(
             "Version mismatch! Please update " + module.getPackageName() + " to version " + Prison
-                .getInstance().getPlatform().getPluginVersion());
+                .get().getPlatform().getPluginVersion());
     }
 
     /**
