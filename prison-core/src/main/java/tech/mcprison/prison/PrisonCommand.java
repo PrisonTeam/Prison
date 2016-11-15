@@ -24,7 +24,7 @@ import tech.mcprison.prison.platform.CommandSender;
 import tech.mcprison.prison.modules.Module;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class PrisonCommand {
 

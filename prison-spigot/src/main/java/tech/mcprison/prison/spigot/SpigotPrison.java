@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
 /**
  * The plugin class for the Spigot implementation.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotPrison extends JavaPlugin {
 

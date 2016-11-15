@@ -26,7 +26,7 @@ import org.spongepowered.api.plugin.Plugin;
 import tech.mcprison.prison.cells.CellsModule;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 @Plugin(id = "prison-cells", name = "PrisonCells", version = "3.0.0-SNAPSHOT", description = "The cells module for Prison.", dependencies = {
     @Dependency(id = "prison-sponge")}) public class CellsSponge {

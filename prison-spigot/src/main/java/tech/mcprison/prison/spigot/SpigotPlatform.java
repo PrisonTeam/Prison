@@ -45,7 +45,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 class SpigotPlatform implements Platform {
 

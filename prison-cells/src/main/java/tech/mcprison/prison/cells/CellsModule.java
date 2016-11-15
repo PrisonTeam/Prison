@@ -21,7 +21,7 @@ package tech.mcprison.prison.cells;
 import tech.mcprison.prison.modules.Module;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class CellsModule extends Module {
 

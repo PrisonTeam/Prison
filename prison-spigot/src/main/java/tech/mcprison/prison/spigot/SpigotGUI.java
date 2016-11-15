@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotGUI implements GUI {
 

@@ -31,7 +31,7 @@ import java.util.UUID;
 /**
  * Represents a platform that Prison has been implemented for.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @author Camouflage100
  * @since 3.0
  */

@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Keeps track of each module and each module's status.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class ModuleManager {

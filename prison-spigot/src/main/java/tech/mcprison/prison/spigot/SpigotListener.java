@@ -38,7 +38,7 @@ import tech.mcprison.prison.util.Location;
 /**
  * Posts Prison's platform events.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotListener implements Listener {
 

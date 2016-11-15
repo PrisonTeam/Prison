@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class GUIListener implements Listener {
 

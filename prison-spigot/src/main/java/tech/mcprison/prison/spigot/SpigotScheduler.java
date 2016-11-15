@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import tech.mcprison.prison.platform.Scheduler;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotScheduler implements Scheduler {
 

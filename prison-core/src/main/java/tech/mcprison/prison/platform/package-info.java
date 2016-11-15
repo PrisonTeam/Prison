@@ -21,7 +21,7 @@
  * provided by mods like Bukkit and Sponge are not provided for us. Instead, we must make our own
  * and have the implementations implement them with the different mods.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 package tech.mcprison.prison.platform;

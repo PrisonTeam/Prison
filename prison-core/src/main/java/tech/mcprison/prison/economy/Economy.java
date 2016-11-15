@@ -23,7 +23,7 @@ import tech.mcprison.prison.platform.Player;
 /**
  * Allows you to interact with the server's economy.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public interface Economy {

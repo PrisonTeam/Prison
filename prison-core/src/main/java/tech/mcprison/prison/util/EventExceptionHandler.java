@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  * when an exception occurs. This allows us to avoid making try... catch blocks in each subscriber method (listener)
  * if we wanted to see exception data, which is quite nice, don't you think?
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class EventExceptionHandler implements SubscriberExceptionHandler {

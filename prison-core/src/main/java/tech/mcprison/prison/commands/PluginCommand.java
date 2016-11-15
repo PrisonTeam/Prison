@@ -19,7 +19,7 @@
 package tech.mcprison.prison.commands;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class PluginCommand {
 

@@ -24,7 +24,7 @@ import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.platform.Player;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class VaultEconomy implements Economy {
 

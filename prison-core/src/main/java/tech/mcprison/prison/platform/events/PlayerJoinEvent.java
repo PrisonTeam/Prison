@@ -23,7 +23,7 @@ import tech.mcprison.prison.platform.Player;
 /**
  * Platform-independent event, which is posted when a player joins the server.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class PlayerJoinEvent {

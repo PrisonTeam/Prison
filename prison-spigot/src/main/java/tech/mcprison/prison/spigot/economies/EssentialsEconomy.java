@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 /**
  * Integrates with Essentials Economy.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class EssentialsEconomy implements Economy {
 

@@ -26,7 +26,7 @@ import org.spongepowered.api.plugin.Plugin;
 import java.util.logging.Logger;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 @Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", url = "http://mc-prison.tech")
 public class SpongePrison {

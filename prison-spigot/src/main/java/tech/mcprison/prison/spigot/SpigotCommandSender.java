@@ -25,7 +25,7 @@ import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.util.Text;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotCommandSender implements CommandSender {
 

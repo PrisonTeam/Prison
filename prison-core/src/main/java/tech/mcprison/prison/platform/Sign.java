@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Represents a sign in a Minecraft world.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public interface Sign {
 

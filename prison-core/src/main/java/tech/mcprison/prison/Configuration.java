@@ -25,7 +25,7 @@ import tech.mcprison.prison.platform.config.Configurable;
  * Every time a new value is added to a production version (i.e. public release),
  * the VERSION constant must be incremented by one to ensure the configuration will be regenerated.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class Configuration implements Configurable {

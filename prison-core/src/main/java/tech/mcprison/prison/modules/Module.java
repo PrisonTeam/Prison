@@ -26,7 +26,7 @@ import java.io.File;
  * Represents a module, which is a part of Prison that can be enabled and
  * disabled independently from the rest of the modules.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public abstract class Module {

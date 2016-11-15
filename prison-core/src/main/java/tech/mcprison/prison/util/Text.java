@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * Provides utilities for manipulating text.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class Text {

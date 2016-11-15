@@ -25,7 +25,7 @@ import tech.mcprison.prison.util.Location;
 import java.util.List;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotSign implements Sign {
 

@@ -21,7 +21,7 @@ package tech.mcprison.prison.platform;
 /**
  * Represents any entity that may send commands and receive output.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public interface CommandSender {

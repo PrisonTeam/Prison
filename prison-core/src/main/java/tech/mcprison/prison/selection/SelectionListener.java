@@ -23,7 +23,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.platform.events.PlayerInteractEvent;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SelectionListener {
 

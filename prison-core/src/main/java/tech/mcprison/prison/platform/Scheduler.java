@@ -21,7 +21,7 @@ package tech.mcprison.prison.platform;
 /**
  * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own thread.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public interface Scheduler {

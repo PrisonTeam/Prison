@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpongePlatform implements Platform {
 

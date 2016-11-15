@@ -23,7 +23,7 @@ import tech.mcprison.prison.platform.World;
 /**
  * Represents a location in a Minecraft world.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class Location {

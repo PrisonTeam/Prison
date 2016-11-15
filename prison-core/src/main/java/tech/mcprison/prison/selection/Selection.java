@@ -24,7 +24,7 @@ import tech.mcprison.prison.util.Location;
 /**
  * Represents an individual selection.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class Selection {

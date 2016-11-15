@@ -35,7 +35,7 @@ import java.io.File;
  * {@link Prison#getInstance()} method, however in order to use the core libraries, you must call
  * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class Prison {

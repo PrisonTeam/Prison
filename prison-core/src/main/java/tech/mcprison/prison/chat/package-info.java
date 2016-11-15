@@ -21,7 +21,7 @@
  * The Fanciful library is authored by mkremins, and licensed under the MIT License.
  * The ArrayWrapper was written by Glen Husman.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @author mkremins
  * @author Glen Husman
  * @since 3.0

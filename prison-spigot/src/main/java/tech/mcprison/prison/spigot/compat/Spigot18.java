@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class Spigot18 implements Compatibility {
 

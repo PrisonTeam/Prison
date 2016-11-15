@@ -23,7 +23,7 @@ import tech.mcprison.prison.platform.Player;
 /**
  * A platform-independent event, posted when a player chats a message.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class PlayerChatEvent implements Cancelable {

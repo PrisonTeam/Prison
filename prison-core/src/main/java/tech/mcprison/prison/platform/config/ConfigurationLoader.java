@@ -37,7 +37,7 @@ import java.util.Date;
  * The loader will also check the target version of the configurable with its serialized version.
  * If the version does not match, the file will be duplicated and regenerated with the correct values.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class ConfigurationLoader {

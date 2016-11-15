@@ -21,7 +21,7 @@ package tech.mcprison.prison.platform;
 /**
  * Thrown when a module attempts to perform an action which the platform is incapable of.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public class IncapableException extends RuntimeException {

@@ -26,7 +26,7 @@ import org.bukkit.inventory.ItemStack;
  * Different Spigot versions have different methods.
  * The compatibility system ensures that each version can be used with the same code.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public interface Compatibility {
 

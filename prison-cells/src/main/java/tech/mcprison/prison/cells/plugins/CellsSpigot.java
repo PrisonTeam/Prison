@@ -22,7 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.cells.CellsModule;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class CellsSpigot extends JavaPlugin {
 

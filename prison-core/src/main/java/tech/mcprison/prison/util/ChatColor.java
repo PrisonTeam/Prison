@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * All supported color values for chat.
  *
  * @author Spigot team
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public enum ChatColor {

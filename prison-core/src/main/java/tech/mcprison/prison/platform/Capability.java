@@ -22,7 +22,7 @@ package tech.mcprison.prison.platform;
  * Different platforms have different features implemented.
  * Capabilities tell Prison which features are available on a platform.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public enum Capability {

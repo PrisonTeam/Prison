@@ -26,7 +26,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Spigot 1.9 and 1.10.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class Spigot19 implements Compatibility {
 

@@ -21,7 +21,7 @@ package tech.mcprison.prison.platform.events;
 /**
  * Represents an event whose outcome is cancelable.
  *
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  * @since 3.0
  */
 public interface Cancelable {

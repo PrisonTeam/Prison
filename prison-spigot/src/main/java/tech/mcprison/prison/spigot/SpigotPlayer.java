@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotPlayer extends SpigotCommandSender implements Player {
 

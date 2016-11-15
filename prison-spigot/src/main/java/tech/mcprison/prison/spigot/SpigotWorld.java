@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @author SirFaizdat
+ * @author Faizaan A. Datoo
  */
 public class SpigotWorld implements World {
 
