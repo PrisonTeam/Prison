@@ -30,7 +30,7 @@ import tech.mcprison.prison.platform.config.MessageConfigurable;
  */
 public class Messages extends MessageConfigurable {
 
-    public static final int VERSION = 5; // For everyone to reference
+    public static final int VERSION = 6; // For everyone to reference
     public int version = VERSION; // For the configuration file to store
 
     // Entries
@@ -62,6 +62,8 @@ public class Messages extends MessageConfigurable {
     public String playerNotOnline = ERROR_PREFIX + "The player %1 is not online.";
     public String worldNotFound = ERROR_PREFIX + "The world \"%1\" was not found";
     public String selectionNeeded = ERROR_PREFIX + "You must create a selection first!";
+    public String alertsPresent = INFO_PREFIX + "You have &c&l%d alerts &r&c. Type /prison alerts to view them.";
+    public String alertsCleared = INFO_PREFIX + "You have cleared your alerts.";
 
     @Override public int getVersion() {
         return version;

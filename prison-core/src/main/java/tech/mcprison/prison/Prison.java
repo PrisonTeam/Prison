@@ -23,6 +23,7 @@ import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Alert;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.platform.Platform;
 import tech.mcprison.prison.platform.config.ConfigurationLoader;
@@ -55,6 +56,8 @@ public class Prison {
     private ConfigurationLoader messagesLoader;
     private EventBus eventBus;
 
+    // TODO Change getInstance() to get()
+
     /**
      * Gets the current instance of this class. <p> An instance will always be available, but you
      * must call the {@link Prison#init(Platform)} method before you perform any other action.
@@ -77,6 +80,8 @@ public class Prison {
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
         Output.get().logInfo("Enable start...");
+
+        Alert.get(); // Initialize alerts
 
         this.platform = platform;
         Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());

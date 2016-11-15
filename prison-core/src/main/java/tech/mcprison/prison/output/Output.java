@@ -33,6 +33,9 @@ public class Output {
 
     // Fields
     private static Output instance;
+    public String INFO_PREFIX = "&3Info &8&l/// &7";
+    public String WARNING_PREFIX = "&6Warning &8&l/// &7";
+    public String ERROR_PREFIX = "&cError &8&l/// &7";
 
     // Constructor
 
@@ -83,30 +86,30 @@ public class Output {
      * Send information to a {@link CommandSender}.
      *
      * @param sender  The {@link CommandSender} receiving the message.
-     * @param message The message to send. This may include color codes, but the default is white.
+     * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendInfo(CommandSender sender, String message, Object... args) {
-        sender.sendMessage("&3Prison &7/// &f" + String.format(message, args));
+        sender.sendMessage(INFO_PREFIX + String.format(message, args));
     }
 
     /**
      * Send a warning to a {@link CommandSender}.
      *
      * @param sender  The {@link CommandSender} receiving the message.
-     * @param message The message to send. This may include color codes, but the default is orange.
+     * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendWarn(CommandSender sender, String message, Object... args) {
-        sender.sendMessage("&3Prison &7/// &6" + String.format(message, args));
+        sender.sendMessage(WARNING_PREFIX + String.format(message, args));
     }
 
     /**
      * Send an error to a {@link CommandSender}.
      *
      * @param sender  The {@link CommandSender} receiving the message.
-     * @param message The message to send. This may include color codes, but the default is red.
+     * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendError(CommandSender sender, String message, Object... args) {
-        sender.sendMessage("&3Prison &7/// &c" + String.format(message, args));
+        sender.sendMessage(ERROR_PREFIX + String.format(message, args));
     }
 
     // Getters

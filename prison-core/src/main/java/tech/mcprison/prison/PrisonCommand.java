@@ -20,8 +20,11 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.platform.CommandSender;
+import tech.mcprison.prison.commands.FlagArg;
+import tech.mcprison.prison.commands.Flags;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Alert;
+import tech.mcprison.prison.platform.CommandSender;
 
 /**
  * @author Faizaan A. Datoo
@@ -124,6 +127,18 @@ public class PrisonCommand {
         sender.sendMessage("&7============= &d/prison patrons &7=============");
     }
     */
+
+    @Command(identifier = "prison alerts", description = "View the list of alerts currently active", onlyPlayers = false, permissions = {
+        "prison.alerts"}) @Flags(identifier = {"c"}, description = {"Clear alerts"})
+    public void alertsCommand(CommandSender sender, @FlagArg("c") boolean clear) {
+        if (clear) {
+            Alert.get().clearAlerts();
+            sender.sendMessage(Prison.getInstance().getMessages().alertsCleared);
+            return;
+        }
+        Alert.get().listAlerts().forEach(sender::sendMessage);
+        sender.sendMessage("&8&oTo clear alerts, type /prison alerts -c.");
+    }
 
     // Get a module by name or by package name
     private Module getModule(String name) {
