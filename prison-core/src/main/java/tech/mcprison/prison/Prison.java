@@ -21,10 +21,11 @@ package tech.mcprison.prison;
 import com.google.common.eventbus.EventBus;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.platform.Platform;
-import tech.mcprison.prison.platform.config.ConfigurationLoader;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.platform.Platform;
+import tech.mcprison.prison.platform.config.ConfigurationLoader;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
 
@@ -75,10 +76,10 @@ public class Prison {
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
-        platform.log("&7> &dENABLE START &7 <");
+        Output.get().logInfo("Enable start...");
 
         this.platform = platform;
-        platform.log("&7Using platform &3%s&7.", platform.getClass().getName());
+        Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
 
         initDataFolder();
         initMessages();
@@ -87,9 +88,9 @@ public class Prison {
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
-        platform.log("&7Enabled &3Prison v%s&7.", platform.getPluginVersion());
-        platform
-            .log("&7> &dENABLE COMPLETE &5(%dms) &7<", (System.currentTimeMillis() - startTime));
+        Output.get()
+            .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+                (System.currentTimeMillis() - startTime));
     }
 
     private void initDataFolder() {

@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.platform.CommandSender;
 import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.util.ChatColor;
@@ -411,8 +412,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
                     result.messageParts.add(new MessagePart(TextualComponent.rawText("\n")));
                 }
             } catch (CloneNotSupportedException e) {
-                Prison.getInstance().getPlatform().log("Failed to clone object");
-                e.printStackTrace();
+                Output.get().logError("Failed to clone object.", e);
                 return this;
             }
         }

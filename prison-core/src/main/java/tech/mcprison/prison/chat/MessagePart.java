@@ -22,6 +22,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.gson.stream.JsonWriter;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.ChatColor;
 
 import java.io.IOException;
@@ -143,9 +144,7 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
             }
             json.endObject();
         } catch (IOException e) {
-            Prison.getInstance().getPlatform()
-                .log("A problem occured during writing of JSON string.");
-            e.printStackTrace();
+            Output.get().logError("A problem occurred during writing of JSON string.", e);
         }
     }
 

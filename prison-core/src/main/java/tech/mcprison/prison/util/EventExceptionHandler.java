@@ -20,7 +20,7 @@ package tech.mcprison.prison.util;
 
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
-import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.lang.reflect.Method;
 
@@ -36,16 +36,15 @@ public class EventExceptionHandler implements SubscriberExceptionHandler {
 
     @Override public void handleException(Throwable exception, SubscriberExceptionContext context) {
         Method method = context.getSubscriberMethod();
-        Prison.getInstance().getPlatform().log("&7> &cEvent Exception!");
-        Prison.getInstance().getPlatform().log(
+        Output.get().logError("&c&l!!! Event Exception!!!");
+        Output.get().logError(
             "&cException thrown by subscriber method " + method.getName() + '(' + method
                 .getParameterTypes()[0].getName() + ')' + " on listener " + context.getSubscriber()
                 .getClass().getName());
-        Prison.getInstance().getPlatform().log("&6Here's the stack trace:");
-        exception.printStackTrace();
-        Prison.getInstance().getPlatform().log(
+        Output.get().logError("&6Here's the stack trace:", exception);
+        Output.get().logError(
             "&6Report this entire message to the developers if you can't solve the problem yourself.");
-        Prison.getInstance().getPlatform().log("&7> &cEvent Exception!");
+        Output.get().logError("&c&l!!! Event Exception!!!");
     }
 
 }

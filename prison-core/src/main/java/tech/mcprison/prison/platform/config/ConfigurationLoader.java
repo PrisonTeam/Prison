@@ -24,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,15 +92,14 @@ public class ConfigurationLoader {
 
             if (isOutdated(json)) {
                 duplicateConfigFile();
-                Prison.getInstance().getPlatform().log("&c&lAlert: &7Your " + fileName
+                Output.get().logWarn("Your " + fileName
                     + " file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
                 return;
             }
 
             readConfiguration(json);
         } catch (IOException e) {
-            Prison.getInstance().getPlatform()
-                .log("&c&lError: &7Failed to load the " + fileName + " file.");
+            Output.get().logError("Failed to load the " + fileName + " file.");
             e.printStackTrace();
         }
 

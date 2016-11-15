@@ -67,7 +67,7 @@ public class SpigotPrison extends JavaPlugin {
             knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
             knownCommands.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            Prison.getInstance().getPlatform().log(
+            getLogger().severe(
                 "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
             e.printStackTrace();
         }

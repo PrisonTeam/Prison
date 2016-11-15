@@ -19,6 +19,7 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,9 +59,9 @@ public class ModuleManager {
         }
 
         setStatus(module.getName(), "&6Version mismatch (update module)");
-        Prison.getInstance().getPlatform()
-            .log("&6Warning: &7Version mismatch! Please update &6%s &7to version &6%s&7.",
-                module.getPackageName(), Prison.getInstance().getPlatform().getPluginVersion());
+        Output.get().logWarn(
+            "Version mismatch! Please update " + module.getPackageName() + " to version " + Prison
+                .getInstance().getPlatform().getPluginVersion());
     }
 
     /**
@@ -71,7 +72,7 @@ public class ModuleManager {
      */
     public boolean enableModule(Module module) {
         long startTime = System.currentTimeMillis();
-        Prison.getInstance().getPlatform().log("&7> &d%s ENABLE START &7 <", module.getName());
+        Output.get().logInfo("%s enable start...", module.getName());
 
         module.enable();
         module.setEnabled(true);
@@ -85,15 +86,13 @@ public class ModuleManager {
 
         // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
         if (getStatus(module.getName()).startsWith("&c")) {
-            Prison.getInstance().getPlatform()
-                .log("&7> &c%s ENABLE FAILED &5(%dms) &7<", module.getName(),
-                    (System.currentTimeMillis() - startTime));
+            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
+                (System.currentTimeMillis() - startTime));
             return false;
         }
 
-        Prison.getInstance().getPlatform()
-            .log("&7> &d%s ENABLE COMPLETE &5(%dms) &7<", module.getName(),
-                (System.currentTimeMillis() - startTime));
+        Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
+            (System.currentTimeMillis() - startTime));
         return true;
     }
 
