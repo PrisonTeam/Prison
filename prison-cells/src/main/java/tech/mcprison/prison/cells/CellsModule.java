@@ -26,7 +26,7 @@ import tech.mcprison.prison.modules.Module;
 public class CellsModule extends Module {
 
     public CellsModule(String version) {
-        super("Cells", version);
+        super("Cells", version, 30);
     }
 
 }
