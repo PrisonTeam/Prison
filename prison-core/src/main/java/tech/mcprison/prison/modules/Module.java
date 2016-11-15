@@ -33,12 +33,21 @@ public abstract class Module {
 
     private String name, version;
     private File dataFolder;
+    private int apiTarget;
     private boolean enabled;
 
-    public Module(String name, String version) {
+    /**
+     * Instantiate your module.
+     *
+     * @param name    The name of the module.
+     * @param version The version of the module.
+     * @param target  The API level to target.
+     */
+    public Module(String name, String version, int target) {
         this.name = name;
         this.version = version;
         this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
+        this.apiTarget = target;
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }
@@ -95,4 +104,9 @@ public abstract class Module {
     public File getDataFolder() {
         return dataFolder;
     }
+
+    int getApiTarget() {
+        return apiTarget;
+    }
+
 }

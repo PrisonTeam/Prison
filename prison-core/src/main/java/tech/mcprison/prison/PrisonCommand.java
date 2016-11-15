@@ -34,7 +34,7 @@ public class PrisonCommand {
     @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
         sender.sendMessage("&7========== &d/prison version &7==========");
-        sender.sendMessage("&7Version: &3" + Prison.get().getPlatform().getPluginVersion());
+        sender.sendMessage("&7Version: &3" + Prison.get().getPlatform().getPluginVersion() + " &8(API level " + Prison.API_LEVEL + ")");
         sender.sendMessage(
             "&7Platform: &3" + Prison.get().getPlatform().getClass().getName());
         sender.sendMessage("&7Integrations:");

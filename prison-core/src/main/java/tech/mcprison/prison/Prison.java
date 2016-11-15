@@ -48,6 +48,9 @@ public class Prison {
     private Platform platform;
 
     // Fields
+
+    public static final int API_LEVEL = 30;
+
     private File dataFolder;
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;

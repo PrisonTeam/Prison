@@ -54,14 +54,15 @@ public class ModuleManager {
     }
 
     private void validateVersion(Module module) {
-        if (module.getVersion().equals(Prison.get().getPlatform().getPluginVersion())) {
+        if (module.getApiTarget() == Prison.API_LEVEL) {
             return; // Version matches, no need to continue
         }
 
         setStatus(module.getName(), "&6Version mismatch (update module)");
         Output.get().logWarn(
-            "Version mismatch! Please update " + module.getPackageName() + " to version " + Prison
-                .get().getPlatform().getPluginVersion());
+            "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
+                + ", while prison-core is on API " + Prison.API_LEVEL
+                + ". This may cause problems.");
     }
 
     /**
