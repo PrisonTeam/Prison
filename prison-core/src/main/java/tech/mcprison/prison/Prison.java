@@ -60,8 +60,8 @@ public class Prison {
     private EventBus eventBus;
 
     /**
-     * Gets the current instance of this class. <p> An instance will always be available, but you
-     * must call the {@link Prison#init(Platform)} method before you perform any other action.
+     * Gets the current instance of this class. <p> An instance will always be available after
+     * the implementation invokes the {@link Prison#init(Platform)} method.
      *
      * @return an instance of Prison.
      */
@@ -80,17 +80,16 @@ public class Prison {
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
-        Output.get().logInfo("Enable start...");
-
-        Alert.get(); // Initialize alerts
 
         this.platform = platform;
         Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
+        Output.get().logInfo("Enable start...");
 
         initDataFolder();
         initMessages();
         initConfig();
         initManagers();
+        Alert.get(); // Initialize alerts
 
         this.commandHandler.registerCommands(new PrisonCommand());
 

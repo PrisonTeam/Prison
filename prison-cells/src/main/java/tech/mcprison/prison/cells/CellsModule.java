@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.cells;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 
 /**
@@ -26,7 +27,8 @@ import tech.mcprison.prison.modules.Module;
 public class CellsModule extends Module {
 
     public CellsModule(String version) {
-        super("Cells", version, 30);
+        super("Cells", version, 29);
+        Prison.get().getModuleManager().registerModule(this);
     }
 
 }

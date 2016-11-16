@@ -38,6 +38,12 @@ public class Button {
     private List<String> lore;
     private boolean closeOnClick = false;
 
+    /**
+     * @param item         The item that this button will show.
+     * @param action       The action implementation; this code is run when the button is clicked.
+     * @param name         The name of the button (shown as the item name).
+     * @param closeOnClick Whether to close the GUI on click.
+     */
     public Button(Block item, Action action, String name, boolean closeOnClick) {
         this.item = item;
         this.action = action;
@@ -46,6 +52,13 @@ public class Button {
         this.lore = new ArrayList<>();
     }
 
+    /**
+     * @param item         The item that this button will show.
+     * @param action       The action implementation; this code is run when the button is clicked.
+     * @param name         The name of the button (shown as the item name).
+     * @param closeOnClick Whether to close the GUI on click.
+     * @param lore         The lore text to put under the button.
+     */
     public Button(Block item, Action action, String name, boolean closeOnClick, String... lore) {
         this.item = item;
         this.action = action;

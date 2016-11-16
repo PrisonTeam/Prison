@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 
 /**
  * A serializer and deserializer for locations.
+ * Register it with a GSON instance.
  *
  * @author Faizaan A. Datoo
  * @since API 30
