@@ -31,7 +31,9 @@ import java.util.List;
  *
  * @author Faizaan A. Datoo
  * @since API 30
+ * @deprecated Doesn't work as planned, will be revisited in future API revisions.
  */
+@Deprecated
 public class Alert {
 
     // Fields

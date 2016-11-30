@@ -89,7 +89,6 @@ public class Prison {
         initMessages();
         initConfig();
         initManagers();
-        Alert.get(); // Initialize alerts
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
