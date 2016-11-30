@@ -173,7 +173,7 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public void log(String message, Object... format) {
-        message = Text.translateAmpColorCodes(String.format("&8[&3Prison&8]&r " + message, format));
+        message = Text.translateAmpColorCodes(String.format(message, format));
 
         ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) {
