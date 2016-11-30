@@ -128,18 +128,6 @@ public class PrisonCommand {
     }
     */
 
-    @Command(identifier = "prison alerts", description = "View the list of alerts currently active", onlyPlayers = false, permissions = {
-        "prison.alerts"}) @Flags(identifier = {"c"}, description = {"Clear alerts"})
-    public void alertsCommand(CommandSender sender, @FlagArg("c") boolean clear) {
-        if (clear) {
-            Alert.get().clearAlerts();
-            sender.sendMessage(Prison.get().getMessages().alertsCleared);
-            return;
-        }
-        Alert.get().listAlerts().forEach(sender::sendMessage);
-        sender.sendMessage("&8&oTo clear alerts, type /prison alerts -c.");
-    }
-
     // Get a module by name or by package name
     private Module getModule(String name) {
         Module module =
