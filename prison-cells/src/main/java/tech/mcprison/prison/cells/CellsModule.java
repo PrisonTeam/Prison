@@ -27,8 +27,12 @@ import tech.mcprison.prison.modules.Module;
 public class CellsModule extends Module {
 
     public CellsModule(String version) {
-        super("Cells", version, 29);
+        super("Cells", version, 30);
         Prison.get().getModuleManager().registerModule(this);
+    }
+
+    @Override public void enable() {
+
     }
 
 }
