@@ -19,9 +19,12 @@
 package tech.mcprison.prison.database;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * An abstract class containing common methods for all supported databases.
@@ -32,15 +35,8 @@ import java.sql.ResultSet;
 public abstract class Database {
 
     protected Connection connection;
-    private String host, username, password, database;
-    private int port;
 
-    public Database(String host, String username, String password, String database, int port) {
-        this.host = host;
-        this.username = username;
-        this.password = password;
-        this.database = database;
-        this.port = port;
+    public Database() {
         this.connection = null;
     }
 
@@ -57,14 +53,31 @@ public abstract class Database {
      * @param query The valid SQL query to run on the database.
      * @return The {@link ResultSet} returned from the query.
      */
-    public abstract ResultSet executeQuery(String query);
+    public ResultSet executeQuery(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery(query);
+        } catch (SQLException e) {
+            Output.get().logError(
+                "Your database connection is flawed, and could not be utilized correctly.", e);
+            return null;
+        }
+    }
 
     /**
      * Executes an update query on the database. This does not have a response involved, unlike {@link #executeQuery(String)}.
      *
      * @param query The valid SQL query to run on the database.
      */
-    public abstract void executeUpdate(String query);
+    public void executeUpdate(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            Output.get().logError(
+                "Your database connection is flawed, and could not be utilized correctly.", e);
+        }
+    }
 
     /**
      * Asynchronously execute a query on the database.
@@ -104,26 +117,6 @@ public abstract class Database {
 
     public Connection getConnection() {
         return connection;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public int getPort() {
-        return port;
     }
 
 }

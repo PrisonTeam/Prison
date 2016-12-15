@@ -20,54 +20,44 @@ package tech.mcprison.prison.database;
 
 import tech.mcprison.prison.output.Output;
 
+import java.io.File;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * An implementation of {@link Database} for MySQL.
+ * An implementation of {@link Database} for SQLite.
  *
  * @author Faizaan A. Datoo
  * @since 3.0
  */
-public class MySQLDatabase extends Database {
+public class SQLiteDatabase extends Database {
 
-    private String host, username, password, database;
-    private int port;
+    File dbFile;
 
-    public MySQLDatabase(String host, String username, String password, String database, int port) {
-        this.host = host;
-        this.username = username;
-        this.password = password;
-        this.database = database;
-        this.port = port;
+    public SQLiteDatabase(File dbFile) {
+        this.dbFile = dbFile;
     }
 
     @Override public boolean establishConnection() {
+        if (!dbFile.exists()) {
+            throw new IllegalStateException("Database file must exist.");
+        }
+
         try {
             if (connection != null && !connection.isClosed()) {
                 return true;
             }
 
-            synchronized (this) {
-                if (connection != null && !connection.isClosed()) {
-                    return true;
-                }
-
-                Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.getHost() + ":" + this.getPort() + "/" + this
-                        .getDatabase(), this.getUsername(), this.getPassword());
-            }
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
             return true;
         } catch (SQLException e) {
-            Output.get().logError("Failed to establish a connection to the MySQL database.", e);
-            e.printStackTrace();
+            Output.get().logError("Failed to establish a connection to the SQLite database.", e);
             return false;
         } catch (ClassNotFoundException e) {
-            Output.get().logError(
-                "You do not have the required MySQL JDBC driver to connect to the database..", e);
+            Output.get().logError("You do not have the correct SQLite JDBC drivers.", e);
             return false;
         }
     }
@@ -79,26 +69,6 @@ public class MySQLDatabase extends Database {
             Output.get().logError(
                 "Cannot close database connection.", e);
         }
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public int getPort() {
-        return port;
     }
 
 }
