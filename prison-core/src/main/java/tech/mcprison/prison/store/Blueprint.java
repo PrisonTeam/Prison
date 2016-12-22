@@ -30,7 +30,7 @@ import java.util.List;
  */
 public abstract class Blueprint {
 
-    private List<String> columns = new ArrayList<>();
+    private List<BlueprintColumn> columns = new ArrayList<>();
     private Class<?> type;
 
     public Blueprint(Class<?> type) {
@@ -49,7 +49,7 @@ public abstract class Blueprint {
      *
      * @return The {@link List} containing the columns.
      */
-    public List<String> getColumns() {
+    public List<BlueprintColumn> getColumns() {
         return columns;
     }
 
@@ -57,9 +57,10 @@ public abstract class Blueprint {
      * Add a column to the blueprint.
      *
      * @param name The name of the column.
+     * @param type The type of object this column holds.
      */
-    protected void addColumn(String name) {
-        columns.add(name);
+    protected void addColumn(String name, Class<?> type) {
+        columns.add(new BlueprintColumn(name, type));
     }
 
     public Class<?> getType() {

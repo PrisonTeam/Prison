@@ -72,7 +72,7 @@ public class BlueprintCompiler {
             // Get what we need from the annotation
             Column columnAnnotation = field.getAnnotation(Column.class);
             String columnName = columnAnnotation.name();
-            if (!blueprint.getColumns().contains(columnName)) {
+            if (!containsColumn(columnName)) {
                 Output.get()
                     .logWarn("Object attempted to use column that isn't defined in the blueprint.");
                 continue; // Skip this one
@@ -91,6 +91,16 @@ public class BlueprintCompiler {
         }
 
         return values;
+    }
+
+    private boolean containsColumn(String columnName) {
+        for (BlueprintColumn blueprintColumn : blueprint.getColumns()) {
+            if (columnName.equals(blueprintColumn.name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

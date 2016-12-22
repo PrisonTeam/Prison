@@ -19,18 +19,34 @@
 package tech.mcprison.prison.store;
 
 /**
+ * A blueprint column contains the column name and its type.
+ *
  * @author Faizaan A. Datoo
+ * @since 3.0
  */
-public class TestBlueprint extends Blueprint {
+public class BlueprintColumn {
 
-    public TestBlueprint() {
-        super(TestBean.class);
-        addColumn("name", String.class);
-        addColumn("age", Integer.class);
-        addColumn("weight", Double.class);
+    public String name;
+    public Class<?> type;
+
+    public BlueprintColumn(String name, Class<?> type) {
+        this.name = name;
+        this.type = type;
     }
 
-    @Override public String getName() {
-        return "test";
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
     }
 }
