@@ -20,10 +20,7 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.FlagArg;
-import tech.mcprison.prison.commands.Flags;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.output.Alert;
 import tech.mcprison.prison.platform.CommandSender;
 
 /**
@@ -34,9 +31,10 @@ public class PrisonCommand {
     @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
         sender.sendMessage("&7========== &d/prison version &7==========");
-        sender.sendMessage("&7Version: &3" + Prison.get().getPlatform().getPluginVersion() + " &8(API level " + Prison.API_LEVEL + ")");
         sender.sendMessage(
-            "&7Platform: &3" + Prison.get().getPlatform().getClass().getName());
+            "&7Version: &3" + Prison.get().getPlatform().getPluginVersion() + " &8(API level "
+                + Prison.API_LEVEL + ")");
+        sender.sendMessage("&7Platform: &3" + Prison.get().getPlatform().getClass().getName());
         sender.sendMessage("&7Integrations:");
         sender.sendMessage("&7    Permissions: &cNone");
         sender.sendMessage("&7    Economy: &cNone");
@@ -130,8 +128,7 @@ public class PrisonCommand {
 
     // Get a module by name or by package name
     private Module getModule(String name) {
-        Module module =
-            Prison.get().getModuleManager().getModule(name); // Try it by name first
+        Module module = Prison.get().getModuleManager().getModule(name); // Try it by name first
         if (module == null) {
             module = Prison.get().getModuleManager()
                 .getModuleByPackageName(name); // Try it by package name next
