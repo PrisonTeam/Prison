@@ -23,9 +23,6 @@
     <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.jooq:jooq:3.8.6" level="project" />
-    <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:6.0.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.15.1" level="project" />
     <orderEntry type="module" module-name="prison-core_main" />
     <orderEntry type="library" name="Gradle: org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: net.milkbowl.vault:VaultAPI:1.6" level="project" />

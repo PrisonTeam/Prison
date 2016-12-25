@@ -26,9 +26,6 @@ shadowJar {
     dependencies {
         include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
         include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
-        include(dependency(group: 'org.jooq', name: 'jooq', version: '3.8.6'))
-        include(dependency(group: 'mysql', name: 'mysql-connector-java', version: '6.0.5'))
-        include(dependency(group: 'org.xerial', name: 'sqlite-jdbc', version: '3.15.1'))
     }
     classifier ''
     version = null
