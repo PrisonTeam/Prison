@@ -83,10 +83,7 @@ public class ModuleManager {
         if (getStatus(module.getName()) == null || getStatus(module.getName())
             .contains("Disabled")) {
             setStatus(module.getName(), "&aEnabled");
-        }
-
-        // If the status is red-colored, this signifies an error. Otherwise, the enable was successful
-        if (getStatus(module.getName()).startsWith("&c")) {
+        } else { // Anything else and we assume that the enable failed.
             Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
                 (System.currentTimeMillis() - startTime));
             return false;
