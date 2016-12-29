@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.platform.config;
 
+import tech.mcprison.prison.store.Exclude;
+
 /**
  * A {@link Configurable} with the prefixes as protected class members for easy access.
  *

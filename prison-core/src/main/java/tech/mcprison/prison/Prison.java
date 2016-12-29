@@ -19,16 +19,21 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import tech.mcprison.prison.adapters.LocationAdapter;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
-import tech.mcprison.prison.output.Alert;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.platform.Platform;
+import tech.mcprison.prison.store.AnnotationExclusionStrategy;
 import tech.mcprison.prison.platform.config.ConfigurationLoader;
 import tech.mcprison.prison.selection.SelectionManager;
+import tech.mcprison.prison.store.Exclude;
 import tech.mcprison.prison.util.EventExceptionHandler;
+import tech.mcprison.prison.util.Location;
 
 import java.io.File;
 
@@ -57,6 +62,7 @@ public class Prison {
     private SelectionManager selectionManager;
     private ConfigurationLoader configurationLoader;
     private ConfigurationLoader messagesLoader;
+    private Gson gson;
     private EventBus eventBus;
 
     /**
@@ -86,6 +92,7 @@ public class Prison {
         Output.get().logInfo("Enable start...");
 
         initDataFolder();
+        initGson();
         initMessages();
         initConfig();
         initManagers();
@@ -102,6 +109,12 @@ public class Prison {
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }
+    }
+
+    private void initGson() {
+        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
+            .setExclusionStrategies(new AnnotationExclusionStrategy())
+            .registerTypeAdapter(Location.class, new LocationAdapter()).create();
     }
 
     private void initMessages() {
@@ -153,6 +166,17 @@ public class Prison {
      */
     public File getDataFolder() {
         return dataFolder;
+    }
+
+    /**
+     * Returns an instance of {@link Gson}, which can be used to serialize/de-serialize JSON files.
+     * This comes with the annotation exclusion strategy (see {@link Exclude})
+     * and all adapters in the <i>tech.mcprison.prison.adapters</i> package registered.
+     *
+     * @return The {@link Gson} object, ready for use.
+     */
+    public Gson getGson() {
+        return gson;
     }
 
     /**

@@ -16,18 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.platform.config;
+package tech.mcprison.prison.store;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class AnnotationExclusionStrategy implements ExclusionStrategy {
-
-    @Override public boolean shouldSkipField(FieldAttributes f) {
-        return f.getAnnotation(Exclude.class) != null;
-    }
-
-    @Override public boolean shouldSkipClass(Class<?> clazz) {
-        return false;
-    }
+/**
+ * Fields with this annotation will not be serialized into JSON.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 30
+ */
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface Exclude {
 }

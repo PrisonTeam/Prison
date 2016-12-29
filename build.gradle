@@ -73,6 +73,7 @@ subprojects {
         compile 'com.google.guava:guava:19.0'
         compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+        compile 'org.hibernate:hibernate-core:5.2.6.Final'
         testCompile 'junit:junit:4.12'
     }
 

@@ -26,6 +26,7 @@ shadowJar {
     dependencies {
         include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
         include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
+        include(dependency('org.hibernate:hibernate-core:5.2.6.Final'))
     }
     classifier ''
     version = null
