@@ -6,9 +6,20 @@ import tech.mcprison.prison.modules.Module;
  *
  */
 public class Cells extends Module {
-    public Cells(String version){
-        super("Cells",version,30);
+    private static Cells i = null;
+    public static Cells get(){
+        return i;
     }
+    private CellsList cells;
+    public CellsList getCells() {
+        return cells;
+    }
+    private static String version = "Unregistered-Snapshot";
+    private boolean initialized = false;
+    public boolean getInitialized(){
+        return initialized;
+    }
+    public Cells(String version){super("Cells",version,30);}
     public void enable(){
 
     }
