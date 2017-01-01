@@ -19,6 +19,7 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.io.File;
 
@@ -71,6 +72,14 @@ public abstract class Module {
     public void reload() {
     }
 
+    /**
+     * Returns the module manager, which stores instances of all registered {@link
+     * Module}s and manages their state.
+     *
+     * @return The {@link ModuleManager}.
+     */
+    public ModuleManager getModuleManager() {return Prison.get().getModuleManager();}
+    public Output getLogger(){return Output.get();}
     public String getName() {
         return name;
     }
