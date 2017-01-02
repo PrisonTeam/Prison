@@ -21,7 +21,6 @@ dependencies {
 
 shadowJar {
     dependencies {
-        include(dependency(':prison-core'))
     }
     baseName 'PrisonShops'
     classifier ''
