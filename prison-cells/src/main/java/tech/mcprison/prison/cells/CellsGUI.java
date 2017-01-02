@@ -10,7 +10,7 @@ import tech.mcprison.prison.platform.IncapableException;
  */
 public class CellsGUI {
     public boolean canShow() {
-        return Prison.get().getPlatform().getClass().getName() == "SpigotPlatform";
+        return Prison.get().getPlatform().getCapabilities().get(Capability.GUI);
     }
 
     private GUI gui;
