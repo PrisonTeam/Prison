@@ -1,12 +1,17 @@
 package tech.mcprison.prison.cells;
 
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 
 /**
  *
  */
 public class Cells extends Module {
     private static Cells i = null;
+    private CellsConfig config;
+    public CellsConfig getConfig(){
+        return config;
+    }
     public static Cells get(){
         return i;
     }
@@ -21,6 +26,6 @@ public class Cells extends Module {
     }
     public Cells(String version){super("Cells",version,30);}
     public void enable(){
-
+        Output.get().logInfo("&bEnabling &ePrison Cells&b...");
     }
 }
