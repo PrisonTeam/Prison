@@ -9,13 +9,17 @@ import tech.mcprison.prison.platform.IncapableException;
  * Created by DMP9 on 30/12/2016.
  */
 public class CellsGUI {
-    public boolean canShow(){return Prison.get().getPlatform().getClass().getName() == "SpigotPlatform";}
+    public boolean canShow() {
+        return Prison.get().getPlatform().getClass().getName() == "SpigotPlatform";
+    }
+
     private GUI gui;
-    public CellsGUI()
-    {
-        if (!canShow())
+
+    public CellsGUI() {
+        if (!canShow()) {
             throw new IncapableException(Capability.GUI);
-        gui = Prison.get().getPlatform().createGUI("",1);
+        }
+        gui = Prison.get().getPlatform().createGUI("", 1);
 
     }
 }

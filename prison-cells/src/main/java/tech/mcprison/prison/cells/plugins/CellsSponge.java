@@ -11,11 +11,9 @@ import tech.mcprison.prison.cells.Cells;
  *
  */
 @Plugin(id = "prison-demo", name = "PrisonDemo", version = "1.0.0", dependencies = {
-        @Dependency(id = "prison")})
-public class CellsSponge {
+    @Dependency(id = "prison")}) public class CellsSponge {
 
-    @Listener
-    public void onServerStart(GameStartedServerEvent event) {
+    @Listener public void onServerStart(GameStartedServerEvent event) {
         Prison.get().getModuleManager().registerModule(new Cells("1.0.0"));
     }
 

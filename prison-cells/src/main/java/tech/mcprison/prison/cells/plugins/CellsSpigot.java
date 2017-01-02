@@ -8,7 +8,7 @@ import tech.mcprison.prison.cells.Cells;
  * Created by DMP9 on 30/12/2016.
  */
 public class CellsSpigot extends JavaPlugin {
-    public void onEnable(){
+    public void onEnable() {
         Prison.get().getModuleManager().registerModule(new Cells(getDescription().getVersion()));
     }
 }
