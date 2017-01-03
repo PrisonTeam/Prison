@@ -21,6 +21,7 @@ package tech.mcprison.prison.platform;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.platform.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
@@ -156,5 +157,10 @@ public interface Platform {
      * @param text   The text of the actionbar
      */
     void showActionBar(Player player, String text);
+
+    /**
+     * Returns the scoreboard manager.
+     */
+    ScoreboardManager getScoreboardManager();
 
 }

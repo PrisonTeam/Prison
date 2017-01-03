@@ -22,6 +22,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.platform.*;
+import tech.mcprison.prison.platform.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
@@ -104,6 +105,10 @@ public class SpongePlatform implements Platform {
 
     @Override public void showActionBar(Player player, String text) {
 
+    }
+
+    @Override public ScoreboardManager getScoreboardManager() {
+        return null;
     }
 
 }

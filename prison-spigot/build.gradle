@@ -49,6 +49,8 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency(':prison-core'))
+        include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
+        include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
     }
     baseName 'Prison'
     classifier ''
