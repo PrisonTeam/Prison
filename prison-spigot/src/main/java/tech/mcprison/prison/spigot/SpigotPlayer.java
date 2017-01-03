@@ -23,6 +23,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.platform.ItemStack;
 import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.platform.scoreboard.Scoreboard;
+import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 
@@ -83,6 +85,14 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
             new org.bukkit.Location(Bukkit.getWorld(location.getWorld().getName()), location.getX(),
                 location.getY(), location.getZ(), location.getPitch(), location.getYaw()),
             PlayerTeleportEvent.TeleportCause.PLUGIN);
+    }
+
+    @Override public boolean isOnline() {
+        return bukkitPlayer.isOnline();
+    }
+
+    @Override public void setScoreboard(Scoreboard scoreboard) {
+        bukkitPlayer.setScoreboard(((SpigotScoreboard) scoreboard).getBukkitScoreboard());
     }
 
 }

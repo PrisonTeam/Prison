@@ -1,5 +1,0 @@
-name: PrisonShops
-version: 3.0.0-SNAPSHOT
-main: tech.mcprison.prison.shops.plugins.ShopsSpigot
-description: The shops module for Prison.
-depend: [Prison]

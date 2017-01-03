@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,19 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-
-// Matches API level set in Prison.API_LEVEL
-version = 30
-
-shadowJar {
-    dependencies {
-        include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
-        include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
-    }
-    classifier ''
-    version = null
-}
-
-build.dependsOn(shadowJar)
+/**
+ * An currently incomplete scoreboard API. Use the {@link tech.mcprison.prison.util.Scoreboard} utility instead.
+ * <p>
+ * This package exists as a direct interface to the Minecraft server's scoreboards. It's not meant for direct usage
+ * in your modules, though you may use it if you wish.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 30
+ */
+package tech.mcprison.prison.platform.scoreboard;

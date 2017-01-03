@@ -35,8 +35,10 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.platform.*;
+import tech.mcprison.prison.platform.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
+import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -51,9 +53,11 @@ class SpigotPlatform implements Platform {
 
     private SpigotPrison plugin;
     private List<PluginCommand> commands = new ArrayList<>();
+    private ScoreboardManager scoreboardManager;
 
     SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
+        this.scoreboardManager = new SpigotScoreboardManager();
     }
 
     @Override public World getWorld(String name) {
@@ -190,6 +194,10 @@ class SpigotPlatform implements Platform {
 
     @Override public void showActionBar(Player player, String text) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
+    }
+
+    @Override public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 
     private boolean isDoor(Material block) {

@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.platform;
 
+import tech.mcprison.prison.platform.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Location;
 
 import java.util.UUID;
@@ -63,6 +64,17 @@ public interface Player extends CommandSender {
      * @param location The new {@link Location}.
      */
     void teleport(Location location);
+
+    /**
+     * @return Returns true if the player is online, false otherwise.
+     */
+    boolean isOnline();
+
+    /**
+     * Sets the player's visible scoreboard.
+     * @param scoreboard The {@link Scoreboard} to show the player.
+     */
+    void setScoreboard(Scoreboard scoreboard);
 
     @Override default boolean doesSupportColors() {
         return true;
