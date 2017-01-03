@@ -73,8 +73,10 @@ public class ConfigurationLoader {
 
     /**
      * Load the Configurable from the file provided.
+     *
+     * @return The result of the configuration's load.
      */
-    public void loadConfiguration() {
+    public LoadResult loadConfiguration() {
         try {
             // If it doesn't exist, create it
             if (!configFile.exists()) {
@@ -84,7 +86,7 @@ public class ConfigurationLoader {
                     e.printStackTrace();
                 }
                 writeConfiguration();
-                return;
+                return LoadResult.SUCCESS;
             }
 
             // It does exist, so let's load it.
@@ -94,13 +96,15 @@ public class ConfigurationLoader {
                 duplicateConfigFile();
                 Output.get().logWarn("Your " + fileName
                     + " file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
-                return;
+                return LoadResult.REGENERATED;
             }
 
             readConfiguration(json);
+            return LoadResult.SUCCESS;
         } catch (IOException e) {
             Output.get().logError("Failed to load the " + fileName + " file.");
             e.printStackTrace();
+            return LoadResult.FAILURE;
         }
 
     }

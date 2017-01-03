@@ -106,7 +106,7 @@ public enum ChatColor {
      */
     public static final char COLOR_CHAR = '\u00A7';
     private static final Pattern STRIP_COLOR_PATTERN =
-        Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+        Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "|&[0-9A-FK-OR]");
     private final static Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
     private final static Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
 
