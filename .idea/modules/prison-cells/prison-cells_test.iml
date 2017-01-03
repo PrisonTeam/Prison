@@ -15,7 +15,6 @@
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.7" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:5.2.6.Final" level="project" />
-    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:5.2.6.Final" level="project" />
     <orderEntry type="module" module-name="prison-core_main" />
     <orderEntry type="library" name="Gradle: org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: org.spongepowered:spongeapi:4.1.0" level="project" />
