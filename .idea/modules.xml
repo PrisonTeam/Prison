@@ -9,13 +9,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-core/prison-core.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-core/prison-core.iml" group="prison-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-core/prison-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-core/prison-core_main.iml" group="prison-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-core/prison-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-core/prison-core_test.iml" group="prison-core" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines.iml" group="prison-mines" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_main.iml" group="prison-mines" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-mines/prison-mines_test.iml" group="prison-mines" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks.iml" group="prison-ranks" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_main.iml" group="prison-ranks" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-ranks/prison-ranks_test.iml" group="prison-ranks" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops.iml" group="prison-shops" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops_main.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops_main.iml" group="prison-shops" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops_test.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-shops/prison-shops_test.iml" group="prison-shops" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot.iml" filepath="$PROJECT_DIR$/.idea/modules/prison-spigot/prison-spigot.iml" group="prison-spigot" />

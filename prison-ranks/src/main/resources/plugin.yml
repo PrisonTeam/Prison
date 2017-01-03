@@ -1,5 +1,0 @@
-name: PrisonRanks
-version: 3.0.0-SNAPSHOT
-main: tech.mcprison.prison.ranks.plugins.RanksSpigot
-description: The ranks module for Prison.
-depend: [Prison]
