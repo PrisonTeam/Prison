@@ -34,8 +34,7 @@ import java.nio.file.Files;
 public abstract class AbstractJsonable<T extends AbstractJsonable<T>> implements Jsonable<T> {
 
     @Override public T fromJson(String json) {
-        return Prison.get().getGson().fromJson(json, new TypeToken<T>() {
-        }.getType());
+        return Prison.get().getGson().fromJson(json, TypeToken.of(getClass()).getType());
     }
 
     @Override public T fromFile(File file) throws IOException {
@@ -44,8 +43,7 @@ public abstract class AbstractJsonable<T extends AbstractJsonable<T>> implements
     }
 
     @Override public String toJson() {
-        return Prison.get().getGson().toJson(this, new TypeToken<T>() {
-        }.getType());
+        return Prison.get().getGson().toJson(this, getClass());
     }
 
     @Override public void toFile(File file) throws IOException {
