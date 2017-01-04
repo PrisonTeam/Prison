@@ -86,7 +86,7 @@ public class ConfigurationLoader {
                     e.printStackTrace();
                 }
                 writeConfiguration();
-                return LoadResult.SUCCESS;
+                return LoadResult.CREATED;
             }
 
             // It does exist, so let's load it.
