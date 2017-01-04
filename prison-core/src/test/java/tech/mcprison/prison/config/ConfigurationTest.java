@@ -45,7 +45,7 @@ public class ConfigurationTest {
 
         pluginDir = folder.newFolder("PrisonTest");
 
-        Prison.get().init(new TestPlatform(pluginDir));
+        Prison.get().init(new TestPlatform(pluginDir, true));
 
         loader = new ConfigurationLoader(pluginDir, "test.json", TestConfigurable.class,
             TestConfigurable.VERSION);

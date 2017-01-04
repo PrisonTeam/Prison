@@ -38,13 +38,15 @@ import java.util.UUID;
 public class TestPlatform implements Platform {
 
     private File pluginDirectory;
+    private boolean suppressOutput;
 
-    public TestPlatform(File pluginDirectory) {
+    public TestPlatform(File pluginDirectory, boolean suppressOutput) {
         this.pluginDirectory = pluginDirectory;
+        this.suppressOutput = suppressOutput;
     }
 
     @Override public World getWorld(String name) {
-        return null;
+        return new TestWorld(name);
     }
 
     @Override public Player getPlayer(String name) {
@@ -100,6 +102,7 @@ public class TestPlatform implements Platform {
     }
 
     @Override public void log(String message, Object... format) {
+        if(suppressOutput) return;
         System.out.println(ChatColor.stripColor(String.format(message, format)));
     }
 
