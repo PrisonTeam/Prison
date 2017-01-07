@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.platform;
 
+import tech.mcprison.prison.block.BlockState;
 import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.Location;
 
@@ -56,4 +57,11 @@ public interface World {
      */
     void setBlockAt(Location location, Block block); // The new block on the block (hehe)
 
+    /**
+     * Sets the block & block state at a location to the specified value.
+     * @param location The {@Link Location} of the block
+     * @param blockState The {@Link BlockState}. The block will be set to blockState.getType()
+     */
+    void setBlockAt(Location location, BlockState blockState);
+    BlockState getBlockStateAt(Location location);
 }
