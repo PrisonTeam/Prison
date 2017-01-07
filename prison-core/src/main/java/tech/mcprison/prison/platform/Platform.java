@@ -163,4 +163,9 @@ public interface Platform {
      */
     ScoreboardManager getScoreboardManager();
 
+    /**
+     * @return The block manager.
+     */
+    BlockManager getBlockManager();
+
 }
