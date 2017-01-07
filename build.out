@@ -1,1 +1,6 @@
-Postponed.
+@PrisonCells.jar:/PrisonCells/build/libs/PrisonCells.jar
+@PrisonRanks.jar:/PrisonRanks/build/libs/PrisonRanks.jar
+@PrisonMines.jar:/PrisonMines/build/libs/PrisonMines.jar
+@PrisonCore.jar:/Prison/prison-core/build/libs/prison-core-30.jar
+!Spigot:/Prison/prison-spigot/build/libs/Prison.jar
+!Sponge:/Prison/prison-sponge/build/libs/Prison.jar
