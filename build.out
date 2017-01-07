@@ -1,7 +1,6 @@
--/Prison/:https://github.com/MC-Prison/Prison.git
 -/PrisonCells/:https://github.com/MC-Prison/PrisonCells.git
--/PrisonRanks/https://github.com/MC-Prison/PrisonRanks.git
--/PrisonMines/https://github.com/MC-Prison/PrisonMines.git
+-/PrisonRanks/:https://github.com/MC-Prison/PrisonRanks.git
+-/PrisonMines/:https://github.com/MC-Prison/PrisonMines.git
 !Spigot.zip:/Prison/prison-spigot/build/libs/Prison.jar
 !Sponge.zip:/Prison/prison-sponge/build/libs/Prison.jar
 @PrisonCells.jar:/PrisonCells/build/libs/PrisonCells.jar
