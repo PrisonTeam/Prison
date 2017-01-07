@@ -20,7 +20,6 @@ package tech.mcprison.prison.spigot;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import tech.mcprison.prison.block.BlockState;
 import tech.mcprison.prison.platform.Player;
 import tech.mcprison.prison.platform.World;
 import tech.mcprison.prison.util.Block;
@@ -61,15 +60,6 @@ public class SpigotWorld implements World {
     @Override public void setBlockAt(Location location, Block block) {
         bukkitWorld.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())
             .setType(Material.getMaterial(block.getLegacyId()));
-    }
-
-    @Override public void setBlockAt(Location location, BlockState blockState) {
-        org.bukkit.block.Block b = bukkitWorld.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        b.setType(Material.getMaterial(blockState.getType().getLegacyId()));
-    }
-
-    @Override public BlockState getBlockStateAt(Location location) {
-        return null;
     }
 
 }

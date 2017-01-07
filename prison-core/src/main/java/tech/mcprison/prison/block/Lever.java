@@ -29,7 +29,7 @@ import tech.mcprison.prison.util.Location;
  */
 public class Lever extends BlockState {
 
-    public Lever(Location location, boolean on) {
+    public Lever(Location location) {
         super(location, Block.LEVER);
     }
 
@@ -39,7 +39,7 @@ public class Lever extends BlockState {
      * @return true if the lever is on, false if it's off
      */
     public boolean isOn() {
-        return getLocation().getWorld()
+        return Prison.get().getPlatform().getBlockManager().isLeverOn(location);
     }
 
 }

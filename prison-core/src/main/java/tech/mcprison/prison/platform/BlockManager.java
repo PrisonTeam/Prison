@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,42 +18,23 @@
 
 package tech.mcprison.prison.platform;
 
-import tech.mcprison.prison.util.Block;
 import tech.mcprison.prison.util.Location;
 
-import java.util.List;
-
 /**
- * Represents a world on the Minecraft server.
+ * A bridge between the core and the server to get and set the state of blocks.
+ * See the {@link tech.mcprison.prison.block.BlockState} class for more practical usage.
  *
  * @author Faizaan A. Datoo
  * @since API 30
  */
-public interface World {
+public interface BlockManager {
 
     /**
-     * Returns the name of this world.
-     */
-    String getName();
-
-    /**
-     * Returns a list of all the players in this world.
-     */
-    List<Player> getPlayers();
-
-    /**
-     * Returns the {@link Block} at a specified location.
+     * Returns whether a lever is on (i.e. emitting redstone signal) or off.
      *
-     * @param location The {@link Location} of the block.
+     * @param location The {@link Location} of the lever.
+     * @return true if the lever is on, false if it's off, or if the target block is not a lever.
      */
-    Block getBlockAt(Location location);
-
-    /**
-     * Sets the block at a location to the specified block.
-     *
-     * @param location The {@link Location} of the block.
-     * @param block    The new {@link Block}.
-     */
-    void setBlockAt(Location location, Block block); // The new block on the block (hehe)
+    boolean isLeverOn(Location location);
 
 }
