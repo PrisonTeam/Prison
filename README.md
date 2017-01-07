@@ -30,4 +30,4 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 ## What's the status on Prison v3.0?
 
-Prison v3.0 is currently under heavy development. We do not have an expected time of release, but we are hoping to have it released by the end of 2016. Remember, good things come to those who wait.
+Prison v3.0 is currently under heavy development. We do not have an expected time of release, but we are hoping to have it released by the end of February 2017. Remember, good things come to those who wait.
