@@ -111,4 +111,8 @@ public class SpongePlatform implements Platform {
         return null;
     }
 
+    @Override public BlockManager getBlockManager() {
+        return null;
+    }
+
 }
