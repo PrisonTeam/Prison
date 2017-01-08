@@ -200,6 +200,10 @@ class SpigotPlatform implements Platform {
         return scoreboardManager;
     }
 
+    @Override public BlockManager getBlockManager() {
+        return null;
+    }
+
     private boolean isDoor(Material block) {
         return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR
             || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR_BLOCK
