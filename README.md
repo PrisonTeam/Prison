@@ -3,7 +3,7 @@
 [![User Documentation](https://img.shields.io/badge/documentation-users-green.svg)](https://github.com/MC-Prison/Prison/wiki/User%20Documentation)
 [![Developer Documentation](https://img.shields.io/badge/documentation-developers-orange.svg)](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)
 [![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/MC-Prison/Prison.svg?branch=master)](https://travis-ci.org/MC-Prison/Prison)
+[![Build Status](http://srv.dmp9software.co.uk:8080/job/Prison/badge/icon?style=plastic)](https://travis-ci.org/MC-Prison/Prison)
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 
 1. [What is Prison?](#what-is-prison)
