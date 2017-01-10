@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.gui.Button;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.internal.Player;
 
 import java.util.HashMap;
 import java.util.Map;

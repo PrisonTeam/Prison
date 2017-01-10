@@ -27,9 +27,9 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.platform.Platform;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.store.AnnotationExclusionStrategy;
-import tech.mcprison.prison.platform.config.ConfigurationLoader;
+import tech.mcprison.prison.config.ConfigurationLoader;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Exclude;
 import tech.mcprison.prison.util.EventExceptionHandler;
@@ -88,7 +88,7 @@ public class Prison {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
-        Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
+        Output.get().logInfo("Using internal &3%s&f.", platform.getClass().getName());
         Output.get().logInfo("Enable start...");
 
         initDataFolder();
@@ -240,7 +240,7 @@ public class Prison {
 
     /**
      * This method is mainly for the use of the command library. It retrieves a list of commands
-     * from the platform, and then queries the list for a command with a certain label.
+     * from the internal, and then queries the list for a command with a certain label.
      *
      * @param label The command's label.
      * @return The {@link PluginCommand}, or null if no command exists by that label.

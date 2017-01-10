@@ -24,8 +24,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.TestPlatform;
-import tech.mcprison.prison.platform.config.ConfigurationLoader;
-import tech.mcprison.prison.platform.config.LoadResult;
 
 import java.io.File;
 

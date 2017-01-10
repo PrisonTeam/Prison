@@ -26,11 +26,10 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.TestPlatform;
 import tech.mcprison.prison.TestPlayer;
 import tech.mcprison.prison.TestWorld;
-import tech.mcprison.prison.platform.ItemStack;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.World;
-import tech.mcprison.prison.platform.events.PlayerInteractEvent;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.events.PlayerInteractEvent;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 import static org.junit.Assert.*;
@@ -70,7 +69,7 @@ public class SelectionTest {
 
         int initialAmount = ourPlayer.getInput().size();
 
-        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, new ItemStack("test", 1, Block.ACACIA_SAPLING), PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING), PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertEquals(initialAmount, ourPlayer.getInput().size()); // nothing should have happened because we have the wrong item in our hand
 

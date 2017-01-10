@@ -19,7 +19,7 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.platform.CommandSender;
+import tech.mcprison.prison.internal.CommandSender;
 
 import java.util.Arrays;
 

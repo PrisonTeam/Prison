@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.economy;
 
-import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.internal.Player;
 
 /**
  * Allows you to interact with the server's economy.

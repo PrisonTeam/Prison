@@ -20,10 +20,10 @@ package tech.mcprison.prison.commands;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.handlers.*;
-import tech.mcprison.prison.platform.CommandSender;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.World;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
 import java.lang.reflect.Method;
@@ -165,7 +165,7 @@ public class CommandHandler {
         registerArgumentHandler(double.class, new DoubleArgumentHandler());
         registerArgumentHandler(Player.class, new PlayerArgumentHandler());
         registerArgumentHandler(World.class, new WorldArgumentHandler());
-        registerArgumentHandler(Block.class, new BlockArgumentHandler());
+        registerArgumentHandler(BlockType.class, new BlockArgumentHandler());
     }
 
     @SuppressWarnings("unchecked")

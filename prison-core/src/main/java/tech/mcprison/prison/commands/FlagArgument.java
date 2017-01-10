@@ -19,7 +19,7 @@
 package tech.mcprison.prison.commands;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.platform.CommandSender;
+import tech.mcprison.prison.internal.CommandSender;
 
 public class FlagArgument extends CommandArgument {
     private final Flag flag;

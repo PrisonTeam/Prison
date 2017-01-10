@@ -20,7 +20,7 @@ package tech.mcprison.prison.output;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.platform.events.PlayerJoinEvent;
+import tech.mcprison.prison.internal.events.PlayerJoinEvent;
 import tech.mcprison.prison.util.Text;
 
 import java.util.ArrayList;

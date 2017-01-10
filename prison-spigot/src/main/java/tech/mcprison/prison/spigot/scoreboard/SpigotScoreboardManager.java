@@ -19,8 +19,8 @@
 package tech.mcprison.prison.spigot.scoreboard;
 
 import org.bukkit.Bukkit;
-import tech.mcprison.prison.platform.scoreboard.Scoreboard;
-import tech.mcprison.prison.platform.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 
 /**
  * @author Faizaan A. Datoo

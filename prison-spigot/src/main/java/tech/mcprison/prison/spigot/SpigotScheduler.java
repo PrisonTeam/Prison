@@ -19,7 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import org.bukkit.scheduler.BukkitScheduler;
-import tech.mcprison.prison.platform.Scheduler;
+import tech.mcprison.prison.internal.Scheduler;
 
 /**
  * @author Faizaan A. Datoo

@@ -18,9 +18,9 @@
 
 package tech.mcprison.prison;
 
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.World;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 import java.util.List;
@@ -44,11 +44,11 @@ public class TestWorld implements World {
         return null;
     }
 
-    @Override public Block getBlockAt(Location location) {
+    @Override public BlockType getBlockAt(Location location) {
         return null;
     }
 
-    @Override public void setBlockAt(Location location, Block block) {
+    @Override public void setBlockAt(Location location, BlockType block) {
 
     }
 

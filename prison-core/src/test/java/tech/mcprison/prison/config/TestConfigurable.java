@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.config;
 
-import tech.mcprison.prison.platform.config.Configurable;
-
 /**
  * @author Faizaan A. Datoo
  */

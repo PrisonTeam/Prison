@@ -174,7 +174,7 @@ public enum ChatColor {
 
     /**
      * Translates a string using an alternate color code character into a
-     * string that uses the platform ChatColor.COLOR_CODE color code
+     * string that uses the internal ChatColor.COLOR_CODE color code
      * character. The alternate color code character will only be replaced if
      * it is immediately followed by 0-9, A-F, a-f, K-O, k-o, R or r.
      *

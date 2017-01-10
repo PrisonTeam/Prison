@@ -18,9 +18,9 @@
 
 package tech.mcprison.prison.spigot.scoreboard;
 
-import tech.mcprison.prison.platform.scoreboard.DisplaySlot;
-import tech.mcprison.prison.platform.scoreboard.Objective;
-import tech.mcprison.prison.platform.scoreboard.Score;
+import tech.mcprison.prison.internal.scoreboard.DisplaySlot;
+import tech.mcprison.prison.internal.scoreboard.Objective;
+import tech.mcprison.prison.internal.scoreboard.Score;
 
 /**
  * @author Faizaan A. Datoo

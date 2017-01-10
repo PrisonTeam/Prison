@@ -18,7 +18,8 @@
 
 package tech.mcprison.prison.util;
 
-import tech.mcprison.prison.platform.World;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 
 /**
  * Represents a location in a Minecraft world.
@@ -111,6 +112,10 @@ public class Location {
 
     public int getBlockZ() {
         return Math.toIntExact(Math.round(getZ()));
+    }
+
+    public Block getBlockAt() {
+        return world.getBlockAt(this);
     }
 
     @Override public boolean equals(Object o) {

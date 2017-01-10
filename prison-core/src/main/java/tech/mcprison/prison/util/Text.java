@@ -123,7 +123,7 @@ public class Text {
     /**
      * Translates the color codes (a-f) (A-F) (0-9), prefixed by a certain character, into Minecraft-readable color codes.
      * <p>
-     * <p>Use of this method is discouraged. Implementations are recommended to translate color codes using their native platform's
+     * <p>Use of this method is discouraged. Implementations are recommended to translate color codes using their native internal's
      * APIs. This assumes that the server mod will accept vanilla Minecraft color codes, although implementations such as Sponge do not do this.
      * However, because there are some practical uses for a method like this, it exists in a non-deprecated but discouraged state.
      *
@@ -150,7 +150,7 @@ public class Text {
     /**
      * Translates color codes (a-f) (A-F) (0-9), prefixed by an ampersand, into Minecraft-readable color codes.
      * <p>
-     * <p>Use of this method is discouraged. Implementations are recommended to translate color codes using their native platform's
+     * <p>Use of this method is discouraged. Implementations are recommended to translate color codes using their native internal's
      * APIs. This assumes that the server mod will accept vanilla Minecraft color codes, although implementations such as Sponge do not do this.
      * However, because there are some practical uses for a method like this, it exists in a non-deprecated but discouraged state.
      *

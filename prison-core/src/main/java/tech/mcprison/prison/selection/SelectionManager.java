@@ -18,9 +18,9 @@
 
 package tech.mcprison.prison.selection;
 
-import tech.mcprison.prison.platform.ItemStack;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.util.BlockType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class SelectionManager {
 
     public static final ItemStack SELECTION_TOOL =
-        new ItemStack("&6Selection Wand", 1, Block.BLAZE_ROD, "&7Corner 1 - Left click",
+        new ItemStack("&6Selection Wand", 1, BlockType.BLAZE_ROD, "&7Corner 1 - Left click",
             "&7Corner 2 - Right click");
     private Map<String, Selection> selectionMap;
 

@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.spigot.scoreboard;
 
-import tech.mcprison.prison.platform.scoreboard.DisplaySlot;
-import tech.mcprison.prison.platform.scoreboard.Objective;
-import tech.mcprison.prison.platform.scoreboard.Scoreboard;
-import tech.mcprison.prison.platform.scoreboard.Team;
+import tech.mcprison.prison.internal.scoreboard.DisplaySlot;
+import tech.mcprison.prison.internal.scoreboard.Objective;
+import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.internal.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;

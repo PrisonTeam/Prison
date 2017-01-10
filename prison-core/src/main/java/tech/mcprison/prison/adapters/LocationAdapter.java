@@ -20,7 +20,7 @@ package tech.mcprison.prison.adapters;
 
 import com.google.gson.*;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.platform.World;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.util.Location;
 
 import java.lang.reflect.Type;

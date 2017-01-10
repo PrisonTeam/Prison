@@ -21,7 +21,7 @@ package tech.mcprison.prison.commands.handlers;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.*;
 import tech.mcprison.prison.commands.VerifyError;
-import tech.mcprison.prison.platform.CommandSender;
+import tech.mcprison.prison.internal.CommandSender;
 
 public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHandler<T> {
 

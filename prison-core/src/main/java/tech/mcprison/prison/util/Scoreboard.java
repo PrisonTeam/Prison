@@ -23,11 +23,10 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.scoreboard.DisplaySlot;
-import tech.mcprison.prison.platform.scoreboard.Objective;
-import tech.mcprison.prison.platform.scoreboard.Team;
-import tech.mcprison.prison.util.ChatColor;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.scoreboard.DisplaySlot;
+import tech.mcprison.prison.internal.scoreboard.Objective;
+import tech.mcprison.prison.internal.scoreboard.Team;
 
 import java.util.AbstractMap;
 import java.util.Iterator;
@@ -36,7 +35,7 @@ import java.util.Map;
 
 public class Scoreboard {
 
-    private tech.mcprison.prison.platform.scoreboard.Scoreboard scoreboard;
+    private tech.mcprison.prison.internal.scoreboard.Scoreboard scoreboard;
 
     private String title;
     private Map<String, Integer> scores;
@@ -118,7 +117,7 @@ public class Scoreboard {
         teams.clear();
     }
 
-    public tech.mcprison.prison.platform.scoreboard.Scoreboard getScoreboard() {
+    public tech.mcprison.prison.internal.scoreboard.Scoreboard getScoreboard() {
         return scoreboard;
     }
 

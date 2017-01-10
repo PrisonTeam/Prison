@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.gui;
 
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.util.BlockType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class Button {
 
-    private Block item;
+    private BlockType item;
     private Action action;
     private String name;
     private List<String> lore;
@@ -44,7 +44,7 @@ public class Button {
      * @param name         The name of the button (shown as the item name).
      * @param closeOnClick Whether to close the GUI on click.
      */
-    public Button(Block item, Action action, String name, boolean closeOnClick) {
+    public Button(BlockType item, Action action, String name, boolean closeOnClick) {
         this.item = item;
         this.action = action;
         this.name = name;
@@ -59,7 +59,7 @@ public class Button {
      * @param closeOnClick Whether to close the GUI on click.
      * @param lore         The lore text to put under the button.
      */
-    public Button(Block item, Action action, String name, boolean closeOnClick, String... lore) {
+    public Button(BlockType item, Action action, String name, boolean closeOnClick, String... lore) {
         this.item = item;
         this.action = action;
         this.name = name;
@@ -67,7 +67,7 @@ public class Button {
         this.lore = Arrays.asList(lore);
     }
 
-    public Block getItem() {
+    public BlockType getItem() {
         return item;
     }
 

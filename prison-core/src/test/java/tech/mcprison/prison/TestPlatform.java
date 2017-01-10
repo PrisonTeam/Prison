@@ -21,8 +21,10 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.platform.*;
-import tech.mcprison.prison.platform.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.internal.platform.Capability;
+import tech.mcprison.prison.internal.*;
+import tech.mcprison.prison.internal.platform.Platform;
+import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 

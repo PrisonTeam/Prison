@@ -19,10 +19,10 @@
 package tech.mcprison.prison.spigot;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.World;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.util.Location;
 
 import java.util.List;
@@ -52,14 +52,7 @@ public class SpigotWorld implements World {
     }
 
     @Override public Block getBlockAt(Location location) {
-        return Block.getBlock(
-            bukkitWorld.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())
-                .getTypeId());
-    }
-
-    @Override public void setBlockAt(Location location, Block block) {
-        bukkitWorld.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())
-            .setType(Material.getMaterial(block.getLegacyId()));
+        return new SpigotBlock(bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
     }
 
 }

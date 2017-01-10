@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison;
 
-import tech.mcprison.prison.platform.config.MessageConfigurable;
+import tech.mcprison.prison.config.MessageConfigurable;
 
 /**
  * Represents Prison's messages file. Contains all of the keys and their default values.
@@ -45,7 +45,7 @@ public class Messages extends MessageConfigurable {
     public String undefinedFlagArgument =
         ERROR_PREFIX + "The argument [%s] to the flag -%s is not defined";
     public String internalErrorOccurred =
-        ERROR_PREFIX + "An platform error occurred while attempting to perform this command.";
+        ERROR_PREFIX + "An internal error occurred while attempting to perform this command.";
     public String noPermission =
         ERROR_PREFIX + "You lack the necessary permissions to perform this command.";
     public String blockParseError = ERROR_PREFIX + "The parameter [%p] is not a valid block.";

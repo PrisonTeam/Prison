@@ -18,9 +18,7 @@
 
 package tech.mcprison.prison.spigot.scoreboard;
 
-import org.bukkit.Bukkit;
-import tech.mcprison.prison.platform.Player;
-import tech.mcprison.prison.platform.scoreboard.Team;
+import tech.mcprison.prison.internal.scoreboard.Team;
 
 /**
  * @author Faizaan A. Datoo

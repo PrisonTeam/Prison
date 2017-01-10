@@ -20,8 +20,8 @@ package tech.mcprison.prison.commands.handlers;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.*;
-import tech.mcprison.prison.platform.CommandSender;
-import tech.mcprison.prison.platform.Player;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 
 public class PlayerArgumentHandler extends ArgumentHandler<Player> {
     public PlayerArgumentHandler() {

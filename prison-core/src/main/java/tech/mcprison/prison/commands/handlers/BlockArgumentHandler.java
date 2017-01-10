@@ -22,22 +22,22 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.ArgumentHandler;
 import tech.mcprison.prison.commands.CommandArgument;
 import tech.mcprison.prison.commands.TransformError;
-import tech.mcprison.prison.platform.CommandSender;
-import tech.mcprison.prison.util.Block;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.util.BlockType;
 
-public class BlockArgumentHandler extends ArgumentHandler<Block> {
+public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
     public BlockArgumentHandler() {
         setMessage("parse_error", Prison.get().getMessages().blockParseError);
     }
 
-    @Override public Block transform(CommandSender sender, CommandArgument argument, String value)
+    @Override public BlockType transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        Block m = null;
+        BlockType m = null;
 
         // Try block legacy (numerical) ID first
         try {
-            m = Block.getBlock(Integer.parseInt(value));
+            m = BlockType.getBlock(Integer.parseInt(value));
         } catch (NumberFormatException ignored) {
         }
 
@@ -47,7 +47,7 @@ public class BlockArgumentHandler extends ArgumentHandler<Block> {
 
         // Now try new block IDs
 
-        m = Block.getBlock(value);
+        m = BlockType.getBlock(value);
 
         if (m != null) {
             return m;
@@ -63,7 +63,7 @@ public class BlockArgumentHandler extends ArgumentHandler<Block> {
             } catch (NumberFormatException ignored) {
                 throw new TransformError(argument.getMessage("parse_error"));
             }
-            m = Block.getBlockWithData(id, data);
+            m = BlockType.getBlockWithData(id, data);
         }
 
         if (m != null) {
