@@ -57,10 +57,6 @@ public class TestPlayer implements Player {
         input.add(message);
     }
 
-    @Override public void sendError(String error) {
-        input.add(error);
-    }
-
     @Override public void sendMessage(String[] messages) {
         input.addAll(Arrays.asList(messages));
     }
