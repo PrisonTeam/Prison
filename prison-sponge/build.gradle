@@ -48,7 +48,6 @@ sponge {
 
 shadowJar {
     dependencies {
-        include(dependency(':prison-core'))
     }
     baseName 'Prison'
     classifier ''
