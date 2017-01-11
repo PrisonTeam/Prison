@@ -18,35 +18,25 @@
 
 package tech.mcprison.prison.sponge;
 
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.util.Location;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.spongepowered.api.text.serializer.TextSerializers;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class SpongeWorld implements World {
+public class SpongeUtil {
 
-    org.spongepowered.api.world.World sWorld;
+    // Convention: If name conflicts, Prison classes should be imported, while Sponge classes should use fully qualified names.
 
-    public SpongeWorld(org.spongepowered.api.world.World sWorld) {
-        this.sWorld = sWorld;
+    private SpongeUtil() {
     }
 
-    @Override public String getName() {
-        return sWorld.getName();
-    }
-
-    @Override public List<Player> getPlayers() {
-        return sWorld.getPlayers().stream().map(SpongePlayer::new).collect(Collectors.toList());
-    }
-
-    @Override public Block getBlockAt(Location location) {
-        return null;
+    /**
+     * Message may include &-prefixed color codes.
+     */
+    public static org.spongepowered.api.text.Text translateToSponge(String message) {
+        return TextSerializers.LEGACY_FORMATTING_CODE
+            .deserialize(Text.translateAmpColorCodes(message));
     }
 
 }

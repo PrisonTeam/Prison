@@ -19,28 +19,35 @@
 package tech.mcprison.prison.sponge;
 
 import com.google.inject.Inject;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import tech.mcprison.prison.Prison;
 
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 /**
  * @author Faizaan A. Datoo
  */
-@Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", url = "http://mc-prison.tech")
+@Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", version = "3.0.0", url = "http://mc-prison.tech")
 public class SpongePrison {
 
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
-    @Listener
-    public void onServerStart(GameStartedServerEvent e) {
+    @Inject @ConfigDir(sharedRoot = false) private Path configDir;
 
+    @Listener public void onServerStart(GameStartedServerEvent e) {
+        Prison.get().init(new SpongePlatform(this));
     }
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public Path getConfigDir() {
+        return configDir;
     }
 
 }
