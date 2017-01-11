@@ -124,8 +124,4 @@ public class TestPlatform implements Platform {
         return null;
     }
 
-    @Override public BlockManager getBlockManager() {
-        return null;
-    }
-
 }

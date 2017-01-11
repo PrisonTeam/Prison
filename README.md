@@ -3,7 +3,7 @@
 [![User Documentation](https://img.shields.io/badge/documentation-users-green.svg)](https://github.com/MC-Prison/Prison/wiki/User%20Documentation)
 [![Developer Documentation](https://img.shields.io/badge/documentation-developers-orange.svg)](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)
 [![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](http://srv.dmp9software.co.uk:8080/job/Prison/badge/icon)](http://srv.dmp9software.co.uk:8080/job/Prison)
+[![Build Status](http://dmp9software.co.uk/jenkins/job/Prison/badge/icon)](http://dmp9software.co.uk/jenkins/job/Prison)
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 
 1. [What is Prison?](#what-is-prison)
@@ -30,4 +30,4 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 ## What's the status on Prison v3.0?
 
-Prison v3.0 is currently under heavy development. We do not have an expected time of release, but we are hoping to have it released by the end of February 2017. Remember, good things come to those who wait.
+Prison v3.0 is currently under heavy development. We do not have an expected time of release, but we are hoping to have it released by the end of February 2017. You can follow the development on the issues page, or build prison using the PrisonBuild tool (see the [Developer Documentation](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)). Remember, good things come to those who wait.
