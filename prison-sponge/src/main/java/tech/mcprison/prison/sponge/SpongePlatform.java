@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Faizaan A. Datoo
@@ -52,19 +53,24 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public World getWorld(String name) {
-        return null;
+        return Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null);
     }
 
     @Override public Player getPlayer(String name) {
-        return null;
+        return Sponge.getServer().getOnlinePlayers().stream()
+            .filter(player -> player.getName().equals(name)).findFirst().map(SpongePlayer::new)
+            .orElse(null);
     }
 
     @Override public Player getPlayer(UUID uuid) {
-        return null;
+        return Sponge.getServer().getOnlinePlayers().stream()
+            .filter(player -> player.getUniqueId().equals(uuid)).findFirst().map(SpongePlayer::new)
+            .orElse(null);
     }
 
     @Override public List<Player> getOnlinePlayers() {
-        return null;
+        return Sponge.getServer().getOnlinePlayers().stream().map(SpongePlayer::new)
+            .collect(Collectors.toList());
     }
 
     @Override public Sign getSign(Location location) {
