@@ -109,7 +109,7 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public void log(String message, Object... format) {
-        Text text = SpongeUtil.translateToSponge(String.format(message, format));
+        Text text = SpongeUtil.prisonTextToSponge(String.format(message, format));
         Sponge.getServer().getConsole().sendMessage(text);
     }
 
@@ -121,8 +121,8 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public void showTitle(Player player, String title, String subtitle, int fade) {
-        Text titleText = SpongeUtil.translateToSponge(title);
-        Text subtitleText = SpongeUtil.translateToSponge(subtitle);
+        Text titleText = SpongeUtil.prisonTextToSponge(title);
+        Text subtitleText = SpongeUtil.prisonTextToSponge(subtitle);
         Title titleObj =
             Title.builder().title(titleText).subtitle(subtitleText).fadeIn(fade).fadeOut(fade)
                 .build();
@@ -132,7 +132,7 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public void showActionBar(Player player, String text) {
-        Text textObj = SpongeUtil.translateToSponge(text);
+        Text textObj = SpongeUtil.prisonTextToSponge(text);
 
         Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
             .sendMessage(ChatTypes.ACTION_BAR, textObj);

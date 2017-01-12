@@ -18,7 +18,9 @@
 
 package tech.mcprison.prison.sponge;
 
+import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -34,9 +36,38 @@ public class SpongeUtil {
     /**
      * Message may include &-prefixed color codes.
      */
-    public static org.spongepowered.api.text.Text translateToSponge(String message) {
+    public static org.spongepowered.api.text.Text prisonTextToSponge(String message) {
         return TextSerializers.LEGACY_FORMATTING_CODE
             .deserialize(Text.translateAmpColorCodes(message));
     }
+
+    public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
+        return TextSerializers.LEGACY_FORMATTING_CODE.serialize(message);
+    }
+
+    public static Location spongeLocationToPrison(
+        org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc) {
+        return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
+            spongeLoc.getY(), spongeLoc.getZ());
+    }
+
+    public static Location spongeLocationToPrison(
+        org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc,
+        Vector3d rotation) {
+        float yaw = (float) ((rotation.getY() + 90) % 360);
+        float pitch = (float) ((rotation.getX()) * -1);
+
+        return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
+            spongeLoc.getY(), spongeLoc.getZ(), pitch, yaw);
+    }
+
+    public static org.spongepowered.api.world.Location<org.spongepowered.api.world.World> prisonLocationToSponge(
+        Location prisonLoc) {
+        return new org.spongepowered.api.world.Location<org.spongepowered.api.world.World>(
+            ((SpongeWorld) prisonLoc.getWorld()).getSpongeWorld(), prisonLoc.getX(),
+            prisonLoc.getY(), prisonLoc.getZ());
+    }
+
+
 
 }
