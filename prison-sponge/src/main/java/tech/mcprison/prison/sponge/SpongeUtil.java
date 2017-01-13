@@ -20,6 +20,8 @@ package tech.mcprison.prison.sponge;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.util.Direction;
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -43,6 +45,16 @@ public class SpongeUtil {
 
     public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
         return TextSerializers.LEGACY_FORMATTING_CODE.serialize(message);
+    }
+
+    public static Direction prisonBlockFaceToSponge(BlockFace blockFace) {
+        if (blockFace == BlockFace.TOP) {
+            return Direction.UP;
+        } else if (blockFace == BlockFace.BOTTOM) {
+            return Direction.DOWN;
+        } else {
+            return Direction.valueOf(blockFace.name());
+        }
     }
 
     public static Location spongeLocationToPrison(
