@@ -54,6 +54,16 @@ public class SpigotBlock implements Block {
 
     @Override public BlockState getState() {
         switch (getType()) {
+            case LEVER:
+                return new SpigotLever(this);
+            case ACACIA_DOOR_BLOCK:
+            case OAK_DOOR_BLOCK:
+            case BIRCH_DOOR_BLOCK:
+            case SPRUCE_DOOR_BLOCK:
+            case DARK_OAK_DOOR_BLOCK:
+            case IRON_DOOR_BLOCK:
+            case JUNGLE_DOOR_BLOCK:
+                return new SpigotDoor(this);
             default:
                 return new SpigotBlockState(this);
         }
