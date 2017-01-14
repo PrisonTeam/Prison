@@ -26,7 +26,6 @@ import tech.mcprison.prison.internal.Player;
  * @author Faizaan A. Datoo
  * @since API 30
  */
-@Event
 public class PlayerChatEvent implements Cancelable {
 
     private Player player;

@@ -28,7 +28,6 @@ import tech.mcprison.prison.util.Location;
  * @author Faizaan A. Datoo
  * @since API 30
  */
-@Event
 public class PlayerInteractEvent implements Cancelable {
 
     private Player player;

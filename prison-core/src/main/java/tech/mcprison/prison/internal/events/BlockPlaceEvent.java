@@ -28,7 +28,6 @@ import tech.mcprison.prison.util.Location;
  * @author Camouflage100
  * @since API 30
  */
-@Event
 public class BlockPlaceEvent implements Cancelable {
 
     private BlockType block;

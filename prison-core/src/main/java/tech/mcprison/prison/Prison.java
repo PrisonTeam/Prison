@@ -24,13 +24,13 @@ import com.google.gson.GsonBuilder;
 import tech.mcprison.prison.adapters.LocationAdapter;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
+import tech.mcprison.prison.config.ConfigurationLoader;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.internal.platform.Platform;
-import tech.mcprison.prison.store.AnnotationExclusionStrategy;
-import tech.mcprison.prison.config.ConfigurationLoader;
 import tech.mcprison.prison.selection.SelectionManager;
+import tech.mcprison.prison.store.AnnotationExclusionStrategy;
 import tech.mcprison.prison.store.Exclude;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.Location;
@@ -60,8 +60,7 @@ public class Prison {
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
-    private ConfigurationLoader configurationLoader;
-    private ConfigurationLoader messagesLoader;
+    private ConfigurationLoader configurationLoader, messagesLoader;
     private Gson gson;
     private EventBus eventBus;
 
@@ -83,14 +82,18 @@ public class Prison {
     /**
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.
+     * <p>
+     * Note that modules <b>should not call this method</b> unless under very special circumstances.
+     * This is intended solely for the implementations.
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
-        Output.get().logInfo("Using internal &3%s&f.", platform.getClass().getName());
+        Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
         Output.get().logInfo("Enable start...");
 
+        // Initialize various parts of the API. The magic happens here :)
         initDataFolder();
         initGson();
         initMessages();
@@ -105,6 +108,7 @@ public class Prison {
     }
 
     private void initDataFolder() {
+        // Creates the /Prison/Core directory, for core configuration.
         this.dataFolder = new File(platform.getPluginDirectory(), "Core");
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
@@ -112,12 +116,15 @@ public class Prison {
     }
 
     private void initGson() {
+        // Creates a handy instance of GSON with pretty printing, disabled HTML escaping, @Exclude support, and all adapters registered.
+        // Note that if any adapters are added to the adapters package, this block must be updated.
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
             .setExclusionStrategies(new AnnotationExclusionStrategy())
             .registerTypeAdapter(Location.class, new LocationAdapter()).create();
     }
 
     private void initMessages() {
+        // Our localization configuration, located in /Prison/Core/messages.json
         this.messagesLoader =
             new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
                 Messages.VERSION);
@@ -125,6 +132,7 @@ public class Prison {
     }
 
     private void initConfig() {
+        // Our configuration, located in /Prison/Core/config.json
         this.configurationLoader =
             new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
                 Configuration.VERSION);
@@ -132,6 +140,7 @@ public class Prison {
     }
 
     private void initManagers() {
+        // Now we initialize the API
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
@@ -241,6 +250,9 @@ public class Prison {
     /**
      * This method is mainly for the use of the command library. It retrieves a list of commands
      * from the internal, and then queries the list for a command with a certain label.
+     * <p>
+     * The chances that a module will have to use this is slim. Instead, use the command library
+     * located in the {@link tech.mcprison.prison.commands} package.
      *
      * @param label The command's label.
      * @return The {@link PluginCommand}, or null if no command exists by that label.
