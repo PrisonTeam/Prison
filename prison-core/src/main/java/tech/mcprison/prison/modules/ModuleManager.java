@@ -21,6 +21,7 @@ package tech.mcprison.prison.modules;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Event;
 import tech.mcprison.prison.internal.events.EventListener;
+import tech.mcprison.prison.internal.events.NotEventException;
 import tech.mcprison.prison.output.Output;
 
 import java.lang.reflect.InvocationTargetException;
@@ -179,28 +180,55 @@ public class ModuleManager {
     public void setStatus(String moduleName, String newStatus) {
         moduleStates.put(moduleName, newStatus);
     }
-    private HashMap<Module,Method> methods;
+
+    private HashMap<Module, Method> methods;
 
     /**
      * Registers all declared methods within the {@Link EventListener} that have parameters assignable from {@Link Event}.
-     * @param module the module
+     *
+     * @param module        the module
      * @param eventListener the class with event handlers
      */
-    public void registerListener(Module module,EventListener eventListener){
-        for (Method m : eventListener.getClass().getDeclaredMethods()){
-            if (m.getParameterCount() > 1){
+    public void registerListener(Module module, EventListener eventListener) {
+        for (Method m : eventListener.getClass().getDeclaredMethods()) {
+            if (m.getParameterCount() > 1) {
                 continue; // We can't invoke this one.
             }
-            if (m.getParameterTypes()[0].isAssignableFrom(Event.class)){
-                methods.put(module,m);
+            if (m.getParameterTypes()[0].isAssignableFrom(Event.class)) {
+                methods.put(module, m);
             }
         }
     }
 
-    public void invokeEvent(Event event) throws InvocationTargetException, IllegalAccessException {
-        for (Method method : methods.values()){
-            if (method.getParameterTypes()[0].isInstance(event)){
-                method.invoke(method.getDeclaringClass(),event);
+    public void unregisterListener(Module module, EventListener eventListener) {
+        for (Method m : eventListener.getClass().getDeclaredMethods()) {
+            if (methods.containsValue(m)) {
+                methods.remove(module, m);
+            }
+        }
+    }
+
+    public void unregisterListeners(Module module) {
+        for (Map.Entry<Module, Method> listenerEntry : methods.entrySet()) {
+            if (listenerEntry.getKey() == module) {
+                methods.remove(listenerEntry.getKey(), listenerEntry.getValue());
+            }
+        }
+    }
+
+    /**
+     * Invokes the event for event listeners that handle it
+     *
+     * @param event the class representing the event
+     */
+    public void invokeEvent(Class event)
+        throws NotEventException, InvocationTargetException, IllegalAccessException {
+        if (event.getAnnotation(Event.class) == null) {
+            throw new NotEventException();
+        }
+        for (Method method : methods.values()) {
+            if (method.getParameterTypes()[0].isInstance(event)) {
+                method.invoke(method.getDeclaringClass(), event);
             }
         }
     }

@@ -19,7 +19,11 @@
 package tech.mcprison.prison.internal.events;
 
 /**
- * Created by DMP9 on 14/01/2017.
+ * This interface should be added to all classes that handle events.
  */
-public @interface EventListener {
+public interface EventListener {
+    /**
+     * What should happen when an exception is thrown when invoking a method originating from this class
+     */
+    void onException(Exception e);
 }

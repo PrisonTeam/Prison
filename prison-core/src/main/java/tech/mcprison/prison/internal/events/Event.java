@@ -18,8 +18,13 @@
 
 package tech.mcprison.prison.internal.events;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Represents an event which can be called from the module manager
  */
-public @interface Event {
+public @Retention(RetentionPolicy.RUNTIME)@Target(ElementType.TYPE) @interface Event {
 }
