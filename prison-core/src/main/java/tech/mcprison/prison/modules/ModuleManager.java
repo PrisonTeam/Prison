@@ -19,8 +19,12 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.events.Event;
+import tech.mcprison.prison.internal.events.EventListener;
 import tech.mcprison.prison.output.Output;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -175,5 +179,29 @@ public class ModuleManager {
     public void setStatus(String moduleName, String newStatus) {
         moduleStates.put(moduleName, newStatus);
     }
+    private HashMap<Module,Method> methods;
 
+    /**
+     * Registers all declared methods within the {@Link EventListener} that have parameters assignable from {@Link Event}.
+     * @param module the module
+     * @param eventListener the class with event handlers
+     */
+    public void registerListener(Module module,EventListener eventListener){
+        for (Method m : eventListener.getClass().getDeclaredMethods()){
+            if (m.getParameterCount() > 1){
+                continue; // We can't invoke this one.
+            }
+            if (m.getParameterTypes()[0].isAssignableFrom(Event.class)){
+                methods.put(module,m);
+            }
+        }
+    }
+
+    public void invokeEvent(Event event) throws InvocationTargetException, IllegalAccessException {
+        for (Method method : methods.values()){
+            if (method.getParameterTypes()[0].isInstance(event)){
+                method.invoke(method.getDeclaringClass(),event);
+            }
+        }
+    }
 }
