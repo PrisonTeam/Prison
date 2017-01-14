@@ -50,8 +50,8 @@ shadowJar {
     dependencies {
         include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
     }
-    baseName 'Prison'
-    classifier ''
+
+    classifier 'Spigot'
     version = null
 }
 

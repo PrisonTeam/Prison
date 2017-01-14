@@ -49,8 +49,8 @@ sponge {
 shadowJar {
     dependencies {
     }
-    baseName 'Prison'
-    classifier ''
+
+    classifier 'Sponge'
     version = null
 }
 

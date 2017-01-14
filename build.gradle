@@ -53,6 +53,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'com.github.johnrengelman.shadow'
 
+    archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
     version = '3.0.0-SNAPSHOT'
 
