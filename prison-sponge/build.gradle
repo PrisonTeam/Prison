@@ -34,8 +34,7 @@ repositories {
 
 dependencies {
     compile project(':prison-core')
-    compile 'org.spongepowered:spongeapi:5.0.0'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    provided 'org.spongepowered:spongeapi:5.0.0'
 }
 
 sponge {

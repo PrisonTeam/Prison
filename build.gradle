@@ -67,14 +67,25 @@ subprojects {
 
     configurations {
         deployerJars
+        provided
+    }
+
+    sourceSets {
+        main {
+            compileClasspath += configurations.provided
+            runtimeClasspath += configurations.provided
+        }
+        test {
+            compileClasspath += configurations.provided
+            runtimeClasspath += configurations.provided
+        }
     }
 
     dependencies {
-        compile 'org.apache.commons:commons-lang3:3.4'
-        compile 'com.google.guava:guava:19.0'
+        provided 'org.apache.commons:commons-lang3:3.4'
+        provided 'com.google.guava:guava:19.0'
         compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-        compile 'org.hibernate:hibernate-core:5.2.6.Final'
         testCompile 'junit:junit:4.12'
     }
 
