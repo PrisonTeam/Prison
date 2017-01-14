@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.sponge;
+package tech.mcprison.prison.sponge.game;
 
 
 import tech.mcprison.prison.internal.Player;

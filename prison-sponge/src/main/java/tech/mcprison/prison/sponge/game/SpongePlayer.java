@@ -16,12 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.sponge;
+package tech.mcprison.prison.sponge.game;
 
 import com.flowpowered.math.vector.Vector3d;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.Location;
 
 import java.util.UUID;

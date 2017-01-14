@@ -16,13 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.sponge;
+package tech.mcprison.prison.sponge.block;
 
 import org.spongepowered.api.world.World;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
+import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 

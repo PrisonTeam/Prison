@@ -16,12 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.sponge;
+package tech.mcprison.prison.sponge.game;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.sponge.SpongeUtil;
 
 import java.util.Arrays;
 
