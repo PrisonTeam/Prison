@@ -32,6 +32,8 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.sponge.game.SpongePlayer;
+import tech.mcprison.prison.sponge.game.SpongeWorld;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
