@@ -25,6 +25,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.gui.GUIListener;
 
 import java.lang.reflect.Field;
 

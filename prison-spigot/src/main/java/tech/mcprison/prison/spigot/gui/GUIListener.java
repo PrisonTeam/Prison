@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.spigot;
+package tech.mcprison.prison.spigot.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import tech.mcprison.prison.gui.Button;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.ArrayList;
 import java.util.Iterator;
