@@ -39,4 +39,8 @@ public class SpigotScore implements Score {
         bScore.setScore(score);
     }
 
+    public org.bukkit.scoreboard.Score getWrapper() {
+        return bScore;
+    }
+
 }

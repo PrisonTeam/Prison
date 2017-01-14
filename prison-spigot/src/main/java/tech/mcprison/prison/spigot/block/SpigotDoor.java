@@ -31,13 +31,13 @@ public class SpigotDoor extends SpigotBlockState implements Door {
 
     @Override public boolean isOpen() {
         org.bukkit.material.Door door =
-            (org.bukkit.material.Door) block.getBukkitBlock().getState().getData();
+            (org.bukkit.material.Door) block.getWrapper().getState().getData();
         return door.isOpen();
     }
 
     @Override public void setOpen(boolean open) {
         org.bukkit.material.Door door =
-            (org.bukkit.material.Door) block.getBukkitBlock().getState().getData();
+            (org.bukkit.material.Door) block.getWrapper().getState().getData();
         door.setOpen(open);
     }
 

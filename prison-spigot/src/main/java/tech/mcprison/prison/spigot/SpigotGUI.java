@@ -92,4 +92,7 @@ public class SpigotGUI implements GUI {
         return this;
     }
 
+    public Inventory getWrapper() {
+        return bukkitInventory;
+    }
 }

@@ -85,7 +85,8 @@ public class SpigotBlock implements Block {
         return ret;
     }
 
-    public org.bukkit.block.Block getBukkitBlock() {
+    public org.bukkit.block.Block getWrapper() {
         return bBlock;
     }
+
 }

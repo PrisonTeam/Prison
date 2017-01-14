@@ -57,4 +57,9 @@ public class SpigotSign implements Sign {
         bSign.setLine(line, value);
         bSign.update();
     }
+
+    public org.bukkit.block.Sign getWrapper() {
+        return bSign;
+    }
+
 }

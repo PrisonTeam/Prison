@@ -66,7 +66,8 @@ public class SpigotScoreboard implements Scoreboard {
         return ret;
     }
 
-    public org.bukkit.scoreboard.Scoreboard getBukkitScoreboard() {
+    public org.bukkit.scoreboard.Scoreboard getWrapper() {
         return bScoreboard;
     }
+
 }

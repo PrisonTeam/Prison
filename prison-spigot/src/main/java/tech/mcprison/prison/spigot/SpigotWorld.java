@@ -55,4 +55,8 @@ public class SpigotWorld implements World {
         return new SpigotBlock(bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
     }
 
+    public org.bukkit.World getWrapper() {
+        return bukkitWorld;
+    }
+
 }

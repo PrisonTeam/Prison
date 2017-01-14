@@ -67,4 +67,8 @@ public class SpigotCommandSender implements CommandSender {
         }
     }
 
+    public org.bukkit.command.CommandSender getWrapper() {
+        return bukkitSender;
+    }
+
 }

@@ -31,13 +31,13 @@ public class SpigotLever extends SpigotBlockState implements Lever {
 
     @Override public boolean isOn() {
         org.bukkit.material.Lever lever =
-            (org.bukkit.material.Lever) block.getBukkitBlock().getState().getData();
+            (org.bukkit.material.Lever) block.getWrapper().getState().getData();
         return lever.isPowered();
     }
 
     @Override public void setOn(boolean on) {
         org.bukkit.material.Lever lever =
-            (org.bukkit.material.Lever) block.getBukkitBlock().getState().getData();
+            (org.bukkit.material.Lever) block.getWrapper().getState().getData();
         lever.setPowered(on);
     }
 

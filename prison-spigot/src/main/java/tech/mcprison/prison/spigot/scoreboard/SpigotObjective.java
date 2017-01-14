@@ -53,4 +53,8 @@ public class SpigotObjective implements Objective {
         return new SpigotScore(bObjective.getScore(entry));
     }
 
+    public org.bukkit.scoreboard.Objective getWrapper() {
+        return bObjective;
+    }
+
 }

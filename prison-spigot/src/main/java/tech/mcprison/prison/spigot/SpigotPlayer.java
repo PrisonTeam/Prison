@@ -92,7 +92,11 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     }
 
     @Override public void setScoreboard(Scoreboard scoreboard) {
-        bukkitPlayer.setScoreboard(((SpigotScoreboard) scoreboard).getBukkitScoreboard());
+        bukkitPlayer.setScoreboard(((SpigotScoreboard) scoreboard).getWrapper());
+    }
+
+    public org.bukkit.entity.Player getWrapper() {
+        return bukkitPlayer;
     }
 
 }

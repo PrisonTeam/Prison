@@ -58,4 +58,9 @@ public class SpigotTeam implements Team {
     @Override public void removeEntry(String player) {
         bTeam.removeEntry(player);
     }
+
+    public org.bukkit.scoreboard.Team getWrapper() {
+        return bTeam;
+    }
+
 }
