@@ -42,10 +42,7 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
 
     @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        Player p = Prison.get().getPlatform().getPlayer(value);
-        if (p == null) {
-            throw new TransformError(argument.getMessage("player_not_online", value));
-        }
-        return p;
+        return Prison.get().getPlatform().getPlayer(value)
+            .orElseThrow(() -> new TransformError(argument.getMessage("player_not_online", value)));
     }
 }

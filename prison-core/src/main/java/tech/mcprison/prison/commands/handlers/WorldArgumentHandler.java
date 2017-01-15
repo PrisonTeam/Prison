@@ -43,10 +43,7 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
 
     @Override public World transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        World world = Prison.get().getPlatform().getWorld(value);
-        if (world == null) {
-            throw new TransformError(argument.getMessage("world_not_found", value));
-        }
-        return world;
+        return Prison.get().getPlatform().getWorld(value)
+            .orElseThrow(() -> new TransformError(argument.getMessage("world_not_found", value)));
     }
 }

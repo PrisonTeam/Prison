@@ -21,18 +21,18 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.Sign;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
-import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Faizaan A. Datoo
@@ -47,15 +47,15 @@ public class TestPlatform implements Platform {
         this.suppressOutput = suppressOutput;
     }
 
-    @Override public World getWorld(String name) {
-        return new TestWorld(name);
+    @Override public Optional<World> getWorld(String name) {
+        return Optional.of(new TestWorld(name));
     }
 
-    @Override public Player getPlayer(String name) {
+    @Override public Optional<Player> getPlayer(String name) {
         return null;
     }
 
-    @Override public Player getPlayer(UUID uuid) {
+    @Override public Optional<Player> getPlayer(UUID uuid) {
         return null;
     }
 
@@ -104,7 +104,9 @@ public class TestPlatform implements Platform {
     }
 
     @Override public void log(String message, Object... format) {
-        if(suppressOutput) return;
+        if (suppressOutput) {
+            return;
+        }
         System.out.println(ChatColor.stripColor(String.format(message, format)));
     }
 

@@ -31,6 +31,7 @@ import tech.mcprison.prison.util.Location;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,17 +46,17 @@ public interface Platform {
     /**
      * Returns the world with the specified name.
      */
-    World getWorld(String name);
+    Optional<World> getWorld(String name);
 
     /**
      * Returns the player with the specified name.
      */
-    Player getPlayer(String name);
+    Optional<Player> getPlayer(String name);
 
     /**
      * Returns the player with the specified UUID.
      */
-    Player getPlayer(UUID uuid);
+    Optional<Player> getPlayer(UUID uuid);
 
     /**
      * Returns a list of all online players.

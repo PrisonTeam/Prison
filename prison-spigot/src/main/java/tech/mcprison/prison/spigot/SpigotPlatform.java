@@ -34,8 +34,11 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.Sign;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
-import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
@@ -60,6 +63,9 @@ class SpigotPlatform implements Platform {
 
     private SpigotPrison plugin;
     private List<PluginCommand> commands = new ArrayList<>();
+    private Map<String, World> worlds = new HashMap<>();
+    private List<Player> players = new ArrayList<>();
+
     private ScoreboardManager scoreboardManager;
 
     SpigotPlatform(SpigotPrison plugin) {
@@ -67,30 +73,48 @@ class SpigotPlatform implements Platform {
         this.scoreboardManager = new SpigotScoreboardManager();
     }
 
-    @Override public World getWorld(String name) {
+    @Override public Optional<World> getWorld(String name) {
+        if (worlds.containsKey(name)) {
+            return Optional.of(worlds.get(name));
+        }
+
         if (Bukkit.getWorld(name) == null) {
-            return null; // Avoid NPE
+            return Optional.empty(); // Avoid NPE
         }
-        return new SpigotWorld(Bukkit.getWorld(name));
+        SpigotWorld newWorld = new SpigotWorld(Bukkit.getWorld(name));
+        worlds.put(newWorld.getName(), newWorld);
+        return Optional.of(newWorld);
     }
 
-    @Override public Player getPlayer(String name) {
-        if (Bukkit.getPlayer(name) == null) {
-            return null; // Avoid NPE
-        }
-        return new SpigotPlayer(Bukkit.getPlayer(name));
+    @Override public Optional<Player> getPlayer(String name) {
+        return Optional.ofNullable(
+            players.stream().filter(player -> player.getName().equals(name)).findFirst()
+                .orElseGet(() -> {
+                    if (Bukkit.getPlayer(name) == null) {
+                        return null;
+                    }
+                    SpigotPlayer player = new SpigotPlayer(Bukkit.getPlayer(name));
+                    players.add(player);
+                    return player;
+                }));
     }
 
-    @Override public Player getPlayer(UUID uuid) {
-        if (Bukkit.getPlayer(uuid) == null) {
-            return null; // Avoid NPE
-        }
-        return new SpigotPlayer(Bukkit.getPlayer(uuid));
+    @Override public Optional<Player> getPlayer(UUID uuid) {
+        return Optional.ofNullable(
+            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
+                .orElseGet(() -> {
+                    if (Bukkit.getPlayer(uuid) == null) {
+                        return null;
+                    }
+                    SpigotPlayer player = new SpigotPlayer(Bukkit.getPlayer(uuid));
+                    players.add(player);
+                    return player;
+                }));
     }
 
     @Override public List<Player> getOnlinePlayers() {
-        return Bukkit.getOnlinePlayers().stream().map(player -> getPlayer(player.getUniqueId()))
-            .collect(Collectors.toList());
+        return Bukkit.getOnlinePlayers().stream()
+            .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
     }
 
     @Override public Sign getSign(Location location) {
