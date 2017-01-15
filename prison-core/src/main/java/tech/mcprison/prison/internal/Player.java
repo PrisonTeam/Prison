@@ -76,6 +76,8 @@ public interface Player extends CommandSender {
      */
     void setScoreboard(Scoreboard scoreboard);
 
+
+
     @Override default boolean doesSupportColors() {
         return true;
     }
