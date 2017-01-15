@@ -6,4 +6,4 @@
 @Prison-Cells.jar:/PrisonCells/build/libs/cells-3.0.0-SNAPSHOT.jar
 @Prison-Ranks.jar:/PrisonRanks/build/libs/prison-ranks-3.0.0-SNAPSHOT.jar
 @Prison-Mines.jar:/PrisonMines/build/libs/prison-mines-3.0.0-SNAPSHOT.jar
-@Prison-API.jar:/Prison/prison-core/build/libs/prison-core-30.jar
+@Prison-API.jar:prison-core/build/libs/Prison-API.jar
