@@ -37,10 +37,7 @@ import tech.mcprison.prison.sponge.game.SpongeWorld;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,20 +51,23 @@ public class SpongePlatform implements Platform {
         this.plugin = plugin;
     }
 
-    @Override public World getWorld(String name) {
-        return Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null);
+    @Override public Optional<World> getWorld(String name) {
+        World world = Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null);;
+        return world == null ? Optional.empty() : Optional.of(world);
     }
 
-    @Override public Player getPlayer(String name) {
-        return Sponge.getServer().getOnlinePlayers().stream()
+    @Override public Optional<Player> getPlayer(String name) {
+        Player p = Sponge.getServer().getOnlinePlayers().stream()
             .filter(player -> player.getName().equals(name)).findFirst().map(SpongePlayer::new)
             .orElse(null);
+        return p == null ? Optional.empty() : Optional.of(p);
     }
 
-    @Override public Player getPlayer(UUID uuid) {
-        return Sponge.getServer().getOnlinePlayers().stream()
+    @Override public Optional<Player> getPlayer(UUID uuid) {
+        SpongePlayer p = Sponge.getServer().getOnlinePlayers().stream()
             .filter(player -> player.getUniqueId().equals(uuid)).findFirst().map(SpongePlayer::new)
             .orElse(null);
+        return p == null ? Optional.empty() : Optional.of(p);
     }
 
     @Override public List<Player> getOnlinePlayers() {
