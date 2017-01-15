@@ -52,22 +52,20 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public Optional<World> getWorld(String name) {
-        World world = Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null);;
-        return world == null ? Optional.empty() : Optional.of(world);
+        return Optional
+            .ofNullable(Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null));
     }
 
     @Override public Optional<Player> getPlayer(String name) {
-        Player p = Sponge.getServer().getOnlinePlayers().stream()
+        return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
             .filter(player -> player.getName().equals(name)).findFirst().map(SpongePlayer::new)
-            .orElse(null);
-        return p == null ? Optional.empty() : Optional.of(p);
+            .orElse(null));
     }
 
     @Override public Optional<Player> getPlayer(UUID uuid) {
-        SpongePlayer p = Sponge.getServer().getOnlinePlayers().stream()
+        return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
             .filter(player -> player.getUniqueId().equals(uuid)).findFirst().map(SpongePlayer::new)
-            .orElse(null);
-        return p == null ? Optional.empty() : Optional.of(p);
+            .orElse(null));
     }
 
     @Override public List<Player> getOnlinePlayers() {
