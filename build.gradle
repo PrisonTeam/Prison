@@ -38,15 +38,6 @@ buildscript {
 
     repositories {
         mavenCentral()
-
-        maven {
-            url 'https://dmp9software.co.uk/artifactory/plugins-release'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
-
         jcenter()
     }
 
