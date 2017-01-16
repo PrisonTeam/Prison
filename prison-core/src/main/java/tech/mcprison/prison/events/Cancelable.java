@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,26 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
-
-import tech.mcprison.prison.internal.Player;
+package tech.mcprison.prison.events;
 
 /**
- * Platform-independent event, which is posted when a player joins the server.
+ * Represents an event whose outcome is cancelable.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
-public class PlayerJoinEvent {
+public interface Cancelable {
 
-    private Player player;
+    boolean isCanceled();
 
-    public PlayerJoinEvent(Player player) {
-        this.player = player;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
+    void setCanceled(boolean canceled);
 
 }

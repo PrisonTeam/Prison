@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * if we wanted to see exception data, which is quite nice, don't you think?
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public class EventExceptionHandler implements SubscriberExceptionHandler {
 

@@ -21,7 +21,7 @@ package tech.mcprison.prison.sponge;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.Direction;
-import tech.mcprison.prison.internal.block.BlockFace;
+import tech.mcprison.prison.block.BlockFace;
 import tech.mcprison.prison.sponge.game.SpongeWorld;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;

@@ -20,9 +20,9 @@ package tech.mcprison.prison.sponge.block;
 
 import org.spongepowered.api.world.World;
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.internal.block.BlockFace;
-import tech.mcprison.prison.internal.block.BlockState;
+import tech.mcprison.prison.block.Block;
+import tech.mcprison.prison.block.BlockFace;
+import tech.mcprison.prison.block.BlockState;
 import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;

@@ -23,7 +23,7 @@ package tech.mcprison.prison.internal.platform;
  * Capabilities tell Prison which features are available on a internal.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public enum Capability {
 

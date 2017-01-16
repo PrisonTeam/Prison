@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.block;
+package tech.mcprison.prison.block;
 
 import tech.mcprison.prison.util.BlockType;
 
@@ -24,7 +24,7 @@ import tech.mcprison.prison.util.BlockType;
  * Represents a door.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public interface Door extends BlockState {
 

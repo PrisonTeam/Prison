@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,48 +16,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.events;
 
-import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 /**
- * Platform-independent event, which is posted when a player clicks something.
+ * Platform-independent event, which is posted when a player places a block.
  *
- * @author Faizaan A. Datoo
- * @since API 30
+ * @author Camouflage100
+ * @since API 1.0
  */
-public class PlayerInteractEvent implements Cancelable {
+public class BlockPlaceEvent implements Cancelable {
 
+    private BlockType block;
+    private Location blockLocation;
     private Player player;
-    private ItemStack itemInHand;
-    private Action action;
-    private Location clicked;
     private boolean canceled = false;
 
-    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
-        Location clicked) {
+    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
+        this.block = block;
+        this.blockLocation = blockLocation;
         this.player = player;
-        this.itemInHand = itemInHand;
-        this.action = action;
-        this.clicked = clicked;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public ItemStack getItemInHand() {
-        return itemInHand;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public Location getClicked() {
-        return clicked;
     }
 
     @Override public boolean isCanceled() {
@@ -68,8 +49,16 @@ public class PlayerInteractEvent implements Cancelable {
         this.canceled = canceled;
     }
 
-    public enum Action {
-        LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
+    public BlockType getBlock() {
+        return block;
+    }
+
+    public Location getBlockLocation() {
+        return blockLocation;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
 }

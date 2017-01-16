@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,47 +16,48 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.events;
 
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.util.Location;
 
 /**
- * A internal-independent event, posted when a player chats a message.
+ * Platform-independent event, which is posted when a player clicks something.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
-public class PlayerChatEvent implements Cancelable {
+public class PlayerInteractEvent implements Cancelable {
 
     private Player player;
-    private String message;
-    private String format;
+    private ItemStack itemInHand;
+    private Action action;
+    private Location clicked;
     private boolean canceled = false;
 
-    public PlayerChatEvent(Player player, String message, String format) {
+    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
+        Location clicked) {
         this.player = player;
-        this.message = message;
-        this.format = format;
+        this.itemInHand = itemInHand;
+        this.action = action;
+        this.clicked = clicked;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public String getMessage() {
-        return message;
+    public ItemStack getItemInHand() {
+        return itemInHand;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public Action getAction() {
+        return action;
     }
 
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
+    public Location getClicked() {
+        return clicked;
     }
 
     @Override public boolean isCanceled() {
@@ -66,4 +67,9 @@ public class PlayerChatEvent implements Cancelable {
     @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
+
+    public enum Action {
+        LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
+    }
+
 }

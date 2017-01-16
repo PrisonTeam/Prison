@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import java.io.File;
  * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public class Prison {
 
@@ -54,7 +54,7 @@ public class Prison {
 
     // Fields
 
-    public static final int API_LEVEL = 30;
+    public static final int API_LEVEL = 1;
 
     private File dataFolder;
     private ModuleManager moduleManager;

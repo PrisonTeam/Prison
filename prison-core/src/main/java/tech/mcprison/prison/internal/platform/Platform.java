@@ -39,7 +39,7 @@ import java.util.UUID;
  *
  * @author Faizaan A. Datoo
  * @author Camouflage100
- * @since API 30
+ * @since API 1.0
  */
 public interface Platform {
 

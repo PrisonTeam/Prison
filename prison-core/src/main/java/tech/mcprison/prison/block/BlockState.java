@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.block;
+package tech.mcprison.prison.block;
 
 /**
  * Represents a captured state of a block, which will not change
@@ -28,7 +28,7 @@ package tech.mcprison.prison.internal.block;
  * block to another type entirely, causing your BlockState to become invalid.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public interface BlockState {
 

@@ -16,16 +16,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.block;
+package tech.mcprison.prison.block;
 
 /**
- * One of the six sides of a block.
+ * Represents the state of a lever.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
-public enum BlockFace {
+public interface Lever extends BlockState {
 
-    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM;
+    /**
+     * Returns whether the lever is on or off.
+     * On is defined as emitting a redstone signal.
+     *
+     * @return true if the lever is on, false if it's off.
+     */
+    boolean isOn();
+
+    /**
+     * Set a lever as on (i.e. emitting redstone current) or off.
+     *
+     * @param on true to power it, false otherwise.
+     */
+    void setOn(boolean on);
 
 }

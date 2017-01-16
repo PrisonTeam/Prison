@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.block;
+package tech.mcprison.prison.block;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.util.BlockType;
@@ -28,7 +28,7 @@ import java.util.List;
  * Represents a block. Only one block may exist for a location in the world.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public interface Block {
 

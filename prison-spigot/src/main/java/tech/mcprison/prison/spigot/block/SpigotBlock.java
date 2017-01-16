@@ -19,9 +19,9 @@
 package tech.mcprison.prison.spigot.block;
 
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.internal.block.BlockFace;
-import tech.mcprison.prison.internal.block.BlockState;
+import tech.mcprison.prison.block.Block;
+import tech.mcprison.prison.block.BlockFace;
+import tech.mcprison.prison.block.BlockState;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;

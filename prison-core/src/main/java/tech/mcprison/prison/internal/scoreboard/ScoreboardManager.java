@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.scoreboard;
  * Generates and stores instances of scoreboards for use.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public interface ScoreboardManager {
 

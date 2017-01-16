@@ -21,7 +21,7 @@ package tech.mcprison.prison.sponge.game;
 
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.block.Block;
 import tech.mcprison.prison.util.Location;
 
 import java.util.List;

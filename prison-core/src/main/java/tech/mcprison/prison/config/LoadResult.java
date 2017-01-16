@@ -22,7 +22,7 @@ package tech.mcprison.prison.config;
  * The result of loading a {@link Configurable} in {@link ConfigurationLoader#loadConfiguration()}.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
 public enum LoadResult {
 

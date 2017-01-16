@@ -16,29 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.block;
+package tech.mcprison.prison.events;
+
+import tech.mcprison.prison.internal.Player;
 
 /**
- * Represents the state of a lever.
+ * Platform-independent event, which is posted when a player leaves the server.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
-public interface Lever extends BlockState {
+public class PlayerQuitEvent {
 
-    /**
-     * Returns whether the lever is on or off.
-     * On is defined as emitting a redstone signal.
-     *
-     * @return true if the lever is on, false if it's off.
-     */
-    boolean isOn();
+    private Player player;
 
-    /**
-     * Set a lever as on (i.e. emitting redstone current) or off.
-     *
-     * @param on true to power it, false otherwise.
-     */
-    void setOn(boolean on);
+    public PlayerQuitEvent(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 
 }

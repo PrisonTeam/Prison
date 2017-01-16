@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package tech.mcprison.prison.output;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.events.PlayerJoinEvent;
+import tech.mcprison.prison.events.PlayerJoinEvent;
 import tech.mcprison.prison.util.Text;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
  * The alerts system ensures server operators see important Prison messages when they log on.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  * @deprecated Doesn't work as planned, will be revisited in future API revisions.
  */
 @Deprecated

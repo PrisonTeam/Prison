@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,26 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
-
-import tech.mcprison.prison.internal.Player;
+package tech.mcprison.prison.block;
 
 /**
- * Platform-independent event, which is posted when a player leaves the server.
+ * One of the six sides of a block.
  *
  * @author Faizaan A. Datoo
- * @since API 30
+ * @since API 1.0
  */
-public class PlayerQuitEvent {
+public enum BlockFace {
 
-    private Player player;
-
-    public PlayerQuitEvent(Player player) {
-        this.player = player;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
+    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM;
 
 }
