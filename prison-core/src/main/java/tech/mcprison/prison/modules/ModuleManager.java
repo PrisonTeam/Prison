@@ -21,10 +21,7 @@ package tech.mcprison.prison.modules;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Keeps track of each module and each module's status.
@@ -46,7 +43,7 @@ public class ModuleManager {
      * Register a new module.
      */
     public void registerModule(Module module) {
-        if (getModule(module.getName()) != null) {
+        if (getModule(module.getName()).isPresent()) {
             return; // Already added
         }
         modules.add(module);
@@ -102,8 +99,7 @@ public class ModuleManager {
     public void unregisterModule(Module module) {
         disableModule(module);
         moduleStates.remove(module.getName());
-        modules.remove(getModule(module
-            .getName())); // Using the getter so that we know the thing being removed is in the list
+        getModule(module.getName()).ifPresent(modules::remove);
     }
 
     /**
@@ -130,25 +126,17 @@ public class ModuleManager {
     /**
      * Returns the {@link Module} with the specified name.
      */
-    public Module getModule(String name) {
-        for (Module module : modules) {
-            if (module.getName().equalsIgnoreCase(name)) {
-                return module;
-            }
-        }
-        return null;
+    public Optional<Module> getModule(String name) {
+        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
+            .findFirst();
     }
 
     /**
      * Returns the {@link Module} with the specified package name.
      */
-    public Module getModuleByPackageName(String name) {
-        for (Module module : modules) {
-            if (module.getPackageName().equalsIgnoreCase(name)) {
-                return module;
-            }
-        }
-        return null;
+    public Optional<Module> getModuleByPackageName(String name) {
+        return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
+            .findFirst();
     }
 
     /**

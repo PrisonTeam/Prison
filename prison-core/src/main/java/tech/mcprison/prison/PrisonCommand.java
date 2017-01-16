@@ -20,8 +20,11 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
+
+import java.util.Optional;
 
 /**
  * @author Faizaan A. Datoo
@@ -60,11 +63,13 @@ public class PrisonCommand {
     @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
     public void moduleEnableCommand(CommandSender sender,
         @Arg(name = "moduleName") String moduleName) {
-        Module module = getModule(moduleName);
-        if (module == null) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        if (!moduleOptional.isPresent()) {
             sender.sendMessage("&7The module &c" + moduleName + " &7does not exist.");
             return;
         }
+
+        Module module = moduleOptional.get();
 
         if (module.isEnabled()) {
             sender.sendMessage("&7The module &c" + module.getName() + " &7is already enabled.");
@@ -83,11 +88,13 @@ public class PrisonCommand {
     @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
     public void moduleDisableCommand(CommandSender sender,
         @Arg(name = "moduleName") String moduleName) {
-        Module module = getModule(moduleName);
-        if (module == null) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        if (!moduleOptional.isPresent()) {
             sender.sendMessage("&7The module &c" + moduleName + " &7does not exist.");
             return;
         }
+
+        Module module = moduleOptional.get();
 
         if (!module.isEnabled()) {
             sender.sendMessage("&7The module &c" + moduleName + " &7is already disabled.");
@@ -99,16 +106,10 @@ public class PrisonCommand {
     }
 
     // Get a module by name or by package name
-    private Module getModule(String name) {
-        Module module = Prison.get().getModuleManager().getModule(name); // Try it by name first
-        if (module == null) {
-            module = Prison.get().getModuleManager()
-                .getModuleByPackageName(name); // Try it by package name next
-            if (module == null) {
-                return null;
-            }
-        }
-        return module;
+    private Optional<Module> getModule(String name) {
+        ModuleManager manager = Prison.get().getModuleManager();
+        return Optional.ofNullable(
+            manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
     }
 
 }
