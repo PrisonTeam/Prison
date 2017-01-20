@@ -16,8 +16,7 @@ import java.util.HashMap;
  */
 public class ItemManager {
     private HashMap<BlockType,String> items;
-    private boolean initialized;
-    public ItemManager initialize() throws IOException {
+    public ItemManager() throws IOException {
         File file = new File(Prison.get().getDataFolder(),"/items.csv");
         items = new HashMap<>();
         InputStream is;
@@ -42,11 +41,9 @@ public class ItemManager {
                 continue;
             }
         }
-        return this;
     }
     public HashMap<BlockType,String> getItems(){
         return items;
     }
-    public boolean isInitialized(){return initialized;}
 
 }
