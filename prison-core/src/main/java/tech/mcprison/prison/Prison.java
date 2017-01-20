@@ -33,6 +33,7 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.AnnotationExclusionStrategy;
 import tech.mcprison.prison.store.Exclude;
 import tech.mcprison.prison.util.EventExceptionHandler;
+import tech.mcprison.prison.util.ItemManager;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
@@ -63,6 +64,7 @@ public class Prison {
     private ConfigurationLoader configurationLoader, messagesLoader;
     private Gson gson;
     private EventBus eventBus;
+    private ItemManager itemManager;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -99,6 +101,7 @@ public class Prison {
         initMessages();
         initConfig();
         initManagers();
+
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
@@ -145,6 +148,7 @@ public class Prison {
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
+        this.itemManager = new ItemManager();
     }
 
     /**
@@ -246,6 +250,10 @@ public class Prison {
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
+    /**
+     * Returns the item manager, which manages the "friendly" names of items
+     */
+    public ItemManager getItemManager(){return itemManager;}
 
     /**
      * This method is mainly for the use of the command library. It retrieves a list of commands

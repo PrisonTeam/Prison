@@ -18,6 +18,10 @@
 
 package tech.mcprison.prison.util;
 
+import tech.mcprison.prison.Prison;
+
+import java.util.Map;
+
 /**
  * All of the blocks in the game.
  *
@@ -687,7 +691,26 @@ public enum BlockType {
                 return block;
             }
         }
-        return null;
+        boolean isInt = false;
+        try {
+            Integer.parseInt(id.replaceAll(":", ""));
+            isInt = true;
+        }
+        catch (Exception e){
+            isInt = false;
+        }
+        if (isInt) {
+            if (!id.contains(":")){
+                return getBlockWithData(Integer.parseInt(id),(short)0);
+            }
+            return getBlockWithData(Integer.parseInt(id.split(":")[0]),Short.parseShort(id.split(":")[1]));
+        }
+        for (Map.Entry<BlockType,String> entry : Prison.get().getItemManager().getItems().entrySet()){
+            if (id == entry.getValue()){
+                return entry.getKey();
+            }
+        }
+        return getBlockByName(id);
     }
 
     public static BlockType getBlockByName(String name) {
