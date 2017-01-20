@@ -20,7 +20,13 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 // Matches API level set in Prison.API_LEVEL
-version = 1.0
+version = 1.1-SNAPSHOT
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'items.csv'
+    }
+}
 
 shadowJar {
     dependencies {
