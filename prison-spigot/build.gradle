@@ -48,6 +48,7 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
+        include(project(':prison-core'))
     }
 
     classifier 'Spigot'

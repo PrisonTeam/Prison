@@ -3,7 +3,10 @@ package tech.mcprison.prison.util;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -15,7 +18,8 @@ import java.util.HashMap;
  * @since API 1.1
  */
 public class ItemManager {
-    private HashMap<BlockType,String> items;
+    private HashMap<BlockType, String> items;
+
     public ItemManager() {
         try {
             File file = new File(Prison.get().getDataFolder(), "/items.csv");
@@ -43,13 +47,12 @@ public class ItemManager {
                     continue;
                 }
             }
-        }
-        catch (Exception e){
-            Output.get()
-                .logError("Error while reading items.csv", e);
+        } catch (Exception e) {
+            Output.get().logError("Error while reading items.csv", e);
         }
     }
-    public HashMap<BlockType,String> getItems(){
+
+    public HashMap<BlockType, String> getItems() {
         return items;
     }
 

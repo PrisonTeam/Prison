@@ -102,7 +102,6 @@ public class Prison {
         initConfig();
         initManagers();
 
-
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
@@ -250,6 +249,7 @@ public class Prison {
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
+
     /**
      * Returns the item manager, which manages the "friendly" names of items
      */
