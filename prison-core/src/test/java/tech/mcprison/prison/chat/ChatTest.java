@@ -20,6 +20,7 @@ package tech.mcprison.prison.chat;
 
 import org.junit.Test;
 import tech.mcprison.prison.util.ChatColor;
+
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +33,8 @@ public class ChatTest {
             new FancyMessage("Test").link("http://google.com").color(ChatColor.AQUA).then("ing")
                 .color(ChatColor.BLACK);
 
-        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},{\"text\":\"ing\",\"color\":\"black\"}]}";
+        String expected =
+            "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},{\"text\":\"ing\",\"color\":\"black\"}]}";
         String actual = message.toJSONString();
 
         assertEquals(expected, actual);

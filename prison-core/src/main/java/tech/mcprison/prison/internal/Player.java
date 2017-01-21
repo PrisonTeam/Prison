@@ -72,6 +72,7 @@ public interface Player extends CommandSender {
 
     /**
      * Sets the player's visible scoreboard.
+     *
      * @param scoreboard The {@link Scoreboard} to show the player.
      */
     void setScoreboard(Scoreboard scoreboard);

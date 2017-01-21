@@ -69,7 +69,7 @@ public class ConfigurationTest {
 
         // if the file is being created for the first time, the loader skips the version check
         // so, let's load it again if this is the case
-        if(res == LoadResult.CREATED) {
+        if (res == LoadResult.CREATED) {
             res = loader.loadConfiguration();
         }
 

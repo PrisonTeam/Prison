@@ -80,8 +80,14 @@ public abstract class Module {
      *
      * @return The {@link ModuleManager}.
      */
-    public ModuleManager getModuleManager() {return Prison.get().getModuleManager();}
-    public Output getLogger(){return Output.get();}
+    public ModuleManager getModuleManager() {
+        return Prison.get().getModuleManager();
+    }
+
+    public Output getLogger() {
+        return Output.get();
+    }
+
     public String getName() {
         return name;
     }

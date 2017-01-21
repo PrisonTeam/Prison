@@ -62,7 +62,8 @@ public class Messages extends MessageConfigurable {
     public String playerNotOnline = ERROR_PREFIX + "The player %1 is not online.";
     public String worldNotFound = ERROR_PREFIX + "The world \"%1\" was not found";
     public String selectionNeeded = ERROR_PREFIX + "You must create a selection first!";
-    public String alertsPresent = INFO_PREFIX + "You have &c&l%d alerts &r&c. Type /prison alerts to view them.";
+    public String alertsPresent =
+        INFO_PREFIX + "You have &c&l%d alerts &r&c. Type /prison alerts to view them.";
     public String alertsCleared = INFO_PREFIX + "You have cleared your alerts.";
 
     @Override public int getVersion() {
