@@ -1,9 +1,9 @@
 -/PrisonCells/:https://github.com/MC-Prison/PrisonCells.git
 -/PrisonRanks/:https://github.com/MC-Prison/PrisonRanks.git
 -/PrisonMines/:https://github.com/MC-Prison/PrisonMines.git
-!Spigot.zip:/Prison/prison-spigot/build/libs/Prison-Spigot.jar
-!Sponge.zip:/Prison/prison-sponge/build/libs/Prison-Sponge.jar
-@Prison-Cells.jar:/PrisonCells/build/libs/cells-3.0.0-SNAPSHOT.jar
-@Prison-Ranks.jar:/PrisonRanks/build/libs/prison-ranks-3.0.0-SNAPSHOT.jar
-@Prison-Mines.jar:/PrisonMines/build/libs/prison-mines-3.0.0-SNAPSHOT.jar
-@Prison-API.jar:/Prison/prison-core/build/libs/Prison-API.jar
+!Spigot.zip:/Prison/prison-spigot/build/libs/Prison.jar
+!Sponge.zip:/Prison/prison-sponge/build/libs/Prison.jar
+@PrisonCells.jar:/PrisonCells/build/libs/cells-3.0.0-SNAPSHOT.jar
+@PrisonRanks.jar:/PrisonRanks/build/libs/prison-ranks-3.0.0-SNAPSHOT.jar
+@PrisonMines.jar:/PrisonMines/build/libs/prisonmines-3.0.0-SNAPSHOT.jar
+@PrisonAPI.jar:/Prison/prison-core/build/libs/Prison-API.jar
