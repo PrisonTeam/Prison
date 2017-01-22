@@ -253,7 +253,9 @@ public class Prison {
     /**
      * Returns the item manager, which manages the "friendly" names of items
      */
-    public ItemManager getItemManager(){return itemManager;}
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
 
     /**
      * This method is mainly for the use of the command library. It retrieves a list of commands

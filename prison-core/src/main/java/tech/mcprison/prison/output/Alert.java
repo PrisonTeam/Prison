@@ -33,8 +33,7 @@ import java.util.List;
  * @since API 1.0
  * @deprecated Doesn't work as planned, will be revisited in future API revisions.
  */
-@Deprecated
-public class Alert {
+@Deprecated public class Alert {
 
     // Fields
 
