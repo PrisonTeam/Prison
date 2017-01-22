@@ -55,15 +55,13 @@ public class SpigotListener implements Listener {
     }
 
     @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
-        Prison.get().getEventBus().post(
-            new tech.mcprison.prison.events.PlayerJoinEvent(
-                new SpigotPlayer(e.getPlayer())));
+        Prison.get().getEventBus()
+            .post(new tech.mcprison.prison.events.PlayerJoinEvent(new SpigotPlayer(e.getPlayer())));
     }
 
     @EventHandler public void onPlayerQuit(PlayerQuitEvent e) {
-        Prison.get().getEventBus().post(
-            new tech.mcprison.prison.events.PlayerQuitEvent(
-                new SpigotPlayer(e.getPlayer())));
+        Prison.get().getEventBus()
+            .post(new tech.mcprison.prison.events.PlayerQuitEvent(new SpigotPlayer(e.getPlayer())));
     }
 
     @EventHandler public void onBlockPlace(BlockPlaceEvent e) {
@@ -91,8 +89,7 @@ public class SpigotListener implements Listener {
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
         tech.mcprison.prison.events.PlayerInteractEvent event =
-            new tech.mcprison.prison.events.PlayerInteractEvent(
-                new SpigotPlayer(e.getPlayer()),
+            new tech.mcprison.prison.events.PlayerInteractEvent(new SpigotPlayer(e.getPlayer()),
                 bukkitItemStackToPrisonItemStack(spigotPrison.compatibility.getItemInMainHand(e)),
                 tech.mcprison.prison.events.PlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),

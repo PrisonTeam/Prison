@@ -31,7 +31,8 @@ public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
         setMessage("parse_error", Prison.get().getMessages().blockParseError);
     }
 
-    @Override public BlockType transform(CommandSender sender, CommandArgument argument, String value)
+    @Override
+    public BlockType transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         BlockType m = null;
 
