@@ -32,7 +32,7 @@ import java.util.Map;
 public enum BlockType {
 
     // This was auto-generated from WorldEdit's blocks.json
-    AIR(0, "minecraft:air", 0),
+   AIR(0, "minecraft:air", 0),
     STONE(1, "minecraft:stone", 0),
     GRANITE(1, "minecraft:stone", 1),
     POLISHED_GRANITE(1, "minecraft:stone", 2),
@@ -695,18 +695,19 @@ public enum BlockType {
         try {
             Integer.parseInt(id.replaceAll(":", ""));
             isInt = true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             isInt = false;
         }
         if (isInt) {
-            if (!id.contains(":")){
-                return getBlockWithData(Integer.parseInt(id),(short)0);
+            if (!id.contains(":")) {
+                return getBlockWithData(Integer.parseInt(id), (short) 0);
             }
-            return getBlockWithData(Integer.parseInt(id.split(":")[0]),Short.parseShort(id.split(":")[1]));
+            return getBlockWithData(Integer.parseInt(id.split(":")[0]),
+                Short.parseShort(id.split(":")[1]));
         }
-        for (Map.Entry<BlockType,String> entry : Prison.get().getItemManager().getItems().entrySet()){
-            if (id == entry.getValue()){
+        for (Map.Entry<BlockType, String> entry : Prison.get().getItemManager().getItems()
+            .entrySet()) {
+            if (id == entry.getValue()) {
                 return entry.getKey();
             }
         }
