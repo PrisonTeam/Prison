@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -68,6 +69,17 @@ public class SpigotListener implements Listener {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         tech.mcprison.prison.events.BlockPlaceEvent event =
             new tech.mcprison.prison.events.BlockPlaceEvent(
+                BlockType.getBlock(e.getBlock().getTypeId()),
+                new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
+                    block.getZ()), (new SpigotPlayer(e.getPlayer())));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+    }
+
+    @EventHandler public void onBlockBreak(BlockBreakEvent e){
+        org.bukkit.Location block = e.getBlock().getLocation();
+        tech.mcprison.prison.events.BlockBreakEvent event =
+            new tech.mcprison.prison.events.BlockBreakEvent(
                 BlockType.getBlock(e.getBlock().getTypeId()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
