@@ -20,7 +20,6 @@ package tech.mcprison.prison.modules;
 
 import com.google.common.eventbus.EventBus;
 import com.google.gson.Gson;
-import tech.mcprison.prison.Configuration;
 import tech.mcprison.prison.Messages;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.CommandHandler;
@@ -155,16 +154,6 @@ public abstract class Module {
      */
     public Gson getGson() {
         return Prison.get().getGson();
-    }
-
-    /**
-     * Returns the configuration class, which contains each configuration option in a public
-     * variable. It is loaded and saved via a {@link ConfigurationLoader}.
-     *
-     * @return the {@link Configuration}.
-     */
-    public Configuration getConfig() {
-        return Prison.get().getConfig();
     }
 
     /**
