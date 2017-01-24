@@ -21,6 +21,7 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 
@@ -112,4 +113,9 @@ public class PrisonCommand {
             manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
     }
 
+    @Command(identifier = "prison wand", description = "Adds the prison selector to the player inventory")
+    public void wandCommand(CommandSender sender){
+        Prison.get().getSelectionManager().bestowSelectionTool((Player)sender);
+        sender.sendMessage("&7First position: Left Click - Second position: Right click");
+    }
 }
