@@ -18,8 +18,18 @@
 
 package tech.mcprison.prison.modules;
 
+import com.google.common.eventbus.EventBus;
+import com.google.gson.Gson;
+import tech.mcprison.prison.Configuration;
+import tech.mcprison.prison.Messages;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.commands.CommandHandler;
+import tech.mcprison.prison.config.ConfigurationLoader;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.selection.SelectionManager;
+import tech.mcprison.prison.store.Exclude;
+import tech.mcprison.prison.util.ItemManager;
 
 import java.io.File;
 
@@ -124,6 +134,83 @@ public abstract class Module {
 
     int getApiTarget() {
         return apiTarget;
+    }
+
+    /**
+     * Returns the Platform in use, which contains methods for interacting with the Minecraft server
+     * on whichever implementation is currently being used.
+     *
+     * @return the {@link Platform}.
+     */
+    public Platform getPlatform() {
+        return Prison.get().getPlatform();
+    }
+
+    /**
+     * Returns an instance of {@link Gson}, which can be used to serialize/de-serialize JSON files.
+     * This comes with the annotation exclusion strategy (see {@link Exclude})
+     * and all adapters in the <i>tech.mcprison.prison.adapters</i> package registered.
+     *
+     * @return The {@link Gson} object, ready for use.
+     */
+    public Gson getGson() {
+        return Prison.get().getGson();
+    }
+
+    /**
+     * Returns the configuration class, which contains each configuration option in a public
+     * variable. It is loaded and saved via a {@link ConfigurationLoader}.
+     *
+     * @return the {@link Configuration}.
+     */
+    public Configuration getConfig() {
+        return Prison.get().getConfig();
+    }
+
+    /**
+     * Returns the messages class, which contains each localization option in a public variable. It
+     * is loaded and saved via a {@link ConfigurationLoader}.
+     *
+     * @return the {@link Messages}.
+     */
+    public Messages getMessages() {
+        return Prison.get().getMessages();
+    }
+
+    /**
+     * Returns the event bus, where event listeners can be registered and events can be posted.
+     *
+     * @return The {@link EventBus}.
+     */
+    public EventBus getEventBus() {
+        return Prison.get().getEventBus();
+    }
+
+    /**
+     * Returns the command handler, where command methods can be registered using the {@link
+     * CommandHandler#registerCommands(Object)} method.
+     *
+     * @return The {@link CommandHandler}.
+     */
+    public CommandHandler getCommandHandler() {
+        return Prison.get().getCommandHandler();
+    }
+
+    /**
+     * Returns the selection manager, which stores each player's current selection using Prison's
+     * selection wand.
+     *
+     * @return The {@link SelectionManager}.
+     */
+    public SelectionManager getSelectionManager() {
+        return Prison.get().getSelectionManager();
+    }
+
+    /**
+     * Returns the item manager, which manages the "friendly" names of items
+     */
+    public ItemManager getItemManager() {
+        return Prison.get().getItemManager();
     }
 
 }
