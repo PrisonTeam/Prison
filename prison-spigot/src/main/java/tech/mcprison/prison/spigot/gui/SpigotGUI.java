@@ -37,14 +37,14 @@ public class SpigotGUI implements GUI {
 
     private Map<Integer, Button> buttons;
     private String title;
-    private int numRows;
+    private int numSlots;
 
     private Inventory bukkitInventory;
 
-    public SpigotGUI(String title, int numRows) {
+    public SpigotGUI(String title, int numSlots) {
         this.buttons = new HashMap<>();
         this.title = title;
-        this.numRows = numRows;
+        this.numSlots = numSlots;
     }
 
     @Override public void show(Player... players) {
@@ -57,7 +57,7 @@ public class SpigotGUI implements GUI {
 
     @Override public GUI build() {
         bukkitInventory = Bukkit.getServer()
-            .createInventory(null, numRows * 9, ChatColor.translateAlternateColorCodes('&', title));
+            .createInventory(null, numSlots, ChatColor.translateAlternateColorCodes('&', title));
         for (Map.Entry<Integer, Button> button : buttons.entrySet()) {
             bukkitInventory.setItem(button.getKey(), buttonToItemStack(button.getValue()));
         }
@@ -80,7 +80,7 @@ public class SpigotGUI implements GUI {
     }
 
     @Override public int getNumRows() {
-        return numRows;
+        return numSlots / 9;
     }
 
     @Override public Map<Integer, Button> getButtons() {

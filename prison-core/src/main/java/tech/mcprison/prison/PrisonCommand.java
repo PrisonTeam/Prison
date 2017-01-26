@@ -106,6 +106,12 @@ public class PrisonCommand {
         sender.sendMessage("&7The module &3" + module.getName() + " &7has been disabled.");
     }
 
+    @Command(identifier = "prison wand", description = "Adds the prison selector to the player inventory")
+    public void wandCommand(CommandSender sender){
+        Prison.get().getSelectionManager().bestowSelectionTool((Player)sender);
+        sender.sendMessage("&7First position: Left Click - Second position: Right click");
+    }
+
     // Get a module by name or by package name
     private Optional<Module> getModule(String name) {
         ModuleManager manager = Prison.get().getModuleManager();
@@ -113,9 +119,4 @@ public class PrisonCommand {
             manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
     }
 
-    @Command(identifier = "prison wand", description = "Adds the prison selector to the player inventory")
-    public void wandCommand(CommandSender sender){
-        Prison.get().getSelectionManager().bestowSelectionTool((Player)sender);
-        sender.sendMessage("&7First position: Left Click - Second position: Right click");
-    }
 }
