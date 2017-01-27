@@ -707,7 +707,7 @@ public enum BlockType {
         }
         for (Map.Entry<BlockType, String> entry : Prison.get().getItemManager().getItems()
             .entrySet()) {
-            if (id == entry.getValue()) {
+            if (id.equalsIgnoreCase(entry.getValue())) {
                 return entry.getKey();
             }
         }
