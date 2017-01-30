@@ -19,6 +19,7 @@
 package tech.mcprison.prison.internal;
 
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
 import java.util.UUID;
@@ -77,7 +78,9 @@ public interface Player extends CommandSender {
      */
     void setScoreboard(Scoreboard scoreboard);
 
+    Gamemode getGamemode();
 
+    void setGamemode(Gamemode gamemode);
 
     @Override default boolean doesSupportColors() {
         return true;

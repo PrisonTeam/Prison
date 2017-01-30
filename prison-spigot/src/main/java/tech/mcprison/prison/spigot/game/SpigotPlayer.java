@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot.game;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.internal.ItemStack;
@@ -26,6 +27,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.ChatColor;
+import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
 import java.util.Arrays;
@@ -93,6 +95,14 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
 
     @Override public void setScoreboard(Scoreboard scoreboard) {
         bukkitPlayer.setScoreboard(((SpigotScoreboard) scoreboard).getWrapper());
+    }
+
+    @Override public Gamemode getGamemode() {
+        return Gamemode.valueOf(getWrapper().getGameMode().toString());
+    }
+
+    @Override public void setGamemode(Gamemode gamemode) {
+        getWrapper().setGameMode(GameMode.valueOf(gamemode.toString()));
     }
 
     public org.bukkit.entity.Player getWrapper() {
