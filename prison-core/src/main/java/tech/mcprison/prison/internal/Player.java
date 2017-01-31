@@ -78,8 +78,15 @@ public interface Player extends CommandSender {
      */
     void setScoreboard(Scoreboard scoreboard);
 
+    /**
+     * Returns the player's current {@link Gamemode}
+     */
     Gamemode getGamemode();
 
+    /**
+     * Changes the player's {@link Gamemode} to the specified value
+     * @param gamemode the new gamemode
+     */
     void setGamemode(Gamemode gamemode);
 
     @Override default boolean doesSupportColors() {
