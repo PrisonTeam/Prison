@@ -19,7 +19,10 @@
 package tech.mcprison.prison.util;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -226,5 +229,63 @@ public class Text {
     public static String tab(String text) {
         return "&f    " + text;
     }
+
+    /*
+     * Time-related utilities
+     */
+
+    private static final long millisPerSecond = 1000;
+    private static final long millisPerMinute = 60 * millisPerSecond;
+    private static final long millisPerHour = 60 * millisPerMinute;
+    private static final long millisPerDay = 24 * millisPerHour;
+    private static final long millisPerWeek = 7 * millisPerDay;
+    private static final long millisPerMonth = 31 * millisPerDay;
+    private static final long millisPerYear = 365 * millisPerDay;
+    private static final Map<String, Long> unitMillis = CollectionUtil
+        .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
+            millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
+            millisPerSecond);
+
+    /**
+     * Takes a millisecond amount and converts it into a pretty, human-readable string.
+     *
+     * @param millis The time until (or since if this is negative) something occurs.
+     * @return The human-readable string.
+     */
+    public static String getTimeUntilString(long millis) {
+        String ret = "";
+
+        double millisLeft = (double) Math.abs(millis);
+
+        List<String> unitCountParts = new ArrayList<>();
+        for (Map.Entry<String, Long> entry : unitMillis.entrySet()) {
+            if (unitCountParts.size() == 3) {
+                break;
+            }
+            String unitName = entry.getKey();
+            long unitSize = entry.getValue();
+            long unitCount = (long) Math.floor(millisLeft / unitSize);
+            if (unitCount < 1) {
+                continue;
+            }
+            millisLeft -= unitSize * unitCount;
+            unitCountParts.add(unitCount + " " + unitName);
+        }
+
+        if (unitCountParts.size() == 0) {
+            return "just now";
+        }
+
+        ret += implodeWithComma(unitCountParts.toArray(new String[unitCountParts.size()]));
+        ret += " ";
+        if (millis <= 0) {
+            ret += "ago";
+        } else {
+            ret += "from now";
+        }
+
+        return ret;
+    }
+
 
 }
