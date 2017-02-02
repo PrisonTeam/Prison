@@ -241,6 +241,7 @@ class SpigotPlatform implements Platform {
     @Override public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
         capabilities.put(Capability.GUI, true);
+        capabilities.put(Capability.ECONOMY, getEconomy() != null);
         return capabilities;
     }
 

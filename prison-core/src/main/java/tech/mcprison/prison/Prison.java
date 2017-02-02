@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import tech.mcprison.prison.adapters.LocationAdapter;
 import tech.mcprison.prison.commands.CommandHandler;
-import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.config.ConfigurationLoader;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.modules.Module;
@@ -85,8 +84,7 @@ public class Prison {
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.
      * <p>
-     * Note that modules <b>should not call this method</b> unless under very special circumstances.
-     * This is intended solely for the implementations.
+     * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
     public void init(Platform platform) {
         long startTime = System.currentTimeMillis();
@@ -108,6 +106,8 @@ public class Prison {
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
     }
+
+    // Initialization steps
 
     private void initDataFolder() {
         // Creates the /Prison/Core directory, for core configuration.
@@ -149,6 +149,8 @@ public class Prison {
         this.selectionManager = new SelectionManager();
         this.itemManager = new ItemManager();
     }
+
+    // End initialization steps
 
     /**
      * Finalizes and unregisters instances in prison-core. In the implementations, this should be
@@ -255,25 +257,6 @@ public class Prison {
      */
     public ItemManager getItemManager() {
         return itemManager;
-    }
-
-    /**
-     * This method is mainly for the use of the command library. It retrieves a list of commands
-     * from the internal, and then queries the list for a command with a certain label.
-     * <p>
-     * The chances that a module will have to use this is slim. Instead, use the command library
-     * located in the {@link tech.mcprison.prison.commands} package.
-     *
-     * @param label The command's label.
-     * @return The {@link PluginCommand}, or null if no command exists by that label.
-     */
-    public PluginCommand getCommand(String label) {
-        for (PluginCommand command : platform.getCommands()) {
-            if (command.getLabel().equalsIgnoreCase(label)) {
-                return command;
-            }
-        }
-        return null;
     }
 
 }

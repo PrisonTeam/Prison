@@ -168,4 +168,20 @@ public interface Platform {
      */
     ScoreboardManager getScoreboardManager();
 
+    /**
+     * Retrieves the {@link PluginCommand} object for a command with a certain label.
+     *
+     * @param label The command's label.
+     * @return The {@link PluginCommand}, or null if no command exists by that label.
+     */
+    default Optional<PluginCommand> getCommand(String label) {
+        for (PluginCommand command : getCommands()) {
+            if (command.getLabel().equalsIgnoreCase(label)) {
+                return Optional.of(command);
+            }
+        }
+        return Optional.empty();
+    }
+
+
 }

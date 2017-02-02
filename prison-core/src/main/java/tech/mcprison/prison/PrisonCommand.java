@@ -20,96 +20,117 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.displays.BulletedListComponent;
+import tech.mcprison.prison.displays.ChatDisplay;
+import tech.mcprison.prison.displays.TextComponent;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.Text;
 
 import java.util.Optional;
 
 /**
+ * Root commands for managing the platform as a whole, in-game.
+ *
  * @author Faizaan A. Datoo
+ * @since API 1.0
  */
 public class PrisonCommand {
 
     @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
-        sender.sendMessage("&7========== &d/prison version &7==========");
-        sender.sendMessage(
-            "&7Version: &3" + Prison.get().getPlatform().getPluginVersion() + " &8(API level "
-                + Prison.API_LEVEL + ")");
-        sender.sendMessage("&7Platform: &3" + Prison.get().getPlatform().getClass().getName());
-        sender.sendMessage("&7Integrations:");
-        sender.sendMessage("&7    Permissions: &cNone");
-        sender.sendMessage("&7    Economy: &cNone");
-        sender.sendMessage("&7    Selection: &cNone");
-        sender.sendMessage("&7========== &d/prison version &7==========");
+        ChatDisplay display = new ChatDisplay("/prison version");
+        display
+            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+                Prison.API_LEVEL);
+
+        display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.text("&7Integrations:");
+
+        display.text(Text.tab("&7Permissions: &cNone"));
+
+        String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
+            "&aYes" :
+            "&cNone";
+
+        display.text(Text.tab("&7Economy: " + economy));
+
+        display.send(sender);
     }
 
     @Command(identifier = "prison modules", description = "List and manage Prison's modules.", onlyPlayers = false)
     public void modulesCommand(CommandSender sender) {
-        sender.sendMessage("&7========== &d/prison modules &7==========");
-        sender.sendMessage("&8To enable a module, use /prison modules enable.");
-        sender.sendMessage("&8To disable a module, use /prison modules disable.");
-        sender.sendMessage("");  // blank line
+        ChatDisplay display = new ChatDisplay("/prison modules");
+//        display
+//            .addComponent(new TextComponent("&7To enable a module, use /prison modules enable."));
+//        display
+//            .addComponent(new TextComponent("&7To disable a module, use /prison modules disable."));
+        display.emptyLine();
+
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
         for (Module module : Prison.get().getModuleManager().getModules()) {
-            sender.sendMessage(
-                "&7• &3" + module.getName() + " &8(" + module.getPackageName() + ") &3v" + module
-                    .getVersion() + " &8- " + Prison.get().getModuleManager()
-                    .getStatus(module.getName()));
+            builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
+                module.getVersion(), Prison.get().getModuleManager().getStatus(module.getName()));
         }
-        sender.sendMessage("&7========== &d/prison modules &7==========");
+
+        display.addComponent(builder.build());
+
+        display.send(sender);
     }
 
-    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
+    // FIXME THESE COMMANDS ARE BROKEN
+    // Modules can't load and unload on the fly.
+
+//    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
     public void moduleEnableCommand(CommandSender sender,
         @Arg(name = "moduleName") String moduleName) {
         Optional<Module> moduleOptional = getModule(moduleName);
         if (!moduleOptional.isPresent()) {
-            sender.sendMessage("&7The module &c" + moduleName + " &7does not exist.");
+            Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
             return;
         }
 
         Module module = moduleOptional.get();
 
         if (module.isEnabled()) {
-            sender.sendMessage("&7The module &c" + module.getName() + " &7is already enabled.");
+            Output.get()
+                .sendWarn(sender, "&7The module &c%s &7is already enabled.", module.getName());
             return;
         }
 
         boolean result = Prison.get().getModuleManager().enableModule(module);
         if (result) {
-            sender.sendMessage("&7The module &3" + module.getName() + " &7has been enabled.");
+            Output.get()
+                .sendInfo(sender, "&7The module &3%s &7has been enabled.", module.getName());
         } else {
-            sender.sendMessage("&7Failed to enable the module &c" + module.getName()
-                + "&7. &8Check the console for details.");
+            Output.get().sendError(sender,
+                "&7Failed to enable the module &c%s &7. &8Check the console for details.",
+                module.getName());
         }
     }
 
-    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
+//    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
     public void moduleDisableCommand(CommandSender sender,
         @Arg(name = "moduleName") String moduleName) {
         Optional<Module> moduleOptional = getModule(moduleName);
         if (!moduleOptional.isPresent()) {
-            sender.sendMessage("&7The module &c" + moduleName + " &7does not exist.");
+            Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
             return;
         }
 
         Module module = moduleOptional.get();
 
         if (!module.isEnabled()) {
-            sender.sendMessage("&7The module &c" + moduleName + " &7is already disabled.");
+            Output.get().sendWarn(sender, "&7The module &c%s &7is already disabled.", moduleName);
             return;
         }
 
         Prison.get().getModuleManager().disableModule(module);
-        sender.sendMessage("&7The module &3" + module.getName() + " &7has been disabled.");
-    }
-
-    @Command(identifier = "prison wand", description = "Adds the prison selector to the player inventory")
-    public void wandCommand(CommandSender sender){
-        Prison.get().getSelectionManager().bestowSelectionTool((Player)sender);
-        sender.sendMessage("&7First position: Left Click - Second position: Right click");
+        Output.get().sendInfo(sender, "&7The module &3%s &7has been disabled.", module.getName());
     }
 
     // Get a module by name or by package name

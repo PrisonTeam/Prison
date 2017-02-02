@@ -173,4 +173,58 @@ public class Text {
         return NumberFormat.getCurrencyInstance(Locale.US).format(number);
     }
 
+    /**
+     * Repeats some text n amount of times.
+     *
+     * @param txt The text to repeat.
+     * @param n   The amount of times to repeat it.
+     * @return The repeated string.
+     */
+    public static String repeat(String txt, int n) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            builder.append(txt);
+        }
+        return builder.toString();
+    }
+
+    private static String headingLine = repeat("-", 52);
+
+    /**
+     * Generates a title heading for a chat display.
+     *
+     * @param txt The {@link String} to show as the title.
+     * @return The title heading string.
+     */
+    public static String titleize(String txt) {
+        txt = translateAmpColorCodes("&3" + txt);
+
+        String center = translateAmpColorCodes("&7« " + txt + " &7»");
+
+        int centerlen = center.length();
+        int pivot = headingLine.length() / 2;
+
+        int balance = -1;
+        int eatLeft = (centerlen / 2) - balance;
+        int eatRight = (centerlen - eatLeft) + balance;
+
+        if (eatLeft < pivot) {
+            return translateAmpColorCodes(
+                "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
+                    + (headingLine.substring(pivot + eatRight)));
+        } else {
+            return center;
+        }
+    }
+
+    /**
+     * Prepends a 4-space tab in front of some text.
+     *
+     * @param text The text to tab in front of.
+     * @return The tabbed string.
+     */
+    public static String tab(String text) {
+        return "&f    " + text;
+    }
+
 }

@@ -27,10 +27,7 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandHandler {
 
@@ -212,22 +209,20 @@ public class CommandHandler {
                 throw new RegisterCommandMethodException(method, "Invalid identifiers");
             }
 
-            PluginCommand rootPcommand = plugin.getCommand(identifiers[0]);
+            Optional<PluginCommand> rootPcommandOptional =
+                plugin.getPlatform().getCommand(identifiers[0]);
+            PluginCommand rootPcommand;
 
-            if (rootPcommand == null) {
+            if (!rootPcommandOptional.isPresent()) {
                 rootPcommand = new PluginCommand(identifiers[0], commandAnno.description(),
                     "/" + identifiers[0]);
                 plugin.getPlatform().registerCommand(rootPcommand);
+            } else {
+                rootPcommand = rootPcommandOptional.get();
             }
 
-            RootCommand rootCommand = rootCommands.get(rootPcommand);
-
-            if (rootCommand == null) {
-                rootCommand = new RootCommand(rootPcommand, this);
-                rootCommands.put(rootPcommand, rootCommand);
-            }
-
-            RegisteredCommand mainCommand = rootCommand;
+            RegisteredCommand mainCommand = rootCommands
+                .computeIfAbsent(rootPcommand, k -> new RootCommand(rootPcommand, this));
 
             for (int i = 1; i < identifiers.length; i++) {
                 String suffix = identifiers[i];

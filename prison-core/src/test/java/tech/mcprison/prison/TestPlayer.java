@@ -21,6 +21,7 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
 import java.util.ArrayList;
@@ -94,6 +95,14 @@ public class TestPlayer implements Player {
     }
 
     @Override public void setScoreboard(Scoreboard scoreboard) {
+
+    }
+
+    @Override public Gamemode getGamemode() {
+        return null;
+    }
+
+    @Override public void setGamemode(Gamemode gamemode) {
 
     }
 }
