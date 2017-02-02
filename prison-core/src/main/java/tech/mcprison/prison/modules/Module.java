@@ -18,17 +18,8 @@
 
 package tech.mcprison.prison.modules;
 
-import com.google.common.eventbus.EventBus;
-import com.google.gson.Gson;
-import tech.mcprison.prison.Messages;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.CommandHandler;
-import tech.mcprison.prison.config.ConfigurationLoader;
-import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.selection.SelectionManager;
-import tech.mcprison.prison.store.Exclude;
-import tech.mcprison.prison.util.ItemManager;
 
 import java.io.File;
 
@@ -41,13 +32,21 @@ import java.io.File;
  */
 public abstract class Module {
 
+    /*
+     * Fields & Constants
+     */
+
     private String name, version;
     private File dataFolder;
     private int apiTarget;
-    private boolean enabled;
+    private ModuleStatus status;
+
+    /*
+     * Constructor
+     */
 
     /**
-     * Instantiate your module.
+     * Initialize your module.
      *
      * @param name    The name of the module.
      * @param version The version of the module.
@@ -58,12 +57,15 @@ public abstract class Module {
         this.version = version;
         this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
         this.apiTarget = target;
+        this.status = new ModuleStatus();
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }
     }
 
-
+    /*
+     * Methods, to be overridden
+     */
 
     /**
      * Called when the module is to be enabled.
@@ -78,9 +80,32 @@ public abstract class Module {
     }
 
     /**
-     * Called when the plugin reloads.
+     * Tell the module loader that this module failed to start.
+     *
+     * @param reason The reason why this failed to start. May include amp-prefixed color codes.
      */
-    public void reload() {
+    protected void fail(String reason) {
+        getStatus().toFailed(reason);
+    }
+
+    /*
+     * Getters & Setters
+     */
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public int getApiTarget() {
+        return apiTarget;
+    }
+
+    public Output getLogger() {
+        return Output.get();
     }
 
     /**
@@ -93,31 +118,27 @@ public abstract class Module {
         return Prison.get().getModuleManager();
     }
 
-    public Output getLogger() {
-        return Output.get();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
     /**
-     * The package name is the word "Prison" followed by the module name.
+     * The package name is used to identify the module on an internal level.
      */
     public String getPackageName() {
         return "Prison" + name;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return status.getStatus() == ModuleStatus.Status.ENABLED;
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        if (enabled) {
+            getStatus().toEnabled();
+        } else {
+            getStatus().toDisabled();
+        }
+    }
+
+    public ModuleStatus getStatus() {
+        return status;
     }
 
     /**
@@ -129,77 +150,6 @@ public abstract class Module {
      */
     public File getDataFolder() {
         return dataFolder;
-    }
-
-    int getApiTarget() {
-        return apiTarget;
-    }
-
-    /**
-     * Returns the Platform in use, which contains methods for interacting with the Minecraft server
-     * on whichever implementation is currently being used.
-     *
-     * @return the {@link Platform}.
-     */
-    public Platform getPlatform() {
-        return Prison.get().getPlatform();
-    }
-
-    /**
-     * Returns an instance of {@link Gson}, which can be used to serialize/de-serialize JSON files.
-     * This comes with the annotation exclusion strategy (see {@link Exclude})
-     * and all adapters in the <i>tech.mcprison.prison.adapters</i> package registered.
-     *
-     * @return The {@link Gson} object, ready for use.
-     */
-    public Gson getGson() {
-        return Prison.get().getGson();
-    }
-
-    /**
-     * Returns the messages class, which contains each localization option in a public variable. It
-     * is loaded and saved via a {@link ConfigurationLoader}.
-     *
-     * @return the {@link Messages}.
-     */
-    public Messages getMessages() {
-        return Prison.get().getMessages();
-    }
-
-    /**
-     * Returns the event bus, where event listeners can be registered and events can be posted.
-     *
-     * @return The {@link EventBus}.
-     */
-    public EventBus getEventBus() {
-        return Prison.get().getEventBus();
-    }
-
-    /**
-     * Returns the command handler, where command methods can be registered using the {@link
-     * CommandHandler#registerCommands(Object)} method.
-     *
-     * @return The {@link CommandHandler}.
-     */
-    public CommandHandler getCommandHandler() {
-        return Prison.get().getCommandHandler();
-    }
-
-    /**
-     * Returns the selection manager, which stores each player's current selection using Prison's
-     * selection wand.
-     *
-     * @return The {@link SelectionManager}.
-     */
-    public SelectionManager getSelectionManager() {
-        return Prison.get().getSelectionManager();
-    }
-
-    /**
-     * Returns the item manager, which manages the "friendly" names of items
-     */
-    public ItemManager getItemManager() {
-        return Prison.get().getItemManager();
     }
 
 }

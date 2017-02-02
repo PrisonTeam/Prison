@@ -74,7 +74,7 @@ public class PrisonCommand {
             new BulletedListComponent.BulletedListBuilder();
         for (Module module : Prison.get().getModuleManager().getModules()) {
             builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
-                module.getVersion(), Prison.get().getModuleManager().getStatus(module.getName()));
+                module.getVersion(), module.getStatus().getMessage());
         }
 
         display.addComponent(builder.build());

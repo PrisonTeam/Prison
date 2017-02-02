@@ -21,7 +21,9 @@ package tech.mcprison.prison.modules;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Keeps track of each module and each module's status.
@@ -32,11 +34,9 @@ import java.util.*;
 public class ModuleManager {
 
     private List<Module> modules;
-    private Map<String, String> moduleStates;
 
     public ModuleManager() {
         modules = new ArrayList<>();
-        moduleStates = new HashMap<>();
     }
 
     /**
@@ -55,7 +55,7 @@ public class ModuleManager {
             return; // Version matches, no need to continue
         }
 
-        setStatus(module.getName(), "&6Version mismatch (update module)");
+        module.getStatus().setMessage("&6Version mismatch (update module)");
         Output.get().logWarn(
             "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
                 + ", while prison-core is on API " + Prison.API_LEVEL
@@ -72,15 +72,12 @@ public class ModuleManager {
         long startTime = System.currentTimeMillis();
         Output.get().logInfo("%s enable start...", module.getName());
 
-        module.enable();
         module.setEnabled(true);
+        module.enable();
         validateVersion(module);
 
-        // If the status is still null, then nothing went wrong during the enable.
-        if (getStatus(module.getName()) == null || getStatus(module.getName())
-            .contains("Disabled")) {
-            setStatus(module.getName(), "&aEnabled");
-        } else { // Anything else and we assume that the enable failed.
+        if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
+            // Anything else and we assume that the enable failed.
             Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
                 (System.currentTimeMillis() - startTime));
             return false;
@@ -98,7 +95,6 @@ public class ModuleManager {
      */
     public void unregisterModule(Module module) {
         disableModule(module);
-        moduleStates.remove(module.getName());
         getModule(module.getName()).ifPresent(modules::remove);
     }
 
@@ -109,8 +105,7 @@ public class ModuleManager {
      */
     public void disableModule(Module module) {
         module.disable();
-        module.setEnabled(false);
-        setStatus(module.getName(), "&cDisabled");
+        module.getStatus().toDisabled();
     }
 
     /**
@@ -149,9 +144,12 @@ public class ModuleManager {
     /**
      * Returns the status of a module (enabled or error message), in the form of a color-coded string.
      * This is meant to show to users.
+     *
+     * @deprecated Use {@link Module#getStatus()} instead.
      */
-    public String getStatus(String moduleName) {
-        return moduleStates.get(moduleName);
+    @Deprecated public String getStatus(String moduleName) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
     }
 
     /**
@@ -159,9 +157,23 @@ public class ModuleManager {
      *
      * @param moduleName The name of the module.
      * @param newStatus  The module's status. May include color codes, amp-prefixed.
+     * @deprecated Use {@link Module#getStatus()} instead.
      */
-    public void setStatus(String moduleName, String newStatus) {
-        moduleStates.put(moduleName, newStatus);
+    @Deprecated public void setStatus(String moduleName, String newStatus) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        if (!moduleOptional.isPresent()) {
+            return;
+        }
+        Module module = moduleOptional.get();
+
+        if (newStatus.toLowerCase().contains("enabled")) {
+            module.getStatus().toEnabled();
+        } else if (newStatus.toLowerCase().contains("disabled")) {
+            module.getStatus().toDisabled();
+        } else {
+            module.getStatus().toFailed(newStatus);
+        }
+
     }
 
 }
