@@ -6,6 +6,7 @@ import tech.mcprison.prison.util.InventoryType;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public interface Inventory extends Iterable<ItemStack> {
 
@@ -15,9 +16,7 @@ public interface Inventory extends Iterable<ItemStack> {
 
     String getName();
 
-    int setSize();
-
-    int setMaxStackSize();
+    void setMaxStackSize(int size);
 
     boolean isEmpty();
 
@@ -33,7 +32,7 @@ public interface Inventory extends Iterable<ItemStack> {
 
     Iterator<ItemStack> getIterator(int index);
 
-    ItemStack[] getItems();
+    List<ItemStack> getItems();
 
     HashMap<Integer,ItemStack> getItems(BlockType type);
 
