@@ -20,6 +20,7 @@ package tech.mcprison.prison.util;
 
 import tech.mcprison.prison.Prison;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -705,9 +706,8 @@ public enum BlockType {
             return getBlockWithData(Integer.parseInt(id.split(":")[0]),
                 Short.parseShort(id.split(":")[1]));
         }
-        for (Map.Entry<BlockType, String> entry : Prison.get().getItemManager().getItems()
-            .entrySet()) {
-            if (id.equalsIgnoreCase(entry.getValue())) {
+        for (Map.Entry<BlockType, Collection<String>> entry : Prison.get().getItemManager().getItems().entrySet()) {
+            if (entry.getValue().contains(id.toLowerCase())) {
                 return entry.getKey();
             }
         }

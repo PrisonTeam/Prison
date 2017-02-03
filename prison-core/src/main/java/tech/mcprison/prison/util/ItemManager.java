@@ -1,5 +1,7 @@
 package tech.mcprison.prison.util;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 
@@ -9,7 +11,8 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class takes care of the items.csv containing 8000+ different name combinations for blocks.
@@ -18,12 +21,12 @@ import java.util.HashMap;
  * @since API 1.1
  */
 public class ItemManager {
-    private HashMap<BlockType, String> items;
+    private Multimap<BlockType, String> items;
 
     public ItemManager() {
         try {
             File file = new File(Prison.get().getDataFolder(), "/items.csv");
-            items = new HashMap<>();
+            items = ArrayListMultimap.create();
             InputStream is;
             if (!file.exists()) {
                 InputStream inputStream = getClass().getResourceAsStream("/items.csv");
@@ -39,7 +42,7 @@ public class ItemManager {
                         String itemName = array[0];
                         int id = Integer.parseInt(array[1]);
                         short data = Short.parseShort(array[2]);
-                        items.put(BlockType.getBlockWithData(id, data), itemName);
+                        items.put(BlockType.getBlockWithData(id, data), itemName.toLowerCase());
                     }
                 } catch (Exception e) {
                     Output.get()
@@ -47,15 +50,13 @@ public class ItemManager {
                     continue;
                 }
             }
-
-            Output.get().logInfo("&aLoaded "+items.size()+" item names");
         } catch (Exception e) {
             Output.get().logError("Error while reading items.csv", e);
         }
     }
 
-    public HashMap<BlockType, String> getItems() {
-        return items;
+    public Map<BlockType,Collection<String>> getItems() {
+        return items.asMap();
     }
 
 }
