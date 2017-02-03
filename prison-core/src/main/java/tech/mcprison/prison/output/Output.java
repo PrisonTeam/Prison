@@ -51,7 +51,7 @@ public class Output {
      * @param message The informational message. May include color codes, but the default is white.
      */
     public void logInfo(String message, Object... args) {
-        Prison.get().getPlatform().log("&3Prison &7» &f" + String.format(message, args));
+        Prison.get().getPlatform().log("&3Prison &7> &f" + String.format(message, args));
     }
 
     /**
@@ -61,7 +61,7 @@ public class Output {
      * @param throwable The exceptions thrown, if any.
      */
     public void logWarn(String message, Throwable... throwable) {
-        Prison.get().getPlatform().log("&3Prison &7» &6" + message);
+        Prison.get().getPlatform().log("&3Prison &7> &6" + message);
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
@@ -75,7 +75,7 @@ public class Output {
      * @param throwable The exceptions thrown, if any.
      */
     public void logError(String message, Throwable... throwable) {
-        Prison.get().getPlatform().log("&3Prison &7» &c" + message);
+        Prison.get().getPlatform().log("&3Prison &7> &c" + message);
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
