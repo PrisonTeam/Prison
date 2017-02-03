@@ -2,6 +2,7 @@ package tech.mcprison.prison.internal.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.InventoryType;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,8 @@ public interface Inventory extends Iterable<ItemStack> {
     boolean contains(BlockType type,int amount);
 
     Iterator<ItemStack> getIterator();
+
+    Iterator<ItemStack> getIterator(int index);
 
     ItemStack[] getItems();
 
@@ -59,4 +62,6 @@ public interface Inventory extends Iterable<ItemStack> {
     int firstEmpty();
 
     InventoryHolder getHolder();
+
+    InventoryType getType();
 }
