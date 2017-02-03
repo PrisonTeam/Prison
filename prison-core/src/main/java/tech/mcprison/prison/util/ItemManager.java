@@ -47,6 +47,8 @@ public class ItemManager {
                     continue;
                 }
             }
+
+            Output.get().logInfo("&aLoaded "+items.size()+" item names");
         } catch (Exception e) {
             Output.get().logError("Error while reading items.csv", e);
         }
