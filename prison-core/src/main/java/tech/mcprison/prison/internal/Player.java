@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.internal;
 
+import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -30,7 +31,7 @@ import java.util.UUID;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface Player extends CommandSender {
+public interface Player extends CommandSender, InventoryHolder {
 
     /**
      * Returns the unique identifier for this player.

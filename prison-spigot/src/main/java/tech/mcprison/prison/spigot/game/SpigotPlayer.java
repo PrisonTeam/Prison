@@ -24,7 +24,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Gamemode;
@@ -109,4 +111,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         return bukkitPlayer;
     }
 
+    @Override
+    public Inventory getInventory() {
+        return new SpigotPlayerInventory(getWrapper().getInventory());
+    }
 }
