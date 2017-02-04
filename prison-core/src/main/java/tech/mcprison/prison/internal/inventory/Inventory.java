@@ -30,8 +30,6 @@ public interface Inventory extends Iterable<ItemStack> {
 
     Iterator<ItemStack> getIterator();
 
-    Iterator<ItemStack> getIterator(int index);
-
     List<ItemStack> getItems();
 
     HashMap<Integer,ItemStack> getItems(BlockType type);
@@ -40,9 +38,9 @@ public interface Inventory extends Iterable<ItemStack> {
 
     ItemStack getItem(int index);
 
-    boolean addItem(ItemStack... itemStack);
+    void addItem(ItemStack... itemStack);
 
-    boolean removeItem(ItemStack... itemStack);
+    void removeItem(ItemStack... itemStack);
 
     void clearAll();
 

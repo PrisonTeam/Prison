@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.InventoryType;
 import tech.mcprison.prison.util.Location;
 
 import java.util.Collections;
@@ -107,4 +108,16 @@ public class SpigotUtil {
         return bukkitStack;
     }
 
+    /*
+     * InventoryType
+     */
+    public static InventoryType bukkitInventoryTypeToPrison(
+        org.bukkit.event.inventory.InventoryType type) {
+        return InventoryType.valueOf(type.toString());
+    }
+
+    public static org.bukkit.event.inventory.InventoryType prisonInventoryTypeToBukkit(
+        InventoryType type) {
+        return org.bukkit.event.inventory.InventoryType.valueOf(type.toString());
+    }
 }
