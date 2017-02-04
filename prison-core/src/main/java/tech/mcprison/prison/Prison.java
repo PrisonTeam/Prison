@@ -102,6 +102,8 @@ public class Prison {
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
+        new Notifier();
+
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
