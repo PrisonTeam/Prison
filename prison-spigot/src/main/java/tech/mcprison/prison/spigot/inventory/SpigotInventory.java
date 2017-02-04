@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * Created by DMP9 on 03/02/2017.
  */
-public abstract class SpigotInventory implements Inventory {
+public class SpigotInventory implements Inventory {
     private org.bukkit.inventory.Inventory wrapper;
 
     public SpigotInventory(org.bukkit.inventory.Inventory wrapper){
@@ -32,7 +32,8 @@ public abstract class SpigotInventory implements Inventory {
                 return new SpigotBeacon((BeaconInventory) wrapper);
             case BREWING:
                 return new SpigotBrewer((BrewerInventory) wrapper);
-
+            case CHEST:
+                return new SpigotInventory(wrapper);
         }
         return null;
     }
