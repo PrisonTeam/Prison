@@ -287,5 +287,22 @@ public class Text {
         return ret;
     }
 
+    /**
+     * Makes a base noun plural, depending on the quantity. For example,
+     * entering "thing" as the base noun would make it "things", if the quantity
+     * exceeds one.
+     *
+     * @param baseNoun The non-plural base noun. Example: "thing"
+     * @param quantity The amount.
+     * @return The pluralized string.
+     */
+    public static String pluralize(String baseNoun, int quantity) {
+        if (quantity == 1) {
+            return baseNoun;
+        } else {
+            return baseNoun + "s";
+        }
+    }
+
 
 }
