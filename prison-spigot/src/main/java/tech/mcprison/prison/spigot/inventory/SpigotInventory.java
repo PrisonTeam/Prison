@@ -1,9 +1,14 @@
 package tech.mcprison.prison.spigot.inventory;
 
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.BeaconInventory;
+import org.bukkit.inventory.BrewerInventory;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.InventoryType;
 
@@ -19,8 +24,31 @@ public abstract class SpigotInventory implements Inventory {
         this.wrapper = wrapper;
     }
 
+    public static SpigotInventory fromWrapper(org.bukkit.inventory.Inventory wrapper){
+        switch (SpigotUtil.bukkitInventoryTypeToPrison(wrapper.getType())){
+            case ANVIL:
+                return new SpigotAnvil((AnvilInventory) wrapper);
+            case BEACON:
+                return new SpigotBeacon((BeaconInventory) wrapper);
+            case BREWING:
+                return new SpigotBrewer((BrewerInventory) wrapper);
+
+        }
+        return null;
+    }
+
     public org.bukkit.inventory.Inventory getWrapper(){
         return wrapper;
+    }
+
+    @Override public String getTitle(){
+        return wrapper.getTitle();
+    }
+
+    @Override public List<Player> getViewers(){
+        List<Player> players = new ArrayList<>();
+        wrapper.getViewers().forEach(x -> players.add(new SpigotPlayer((org.bukkit.entity.Player) x)));
+        return players;
     }
 
     @Override public int getSize() {
@@ -41,6 +69,11 @@ public abstract class SpigotInventory implements Inventory {
 
     @Override public boolean isEmpty() {
         return wrapper.getContents().length == 0;
+    }
+
+    @Override public void setItems(List<ItemStack> items){
+        List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+        items.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
     }
 
     @Override public boolean contains(ItemStack... itemStack) {

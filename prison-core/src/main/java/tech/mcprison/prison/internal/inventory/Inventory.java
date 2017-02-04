@@ -1,6 +1,7 @@
 package tech.mcprison.prison.internal.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.InventoryType;
 
@@ -14,9 +15,13 @@ public interface Inventory extends Iterable<ItemStack> {
 
     int getMaxStackSize();
 
+    String getTitle();
+
     String getName();
 
     void setMaxStackSize(int size);
+
+    void setItems(List<ItemStack> items);
 
     boolean isEmpty();
 
@@ -61,4 +66,6 @@ public interface Inventory extends Iterable<ItemStack> {
     InventoryHolder getHolder();
 
     InventoryType getType();
+
+    List<Player> getViewers();
 }
