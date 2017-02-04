@@ -24,12 +24,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.events.PlayerChatEvent;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -65,6 +61,12 @@ public class SpigotListener implements Listener {
             .post(new tech.mcprison.prison.events.PlayerQuitEvent(new SpigotPlayer(e.getPlayer())));
     }
 
+    @EventHandler public void onPlayerKicked(PlayerKickEvent e) {
+        Prison.get().getEventBus().post(
+            new tech.mcprison.prison.events.PlayerKickEvent(new SpigotPlayer(e.getPlayer()),
+                e.getReason()));
+    }
+
     @EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         tech.mcprison.prison.events.BlockPlaceEvent event =
@@ -76,7 +78,7 @@ public class SpigotListener implements Listener {
         e.setCancelled(event.isCanceled());
     }
 
-    @EventHandler public void onBlockBreak(BlockBreakEvent e){
+    @EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         tech.mcprison.prison.events.BlockBreakEvent event =
             new tech.mcprison.prison.events.BlockBreakEvent(
@@ -102,7 +104,7 @@ public class SpigotListener implements Listener {
         org.bukkit.Location block = e.getClickedBlock().getLocation();
         tech.mcprison.prison.events.PlayerInteractEvent event =
             new tech.mcprison.prison.events.PlayerInteractEvent(new SpigotPlayer(e.getPlayer()),
-                bukkitItemStackToPrisonItemStack(spigotPrison.compatibility.getItemInMainHand(e)),
+                SpigotUtil.bukkitItemStackToPrison(spigotPrison.compatibility.getItemInMainHand(e)),
                 tech.mcprison.prison.events.PlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
@@ -111,14 +113,20 @@ public class SpigotListener implements Listener {
         e.setCancelled(event.isCanceled());
     }
 
-    private ItemStack bukkitItemStackToPrisonItemStack(org.bukkit.inventory.ItemStack bis) {
-        String typeName = bis.getType().name().replace("_", " ").toLowerCase();
-        String name = bis.hasItemMeta() ?
-            (bis.getItemMeta().hasDisplayName() ? bis.getItemMeta().getDisplayName() : typeName) :
-            typeName;
-        int amount = bis.getAmount();
-        BlockType block = BlockType.getBlock(bis.getType().getId());
-        return new ItemStack(name, amount, block);
+    @EventHandler public void onPlayerDropItem(PlayerDropItemEvent e) {
+        tech.mcprison.prison.events.PlayerDropItemEvent event =
+            new tech.mcprison.prison.events.PlayerDropItemEvent(new SpigotPlayer(e.getPlayer()),
+                SpigotUtil.bukkitItemStackToPrison(e.getItemDrop().getItemStack()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+    }
+
+    @EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
+        tech.mcprison.prison.events.PlayerPickUpItemEvent event =
+            new tech.mcprison.prison.events.PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
+                SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
     }
 
     @EventHandler public void onPlayerChat(AsyncPlayerChatEvent e) {

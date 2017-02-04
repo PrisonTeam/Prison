@@ -76,25 +76,12 @@ public abstract class SpigotInventory implements Inventory {
         items.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
     }
 
-    @Override public boolean contains(ItemStack... itemStack) {
-        for (ItemStack stack : itemStack){
-            if (!wrapper.contains(SpigotUtil.prisonItemStackToBukkit(stack))){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override public boolean contains(ItemStack itemStack, int amount) {
-        return wrapper.contains(SpigotUtil.prisonItemStackToBukkit(itemStack),amount);
+    @Override public boolean contains(ItemStack itemStack) {
+        return wrapper.contains(SpigotUtil.prisonItemStackToBukkit(itemStack));
     }
 
     @Override public boolean contains(BlockType type) {
         return wrapper.contains(SpigotUtil.blockTypeToMaterial(type));
-    }
-
-    @Override public boolean contains(BlockType type, int amount) {
-        return wrapper.contains(SpigotUtil.blockTypeToMaterial(type),amount);
     }
 
     @Override public Iterator<ItemStack> getIterator() {
@@ -103,15 +90,15 @@ public abstract class SpigotInventory implements Inventory {
         return prisonStacks.iterator();
     }
 
-    @Override public List<ItemStack> getItems() {
+    @Override public ItemStack[] getItems() {
         ArrayList<ItemStack> prisonStacks = new ArrayList<>();
         Arrays.asList(wrapper.getContents()).forEach(x -> prisonStacks.add(SpigotUtil.bukkitItemStackToPrison(x)));
-        return prisonStacks;
+        return (ItemStack[])prisonStacks.toArray();
     }
 
     @Override public HashMap<Integer, ItemStack> getItems(BlockType type) {
         HashMap<Integer,ItemStack> result = new HashMap<>();
-        List<ItemStack> items = getItems();
+        List<ItemStack> items = Arrays.asList(getItems());
         items.removeIf(x -> x.getMaterial() != type);
         items.forEach(y -> result.put(items.indexOf(y),y));
         return result;
@@ -119,7 +106,7 @@ public abstract class SpigotInventory implements Inventory {
 
     @Override public HashMap<Integer, ItemStack> getItems(ItemStack stack) {
         HashMap<Integer,ItemStack> result = new HashMap<>();
-        List<ItemStack> items = getItems();
+        List<ItemStack> items = Arrays.asList(getItems());
         items.removeIf(x -> x != stack);
         items.forEach(y -> result.put(items.indexOf(y),y));
         return result;
