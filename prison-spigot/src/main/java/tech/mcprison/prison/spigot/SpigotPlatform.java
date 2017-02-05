@@ -34,10 +34,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.Scheduler;
-import tech.mcprison.prison.internal.Sign;
-import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -48,6 +45,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotSign;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
+import tech.mcprison.prison.spigot.permissions.VaultPermission;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -129,6 +127,15 @@ class SpigotPlatform implements Platform {
             return new EssentialsEconomy();
         } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
             return new VaultEconomy();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Permission getPermission() {
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            return new VaultPermission();
         } else {
             return null;
         }
@@ -242,6 +249,7 @@ class SpigotPlatform implements Platform {
         Map<Capability, Boolean> capabilities = new HashMap<>();
         capabilities.put(Capability.GUI, true);
         capabilities.put(Capability.ECONOMY, getEconomy() != null);
+        capabilities.put(Capability.PERMISSIONS, getPermission() != null);
         return capabilities;
     }
 

@@ -21,10 +21,7 @@ package tech.mcprison.prison.internal.platform;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.Scheduler;
-import tech.mcprison.prison.internal.Sign;
-import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.util.Location;
 
@@ -78,6 +75,14 @@ public interface Platform {
      * @return the {@link Economy} instance if the server supports it, or null if there is no supported server economy plugin.
      */
     Economy getEconomy();
+
+    /**
+     * Returns the server's permissions utilities.
+     * If there is no permissions plugin, then {@link Capability#PERMISSIONS} will be false for the internal.
+     *
+     * @return The {@link Permission} instance if the server supports it, or null fi there is no supported server permissions plugin.
+     */
+    Permission getPermission();
 
     /**
      * Returns the plugin's version.

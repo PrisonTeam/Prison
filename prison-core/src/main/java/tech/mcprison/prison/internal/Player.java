@@ -19,6 +19,7 @@
 package tech.mcprison.prison.internal;
 
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;

@@ -21,10 +21,7 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.Scheduler;
-import tech.mcprison.prison.internal.Sign;
-import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -74,6 +71,11 @@ public class TestPlatform implements Platform {
 
     @Override
     public Economy getEconomy() {
+        return null;
+    }
+
+    @Override
+    public Permission getPermission() {
         return null;
     }
 
