@@ -33,21 +33,19 @@ public class VaultPermission implements Permission {
 
     public VaultPermission() {
         RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
-                Bukkit.getServer().getServicesManager()
-                        .getRegistration(net.milkbowl.vault.permission.Permission.class);
+            Bukkit.getServer().getServicesManager()
+                .getRegistration(net.milkbowl.vault.permission.Permission.class);
         if (permissionProvider != null) {
             permissions = permissionProvider.getProvider();
         }
     }
 
-    @Override
-    public void addPermission(Player holder, String permission) {
+    @Override public void addPermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerAdd(player.getWrapper(), permission);
     }
 
-    @Override
-    public void removePermission(Player holder, String permission) {
+    @Override public void removePermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerRemove(player.getWrapper(), permission);
     }

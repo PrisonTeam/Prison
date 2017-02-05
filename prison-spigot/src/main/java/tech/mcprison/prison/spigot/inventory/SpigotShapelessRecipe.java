@@ -17,29 +17,34 @@ public class SpigotShapelessRecipe extends SpigotRecipe implements ShapelessReci
     }
 
     @Override public ShapelessRecipe addIngredient(int count, BlockType ingredient) {
-        ((org.bukkit.inventory.ShapelessRecipe)getWrapper()).addIngredient(count, SpigotUtil.blockTypeToMaterial(ingredient));
+        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            .addIngredient(count, SpigotUtil.blockTypeToMaterial(ingredient));
         return this;
     }
 
     @Override public ShapelessRecipe addIngredient(BlockType ingredient) {
-        ((org.bukkit.inventory.ShapelessRecipe)getWrapper()).addIngredient(SpigotUtil.blockTypeToMaterial(ingredient));
+        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            .addIngredient(SpigotUtil.blockTypeToMaterial(ingredient));
         return this;
     }
 
     @Override public List<ItemStack> getIngredientList() {
-        List<org.bukkit.inventory.ItemStack> bukkit = ((org.bukkit.inventory.ShapelessRecipe)getWrapper()).getIngredientList();
+        List<org.bukkit.inventory.ItemStack> bukkit =
+            ((org.bukkit.inventory.ShapelessRecipe) getWrapper()).getIngredientList();
         List<ItemStack> result = new ArrayList<>();
         bukkit.forEach(x -> result.add(SpigotUtil.bukkitItemStackToPrison(x)));
         return result;
     }
 
     @Override public ShapelessRecipe removeIngredient(int count, BlockType ingredient) {
-        ((org.bukkit.inventory.ShapelessRecipe)getWrapper()).removeIngredient(count, SpigotUtil.blockTypeToMaterial(ingredient));
+        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            .removeIngredient(count, SpigotUtil.blockTypeToMaterial(ingredient));
         return this;
     }
 
     @Override public ShapelessRecipe removeIngredient(BlockType ingredient) {
-        ((org.bukkit.inventory.ShapelessRecipe)getWrapper()).removeIngredient(SpigotUtil.blockTypeToMaterial(ingredient));
+        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            .removeIngredient(SpigotUtil.blockTypeToMaterial(ingredient));
         return this;
     }
 }

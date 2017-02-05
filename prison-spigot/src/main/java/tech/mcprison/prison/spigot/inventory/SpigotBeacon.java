@@ -13,10 +13,12 @@ public class SpigotBeacon extends SpigotInventory implements BeaconInventory {
     }
 
     @Override public ItemStack getItem() {
-        return SpigotUtil.bukkitItemStackToPrison(((org.bukkit.inventory.BeaconInventory)getWrapper()).getItem());
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.BeaconInventory) getWrapper()).getItem());
     }
 
     @Override public void setItem(ItemStack item) {
-        ((org.bukkit.inventory.BeaconInventory)getWrapper()).setItem(SpigotUtil.prisonItemStackToBukkit(item));
+        ((org.bukkit.inventory.BeaconInventory) getWrapper())
+            .setItem(SpigotUtil.prisonItemStackToBukkit(item));
     }
 }

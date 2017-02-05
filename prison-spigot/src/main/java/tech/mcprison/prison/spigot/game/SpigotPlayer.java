@@ -111,8 +111,7 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         return bukkitPlayer;
     }
 
-    @Override
-    public Inventory getInventory() {
+    @Override public Inventory getInventory() {
         return new SpigotPlayerInventory(getWrapper().getInventory());
     }
 }

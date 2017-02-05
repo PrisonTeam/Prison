@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.gui.Button;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,6 +91,10 @@ public class SpigotGUI implements GUI {
     @Override public GUI addButton(int slot, Button button) {
         buttons.put(slot, button);
         return this;
+    }
+
+    @Override public tech.mcprison.prison.internal.inventory.Inventory getInventory() {
+        return new SpigotInventory(bukkitInventory);
     }
 
     public Inventory getWrapper() {

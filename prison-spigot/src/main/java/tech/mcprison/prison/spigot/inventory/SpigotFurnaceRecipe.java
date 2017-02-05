@@ -14,11 +14,13 @@ public class SpigotFurnaceRecipe extends SpigotRecipe implements FurnaceRecipe {
     }
 
     @Override public ItemStack getInput() {
-        return SpigotUtil.bukkitItemStackToPrison(((org.bukkit.inventory.FurnaceRecipe)getWrapper()).getInput());
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.FurnaceRecipe) getWrapper()).getInput());
     }
 
     @Override public FurnaceRecipe setInput(BlockType input) {
-        ((org.bukkit.inventory.FurnaceRecipe)getWrapper()).setInput(SpigotUtil.blockTypeToMaterial(input));
+        ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
+            .setInput(SpigotUtil.blockTypeToMaterial(input));
         return this;
     }
 }

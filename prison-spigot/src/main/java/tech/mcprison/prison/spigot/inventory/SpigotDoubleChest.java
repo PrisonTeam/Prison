@@ -11,13 +11,13 @@ public class SpigotDoubleChest extends SpigotInventory implements DoubleChestInv
         super(wrapper);
     }
 
-    @Override
-    public Inventory getLeftSide() {
-        return new SpigotInventory(((org.bukkit.inventory.DoubleChestInventory)getWrapper()).getLeftSide());
+    @Override public Inventory getLeftSide() {
+        return new SpigotInventory(
+            ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
     }
 
-    @Override
-    public Inventory getRightSide() {
-        return new SpigotInventory(((org.bukkit.inventory.DoubleChestInventory)getWrapper()).getLeftSide());
+    @Override public Inventory getRightSide() {
+        return new SpigotInventory(
+            ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
     }
 }
