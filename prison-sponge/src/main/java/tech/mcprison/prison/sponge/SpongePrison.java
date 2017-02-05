@@ -39,6 +39,10 @@ public class SpongePrison {
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
 
     @Listener public void onServerStart(GameStartedServerEvent e) {
+        if (!configDir.toFile().exists()) {
+            configDir.toFile().mkdirs();
+        }
+
         Prison.get().init(new SpongePlatform(this));
     }
 

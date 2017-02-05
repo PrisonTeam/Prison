@@ -31,6 +31,7 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     @Override public Double transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         value = value.replace("$", "");
+        value = value.replace("%", "");
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {

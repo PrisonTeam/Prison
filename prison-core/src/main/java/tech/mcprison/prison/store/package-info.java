@@ -16,27 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison;
-
-import com.google.common.eventbus.Subscribe;
-import tech.mcprison.prison.events.PlayerJoinEvent;
-
 /**
- * Notifies the administrators if something is wrong within the plugin.
+ * A storage system of serialized JSON. In a future release,
+ * the storage system will be asynchronous and modern... but who has time for that now? :P
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 1.0
  */
-public class Notifier {
-
-    public Notifier() {
-        Prison.get().getEventBus().register(this);
-    }
-
-    @Subscribe public void onPlayerJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission("prison.admin")) {
-            // They can receive messages
-        }
-    }
-
-}
+package tech.mcprison.prison.store;

@@ -20,6 +20,7 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -104,5 +105,10 @@ public class TestPlayer implements Player {
 
     @Override public void setGamemode(Gamemode gamemode) {
 
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 }

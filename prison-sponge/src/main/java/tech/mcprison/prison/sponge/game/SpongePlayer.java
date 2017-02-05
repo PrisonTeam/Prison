@@ -21,6 +21,7 @@ package tech.mcprison.prison.sponge.game;
 import com.flowpowered.math.vector.Vector3d;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.Gamemode;
@@ -84,5 +85,10 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
 
     @Override public boolean doesSupportColors() {
         return spongePlayer.isChatColorsEnabled();
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 }

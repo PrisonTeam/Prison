@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2016 The Prison Team
+ *  Copyright (C) 2017 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,22 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include 'items.csv'
-    }
-}
-
-shadowJar {
-    dependencies {
-        include(dependency(group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'))
-        include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
-    }
-    classifier 'API'
-    version = null
-}
-
-build.dependsOn(shadowJar)
+/**
+ * A handy utility to create formatted chat displays.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 1.1
+ */
+package tech.mcprison.prison.displays;
