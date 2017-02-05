@@ -1,7 +1,10 @@
 package tech.mcprison.prison.internal.inventory;
 
 /**
- * Created by DMP9 on 03/02/2017.
+ * Represents an inventory created by an anvil.
+ *
+ * @author Dylan M. Perks
+ * @since API 1.1
  */
 public interface AnvilInventory extends Inventory {
 }
