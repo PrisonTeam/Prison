@@ -21,7 +21,6 @@ plugins {
 }
 
 group 'tech.mcprison'
-version '3.0.0-SNAPSHOT'
 description 'An all-in-one Prison plugin.'
 
 repositories {

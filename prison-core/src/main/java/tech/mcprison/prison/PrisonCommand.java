@@ -48,7 +48,11 @@ public class PrisonCommand {
         display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
         display.text("&7Integrations:");
 
-        display.text(Text.tab("&7Permissions: &cNone"));
+        String permissions = Prison.get().getPlatform().getCapabilities().get(Capability.PERMISSIONS) ?
+                "&aYes" :
+                "&cNone";
+
+        display.text(Text.tab("&7Permissions: " + permissions));
 
         String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
                 "&aYes" :

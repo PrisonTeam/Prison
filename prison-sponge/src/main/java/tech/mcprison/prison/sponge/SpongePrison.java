@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * @author Faizaan A. Datoo
  */
-@Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", version = "3.0.0", url = "http://mc-prison.tech")
+@Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", version = "3.1.1.0", url = "http://mc-prison.tech")
 public class SpongePrison {
 
     @Inject private Logger logger;
