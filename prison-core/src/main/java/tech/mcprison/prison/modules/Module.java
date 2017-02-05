@@ -18,8 +18,8 @@
 
 package tech.mcprison.prison.modules;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.Output;
+import tech.mcprison.prison.Prison;
 
 import java.io.File;
 

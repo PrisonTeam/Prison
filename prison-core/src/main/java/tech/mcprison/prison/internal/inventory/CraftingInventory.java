@@ -8,11 +8,11 @@ import tech.mcprison.prison.internal.ItemStack;
 public interface CraftingInventory extends Inventory {
     ItemStack[] getMatrix();
 
+    void setMatrix(ItemStack[] contents);
+
     Recipe getRecipe();
 
     ItemStack getResult();
-
-    void setMatrix(ItemStack[] contents);
 
     void setResult(ItemStack newResult);
 }

@@ -18,7 +18,10 @@
 
 package tech.mcprison.prison.store;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runners.MethodSorters;
 import tech.mcprison.prison.Prison;
@@ -32,13 +35,16 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Faizaan A. Datoo
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) public class StoreTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class StoreTest {
 
-    @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     File file;
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), true));
 
         // temp files weren't persisting so we're using normal files
@@ -48,13 +54,15 @@ import static org.junit.Assert.assertNotNull;
     }
 
     // prefixed with a so it runs first
-    @Test public void a_saveTest() throws Exception {
+    @Test
+    public void a_saveTest() throws Exception {
         TestJsonable jsonable = new TestJsonable();
         jsonable.toFile(file);
     }
 
     // prefixed with b so it runs after the saving
-    @Test public void b_loadTest() throws Exception {
+    @Test
+    public void b_loadTest() throws Exception {
         TestJsonable jsonable = new TestJsonable();
         TestJsonable test = jsonable.fromFile(file);
 

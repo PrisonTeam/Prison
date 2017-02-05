@@ -28,8 +28,9 @@ public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
         setMessage("parse_error", Prison.get().getMessages().numberParseError);
     }
 
-    @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)
-        throws TransformError {
+    @Override
+    public Integer transform(CommandSender sender, CommandArgument argument, String value)
+            throws TransformError {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {

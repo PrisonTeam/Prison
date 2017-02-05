@@ -57,8 +57,8 @@ public interface Door extends BlockState {
     default boolean isWoodenDoor() {
         BlockType block = getBlock().getType();
         return block == BlockType.ACACIA_DOOR_BLOCK || block == BlockType.BIRCH_DOOR_BLOCK
-            || block == BlockType.DARK_OAK_DOOR_BLOCK || block == BlockType.JUNGLE_DOOR_BLOCK
-            || block == BlockType.OAK_DOOR_BLOCK || block == BlockType.SPRUCE_DOOR_BLOCK;
+                || block == BlockType.DARK_OAK_DOOR_BLOCK || block == BlockType.JUNGLE_DOOR_BLOCK
+                || block == BlockType.OAK_DOOR_BLOCK || block == BlockType.SPRUCE_DOOR_BLOCK;
     }
 
 }

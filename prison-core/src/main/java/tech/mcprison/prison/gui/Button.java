@@ -60,7 +60,7 @@ public class Button {
      * @param lore         The lore text to put under the button.
      */
     public Button(BlockType item, Action action, String name, boolean closeOnClick,
-        String... lore) {
+                  String... lore) {
         this.item = item;
         this.action = action;
         this.name = name;

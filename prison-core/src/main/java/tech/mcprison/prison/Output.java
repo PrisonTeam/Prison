@@ -44,6 +44,13 @@ public class Output {
 
     // Public methods
 
+    public static Output get() {
+        if (instance == null) {
+            new Output();
+        }
+        return instance;
+    }
+
     /**
      * Log an informational message to the console.
      *
@@ -101,6 +108,8 @@ public class Output {
         sender.sendMessage(WARNING_PREFIX + String.format(message, args));
     }
 
+    // Getters
+
     /**
      * Send an error to a {@link CommandSender}.
      *
@@ -109,15 +118,6 @@ public class Output {
      */
     public void sendError(CommandSender sender, String message, Object... args) {
         sender.sendMessage(ERROR_PREFIX + String.format(message, args));
-    }
-
-    // Getters
-
-    public static Output get() {
-        if (instance == null) {
-            new Output();
-        }
-        return instance;
     }
 
 }

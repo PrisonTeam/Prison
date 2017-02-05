@@ -39,34 +39,35 @@ public class Messages extends MessageConfigurable {
     public String excludeError = ERROR_PREFIX + "[%p] has an invalid value.";
     public String cantAsConsole = ERROR_PREFIX + "You can't do this as console.";
     public String missingArgument =
-        ERROR_PREFIX + "The argument [%s] is not defined (it has no default value).";
+            ERROR_PREFIX + "The argument [%s] is not defined (it has no default value).";
     public String missingFlagArgument =
-        ERROR_PREFIX + "The flag -%s does not have the required parameters.";
+            ERROR_PREFIX + "The flag -%s does not have the required parameters.";
     public String undefinedFlagArgument =
-        ERROR_PREFIX + "The argument [%s] to the flag -%s is not defined";
+            ERROR_PREFIX + "The argument [%s] to the flag -%s is not defined";
     public String internalErrorOccurred =
-        ERROR_PREFIX + "An internal error occurred while attempting to perform this command.";
+            ERROR_PREFIX + "An internal error occurred while attempting to perform this command.";
     public String noPermission =
-        ERROR_PREFIX + "You lack the necessary permissions to perform this command.";
+            ERROR_PREFIX + "You lack the necessary permissions to perform this command.";
     public String blockParseError = ERROR_PREFIX + "The parameter [%p] is not a valid block.";
     public String numberParseError = ERROR_PREFIX + "The parameter [%p] is not a number.";
     public String numberTooLow =
-        ERROR_PREFIX + "The parameter [%p] must be equal or greater than %1";
+            ERROR_PREFIX + "The parameter [%p] must be equal or greater than %1";
     public String numberTooHigh = ERROR_PREFIX + "The parameter [%p] must be equal or less than %1";
     public String numberRangeError = ERROR_PREFIX
-        + "The parameter [%p] must be equal or greater than %1 and less than or equal to %2";
+            + "The parameter [%p] must be equal or greater than %1 and less than or equal to %2";
     public String tooFewCharacters =
-        ERROR_PREFIX + "The parameter [%p] must be less than %1 characters.";
+            ERROR_PREFIX + "The parameter [%p] must be less than %1 characters.";
     public String tooManyCharacters =
-        ERROR_PREFIX + "The parameter [%p] must be less than %1 characters.";
+            ERROR_PREFIX + "The parameter [%p] must be less than %1 characters.";
     public String playerNotOnline = ERROR_PREFIX + "The player %1 is not online.";
     public String worldNotFound = ERROR_PREFIX + "The world \"%1\" was not found";
     public String selectionNeeded = ERROR_PREFIX + "You must create a selection first!";
     public String alertsPresent =
-        INFO_PREFIX + "You have &c&l%d alerts &r&c. Type /prison alerts to view them.";
+            INFO_PREFIX + "You have &c&l%d alerts &r&c. Type /prison alerts to view them.";
     public String alertsCleared = INFO_PREFIX + "You have cleared your alerts.";
 
-    @Override public int getVersion() {
+    @Override
+    public int getVersion() {
         return version;
     }
 }

@@ -31,7 +31,8 @@ public class SelectionListener {
         Prison.get().getEventBus().register(this);
     }
 
-    @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
+    @Subscribe
+    public void onPlayerInteract(PlayerInteractEvent e) {
         if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL)) {
             return;
         }
@@ -43,14 +44,14 @@ public class SelectionListener {
             sel.setMin(e.getClicked());
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
-                .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
+                    .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
         } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMax(e.getClicked());
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
-                .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
+                    .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
         }
     }
 

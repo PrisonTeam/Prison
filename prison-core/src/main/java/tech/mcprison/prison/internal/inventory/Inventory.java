@@ -79,6 +79,8 @@ public interface Inventory extends Iterable<ItemStack> {
      */
     ItemStack[] getItems();
 
+    void setItems(List<ItemStack> items);
+
     HashMap<Integer, ItemStack> getItems(BlockType type);
 
     HashMap<Integer, ItemStack> getItems(ItemStack stack);
@@ -110,8 +112,6 @@ public interface Inventory extends Iterable<ItemStack> {
     List<Player> getViewers();
 
     String getTitle();
-
-    void setItems(List<ItemStack> items);
 
     InventoryType getType();
 

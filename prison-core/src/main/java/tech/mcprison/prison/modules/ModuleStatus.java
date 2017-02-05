@@ -31,22 +31,12 @@ public class ModuleStatus {
      */
 
 
-    public enum Status {
-
-        ENABLED, DISABLED, FAILED
-
-    }
+    private Status status;
 
     /*
      * Fields & Constants
      */
-
-    private Status status;
     private String message;
-
-    /*
-     * Methods
-     */
 
     /**
      * Quickly set a module to the {@link Status#ENABLED} status, and set the message to "&aEnabled".
@@ -55,6 +45,10 @@ public class ModuleStatus {
         setStatus(Status.ENABLED);
         setMessage("&aEnabled");
     }
+
+    /*
+     * Methods
+     */
 
     /**
      * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "&cDisabled".
@@ -74,13 +68,13 @@ public class ModuleStatus {
         setMessage(reason);
     }
 
-    /*
-     * Getters & Setters
-     */
-
     public Status getStatus() {
         return status;
     }
+
+    /*
+     * Getters & Setters
+     */
 
     public void setStatus(Status status) {
         this.status = status;
@@ -92,6 +86,12 @@ public class ModuleStatus {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public enum Status {
+
+        ENABLED, DISABLED, FAILED
+
     }
 
 }

@@ -46,11 +46,13 @@ public class PlayerPickUpItemEvent implements Cancelable {
         return itemStack;
     }
 
-    @Override public boolean isCanceled() {
+    @Override
+    public boolean isCanceled() {
         return canceled;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override
+    public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 }

@@ -33,6 +33,19 @@ import java.util.regex.Pattern;
  */
 public class Text {
 
+    private static final long millisPerSecond = 1000;
+    private static final long millisPerMinute = 60 * millisPerSecond;
+    private static final long millisPerHour = 60 * millisPerMinute;
+    private static final long millisPerDay = 24 * millisPerHour;
+    private static final long millisPerWeek = 7 * millisPerDay;
+    private static final long millisPerMonth = 31 * millisPerDay;
+    private static final long millisPerYear = 365 * millisPerDay;
+    private static final Map<String, Long> unitMillis = CollectionUtil
+            .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
+                    millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
+                    millisPerSecond);
+    private static String headingLine = repeat("-", 52);
+
     private Text() {
     }
 
@@ -82,7 +95,7 @@ public class Text {
         int pos = text.lastIndexOf(toReplace);
         if (pos > -1) {
             return text.substring(0, pos) + replacement + text
-                .substring(pos + toReplace.length(), text.length());
+                    .substring(pos + toReplace.length(), text.length());
         } else {
             return text;
         }
@@ -102,6 +115,10 @@ public class Text {
         }
         return replaceLast(builder.toString(), glue, "");
     }
+
+    /*
+     * Time-related utilities
+     */
 
     /**
      * Combines an array of strings, inserting a comma between each entry.
@@ -191,8 +208,6 @@ public class Text {
         return builder.toString();
     }
 
-    private static String headingLine = repeat("-", 52);
-
     /**
      * Generates a title heading for a chat display.
      *
@@ -213,8 +228,8 @@ public class Text {
 
         if (eatLeft < pivot) {
             return translateAmpColorCodes(
-                "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
-                    + (headingLine.substring(pivot + eatRight)));
+                    "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
+                            + (headingLine.substring(pivot + eatRight)));
         } else {
             return center;
         }
@@ -229,22 +244,6 @@ public class Text {
     public static String tab(String text) {
         return "&f    " + text;
     }
-
-    /*
-     * Time-related utilities
-     */
-
-    private static final long millisPerSecond = 1000;
-    private static final long millisPerMinute = 60 * millisPerSecond;
-    private static final long millisPerHour = 60 * millisPerMinute;
-    private static final long millisPerDay = 24 * millisPerHour;
-    private static final long millisPerWeek = 7 * millisPerDay;
-    private static final long millisPerMonth = 31 * millisPerDay;
-    private static final long millisPerYear = 365 * millisPerDay;
-    private static final Map<String, Long> unitMillis = CollectionUtil
-        .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
-            millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
-            millisPerSecond);
 
     /**
      * Takes a millisecond amount and converts it into a pretty, human-readable string.

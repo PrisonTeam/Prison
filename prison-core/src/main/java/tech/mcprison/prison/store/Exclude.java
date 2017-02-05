@@ -29,5 +29,7 @@ import java.lang.annotation.Target;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.FIELD) public @interface Exclude {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Exclude {
 }

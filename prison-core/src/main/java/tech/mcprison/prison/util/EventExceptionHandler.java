@@ -34,16 +34,17 @@ import java.lang.reflect.Method;
  */
 public class EventExceptionHandler implements SubscriberExceptionHandler {
 
-    @Override public void handleException(Throwable exception, SubscriberExceptionContext context) {
+    @Override
+    public void handleException(Throwable exception, SubscriberExceptionContext context) {
         Method method = context.getSubscriberMethod();
         Output.get().logError("&c&l!!! Event Exception!!!");
         Output.get().logError(
-            "&cException thrown by subscriber method " + method.getName() + '(' + method
-                .getParameterTypes()[0].getName() + ')' + " on listener " + context.getSubscriber()
-                .getClass().getName());
+                "&cException thrown by subscriber method " + method.getName() + '(' + method
+                        .getParameterTypes()[0].getName() + ')' + " on listener " + context.getSubscriber()
+                        .getClass().getName());
         Output.get().logError("&6Here's the stack trace:", exception);
         Output.get().logError(
-            "&6Report this entire message to the developers if you can't solve the problem yourself.");
+                "&6Report this entire message to the developers if you can't solve the problem yourself.");
         Output.get().logError("&c&l!!! Event Exception!!!");
     }
 

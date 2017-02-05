@@ -55,18 +55,18 @@ public interface Block {
     BlockType getType();
 
     /**
-     * Returns a snapshot of the state of this block, which you can edit to your liking.
-     *
-     * @return The current {@link BlockState}.
-     */
-    BlockState getState();
-
-    /**
      * Sets the block to a different type.
      *
      * @param type The new {@link BlockType}.
      */
     void setType(BlockType type);
+
+    /**
+     * Returns a snapshot of the state of this block, which you can edit to your liking.
+     *
+     * @return The current {@link BlockState}.
+     */
+    BlockState getState();
 
     /**
      * Returns whether the block is empty (i.e. the type is air).

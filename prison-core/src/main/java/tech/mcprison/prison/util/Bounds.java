@@ -90,8 +90,8 @@ public class Bounds {
         double maxZ = Math.max(min.getZ(), max.getZ());
 
         return location.getX() >= minX && location.getX() <= maxX // Within X
-            && location.getY() >= minY && location.getY() <= maxY // Within Y
-            && location.getZ() >= minZ && location.getZ() <= maxZ; // Within Z
+                && location.getY() >= minY && location.getY() <= maxY // Within Y
+                && location.getZ() >= minZ && location.getZ() <= maxZ; // Within Z
     }
 
     public Location getMin() {
@@ -110,11 +110,13 @@ public class Bounds {
         this.max = max;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Bounds{" + "min=" + min.toCoordinates() + ", max=" + max.toCoordinates() + '}';
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -124,11 +126,12 @@ public class Bounds {
 
         Bounds bounds = (Bounds) o;
         return min != null ?
-            min.equals(bounds.min) :
-            bounds.min == null && (max != null ? max.equals(bounds.max) : bounds.max == null);
+                min.equals(bounds.min) :
+                bounds.min == null && (max != null ? max.equals(bounds.max) : bounds.max == null);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = min != null ? min.hashCode() : 0;
         result = 31 * result + (max != null ? max.hashCode() : 0);
         return result;

@@ -34,7 +34,8 @@ public class TextComponent extends DisplayComponent {
         this.text = String.format(text, args);
     }
 
-    @Override public String text() {
+    @Override
+    public String text() {
         return Text.translateAmpColorCodes(text);
     }
 

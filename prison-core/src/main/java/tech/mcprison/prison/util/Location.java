@@ -118,7 +118,8 @@ public class Location {
         return world.getBlockAt(this);
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -144,12 +145,13 @@ public class Location {
             return false;
         }
         return world != null ?
-            world.getName().equals(location.world.getName()) :
-            location.world == null;
+                world.getName().equals(location.world.getName()) :
+                location.world == null;
 
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result;
         long temp;
         result = world != null ? world.hashCode() : 0;
@@ -164,9 +166,10 @@ public class Location {
         return result;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Location{" + "world=" + world + ", x=" + x + ", y=" + y + ", z=" + z + ", pitch="
-            + pitch + ", yaw=" + yaw + '}';
+                + pitch + ", yaw=" + yaw + '}';
     }
 
     /**

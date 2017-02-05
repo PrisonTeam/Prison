@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ShapedRecipe extends Recipe {
     Map<Character, ItemStack> getIngredientMap();
 
-    ItemStack	getResult();
+    ItemStack getResult();
 
     String[] getShape();
 

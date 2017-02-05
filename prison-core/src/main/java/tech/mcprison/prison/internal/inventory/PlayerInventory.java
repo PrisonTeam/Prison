@@ -6,35 +6,35 @@ import tech.mcprison.prison.internal.ItemStack;
  * Created by DMP9 on 04/02/2017.
  */
 public interface PlayerInventory extends Inventory {
-    ItemStack[]	getArmorContents();
-
-    ItemStack getBoots();
-
-    ItemStack getChestplate();
-
-    int	getHeldItemSlot();
-
-    ItemStack getHelmet();
-
-    ItemStack getLeggings();
+    ItemStack[] getArmorContents();
 
     void setArmorContents(ItemStack[] items);
 
-    ItemStack getItemInRightHand();
-
-    ItemStack getItemInLeftHand();
+    ItemStack getBoots();
 
     void setBoots(ItemStack boots);
 
+    ItemStack getChestplate();
+
     void setChestplate(ItemStack boots);
 
-    void setLeggings(ItemStack boots);
+    int getHeldItemSlot();
+
+    void setHeldItemSlot(int slot);
+
+    ItemStack getHelmet();
 
     void setHelmet(ItemStack boots);
 
-    void setItemInLeftHand(ItemStack stack);
+    ItemStack getLeggings();
+
+    void setLeggings(ItemStack boots);
+
+    ItemStack getItemInRightHand();
 
     void setItemInRightHand(ItemStack stack);
 
-    void setHeldItemSlot(int slot);
+    ItemStack getItemInLeftHand();
+
+    void setItemInLeftHand(ItemStack stack);
 }

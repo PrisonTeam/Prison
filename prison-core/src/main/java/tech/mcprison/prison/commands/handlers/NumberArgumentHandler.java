@@ -33,7 +33,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
         addVerifier("min", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -52,7 +52,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
         addVerifier("max", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -71,7 +71,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
         addVerifier("range", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 2) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -82,7 +82,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                     double dvalue = value.doubleValue();
                     if (dvalue < min || dvalue > max) {
                         throw new VerifyError(
-                            argument.getMessage("range_error", verifyArgs[0], verifyArgs[1]));
+                                argument.getMessage("range_error", verifyArgs[0], verifyArgs[1]));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());

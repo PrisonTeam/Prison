@@ -37,7 +37,7 @@ public class PlayerInteractEvent implements Cancelable {
     private boolean canceled = false;
 
     public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
-        Location clicked) {
+                               Location clicked) {
         this.player = player;
         this.itemInHand = itemInHand;
         this.action = action;
@@ -60,11 +60,13 @@ public class PlayerInteractEvent implements Cancelable {
         return clicked;
     }
 
-    @Override public boolean isCanceled() {
+    @Override
+    public boolean isCanceled() {
         return canceled;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override
+    public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 

@@ -106,7 +106,7 @@ public enum ChatColor {
      */
     public static final char COLOR_CHAR = '\u00A7';
     private static final Pattern STRIP_COLOR_PATTERN =
-        Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "|&[0-9A-FK-OR]");
+            Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "|&[0-9A-FK-OR]");
     private final static Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
     private final static Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
 
@@ -130,7 +130,7 @@ public enum ChatColor {
         this.code = code;
         this.intCode = intCode;
         this.isFormat = isFormat;
-        this.toString = new String(new char[] {COLOR_CHAR, code});
+        this.toString = new String(new char[]{COLOR_CHAR, code});
     }
 
     /**
@@ -186,7 +186,7 @@ public enum ChatColor {
         char[] b = textToTranslate.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
             if (b[i] == altColorChar
-                && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+                    && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
                 b[i] = ChatColor.COLOR_CHAR;
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
@@ -234,7 +234,8 @@ public enum ChatColor {
         return code;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return toString;
     }
 

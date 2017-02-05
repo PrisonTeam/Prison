@@ -35,7 +35,7 @@ public class CommandHandler {
 
     private Prison plugin;
     private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
-        new HashMap<Class<?>, ArgumentHandler<?>>();
+            new HashMap<Class<?>, ArgumentHandler<?>>();
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
     private PermissionHandler permissionHandler = (sender, permissions) -> {
@@ -57,7 +57,7 @@ public class CommandHandler {
                 def = argument.getHandler().getVariableUserFriendlyName(varName);
                 if (def == null) {
                     throw new IllegalArgumentException(
-                        "The ArgumentVariable '" + varName + "' is not registered.");
+                            "The ArgumentVariable '" + varName + "' is not registered.");
                 }
                 def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
             } else {
@@ -65,10 +65,11 @@ public class CommandHandler {
             }
 
             return ChatColor.AQUA + "[" + argument.getName() + def + ChatColor.AQUA + "] "
-                + ChatColor.DARK_AQUA + argument.getDescription();
+                    + ChatColor.DARK_AQUA + argument.getDescription();
         }
 
-        @Override public String[] getHelpMessage(RegisteredCommand command) {
+        @Override
+        public String[] getHelpMessage(RegisteredCommand command) {
             ArrayList<String> message = new ArrayList<String>();
 
             if (command.isSet()) {
@@ -112,7 +113,8 @@ public class CommandHandler {
             return message.toArray(new String[0]);
         }
 
-        @Override public String getUsage(RegisteredCommand command) {
+        @Override
+        public String getUsage(RegisteredCommand command) {
             StringBuilder usage = new StringBuilder();
             usage.append(command.getLabel());
 
@@ -187,10 +189,10 @@ public class CommandHandler {
     }
 
     public <T> void registerArgumentHandler(Class<? extends T> clazz,
-        ArgumentHandler<T> argHandler) {
+                                            ArgumentHandler<T> argHandler) {
         if (argumentHandlers.get(clazz) != null) {
             throw new IllegalArgumentException(
-                "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
+                    "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
         }
 
         argHandler.handler = this;
@@ -210,19 +212,19 @@ public class CommandHandler {
             }
 
             Optional<PluginCommand> rootPcommandOptional =
-                plugin.getPlatform().getCommand(identifiers[0]);
+                    plugin.getPlatform().getCommand(identifiers[0]);
             PluginCommand rootPcommand;
 
             if (!rootPcommandOptional.isPresent()) {
                 rootPcommand = new PluginCommand(identifiers[0], commandAnno.description(),
-                    "/" + identifiers[0]);
+                        "/" + identifiers[0]);
                 plugin.getPlatform().registerCommand(rootPcommand);
             } else {
                 rootPcommand = rootPcommandOptional.get();
             }
 
             RegisteredCommand mainCommand = rootCommands
-                .computeIfAbsent(rootPcommand, k -> new RootCommand(rootPcommand, this));
+                    .computeIfAbsent(rootPcommand, k -> new RootCommand(rootPcommand, this));
 
             for (int i = 1; i < identifiers.length; i++) {
                 String suffix = identifiers[i];
@@ -248,7 +250,7 @@ public class CommandHandler {
     }
 
     public boolean onCommand(CommandSender sender, PluginCommand command, String label,
-        String[] args) {
+                             String[] args) {
         RootCommand rootCommand = rootCommands.get(command);
         if (rootCommand == null) {
             return false;

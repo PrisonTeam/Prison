@@ -2,8 +2,8 @@ package tech.mcprison.prison.util;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.Output;
+import tech.mcprison.prison.Prison;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +27,7 @@ public class ItemManager {
         try {
             File file = new File(Prison.get().getDataFolder(), "/items.csv");
             items = ArrayListMultimap.create();
-            InputStream is;
+
             if (!file.exists()) {
                 InputStream inputStream = getClass().getResourceAsStream("/items.csv");
                 Files.copy(inputStream, Paths.get(file.getPath()));
@@ -46,8 +46,7 @@ public class ItemManager {
                     }
                 } catch (Exception e) {
                     Output.get()
-                        .logError("Error while reading items.csv -- it's probably invalid", e);
-                    continue;
+                            .logError("Error while reading items.csv -- it's probably invalid", e);
                 }
             }
         } catch (Exception e) {
@@ -55,7 +54,7 @@ public class ItemManager {
         }
     }
 
-    public Map<BlockType,Collection<String>> getItems() {
+    public Map<BlockType, Collection<String>> getItems() {
         return items.asMap();
     }
 

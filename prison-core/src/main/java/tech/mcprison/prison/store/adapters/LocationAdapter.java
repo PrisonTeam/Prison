@@ -43,7 +43,7 @@ public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializ
 
     @Override
     public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-        throws JsonParseException {
+            throws JsonParseException {
         if (!json.isJsonObject()) {
             return null;
         }

@@ -86,11 +86,13 @@ public interface Player extends CommandSender, InventoryHolder {
 
     /**
      * Changes the player's {@link Gamemode} to the specified value
+     *
      * @param gamemode the new gamemode
      */
     void setGamemode(Gamemode gamemode);
 
-    @Override default boolean doesSupportColors() {
+    @Override
+    default boolean doesSupportColors() {
         return true;
     }
 

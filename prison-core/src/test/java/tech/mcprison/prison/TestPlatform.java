@@ -47,82 +47,101 @@ public class TestPlatform implements Platform {
         this.suppressOutput = suppressOutput;
     }
 
-    @Override public Optional<World> getWorld(String name) {
+    @Override
+    public Optional<World> getWorld(String name) {
         return Optional.of(new TestWorld(name));
     }
 
-    @Override public Optional<Player> getPlayer(String name) {
+    @Override
+    public Optional<Player> getPlayer(String name) {
         return null;
     }
 
-    @Override public Optional<Player> getPlayer(UUID uuid) {
+    @Override
+    public Optional<Player> getPlayer(UUID uuid) {
         return null;
     }
 
-    @Override public List<Player> getOnlinePlayers() {
+    @Override
+    public List<Player> getOnlinePlayers() {
         return null;
     }
 
-    @Override public Sign getSign(Location location) {
+    @Override
+    public Sign getSign(Location location) {
         return null;
     }
 
-    @Override public Economy getEconomy() {
+    @Override
+    public Economy getEconomy() {
         return null;
     }
 
-    @Override public String getPluginVersion() {
+    @Override
+    public String getPluginVersion() {
         return "Tests";
     }
 
-    @Override public File getPluginDirectory() {
+    @Override
+    public File getPluginDirectory() {
         return pluginDirectory;
     }
 
-    @Override public void registerCommand(PluginCommand command) {
+    @Override
+    public void registerCommand(PluginCommand command) {
 
     }
 
-    @Override public void unregisterCommand(String command) {
+    @Override
+    public void unregisterCommand(String command) {
 
     }
 
-    @Override public List<PluginCommand> getCommands() {
+    @Override
+    public List<PluginCommand> getCommands() {
         return Collections.emptyList();
     }
 
-    @Override public Scheduler getScheduler() {
+    @Override
+    public Scheduler getScheduler() {
         return null;
     }
 
-    @Override public GUI createGUI(String title, int numRows) {
+    @Override
+    public GUI createGUI(String title, int numRows) {
         return null;
     }
 
-    @Override public void toggleDoor(Location doorLocation) {
+    @Override
+    public void toggleDoor(Location doorLocation) {
 
     }
 
-    @Override public void log(String message, Object... format) {
+    @Override
+    public void log(String message, Object... format) {
         if (suppressOutput) {
             return;
         }
         System.out.println(ChatColor.stripColor(String.format(message, format)));
     }
 
-    @Override public Map<Capability, Boolean> getCapabilities() {
+    @Override
+    public Map<Capability, Boolean> getCapabilities() {
         return null;
     }
 
-    @Override public void showTitle(Player player, String title, String subtitle, int fade) {
+    @Override
+    public void showTitle(Player player, String title, String subtitle, int fade) {
 
     }
 
-    @Override public void showActionBar(Player player, String text) {
+    @Override
+    public void showActionBar(Player player, String text) {
 
     }
 
-    @Override public ScoreboardManager getScoreboardManager() {
+    @Override
+    public ScoreboardManager getScoreboardManager() {
         return null;
     }
 

@@ -33,7 +33,7 @@ import java.util.Map;
 public enum BlockType {
 
     // This was auto-generated from WorldEdit's blocks.json
-   AIR(0, "minecraft:air", 0),
+    AIR(0, "minecraft:air", 0),
     STONE(1, "minecraft:stone", 0),
     GRANITE(1, "minecraft:stone", 1),
     POLISHED_GRANITE(1, "minecraft:stone", 2),
@@ -704,7 +704,7 @@ public enum BlockType {
                 return getBlockWithData(Integer.parseInt(id), (short) 0);
             }
             return getBlockWithData(Integer.parseInt(id.split(":")[0]),
-                Short.parseShort(id.split(":")[1]));
+                    Short.parseShort(id.split(":")[1]));
         }
         for (Map.Entry<BlockType, Collection<String>> entry : Prison.get().getItemManager().getItems().entrySet()) {
             if (entry.getValue().contains(id.toLowerCase())) {
@@ -734,8 +734,8 @@ public enum BlockType {
 
     public static boolean isDoor(BlockType block) {
         return block == ACACIA_DOOR_BLOCK || block == BIRCH_DOOR_BLOCK
-            || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK
-            || block == JUNGLE_DOOR_BLOCK || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;
+                || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK
+                || block == JUNGLE_DOOR_BLOCK || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;
     }
 
     public int getLegacyId() {
@@ -750,7 +750,8 @@ public enum BlockType {
         return data;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return id + ":" + data;
     }
 

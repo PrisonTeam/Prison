@@ -42,8 +42,8 @@ public class PrisonCommand {
     public void versionCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison version");
         display
-            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
-                Prison.API_LEVEL);
+                .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+                        Prison.API_LEVEL);
 
         display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
         display.text("&7Integrations:");
@@ -51,8 +51,8 @@ public class PrisonCommand {
         display.text(Text.tab("&7Permissions: &cNone"));
 
         String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
-            "&aYes" :
-            "&cNone";
+                "&aYes" :
+                "&cNone";
 
         display.text(Text.tab("&7Economy: " + economy));
 
@@ -69,10 +69,10 @@ public class PrisonCommand {
         display.emptyLine();
 
         BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+                new BulletedListComponent.BulletedListBuilder();
         for (Module module : Prison.get().getModuleManager().getModules()) {
             builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
-                module.getVersion(), module.getStatus().getMessage());
+                    module.getVersion(), module.getStatus().getMessage());
         }
 
         display.addComponent(builder.build());
@@ -83,9 +83,9 @@ public class PrisonCommand {
     // FIXME THESE COMMANDS ARE BROKEN
     // Modules can't load and unload on the fly.
 
-//    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
+    //    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
     public void moduleEnableCommand(CommandSender sender,
-        @Arg(name = "moduleName") String moduleName) {
+                                    @Arg(name = "moduleName") String moduleName) {
         Optional<Module> moduleOptional = getModule(moduleName);
         if (!moduleOptional.isPresent()) {
             Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
@@ -96,24 +96,24 @@ public class PrisonCommand {
 
         if (module.isEnabled()) {
             Output.get()
-                .sendWarn(sender, "&7The module &c%s &7is already enabled.", module.getName());
+                    .sendWarn(sender, "&7The module &c%s &7is already enabled.", module.getName());
             return;
         }
 
         boolean result = Prison.get().getModuleManager().enableModule(module);
         if (result) {
             Output.get()
-                .sendInfo(sender, "&7The module &3%s &7has been enabled.", module.getName());
+                    .sendInfo(sender, "&7The module &3%s &7has been enabled.", module.getName());
         } else {
             Output.get().sendError(sender,
-                "&7Failed to enable the module &c%s &7. &8Check the console for details.",
-                module.getName());
+                    "&7Failed to enable the module &c%s &7. &8Check the console for details.",
+                    module.getName());
         }
     }
 
-//    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
+    //    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
     public void moduleDisableCommand(CommandSender sender,
-        @Arg(name = "moduleName") String moduleName) {
+                                     @Arg(name = "moduleName") String moduleName) {
         Optional<Module> moduleOptional = getModule(moduleName);
         if (!moduleOptional.isPresent()) {
             Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
@@ -135,7 +135,7 @@ public class PrisonCommand {
     private Optional<Module> getModule(String name) {
         ModuleManager manager = Prison.get().getModuleManager();
         return Optional.ofNullable(
-            manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
+                manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
     }
 
 }

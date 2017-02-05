@@ -18,8 +18,8 @@
 
 package tech.mcprison.prison.modules;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.Output;
+import tech.mcprison.prison.Prison;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +57,9 @@ public class ModuleManager {
 
         module.getStatus().setMessage("&6Version mismatch (update module)");
         Output.get().logWarn(
-            "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
-                + ", while prison-core is on API " + Prison.API_LEVEL
-                + ". This may cause problems.");
+                "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
+                        + ", while prison-core is on API " + Prison.API_LEVEL
+                        + ". This may cause problems.");
     }
 
     /**
@@ -79,12 +79,12 @@ public class ModuleManager {
         if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
             // Anything else and we assume that the enable failed.
             Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
-                (System.currentTimeMillis() - startTime));
+                    (System.currentTimeMillis() - startTime));
             return false;
         }
 
         Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
-            (System.currentTimeMillis() - startTime));
+                (System.currentTimeMillis() - startTime));
         return true;
     }
 
@@ -123,7 +123,7 @@ public class ModuleManager {
      */
     public Optional<Module> getModule(String name) {
         return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
-            .findFirst();
+                .findFirst();
     }
 
     /**
@@ -131,7 +131,7 @@ public class ModuleManager {
      */
     public Optional<Module> getModuleByPackageName(String name) {
         return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
-            .findFirst();
+                .findFirst();
     }
 
     /**
@@ -147,7 +147,8 @@ public class ModuleManager {
      *
      * @deprecated Use {@link Module#getStatus()} instead.
      */
-    @Deprecated public String getStatus(String moduleName) {
+    @Deprecated
+    public String getStatus(String moduleName) {
         Optional<Module> moduleOptional = getModule(moduleName);
         return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
     }
@@ -159,7 +160,8 @@ public class ModuleManager {
      * @param newStatus  The module's status. May include color codes, amp-prefixed.
      * @deprecated Use {@link Module#getStatus()} instead.
      */
-    @Deprecated public void setStatus(String moduleName, String newStatus) {
+    @Deprecated
+    public void setStatus(String moduleName, String newStatus) {
         Optional<Module> moduleOptional = getModule(moduleName);
         if (!moduleOptional.isPresent()) {
             return;

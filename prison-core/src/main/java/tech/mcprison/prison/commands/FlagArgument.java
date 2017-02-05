@@ -25,25 +25,26 @@ public class FlagArgument extends CommandArgument {
     private final Flag flag;
 
     public FlagArgument(Arg commandArgAnnotation, Class<?> argumentClass,
-        ArgumentHandler<?> argumentHandler, Flag flag) {
+                        ArgumentHandler<?> argumentHandler, Flag flag) {
         super(commandArgAnnotation, argumentClass, argumentHandler);
         this.flag = flag;
     }
 
     public FlagArgument(String name, String description, String def, String verifiers,
-        Class<?> argumentClass, ArgumentHandler<?> handler, Flag flag) {
+                        Class<?> argumentClass, ArgumentHandler<?> handler, Flag flag) {
         super(name, description, def, verifiers, argumentClass, handler);
         this.flag = flag;
     }
 
-    @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
+    @Override
+    public Object execute(CommandSender sender, Arguments args) throws CommandError {
         String arg;
         if (!args.flagExists(flag)) {
             arg = getDefault();
         } else if (!args.hasNext(flag)) {
             throw new CommandError(String
-                .format(Prison.get().getMessages().undefinedFlagArgument, getName(),
-                    flag.getIdentifier()));
+                    .format(Prison.get().getMessages().undefinedFlagArgument, getName(),
+                            flag.getIdentifier()));
         } else {
             arg = CommandUtil.escapeArgumentVariable(args.nextFlagArgument(flag));
         }

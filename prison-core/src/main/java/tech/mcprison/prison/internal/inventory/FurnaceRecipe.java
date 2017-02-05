@@ -9,7 +9,7 @@ import tech.mcprison.prison.util.BlockType;
 public interface FurnaceRecipe extends Recipe {
     ItemStack getInput();
 
-    ItemStack	getResult();
+    FurnaceRecipe setInput(BlockType input);
 
-    FurnaceRecipe	setInput(BlockType input);
+    ItemStack getResult();
 }

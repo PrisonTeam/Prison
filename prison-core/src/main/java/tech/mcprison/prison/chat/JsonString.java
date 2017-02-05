@@ -41,7 +41,8 @@ final class JsonString implements JsonRepresentedObject {
         return new JsonString(map.get("stringValue").toString());
     }
 
-    @Override public void writeJson(JsonWriter writer) throws IOException {
+    @Override
+    public void writeJson(JsonWriter writer) throws IOException {
         writer.value(getValue());
     }
 
@@ -55,7 +56,8 @@ final class JsonString implements JsonRepresentedObject {
         return theSingleValue;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return _value;
     }
 }

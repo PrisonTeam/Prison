@@ -53,7 +53,7 @@ public class CommandUtil {
             Matcher matcher = verifyArgumentsPattern.matcher(arg);
             if (!matcher.matches()) {
                 throw new IllegalArgumentException(
-                    "The argrument \"" + arg + "\" is in invalid form.");
+                        "The argrument \"" + arg + "\" is in invalid form.");
             }
 
             List<String> parameters = new ArrayList<String>();

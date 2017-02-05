@@ -23,7 +23,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.PARAMETER) public @interface Arg {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Arg {
     /**
      * The default argument to process if the argument is not defined by the user. To make it a mandatory argument define it as a space " " (as it is default).<br><br>
      * When this is combined with the {@link FlagArg} annotation the default argument will only be used if the <b>flag</b> is not defined by the user. Flags can't have default arguments.

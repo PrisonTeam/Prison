@@ -31,7 +31,7 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
         addVariable("sender", "The command executor", new ArgumentVariable<World>() {
             @Override
             public World var(CommandSender sender, CommandArgument argument, String varName)
-                throws CommandError {
+                    throws CommandError {
                 if (!(sender instanceof Player)) {
                     throw new CommandError(argument.getMessage("cant_as_console"));
                 }
@@ -41,9 +41,10 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
         });
     }
 
-    @Override public World transform(CommandSender sender, CommandArgument argument, String value)
-        throws TransformError {
+    @Override
+    public World transform(CommandSender sender, CommandArgument argument, String value)
+            throws TransformError {
         return Prison.get().getPlatform().getWorld(value)
-            .orElseThrow(() -> new TransformError(argument.getMessage("world_not_found", value)));
+                .orElseThrow(() -> new TransformError(argument.getMessage("world_not_found", value)));
     }
 }

@@ -21,7 +21,6 @@ package tech.mcprison.prison;
 import com.google.common.eventbus.EventBus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import tech.mcprison.prison.store.adapters.LocationAdapter;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.config.ConfigurationLoader;
 import tech.mcprison.prison.internal.platform.Platform;
@@ -30,6 +29,7 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.AnnotationExclusionStrategy;
 import tech.mcprison.prison.store.Exclude;
+import tech.mcprison.prison.store.adapters.LocationAdapter;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 import tech.mcprison.prison.util.Location;
@@ -48,13 +48,11 @@ public class Prison {
 
     // Singleton
 
+    public static final int API_LEVEL = 1;
     private static Prison instance = null;
-    private Platform platform;
 
     // Fields
-
-    public static final int API_LEVEL = 1;
-
+    private Platform platform;
     private File dataFolder;
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
@@ -102,8 +100,8 @@ public class Prison {
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
-            .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                (System.currentTimeMillis() - startTime));
+                .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+                        (System.currentTimeMillis() - startTime));
     }
 
     // Initialization steps
@@ -120,23 +118,23 @@ public class Prison {
         // Creates a handy instance of GSON with pretty printing, disabled HTML escaping, @Exclude support, and all adapters registered.
         // Note that if any adapters are added to the adapters package, this block must be updated.
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-            .setExclusionStrategies(new AnnotationExclusionStrategy())
-            .registerTypeAdapter(Location.class, new LocationAdapter()).create();
+                .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .registerTypeAdapter(Location.class, new LocationAdapter()).create();
     }
 
     private void initMessages() {
         // Our localization configuration, located in /Prison/Core/messages.json
         this.messagesLoader =
-            new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
-                Messages.VERSION);
+                new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
+                        Messages.VERSION);
         this.messagesLoader.loadConfiguration();
     }
 
     private void initConfig() {
         // Our configuration, located in /Prison/Core/config.json
         this.configurationLoader =
-            new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
-                Configuration.VERSION);
+                new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
+                        Configuration.VERSION);
         this.configurationLoader.loadConfiguration();
     }
 
