@@ -18,8 +18,8 @@
 
 package tech.mcprison.prison.spigot.block;
 
-import tech.mcprison.prison.block.Block;
-import tech.mcprison.prison.block.BlockState;
+import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.BlockState;
 
 /**
  * @author Faizaan A. Datoo

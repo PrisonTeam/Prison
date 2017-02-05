@@ -16,26 +16,41 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
+package tech.mcprison.prison.internal.events;
 
 import tech.mcprison.prison.internal.Player;
 
 /**
- * Platform-independent event, which is posted when a player joins the server.
+ * Posted when a player is kicked from the server.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 1.1
  */
-public class PlayerJoinEvent {
+public class PlayerKickEvent implements Cancelable {
 
     private Player player;
+    private String reason;
+    private boolean canceled = false;
 
-    public PlayerJoinEvent(Player player) {
+    public PlayerKickEvent(Player player, String reason) {
         this.player = player;
+        this.reason = reason;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
 }

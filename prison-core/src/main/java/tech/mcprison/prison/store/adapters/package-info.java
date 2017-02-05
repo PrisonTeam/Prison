@@ -19,4 +19,4 @@
 /**
  * Contains GSON adapters that can be registered to serialize and deserialize objects with Prison data structures in them.
  */
-package tech.mcprison.prison.adapters;
+package tech.mcprison.prison.store.adapters;

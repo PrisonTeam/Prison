@@ -21,7 +21,7 @@ package tech.mcprison.prison.spigot.game;
 import org.bukkit.Bukkit;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.block.Block;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.util.Location;

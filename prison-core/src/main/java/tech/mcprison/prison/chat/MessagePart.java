@@ -21,8 +21,7 @@ package tech.mcprison.prison.chat;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.gson.stream.JsonWriter;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.Output;
 import tech.mcprison.prison.util.ChatColor;
 
 import java.io.IOException;

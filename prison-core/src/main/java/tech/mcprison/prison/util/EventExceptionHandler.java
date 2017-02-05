@@ -20,7 +20,7 @@ package tech.mcprison.prison.util;
 
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.Output;
 
 import java.lang.reflect.Method;
 

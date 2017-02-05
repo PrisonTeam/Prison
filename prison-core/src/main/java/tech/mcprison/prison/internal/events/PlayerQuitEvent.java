@@ -16,22 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.block;
+package tech.mcprison.prison.internal.events;
+
+import tech.mcprison.prison.internal.Player;
 
 /**
- * Represents a captured state of a block, which will not change
- * automatically.
- * <p>
- * Unlike {@link Block }, which only one object can exist per coordinate, {@link BlockState}
- * can exist multiple times for any given Block. Note that another plugin may
- * change the state of the block and you will not know, or they may change the
- * block to another type entirely, causing your BlockState to become invalid.
+ * Platform-independent event, which is posted when a player leaves the server.
  *
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface BlockState {
+public class PlayerQuitEvent {
 
-    Block getBlock();
+    private Player player;
+
+    public PlayerQuitEvent(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 
 }

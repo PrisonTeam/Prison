@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.spigot.block;
 
-import tech.mcprison.prison.block.Lever;
+import tech.mcprison.prison.internal.block.Lever;
 
 /**
  * @author Faizaan A. Datoo

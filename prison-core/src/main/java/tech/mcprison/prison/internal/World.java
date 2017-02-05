@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.internal;
 
-import tech.mcprison.prison.block.Block;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.util.Location;
 
 import java.util.List;

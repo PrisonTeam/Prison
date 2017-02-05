@@ -22,12 +22,10 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.displays.BulletedListComponent;
 import tech.mcprison.prison.displays.ChatDisplay;
-import tech.mcprison.prison.displays.TextComponent;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
 
 import java.util.Optional;

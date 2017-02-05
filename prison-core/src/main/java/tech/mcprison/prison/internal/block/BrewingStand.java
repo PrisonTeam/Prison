@@ -1,4 +1,4 @@
-package tech.mcprison.prison.block;
+package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 

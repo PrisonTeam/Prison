@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.adapters;
+package tech.mcprison.prison.store.adapters;
 
 import com.google.gson.*;
 import tech.mcprison.prison.Prison;

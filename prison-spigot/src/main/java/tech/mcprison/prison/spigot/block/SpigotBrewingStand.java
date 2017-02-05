@@ -1,7 +1,7 @@
 package tech.mcprison.prison.spigot.block;
 
-import tech.mcprison.prison.block.Block;
-import tech.mcprison.prison.block.BrewingStand;
+import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.BrewingStand;
 import tech.mcprison.prison.internal.inventory.BrewerInventory;
 import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
 

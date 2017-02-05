@@ -16,48 +16,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
+package tech.mcprison.prison.internal.events;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.Location;
 
 /**
- * Platform-independent event, which is posted when a player clicks something.
+ * Posted when a player drops an item out of their inventory.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 1.1
  */
-public class PlayerInteractEvent implements Cancelable {
+public class PlayerDropItemEvent implements Cancelable {
 
     private Player player;
-    private ItemStack itemInHand;
-    private Action action;
-    private Location clicked;
+    private ItemStack itemStack;
     private boolean canceled = false;
 
-    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
-        Location clicked) {
+    public PlayerDropItemEvent(Player player, ItemStack itemStack) {
         this.player = player;
-        this.itemInHand = itemInHand;
-        this.action = action;
-        this.clicked = clicked;
+        this.itemStack = itemStack;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public ItemStack getItemInHand() {
-        return itemInHand;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public Location getClicked() {
-        return clicked;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
     @Override public boolean isCanceled() {
@@ -66,10 +52,6 @@ public class PlayerInteractEvent implements Cancelable {
 
     @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
-    }
-
-    public enum Action {
-        LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
     }
 
 }

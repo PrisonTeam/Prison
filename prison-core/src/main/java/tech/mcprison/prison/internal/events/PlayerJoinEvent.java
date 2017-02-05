@@ -16,18 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
+package tech.mcprison.prison.internal.events;
+
+import tech.mcprison.prison.internal.Player;
 
 /**
- * Represents an event whose outcome is cancelable.
+ * Platform-independent event, which is posted when a player joins the server.
  *
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface Cancelable {
+public class PlayerJoinEvent {
 
-    boolean isCanceled();
+    private Player player;
 
-    void setCanceled(boolean canceled);
+    public PlayerJoinEvent(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 
 }

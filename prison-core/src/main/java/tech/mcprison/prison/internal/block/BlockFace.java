@@ -16,41 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
-
-import tech.mcprison.prison.internal.Player;
+package tech.mcprison.prison.internal.block;
 
 /**
- * Posted when a player is kicked from the server.
+ * One of the six sides of a block.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 1.0
  */
-public class PlayerKickEvent implements Cancelable {
+public enum BlockFace {
 
-    private Player player;
-    private String reason;
-    private boolean canceled = false;
-
-    public PlayerKickEvent(Player player, String reason) {
-        this.player = player;
-        this.reason = reason;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    @Override public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
+    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM;
 
 }

@@ -19,7 +19,7 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.Output;
 
 import java.util.ArrayList;
 import java.util.List;

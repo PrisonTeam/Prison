@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.block;
+package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.util.BlockType;
 

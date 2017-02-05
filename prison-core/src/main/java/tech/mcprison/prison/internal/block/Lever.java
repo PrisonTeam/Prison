@@ -16,41 +16,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
-
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.Player;
+package tech.mcprison.prison.internal.block;
 
 /**
- * Posted when a player picks up an item drop.
+ * Represents the state of a lever.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 1.0
  */
-public class PlayerPickUpItemEvent implements Cancelable {
+public interface Lever extends BlockState {
 
-    private Player player;
-    private ItemStack itemStack;
-    private boolean canceled = false;
+    /**
+     * Returns whether the lever is on or off.
+     * On is defined as emitting a redstone signal.
+     *
+     * @return true if the lever is on, false if it's off.
+     */
+    boolean isOn();
 
-    public PlayerPickUpItemEvent(Player player, ItemStack itemStack) {
-        this.player = player;
-        this.itemStack = itemStack;
-    }
+    /**
+     * Set a lever as on (i.e. emitting redstone current) or off.
+     *
+     * @param on true to power it, false otherwise.
+     */
+    void setOn(boolean on);
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
-
-    @Override public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
 }

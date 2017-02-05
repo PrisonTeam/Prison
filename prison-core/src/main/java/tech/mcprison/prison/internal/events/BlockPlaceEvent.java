@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.events;
+package tech.mcprison.prison.internal.events;
 
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.BlockType;

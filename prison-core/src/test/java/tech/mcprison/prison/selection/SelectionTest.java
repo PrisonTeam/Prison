@@ -28,7 +28,7 @@ import tech.mcprison.prison.TestPlayer;
 import tech.mcprison.prison.TestWorld;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.events.PlayerInteractEvent;
+import tech.mcprison.prison.internal.events.PlayerInteractEvent;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 

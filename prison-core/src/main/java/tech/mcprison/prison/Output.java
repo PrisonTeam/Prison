@@ -16,9 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.output;
+package tech.mcprison.prison;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
 
 import java.util.Arrays;
