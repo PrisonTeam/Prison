@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Spigot 1.9 and 1.10.
+ * Spigot 1.9, 1.10, and 1.11.
  *
  * @author Faizaan A. Datoo
  */
