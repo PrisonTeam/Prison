@@ -9,6 +9,7 @@ package tech.mcprison.prison.internal.inventory;
 public interface InventoryHolder {
     /**
      * Gets the {@link Inventory} this {@link InventoryHolder} is holding
+     *
      * @return
      */
     public Inventory getInventory();

@@ -89,6 +89,7 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Creates a {@link HashMap} with items matching the specified {@link ItemStack}
+     *
      * @param stack the {@link ItemStack} to check the inventory contents against.
      * @return a HashMap with the index of items with matching items as the keys, and said items as the values
      */
@@ -96,6 +97,7 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Gets an item in a specific slot of this inventory
+     *
      * @param index the index of the item
      * @return the item at the specified index
      */
@@ -103,12 +105,14 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Adds the specified item(s) to a this inventory
+     *
      * @param itemStack the item(s) to add to this inventory
      */
     void addItem(ItemStack... itemStack);
 
     /**
      * Removes the specified item(s) to a this inventory
+     *
      * @param itemStack the item(s) to remove to this inventory
      */
     void removeItem(ItemStack... itemStack);
@@ -120,30 +124,35 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Clears all the items contained within this inventory from the specified index
+     *
      * @param index the index to start clearing from
      */
     void clearAll(int index);
 
     /**
      * Clears a slot of this inventory
+     *
      * @param index the index of the slot to be cleared
      */
     void clear(int index);
 
     /**
      * Clears all the slots with matching BlockTypes
+     *
      * @param type the {@link BlockType} to remove from the inventory
      */
     void clear(BlockType type);
 
     /**
      * Clears all the slots matching the specified {@link ItemStack}
+     *
      * @param stack the {@link ItemStack} to remove from this inventory
      */
     void clear(ItemStack stack);
 
     /**
      * Gets the index of the first instance of the specified {@link ItemStack} in this inventory.
+     *
      * @param stack the item to get the first index of
      * @return the first index of the item
      */
@@ -151,6 +160,7 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Gets the index of the first instance of the specified {@link BlockType} in this inventory.
+     *
      * @param type the {@link BlockType} to get the first index of
      * @return the first index of the BlockType
      */
@@ -158,12 +168,14 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Gets the index of the first empty slot in this inventory
+     *
      * @return the first empty slot index
      */
     int firstEmpty();
 
     /**
      * Gets the {@link InventoryHolder} of this inventory
+     *
      * @return the holder of this inventory (i.e. Entity or Block
      * @see InventoryType
      */
@@ -171,24 +183,28 @@ public interface Inventory extends Iterable<ItemStack> {
 
     /**
      * Gets all the players viewing this Inventory
+     *
      * @return a list of players viewing this inventory
      */
     List<Player> getViewers();
 
     /**
      * Gets the title of this inventory
+     *
      * @return the title of this inventory
      */
     String getTitle();
 
     /**
      * Sets the contents of this inventory
+     *
      * @param items the items to replace the current contents with
      */
     void setItems(List<ItemStack> items);
 
     /**
      * Gets the type of this inventory
+     *
      * @return the type of this inventory
      * @see InventoryHolder
      */

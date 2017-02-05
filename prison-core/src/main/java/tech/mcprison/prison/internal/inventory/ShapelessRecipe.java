@@ -8,13 +8,14 @@ import java.util.List;
 /**
  * Represents a shapeless recipe (a crafting recipe that has no requirement on a specific shape)
  *
- * @since API 1.1
  * @author Dylan M. Perks
+ * @since API 1.1
  */
 public interface ShapelessRecipe extends Recipe {
     /**
      * Adds an ingredient to this recipe
-     * @param count the amount of the ingredient required to complete the recipe
+     *
+     * @param count      the amount of the ingredient required to complete the recipe
      * @param ingredient the ingredient to add to the recipe
      * @return this instance to allow chain calls
      */
@@ -22,6 +23,7 @@ public interface ShapelessRecipe extends Recipe {
 
     /**
      * Adds an ingredient to this recipe
+     *
      * @param ingredient the ingredient to add to the recipe
      * @return this instance to allow chain calls
      */
@@ -29,13 +31,15 @@ public interface ShapelessRecipe extends Recipe {
 
     /**
      * Gets all the ingredients in this recipe
+     *
      * @return a list containing all the ingredients
      */
     List<ItemStack> getIngredientList();
 
     /**
      * Removes an ingredient from this recipe
-     * @param count the amount of the ingredient to remove
+     *
+     * @param count      the amount of the ingredient to remove
      * @param ingredient the ingredient to remove from this recipe
      * @return this instance to allow chain calls
      */
@@ -43,6 +47,7 @@ public interface ShapelessRecipe extends Recipe {
 
     /**
      * Removes an ingredient from this recipe
+     *
      * @param ingredient the ingredient to remove from this recipe
      * @return this instance to allow chain calls
      */

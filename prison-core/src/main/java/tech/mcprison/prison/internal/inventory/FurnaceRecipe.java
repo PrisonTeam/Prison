@@ -12,18 +12,21 @@ import tech.mcprison.prison.util.BlockType;
 public interface FurnaceRecipe extends Recipe {
     /**
      * Gets the input (item to be smelted) of this recipe
+     *
      * @return the {@link ItemStack} to be smelted
      */
     ItemStack getInput();
 
     /**
      * Gets the {@link ItemStack} created when the input is smelted.
+     *
      * @return
      */
     ItemStack getResult();
 
     /**
      * Sets the input (item to be smelted) in this recipe
+     *
      * @param input the input of this recipe ()
      * @return
      */
