@@ -66,8 +66,9 @@ public class GUIListener implements Listener {
                 gui[0] = inv;
                 b[0] = inv.getButtons().get(e.getSlot());
             });
-
+        e.getWhoClicked().sendMessage("Click recognized");
         if (b[0] == null) {
+            e.getWhoClicked().sendMessage("NOT BTN");
             return;
         }
         e.setCancelled(true);
