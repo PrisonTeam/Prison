@@ -12,13 +12,13 @@ public class SpigotEnchanting extends SpigotInventory implements EnchantingInven
         super(wrapper);
     }
 
-    @Override
-    public ItemStack getItem() {
-        return SpigotUtil.bukkitItemStackToPrison(((org.bukkit.inventory.EnchantingInventory)getWrapper()).getItem());
+    @Override public ItemStack getItem() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.EnchantingInventory) getWrapper()).getItem());
     }
 
-    @Override
-    public void setItem(ItemStack item) {
-        ((org.bukkit.inventory.EnchantingInventory)getWrapper()).setItem(SpigotUtil.prisonItemStackToBukkit(item));
+    @Override public void setItem(ItemStack item) {
+        ((org.bukkit.inventory.EnchantingInventory) getWrapper())
+            .setItem(SpigotUtil.prisonItemStackToBukkit(item));
     }
 }

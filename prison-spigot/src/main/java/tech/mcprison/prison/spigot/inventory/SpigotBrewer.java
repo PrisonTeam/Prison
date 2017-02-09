@@ -16,14 +16,16 @@ public class SpigotBrewer extends SpigotInventory implements BrewerInventory {
     }
 
     @Override public ItemStack getIngredient() {
-        return SpigotUtil.bukkitItemStackToPrison(((org.bukkit.inventory.BrewerInventory)getWrapper()).getIngredient());
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.BrewerInventory) getWrapper()).getIngredient());
     }
 
     @Override public void setIngredient(ItemStack ingredient) {
-        ((org.bukkit.inventory.BrewerInventory)getWrapper()).setIngredient(SpigotUtil.prisonItemStackToBukkit(ingredient));
+        ((org.bukkit.inventory.BrewerInventory) getWrapper())
+            .setIngredient(SpigotUtil.prisonItemStackToBukkit(ingredient));
     }
 
-    @Override public InventoryHolder getHolder(){
+    @Override public InventoryHolder getHolder() {
         return new SpigotBrewingStand((BrewingStand) getWrapper().getHolder());
     }
 }

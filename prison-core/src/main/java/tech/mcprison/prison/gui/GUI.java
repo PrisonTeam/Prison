@@ -19,6 +19,8 @@
 package tech.mcprison.prison.gui;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
+import tech.mcprison.prison.internal.inventory.InventoryHolder;
 
 import java.util.Map;
 
@@ -28,7 +30,7 @@ import java.util.Map;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface GUI {
+public interface GUI extends InventoryHolder {
 
     /**
      * Show this GUI to a player or players.
@@ -64,5 +66,10 @@ public interface GUI {
      * @return Returns itself to allow for chaining.
      */
     GUI addButton(int slot, Button button);
+
+    /**
+     * Returns the inventory associated with this GUI. The inventory is null until {@link GUI#build()} is called.
+     */
+    Inventory getInventory();
 
 }

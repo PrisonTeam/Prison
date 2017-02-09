@@ -18,7 +18,7 @@
 
 /**
  * Contains classes for creating and displaying inventory-based GUIs to players.
- * <p>
+ * <br>
  * <p>Note that some platforms may not have GUI support, so be sure to check if they have {@link tech.mcprison.prison.internal.platform.Capability#GUI}.
  */
 package tech.mcprison.prison.gui;

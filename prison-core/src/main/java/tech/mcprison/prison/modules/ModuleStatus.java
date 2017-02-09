@@ -39,7 +39,7 @@ public class ModuleStatus {
     private String message;
 
     /**
-     * Quickly set a module to the {@link Status#ENABLED} status, and set the message to "&aEnabled".
+     * Quickly set a module to the {@link Status#ENABLED} status, and set the message to "Enabled" in green (a).
      */
     public void toEnabled() {
         setStatus(Status.ENABLED);
@@ -51,7 +51,7 @@ public class ModuleStatus {
      */
 
     /**
-     * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "&cDisabled".
+     * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "Disabled" in red (c).
      */
     public void toDisabled() {
         setStatus(Status.DISABLED);

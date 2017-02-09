@@ -17,23 +17,25 @@ public class SpigotShapedRecipe extends SpigotRecipe implements ShapedRecipe {
     }
 
     @Override public Map<Character, ItemStack> getIngredientMap() {
-        Map<Character, org.bukkit.inventory.ItemStack> stackMap = ((org.bukkit.inventory.ShapedRecipe)getWrapper()).getIngredientMap();
+        Map<Character, org.bukkit.inventory.ItemStack> stackMap =
+            ((org.bukkit.inventory.ShapedRecipe) getWrapper()).getIngredientMap();
         Map<Character, ItemStack> result = new HashMap<>();
-        stackMap.forEach((x, y) -> result.put(x,SpigotUtil.bukkitItemStackToPrison(y)));
+        stackMap.forEach((x, y) -> result.put(x, SpigotUtil.bukkitItemStackToPrison(y)));
         return result;
     }
 
     @Override public String[] getShape() {
-        return ((org.bukkit.inventory.ShapedRecipe)getWrapper()).getShape();
+        return ((org.bukkit.inventory.ShapedRecipe) getWrapper()).getShape();
     }
 
     @Override public ShapedRecipe setIngredient(char key, BlockType ingredient) {
-        ((org.bukkit.inventory.ShapedRecipe)getWrapper()).setIngredient(key, SpigotUtil.blockTypeToMaterial(ingredient));
+        ((org.bukkit.inventory.ShapedRecipe) getWrapper())
+            .setIngredient(key, SpigotUtil.blockTypeToMaterial(ingredient));
         return this;
     }
 
     @Override public ShapedRecipe shape(String... shape) {
-        ((org.bukkit.inventory.ShapedRecipe)getWrapper()).shape(shape);
+        ((org.bukkit.inventory.ShapedRecipe) getWrapper()).shape(shape);
         return this;
     }
 }
