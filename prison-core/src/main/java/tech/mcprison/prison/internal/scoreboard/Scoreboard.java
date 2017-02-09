@@ -24,7 +24,7 @@ import java.util.List;
  * Represents a scoreboard shown to the user.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public interface Scoreboard {
 

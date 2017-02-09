@@ -6,7 +6,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents an {@link Inventory} belonging to a Player
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface PlayerInventory extends Inventory {
     /**
@@ -54,7 +54,7 @@ public interface PlayerInventory extends Inventory {
     /**
      * Sets the armor this player is wearing
      *
-     * @return a list of items to set as the players armor
+     * @param items a list of items to set as the players armor
      */
     void setArmorContents(ItemStack[] items);
 

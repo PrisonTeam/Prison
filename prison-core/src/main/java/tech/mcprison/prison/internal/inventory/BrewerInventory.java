@@ -3,9 +3,9 @@ package tech.mcprison.prison.internal.inventory;
 import tech.mcprison.prison.internal.ItemStack;
 
 /**
- * Represents a brewing inventory, typically created by a {@link tech.mcprison.prison.block.BrewingStand}
+ * Represents a brewing inventory, typically created by a {@link tech.mcprison.prison.internal.block.BrewingStand}
  *
- * @since API 1.1
+ * @since API 0.1
  */
 public interface BrewerInventory extends Inventory {
 

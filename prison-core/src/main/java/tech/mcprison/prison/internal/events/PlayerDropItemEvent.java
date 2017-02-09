@@ -25,7 +25,7 @@ import tech.mcprison.prison.internal.Player;
  * Posted when a player drops an item out of their inventory.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 0.1
  */
 public class PlayerDropItemEvent implements Cancelable {
 

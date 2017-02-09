@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  * Register it with a GSON instance.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
 

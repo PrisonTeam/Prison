@@ -22,7 +22,7 @@ package tech.mcprison.prison.modules;
  * Stores data on the status of the module.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 0.1
  */
 public class ModuleStatus {
 

@@ -24,7 +24,7 @@ import tech.mcprison.prison.internal.Player;
  * Posted when a player is kicked from the server.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 0.1
  */
 public class PlayerKickEvent implements Cancelable {
 

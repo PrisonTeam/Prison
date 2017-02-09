@@ -24,7 +24,7 @@ import tech.mcprison.prison.internal.platform.Platform;
  * An interface for adding/removing permissions from players.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 0.1
  */
 public interface Permission {
 

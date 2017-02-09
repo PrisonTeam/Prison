@@ -42,13 +42,13 @@ import java.io.File;
  * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class Prison {
 
     // Singleton
 
-    public static final int API_LEVEL = 1;
+    public static final int API_LEVEL = 0;
     private static Prison instance = null;
 
     // Fields

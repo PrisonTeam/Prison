@@ -29,7 +29,7 @@ import java.nio.file.Files;
  * A basic implementation of {@link Jsonable} for general beans.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public abstract class AbstractJsonable<T extends AbstractJsonable<T>> implements Jsonable<T> {
 

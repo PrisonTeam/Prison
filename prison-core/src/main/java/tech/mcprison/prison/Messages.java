@@ -26,7 +26,7 @@ import tech.mcprison.prison.config.MessageConfigurable;
  * the VERSION constant must be incremented by one to ensure the file will be regenerated.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class Messages extends MessageConfigurable {
 
