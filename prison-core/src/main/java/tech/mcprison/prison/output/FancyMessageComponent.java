@@ -16,10 +16,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package tech.mcprison.prison.output;
+
+import tech.mcprison.prison.chat.FancyMessage;
+
 /**
- * A handy utility to create formatted chat displays.
+ * A component wrapper for {@link tech.mcprison.prison.chat.FancyMessage}s.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-package tech.mcprison.prison.displays;
+public class FancyMessageComponent extends DisplayComponent {
+
+    protected FancyMessage message;
+
+    public FancyMessageComponent(FancyMessage message) {
+        this.message = message;
+    }
+
+    @Override
+    public String text() {
+        return message.toJSONString();
+    }
+
+    public String plainText() {
+        return message.toOldMessageFormat();
+    }
+
+}

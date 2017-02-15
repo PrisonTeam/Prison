@@ -16,31 +16,36 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.displays;
+package tech.mcprison.prison.store;
 
-import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.Prison;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * A component wrapper for {@link tech.mcprison.prison.chat.FancyMessage}s.
+ * An implementation of {@link Document}. In most cases, you can just extend this for all your
+ * storage classes.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since 1.0
  */
-public class FancyMessageComponent extends DisplayComponent {
+public abstract class AbstractDocument implements Document {
 
-    protected FancyMessage message;
-
-    public FancyMessageComponent(FancyMessage message) {
-        this.message = message;
+    @Override public Map<String, String> getAllAsStrings() {
+        Map<String, String> retVal = new HashMap<>();
+        for (String key : getKeys()) {
+            retVal.put(key, getAsString(key));
+        }
+        return retVal;
     }
 
-    @Override
-    public String text() {
-        return message.toJSONString();
+    @Override public String toJson() {
+        return GsonSingleton.getInstance().getGson().toJson(this);
     }
 
-    public String plainText() {
-        return message.toOldMessageFormat();
+    @Override public <T> T fromJson(String json, Class<T> type) {
+        return GsonSingleton.getInstance().getGson().fromJson(json, type);
     }
 
 }

@@ -16,24 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.config;
-
-import tech.mcprison.prison.store.Exclude;
-
 /**
- * A {@link Configurable} with the prefixes as protected class members for easy access.
+ * A handy utility to create formatted chat displays.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public abstract class MessageConfigurable implements Configurable {
-
-    // Naming conventions are a bit off, but I tried to maintain backwards-compatibility
-    @Exclude
-    protected String INFO_PREFIX = "&3Info &8» &7";
-    @Exclude
-    protected String WARNING_PREFIX = "&6Warning &8» &7";
-    @Exclude
-    protected String ERROR_PREFIX = "&cError &8» &7";
-
-}
+package tech.mcprison.prison.output;

@@ -16,27 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.displays;
+package tech.mcprison.prison.store;
 
-import tech.mcprison.prison.util.Text;
+import java.lang.annotation.*;
 
 /**
- * A component for boring plain old text.
+ * Excludes a field from being serialized into a JSON file.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since 1.0
  */
-public class TextComponent extends DisplayComponent {
-
-    protected String text;
-
-    public TextComponent(String text, Object... args) {
-        this.text = String.format(text, args);
-    }
-
-    @Override
-    public String text() {
-        return Text.translateAmpColorCodes(text);
-    }
-
+@Retention(RetentionPolicy.RUNTIME) @Documented @Target(ElementType.FIELD)
+public @interface Exclude {
 }

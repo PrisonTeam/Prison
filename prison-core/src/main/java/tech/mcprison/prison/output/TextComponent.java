@@ -16,28 +16,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison;
+package tech.mcprison.prison.output;
 
-import tech.mcprison.prison.config.Configurable;
+import tech.mcprison.prison.util.Text;
 
 /**
- * Represents Prison's configuration. Contains all of the keys and their default values.
- * Every time a new value is added to a production version (i.e. public release),
- * the VERSION constant must be incremented by one to ensure the configuration will be regenerated.
+ * A component for boring plain old text.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class Configuration implements Configurable {
+public class TextComponent extends DisplayComponent {
 
-    public static final int VERSION = 2; // For everyone to reference
-    public int version = VERSION; // For the configuration file to store
+    protected String text;
 
-    // Entries
+    public TextComponent(String text, Object... args) {
+        this.text = String.format(text, args);
+    }
 
     @Override
-    public int getVersion() {
-        return version;
+    public String text() {
+        return Text.translateAmpColorCodes(text);
     }
 
 }

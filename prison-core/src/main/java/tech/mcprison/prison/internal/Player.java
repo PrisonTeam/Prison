@@ -19,11 +19,11 @@
 package tech.mcprison.prison.internal;
 
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
-import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -92,8 +92,14 @@ public interface Player extends CommandSender, InventoryHolder {
      */
     void setGamemode(Gamemode gamemode);
 
-    @Override
-    default boolean doesSupportColors() {
+    /**
+     * Returns this player's locale.
+     *
+     * @return An {@link Optional} containing the locale of this player, or empty if it couldn't be retrieved.
+     */
+    Optional<String> getLocale();
+
+    @Override default boolean doesSupportColors() {
         return true;
     }
 

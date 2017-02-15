@@ -16,21 +16,43 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.config;
+package tech.mcprison.prison.output;
+
+import tech.mcprison.prison.chat.FancyMessage;
 
 /**
- * Represents a class that holds configuration keys.
+ * A component that can be attached to a {@link ChatDisplay}.
+ * Display components add some text to the display in a certain way.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public interface Configurable {
+public abstract class DisplayComponent {
+
+    /*
+     * Fields & Constants
+     */
+
+    protected ChatDisplay display;
+
+    /*
+     * Methods
+     */
 
     /**
-     * Returns the deserialized version of the file.
+     * Returns the text that is being appended to the {@link ChatDisplay}.
+     * This should return the raw JSON if {@link tech.mcprison.prison.chat.FancyMessage} is involved.
+     * To retrieve a raw JSON string, call {@link FancyMessage#toJSONString()}.
      *
-     * @return The version, in integer form.
+     * @return The string of text to add.
      */
-    int getVersion();
+    public abstract String text();
 
+    /*
+     * Getters & Setters
+     */
+
+    void setDisplay(ChatDisplay display) {
+        this.display = display;
+    }
 }

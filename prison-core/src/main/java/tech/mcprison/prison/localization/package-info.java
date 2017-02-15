@@ -16,19 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.inventory;
-
 /**
- * Represents a block or entity capable of holding an inventory (e.g. Chest)
+ * This package contains a localization library for Prison and its modules.
+ * <p>
+ * It is the Rosetta library by Max Ronance. It has been adapted to work with Prison by Faizaan Datoo.
+ * It is licensed under the New BSD License, which is found in the LICENSE.txt file in this package.
  *
- * @author Dylan M. Perks
- * @since API 0.1
+ * @author Max Ronance
+ * @author Faizaan A. Datoo
+ * @since 1.0
  */
-public interface InventoryHolder {
-    /**
-     * Gets the {@link Inventory} this {@link InventoryHolder} is holding
-     *
-     * @return
-     */
-    public Inventory getInventory();
-}
+package tech.mcprison.prison.localization;

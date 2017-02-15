@@ -16,19 +16,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.inventory;
+package tech.mcprison.prison.modules;
+
+import java.io.File;
 
 /**
- * Represents a block or entity capable of holding an inventory (e.g. Chest)
- *
- * @author Dylan M. Perks
- * @since API 0.1
+ * Represents something that can have a data folder.
+ * @author Faizaan A. Datoo
+ * @since API 1.0
  */
-public interface InventoryHolder {
-    /**
-     * Gets the {@link Inventory} this {@link InventoryHolder} is holding
-     *
-     * @return
-     */
-    public Inventory getInventory();
+public interface IDataFolderOwner {
+
+    File getDataFolder();
+
 }

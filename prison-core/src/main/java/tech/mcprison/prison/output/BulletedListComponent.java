@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.displays;
+package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.util.Text;
 
