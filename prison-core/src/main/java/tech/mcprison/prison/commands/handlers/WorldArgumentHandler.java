@@ -26,14 +26,14 @@ import tech.mcprison.prison.internal.World;
 
 public class WorldArgumentHandler extends ArgumentHandler<World> {
     public WorldArgumentHandler() {
-        setMessage("world_not_found", Prison.get().getMessages().worldNotFound);
-
         addVariable("sender", "The command executor", new ArgumentVariable<World>() {
             @Override
             public World var(CommandSender sender, CommandArgument argument, String varName)
-                    throws CommandError {
+                throws CommandError {
                 if (!(sender instanceof Player)) {
-                    throw new CommandError(argument.getMessage("cant_as_console"));
+                    throw new CommandError(
+                        Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                            .localizeFor(sender));
                 }
 
                 return ((Player) sender).getLocation().getWorld();
@@ -41,10 +41,10 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
         });
     }
 
-    @Override
-    public World transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
-        return Prison.get().getPlatform().getWorld(value)
-                .orElseThrow(() -> new TransformError(argument.getMessage("world_not_found", value)));
+    @Override public World transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
+        return Prison.get().getPlatform().getWorld(value).orElseThrow(() -> new TransformError(
+            Prison.get().getLocaleManager().getLocalizable("worldNotFound").withReplacements(value)
+                .localizeFor(sender)));
     }
 }

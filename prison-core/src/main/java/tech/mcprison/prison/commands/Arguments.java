@@ -46,8 +46,10 @@ public class Arguments {
             int endIndex = flag.getArguments().size() + flagIndex;
 
             if (endIndex > largs.size()) {
-                throw new CommandError(String
-                        .format(Prison.get().getMessages().missingFlagArgument, flag.getIdentifier()));
+                //FIXME Since we can't access the command sender from here, the following string is currently not going to be localized.
+                throw new CommandError(
+                    Prison.get().getLocaleManager().getLocalizable("missingFlagArgument")
+                        .withReplacements(flag.getIdentifier()).localize());
             }
 
             flagCounter.put(flag, 0);

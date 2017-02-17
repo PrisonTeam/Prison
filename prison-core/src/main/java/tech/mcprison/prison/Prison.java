@@ -21,6 +21,7 @@ package tech.mcprison.prison;
 import com.google.common.eventbus.EventBus;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.internal.platform.Platform;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.IDataFolderOwner;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
@@ -53,6 +54,7 @@ public class Prison implements IDataFolderOwner {
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
     private EventBus eventBus;
+    private LocaleManager localeManager;
     private ItemManager itemManager;
 
     /**
@@ -106,6 +108,7 @@ public class Prison implements IDataFolderOwner {
 
     private void initManagers() {
         // Now we initialize the API
+        this.localeManager = new LocaleManager(this);
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
@@ -143,6 +146,17 @@ public class Prison implements IDataFolderOwner {
      */
     public File getDataFolder() {
         return dataFolder;
+    }
+
+    /**
+     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison uses
+     * to run its command library, and the like. {@link Module}s have their own {@link LocaleManager}s, so that
+     * each module can have independent localization.
+     *
+     * @return The global locale manager instance.
+     */
+    public LocaleManager getLocaleManager() {
+        return localeManager;
     }
 
     /**

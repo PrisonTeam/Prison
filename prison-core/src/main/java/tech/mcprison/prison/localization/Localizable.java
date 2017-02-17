@@ -293,10 +293,40 @@ public class Localizable {
      *
      * @param sender The {@link CommandSender} to send this {@link Localizable}
      *               to
+     * @param level  The message level to set this to.
+     * @since 1.0
+     */
+    public void sendTo(CommandSender sender, Level level) {
+        switch (level) {
+            case WARN:
+                Output.get().sendWarn(sender, localizeFor(sender));
+                break;
+            case ERROR:
+                Output.get().sendError(sender, localizeFor(sender));
+                break;
+            case INFO:
+            default:
+                Output.get().sendInfo(sender, localizeFor(sender));
+                break;
+        }
+    }
+
+    /**
+     * Sends this {@link Localizable} to the given {@link CommandSender}. If the
+     * {@link CommandSender} is also a {@link Player}, the message will be
+     * localized in their respective locale. Otherwise, it will be localized in
+     * the parent {@link LocaleManager}'s default locale.
+     * <p>
+     * <p>It is unnecessary to include alternate dialects of a locale as
+     * fallbacks (e.g. {@code en_GB} as a fallback for {@code en_US}), as they
+     * are included by default by the library.</p>
+     *
+     * @param sender The {@link CommandSender} to send this {@link Localizable}
+     *               to
      * @since 1.0
      */
     public void sendTo(CommandSender sender) {
-        sender.sendMessage(localizeFor(sender));
+        sendTo(sender, Level.INFO);
     }
 
     /**
@@ -338,6 +368,10 @@ public class Localizable {
      */
     private String fromNullableString(String nullable) {
         return nullable != null ? nullable : "";
+    }
+
+    public enum Level {
+        INFO, WARN, ERROR
     }
 
 }

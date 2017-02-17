@@ -28,12 +28,11 @@ import tech.mcprison.prison.util.BlockType;
 public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
     public BlockArgumentHandler() {
-        setMessage("parse_error", Prison.get().getMessages().blockParseError);
     }
 
     @Override
     public BlockType transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+        throws TransformError {
         BlockType m = null;
 
         // Try block legacy (numerical) ID first
@@ -62,7 +61,9 @@ public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
                 id = Integer.parseInt(value.split(":")[0]);
                 data = Short.parseShort(value.split(":")[1]);
             } catch (NumberFormatException ignored) {
-                throw new TransformError(argument.getMessage("parse_error"));
+                throw new TransformError(
+                    Prison.get().getLocaleManager().getLocalizable("blockParseError")
+                        .withReplacements(value).localizeFor(sender));
             }
             m = BlockType.getBlockWithData(id, data);
         }
@@ -73,6 +74,8 @@ public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
         // No more checks, just fail
 
-        throw new TransformError(argument.getMessage("parse_error"));
+        throw new TransformError(
+            Prison.get().getLocaleManager().getLocalizable("blockParseError")
+                .withReplacements(value).localizeFor(sender));
     }
 }
