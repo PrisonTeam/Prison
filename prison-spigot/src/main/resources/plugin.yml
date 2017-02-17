@@ -2,7 +2,7 @@ name: Prison
 main: tech.mcprison.prison.spigot.SpigotPrison
 version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
-website: http://mc-prison.github.io
+website: https://mc-prison.tech
 softdepend: [Essentials, Vault, LuckPerms]
 
 permissions:
