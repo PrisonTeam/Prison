@@ -1,6 +1,7 @@
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.block;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
@@ -20,13 +21,11 @@ public class BlockBreakEvent implements Cancelable {
         this.player = player;
     }
 
-    @Override
-    public boolean isCanceled() {
+    @Override public boolean isCanceled() {
         return canceled;
     }
 
-    @Override
-    public void setCanceled(boolean canceled) {
+    @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 

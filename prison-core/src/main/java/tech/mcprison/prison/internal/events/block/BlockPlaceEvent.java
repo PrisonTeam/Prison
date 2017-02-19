@@ -16,44 +16,50 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.block;
 
-import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
+import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Location;
 
 /**
- * Posted when a player drops an item out of their inventory.
+ * Platform-independent event, which is posted when a player places a block.
  *
- * @author Faizaan A. Datoo
- * @since API 1.1
+ * @author Camouflage100
+ * @since API 1.0
  */
-public class PlayerDropItemEvent implements Cancelable {
+public class BlockPlaceEvent implements Cancelable {
 
+    private BlockType block;
+    private Location blockLocation;
     private Player player;
-    private ItemStack itemStack;
     private boolean canceled = false;
 
-    public PlayerDropItemEvent(Player player, ItemStack itemStack) {
+    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
+        this.block = block;
+        this.blockLocation = blockLocation;
         this.player = player;
-        this.itemStack = itemStack;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public BlockType getBlock() {
+        return block;
+    }
+
+    public Location getBlockLocation() {
+        return blockLocation;
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
     }
 
 }

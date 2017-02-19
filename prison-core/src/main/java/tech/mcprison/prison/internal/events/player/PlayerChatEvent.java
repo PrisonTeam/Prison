@@ -16,26 +16,55 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Platform-independent event, which is posted when a player leaves the server.
+ * A internal-independent event, posted when a player chats a message.
  *
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class PlayerQuitEvent {
+public class PlayerChatEvent implements Cancelable {
 
     private Player player;
+    private String message;
+    private String format;
+    private boolean canceled = false;
 
-    public PlayerQuitEvent(Player player) {
+    public PlayerChatEvent(Player player, String message, String format) {
         this.player = player;
+        this.message = message;
+        this.format = format;
     }
 
     public Player getPlayer() {
         return player;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
 }

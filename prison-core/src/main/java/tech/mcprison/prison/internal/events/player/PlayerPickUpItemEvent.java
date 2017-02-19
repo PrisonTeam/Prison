@@ -16,43 +16,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Posted when a player is kicked from the server.
+ * Posted when a player picks up an item drop.
  *
  * @author Faizaan A. Datoo
  * @since API 1.1
  */
-public class PlayerKickEvent implements Cancelable {
+public class PlayerPickUpItemEvent implements Cancelable {
 
     private Player player;
-    private String reason;
+    private ItemStack itemStack;
     private boolean canceled = false;
 
-    public PlayerKickEvent(Player player, String reason) {
+    public PlayerPickUpItemEvent(Player player, ItemStack itemStack) {
         this.player = player;
-        this.reason = reason;
+        this.itemStack = itemStack;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public String getReason() {
-        return reason;
+    public ItemStack getItemStack() {
+        return itemStack;
     }
 
-    @Override
-    public boolean isCanceled() {
+    @Override public boolean isCanceled() {
         return canceled;
     }
 
-    @Override
-    public void setCanceled(boolean canceled) {
+    @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
-
 }

@@ -16,10 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -37,7 +38,7 @@ public class PlayerInteractEvent implements Cancelable {
     private boolean canceled = false;
 
     public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
-                               Location clicked) {
+        Location clicked) {
         this.player = player;
         this.itemInHand = itemInHand;
         this.action = action;
@@ -60,13 +61,11 @@ public class PlayerInteractEvent implements Cancelable {
         return clicked;
     }
 
-    @Override
-    public boolean isCanceled() {
+    @Override public boolean isCanceled() {
         return canceled;
     }
 
-    @Override
-    public void setCanceled(boolean canceled) {
+    @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 
