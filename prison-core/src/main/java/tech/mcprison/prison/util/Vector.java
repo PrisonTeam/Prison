@@ -32,7 +32,7 @@ import java.util.Random;
  *
  * @author Bukkit Team
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class Vector implements Cloneable {
 

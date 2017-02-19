@@ -9,7 +9,7 @@ import java.util.List;
  * Represents a shapeless recipe (a crafting recipe that has no requirement on a specific shape)
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface ShapelessRecipe extends Recipe {
     /**

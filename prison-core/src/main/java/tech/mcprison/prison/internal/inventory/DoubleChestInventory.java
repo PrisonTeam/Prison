@@ -1,10 +1,10 @@
 package tech.mcprison.prison.internal.inventory;
 
 /**
- * Represents an inventory created by a {@link tech.mcprison.prison.block.DoubleChest}
+ * Represents an inventory created by a {@link tech.mcprison.prison.internal.block.DoubleChest}
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface DoubleChestInventory {
     /**

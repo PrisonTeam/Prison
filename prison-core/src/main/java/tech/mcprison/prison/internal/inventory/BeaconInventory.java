@@ -6,7 +6,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents an inventory created by a beacon
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface BeaconInventory {
     /**

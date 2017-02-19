@@ -28,7 +28,7 @@ import java.util.List;
  * A button is an item in an inventory GUI. When it is clicked, an action is performed.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class Button {
 

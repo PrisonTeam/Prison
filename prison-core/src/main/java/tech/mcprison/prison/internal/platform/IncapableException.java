@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.platform;
  * Thrown when a module attempts to perform an action which the internal is incapable of.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public class IncapableException extends RuntimeException {
 

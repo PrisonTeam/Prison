@@ -27,7 +27,7 @@ import tech.mcprison.prison.util.Location;
  * Platform-independent event, which is posted when a player places a block.
  *
  * @author Camouflage100
- * @since API 1.0
+ * @since API 0.1
  */
 public class BlockPlaceEvent implements Cancelable {
 

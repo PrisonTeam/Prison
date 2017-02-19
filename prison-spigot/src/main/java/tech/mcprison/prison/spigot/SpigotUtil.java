@@ -76,6 +76,9 @@ public class SpigotUtil {
     public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
         ItemStack bukkitStack) {
         ItemMeta meta = bukkitStack.getItemMeta();
+        if(!bukkitStack.hasItemMeta()) {
+            meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        }
 
         String displayName;
 

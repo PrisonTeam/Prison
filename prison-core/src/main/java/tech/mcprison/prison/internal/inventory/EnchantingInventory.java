@@ -6,7 +6,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents an enchanting inventory (menu), typically created by an Enchanting Table
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface EnchantingInventory extends Inventory {
     /**

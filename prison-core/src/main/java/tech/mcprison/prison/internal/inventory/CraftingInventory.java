@@ -6,7 +6,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents a crafting inventory, typically created by a Crafting Table
  *
  * @author Dylan M. Perks
- * @since API 1.1
+ * @since API 0.1
  */
 public interface CraftingInventory extends Inventory {
     /**

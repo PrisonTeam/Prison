@@ -30,7 +30,7 @@ import java.util.UUID;
  * Represents a player on the Minecraft server.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public interface Player extends CommandSender, InventoryHolder {
 

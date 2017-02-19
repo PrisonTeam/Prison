@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal;
  * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own thread.
  *
  * @author Faizaan A. Datoo
- * @since API 1.0
+ * @since API 0.1
  */
 public interface Scheduler {
 

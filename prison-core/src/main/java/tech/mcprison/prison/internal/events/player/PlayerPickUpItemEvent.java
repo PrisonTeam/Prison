@@ -26,7 +26,7 @@ import tech.mcprison.prison.internal.events.Cancelable;
  * Posted when a player picks up an item drop.
  *
  * @author Faizaan A. Datoo
- * @since API 1.1
+ * @since API 0.1
  */
 public class PlayerPickUpItemEvent implements Cancelable {
 
