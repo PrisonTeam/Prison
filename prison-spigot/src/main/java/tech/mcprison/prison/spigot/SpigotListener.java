@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
@@ -146,9 +147,6 @@ public class SpigotListener implements Listener {
         e.setCancelled(event.isCanceled());
     }
 
-    /*
-     * Inventory events
-     */
     @EventHandler public void onBrew(BrewEvent e) {
         tech.mcprison.prison.internal.events.inventory.BrewEvent event =
             new tech.mcprison.prison.internal.events.inventory.BrewEvent(
@@ -156,5 +154,9 @@ public class SpigotListener implements Listener {
                 ((BrewingStand) e.getBlock()).getFuelLevel());
         Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
+    }
+
+    @EventHandler public void onCraftItem(CraftItemEvent event) {
+
     }
 }
