@@ -50,6 +50,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     @Override public void onEnable() {
+        this.saveDefaultConfig();
         initDataDir();
         initCommandMap();
         initCompatibility();

@@ -180,11 +180,6 @@ public interface Platform {
     StorageManager getStorageManager();
 
     /**
-     * Returns an {@link Executor} which uses the server's scheduler to perform asynchronous tasks.
-     */
-    Executor getAsyncExecutor();
-
-    /**
      * Retrieves the {@link PluginCommand} object for a command with a certain label.
      *
      * @param label The command's label.

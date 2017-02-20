@@ -79,7 +79,7 @@ public class Blueprint {
         try {
             T ret = clazz.newInstance();
 
-            for (Field field : ret.getClass().getFields()) {
+            for (Field field : getAllFields(new LinkedList<>(), clazz)) {
                 field.setAccessible(true);
 
                 if (field.isAnnotationPresent(Exclude.class)) {

@@ -16,22 +16,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.store;
+package tech.mcprison.prison.spigot.store;
 
-import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.StorageManager;
+import tech.mcprison.prison.store.Blueprint;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class Storage {
+public class SqlStorageManager implements StorageManager {
 
-    public static boolean store(String id, Object obj) {
-        Blueprint blueprint = new Blueprint(obj);
-        return Prison.get().getPlatform().getStorageManager().store(id, blueprint);
+    @Override public boolean store(String id, Blueprint blueprint) {
+        return false;
     }
 
-    public static <T> T retrieve(String id, Class<T> clazz) {
-        return Prison.get().getPlatform().getStorageManager().retrieve(id, clazz);
+    @Override public <T> T retrieve(String id, Class<T> clazz) {
+        return null;
     }
 
 }

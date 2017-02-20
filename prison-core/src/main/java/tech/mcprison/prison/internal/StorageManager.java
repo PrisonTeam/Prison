@@ -20,8 +20,6 @@ package tech.mcprison.prison.internal;
 
 import tech.mcprison.prison.store.Blueprint;
 
-import java.util.concurrent.CompletableFuture;
-
 /**
  * A low-level manager that handles storing and retrieving populated {@link Blueprint}s.
  * A populated blueprint is a blueprint which has all its {@link tech.mcprison.prison.store.Data} values set.
@@ -38,9 +36,9 @@ public interface StorageManager {
      *
      * @param id        The ID to identify this data by.
      * @param blueprint The populated {@link Blueprint} object.
-     * @return A {@link CompletableFuture} containing <code>true</code> if the store succeeds and <code>false</code> otherwise.
+     * @return <code>true</code> if the store succeeds and <code>false</code> otherwise.
      */
-    CompletableFuture<Boolean> store(String id, Blueprint blueprint);
+    boolean store(String id, Blueprint blueprint);
 
     /**
      * Retrieves a populated {@link Blueprint} from disk.
@@ -48,8 +46,8 @@ public interface StorageManager {
      *
      * @param id    The ID of this data. This must be the same, case-sensitive, as what it was stored as.
      * @param clazz The type of class that this Blueprint will be deserialized into.
-     * @return A {@link CompletableFuture} containing the {@link Blueprint} if it could be found, or <code>null</code> if the retrieval fails.
+     * @return The de-serialized object, or null if the retrieval failed.
      */
-    <T> CompletableFuture<T> retrieve(String id, Class<T> clazz);
+    <T> T retrieve(String id, Class<T> clazz);
 
 }
