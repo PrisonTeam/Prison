@@ -18,11 +18,22 @@
 
 package tech.mcprison.prison.store;
 
+import tech.mcprison.prison.Prison;
+
+import java.util.concurrent.CompletableFuture;
+
 /**
  * @author Faizaan A. Datoo
  */
 public class Storage {
 
+    public CompletableFuture<Boolean> store(String id, Object obj) {
+        Blueprint blueprint = new Blueprint(obj);
+        return Prison.get().getPlatform().getStorageManager().store(id, blueprint);
+    }
 
+    public <T> CompletableFuture<T> retrieve(String id, Class<T> clazz) {
+        return Prison.get().getPlatform().getStorageManager().retrieve(id, clazz);
+    }
 
 }

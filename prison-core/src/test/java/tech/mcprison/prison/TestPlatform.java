@@ -30,6 +30,7 @@ import tech.mcprison.prison.util.Location;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.Executor;
 
 /**
  * @author Faizaan A. Datoo
@@ -144,6 +145,14 @@ public class TestPlatform implements Platform {
 
     @Override
     public ScoreboardManager getScoreboardManager() {
+        return null;
+    }
+
+    @Override public StorageManager getStorageManager() {
+        return null;
+    }
+
+    @Override public Executor getAsyncExecutor() {
         return null;
     }
 

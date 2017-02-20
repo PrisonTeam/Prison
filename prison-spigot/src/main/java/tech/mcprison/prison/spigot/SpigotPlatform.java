@@ -52,6 +52,7 @@ import tech.mcprison.prison.util.Text;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 /**
@@ -132,9 +133,8 @@ class SpigotPlatform implements Platform {
         }
     }
 
-    @Override
-    public Permission getPermission() {
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
+    @Override public Permission getPermission() {
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
             return new VaultPermission();
         } else {
             return null;
@@ -236,6 +236,14 @@ class SpigotPlatform implements Platform {
 
     @Override public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    @Override public StorageManager getStorageManager() {
+        return new SpigotStorageManager(plugin.getDataDirectory());
+    }
+
+    @Override public Executor getAsyncExecutor() {
+        return r -> getScheduler().runTaskLaterAsync(r, 0L);
     }
 
     private boolean isDoor(Material block) {
