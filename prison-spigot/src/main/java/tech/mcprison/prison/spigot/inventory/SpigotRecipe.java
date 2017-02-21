@@ -7,7 +7,7 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 /**
  * Created by DMP9 on 04/02/2017.
  */
-public abstract class SpigotRecipe implements Recipe {
+public class SpigotRecipe implements Recipe {
     org.bukkit.inventory.Recipe wrapper;
 
     public SpigotRecipe(org.bukkit.inventory.Recipe wrapper) {

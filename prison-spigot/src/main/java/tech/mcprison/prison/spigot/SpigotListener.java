@@ -29,6 +29,8 @@ import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.events.inventory.InventoryClickEvent;
+import tech.mcprison.prison.internal.events.inventory.InventoryEvent;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -36,6 +38,8 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
+import tech.mcprison.prison.spigot.inventory.SpigotInventoryView;
+import tech.mcprison.prison.spigot.inventory.SpigotRecipe;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -156,7 +160,15 @@ public class SpigotListener implements Listener {
         e.setCancelled(event.isCanceled());
     }
 
-    @EventHandler public void onCraftItem(CraftItemEvent event) {
-
+    @EventHandler public void onCraftItem(CraftItemEvent e) {
+        tech.mcprison.prison.internal.events.inventory.CraftItemEvent event =
+            new tech.mcprison.prison.internal.events.inventory.CraftItemEvent(
+                new SpigotRecipe(e.getRecipe()), new SpigotInventoryView(e.getView()),
+                SpigotUtil.bukkitSlotTypeToPrison(e.getSlotType()), e.getRawSlot(),
+                InventoryClickEvent.Click.valueOf(e.getClick().toString()),
+                InventoryEvent.Action.valueOf(e.getAction().toString()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+        e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
     }
 }

@@ -15,7 +15,7 @@ public class BrewEvent implements Cancelable {
     private int fuelLevel = 0;
     private Block block = null;
 
-    public BrewEvent(Block block, BrewerInventory contents, int fuelLevel){
+    public BrewEvent(Block block, BrewerInventory contents, int fuelLevel) {
         this.contents = contents;
         this.fuelLevel = fuelLevel;
         this.block = block;
@@ -29,7 +29,7 @@ public class BrewEvent implements Cancelable {
         return fuelLevel;
     }
 
-    public Block getBlock(){
+    public Block getBlock() {
         return block;
     }
 
