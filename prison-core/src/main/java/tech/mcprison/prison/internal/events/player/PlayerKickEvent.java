@@ -19,6 +19,7 @@
 package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
  * Posted when a player is kicked from the server.
