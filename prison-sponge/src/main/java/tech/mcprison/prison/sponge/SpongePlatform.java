@@ -150,4 +150,8 @@ public class SpongePlatform implements Platform {
         return null;
     }
 
+    @Override public StorageManager getStorageManager() {
+        return null;
+    }
+
 }
