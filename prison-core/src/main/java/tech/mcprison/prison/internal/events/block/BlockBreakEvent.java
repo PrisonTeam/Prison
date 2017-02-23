@@ -16,56 +16,46 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.block;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
+import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Location;
 
 /**
- * A internal-independent event, posted when a player chats a message.
- *
- * @author Faizaan A. Datoo
- * @since API 0.1
+ * Created by DMP9 on 23/01/2017.
  */
-public class PlayerChatEvent implements Cancelable {
+public class BlockBreakEvent implements Cancelable {
 
+    private BlockType block;
+    private Location blockLocation;
     private Player player;
-    private String message;
-    private String format;
     private boolean canceled = false;
 
-    public PlayerChatEvent(Player player, String message, String format) {
+    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
+        this.block = block;
+        this.blockLocation = blockLocation;
         this.player = player;
-        this.message = message;
-        this.format = format;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public BlockType getBlock() {
+        return block;
+    }
+
+    public Location getBlockLocation() {
+        return blockLocation;
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
     }
 }

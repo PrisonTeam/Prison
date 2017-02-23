@@ -16,44 +16,55 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
-import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Posted when a player drops an item out of their inventory.
+ * A internal-independent event, posted when a player chats a message.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class PlayerDropItemEvent implements Cancelable {
+public class PlayerChatEvent implements Cancelable {
 
     private Player player;
-    private ItemStack itemStack;
+    private String message;
+    private String format;
     private boolean canceled = false;
 
-    public PlayerDropItemEvent(Player player, ItemStack itemStack) {
+    public PlayerChatEvent(Player player, String message, String format) {
         this.player = player;
-        this.itemStack = itemStack;
+        this.message = message;
+        this.format = format;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
+    public String getMessage() {
+        return message;
     }
 
-    @Override
-    public boolean isCanceled() {
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    @Override public boolean isCanceled() {
         return canceled;
     }
 
-    @Override
-    public void setCanceled(boolean canceled) {
+    @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
-
 }

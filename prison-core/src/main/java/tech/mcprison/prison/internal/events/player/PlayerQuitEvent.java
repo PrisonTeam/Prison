@@ -16,47 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
 
 /**
- * Created by DMP9 on 23/01/2017.
+ * Platform-independent event, which is posted when a player leaves the server.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 0.1
  */
-public class BlockBreakEvent implements Cancelable {
+public class PlayerQuitEvent {
 
-    private BlockType block;
-    private Location blockLocation;
     private Player player;
-    private boolean canceled = false;
 
-    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
-        this.block = block;
-        this.blockLocation = blockLocation;
+    public PlayerQuitEvent(Player player) {
         this.player = player;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
-
-    public BlockType getBlock() {
-        return block;
-    }
-
-    public Location getBlockLocation() {
-        return blockLocation;
     }
 
     public Player getPlayer() {
         return player;
     }
+
 }
