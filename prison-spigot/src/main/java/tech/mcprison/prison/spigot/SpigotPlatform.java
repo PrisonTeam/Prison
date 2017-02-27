@@ -38,7 +38,6 @@ import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -48,9 +47,6 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.permissions.VaultPermission;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
-import tech.mcprison.prison.spigot.store.JsonStorageManager;
-import tech.mcprison.prison.spigot.store.MongoStorageManager;
-import tech.mcprison.prison.spigot.store.SqlStorageManager;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -68,27 +64,11 @@ class SpigotPlatform implements Platform {
     private Map<String, World> worlds = new HashMap<>();
     private List<Player> players = new ArrayList<>();
 
-    private StorageManager storageManager;
     private ScoreboardManager scoreboardManager;
 
     SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
-        this.storageManager = initStorageManager();
         this.scoreboardManager = new SpigotScoreboardManager();
-    }
-
-    private StorageManager initStorageManager() {
-        String storageType = plugin.getConfig().getString("storageType");
-        if (storageType.equalsIgnoreCase("json")) {
-            return new JsonStorageManager(plugin.getDataDirectory());
-        } else if (storageType.equalsIgnoreCase("mongo")) {
-            return new MongoStorageManager();
-        } else if (storageType.equalsIgnoreCase("sql")) {
-            return new SqlStorageManager();
-        } else {
-            Output.get().logWarn("Configuration: Invalid storageType. Defaulting to 'json'.");
-            return new JsonStorageManager(plugin.getDataDirectory());
-        }
     }
 
     @Override public Optional<World> getWorld(String name) {
@@ -255,10 +235,6 @@ class SpigotPlatform implements Platform {
 
     @Override public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
-    }
-
-    @Override public StorageManager getStorageManager() {
-        return storageManager;
     }
 
     private boolean isDoor(Material block) {

@@ -27,7 +27,6 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
-import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 

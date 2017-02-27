@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Executor;
 
 /**
  * Represents a internal that Prison has been implemented for.
@@ -173,11 +172,6 @@ public interface Platform {
      * Returns the scoreboard manager.
      */
     ScoreboardManager getScoreboardManager();
-
-    /**
-     * Returns the storage manager.
-     */
-    StorageManager getStorageManager();
 
     /**
      * Retrieves the {@link PluginCommand} object for a command with a certain label.
