@@ -16,27 +16,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.spigot.inventory;
+package tech.mcprison.prison.internal.events.player;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.Recipe;
-import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.internal.Player;
 
 /**
- * Created by DMP9 on 04/02/2017.
+ * Platform-independent event, which is posted when a player joins the server.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 0.1
  */
-public class SpigotRecipe implements Recipe {
-    org.bukkit.inventory.Recipe wrapper;
+public class PlayerJoinEvent {
 
-    public SpigotRecipe(org.bukkit.inventory.Recipe wrapper) {
-        this.wrapper = wrapper;
+    private Player player;
+
+    public PlayerJoinEvent(Player player) {
+        this.player = player;
     }
 
-    public org.bukkit.inventory.Recipe getWrapper() {
-        return wrapper;
+    public Player getPlayer() {
+        return player;
     }
 
-    @Override public ItemStack getResult() {
-        return SpigotUtil.bukkitItemStackToPrison(wrapper.getResult());
-    }
 }

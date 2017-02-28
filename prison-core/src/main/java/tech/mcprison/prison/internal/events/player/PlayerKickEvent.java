@@ -16,51 +16,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Platform-independent event, which is posted when a player places a block.
+ * Posted when a player is kicked from the server.
  *
- * @author Camouflage100
+ * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class BlockPlaceEvent implements Cancelable {
+public class PlayerKickEvent implements Cancelable {
 
-    private BlockType block;
-    private Location blockLocation;
     private Player player;
+    private String reason;
     private boolean canceled = false;
 
-    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
-        this.block = block;
-        this.blockLocation = blockLocation;
+    public PlayerKickEvent(Player player, String reason) {
         this.player = player;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
-
-    public BlockType getBlock() {
-        return block;
-    }
-
-    public Location getBlockLocation() {
-        return blockLocation;
+        this.reason = reason;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
 }

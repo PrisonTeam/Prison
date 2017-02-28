@@ -16,43 +16,41 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.inventory;
 
-import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Posted when a player is kicked from the server.
+ * Currently undocumented.
  *
- * @author Faizaan A. Datoo
- * @since API 0.1
+ * @author DMP9
  */
-public class PlayerKickEvent implements Cancelable {
-
-    private Player player;
-    private String reason;
-    private boolean canceled = false;
-
-    public PlayerKickEvent(Player player, String reason) {
-        this.player = player;
-        this.reason = reason;
+public class FurnaceBurnEvent implements Cancelable {
+    boolean canceled = false;
+    int burnTime = -1;
+    ItemStack fuel = null;
+    boolean burning = false;
+    public int getBurnTime(){
+        return burnTime;
     }
-
-    public Player getPlayer() {
-        return player;
+    public ItemStack getFuel(){
+        return fuel;
     }
-
-    public String getReason() {
-        return reason;
+    public boolean isBurning(){
+        return burning;
     }
-
-    @Override
-    public boolean isCanceled() {
+    public boolean isCanceled(){
         return canceled;
     }
-
-    @Override
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
+    public void setBurning(boolean burning){
+        this.burning = burning;
     }
-
+    public void setBurnTime(int burnTime)
+    {
+        this.burnTime = burnTime;
+    }
+    public void setCanceled(boolean cancel){
+        canceled = cancel;
+    }
 }

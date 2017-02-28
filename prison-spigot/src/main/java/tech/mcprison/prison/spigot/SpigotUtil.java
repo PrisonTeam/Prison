@@ -21,8 +21,10 @@ package tech.mcprison.prison.spigot;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.InventoryType;
@@ -76,6 +78,9 @@ public class SpigotUtil {
     public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
         ItemStack bukkitStack) {
         ItemMeta meta = bukkitStack.getItemMeta();
+        if(!bukkitStack.hasItemMeta()) {
+            meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        }
 
         String displayName;
 
@@ -119,5 +124,33 @@ public class SpigotUtil {
     public static org.bukkit.event.inventory.InventoryType prisonInventoryTypeToBukkit(
         InventoryType type) {
         return org.bukkit.event.inventory.InventoryType.valueOf(type.toString());
+    }
+
+    public static InventoryType.SlotType bukkitSlotTypeToPrison(
+        org.bukkit.event.inventory.InventoryType.SlotType type){
+        switch (type){
+            case ARMOR:
+                return InventoryType.SlotType.ARMOR;
+            case CONTAINER:
+                return InventoryType.SlotType.DEFAULT;
+            case CRAFTING:
+                return InventoryType.SlotType.CRAFTING;
+            case FUEL:
+                return InventoryType.SlotType.FUEL;
+            case OUTSIDE:
+                return InventoryType.SlotType.NONE;
+            case QUICKBAR:
+                return InventoryType.SlotType.HOTBAR;
+            case RESULT:
+                return InventoryType.SlotType.RESULT;
+            default:
+                return null;
+        }
+    }
+    /*
+     * Property
+     */
+    public static InventoryView.Property prisonPropertyToBukkit(Viewable.Property property){
+        return InventoryView.Property.valueOf(property.toString());
     }
 }

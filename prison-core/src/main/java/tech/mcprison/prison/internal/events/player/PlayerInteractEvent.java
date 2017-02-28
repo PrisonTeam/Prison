@@ -16,43 +16,61 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.player;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
+import tech.mcprison.prison.util.Location;
 
 /**
- * Posted when a player picks up an item drop.
+ * Platform-independent event, which is posted when a player clicks something.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class PlayerPickUpItemEvent implements Cancelable {
+public class PlayerInteractEvent implements Cancelable {
 
     private Player player;
-    private ItemStack itemStack;
+    private ItemStack itemInHand;
+    private Action action;
+    private Location clicked;
     private boolean canceled = false;
 
-    public PlayerPickUpItemEvent(Player player, ItemStack itemStack) {
+    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
+        Location clicked) {
         this.player = player;
-        this.itemStack = itemStack;
+        this.itemInHand = itemInHand;
+        this.action = action;
+        this.clicked = clicked;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
+    public ItemStack getItemInHand() {
+        return itemInHand;
     }
 
-    @Override
-    public boolean isCanceled() {
+    public Action getAction() {
+        return action;
+    }
+
+    public Location getClicked() {
+        return clicked;
+    }
+
+    @Override public boolean isCanceled() {
         return canceled;
     }
 
-    @Override
-    public void setCanceled(boolean canceled) {
+    @Override public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
+
+    public enum Action {
+        LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
+    }
+
 }

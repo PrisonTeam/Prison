@@ -16,26 +16,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events;
+package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.Cancelable;
+import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Platform-independent event, which is posted when a player leaves the server.
+ * Currently undocumented.
  *
- * @author Faizaan A. Datoo
- * @since API 0.1
+ * @author DMP9
  */
-public class PlayerQuitEvent {
+public class InventoryInteractEvent extends InventoryEvent implements Cancelable {
+    private boolean cancel = false;
 
-    private Player player;
-
-    public PlayerQuitEvent(Player player) {
-        this.player = player;
+    public InventoryInteractEvent(Viewable transaction) {
+        super(transaction);
     }
 
-    public Player getPlayer() {
-        return player;
+    @Override public boolean isCanceled() {
+        return cancel;
     }
 
+    @Override public void setCanceled(boolean canceled) {
+        cancel = canceled;
+    }
+
+    public Player getWhoClicked() {
+        return transaction.getPlayer();
+    }
 }
