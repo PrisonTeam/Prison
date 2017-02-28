@@ -25,10 +25,7 @@ import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Faizaan A. Datoo
@@ -121,6 +118,10 @@ public class TestPlayer implements Player {
     @Override
     public void setGamemode(Gamemode gamemode) {
 
+    }
+
+    @Override public Optional<String> getLocale() {
+        return Optional.of("en_US");
     }
 
     @Override

@@ -25,7 +25,6 @@ import tech.mcprison.prison.internal.CommandSender;
 
 public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {
-        setMessage("parse_error", Prison.get().getMessages().numberParseError);
     }
 
     @Override
@@ -36,7 +35,9 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            throw new TransformError(argument.getMessage("parse_error"));
+            throw new TransformError(
+                Prison.get().getLocaleManager().getLocalizable("numberParseError")
+                    .withReplacements(value).localizeFor(sender));
         }
     }
 }

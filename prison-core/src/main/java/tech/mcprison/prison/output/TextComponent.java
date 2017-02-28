@@ -16,31 +16,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.displays;
+package tech.mcprison.prison.output;
 
-import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.util.Text;
 
 /**
- * A component wrapper for {@link tech.mcprison.prison.chat.FancyMessage}s.
+ * A component for boring plain old text.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class FancyMessageComponent extends DisplayComponent {
+public class TextComponent extends DisplayComponent {
 
-    protected FancyMessage message;
+    protected String text;
 
-    public FancyMessageComponent(FancyMessage message) {
-        this.message = message;
+    public TextComponent(String text, Object... args) {
+        this.text = String.format(text, args);
     }
 
     @Override
     public String text() {
-        return message.toJSONString();
-    }
-
-    public String plainText() {
-        return message.toOldMessageFormat();
+        return Text.translateAmpColorCodes(text);
     }
 
 }

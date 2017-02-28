@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.modules;
 
-import tech.mcprison.prison.Output;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.Prison;
 
 import java.io.File;
@@ -30,7 +30,7 @@ import java.io.File;
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public abstract class Module {
+public abstract class Module implements IDataFolderOwner {
 
     /*
      * Fields & Constants

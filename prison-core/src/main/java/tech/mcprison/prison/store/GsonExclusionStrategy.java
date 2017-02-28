@@ -16,23 +16,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.config;
+package tech.mcprison.prison.store;
+
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class TestConfigurable implements Configurable {
+public class GsonExclusionStrategy implements ExclusionStrategy {
 
-    public static int VERSION = 2; // For everyone to reference
-    public int version = VERSION; // For the configuration file to store
+    @Override public boolean shouldSkipField(FieldAttributes f) {
+        return f.getAnnotation(Exclude.class) != null;
+    }
 
-    public String testValue = "Testing";
-
-    // Entries
-
-    @Override
-    public int getVersion() {
-        return version;
+    @Override public boolean shouldSkipClass(Class<?> clazz) {
+        return false;
     }
 
 }

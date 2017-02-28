@@ -17,6 +17,13 @@
  */
 
 /**
- * Contains GSON adapters that can be registered to serialize and deserialize objects with Prison data structures in them.
+ * This package contains a localization library for Prison and its modules.
+ * <p>
+ * It is the Rosetta library by Max Ronance. It has been adapted to work with Prison by Faizaan Datoo.
+ * It is licensed under the New BSD License, which is found in the LICENSE.txt file in this package.
+ *
+ * @author Max Ronance
+ * @author Faizaan A. Datoo
+ * @since 1.0
  */
-package tech.mcprison.prison.store.adapters;
+package tech.mcprison.prison.localization;

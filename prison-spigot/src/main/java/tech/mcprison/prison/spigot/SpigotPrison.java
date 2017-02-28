@@ -27,6 +27,7 @@ import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 /**
@@ -40,6 +41,7 @@ public class SpigotPrison extends JavaPlugin {
     Field knownCommands;
     SpigotScheduler scheduler;
     Compatibility compatibility;
+    File dataDirectory;
 
     @Override public void onLoad() {
         if (!getDataFolder().exists()) {
@@ -48,6 +50,8 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     @Override public void onEnable() {
+        this.saveDefaultConfig();
+        initDataDir();
         initCommandMap();
         initCompatibility();
         this.scheduler = new SpigotScheduler(this);
@@ -59,6 +63,13 @@ public class SpigotPrison extends JavaPlugin {
     @Override public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
+    }
+
+    private void initDataDir() {
+        dataDirectory = new File(getDataFolder(), "data");
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdir();
+        }
     }
 
     private void initCommandMap() {
@@ -85,4 +96,7 @@ public class SpigotPrison extends JavaPlugin {
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }
 
+    public File getDataDirectory() {
+        return dataDirectory;
+    }
 }

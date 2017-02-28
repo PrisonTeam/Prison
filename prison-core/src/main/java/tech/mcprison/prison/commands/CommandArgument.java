@@ -35,14 +35,14 @@ public class CommandArgument implements ExecutableArgument {
     private Map<String, String> overrideMessages = new HashMap<String, String>();
 
     public CommandArgument(Arg commandArgAnnotation, Class<?> argumentClass,
-                           ArgumentHandler<?> argumentHandler) {
+        ArgumentHandler<?> argumentHandler) {
         this(commandArgAnnotation.name(), commandArgAnnotation.description(),
-                commandArgAnnotation.def(), commandArgAnnotation.verifiers(), argumentClass,
-                argumentHandler);
+            commandArgAnnotation.def(), commandArgAnnotation.verifiers(), argumentClass,
+            argumentHandler);
     }
 
     public CommandArgument(String name, String description, String def, String verifiers,
-                           Class<?> argumentClass, ArgumentHandler<?> handler) {
+        Class<?> argumentClass, ArgumentHandler<?> handler) {
         this.name = name;
         this.description = description;
         this.def = def;
@@ -51,13 +51,13 @@ public class CommandArgument implements ExecutableArgument {
         this.argumentClass = argumentClass;
     }
 
-    @Override
-    public Object execute(CommandSender sender, Arguments args) throws CommandError {
+    @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
         String arg;
         if (!args.hasNext()) {
             if (def.equals(" ")) {
                 throw new CommandError(
-                        String.format(Prison.get().getMessages().missingArgument, name), true);
+                    Prison.get().getLocaleManager().getLocalizable("missingArgument")
+                        .withReplacements(name).localizeFor(sender), true);
             }
 
             arg = def;

@@ -18,15 +18,37 @@
 
 package tech.mcprison.prison.store;
 
-import tech.mcprison.prison.TestWorld;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import tech.mcprison.prison.store.adapter.LocationAdapter;
 import tech.mcprison.prison.util.Location;
 
 /**
+ * A singleton which contains an initialized GSON object.
+ *
  * @author Faizaan A. Datoo
  */
-public class TestJsonable extends AbstractJsonable<TestJsonable> {
+public class GsonSingleton {
 
-    public String test = "Testing";
-    public Location loc = new Location(new TestWorld("Test"), 10, 23, 43, 24.3f, 35.4f);
+    private static GsonSingleton instance = new GsonSingleton();
+
+    public static GsonSingleton getInstance() {
+        return instance;
+    }
+
+    private Gson gson;
+
+    private GsonSingleton() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.disableHtmlEscaping();
+        builder.setExclusionStrategies(new GsonExclusionStrategy());
+        builder.registerTypeAdapter(Location.class, new LocationAdapter());
+        gson = builder.create();
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
 
 }

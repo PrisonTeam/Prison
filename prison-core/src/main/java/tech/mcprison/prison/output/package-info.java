@@ -16,20 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.store;
-
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-
-public class AnnotationExclusionStrategy implements ExclusionStrategy {
-
-    @Override
-    public boolean shouldSkipField(FieldAttributes f) {
-        return f.getAnnotation(Exclude.class) != null;
-    }
-
-    @Override
-    public boolean shouldSkipClass(Class<?> clazz) {
-        return false;
-    }
-}
+/**
+ * A handy utility to create formatted chat displays.
+ *
+ * @author Faizaan A. Datoo
+ * @since API 0.1
+ */
+package tech.mcprison.prison.output;

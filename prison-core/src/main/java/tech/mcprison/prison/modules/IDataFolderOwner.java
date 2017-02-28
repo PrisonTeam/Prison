@@ -16,10 +16,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package tech.mcprison.prison.modules;
+
+import java.io.File;
+
 /**
- * A handy utility to create formatted chat displays.
- *
+ * Represents something that can have a data folder.
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
-package tech.mcprison.prison.displays;
+public interface IDataFolderOwner {
+
+    File getDataFolder();
+
+}

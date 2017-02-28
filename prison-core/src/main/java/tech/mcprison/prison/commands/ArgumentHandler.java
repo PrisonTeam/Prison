@@ -33,24 +33,22 @@ public abstract class ArgumentHandler<T> {
 
     public ArgumentHandler() {
         //Default messages
-        setMessage("include_error", Prison.get().getMessages().includeError);
-        setMessage("exclude_error", Prison.get().getMessages().excludeError);
-        setMessage("cant_as_console", Prison.get().getMessages().cantAsConsole);
 
         //Default verifiers
         addVerifier("include", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
+                String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
                 for (String include : verifyArgs) {
                     try {
                         if (transform(sender, argument, include) != value) {
                             throw new java.lang.VerifyError(
-                                    argument.getMessage("include_error", valueRaw));
+                                Prison.get().getLocaleManager().getLocalizable("includeError")
+                                    .withReplacements(valueRaw).localizeFor(sender));
                         }
                     } catch (TransformError e) {
                         throw (IllegalArgumentException) new IllegalArgumentException(
-                                "Could not transform the verify argument " + include, e);
+                            "Could not transform the verify argument " + include, e);
                     }
                 }
             }
@@ -59,16 +57,17 @@ public abstract class ArgumentHandler<T> {
         addVerifier("exclude", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
+                String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError {
                 for (String exclude : verifyArgs) {
                     try {
                         if (transform(sender, argument, exclude) == value) {
                             throw new java.lang.VerifyError(
-                                    argument.getMessage("exclude_error", valueRaw));
+                                Prison.get().getLocaleManager().getLocalizable("excludeError")
+                                    .withReplacements(valueRaw).localizeFor(sender));
                         }
                     } catch (TransformError e) {
                         throw (IllegalArgumentException) new IllegalArgumentException(
-                                "Could not transform the verify argument " + exclude, e);
+                            "Could not transform the verify argument " + exclude, e);
                     }
                 }
             }
@@ -76,10 +75,10 @@ public abstract class ArgumentHandler<T> {
     }
 
     public final void addVariable(String varName, String userFriendlyName,
-                                  ArgumentVariable<T> var) {
+        ArgumentVariable<T> var) {
         if (verifierExists(varName)) {
             throw new IllegalArgumentException(
-                    "A variable with the name " + varName + " does already exist.");
+                "A variable with the name " + varName + " does already exist.");
         }
 
         vars.put(varName, new Variable(userFriendlyName, var));
@@ -88,7 +87,7 @@ public abstract class ArgumentHandler<T> {
     public final void addVerifier(String name, ArgumentVerifier<T> verify) {
         if (verifierExists(name)) {
             throw new IllegalArgumentException(
-                    "A verifier with the name " + name + " does already exist.");
+                "A verifier with the name " + name + " does already exist.");
         }
 
         verifiers.put(name, verify);
@@ -126,7 +125,7 @@ public abstract class ArgumentHandler<T> {
             ArgumentVariable<T> var = getVariable(varName);
             if (var == null) {
                 throw new IllegalArgumentException(
-                        "The ArgumentVariable '" + varName + "' is not registered.");
+                    "The ArgumentVariable '" + varName + "' is not registered.");
             }
 
             transformed = var.var(sender, argument, varName);
@@ -153,8 +152,7 @@ public abstract class ArgumentHandler<T> {
         messageNodes.put(node, def);
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ArgumentHandler -> " + getClass().getName() + "\n");
         sb.append("Set messages: \n");
@@ -174,7 +172,7 @@ public abstract class ArgumentHandler<T> {
     }
 
     public abstract T transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError;
+        throws TransformError;
 
     public final boolean variableExists(String varName) {
         return vars.get(varName) != null;

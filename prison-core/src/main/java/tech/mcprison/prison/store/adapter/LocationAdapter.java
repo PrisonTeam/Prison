@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.store.adapters;
+package tech.mcprison.prison.store.adapter;
 
 import com.google.gson.*;
 import tech.mcprison.prison.Prison;
@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  * Register it with a GSON instance.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since 1.0
  */
 public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
 
@@ -43,7 +43,7 @@ public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializ
 
     @Override
     public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
+        throws JsonParseException {
         if (!json.isJsonObject()) {
             return null;
         }

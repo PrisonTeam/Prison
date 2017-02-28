@@ -132,9 +132,8 @@ class SpigotPlatform implements Platform {
         }
     }
 
-    @Override
-    public Permission getPermission() {
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
+    @Override public Permission getPermission() {
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
             return new VaultPermission();
         } else {
             return null;
