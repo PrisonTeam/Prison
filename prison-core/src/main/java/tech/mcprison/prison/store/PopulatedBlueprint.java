@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.store;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,23 +33,34 @@ public class PopulatedBlueprint extends Blueprint {
 
     private Map<String, Data> dataMap;
 
-    public PopulatedBlueprint(Map<String, Class<?>> variables, Map<String, Data> dataMap) {
-        super(variables);
-        this.dataMap = dataMap;
+    public PopulatedBlueprint(Blueprint blueprint) {
+        super(blueprint.getVariables());
+        dataMap = new HashMap<>();
     }
 
-    public PopulatedBlueprint(Map<String, Class<?>> variables) {
-        super(variables);
-        this.dataMap = new HashMap<>();
-    }
-
-    public PopulatedBlueprint() {
-        this.dataMap = new HashMap<>();
-    }
-
-    public PopulatedBlueprint(Object obj, Map<String, Data> dataMap) {
+    public PopulatedBlueprint(Object obj) {
         super(obj);
-        this.dataMap = dataMap;
+        dataMap = new HashMap<>();
+
+        for (Map.Entry<String, Class<?>> entry : getVariables().entrySet()) {
+            String name = entry.getKey();
+            Class<?> type = entry.getValue();
+
+            try {
+                Field field = obj.getClass().getField(name);
+                field.setAccessible(true);
+
+                if (!field.getType().equals(type)) {
+                    throw new IllegalStateException("field of incorrect type");
+                }
+
+                dataMap.put(name, new Data(field.get(obj)));
+
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+                continue;
+            }
+        }
     }
 
     public Map<String, Data> getDataMap() {

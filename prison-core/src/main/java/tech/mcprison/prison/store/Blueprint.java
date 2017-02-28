@@ -32,14 +32,27 @@ public class Blueprint {
 
     private Map<String, Class<?>> variables;
 
+    /**
+     * Create a new blueprint with a pre-defined set of variables.
+     *
+     * @param variables A map containing the name of each variable and its type.
+     */
     public Blueprint(Map<String, Class<?>> variables) {
         this.variables = variables;
     }
 
+    /**
+     * Creates a new blueprint with an empty set of variables.
+     */
     public Blueprint() {
         this.variables = new HashMap<>();
     }
 
+    /**
+     * Serializes an Object to a Blueprint.
+     *
+     * @param obj The object to serialize.
+     */
     public Blueprint(Object obj) {
         this.variables = new HashMap<>();
 
@@ -50,30 +63,6 @@ public class Blueprint {
             Class<?> type = field.getType();
             variables.put(name, type);
         }
-    }
-
-    public PopulatedBlueprint deserialize(Object obj) {
-        PopulatedBlueprint blueprint = new PopulatedBlueprint(variables);
-
-        for (Map.Entry<String, Class<?>> entry : variables.entrySet()) {
-            String name = entry.getKey();
-            Class<?> type = entry.getValue();
-            Data value = null;
-
-            try {
-                Field objField = obj.getClass().getField(name);
-                objField.setAccessible(true);
-                value = new Data(objField.get(obj));
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-                continue;
-            }
-
-            blueprint.setData(name, value);
-        }
-
-        return blueprint;
-
     }
 
     public Map<String, Class<?>> getVariables() {
