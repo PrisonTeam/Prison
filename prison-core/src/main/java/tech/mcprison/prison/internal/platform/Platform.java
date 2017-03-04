@@ -23,6 +23,7 @@ import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
@@ -172,6 +173,11 @@ public interface Platform {
      * Returns the scoreboard manager.
      */
     ScoreboardManager getScoreboardManager();
+
+    /**
+     * Returns the storage manager.
+     */
+    Storage getStorage();
 
     /**
      * Retrieves the {@link PluginCommand} object for a command with a certain label.

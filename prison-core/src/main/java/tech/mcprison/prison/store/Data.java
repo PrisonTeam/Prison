@@ -76,6 +76,10 @@ public class Data {
         return as(String.class);
     }
 
+    public String toJson() {
+        return GsonSingleton.getInstance().getGson().toJson(obj);
+    }
+
     public <T> List<T> asList(Class<T> listType) {
         return (List<T>) get();
     }

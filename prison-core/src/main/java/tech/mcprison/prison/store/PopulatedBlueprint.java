@@ -54,7 +54,7 @@ public class PopulatedBlueprint extends Blueprint {
      * @param obj The object to be serialized into a PopulatedBlueprint.
      */
     public PopulatedBlueprint(Object obj) {
-        super(obj);
+        super(obj.getClass());
         dataMap = new HashMap<>();
 
         for (Map.Entry<String, Class<?>> entry : getVariables().entrySet()) {

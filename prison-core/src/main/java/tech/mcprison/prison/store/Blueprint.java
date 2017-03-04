@@ -51,14 +51,14 @@ public class Blueprint {
     }
 
     /**
-     * Serializes an Object to a Blueprint.
+     * Serializes a Class to a Blueprint.
      *
-     * @param obj The object to serialize.
+     * @param clazz The class to serialize.
      */
-    public Blueprint(Object obj) {
+    public Blueprint(Class<?> clazz) {
         this.variables = new HashMap<>();
 
-        List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), obj.getClass());
+        List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
         for (Field field : fields) {
             field.setAccessible(true);
             String name = field.getName();
