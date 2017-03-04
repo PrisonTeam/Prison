@@ -25,10 +25,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.events.inventory.InventoryClickEvent;
 import tech.mcprison.prison.internal.events.inventory.InventoryEvent;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
@@ -37,12 +37,13 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
-import tech.mcprison.prison.spigot.inventory.SpigotInventoryView;
-import tech.mcprison.prison.spigot.inventory.SpigotRecipe;
+import tech.mcprison.prison.spigot.inventory.*;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
+import tech.mcprison.prison.util.InventoryType;
 import tech.mcprison.prison.util.Location;
+
+import java.util.HashMap;
 
 /**
  * Posts Prison's internal events.
@@ -170,5 +171,104 @@ public class SpigotListener implements Listener {
         Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
         e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
+    }
+
+    @EventHandler public void onFurnaceBurn(FurnaceBurnEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceBurnEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceBurnEvent(
+                new SpigotBlock(e.getBlock()), SpigotUtil.bukkitItemStackToPrison(e.getFuel()),
+                e.getBurnTime(), e.isBurning());
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+        e.setBurning(event.isBurning());
+        e.setBurnTime(event.getBurnTime());
+    }
+
+    @EventHandler public void onFurnaceExtract(FurnaceExtractEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceExtractEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceExtractEvent(
+                new SpigotPlayer(e.getPlayer()), new SpigotBlock(e.getBlock()),
+                SpigotUtil.materialToBlockType(e.getItemType()), e.getItemAmount(),
+                e.getExpToDrop());
+        Prison.get().getEventBus().post(event);
+        e.setExpToDrop(event.getExpToDrop());
+    }
+
+    @EventHandler public void onFurnaceSmelt(FurnaceSmeltEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceSmeltEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceSmeltEvent(
+                new SpigotBlock(e.getBlock()), SpigotUtil.bukkitItemStackToPrison(e.getSource()),
+                SpigotUtil.bukkitItemStackToPrison(e.getResult()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(e.isCancelled());
+    }
+
+    @EventHandler public void onInventoryClose(InventoryCloseEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryCloseEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryCloseEvent(
+                new SpigotInventoryView(e.getView()));
+        Prison.get().getEventBus().post(event);
+    }
+
+    @EventHandler public void onInventoryCreative(InventoryCreativeEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryCreativeEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryCreativeEvent(
+                new SpigotInventoryView(e.getView()),
+                InventoryType.SlotType.valueOf(e.getSlotType().name()), e.getSlot(),
+                SpigotUtil.bukkitItemStackToPrison(e.getCursor()));
+        Prison.get().getEventBus().post(event);
+        e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
+        e.setCancelled(event.isCanceled());
+        e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
+    }
+
+    @EventHandler public void onInventoryDrag(InventoryDragEvent e) {
+        HashMap<Integer, ItemStack> slots = new HashMap<>();
+        e.getNewItems().entrySet()
+            .forEach(x -> slots.put(x.getKey(), SpigotUtil.bukkitItemStackToPrison(x.getValue())));
+        tech.mcprison.prison.internal.events.inventory.InventoryDragEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryDragEvent(
+                new SpigotInventoryView(e.getView()),
+                SpigotUtil.bukkitItemStackToPrison(e.getCursor()),
+                SpigotUtil.bukkitItemStackToPrison(e.getOldCursor()),
+                e.getType() == DragType.SINGLE, slots);
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+        e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
+    }
+
+    @EventHandler public void onInventoryMoveItem(InventoryMoveItemEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryMoveItemEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryMoveItemEvent(
+                new SpigotInventory(e.getSource()), SpigotUtil.bukkitItemStackToPrison(e.getItem()),
+                new SpigotInventory(e.getDestination()), e.getSource() == e.getInitiator());
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+        e.setItem(SpigotUtil.prisonItemStackToBukkit(event.getItem()));
+    }
+
+    @EventHandler public void onInventoryOpen(InventoryOpenEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryOpenEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryOpenEvent(
+                new SpigotInventoryView(e.getView()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+    }
+
+    @EventHandler public void onPrepareAnvil(PrepareAnvilEvent e) {
+        tech.mcprison.prison.internal.events.inventory.PrepareAnvilEvent event =
+            new tech.mcprison.prison.internal.events.inventory.PrepareAnvilEvent(
+                new SpigotInventoryView(e.getView()),
+                SpigotUtil.bukkitItemStackToPrison(e.getResult()));
+        Prison.get().getEventBus().post(event);
+        e.setResult(SpigotUtil.prisonItemStackToBukkit(event.getResult()));
+    }
+
+    @EventHandler public void onPrepareItemCraft(PrepareItemCraftEvent e) {
+        tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent event =
+            new tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent(
+                new SpigotInventoryView(e.getView()), new SpigotCrafting(e.getInventory()),
+                e.isRepair());
+        Prison.get().getEventBus().post(event);
     }
 }

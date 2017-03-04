@@ -1,24 +1,7 @@
-/*
- *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
@@ -31,26 +14,44 @@ public class FurnaceBurnEvent implements Cancelable {
     int burnTime = -1;
     ItemStack fuel = null;
     boolean burning = false;
-    public int getBurnTime(){
-        return burnTime;
-    }
-    public ItemStack getFuel(){
-        return fuel;
-    }
-    public boolean isBurning(){
-        return burning;
-    }
-    public boolean isCanceled(){
-        return canceled;
-    }
-    public void setBurning(boolean burning){
+    Block block;
+
+    public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning) {
+        block = furnace;
+        this.fuel = fuel;
+        this.burnTime = burnTime;
         this.burning = burning;
     }
-    public void setBurnTime(int burnTime)
-    {
+
+    public int getBurnTime() {
+        return burnTime;
+    }
+
+    public ItemStack getFuel() {
+        return fuel;
+    }
+
+    public boolean isBurning() {
+        return burning;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void setBurning(boolean burning) {
+        this.burning = burning;
+    }
+
+    public void setBurnTime(int burnTime) {
         this.burnTime = burnTime;
     }
-    public void setCanceled(boolean cancel){
+
+    public void setCanceled(boolean cancel) {
         canceled = cancel;
+    }
+
+    public Block getBlock() {
+        return block;
     }
 }
