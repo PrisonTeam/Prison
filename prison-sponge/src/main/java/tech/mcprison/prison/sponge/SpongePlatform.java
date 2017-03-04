@@ -31,6 +31,7 @@ import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.sponge.game.SpongePlayer;
 import tech.mcprison.prison.sponge.game.SpongeWorld;
+import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
 import java.io.File;
@@ -43,9 +44,11 @@ import java.util.stream.Collectors;
 public class SpongePlatform implements Platform {
 
     private SpongePrison plugin;
+    private Storage storage;
 
     public SpongePlatform(SpongePrison plugin) {
         this.plugin = plugin;
+        this.storage = new SpongeStorage();
     }
 
     @Override public Optional<World> getWorld(String name) {
@@ -148,6 +151,10 @@ public class SpongePlatform implements Platform {
 
     @Override public ScoreboardManager getScoreboardManager() {
         return null;
+    }
+
+    @Override public Storage getStorage() {
+        return storage;
     }
 
 }
