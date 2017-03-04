@@ -23,6 +23,7 @@ import tech.mcprison.prison.commands.handlers.*;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
@@ -257,7 +258,8 @@ public class CommandHandler {
         }
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
-            sender.sendMessage(Prison.get().getMessages().cantAsConsole);
+            Prison.get().getLocaleManager().getLocalizable("cantAsConsole").sendTo(sender,
+                Localizable.Level.ERROR);
             return true;
         }
 

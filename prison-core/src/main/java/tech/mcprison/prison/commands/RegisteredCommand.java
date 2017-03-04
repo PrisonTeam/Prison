@@ -20,6 +20,8 @@ package tech.mcprison.prison.commands;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.localization.Localizable;
+import tech.mcprison.prison.output.Output;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +48,7 @@ public class RegisteredCommand {
     private WildcardArgument wildcard;
     private Map<String, Flag> flagsByName = new LinkedHashMap<String, Flag>();
     private Map<String, RegisteredCommand> suffixesByName =
-            new HashMap<String, RegisteredCommand>();
+        new HashMap<String, RegisteredCommand>();
 
     RegisteredCommand(String label, CommandHandler handler, RegisteredCommand parent) {
         this.label = label;
@@ -65,7 +67,8 @@ public class RegisteredCommand {
 
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
-            sender.sendMessage(Prison.get().getMessages().noPermission);
+            Prison.get().getLocaleManager().getLocalizable("noPermission")
+                .sendTo(sender, Localizable.Level.ERROR);
             return;
         }
 
@@ -103,7 +106,7 @@ public class RegisteredCommand {
         try {
             arguments = new Arguments(args, flagsByName);
         } catch (CommandError e) {
-            sender.sendMessage(e.getColorizedMessage());
+            Output.get().sendError(sender, e.getColorizedMessage());
             return;
         }
 
@@ -111,7 +114,7 @@ public class RegisteredCommand {
             try {
                 resultArgs.add(ea.execute(sender, arguments));
             } catch (CommandError e) {
-                sender.sendMessage(e.getColorizedMessage());
+                Output.get().sendError(sender, e.getColorizedMessage());
                 if (e.showUsage()) {
                     sender.sendMessage(getUsage());
                 }
@@ -125,7 +128,7 @@ public class RegisteredCommand {
             } catch (InvocationTargetException e) {
                 if (e.getCause() instanceof CommandError) {
                     CommandError ce = (CommandError) e.getCause();
-                    sender.sendMessage(ce.getColorizedMessage());
+                    Output.get().sendError(sender, ce.getColorizedMessage());
                     if (ce.showUsage()) {
                         sender.sendMessage(getUsage());
                     }
@@ -134,7 +137,8 @@ public class RegisteredCommand {
                 }
             }
         } catch (Exception e) {
-            sender.sendMessage(Prison.get().getMessages().internalErrorOccurred);
+            Prison.get().getLocaleManager().getLocalizable("internalErrorOccurred")
+                .sendTo(sender, Localizable.Level.ERROR);
             e.printStackTrace();
         }
     }
@@ -144,7 +148,7 @@ public class RegisteredCommand {
 
         if (argumentHandler == null) {
             throw new RegisterCommandMethodException(method,
-                    "Could not find a ArgumentHandler for (" + argumentClass.getName() + ")");
+                "Could not find a ArgumentHandler for (" + argumentClass.getName() + ")");
         }
 
         return argumentHandler;
@@ -223,9 +227,9 @@ public class RegisteredCommand {
         Class<?>[] methodParameters = method.getParameterTypes();
 
         if (methodParameters.length == 0 || !CommandSender.class
-                .isAssignableFrom(methodParameters[0])) {
+            .isAssignableFrom(methodParameters[0])) {
             throw new RegisterCommandMethodException(method,
-                    "The first parameter in the command method must be assignable to the CommandSender interface.");
+                "The first parameter in the command method must be assignable to the CommandSender interface.");
         }
 
         if (flagsAnnotation != null) {
@@ -234,7 +238,7 @@ public class RegisteredCommand {
 
             for (int i = 0; i < flags.length; i++) {
                 Flag flag =
-                        new Flag(flags[i], i < flagdescriptions.length ? flagdescriptions[i] : "");
+                    new Flag(flags[i], i < flagdescriptions.length ? flagdescriptions[i] : "");
                 this.flagsByName.put(flags[i], flag);
                 this.flags.add(flag);
             }
@@ -263,7 +267,7 @@ public class RegisteredCommand {
             //If neither does not exist throw
             if (commandArgAnnotation == null && flagArgAnnotation == null) {
                 throw new RegisterCommandMethodException(method,
-                        "The command annotation is present on a method, however one of the parameters is not annotated.");
+                    "The command annotation is present on a method, however one of the parameters is not annotated.");
             }
 
             Flag flag = null;
@@ -272,7 +276,7 @@ public class RegisteredCommand {
                 flag = this.flagsByName.get(flagArgAnnotation.value());
                 if (flag == null) {
                     throw new RegisterCommandMethodException(method,
-                            "The flag annotation is present on a parameter, however the flag is not defined in the flags annotation.");
+                        "The flag annotation is present on a parameter, however the flag is not defined in the flags annotation.");
                 }
             }
 
@@ -281,7 +285,7 @@ public class RegisteredCommand {
             if (commandArgAnnotation == null) {
                 if (argumentClass != boolean.class && argumentClass != Boolean.class) {
                     throw new RegisterCommandMethodException(method,
-                            "The flag annotation is present on a parameter without the arg annonation, however the parameter type is not an boolean.");
+                        "The flag annotation is present on a parameter without the arg annonation, however the parameter type is not an boolean.");
                 }
 
                 methodArguments.add(flag);
@@ -307,28 +311,28 @@ public class RegisteredCommand {
                             argumentClass = argumentClass.getComponentType();
                             if (argumentClass == null) {
                                 throw new RegisterCommandMethodException(method,
-                                        "The wildcard argument needs to be an array if join is false.");
+                                    "The wildcard argument needs to be an array if join is false.");
                             }
                         }
                         this.wildcard = new WildcardArgument(commandArgAnnotation, argumentClass,
-                                getArgumenHandler(argumentClass), join);
+                            getArgumenHandler(argumentClass), join);
                         argument = this.wildcard;
 
                     } else {
                         argument = new CommandArgument(commandArgAnnotation, argumentClass,
-                                getArgumenHandler(argumentClass));
+                            getArgumenHandler(argumentClass));
                         arguments.add(argument);
                     }
                 } else {
                     argument = new CommandArgument(commandArgAnnotation, argumentClass,
-                            getArgumenHandler(argumentClass));
+                        getArgumenHandler(argumentClass));
                     arguments.add(argument);
                 }
 
                 methodArguments.add(argument);
             } else {
                 FlagArgument argument = new FlagArgument(commandArgAnnotation, argumentClass,
-                        getArgumenHandler(argumentClass), flag);
+                    getArgumenHandler(argumentClass), flag);
                 methodArguments.add(argument);
                 flag.addArgument(argument);
             }

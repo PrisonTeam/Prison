@@ -18,18 +18,14 @@
 
 package tech.mcprison.prison.store;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * Fields with this annotation will not be serialized into JSON.
+ * Annotate a field with this to exclude it from serialization.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since 1.0
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME) @Documented @Target(ElementType.FIELD)
 public @interface Exclude {
 }

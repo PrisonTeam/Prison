@@ -17,10 +17,10 @@
  */
 
 /**
- * A storage system of serialized JSON. In a future release,
- * the storage system will be asynchronous and modern... but who has time for that now? :P
+ * A storage system for Prison which allows efficient data loading and saving to
+ * multiple storage back-ends. The system supports easy serialization/deserialization as well.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since 1.0
  */
 package tech.mcprison.prison.store;

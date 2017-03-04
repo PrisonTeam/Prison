@@ -26,14 +26,10 @@ import tech.mcprison.prison.internal.CommandSender;
 public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHandler<T> {
 
     public NumberArgumentHandler() {
-        setMessage("min_error", Prison.get().getMessages().numberTooLow);
-        setMessage("max_error", Prison.get().getMessages().numberTooHigh);
-        setMessage("range_error", Prison.get().getMessages().numberRangeError);
-
         addVerifier("min", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -41,7 +37,9 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                 try {
                     double min = Double.parseDouble(verifyArgs[0]);
                     if (value.doubleValue() < min) {
-                        throw new VerifyError(argument.getMessage("min_error", verifyArgs[0]));
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("numberTooLow")
+                                .withReplacements(verifyArgs[0], String.valueOf(min)).localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
@@ -52,7 +50,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
         addVerifier("max", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -60,7 +58,9 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                 try {
                     double max = Double.parseDouble(verifyArgs[0]);
                     if (value.doubleValue() > max) {
-                        throw new VerifyError(argument.getMessage("max_error", verifyArgs[0]));
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("numberTooHigh")
+                                .withReplacements(verifyArgs[0], String.valueOf(max)).localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
@@ -71,7 +71,7 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
         addVerifier("range", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, T value, String valueRaw) throws VerifyError {
+                String[] verifyArgs, T value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 2) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -82,7 +82,9 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                     double dvalue = value.doubleValue();
                     if (dvalue < min || dvalue > max) {
                         throw new VerifyError(
-                                argument.getMessage("range_error", verifyArgs[0], verifyArgs[1]));
+                            Prison.get().getLocaleManager().getLocalizable("numberRangeError")
+                                .withReplacements(valueRaw, verifyArgs[0], verifyArgs[1])
+                                .localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());

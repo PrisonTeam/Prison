@@ -25,9 +25,6 @@ import tech.mcprison.prison.internal.CommandSender;
 
 public class StringArgumentHandler extends ArgumentHandler<String> {
     public StringArgumentHandler() {
-        setMessage("min_error", Prison.get().getMessages().tooFewCharacters);
-        setMessage("max_error", Prison.get().getMessages().tooManyCharacters);
-
         addVerifier("min", new ArgumentVerifier<String>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
@@ -39,7 +36,7 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
                 try {
                     int min = Integer.parseInt(verifyArgs[0]);
                     if (value.length() < min) {
-                        throw new VerifyError(argument.getMessage("min_error", verifyArgs[0]));
+                        throw new VerifyError(Prison.get().getLocaleManager().getLocalizable("tooFewCharacters").withReplacements(valueRaw, String.valueOf(min)).localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
@@ -59,7 +56,7 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
                 try {
                     int max = Integer.parseInt(verifyArgs[0]);
                     if (value.length() > max) {
-                        throw new VerifyError(argument.getMessage("max_error", verifyArgs[0]));
+                        throw new VerifyError(Prison.get().getLocaleManager().getLocalizable("tooManyCharacters").withReplacements(valueRaw, String.valueOf(max)).localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());

@@ -25,14 +25,14 @@ import tech.mcprison.prison.internal.Player;
 
 public class PlayerArgumentHandler extends ArgumentHandler<Player> {
     public PlayerArgumentHandler() {
-        setMessage("player_not_online", Prison.get().getMessages().playerNotOnline);
-
         addVariable("sender", "The command executor", new ArgumentVariable<Player>() {
             @Override
             public Player var(CommandSender sender, CommandArgument argument, String varName)
-                    throws CommandError {
+                throws CommandError {
                 if (!(sender instanceof Player)) {
-                    throw new CommandError(argument.getMessage("cant_as_console"));
+                    throw new CommandError(
+                        Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                            .localizeFor(sender));
                 }
 
                 return ((Player) sender);
@@ -40,10 +40,10 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
         });
     }
 
-    @Override
-    public Player transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
-        return Prison.get().getPlatform().getPlayer(value)
-                .orElseThrow(() -> new TransformError(argument.getMessage("player_not_online", value)));
+    @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
+        return Prison.get().getPlatform().getPlayer(value).orElseThrow(() -> new TransformError(
+            Prison.get().getLocaleManager().getLocalizable("playerNotOnline")
+                .withReplacements(value).localizeFor(sender)));
     }
 }

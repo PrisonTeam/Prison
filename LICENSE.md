@@ -138,7 +138,7 @@ performing those activities but which are not part of the work. For example,
 Corresponding Source includes interface definition files associated with source
 files for the work, and the source code for shared libraries and dynamically
 linked subprograms that the work is specifically designed to require, such as
-by intimate data communication or control flow between those subprograms and
+by intimate dataFolder communication or control flow between those subprograms and
 other parts of the work.
 
 The Corresponding Source need not include anything that users can regenerate

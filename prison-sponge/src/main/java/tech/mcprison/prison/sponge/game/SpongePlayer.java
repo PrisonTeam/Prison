@@ -27,6 +27,7 @@ import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -81,6 +82,10 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
 
     @Override public void setGamemode(Gamemode gamemode) {
 
+    }
+
+    @Override public Optional<String> getLocale() {
+        return null;
     }
 
     @Override public boolean doesSupportColors() {
