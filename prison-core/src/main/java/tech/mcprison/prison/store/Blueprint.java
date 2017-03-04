@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.store;
 
+import tech.mcprison.prison.util.ClassUtil;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -56,7 +58,7 @@ public class Blueprint {
     public Blueprint(Object obj) {
         this.variables = new HashMap<>();
 
-        List<Field> fields = getAllFields(new LinkedList<>(), obj.getClass());
+        List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), obj.getClass());
         for (Field field : fields) {
             field.setAccessible(true);
             String name = field.getName();
@@ -67,16 +69,6 @@ public class Blueprint {
 
     public Map<String, Class<?>> getVariables() {
         return variables;
-    }
-
-    private List<Field> getAllFields(List<Field> fields, Class<?> type) {
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
-
-        if (type.getSuperclass() != null) {
-            fields = getAllFields(fields, type.getSuperclass());
-        }
-
-        return fields;
     }
 
 }

@@ -18,8 +18,12 @@
 
 package tech.mcprison.prison.store;
 
+import tech.mcprison.prison.util.ClassUtil;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,11 +37,22 @@ public class PopulatedBlueprint extends Blueprint {
 
     private Map<String, Data> dataMap;
 
+    /**
+     * Initialize from an existing {@link Blueprint} object.
+     * You would use this if you plan to manually set the data map.
+     *
+     * @param blueprint The {@link Blueprint} to initialize from.
+     */
     public PopulatedBlueprint(Blueprint blueprint) {
         super(blueprint.getVariables());
         dataMap = new HashMap<>();
     }
 
+    /**
+     * Initialize from an object, which will be serialized into a PopulatedBlueprint.
+     *
+     * @param obj The object to be serialized into a PopulatedBlueprint.
+     */
     public PopulatedBlueprint(Object obj) {
         super(obj);
         dataMap = new HashMap<>();
@@ -60,6 +75,39 @@ public class PopulatedBlueprint extends Blueprint {
                 e.printStackTrace();
                 continue;
             }
+        }
+    }
+
+    /**
+     * Uses a <b>no-argument constructor</b> in a class to initialize it using the data contained within
+     * this populated blueprint. The class must have a no-argument constructor!
+     *
+     * @param clazz The class type to deserialize this PopulatedBlueprint into.
+     * @return The deserialized object, or null if the operation fails.
+     */
+    public <T> T deserialize(Class<T> clazz) {
+        try {
+            List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
+            T ret = clazz.newInstance();
+
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                Class<?> type = field.getType();
+                Data value = this.getData(fieldName);
+
+                if (value == null) {
+                    throw new Exception("missing field value " + fieldName);
+                }
+
+                field.set(ret, value.as(type));
+
+            }
+
+            return ret;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
