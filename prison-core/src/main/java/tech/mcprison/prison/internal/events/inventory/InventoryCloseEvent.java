@@ -32,7 +32,7 @@ public class InventoryCloseEvent extends InventoryEvent {
         super(transaction);
     }
 
-    public Player getPlayer(){
+    public Player getPlayer() {
         return getView().getPlayer();
     }
 }

@@ -16,7 +16,7 @@ public class FurnaceBurnEvent implements Cancelable {
     boolean burning = false;
     Block block;
 
-    public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning){
+    public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning) {
         block = furnace;
         this.fuel = fuel;
         this.burnTime = burnTime;
@@ -51,5 +51,7 @@ public class FurnaceBurnEvent implements Cancelable {
         canceled = cancel;
     }
 
-    public Block getBlock() {return block;}
+    public Block getBlock() {
+        return block;
+    }
 }

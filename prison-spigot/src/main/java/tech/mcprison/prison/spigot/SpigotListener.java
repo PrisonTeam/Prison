@@ -26,22 +26,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.FurnaceBurnEvent;
-import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.events.inventory.*;
 import tech.mcprison.prison.internal.events.inventory.InventoryClickEvent;
 import tech.mcprison.prison.internal.events.inventory.InventoryEvent;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
@@ -277,8 +264,11 @@ public class SpigotListener implements Listener {
         e.setResult(SpigotUtil.prisonItemStackToBukkit(event.getResult()));
     }
 
-    @EventHandler public void onPrepareItemCraft(PrepareItemCraftEvent e){
-        tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent event = new tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent(new SpigotInventoryView(e.getView()),new SpigotCrafting(e.getInventory()),e.isRepair());
+    @EventHandler public void onPrepareItemCraft(PrepareItemCraftEvent e) {
+        tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent event =
+            new tech.mcprison.prison.internal.events.inventory.PrepareItemCraftEvent(
+                new SpigotInventoryView(e.getView()), new SpigotCrafting(e.getInventory()),
+                e.isRepair());
         Prison.get().getEventBus().post(event);
     }
 }

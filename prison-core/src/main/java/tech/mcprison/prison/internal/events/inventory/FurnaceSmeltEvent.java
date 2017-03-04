@@ -32,27 +32,34 @@ public class FurnaceSmeltEvent implements Cancelable {
     ItemStack source;
     Block block;
     boolean canceled;
-    public FurnaceSmeltEvent(Block furnace, ItemStack source, ItemStack result){
+
+    public FurnaceSmeltEvent(Block furnace, ItemStack source, ItemStack result) {
         block = furnace;
         this.result = result;
         this.source = source;
     }
-    public ItemStack getResult(){
+
+    public ItemStack getResult() {
         return result;
     }
-    public ItemStack getSource(){
+
+    public ItemStack getSource() {
         return source;
     }
-    public boolean isCanceled(){
+
+    public boolean isCanceled() {
         return canceled;
     }
-    public void setCanceled(boolean cancel){
+
+    public void setCanceled(boolean cancel) {
         canceled = cancel;
     }
-    public void setResult(ItemStack result){
+
+    public void setResult(ItemStack result) {
         this.result = result;
     }
-    public Block getBlock(){
+
+    public Block getBlock() {
         return block;
     }
 }

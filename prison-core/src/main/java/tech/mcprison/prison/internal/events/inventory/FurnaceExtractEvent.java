@@ -33,29 +33,37 @@ public class FurnaceExtractEvent {
     Block block;
     BlockType blockType;
     Player player;
-    public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount, int exp){
+
+    public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount,
+        int exp) {
         this.player = player;
         this.block = block;
         this.blockType = itemType;
         this.itemAmount = itemAmount;
         this.expToDrop = exp;
     }
-    public int getItemAmount(){
+
+    public int getItemAmount() {
         return itemAmount;
     }
-    public BlockType getItemType(){
+
+    public BlockType getItemType() {
         return blockType;
     }
-    public Player getPlayer(){
+
+    public Player getPlayer() {
         return player;
     }
-    public int getExpToDrop(){
+
+    public int getExpToDrop() {
         return expToDrop;
     }
-    public void setExpToDrop(int exp){
+
+    public void setExpToDrop(int exp) {
         expToDrop = exp;
     }
-    public Block getBlock(){
+
+    public Block getBlock() {
         return block;
     }
 }

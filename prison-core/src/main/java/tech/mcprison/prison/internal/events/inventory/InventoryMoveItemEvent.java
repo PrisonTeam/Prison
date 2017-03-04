@@ -33,37 +33,40 @@ public class InventoryMoveItemEvent implements Cancelable {
     Inventory source;
     Inventory destination;
     ItemStack item;
-    public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack, Inventory destinationInventory, boolean didSourceInitiate){
+
+    public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
+        Inventory destinationInventory, boolean didSourceInitiate) {
         this.source = sourceInventory;
         this.destination = destinationInventory;
         this.item = itemStack;
         this.sourceInitiated = didSourceInitiate;
     }
-    public Inventory getDestination(){
+
+    public Inventory getDestination() {
         return destination;
     }
 
-    public Inventory getInitiator(){
+    public Inventory getInitiator() {
         return sourceInitiated ? source : destination;
     }
 
-    public ItemStack getItem(){
+    public ItemStack getItem() {
         return item;
     }
 
-    public Inventory getSource(){
+    public Inventory getSource() {
         return source;
     }
 
-    public boolean isCanceled(){
+    public boolean isCanceled() {
         return canceled;
     }
 
-    public void setCanceled(boolean cancel){
+    public void setCanceled(boolean cancel) {
         canceled = cancel;
     }
 
-    public void setItem(ItemStack itemStack){
+    public void setItem(ItemStack itemStack) {
         item = itemStack;
     }
 }

@@ -12,16 +12,18 @@ import tech.mcprison.prison.util.InventoryType;
 public class InventoryCreativeEvent extends InventoryClickEvent {
 
     ItemStack item;
-    public InventoryCreativeEvent(Viewable transaction, InventoryType.SlotType type, int slot, ItemStack newItem) {
+
+    public InventoryCreativeEvent(Viewable transaction, InventoryType.SlotType type, int slot,
+        ItemStack newItem) {
         super(transaction, type, slot, Click.CREATIVE, Action.PLACE_ALL);
         item = newItem;
     }
 
-    public ItemStack getCursor(){
+    public ItemStack getCursor() {
         return item;
     }
 
-    public void setCursor(ItemStack item){
+    public void setCursor(ItemStack item) {
         this.item = item;
     }
 }

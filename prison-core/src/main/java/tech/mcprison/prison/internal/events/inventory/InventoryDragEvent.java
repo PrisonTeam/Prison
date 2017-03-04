@@ -34,9 +34,11 @@ public class InventoryDragEvent extends InventoryInteractEvent {
     boolean right;
     ItemStack newCursor;
     ItemStack oldCursor;
-    Map<Integer,ItemStack> slots;
+    Map<Integer, ItemStack> slots;
     Set<Integer> parsedSlots;
-    public InventoryDragEvent(Viewable transaction, ItemStack newCursor, ItemStack oldCursor, boolean right, Map<Integer,ItemStack> slots) {
+
+    public InventoryDragEvent(Viewable transaction, ItemStack newCursor, ItemStack oldCursor,
+        boolean right, Map<Integer, ItemStack> slots) {
         super(transaction);
         this.right = right;
         this.newCursor = newCursor;
@@ -53,31 +55,31 @@ public class InventoryDragEvent extends InventoryInteractEvent {
         SINGLE, EVEN
     }
 
-    public ItemStack getCursor(){
+    public ItemStack getCursor() {
         return newCursor;
     }
 
-    public Set<Integer> getInventorySlots(){
+    public Set<Integer> getInventorySlots() {
         return parsedSlots;
     }
 
-    public Map<Integer, ItemStack> getNewItems(){
+    public Map<Integer, ItemStack> getNewItems() {
         return slots;
     }
 
-    public ItemStack getOldCursor(){
+    public ItemStack getOldCursor() {
         return oldCursor;
     }
 
-    public Set<Integer> getRawSlots(){
+    public Set<Integer> getRawSlots() {
         return slots.keySet();
     }
 
-    public Drag getType(){
+    public Drag getType() {
         return right ? Drag.SINGLE : Drag.EVEN;
     }
 
-    public void setCursor(ItemStack newCursor){
+    public void setCursor(ItemStack newCursor) {
         this.newCursor = newCursor;
     }
 }
