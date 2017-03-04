@@ -37,8 +37,7 @@ public class Flag implements ExecutableArgument {
         arguments.add(argument);
     }
 
-    @Override
-    public Object execute(CommandSender sender, Arguments args) {
+    @Override public Object execute(CommandSender sender, Arguments args) {
         return args.flagExists(this);
     }
 
@@ -54,8 +53,7 @@ public class Flag implements ExecutableArgument {
         return identifier;
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         return identifier.hashCode();
     }
 }

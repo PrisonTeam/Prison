@@ -68,7 +68,7 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
     TextualComponent text = null;
     String insertionData = null;
     ArrayList<JsonRepresentedObject> translationReplacements =
-            new ArrayList<JsonRepresentedObject>();
+        new ArrayList<JsonRepresentedObject>();
 
     MessagePart(final TextualComponent text) {
         this.text = text;
@@ -89,7 +89,7 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
         part.clickActionData = (String) serialized.get("clickActionData");
         part.insertionData = (String) serialized.get("insertion");
         part.translationReplacements =
-                (ArrayList<JsonRepresentedObject>) serialized.get("translationReplacements");
+            (ArrayList<JsonRepresentedObject>) serialized.get("translationReplacements");
         return part;
     }
 
@@ -97,10 +97,8 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
         return text != null;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public MessagePart clone()
-            throws CloneNotSupportedException {
+    @Override @SuppressWarnings("unchecked") public MessagePart clone()
+        throws CloneNotSupportedException {
         MessagePart obj = (MessagePart) super.clone();
         obj.styles = (ArrayList<ChatColor>) styles.clone();
         if (hoverActionData instanceof JsonString) {
@@ -109,7 +107,7 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
             obj.hoverActionData = ((FancyMessage) hoverActionData).clone();
         }
         obj.translationReplacements =
-                (ArrayList<JsonRepresentedObject>) translationReplacements.clone();
+            (ArrayList<JsonRepresentedObject>) translationReplacements.clone();
         return obj;
 
     }
@@ -124,11 +122,11 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
             }
             if (clickActionName != null && clickActionData != null) {
                 json.name("clickEvent").beginObject().name("action").value(clickActionName)
-                        .name("value").value(clickActionData).endObject();
+                    .name("value").value(clickActionData).endObject();
             }
             if (hoverActionName != null && hoverActionData != null) {
                 json.name("hoverEvent").beginObject().name("action").value(hoverActionName)
-                        .name("value");
+                    .name("value");
                 hoverActionData.writeJson(json);
                 json.endObject();
             }
@@ -136,7 +134,7 @@ final class MessagePart implements JsonRepresentedObject, Cloneable {
                 json.name("insertion").value(insertionData);
             }
             if (translationReplacements.size() > 0 && text != null && TextualComponent
-                    .isTranslatableText(text)) {
+                .isTranslatableText(text)) {
                 json.name("with").beginArray();
                 for (JsonRepresentedObject obj : translationReplacements) {
                     obj.writeJson(json);

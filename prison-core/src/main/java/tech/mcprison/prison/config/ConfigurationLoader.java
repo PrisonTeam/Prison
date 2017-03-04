@@ -61,9 +61,9 @@ public class ConfigurationLoader {
      *                      the file will be regenerated.
      */
     public ConfigurationLoader(File rootFolder, String fileName,
-                               Class<? extends Configurable> clazz, int targetVersion) {
+        Class<? extends Configurable> clazz, int targetVersion) {
         gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy())
-                .setPrettyPrinting().disableHtmlEscaping().create();
+            .setPrettyPrinting().disableHtmlEscaping().create();
         this.clazz = clazz;
         this.targetVersion = targetVersion;
         this.rootFolder = rootFolder;
@@ -95,7 +95,7 @@ public class ConfigurationLoader {
             if (isOutdated(json)) {
                 duplicateConfigFile();
                 Output.get().logWarn("Your " + fileName
-                        + " file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
+                    + " file has been regenerated. I made a backup of your old file, so remember to reconfigure it!");
                 return LoadResult.REGENERATED;
             }
 
@@ -142,7 +142,7 @@ public class ConfigurationLoader {
     private void duplicateConfigFile() throws IOException {
         // Rename the old config file to old-config-timestamp.json
         String fileName = "old-" + this.fileName.split("\\.")[0] + "-" + new SimpleDateFormat(
-                "yyyyMMdd-hhmm'.json'").format(new Date());
+            "yyyyMMdd-hhmm'.json'").format(new Date());
         File newConfigFile = new File(rootFolder, fileName);
         configFile.renameTo(newConfigFile);
 

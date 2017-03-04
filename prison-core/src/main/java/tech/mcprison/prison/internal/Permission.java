@@ -34,7 +34,7 @@ public interface Permission {
      * This method will do nothing if the server is not capable of adding permissions; nonetheless, you should
      * check the {@link Platform#getCapabilities()} map for the {@link tech.mcprison.prison.internal.platform.Capability#PERMISSIONS} capability first.
      *
-     * @param holder The player that will receive this permission.
+     * @param holder     The player that will receive this permission.
      * @param permission The permission to add.
      */
     void addPermission(Player holder, String permission);
@@ -45,7 +45,7 @@ public interface Permission {
      * This method will do nothing if the server is not capable of removing permissions; nonetheless, you should
      * check the {@link Platform#getCapabilities()} map for the {@link tech.mcprison.prison.internal.platform.Capability#PERMISSIONS} capability first.
      *
-     * @param holder The player that will have this permission revoked.
+     * @param holder     The player that will have this permission revoked.
      * @param permission The permission to remove.
      */
     void removePermission(Player holder, String permission);

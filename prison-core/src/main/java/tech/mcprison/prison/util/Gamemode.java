@@ -7,16 +7,13 @@ public enum Gamemode {
     /**
      * Represents the survival gamemode (gamemode 0)
      */
-    SURVIVAL,
-    /**
+    SURVIVAL, /**
      * Represents the creative gamemode (gamemode 1)
      */
-    CREATIVE,
-    /**
+    CREATIVE, /**
      * Represents the adventure gamemode (gamemode 2)
      */
-    ADVENTURE,
-    /**
+    ADVENTURE, /**
      * Represents the spectator gamemode (gamemode 3)
      */
     SPECTATOR,

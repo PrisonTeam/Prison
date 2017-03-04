@@ -33,7 +33,7 @@ public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
     @Override
     public BlockType transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+        throws TransformError {
         BlockType m = null;
 
         // Try block legacy (numerical) ID first

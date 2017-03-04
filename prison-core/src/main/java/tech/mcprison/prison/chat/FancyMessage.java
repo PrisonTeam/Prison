@@ -79,9 +79,8 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
      *
      * @param serialized The key-value mapping which represents a fancy message.
      */
-    @SuppressWarnings("unchecked")
-    public static FancyMessage deserialize(
-            Map<String, Object> serialized) {
+    @SuppressWarnings("unchecked") public static FancyMessage deserialize(
+        Map<String, Object> serialized) {
         FancyMessage msg = new FancyMessage();
         msg.messageParts = (List<MessagePart>) serialized.get("messageParts");
         msg.jsonString = serialized.containsKey("JSON") ? serialized.get("JSON").toString() : null;
@@ -109,7 +108,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
                 if (TextualComponent.isTextKey(entry.getKey())) {
                     // The map mimics the YAML serialization, which has a "key" field and one or more "value" fields
                     Map<String, Object> serializedMapForm =
-                            new HashMap<String, Object>(); // Must be object due to Bukkit serializer API compliance
+                        new HashMap<String, Object>(); // Must be object due to Bukkit serializer API compliance
                     serializedMapForm.put("key", entry.getKey());
                     if (entry.getValue().isJsonPrimitive()) {
                         // Assume string
@@ -117,20 +116,20 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
                     } else {
                         // Composite object, but we assume each element is a string
                         for (Map.Entry<String, JsonElement> compositeNestedElement : entry
-                                .getValue().getAsJsonObject().entrySet()) {
+                            .getValue().getAsJsonObject().entrySet()) {
                             serializedMapForm.put("value." + compositeNestedElement.getKey(),
-                                    compositeNestedElement.getValue().getAsString());
+                                compositeNestedElement.getValue().getAsString());
                         }
                     }
                     component.text = TextualComponent.deserialize(serializedMapForm);
                 } else if (MessagePart.stylesToNames.inverse().containsKey(entry.getKey())) {
                     if (entry.getValue().getAsBoolean()) {
                         component.styles
-                                .add(MessagePart.stylesToNames.inverse().get(entry.getKey()));
+                            .add(MessagePart.stylesToNames.inverse().get(entry.getKey()));
                     }
                 } else if (entry.getKey().equals("color")) {
                     component.color =
-                            ChatColor.valueOf(entry.getValue().getAsString().toUpperCase());
+                        ChatColor.valueOf(entry.getValue().getAsString().toUpperCase());
                 } else if (entry.getKey().equals("clickEvent")) {
                     JsonObject object = entry.getValue().getAsJsonObject();
                     component.clickActionName = object.get("action").getAsString();
@@ -141,7 +140,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
                     if (object.get("value").isJsonPrimitive()) {
                         // Assume string
                         component.hoverActionData =
-                                new JsonString(object.get("value").getAsString());
+                            new JsonString(object.get("value").getAsString());
                     } else {
                         // Assume composite type
                         // The only composite type we currently store is another FancyMessage
@@ -154,7 +153,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
                     for (JsonElement object : entry.getValue().getAsJsonArray()) {
                         if (object.isJsonPrimitive()) {
                             component.translationReplacements
-                                    .add(new JsonString(object.getAsString()));
+                                .add(new JsonString(object.getAsString()));
                         } else {
                             // Only composite type stored in this array is - again - FancyMessages
                             // Recurse within this function to parse this as a translation replacement
@@ -168,8 +167,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         return returnVal;
     }
 
-    @Override
-    public FancyMessage clone() throws CloneNotSupportedException {
+    @Override public FancyMessage clone() throws CloneNotSupportedException {
         FancyMessage instance = (FancyMessage) super.clone();
         instance.messageParts = new ArrayList<MessagePart>(messageParts.size());
         for (int i = 0; i < messageParts.size(); i++) {
@@ -392,18 +390,18 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 
         FancyMessage result = new FancyMessage();
         result.messageParts
-                .clear(); // Remove the one existing text component that exists by default, which destabilizes the object
+            .clear(); // Remove the one existing text component that exists by default, which destabilizes the object
 
         for (int i = 0; i < lines.length; i++) {
             try {
                 for (MessagePart component : lines[i]) {
                     if (component.clickActionData != null && component.clickActionName != null) {
                         throw new IllegalArgumentException(
-                                "The tooltip text cannot have click data.");
+                            "The tooltip text cannot have click data.");
                     } else if (component.hoverActionData != null
-                            && component.hoverActionName != null) {
+                        && component.hoverActionName != null) {
                         throw new IllegalArgumentException(
-                                "The tooltip text cannot have a tooltip.");
+                            "The tooltip text cannot have a tooltip.");
                     }
                     if (component.hasText()) {
                         result.messageParts.add(component.clone());
@@ -418,7 +416,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
             }
         }
         return formattedTooltip(
-                result.messageParts.isEmpty() ? null : result); // Throws NPE if size is 0, intended
+            result.messageParts.isEmpty() ? null : result); // Throws NPE if size is 0, intended
     }
 
     /**
@@ -515,8 +513,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         return this;
     }
 
-    @Override
-    public void writeJson(JsonWriter writer) throws IOException {
+    @Override public void writeJson(JsonWriter writer) throws IOException {
         if (messageParts.size() == 1) {
             latest().writeJson(writer);
         } else {

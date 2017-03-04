@@ -28,9 +28,8 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
         setMessage("parse_error", Prison.get().getMessages().numberParseError);
     }
 
-    @Override
-    public Double transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+    @Override public Double transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
         value = value.replace("$", "");
         value = value.replace("%", "");
         try {

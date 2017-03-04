@@ -35,8 +35,7 @@ public class Configuration implements Configurable {
 
     // Entries
 
-    @Override
-    public int getVersion() {
+    @Override public int getVersion() {
         return version;
     }
 

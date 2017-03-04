@@ -12,16 +12,19 @@ import tech.mcprison.prison.util.InventoryType;
  */
 public class CraftItemEvent extends InventoryClickEvent {
     protected Recipe recipe;
-    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot, Click click, Action action)
-    {
-        super(what,type,slot,click,action);
+
+    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
+        Click click, Action action) {
+        super(what, type, slot, click, action);
         this.recipe = recipe;
     }
-    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot, Click click, Action action, int key)
-    {
-        super(what,type,slot,click,action,key);
+
+    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
+        Click click, Action action, int key) {
+        super(what, type, slot, click, action, key);
         this.recipe = recipe;
     }
+
     public CraftingInventory getInventory() {
         return (CraftingInventory) transaction.getTopInventory();
     }

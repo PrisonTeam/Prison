@@ -87,8 +87,7 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
         return spongePlayer.isChatColorsEnabled();
     }
 
-    @Override
-    public Inventory getInventory() {
+    @Override public Inventory getInventory() {
         return null;
     }
 }

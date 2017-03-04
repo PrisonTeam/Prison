@@ -26,22 +26,21 @@ public class WildcardArgument extends CommandArgument {
     private boolean join;
 
     public WildcardArgument(Arg commandArgAnnotation, Class<?> argumentClass,
-                            ArgumentHandler<?> argumentHandler, boolean join) {
+        ArgumentHandler<?> argumentHandler, boolean join) {
         super(commandArgAnnotation, argumentClass, argumentHandler);
         this.join = join;
     }
 
     public WildcardArgument(String name, String description, String def, String verifiers,
-                            Class<?> argumentClass, ArgumentHandler<?> handler, boolean join) {
+        Class<?> argumentClass, ArgumentHandler<?> handler, boolean join) {
         super(name, description, def, verifiers, argumentClass, handler);
         this.join = join;
     }
 
-    @Override
-    public Object execute(CommandSender sender, Arguments args) throws CommandError {
+    @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
         if (!args.hasNext()) {
             Object o =
-                    getHandler().handle(sender, this, getDefault().equals(" ") ? "" : getDefault());
+                getHandler().handle(sender, this, getDefault().equals(" ") ? "" : getDefault());
             if (join) {
                 return o;
             } else {
@@ -59,13 +58,13 @@ public class WildcardArgument extends CommandArgument {
             }
 
             return getHandler()
-                    .handle(sender, this, CommandUtil.escapeArgumentVariable(sb.toString().trim()));
+                .handle(sender, this, CommandUtil.escapeArgumentVariable(sb.toString().trim()));
         } else {
             Object array = Array.newInstance(getArgumentClass(), args.over());
 
             for (int i = 0; i < args.over(); i++) {
                 Array.set(array, i, getHandler()
-                        .handle(sender, this, CommandUtil.escapeArgumentVariable(args.nextArgument())));
+                    .handle(sender, this, CommandUtil.escapeArgumentVariable(args.nextArgument())));
             }
 
             return array;

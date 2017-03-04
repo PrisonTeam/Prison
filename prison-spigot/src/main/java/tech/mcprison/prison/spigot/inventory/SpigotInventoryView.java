@@ -16,12 +16,15 @@ import tech.mcprison.prison.util.InventoryType;
  */
 public class SpigotInventoryView implements Viewable {
     InventoryView wrapper;
-    public SpigotInventoryView(InventoryView wrapper){
+
+    public SpigotInventoryView(InventoryView wrapper) {
         this.wrapper = wrapper;
     }
-    public InventoryView getWrapper(){
+
+    public InventoryView getWrapper() {
         return wrapper;
     }
+
     @Override public void close() {
         wrapper.close();
     }
@@ -67,10 +70,10 @@ public class SpigotInventoryView implements Viewable {
     }
 
     @Override public void setItem(int slot, ItemStack item) {
-        wrapper.setItem(slot,SpigotUtil.prisonItemStackToBukkit(item));
+        wrapper.setItem(slot, SpigotUtil.prisonItemStackToBukkit(item));
     }
 
     @Override public boolean setProperty(Property prop, int value) {
-        return wrapper.setProperty(SpigotUtil.prisonPropertyToBukkit(prop),value);
+        return wrapper.setProperty(SpigotUtil.prisonPropertyToBukkit(prop), value);
     }
 }

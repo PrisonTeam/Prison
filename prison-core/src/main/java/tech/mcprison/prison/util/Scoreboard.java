@@ -58,7 +58,7 @@ public class Scoreboard {
 
     public void add(String text, Integer score) {
         Preconditions
-                .checkArgument(text.length() < 48, "text cannot be over 48 characters in length");
+            .checkArgument(text.length() < 48, "text cannot be over 48 characters in length");
         text = fixDuplicates(text);
         scores.put(ChatColor.translateAlternateColorCodes('&', text), score);
     }
@@ -91,7 +91,7 @@ public class Scoreboard {
 
     public void build() {
         Objective obj = scoreboard
-                .registerNewObjective((title.length() > 16 ? title.substring(0, 15) : title), "dummy");
+            .registerNewObjective((title.length() > 16 ? title.substring(0, 15) : title), "dummy");
         obj.setDisplayName(title);
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 

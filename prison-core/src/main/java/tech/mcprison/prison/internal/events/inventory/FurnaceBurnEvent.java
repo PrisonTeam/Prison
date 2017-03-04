@@ -13,26 +13,32 @@ public class FurnaceBurnEvent implements Cancelable {
     int burnTime = -1;
     ItemStack fuel = null;
     boolean burning = false;
-    public int getBurnTime(){
+
+    public int getBurnTime() {
         return burnTime;
     }
-    public ItemStack getFuel(){
+
+    public ItemStack getFuel() {
         return fuel;
     }
-    public boolean isBurning(){
+
+    public boolean isBurning() {
         return burning;
     }
-    public boolean isCanceled(){
+
+    public boolean isCanceled() {
         return canceled;
     }
-    public void setBurning(boolean burning){
+
+    public void setBurning(boolean burning) {
         this.burning = burning;
     }
-    public void setBurnTime(int burnTime)
-    {
+
+    public void setBurnTime(int burnTime) {
         this.burnTime = burnTime;
     }
-    public void setCanceled(boolean cancel){
+
+    public void setCanceled(boolean cancel) {
         canceled = cancel;
     }
 }

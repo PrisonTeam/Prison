@@ -450,7 +450,7 @@ public class Vector implements Cloneable {
      */
     public boolean isInSphere(Vector origin, double radius) {
         return (square(origin.x - x) + square(origin.y - y) + square(origin.z - z)) <= square(
-                radius);
+            radius);
     }
 
     /**
@@ -616,8 +616,7 @@ public class Vector implements Cloneable {
      * to account for floating point errors. The epsilon can be retrieved
      * with epsilon.
      */
-    @Override
-    public boolean equals(Object obj) {
+    @Override public boolean equals(Object obj) {
         if (!(obj instanceof Vector)) {
             return false;
         }
@@ -625,7 +624,7 @@ public class Vector implements Cloneable {
         Vector other = (Vector) obj;
 
         return Math.abs(x - other.x) < epsilon && Math.abs(y - other.y) < epsilon
-                && Math.abs(z - other.z) < epsilon && (this.getClass().equals(obj.getClass()));
+            && Math.abs(z - other.z) < epsilon && (this.getClass().equals(obj.getClass()));
     }
 
     /**
@@ -633,16 +632,15 @@ public class Vector implements Cloneable {
      *
      * @return hash code
      */
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         int hash = 7;
 
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x)
-                >>> 32));
+            >>> 32));
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y)
-                >>> 32));
+            >>> 32));
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z)
-                >>> 32));
+            >>> 32));
         return hash;
     }
 
@@ -651,8 +649,7 @@ public class Vector implements Cloneable {
      *
      * @return vector
      */
-    @Override
-    public Vector clone() {
+    @Override public Vector clone() {
         try {
             return (Vector) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -663,8 +660,7 @@ public class Vector implements Cloneable {
     /**
      * Returns this vector's components as x,y,z.
      */
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return x + "," + y + "," + z;
     }
 

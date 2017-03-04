@@ -46,7 +46,7 @@ public class ItemManager {
                     }
                 } catch (Exception e) {
                     Output.get()
-                            .logError("Error while reading items.csv -- it's probably invalid", e);
+                        .logError("Error while reading items.csv -- it's probably invalid", e);
                 }
             }
         } catch (Exception e) {

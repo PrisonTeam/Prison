@@ -34,32 +34,28 @@ import static org.junit.Assert.*;
  */
 public class ConfigurationTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @Rule public TemporaryFolder folder = new TemporaryFolder();
 
     File pluginDir;
     ConfigurationLoader loader;
 
-    @Before
-    public void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
 
         pluginDir = folder.newFolder("PrisonTest");
 
         Prison.get().init(new TestPlatform(pluginDir, true));
 
         loader = new ConfigurationLoader(pluginDir, "test.json", TestConfigurable.class,
-                TestConfigurable.VERSION);
+            TestConfigurable.VERSION);
     }
 
-    @Test
-    public void testLoad() throws Exception {
+    @Test public void testLoad() throws Exception {
         LoadResult res = loader.loadConfiguration();
 
         assertTrue(res == LoadResult.SUCCESS || res == LoadResult.CREATED);
     }
 
-    @Test
-    public void testGet() throws Exception {
+    @Test public void testGet() throws Exception {
         loader.loadConfiguration();
         TestConfigurable test = (TestConfigurable) loader.getConfig();
 
@@ -67,8 +63,7 @@ public class ConfigurationTest {
         assertEquals("Testing", test.testValue);
     }
 
-    @Test
-    public void testVersion() throws Exception {
+    @Test public void testVersion() throws Exception {
         loader = new ConfigurationLoader(pluginDir, "test.json", TestConfigurable.class, 0);
         LoadResult res = loader.loadConfiguration();
 

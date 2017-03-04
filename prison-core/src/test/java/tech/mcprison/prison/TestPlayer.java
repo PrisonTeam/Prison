@@ -43,88 +43,71 @@ public class TestPlayer implements Player {
         return input;
     }
 
-    @Override
-    public String getName() {
+    @Override public String getName() {
         return "Testing";
     }
 
-    @Override
-    public void dispatchCommand(String command) {
+    @Override public void dispatchCommand(String command) {
 
     }
 
-    @Override
-    public boolean hasPermission(String perm) {
+    @Override public boolean hasPermission(String perm) {
         return true;
     }
 
-    @Override
-    public void sendMessage(String message) {
+    @Override public void sendMessage(String message) {
         input.add(message);
     }
 
-    @Override
-    public void sendMessage(String[] messages) {
+    @Override public void sendMessage(String[] messages) {
         input.addAll(Arrays.asList(messages));
     }
 
-    @Override
-    public void sendRaw(String json) {
+    @Override public void sendRaw(String json) {
         input.add(json);
     }
 
-    @Override
-    public UUID getUUID() {
+    @Override public UUID getUUID() {
         return null;
     }
 
-    @Override
-    public String getDisplayName() {
+    @Override public String getDisplayName() {
         return null;
     }
 
-    @Override
-    public void setDisplayName(String newDisplayName) {
+    @Override public void setDisplayName(String newDisplayName) {
 
     }
 
-    @Override
-    public void give(ItemStack itemStack) {
+    @Override public void give(ItemStack itemStack) {
 
     }
 
-    @Override
-    public Location getLocation() {
+    @Override public Location getLocation() {
         return null;
     }
 
-    @Override
-    public void teleport(Location location) {
+    @Override public void teleport(Location location) {
 
     }
 
-    @Override
-    public boolean isOnline() {
+    @Override public boolean isOnline() {
         return true;
     }
 
-    @Override
-    public void setScoreboard(Scoreboard scoreboard) {
+    @Override public void setScoreboard(Scoreboard scoreboard) {
 
     }
 
-    @Override
-    public Gamemode getGamemode() {
+    @Override public Gamemode getGamemode() {
         return null;
     }
 
-    @Override
-    public void setGamemode(Gamemode gamemode) {
+    @Override public void setGamemode(Gamemode gamemode) {
 
     }
 
-    @Override
-    public Inventory getInventory() {
+    @Override public Inventory getInventory() {
         return null;
     }
 }

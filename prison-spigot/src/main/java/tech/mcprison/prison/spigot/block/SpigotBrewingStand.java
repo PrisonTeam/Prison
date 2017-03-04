@@ -10,9 +10,11 @@ import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
  */
 public class SpigotBrewingStand implements BrewingStand {
     org.bukkit.block.BrewingStand wrapper;
-    public SpigotBrewingStand(org.bukkit.block.BrewingStand wrapper){
+
+    public SpigotBrewingStand(org.bukkit.block.BrewingStand wrapper) {
         this.wrapper = wrapper;
     }
+
     @Override public int getBrewingTime() {
         return wrapper.getBrewingTime();
     }

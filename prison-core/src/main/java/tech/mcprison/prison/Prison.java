@@ -100,8 +100,8 @@ public class Prison {
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
-                .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                        (System.currentTimeMillis() - startTime));
+            .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+                (System.currentTimeMillis() - startTime));
     }
 
     // Initialization steps
@@ -118,23 +118,23 @@ public class Prison {
         // Creates a handy instance of GSON with pretty printing, disabled HTML escaping, @Exclude support, and all adapters registered.
         // Note that if any adapters are added to the adapters package, this block must be updated.
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-                .setExclusionStrategies(new AnnotationExclusionStrategy())
-                .registerTypeAdapter(Location.class, new LocationAdapter()).create();
+            .setExclusionStrategies(new AnnotationExclusionStrategy())
+            .registerTypeAdapter(Location.class, new LocationAdapter()).create();
     }
 
     private void initMessages() {
         // Our localization configuration, located in /Prison/Core/messages.json
         this.messagesLoader =
-                new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
-                        Messages.VERSION);
+            new ConfigurationLoader(getDataFolder(), "messages.json", Messages.class,
+                Messages.VERSION);
         this.messagesLoader.loadConfiguration();
     }
 
     private void initConfig() {
         // Our configuration, located in /Prison/Core/config.json
         this.configurationLoader =
-                new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
-                        Configuration.VERSION);
+            new ConfigurationLoader(getDataFolder(), "config.json", Configuration.class,
+                Configuration.VERSION);
         this.configurationLoader.loadConfiguration();
     }
 

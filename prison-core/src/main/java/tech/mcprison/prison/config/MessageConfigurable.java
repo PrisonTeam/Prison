@@ -29,11 +29,8 @@ import tech.mcprison.prison.store.Exclude;
 public abstract class MessageConfigurable implements Configurable {
 
     // Naming conventions are a bit off, but I tried to maintain backwards-compatibility
-    @Exclude
-    protected String INFO_PREFIX = "&3Info &8» &7";
-    @Exclude
-    protected String WARNING_PREFIX = "&6Warning &8» &7";
-    @Exclude
-    protected String ERROR_PREFIX = "&cError &8» &7";
+    @Exclude protected String INFO_PREFIX = "&3Info &8» &7";
+    @Exclude protected String WARNING_PREFIX = "&6Warning &8» &7";
+    @Exclude protected String ERROR_PREFIX = "&cError &8» &7";
 
 }

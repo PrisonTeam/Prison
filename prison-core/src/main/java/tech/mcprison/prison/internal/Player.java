@@ -19,7 +19,6 @@
 package tech.mcprison.prison.internal;
 
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
-import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -92,8 +91,7 @@ public interface Player extends CommandSender, InventoryHolder {
      */
     void setGamemode(Gamemode gamemode);
 
-    @Override
-    default boolean doesSupportColors() {
+    @Override default boolean doesSupportColors() {
         return true;
     }
 
