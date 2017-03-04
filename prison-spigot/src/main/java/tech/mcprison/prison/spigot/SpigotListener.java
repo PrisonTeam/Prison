@@ -25,8 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.inventory.InventoryClickEvent;
@@ -170,5 +169,34 @@ public class SpigotListener implements Listener {
         Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
         e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
+    }
+
+    @EventHandler public void onFurnaceBurn(FurnaceBurnEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceBurnEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceBurnEvent(
+                new SpigotBlock(e.getBlock()), SpigotUtil.bukkitItemStackToPrison(e.getFuel()),
+                e.getBurnTime(), e.isBurning());
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
+        e.setBurning(event.isBurning());
+        e.setBurnTime(event.getBurnTime());
+    }
+
+    @EventHandler public void onFurnaceExtract(FurnaceExtractEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceExtractEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceExtractEvent(
+                new SpigotPlayer(e.getPlayer()), new SpigotBlock(e.getBlock()),
+                SpigotUtil.materialToBlockType(e.getItemType()), e.getItemAmount(),
+                e.getExpToDrop());
+        Prison.get().getEventBus().post(event);
+        e.setExpToDrop(event.getExpToDrop());
+    }
+
+    @EventHandler public void onFurnaceSmelt(FurnaceSmeltEvent e) {
+        tech.mcprison.prison.internal.events.inventory.FurnaceSmeltEvent event =
+            new tech.mcprison.prison.internal.events.inventory.FurnaceSmeltEvent(
+                new SpigotBlock(e.getBlock()), SpigotUtil.bukkitItemStackToPrison(e.getSource()),
+                SpigotUtil.bukkitItemStackToPrison(e.getResult()));
+        e.setCancelled(e.isCancelled());
     }
 }

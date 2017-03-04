@@ -1,6 +1,7 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
@@ -13,6 +14,14 @@ public class FurnaceBurnEvent implements Cancelable {
     int burnTime = -1;
     ItemStack fuel = null;
     boolean burning = false;
+    Block block;
+
+    public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning){
+        block = furnace;
+        this.fuel = fuel;
+        this.burnTime = burnTime;
+        this.burning = burning;
+    }
 
     public int getBurnTime() {
         return burnTime;
@@ -41,4 +50,6 @@ public class FurnaceBurnEvent implements Cancelable {
     public void setCanceled(boolean cancel) {
         canceled = cancel;
     }
+
+    public Block getBlock() {return block;}
 }
