@@ -199,4 +199,11 @@ public class SpigotListener implements Listener {
                 SpigotUtil.bukkitItemStackToPrison(e.getResult()));
         e.setCancelled(e.isCancelled());
     }
+
+    @EventHandler public void onInventoryClose(InventoryCloseEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryCloseEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryCloseEvent(
+                new SpigotInventoryView(e.getView()));
+        Prison.get().getEventBus().post(event);
+    }
 }
