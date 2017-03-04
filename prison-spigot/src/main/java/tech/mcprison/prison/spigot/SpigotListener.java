@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.events.inventory.InventoryClickEvent;
 import tech.mcprison.prison.internal.events.inventory.InventoryEvent;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
@@ -37,12 +38,15 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
+import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 import tech.mcprison.prison.spigot.inventory.SpigotInventoryView;
 import tech.mcprison.prison.spigot.inventory.SpigotRecipe;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.InventoryType;
 import tech.mcprison.prison.util.Location;
+
+import java.util.HashMap;
 
 /**
  * Posts Prison's internal events.
@@ -219,5 +223,28 @@ public class SpigotListener implements Listener {
         e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
         e.setCancelled(event.isCanceled());
         e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
+    }
+
+    @EventHandler public void onInventoryDrag(InventoryDragEvent e) {
+        HashMap<Integer, ItemStack> slots = new HashMap<>();
+        e.getNewItems().entrySet()
+            .forEach(x -> slots.put(x.getKey(), SpigotUtil.bukkitItemStackToPrison(x.getValue())));
+        tech.mcprison.prison.internal.events.inventory.InventoryDragEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryDragEvent(
+                new SpigotInventoryView(e.getView()),
+                SpigotUtil.bukkitItemStackToPrison(e.getCursor()),
+                SpigotUtil.bukkitItemStackToPrison(e.getOldCursor()),
+                e.getType() == DragType.SINGLE, slots);
+        e.setCancelled(event.isCanceled());
+        e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
+    }
+
+    @EventHandler public void onInventoryMoveItem(InventoryMoveItemEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryMoveItemEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryMoveItemEvent(
+                new SpigotInventory(e.getSource()), SpigotUtil.bukkitItemStackToPrison(e.getItem()),
+                new SpigotInventory(e.getDestination()), e.getSource() == e.getInitiator());
+        e.setCancelled(event.isCancelled());
+        e.setItem(SpigotUtil.prisonItemStackToBukkit(event.getItem()));
     }
 }
