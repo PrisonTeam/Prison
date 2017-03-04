@@ -52,7 +52,7 @@ public class BulletedListComponent extends TextComponent {
 
         public BulletedListComponent build() {
             String list = Text.translateAmpColorCodes(
-                    Text.implode(bullets.toArray(new String[bullets.size()]), "\n"));
+                Text.implode(bullets.toArray(new String[bullets.size()]), "\n"));
 
             return new BulletedListComponent(list);
         }

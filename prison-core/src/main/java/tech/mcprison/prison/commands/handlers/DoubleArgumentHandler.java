@@ -27,9 +27,8 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {
     }
 
-    @Override
-    public Double transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+    @Override public Double transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
         value = value.replace("$", "");
         value = value.replace("%", "");
         try {

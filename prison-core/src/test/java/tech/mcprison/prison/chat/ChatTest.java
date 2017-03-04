@@ -28,14 +28,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class ChatTest {
 
-    @Test
-    public void testFancyChat() throws Exception {
+    @Test public void testFancyChat() throws Exception {
         FancyMessage message =
-                new FancyMessage("Test").link("http://google.com").color(ChatColor.AQUA).then("ing")
-                        .color(ChatColor.BLACK);
+            new FancyMessage("Test").link("http://google.com").color(ChatColor.AQUA).then("ing")
+                .color(ChatColor.BLACK);
 
         String expected =
-                "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},{\"text\":\"ing\",\"color\":\"black\"}]}";
+            "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},{\"text\":\"ing\",\"color\":\"black\"}]}";
         String actual = message.toJSONString();
 
         assertEquals(expected, actual);

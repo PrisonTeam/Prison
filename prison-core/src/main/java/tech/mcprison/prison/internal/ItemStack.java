@@ -70,8 +70,7 @@ public class ItemStack {
         return lore;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -83,23 +82,21 @@ public class ItemStack {
 
         String myName = ChatColor.stripColor(name);  // Remove colors from my name
         String theirName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
-                itemStack.getName()));  // Remove colors from their name
+            itemStack.getName()));  // Remove colors from their name
 
         return myName.equals(theirName) && material == itemStack.material;
 
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + material.hashCode();
         return result;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "ItemStack{" + "name='" + name + '\'' + ", amount=" + amount + ", material="
-                + material + '}';
+            + material + '}';
     }
 
 }

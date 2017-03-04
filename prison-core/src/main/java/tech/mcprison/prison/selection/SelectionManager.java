@@ -31,8 +31,8 @@ import java.util.Map;
 public class SelectionManager {
 
     public static final ItemStack SELECTION_TOOL =
-            new ItemStack("&6Selection Wand", 1, BlockType.BLAZE_ROD, "&7Corner 1 - Left click",
-                    "&7Corner 2 - Right click");
+        new ItemStack("&6Selection Wand", 1, BlockType.BLAZE_ROD, "&7Corner 1 - Left click",
+            "&7Corner 2 - Right click");
     private Map<String, Selection> selectionMap;
 
     public SelectionManager() {

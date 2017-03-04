@@ -34,8 +34,7 @@ public class FancyMessageComponent extends DisplayComponent {
         this.message = message;
     }
 
-    @Override
-    public String text() {
+    @Override public String text() {
         return message.toJSONString();
     }
 

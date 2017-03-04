@@ -40,36 +40,32 @@ import static org.junit.Assert.assertTrue;
  */
 public class SelectionTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @Before
-    public void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), true));
     }
 
-    @Test
-    public void testSelection() throws Exception {
+    @Test public void testSelection() throws Exception {
         Prison.get().getSelectionManager(); // init
 
         World ourWorld = new TestWorld("TestWorld");
         TestPlayer ourPlayer = new TestPlayer();
 
         Prison.get().getEventBus().post(
-                new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
-                        PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+            new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
+                PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertTrue(ourPlayer.getInput().contains("&7First position set to &8(10.0, 20.0, 30.0)"));
 
         Prison.get().getEventBus().post(
-                new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
-                        PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
+            new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
+                PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
 
         assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30.0, 20.0, 40.0)"));
     }
 
-    @Test
-    public void testSelectionToolCheck() throws Exception {
+    @Test public void testSelectionToolCheck() throws Exception {
         Prison.get().getSelectionManager(); // init
 
         World ourWorld = new TestWorld("TestWorld");
@@ -78,11 +74,11 @@ public class SelectionTest {
         int initialAmount = ourPlayer.getInput().size();
 
         Prison.get().getEventBus().post(
-                new PlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
-                        PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+            new PlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
+                PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertEquals(initialAmount, ourPlayer.getInput()
-                .size()); // nothing should have happened because we have the wrong item in our hand
+            .size()); // nothing should have happened because we have the wrong item in our hand
 
     }
 }

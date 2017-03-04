@@ -27,9 +27,8 @@ public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
     public IntegerArgumentHandler() {
     }
 
-    @Override
-    public Integer transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+    @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {

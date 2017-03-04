@@ -32,8 +32,7 @@ public class RootCommand extends RegisteredCommand {
         return root;
     }
 
-    @Override
-    void set(Object methodInstance, Method method) {
+    @Override void set(Object methodInstance, Method method) {
         super.set(methodInstance, method);
         root.setDescription(getDescription());
         root.setUsage(getUsage());

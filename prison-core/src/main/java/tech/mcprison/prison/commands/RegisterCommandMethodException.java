@@ -25,7 +25,7 @@ public class RegisterCommandMethodException extends RuntimeException {
 
     public RegisterCommandMethodException(Method method, String msg) {
         super(
-                "Could not register the command method " + method.getName() + " in the class " + method
-                        .getDeclaringClass().getName() + ". Reason: " + msg);
+            "Could not register the command method " + method.getName() + " in the class " + method
+                .getDeclaringClass().getName() + ". Reason: " + msg);
     }
 }

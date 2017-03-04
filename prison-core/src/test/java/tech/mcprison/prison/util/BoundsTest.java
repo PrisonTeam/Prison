@@ -28,20 +28,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class BoundsTest {
 
-    @Test
-    public void equals() throws Exception {
+    @Test public void equals() throws Exception {
         Bounds bounds =
-                new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
+            new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
         Bounds otherBounds =
-                new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
+            new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
 
         assertTrue(bounds.equals(otherBounds));
     }
 
-    @Test
-    public void within() throws Exception {
+    @Test public void within() throws Exception {
         Bounds bounds =
-                new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
+            new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
         Location toCheck = new Location(null, 5.0, 5.0, 5.0);
         assertTrue(bounds.within(toCheck));
 

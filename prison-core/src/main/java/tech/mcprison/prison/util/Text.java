@@ -41,9 +41,9 @@ public class Text {
     private static final long millisPerMonth = 31 * millisPerDay;
     private static final long millisPerYear = 365 * millisPerDay;
     private static final Map<String, Long> unitMillis = CollectionUtil
-            .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
-                    millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
-                    millisPerSecond);
+        .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
+            millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
+            millisPerSecond);
     private static String headingLine = repeat("-", 52);
 
     private Text() {
@@ -95,7 +95,7 @@ public class Text {
         int pos = text.lastIndexOf(toReplace);
         if (pos > -1) {
             return text.substring(0, pos) + replacement + text
-                    .substring(pos + toReplace.length(), text.length());
+                .substring(pos + toReplace.length(), text.length());
         } else {
             return text;
         }
@@ -228,8 +228,8 @@ public class Text {
 
         if (eatLeft < pivot) {
             return translateAmpColorCodes(
-                    "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
-                            + (headingLine.substring(pivot + eatRight)));
+                "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
+                    + (headingLine.substring(pivot + eatRight)));
         } else {
             return center;
         }

@@ -44,8 +44,7 @@ public final class ArrayWrapper<E> {
      *
      * @param elements The elements of the array.
      */
-    @SafeVarargs
-    public ArrayWrapper(E... elements) {
+    @SafeVarargs public ArrayWrapper(E... elements) {
         setArray(elements);
     }
 
@@ -57,9 +56,8 @@ public final class ArrayWrapper<E> {
      * @param c    The type of the elements of the array.
      * @return An array of elements in the specified iterable.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T[] toArray(Iterable<? extends T> list,
-                                  Class<T> c) {
+    @SuppressWarnings("unchecked") public static <T> T[] toArray(Iterable<? extends T> list,
+        Class<T> c) {
         int size = -1;
         if (list instanceof Collection<?>) {
             @SuppressWarnings("rawtypes") Collection coll = (Collection) list;
@@ -107,9 +105,7 @@ public final class ArrayWrapper<E> {
      *
      * @see Arrays#equals(Object[], Object[])
      */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public boolean equals(Object other) {
+    @SuppressWarnings("rawtypes") @Override public boolean equals(Object other) {
         if (!(other instanceof ArrayWrapper)) {
             return false;
         }
@@ -122,8 +118,7 @@ public final class ArrayWrapper<E> {
      * @return This object's hash code.
      * @see Arrays#hashCode(Object[])
      */
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         return Arrays.hashCode(_array);
     }
 }

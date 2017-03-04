@@ -28,7 +28,7 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
         addVerifier("min", new ArgumentVerifier<String>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, String value, String valueRaw) throws VerifyError {
+                String[] verifyArgs, String value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -48,7 +48,7 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
         addVerifier("max", new ArgumentVerifier<String>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-                               String[] verifyArgs, String value, String valueRaw) throws VerifyError {
+                String[] verifyArgs, String value, String valueRaw) throws VerifyError {
                 if (verifyArgs.length != 1) {
                     throw new InvalidVerifyArgument(argument.getName());
                 }
@@ -65,9 +65,8 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
         });
     }
 
-    @Override
-    public String transform(CommandSender sender, CommandArgument argument, String value)
-            throws TransformError {
+    @Override public String transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
         return value;
     }
 }
