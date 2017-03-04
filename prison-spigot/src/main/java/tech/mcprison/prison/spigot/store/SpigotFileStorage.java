@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison;
+package tech.mcprison.prison.spigot.store;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,17 +33,20 @@ import java.util.Map;
 /**
  * @author Faizaan A. Datoo
  */
-public class TestStorage implements Storage {
+public class SpigotFileStorage implements Storage {
 
-    private File storageFolder;
+    private File dataDir;
 
-    public TestStorage(File storageFolder) {
-        this.storageFolder = storageFolder;
-        this.storageFolder.mkdirs();
+    public SpigotFileStorage(File dataDir) {
+        this.dataDir = dataDir;
+        if (!dataDir.exists()) {
+            dataDir.mkdir();
+        }
     }
 
     @Override public void write(String key, Object obj) {
-        File file = new File(getCollectionFolder(obj.getClass()), key + ".json");
+        File file =
+            new File(CollectionUtil.getCollectionDir(dataDir, obj.getClass()), key + ".json");
         PopulatedBlueprint blueprint = new PopulatedBlueprint(obj);
         JSONObject object = new JSONObject();
 
@@ -55,7 +58,6 @@ public class TestStorage implements Storage {
         }
 
         try {
-            file.createNewFile();
             Files.write(file.toPath(), object.toJSONString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,7 +65,7 @@ public class TestStorage implements Storage {
     }
 
     @Override public <T> T read(String key, Class<T> type) {
-        File file = new File(getCollectionFolder(type), key + ".json");
+        File file = new File(CollectionUtil.getCollectionDir(dataDir, type), key + ".json");
         return read(file, type);
     }
 
@@ -96,7 +98,8 @@ public class TestStorage implements Storage {
     @Override public <T> List<T> readAll(Class<T> type) {
         List<T> ret = new ArrayList<>();
 
-        File[] files = getCollectionFolder(type).listFiles((dir, name) -> name.endsWith(".json"));
+        File[] files = CollectionUtil.getCollectionDir(dataDir, type)
+            .listFiles((dir, name) -> name.endsWith(".json"));
 
         if (files != null) {
             for (File file : files) {
@@ -105,16 +108,6 @@ public class TestStorage implements Storage {
         }
 
         return ret;
-    }
-
-    private String getCollectionName(Class<?> clazz) {
-        return clazz.getSimpleName();
-    }
-
-    private File getCollectionFolder(Class<?> clazz) {
-        File file = new File(storageFolder, getCollectionName(clazz));
-        file.mkdirs();
-        return file;
     }
 
 }

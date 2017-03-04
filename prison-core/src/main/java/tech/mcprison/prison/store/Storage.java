@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.store;
 
+import java.util.List;
+
 /**
  * A storage adapter, implemented on a per-platform level. Use this to access and write stored data.
  *
@@ -42,5 +44,14 @@ public interface Storage {
      * @return The read object, or null if the operation fails.
      */
     <T> T read(String key, Class<T> type);
+
+    /**
+     * Reads every piece of data from the same class type from disk. This is useful
+     * for loading data in bulk.
+     *
+     * @param type The type to load.
+     * @return A list containing each object.
+     */
+    <T> List<T> readAll(Class<T> type);
 
 }
