@@ -41,6 +41,7 @@ import tech.mcprison.prison.spigot.inventory.SpigotInventoryView;
 import tech.mcprison.prison.spigot.inventory.SpigotRecipe;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
+import tech.mcprison.prison.util.InventoryType;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -197,6 +198,7 @@ public class SpigotListener implements Listener {
             new tech.mcprison.prison.internal.events.inventory.FurnaceSmeltEvent(
                 new SpigotBlock(e.getBlock()), SpigotUtil.bukkitItemStackToPrison(e.getSource()),
                 SpigotUtil.bukkitItemStackToPrison(e.getResult()));
+        Prison.get().getEventBus().post(event);
         e.setCancelled(e.isCancelled());
     }
 
@@ -205,5 +207,17 @@ public class SpigotListener implements Listener {
             new tech.mcprison.prison.internal.events.inventory.InventoryCloseEvent(
                 new SpigotInventoryView(e.getView()));
         Prison.get().getEventBus().post(event);
+    }
+
+    @EventHandler public void onInventoryCreative(InventoryCreativeEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryCreativeEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryCreativeEvent(
+                new SpigotInventoryView(e.getView()),
+                InventoryType.SlotType.valueOf(e.getSlotType().name()), e.getSlot(),
+                SpigotUtil.bukkitItemStackToPrison(e.getCursor()));
+        Prison.get().getEventBus().post(event);
+        e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
+        e.setCancelled(event.isCanceled());
+        e.setCurrentItem(SpigotUtil.prisonItemStackToBukkit(event.getCurrentItem()));
     }
 }
