@@ -235,6 +235,7 @@ public class SpigotListener implements Listener {
                 SpigotUtil.bukkitItemStackToPrison(e.getCursor()),
                 SpigotUtil.bukkitItemStackToPrison(e.getOldCursor()),
                 e.getType() == DragType.SINGLE, slots);
+        Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
         e.setCursor(SpigotUtil.prisonItemStackToBukkit(event.getCursor()));
     }
@@ -244,7 +245,16 @@ public class SpigotListener implements Listener {
             new tech.mcprison.prison.internal.events.inventory.InventoryMoveItemEvent(
                 new SpigotInventory(e.getSource()), SpigotUtil.bukkitItemStackToPrison(e.getItem()),
                 new SpigotInventory(e.getDestination()), e.getSource() == e.getInitiator());
-        e.setCancelled(event.isCancelled());
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
         e.setItem(SpigotUtil.prisonItemStackToBukkit(event.getItem()));
+    }
+
+    @EventHandler public void onInventoryOpen(InventoryOpenEvent e) {
+        tech.mcprison.prison.internal.events.inventory.InventoryOpenEvent event =
+            new tech.mcprison.prison.internal.events.inventory.InventoryOpenEvent(
+                new SpigotInventoryView(e.getView()));
+        Prison.get().getEventBus().post(event);
+        e.setCancelled(event.isCanceled());
     }
 }
