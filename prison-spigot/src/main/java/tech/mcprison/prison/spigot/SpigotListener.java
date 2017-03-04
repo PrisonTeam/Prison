@@ -257,4 +257,13 @@ public class SpigotListener implements Listener {
         Prison.get().getEventBus().post(event);
         e.setCancelled(event.isCanceled());
     }
+
+    @EventHandler public void onPrepareAnvil(PrepareAnvilEvent e) {
+        tech.mcprison.prison.internal.events.inventory.PrepareAnvilEvent event =
+            new tech.mcprison.prison.internal.events.inventory.PrepareAnvilEvent(
+                new SpigotInventoryView(e.getView()),
+                SpigotUtil.bukkitItemStackToPrison(e.getResult()));
+        Prison.get().getEventBus().post(event);
+        e.setResult(SpigotUtil.prisonItemStackToBukkit(event.getResult()));
+    }
 }
