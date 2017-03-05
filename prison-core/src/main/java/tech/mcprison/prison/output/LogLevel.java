@@ -16,32 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.internal.events.inventory;
-
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.Viewable;
-import tech.mcprison.prison.util.InventoryType;
+package tech.mcprison.prison.output;
 
 /**
- * Currently undocumented.
+ * Represents the different levels of severity in logging.
  *
- * @author DMP9
+ * @author Dylan M. Perks
  */
-public class InventoryCreativeEvent extends InventoryClickEvent {
-
-    ItemStack item;
-
-    public InventoryCreativeEvent(Viewable transaction, InventoryType.SlotType type, int slot,
-        ItemStack newItem) {
-        super(transaction, type, slot, Click.CREATIVE, Action.PLACE_ALL);
-        item = newItem;
-    }
-
-    public ItemStack getCursor() {
-        return item;
-    }
-
-    public void setCursor(ItemStack item) {
-        this.item = item;
-    }
+public enum LogLevel  {
+    /**
+     * Information severity.
+     */
+    INFO,
+    /**
+     * Warning severity.
+     */
+    WARNING,
+    /**
+     * Error severity.
+     */
+    ERROR;
 }

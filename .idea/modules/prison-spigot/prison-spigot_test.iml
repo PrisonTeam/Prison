@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":prison-spigot:test" external.linked.project.path="$MODULE_DIR$/../../../prison-spigot" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="tech.mcprison" external.system.module.type="sourceSet" external.system.module.version="0.2.0-SNAPSHOT" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output-test url="file://$MODULE_DIR$/../../../prison-spigot/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../prison-spigot/src/test">
@@ -14,6 +14,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../prison-spigot/lib/EssentialsX.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../prison-spigot/lib/LuckPerms-Bukkit-2.17.38.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -33,15 +42,6 @@
     <orderEntry type="library" name="Gradle: org.yaml:snakeyaml:1.15" level="project" />
     <orderEntry type="library" name="Gradle: net.md-5:bungeecord-chat:1.9-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: org.bukkit:bukkit:1.9-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../prison-spigot/lib/LuckPerms-Bukkit-2.17.38.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Gradle: junit:junit:4.10" level="project" />
     <orderEntry type="library" name="Gradle: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
