@@ -35,6 +35,13 @@ public interface CraftingInventory extends Inventory {
     ItemStack[] getMatrix();
 
     /**
+     * Sets the items in the 9 slots
+     *
+     * @param contents the new contents of this crafting inventory
+     */
+    void setMatrix(ItemStack[] contents);
+
+    /**
      * Gets the {@link Recipe}, if any, created in this crafting inventory
      *
      * @return the crafting recipe contained within this inventory
@@ -48,13 +55,6 @@ public interface CraftingInventory extends Inventory {
      * @see Recipe
      */
     ItemStack getResult();
-
-    /**
-     * Sets the items in the 9 slots
-     *
-     * @param contents the new contents of this crafting inventory
-     */
-    void setMatrix(ItemStack[] contents);
 
     /**
      * Sets the result of the recipe created in this crafting inventory, if any.

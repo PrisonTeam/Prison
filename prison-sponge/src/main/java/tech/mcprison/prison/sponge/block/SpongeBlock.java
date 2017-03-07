@@ -55,12 +55,12 @@ public class SpongeBlock implements Block {
             .findFirst().orElse(null);
     }
 
-    @Override public BlockState getState() {
-        return null;
-    }
-
     @Override public void setType(BlockType type) {
 
+    }
+
+    @Override public BlockState getState() {
+        return null;
     }
 
     @Override public boolean breakNaturally() {

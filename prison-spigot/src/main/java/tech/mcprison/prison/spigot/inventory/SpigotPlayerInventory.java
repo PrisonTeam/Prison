@@ -41,30 +41,6 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
         return (ItemStack[]) items.toArray();
     }
 
-    @Override public ItemStack getBoots() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getBoots());
-    }
-
-    @Override public ItemStack getChestplate() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getChestplate());
-    }
-
-    @Override public int getHeldItemSlot() {
-        return ((org.bukkit.inventory.PlayerInventory) getWrapper()).getHeldItemSlot();
-    }
-
-    @Override public ItemStack getHelmet() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getHelmet());
-    }
-
-    @Override public ItemStack getLeggings() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getLeggings());
-    }
-
     @Override public void setArmorContents(ItemStack[] items) {
         List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
         Arrays.asList(items).forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
@@ -72,14 +48,9 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
             .setArmorContents((org.bukkit.inventory.ItemStack[]) stacks.toArray());
     }
 
-    @Override public ItemStack getItemInLeftHand() {
+    @Override public ItemStack getBoots() {
         return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInOffHand());
-    }
-
-    @Override public ItemStack getItemInRightHand() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInMainHand());
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getBoots());
     }
 
     @Override public void setBoots(ItemStack boots) {
@@ -87,14 +58,27 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
             .setBoots(SpigotUtil.prisonItemStackToBukkit(boots));
     }
 
+    @Override public ItemStack getChestplate() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getChestplate());
+    }
+
     @Override public void setChestplate(ItemStack chestplate) {
         ((org.bukkit.inventory.PlayerInventory) getWrapper())
             .setBoots(SpigotUtil.prisonItemStackToBukkit(chestplate));
     }
 
-    @Override public void setLeggings(ItemStack leggings) {
-        ((org.bukkit.inventory.PlayerInventory) getWrapper())
-            .setBoots(SpigotUtil.prisonItemStackToBukkit(leggings));
+    @Override public int getHeldItemSlot() {
+        return ((org.bukkit.inventory.PlayerInventory) getWrapper()).getHeldItemSlot();
+    }
+
+    @Override public void setHeldItemSlot(int slot) {
+        ((org.bukkit.inventory.PlayerInventory) getWrapper()).setHeldItemSlot(slot);
+    }
+
+    @Override public ItemStack getHelmet() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getHelmet());
     }
 
     @Override public void setHelmet(ItemStack helmet) {
@@ -102,17 +86,33 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
             .setBoots(SpigotUtil.prisonItemStackToBukkit(helmet));
     }
 
+    @Override public ItemStack getLeggings() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getLeggings());
+    }
+
+    @Override public void setLeggings(ItemStack leggings) {
+        ((org.bukkit.inventory.PlayerInventory) getWrapper())
+            .setBoots(SpigotUtil.prisonItemStackToBukkit(leggings));
+    }
+
+    @Override public ItemStack getItemInLeftHand() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInOffHand());
+    }
+
     @Override public void setItemInLeftHand(ItemStack stack) {
         ((org.bukkit.inventory.PlayerInventory) getWrapper())
             .setItemInOffHand(SpigotUtil.prisonItemStackToBukkit(stack));
     }
 
+    @Override public ItemStack getItemInRightHand() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInMainHand());
+    }
+
     @Override public void setItemInRightHand(ItemStack stack) {
         ((org.bukkit.inventory.PlayerInventory) getWrapper())
             .setItemInMainHand(SpigotUtil.prisonItemStackToBukkit(stack));
-    }
-
-    @Override public void setHeldItemSlot(int slot) {
-        ((org.bukkit.inventory.PlayerInventory) getWrapper()).setHeldItemSlot(slot);
     }
 }

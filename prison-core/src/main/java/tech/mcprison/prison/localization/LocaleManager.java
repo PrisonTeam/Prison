@@ -59,17 +59,10 @@ import java.util.zip.ZipInputStream;
  */
 public class LocaleManager {
 
+    static final HashMap<String, List<String>> ALTERNATIVES = new HashMap<>();
+    static final Logger LOGGER = Logger.getLogger("Rosetta");
     private static final String DEFAULT_LOCALE = "en_US";
     private static final String LOCALE_FOLDER = "lang";
-
-    static final HashMap<String, List<String>> ALTERNATIVES = new HashMap<>();
-
-    static final Logger LOGGER = Logger.getLogger("Rosetta");
-
-    private final IDataFolderOwner module;
-    private String defaultLocale = DEFAULT_LOCALE;
-
-    HashMap<String, Properties> configs = new HashMap<>();
 
     static {
         // English dialects
@@ -99,6 +92,10 @@ public class LocaleManager {
         ALTERNATIVES.put("pt_BR", Arrays.asList("pt_PT"));
         ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR"));
     }
+
+    private final IDataFolderOwner module;
+    HashMap<String, Properties> configs = new HashMap<>();
+    private String defaultLocale = DEFAULT_LOCALE;
 
     /**
      * Constructs a new {@link LocaleManager} owned by the given {@link IDataFolderOwner}.

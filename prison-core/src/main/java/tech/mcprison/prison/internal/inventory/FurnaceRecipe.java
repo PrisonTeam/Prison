@@ -36,17 +36,17 @@ public interface FurnaceRecipe extends Recipe {
     ItemStack getInput();
 
     /**
-     * Gets the {@link ItemStack} created when the input is smelted.
-     *
-     * @return
-     */
-    ItemStack getResult();
-
-    /**
      * Sets the input (item to be smelted) in this recipe
      *
      * @param input the input of this recipe ()
      * @return
      */
     FurnaceRecipe setInput(BlockType input);
+
+    /**
+     * Gets the {@link ItemStack} created when the input is smelted.
+     *
+     * @return
+     */
+    ItemStack getResult();
 }

@@ -45,6 +45,14 @@ public class SpigotCrafting extends SpigotInventory implements CraftingInventory
         return (ItemStack[]) stacks.toArray();
     }
 
+    @Override public void setMatrix(ItemStack[] contents) {
+        List<ItemStack> stackList = Arrays.asList(contents);
+        List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+        stackList.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
+        ((org.bukkit.inventory.CraftingInventory) getWrapper())
+            .setMatrix((org.bukkit.inventory.ItemStack[]) stacks.toArray());
+    }
+
     @Override public Recipe getRecipe() {
         if (((org.bukkit.inventory.CraftingInventory) getWrapper())
             .getRecipe() instanceof FurnaceRecipe) {
@@ -69,14 +77,6 @@ public class SpigotCrafting extends SpigotInventory implements CraftingInventory
     @Override public ItemStack getResult() {
         return SpigotUtil.bukkitItemStackToPrison(
             ((org.bukkit.inventory.CraftingInventory) getWrapper()).getResult());
-    }
-
-    @Override public void setMatrix(ItemStack[] contents) {
-        List<ItemStack> stackList = Arrays.asList(contents);
-        List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
-        stackList.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
-        ((org.bukkit.inventory.CraftingInventory) getWrapper())
-            .setMatrix((org.bukkit.inventory.ItemStack[]) stacks.toArray());
     }
 
     @Override public void setResult(ItemStack newResult) {

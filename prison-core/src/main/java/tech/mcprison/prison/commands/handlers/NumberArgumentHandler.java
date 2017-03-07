@@ -39,7 +39,8 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                     if (value.doubleValue() < min) {
                         throw new VerifyError(
                             Prison.get().getLocaleManager().getLocalizable("numberTooLow")
-                                .withReplacements(verifyArgs[0], String.valueOf(min)).localizeFor(sender));
+                                .withReplacements(verifyArgs[0], String.valueOf(min))
+                                .localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
@@ -60,7 +61,8 @@ public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHa
                     if (value.doubleValue() > max) {
                         throw new VerifyError(
                             Prison.get().getLocaleManager().getLocalizable("numberTooHigh")
-                                .withReplacements(verifyArgs[0], String.valueOf(max)).localizeFor(sender));
+                                .withReplacements(verifyArgs[0], String.valueOf(max))
+                                .localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());

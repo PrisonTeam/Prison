@@ -1,3 +1,21 @@
+/*
+ *  Prison is a Minecraft plugin for the prison game mode.
+ *  Copyright (C) 2017 The Prison Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
@@ -34,6 +52,59 @@ public class InventoryClickEvent extends InventoryInteractEvent {
         this.click = click;
         this.action = action;
         this.hotbar = key;
+    }
+
+    public InventoryEvent.Action getAction() {
+        return action;
+    }
+
+    public ItemStack getCurrentItem() {
+        if (getSlotType() == InventoryType.SlotType.NONE) {
+            return current;
+        }
+        return getView().getItem(slot);
+    }
+
+    public void setCurrentItem(ItemStack stack) {
+        if (type == InventoryType.SlotType.NONE) {
+            current = stack;
+        } else {
+            getView().setItem(slot, stack);
+        }
+    }
+
+    public ItemStack getCursor() {
+        return getView().getCursor();
+    }
+
+    public int getHotbarButton() {
+        return hotbar;
+    }
+
+    public int getRawSlot() {
+        return slot;
+    }
+
+    public int getSlot() {
+        return getView().convertSlot(getRawSlot());
+    }
+
+    public InventoryType.SlotType getSlotType() {
+        return getSlotType();
+    }
+
+    public boolean isLeftClick() {
+        return (click == Click.LEFT) || (click == Click.SHIFT_LEFT) || (click == Click.DOUBLE_CLICK)
+            || (click == Click.CREATIVE);
+    }
+
+    public boolean isRightClick() {
+        return (click == Click.RIGHT) || (click == Click.SHIFT_RIGHT);
+    }
+
+    public boolean isShiftClick() {
+        return (click == Click.SHIFT_LEFT) || (click == Click.SHIFT_RIGHT) || (click
+            == Click.CONTROL_DROP);
     }
 
     public enum Click {
@@ -82,59 +153,6 @@ public class InventoryClickEvent extends InventoryInteractEvent {
          * Any Click.UNKNOWN is called on a best-effort basis.
          */
         UNKNOWN,;
-    }
-
-    public InventoryEvent.Action getAction() {
-        return action;
-    }
-
-    public ItemStack getCurrentItem() {
-        if (getSlotType() == InventoryType.SlotType.NONE) {
-            return current;
-        }
-        return getView().getItem(slot);
-    }
-
-    public ItemStack getCursor() {
-        return getView().getCursor();
-    }
-
-    public int getHotbarButton() {
-        return hotbar;
-    }
-
-    public int getRawSlot() {
-        return slot;
-    }
-
-    public int getSlot() {
-        return getView().convertSlot(getRawSlot());
-    }
-
-    public InventoryType.SlotType getSlotType() {
-        return getSlotType();
-    }
-
-    public boolean isLeftClick() {
-        return (click == Click.LEFT) || (click == Click.SHIFT_LEFT) || (click == Click.DOUBLE_CLICK)
-            || (click == Click.CREATIVE);
-    }
-
-    public boolean isRightClick() {
-        return (click == Click.RIGHT) || (click == Click.SHIFT_RIGHT);
-    }
-
-    public boolean isShiftClick() {
-        return (click == Click.SHIFT_LEFT) || (click == Click.SHIFT_RIGHT) || (click
-            == Click.CONTROL_DROP);
-    }
-
-    public void setCurrentItem(ItemStack stack) {
-        if (type == InventoryType.SlotType.NONE) {
-            current = stack;
-        } else {
-            getView().setItem(slot, stack);
-        }
     }
 
 }

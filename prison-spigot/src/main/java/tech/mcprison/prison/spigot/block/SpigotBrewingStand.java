@@ -37,12 +37,12 @@ public class SpigotBrewingStand implements BrewingStand {
         return wrapper.getBrewingTime();
     }
 
-    @Override public BrewerInventory getInventory() {
-        return new SpigotBrewer(wrapper.getInventory());
-    }
-
     @Override public void setBrewingTime(int brewTime) {
         wrapper.setBrewingTime(brewTime);
+    }
+
+    @Override public BrewerInventory getInventory() {
+        return new SpigotBrewer(wrapper.getInventory());
     }
 
     @Override public Block getBlock() {

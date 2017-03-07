@@ -31,11 +31,6 @@ import tech.mcprison.prison.util.Location;
 public class GsonSingleton {
 
     private static GsonSingleton instance = new GsonSingleton();
-
-    public static GsonSingleton getInstance() {
-        return instance;
-    }
-
     private Gson gson;
 
     private GsonSingleton() {
@@ -45,6 +40,10 @@ public class GsonSingleton {
         builder.setExclusionStrategies(new GsonExclusionStrategy());
         builder.registerTypeAdapter(Location.class, new LocationAdapter());
         gson = builder.create();
+    }
+
+    public static GsonSingleton getInstance() {
+        return instance;
     }
 
     public Gson getGson() {

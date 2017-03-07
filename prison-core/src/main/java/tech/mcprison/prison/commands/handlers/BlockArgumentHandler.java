@@ -74,8 +74,7 @@ public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
         // No more checks, just fail
 
-        throw new TransformError(
-            Prison.get().getLocaleManager().getLocalizable("blockParseError")
-                .withReplacements(value).localizeFor(sender));
+        throw new TransformError(Prison.get().getLocaleManager().getLocalizable("blockParseError")
+            .withReplacements(value).localizeFor(sender));
     }
 }

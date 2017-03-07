@@ -20,8 +20,8 @@ package tech.mcprison.prison.util;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 import java.io.BufferedReader;
 import java.io.File;

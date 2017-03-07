@@ -21,7 +21,10 @@ package tech.mcprison.prison.store;
 import tech.mcprison.prison.util.ClassUtil;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Holds a collection of variable names and types that can be used to construct

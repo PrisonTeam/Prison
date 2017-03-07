@@ -52,6 +52,10 @@ public class SpigotBlock implements Block {
         return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
+    @Override public void setType(BlockType type) {
+        bBlock.setType(SpigotUtil.blockTypeToMaterial(type));
+    }
+
     @Override public BlockState getState() {
         switch (getType()) {
             case LEVER:
@@ -67,10 +71,6 @@ public class SpigotBlock implements Block {
             default:
                 return new SpigotBlockState(this);
         }
-    }
-
-    @Override public void setType(BlockType type) {
-        bBlock.setType(SpigotUtil.blockTypeToMaterial(type));
     }
 
     @Override public boolean breakNaturally() {

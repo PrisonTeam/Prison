@@ -22,6 +22,7 @@ import java.io.File;
 
 /**
  * Represents something that can have a data folder.
+ *
  * @author Faizaan A. Datoo
  * @since API 1.0
  */

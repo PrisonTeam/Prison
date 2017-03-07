@@ -36,7 +36,10 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
                 try {
                     int min = Integer.parseInt(verifyArgs[0]);
                     if (value.length() < min) {
-                        throw new VerifyError(Prison.get().getLocaleManager().getLocalizable("tooFewCharacters").withReplacements(valueRaw, String.valueOf(min)).localizeFor(sender));
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("tooFewCharacters")
+                                .withReplacements(valueRaw, String.valueOf(min))
+                                .localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());
@@ -56,7 +59,10 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
                 try {
                     int max = Integer.parseInt(verifyArgs[0]);
                     if (value.length() > max) {
-                        throw new VerifyError(Prison.get().getLocaleManager().getLocalizable("tooManyCharacters").withReplacements(valueRaw, String.valueOf(max)).localizeFor(sender));
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("tooManyCharacters")
+                                .withReplacements(valueRaw, String.valueOf(max))
+                                .localizeFor(sender));
                     }
                 } catch (NumberFormatException e) {
                     throw new InvalidVerifyArgument(argument.getName());

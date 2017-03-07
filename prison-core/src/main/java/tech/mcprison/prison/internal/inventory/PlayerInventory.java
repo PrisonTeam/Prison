@@ -35,41 +35,6 @@ public interface PlayerInventory extends Inventory {
     ItemStack[] getArmorContents();
 
     /**
-     * Gets the {@link ItemStack} in this inventories boots slot
-     *
-     * @return the boots (or the item in the boots slot) being worn
-     */
-    ItemStack getBoots();
-
-    /**
-     * Gets the {@link ItemStack} in this inventories chestplate slot
-     *
-     * @return the chestplate (or the item in the chestplate slot) being worn
-     */
-    ItemStack getChestplate();
-
-    /**
-     * Gets the slot number of the selected hotbar slot
-     *
-     * @return the slot number
-     */
-    int getHeldItemSlot();
-
-    /**
-     * Gets the {@link ItemStack} in this inventories helmet slot
-     *
-     * @return the helmet (or the item in the helmet slot) being worn
-     */
-    ItemStack getHelmet();
-
-    /**
-     * Gets the {@link ItemStack} in this inventories leggings slot
-     *
-     * @return the leggings (or the item in the leggings slot) being worn
-     */
-    ItemStack getLeggings();
-
-    /**
      * Sets the armor this player is wearing
      *
      * @param items a list of items to set as the players armor
@@ -77,18 +42,11 @@ public interface PlayerInventory extends Inventory {
     void setArmorContents(ItemStack[] items);
 
     /**
-     * Gets the {@link ItemStack} in the players right (main) hand
+     * Gets the {@link ItemStack} in this inventories boots slot
      *
-     * @return the item the player is holding in his/her right hand
+     * @return the boots (or the item in the boots slot) being worn
      */
-    ItemStack getItemInRightHand();
-
-    /**
-     * Gets the {@link ItemStack} in the players left (off) hand
-     *
-     * @return the item the player is holding in his/her left hand
-     */
-    ItemStack getItemInLeftHand();
+    ItemStack getBoots();
 
     /**
      * Sets the item in the players boots slot
@@ -98,6 +56,13 @@ public interface PlayerInventory extends Inventory {
     void setBoots(ItemStack boots);
 
     /**
+     * Gets the {@link ItemStack} in this inventories chestplate slot
+     *
+     * @return the chestplate (or the item in the chestplate slot) being worn
+     */
+    ItemStack getChestplate();
+
+    /**
      * Sets the item in the players chestplate slot
      *
      * @param chestplate the item to be placed in the players chestplate slot
@@ -105,11 +70,25 @@ public interface PlayerInventory extends Inventory {
     void setChestplate(ItemStack chestplate);
 
     /**
-     * Sets the item in the players leggings slot
+     * Gets the slot number of the selected hotbar slot
      *
-     * @param leggings the item to be placed in the players leggings slot
+     * @return the slot number
      */
-    void setLeggings(ItemStack leggings);
+    int getHeldItemSlot();
+
+    /**
+     * Sets the players selected hotbar slot
+     *
+     * @param slot the new slot number
+     */
+    void setHeldItemSlot(int slot);
+
+    /**
+     * Gets the {@link ItemStack} in this inventories helmet slot
+     *
+     * @return the helmet (or the item in the helmet slot) being worn
+     */
+    ItemStack getHelmet();
 
     /**
      * Sets the item in the players helmet slot
@@ -119,11 +98,25 @@ public interface PlayerInventory extends Inventory {
     void setHelmet(ItemStack helmet);
 
     /**
-     * Sets the item in the players left (off) hand
+     * Gets the {@link ItemStack} in this inventories leggings slot
      *
-     * @param stack the item to be placed in the players left hand
+     * @return the leggings (or the item in the leggings slot) being worn
      */
-    void setItemInLeftHand(ItemStack stack);
+    ItemStack getLeggings();
+
+    /**
+     * Sets the item in the players leggings slot
+     *
+     * @param leggings the item to be placed in the players leggings slot
+     */
+    void setLeggings(ItemStack leggings);
+
+    /**
+     * Gets the {@link ItemStack} in the players right (main) hand
+     *
+     * @return the item the player is holding in his/her right hand
+     */
+    ItemStack getItemInRightHand();
 
     /**
      * Sets the item in the players left (main) hand
@@ -133,9 +126,16 @@ public interface PlayerInventory extends Inventory {
     void setItemInRightHand(ItemStack stack);
 
     /**
-     * Sets the players selected hotbar slot
+     * Gets the {@link ItemStack} in the players left (off) hand
      *
-     * @param slot the new slot number
+     * @return the item the player is holding in his/her left hand
      */
-    void setHeldItemSlot(int slot);
+    ItemStack getItemInLeftHand();
+
+    /**
+     * Sets the item in the players left (off) hand
+     *
+     * @param stack the item to be placed in the players left hand
+     */
+    void setItemInLeftHand(ItemStack stack);
 }

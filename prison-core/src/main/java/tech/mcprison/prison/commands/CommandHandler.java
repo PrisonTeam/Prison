@@ -256,8 +256,8 @@ public class CommandHandler {
         }
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
-            Prison.get().getLocaleManager().getLocalizable("cantAsConsole").sendTo(sender,
-                Localizable.Level.ERROR);
+            Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                .sendTo(sender, Localizable.Level.ERROR);
             return true;
         }
 

@@ -79,21 +79,16 @@ public class SpigotInventory implements Inventory {
         return wrapper.getMaxStackSize();
     }
 
-    @Override public String getName() {
-        return wrapper.getName();
-    }
-
     @Override public void setMaxStackSize(int size) {
         wrapper.setMaxStackSize(size);
     }
 
-    @Override public boolean isEmpty() {
-        return wrapper.getContents().length == 0;
+    @Override public String getName() {
+        return wrapper.getName();
     }
 
-    @Override public void setItems(List<ItemStack> items) {
-        List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
-        items.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
+    @Override public boolean isEmpty() {
+        return wrapper.getContents().length == 0;
     }
 
     @Override public boolean contains(ItemStack itemStack) {
@@ -116,6 +111,11 @@ public class SpigotInventory implements Inventory {
         Arrays.asList(wrapper.getContents())
             .forEach(x -> prisonStacks.add(SpigotUtil.bukkitItemStackToPrison(x)));
         return (ItemStack[]) prisonStacks.toArray();
+    }
+
+    @Override public void setItems(List<ItemStack> items) {
+        List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+        items.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
     }
 
     @Override public HashMap<Integer, ItemStack> getItems(BlockType type) {

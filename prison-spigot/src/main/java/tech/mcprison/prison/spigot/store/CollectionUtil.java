@@ -27,7 +27,8 @@ import java.io.File;
  */
 public class CollectionUtil {
 
-    private CollectionUtil() {}
+    private CollectionUtil() {
+    }
 
     public static String getCollectionName(Class<?> clazz) {
         return clazz.getSimpleName();
@@ -35,7 +36,7 @@ public class CollectionUtil {
 
     public static File getCollectionDir(File parent, Class<?> clazz) {
         File dir = new File(parent, getCollectionName(clazz));
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdir();
         }
 

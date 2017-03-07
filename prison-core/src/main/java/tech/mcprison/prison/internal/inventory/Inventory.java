@@ -98,6 +98,13 @@ public interface Inventory extends Iterable<ItemStack> {
     ItemStack[] getItems();
 
     /**
+     * Sets the contents of this inventory
+     *
+     * @param items the items to replace the current contents with
+     */
+    void setItems(List<ItemStack> items);
+
+    /**
      * Creates a {@link HashMap} with items with the same {@link BlockType}
      *
      * @param type the {@link BlockType} to check the inventory contents against.
@@ -212,13 +219,6 @@ public interface Inventory extends Iterable<ItemStack> {
      * @return the title of this inventory
      */
     String getTitle();
-
-    /**
-     * Sets the contents of this inventory
-     *
-     * @param items the items to replace the current contents with
-     */
-    void setItems(List<ItemStack> items);
 
     /**
      * Gets the type of this inventory
