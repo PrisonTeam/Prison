@@ -53,6 +53,15 @@ public class Output {
     }
 
     /**
+     * Log a message with a specified {@link LogLevel}
+     */
+    public void log(String message, LogLevel level, Object... args) {
+        Prison.get().getPlatform().log("&3Prison &7» " + (level == LogLevel.INFO ?
+            "&f" :
+            level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
+    }
+
+    /**
      * Log an informational message to the console.
      *
      * @param message The informational message. May include color codes, but the default is white.
@@ -90,6 +99,14 @@ public class Output {
     }
 
     /**
+     * Send a message to a {@link CommandSender}
+     */
+    public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args){
+        String prefix = level == LogLevel.INFO ? INFO_PREFIX : level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
+        sender.sendMessage(prefix + String.format(message, args));
+    }
+
+    /**
      * Send information to a {@link CommandSender}.
      *
      * @param sender  The {@link CommandSender} receiving the message.
@@ -108,8 +125,6 @@ public class Output {
     public void sendWarn(CommandSender sender, String message, Object... args) {
         sender.sendMessage(WARNING_PREFIX + String.format(message, args));
     }
-
-    // Getters
 
     /**
      * Send an error to a {@link CommandSender}.
