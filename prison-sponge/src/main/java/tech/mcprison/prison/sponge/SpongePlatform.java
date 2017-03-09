@@ -18,6 +18,13 @@
 
 package tech.mcprison.prison.sponge;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -25,7 +32,11 @@ import org.spongepowered.api.text.title.Title;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.*;
+import tech.mcprison.prison.internal.Permission;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.Sign;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -34,126 +45,140 @@ import tech.mcprison.prison.sponge.game.SpongeWorld;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongePlatform implements Platform {
 
-    private SpongePrison plugin;
-    private Storage storage;
+  private SpongePrison plugin;
+  private Storage storage;
 
-    public SpongePlatform(SpongePrison plugin) {
-        this.plugin = plugin;
-        this.storage = new SpongeStorage();
-    }
+  public SpongePlatform(SpongePrison plugin) {
+    this.plugin = plugin;
+    this.storage = new SpongeStorage();
+  }
 
-    @Override public Optional<World> getWorld(String name) {
-        return Optional
-            .ofNullable(Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null));
-    }
+  @Override
+  public Optional<World> getWorld(String name) {
+    return Optional
+        .ofNullable(Sponge.getServer().getWorld(name).map(SpongeWorld::new).orElse(null));
+  }
 
-    @Override public Optional<Player> getPlayer(String name) {
-        return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
-            .filter(player -> player.getName().equals(name)).findFirst().map(SpongePlayer::new)
-            .orElse(null));
-    }
+  @Override
+  public Optional<Player> getPlayer(String name) {
+    return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
+        .filter(player -> player.getName().equals(name)).findFirst().map(SpongePlayer::new)
+        .orElse(null));
+  }
 
-    @Override public Optional<Player> getPlayer(UUID uuid) {
-        return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
-            .filter(player -> player.getUniqueId().equals(uuid)).findFirst().map(SpongePlayer::new)
-            .orElse(null));
-    }
+  @Override
+  public Optional<Player> getPlayer(UUID uuid) {
+    return Optional.ofNullable(Sponge.getServer().getOnlinePlayers().stream()
+        .filter(player -> player.getUniqueId().equals(uuid)).findFirst().map(SpongePlayer::new)
+        .orElse(null));
+  }
 
-    @Override public List<Player> getOnlinePlayers() {
-        return Sponge.getServer().getOnlinePlayers().stream().map(SpongePlayer::new)
-            .collect(Collectors.toList());
-    }
+  @Override
+  public List<Player> getOnlinePlayers() {
+    return Sponge.getServer().getOnlinePlayers().stream().map(SpongePlayer::new)
+        .collect(Collectors.toList());
+  }
 
-    @Override public Sign getSign(Location location) {
-        return null;
-    }
+  @Override
+  public Sign getSign(Location location) {
+    return null;
+  }
 
-    @Override public Economy getEconomy() {
-        return null;
-    }
+  @Override
+  public Economy getEconomy() {
+    return null;
+  }
 
-    @Override public Permission getPermission() {
-        return null;
-    }
+  @Override
+  public Permission getPermission() {
+    return null;
+  }
 
-    @Override public String getPluginVersion() {
-        return Sponge.getPluginManager().getPlugin("prison-sponge")
-            .orElseThrow(IllegalStateException::new).getVersion().orElse("null");
-    }
+  @Override
+  public String getPluginVersion() {
+    return Sponge.getPluginManager().getPlugin("prison-sponge")
+        .orElseThrow(IllegalStateException::new).getVersion().orElse("null");
+  }
 
-    @Override public File getPluginDirectory() {
-        return plugin.getConfigDir().toFile();
-    }
+  @Override
+  public File getPluginDirectory() {
+    return plugin.getConfigDir().toFile();
+  }
 
-    @Override public void registerCommand(PluginCommand command) {
+  @Override
+  public void registerCommand(PluginCommand command) {
+  }
 
-    }
+  @Override
+  public void unregisterCommand(String command) {
+  }
 
-    @Override public void unregisterCommand(String command) {
+  @Override
+  public List<PluginCommand> getCommands() {
+    return null;
+  }
 
-    }
+  @Override
+  public Scheduler getScheduler() {
+    return null;
+  }
 
-    @Override public List<PluginCommand> getCommands() {
-        return null;
-    }
+  @Override
+  public GUI createGUI(String title, int numRows) {
+    return null;
+  }
 
-    @Override public Scheduler getScheduler() {
-        return null;
-    }
+  @Override
+  public void toggleDoor(Location doorLocation) {
+  }
 
-    @Override public GUI createGUI(String title, int numRows) {
-        return null;
-    }
+  @Override
+  public void log(String message, Object... format) {
+    Text text = SpongeUtil.prisonTextToSponge(String.format(message, format));
+    Sponge.getServer().getConsole().sendMessage(text);
+  }
 
-    @Override public void toggleDoor(Location doorLocation) {
+  @Override
+  public Map<Capability, Boolean> getCapabilities() {
+    Map<Capability, Boolean> capabilities = new HashMap<>();
+    capabilities.put(Capability.ECONOMY, true);
+    capabilities.put(Capability.GUI, false); // For now
 
-    }
+    return capabilities;
+  }
 
-    @Override public void log(String message, Object... format) {
-        Text text = SpongeUtil.prisonTextToSponge(String.format(message, format));
-        Sponge.getServer().getConsole().sendMessage(text);
-    }
+  @Override
+  public void showTitle(Player player, String title, String subtitle, int fade) {
+    Text titleText = SpongeUtil.prisonTextToSponge(title);
+    Text subtitleText = SpongeUtil.prisonTextToSponge(subtitle);
+    Title titleObj = Title.builder().title(titleText).subtitle(subtitleText).fadeIn(fade)
+        .fadeOut(fade).build();
 
-    @Override public Map<Capability, Boolean> getCapabilities() {
-        Map<Capability, Boolean> capabilities = new HashMap<>();
-        capabilities.put(Capability.ECONOMY, true);
-        capabilities.put(Capability.GUI, false); // For now
-        return capabilities;
-    }
+    Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
+        .sendTitle(titleObj);
+  }
 
-    @Override public void showTitle(Player player, String title, String subtitle, int fade) {
-        Text titleText = SpongeUtil.prisonTextToSponge(title);
-        Text subtitleText = SpongeUtil.prisonTextToSponge(subtitle);
-        Title titleObj =
-            Title.builder().title(titleText).subtitle(subtitleText).fadeIn(fade).fadeOut(fade)
-                .build();
+  @Override
+  public void showActionBar(Player player, String text) {
+    Text textObj = SpongeUtil.prisonTextToSponge(text);
 
-        Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
-            .sendTitle(titleObj);
-    }
+    Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
+        .sendMessage(ChatTypes.ACTION_BAR, textObj);
+  }
 
-    @Override public void showActionBar(Player player, String text) {
-        Text textObj = SpongeUtil.prisonTextToSponge(text);
+  @Override
+  public ScoreboardManager getScoreboardManager() {
+    return null;
+  }
 
-        Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
-            .sendMessage(ChatTypes.ACTION_BAR, textObj);
-    }
-
-    @Override public ScoreboardManager getScoreboardManager() {
-        return null;
-    }
-
-    @Override public Storage getStorage() {
-        return storage;
-    }
+  @Override
+  public Storage getStorage() {
+    return storage;
+  }
 
 }

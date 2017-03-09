@@ -18,11 +18,10 @@
 
 package tech.mcprison.prison.output;
 
+import java.util.LinkedList;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.Text;
-
-import java.util.LinkedList;
 
 /**
  * A chat display is a utility for creating uniform and good-looking
@@ -33,57 +32,57 @@ import java.util.LinkedList;
  */
 public class ChatDisplay {
 
-    /*
-     * Fields & Constants
-     */
+  /*
+   * Fields & Constants
+   */
 
-    private String title;
-    private LinkedList<DisplayComponent> displayComponents;
+  private String title;
+  private LinkedList<DisplayComponent> displayComponents;
 
-    /*
-     * Constructor
-     */
+  /*
+   * Constructor
+   */
 
-    public ChatDisplay(String title) {
-        this.title = Text.titleize(title);
-        this.displayComponents = new LinkedList<>();
-    }
+  public ChatDisplay(String title) {
+    this.title = Text.titleize(title);
+    this.displayComponents = new LinkedList<>();
+  }
 
-    /*
-     * Methods
-     */
+  /*
+   * Methods
+   */
 
-    public ChatDisplay addComponent(DisplayComponent component) {
-        component.setDisplay(this);
-        displayComponents.add(component);
-        return this;
-    }
+  public ChatDisplay addComponent(DisplayComponent component) {
+    component.setDisplay(this);
+    displayComponents.add(component);
+    return this;
+  }
 
-    public ChatDisplay text(String text, Object... args) {
-        addComponent(new TextComponent(text, args));
-        return this;
-    }
+  public ChatDisplay text(String text, Object... args) {
+    addComponent(new TextComponent(text, args));
+    return this;
+  }
 
-    public ChatDisplay emptyLine() {
-        addComponent(new TextComponent(""));
-        return this;
-    }
+  public ChatDisplay emptyLine() {
+    addComponent(new TextComponent(""));
+    return this;
+  }
 
-    public void send(CommandSender sender) {
-        sender.sendMessage(title);
-        for (DisplayComponent component : displayComponents) {
+  public void send(CommandSender sender) {
+    sender.sendMessage(title);
+    for (DisplayComponent component : displayComponents) {
 
-            if (component instanceof FancyMessageComponent) {
-                if (sender instanceof Player) {
-                    sender.sendMessage(component.text());
-                } else {
-                    sender.sendMessage(((FancyMessageComponent) component).plainText());
-                }
-            } else {
-                sender.sendMessage(component.text());
-            }
-
+      if (component instanceof FancyMessageComponent) {
+        if (sender instanceof Player) {
+          sender.sendMessage(component.text());
+        } else {
+          sender.sendMessage(((FancyMessageComponent) component).plainText());
         }
+      } else {
+        sender.sendMessage(component.text());
+      }
 
     }
+  }
+
 }

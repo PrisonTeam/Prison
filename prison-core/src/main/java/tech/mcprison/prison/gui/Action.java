@@ -26,6 +26,6 @@ package tech.mcprison.prison.gui;
  */
 public interface Action {
 
-    void run(ClickedButton button);
+  void run(ClickedButton button);
 
 }

@@ -18,106 +18,110 @@
 
 package tech.mcprison.prison.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import tech.mcprison.prison.Prison;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 public class Arguments {
-    private List<String> arguments;
-    private int argCounter = 0;
 
-    private Map<Flag, List<String>> flags = new HashMap<Flag, List<String>>();
-    private Map<Flag, Integer> flagCounter = new HashMap<Flag, Integer>();
+  private List<String> arguments;
+  private int argCounter = 0;
 
-    public Arguments(String[] args, Map<String, Flag> flags) throws CommandError {
-        List<String> largs = new ArrayList<String>(Arrays.asList(args));
-        //Find the flags
-        for (Entry<String, Flag> entry : flags.entrySet()) {
-            Flag flag = entry.getValue();
+  private Map<Flag, List<String>> flags = new HashMap<Flag, List<String>>();
+  private Map<Flag, Integer> flagCounter = new HashMap<Flag, Integer>();
 
-            int flagIndex = largs.indexOf("-" + flag.getIdentifier());
-            if (flagIndex == -1) {
-                continue;
-            }
+  public Arguments(String[] args, Map<String, Flag> flags) throws CommandError {
+    List<String> largs = new ArrayList<String>(Arrays.asList(args));
+    //Find the flags
+    for (Entry<String, Flag> entry : flags.entrySet()) {
+      Flag flag = entry.getValue();
 
-            largs.remove(flagIndex);
+      int flagIndex = largs.indexOf("-" + flag.getIdentifier());
+      if (flagIndex == -1) {
+        continue;
+      }
 
-            int endIndex = flag.getArguments().size() + flagIndex;
+      largs.remove(flagIndex);
 
-            if (endIndex > largs.size()) {
-                //FIXME Since we can't access the command sender from here, the following string is currently not going to be localized.
-                throw new CommandError(
-                    Prison.get().getLocaleManager().getLocalizable("missingFlagArgument")
-                        .withReplacements(flag.getIdentifier()).localize());
-            }
+      int endIndex = flag.getArguments().size() + flagIndex;
 
-            flagCounter.put(flag, 0);
+      if (endIndex > largs.size()) {
+        //FIXME Since we can't access the command sender from here, the following string is currently not going to be localized.
+        throw new CommandError(
+            Prison.get().getLocaleManager().getLocalizable("missingFlagArgument")
+                .withReplacements(flag.getIdentifier()).localize());
+      }
 
-            List<String> flagArgs = new ArrayList<String>();
-            this.flags.put(flag, flagArgs);
+      flagCounter.put(flag, 0);
 
-            for (int i = flagIndex; i < endIndex; i++) {
-                flagArgs.add(largs.remove(flagIndex));
-            }
-        }
+      List<String> flagArgs = new ArrayList<String>();
+      this.flags.put(flag, flagArgs);
 
-        //The rest is normal arguments
-        arguments = largs;
+      for (int i = flagIndex; i < endIndex; i++) {
+        flagArgs.add(largs.remove(flagIndex));
+      }
     }
 
-    public boolean flagExists(Flag flag) {
-        return flags.get(flag) != null;
+    //The rest is normal arguments
+    arguments = largs;
+  }
+
+  public boolean flagExists(Flag flag) {
+    return flags.get(flag) != null;
+  }
+
+  public boolean hasNext() {
+    return argCounter < size();
+  }
+
+  public boolean hasNext(Flag flag) {
+    Integer c = flagCounter.get(flag);
+    if (c == null) {
+      return false;
     }
 
-    public boolean hasNext() {
-        return argCounter < size();
+    return c < size(flag);
+  }
+
+  public String nextArgument() {
+    String arg = arguments.get(argCounter);
+    argCounter++;
+    return arg;
+  }
+
+  public String nextFlagArgument(Flag flag) {
+    List<String> args = flags.get(flag);
+
+    if (args == null) {
+      return null;
     }
 
-    public boolean hasNext(Flag flag) {
-        Integer c = flagCounter.get(flag);
-        if (c == null) {
-            return false;
-        }
+    return args.get(flagCounter.put(flag, flagCounter.get(flag) + 1));
+  }
 
-        return c < size(flag);
+  public int over() {
+    return size() - argCounter;
+  }
+
+  public int over(Flag flag) {
+    return size(flag) - flagCounter.get(flag);
+  }
+
+  public int size() {
+    return arguments.size();
+  }
+
+  public int size(Flag flag) {
+    List<String> args = flags.get(flag);
+
+    if (args == null) {
+      return 0;
     }
 
-    public String nextArgument() {
-        String arg = arguments.get(argCounter);
-        argCounter++;
-        return arg;
-    }
-
-    public String nextFlagArgument(Flag flag) {
-        List<String> args = flags.get(flag);
-
-        if (args == null) {
-            return null;
-        }
-
-        return args.get(flagCounter.put(flag, flagCounter.get(flag) + 1));
-    }
-
-    public int over() {
-        return size() - argCounter;
-    }
-
-    public int over(Flag flag) {
-        return size(flag) - flagCounter.get(flag);
-    }
-
-    public int size() {
-        return arguments.size();
-    }
-
-    public int size(Flag flag) {
-        List<String> args = flags.get(flag);
-
-        if (args == null) {
-            return 0;
-        }
-
-        return args.size();
-    }
+    return args.size();
+  }
 }

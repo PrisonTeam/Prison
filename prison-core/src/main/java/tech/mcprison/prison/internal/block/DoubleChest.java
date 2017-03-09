@@ -25,9 +25,11 @@ import tech.mcprison.prison.util.Location;
  * Created by DMP9 on 04/02/2017.
  */
 public interface DoubleChest extends InventoryHolder {
-    InventoryHolder getLeftSide();
 
-    InventoryHolder getRightSide();
+  InventoryHolder getLeftSide();
 
-    Location getLocation();
+  InventoryHolder getRightSide();
+
+  Location getLocation();
+
 }

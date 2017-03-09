@@ -30,28 +30,31 @@ import tech.mcprison.prison.internal.events.Cancelable;
  */
 public class PlayerPickUpItemEvent implements Cancelable {
 
-    private Player player;
-    private ItemStack itemStack;
-    private boolean canceled = false;
+  private Player player;
+  private ItemStack itemStack;
+  private boolean canceled = false;
 
-    public PlayerPickUpItemEvent(Player player, ItemStack itemStack) {
-        this.player = player;
-        this.itemStack = itemStack;
-    }
+  public PlayerPickUpItemEvent(Player player, ItemStack itemStack) {
+    this.player = player;
+    this.itemStack = itemStack;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public Player getPlayer() {
+    return player;
+  }
 
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
+  public ItemStack getItemStack() {
+    return itemStack;
+  }
 
-    @Override public boolean isCanceled() {
-        return canceled;
-    }
+  @Override
+  public boolean isCanceled() {
+    return canceled;
+  }
 
-    @Override public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
+  @Override
+  public void setCanceled(boolean canceled) {
+    this.canceled = canceled;
+  }
+
 }

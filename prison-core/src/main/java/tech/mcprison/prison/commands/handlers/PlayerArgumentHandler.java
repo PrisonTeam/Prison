@@ -19,31 +19,37 @@
 package tech.mcprison.prison.commands.handlers;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.*;
+import tech.mcprison.prison.commands.ArgumentHandler;
+import tech.mcprison.prison.commands.ArgumentVariable;
+import tech.mcprison.prison.commands.CommandArgument;
+import tech.mcprison.prison.commands.CommandError;
+import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 
 public class PlayerArgumentHandler extends ArgumentHandler<Player> {
-    public PlayerArgumentHandler() {
-        addVariable("sender", "The command executor", new ArgumentVariable<Player>() {
-            @Override
-            public Player var(CommandSender sender, CommandArgument argument, String varName)
-                throws CommandError {
-                if (!(sender instanceof Player)) {
-                    throw new CommandError(
-                        Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                            .localizeFor(sender));
-                }
 
-                return ((Player) sender);
-            }
-        });
-    }
+  public PlayerArgumentHandler() {
+    addVariable("sender", "The command executor", new ArgumentVariable<Player>() {
+      @Override
+      public Player var(CommandSender sender, CommandArgument argument, String varName)
+          throws CommandError {
+        if (!(sender instanceof Player)) {
+          throw new CommandError(
+              Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                  .localizeFor(sender));
+        }
 
-    @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
-        throws TransformError {
-        return Prison.get().getPlatform().getPlayer(value).orElseThrow(() -> new TransformError(
-            Prison.get().getLocaleManager().getLocalizable("playerNotOnline")
-                .withReplacements(value).localizeFor(sender)));
-    }
+        return ((Player) sender);
+      }
+    });
+  }
+
+  @Override
+  public Player transform(CommandSender sender, CommandArgument argument, String value)
+      throws TransformError {
+    return Prison.get().getPlatform().getPlayer(value).orElseThrow(() -> new TransformError(
+        Prison.get().getLocaleManager().getLocalizable("playerNotOnline")
+            .withReplacements(value).localizeFor(sender)));
+  }
 }

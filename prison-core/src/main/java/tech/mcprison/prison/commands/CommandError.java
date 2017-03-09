@@ -19,24 +19,25 @@
 package tech.mcprison.prison.commands;
 
 public class CommandError extends Exception {
-    private static final long serialVersionUID = 1L;
 
-    private boolean showUsage;
+  private static final long serialVersionUID = 1L;
 
-    public CommandError(String msg) {
-        this(msg, false);
-    }
+  private boolean showUsage;
 
-    public CommandError(String msg, boolean showUsage) {
-        super(msg);
-        this.showUsage = showUsage;
-    }
+  public CommandError(String msg) {
+    this(msg, false);
+  }
 
-    public String getColorizedMessage() {
-        return getMessage();
-    }
+  public CommandError(String msg, boolean showUsage) {
+    super(msg);
+    this.showUsage = showUsage;
+  }
 
-    public boolean showUsage() {
-        return showUsage;
-    }
+  public String getColorizedMessage() {
+    return getMessage();
+  }
+
+  public boolean showUsage() {
+    return showUsage;
+  }
 }

@@ -19,6 +19,8 @@
 package tech.mcprison.prison.sponge.game;
 
 import com.flowpowered.math.vector.Vector3d;
+import java.util.Optional;
+import java.util.UUID;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -27,72 +29,80 @@ import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
-import java.util.Optional;
-import java.util.UUID;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongePlayer extends SpongeCommandSender implements Player {
 
-    org.spongepowered.api.entity.living.player.Player spongePlayer;
+  private org.spongepowered.api.entity.living.player.Player spongePlayer;
 
-    public SpongePlayer(org.spongepowered.api.entity.living.player.Player spongePlayer) {
-        super(spongePlayer);
-        this.spongePlayer = spongePlayer;
-    }
+  public SpongePlayer(org.spongepowered.api.entity.living.player.Player spongePlayer) {
+    super(spongePlayer);
+    this.spongePlayer = spongePlayer;
+  }
 
-    @Override public UUID getUUID() {
-        return spongePlayer.getUniqueId();
-    }
+  @Override
+  public UUID getUUID() {
+    return spongePlayer.getUniqueId();
+  }
 
-    @Override public String getDisplayName() {
-        return SpongeUtil.spongeTextToPrison(spongePlayer.getDisplayNameData().displayName().get());
-    }
+  @Override
+  public String getDisplayName() {
+    return SpongeUtil.spongeTextToPrison(spongePlayer.getDisplayNameData().displayName().get());
+  }
 
-    @Override public void setDisplayName(String newDisplayName) {
-        spongePlayer.getDisplayNameData().displayName()
-            .set(SpongeUtil.prisonTextToSponge(newDisplayName));
-    }
+  @Override
+  public void setDisplayName(String newDisplayName) {
+    spongePlayer.getDisplayNameData().displayName()
+        .set(SpongeUtil.prisonTextToSponge(newDisplayName));
+  }
 
-    @Override public void give(ItemStack itemStack) {
+  @Override
+  public void give(ItemStack itemStack) {
+  }
 
-    }
+  @Override
+  public Location getLocation() {
+    return SpongeUtil.spongeLocationToPrison(spongePlayer.getLocation());
+  }
 
-    @Override public Location getLocation() {
-        return SpongeUtil.spongeLocationToPrison(spongePlayer.getLocation());
-    }
+  @Override
+  public void teleport(Location location) {
+    spongePlayer.setLocationAndRotation(SpongeUtil.prisonLocationToSponge(location),
+        new Vector3d(location.getPitch(), location.getYaw(), 0));
+  }
 
-    @Override public void teleport(Location location) {
-        spongePlayer.setLocationAndRotation(SpongeUtil.prisonLocationToSponge(location),
-            new Vector3d(location.getPitch(), location.getYaw(), 0));
-    }
+  @Override
+  public boolean isOnline() {
+    return spongePlayer.isOnline();
+  }
 
-    @Override public boolean isOnline() {
-        return spongePlayer.isOnline();
-    }
+  @Override
+  public void setScoreboard(Scoreboard scoreboard) {
+  }
 
-    @Override public void setScoreboard(Scoreboard scoreboard) {
+  @Override
+  public Gamemode getGamemode() {
+    return null;
+  }
 
-    }
+  @Override
+  public void setGamemode(Gamemode gamemode) {
+  }
 
-    @Override public Gamemode getGamemode() {
-        return null;
-    }
+  @Override
+  public Optional<String> getLocale() {
+    return null;
+  }
 
-    @Override public void setGamemode(Gamemode gamemode) {
+  @Override
+  public boolean doesSupportColors() {
+    return spongePlayer.isChatColorsEnabled();
+  }
 
-    }
+  @Override
+  public Inventory getInventory() {
+    return null;
+  }
 
-    @Override public Optional<String> getLocale() {
-        return null;
-    }
-
-    @Override public boolean doesSupportColors() {
-        return spongePlayer.isChatColorsEnabled();
-    }
-
-    @Override public Inventory getInventory() {
-        return null;
-    }
 }

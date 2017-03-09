@@ -29,25 +29,27 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
  */
 public class VaultPermission implements Permission {
 
-    net.milkbowl.vault.permission.Permission permissions = null;
+  net.milkbowl.vault.permission.Permission permissions = null;
 
-    public VaultPermission() {
-        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permissions = permissionProvider.getProvider();
-        }
+  public VaultPermission() {
+    RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
+        Bukkit.getServer().getServicesManager()
+            .getRegistration(net.milkbowl.vault.permission.Permission.class);
+    if (permissionProvider != null) {
+      permissions = permissionProvider.getProvider();
     }
+  }
 
-    @Override public void addPermission(Player holder, String permission) {
-        SpigotPlayer player = (SpigotPlayer) holder;
-        this.permissions.playerAdd(player.getWrapper(), permission);
-    }
+  @Override
+  public void addPermission(Player holder, String permission) {
+    SpigotPlayer player = (SpigotPlayer) holder;
+    this.permissions.playerAdd(player.getWrapper(), permission);
+  }
 
-    @Override public void removePermission(Player holder, String permission) {
-        SpigotPlayer player = (SpigotPlayer) holder;
-        this.permissions.playerRemove(player.getWrapper(), permission);
-    }
+  @Override
+  public void removePermission(Player holder, String permission) {
+    SpigotPlayer player = (SpigotPlayer) holder;
+    this.permissions.playerRemove(player.getWrapper(), permission);
+  }
 
 }

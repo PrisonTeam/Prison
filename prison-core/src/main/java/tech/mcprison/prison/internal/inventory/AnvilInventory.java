@@ -25,4 +25,5 @@ package tech.mcprison.prison.internal.inventory;
  * @since API 0.1
  */
 public interface AnvilInventory extends Inventory {
+
 }

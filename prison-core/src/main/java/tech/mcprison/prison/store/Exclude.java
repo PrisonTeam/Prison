@@ -18,7 +18,11 @@
 
 package tech.mcprison.prison.store;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotate a field with this to exclude it from serialization.
@@ -26,6 +30,9 @@ import java.lang.annotation.*;
  * @author Faizaan A. Datoo
  * @since 1.0
  */
-@Retention(RetentionPolicy.RUNTIME) @Documented @Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target(ElementType.FIELD)
 public @interface Exclude {
+
 }

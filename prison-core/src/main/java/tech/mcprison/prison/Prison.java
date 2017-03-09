@@ -19,6 +19,7 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
+import java.io.File;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -30,8 +31,6 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
-import java.io.File;
-
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
  * {@link Prison#get()} method, however in order to use the core libraries, you must call
@@ -42,167 +41,167 @@ import java.io.File;
  */
 public class Prison implements IDataFolderOwner {
 
-    // Singleton
+  // Singleton
 
-    public static final int API_LEVEL = 0;
-    private static Prison instance = null;
+  public static final int API_LEVEL = 0;
+  private static Prison instance = null;
 
-    // Fields
-    private Platform platform;
-    private File dataFolder;
-    private ModuleManager moduleManager;
-    private CommandHandler commandHandler;
-    private SelectionManager selectionManager;
-    private EventBus eventBus;
-    private LocaleManager localeManager;
-    private ItemManager itemManager;
+  // Fields
+  private Platform platform;
+  private File dataFolder;
+  private ModuleManager moduleManager;
+  private CommandHandler commandHandler;
+  private SelectionManager selectionManager;
+  private EventBus eventBus;
+  private LocaleManager localeManager;
+  private ItemManager itemManager;
 
-    /**
-     * Gets the current instance of this class. <p> An instance will always be available after
-     * the implementation invokes the {@link Prison#init(Platform)} method.
-     *
-     * @return an instance of Prison.
-     */
-    public static Prison get() {
-        if (instance == null) {
-            instance = new Prison();
-        }
-        return instance;
+  /**
+   * Gets the current instance of this class. <p> An instance will always be available after
+   * the implementation invokes the {@link Prison#init(Platform)} method.
+   *
+   * @return an instance of Prison.
+   */
+  public static Prison get() {
+    if (instance == null) {
+      instance = new Prison();
     }
+    return instance;
+  }
 
-    // Public methods
+  // Public methods
 
-    /**
-     * Initializes prison-core. In the implementations, this should be called when the plugin is
-     * enabled. After this is called, every getter in this class will return a value.
-     * <p>
-     * Note that modules <b>should not call this method</b>. This is solely for the implementations.
-     */
-    public void init(Platform platform) {
-        long startTime = System.currentTimeMillis();
+  /**
+   * Initializes prison-core. In the implementations, this should be called when the plugin is
+   * enabled. After this is called, every getter in this class will return a value.
+   * <p>
+   * Note that modules <b>should not call this method</b>. This is solely for the implementations.
+   */
+  public void init(Platform platform) {
+    long startTime = System.currentTimeMillis();
 
-        this.platform = platform;
-        Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
-        Output.get().logInfo("Enable start...");
+    this.platform = platform;
+    Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
+    Output.get().logInfo("Enable start...");
 
-        // Initialize various parts of the API. The magic happens here :)
-        initDataFolder();
-        initManagers();
+    // Initialize various parts of the API. The magic happens here :)
+    initDataFolder();
+    initManagers();
 
-        this.commandHandler.registerCommands(new PrisonCommand());
+    this.commandHandler.registerCommands(new PrisonCommand());
 
-        Output.get()
-            .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                (System.currentTimeMillis() - startTime));
+    Output.get()
+        .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+            (System.currentTimeMillis() - startTime));
+  }
+
+  // Initialization steps
+
+  private void initDataFolder() {
+    // Creates the /Prison/Core directory, for core configuration.
+    this.dataFolder = new File(platform.getPluginDirectory(), "Core");
+    if (!this.dataFolder.exists()) {
+      this.dataFolder.mkdir();
     }
+  }
 
-    // Initialization steps
+  private void initManagers() {
+    // Now we initialize the API
+    this.localeManager = new LocaleManager(this);
+    this.eventBus = new EventBus(new EventExceptionHandler());
+    this.moduleManager = new ModuleManager();
+    this.commandHandler = new CommandHandler();
+    this.selectionManager = new SelectionManager();
+    this.itemManager = new ItemManager();
+  }
 
-    private void initDataFolder() {
-        // Creates the /Prison/Core directory, for core configuration.
-        this.dataFolder = new File(platform.getPluginDirectory(), "Core");
-        if (!this.dataFolder.exists()) {
-            this.dataFolder.mkdir();
-        }
-    }
+  // End initialization steps
 
-    private void initManagers() {
-        // Now we initialize the API
-        this.localeManager = new LocaleManager(this);
-        this.eventBus = new EventBus(new EventExceptionHandler());
-        this.moduleManager = new ModuleManager();
-        this.commandHandler = new CommandHandler();
-        this.selectionManager = new SelectionManager();
-        this.itemManager = new ItemManager();
-    }
+  /**
+   * Finalizes and unregisters instances in prison-core. In the implementations, this should be
+   * called when the plugin is disabled.
+   */
+  public void deinit() {
+    moduleManager.unregisterAll();
+  }
 
-    // End initialization steps
+  // Getters
 
-    /**
-     * Finalizes and unregisters instances in prison-core. In the implementations, this should be
-     * called when the plugin is disabled.
-     */
-    public void deinit() {
-        moduleManager.unregisterAll();
-    }
+  /**
+   * Returns the Platform in use, which contains methods for interacting with the Minecraft server
+   * on whichever implementation is currently being used.
+   *
+   * @return the {@link Platform}.
+   */
+  public Platform getPlatform() {
+    return platform;
+  }
 
-    // Getters
+  /**
+   * Returns the core data folder, which is located at "/plugins/Prison/Core". This contains the
+   * core config.json and messages.json files, as well as other global data.
+   *
+   * @return the {@link File}.
+   */
+  public File getDataFolder() {
+    return dataFolder;
+  }
 
-    /**
-     * Returns the Platform in use, which contains methods for interacting with the Minecraft server
-     * on whichever implementation is currently being used.
-     *
-     * @return the {@link Platform}.
-     */
-    public Platform getPlatform() {
-        return platform;
-    }
+  /**
+   * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
+   * uses to run its command library, and the like. {@link Module}s have their own {@link
+   * LocaleManager}s, so that each module can have independent localization.
+   *
+   * @return The global locale manager instance.
+   */
+  public LocaleManager getLocaleManager() {
+    return localeManager;
+  }
 
-    /**
-     * Returns the core data folder, which is located at "/plugins/Prison/Core". This contains the
-     * core config.json and messages.json files, as well as other global data.
-     *
-     * @return the {@link File}.
-     */
-    public File getDataFolder() {
-        return dataFolder;
-    }
+  /**
+   * Returns the event bus, where event listeners can be registered and events can be posted.
+   *
+   * @return The {@link EventBus}.
+   */
+  public EventBus getEventBus() {
+    return eventBus;
+  }
 
-    /**
-     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison uses
-     * to run its command library, and the like. {@link Module}s have their own {@link LocaleManager}s, so that
-     * each module can have independent localization.
-     *
-     * @return The global locale manager instance.
-     */
-    public LocaleManager getLocaleManager() {
-        return localeManager;
-    }
+  /**
+   * Returns the module manager, which stores instances of all registered {@link
+   * Module}s and manages their state.
+   *
+   * @return The {@link ModuleManager}.
+   */
+  public ModuleManager getModuleManager() {
+    return moduleManager;
+  }
 
-    /**
-     * Returns the event bus, where event listeners can be registered and events can be posted.
-     *
-     * @return The {@link EventBus}.
-     */
-    public EventBus getEventBus() {
-        return eventBus;
-    }
+  /**
+   * Returns the command handler, where command methods can be registered using the {@link
+   * CommandHandler#registerCommands(Object)} method.
+   *
+   * @return The {@link CommandHandler}.
+   */
+  public CommandHandler getCommandHandler() {
+    return commandHandler;
+  }
 
-    /**
-     * Returns the module manager, which stores instances of all registered {@link
-     * Module}s and manages their state.
-     *
-     * @return The {@link ModuleManager}.
-     */
-    public ModuleManager getModuleManager() {
-        return moduleManager;
-    }
+  /**
+   * Returns the selection manager, which stores each player's current selection using Prison's
+   * selection wand.
+   *
+   * @return The {@link SelectionManager}.
+   */
+  public SelectionManager getSelectionManager() {
+    return selectionManager;
+  }
 
-    /**
-     * Returns the command handler, where command methods can be registered using the {@link
-     * CommandHandler#registerCommands(Object)} method.
-     *
-     * @return The {@link CommandHandler}.
-     */
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
-    }
-
-    /**
-     * Returns the selection manager, which stores each player's current selection using Prison's
-     * selection wand.
-     *
-     * @return The {@link SelectionManager}.
-     */
-    public SelectionManager getSelectionManager() {
-        return selectionManager;
-    }
-
-    /**
-     * Returns the item manager, which manages the "friendly" names of items
-     */
-    public ItemManager getItemManager() {
-        return itemManager;
-    }
+  /**
+   * Returns the item manager, which manages the "friendly" names of items
+   */
+  public ItemManager getItemManager() {
+    return itemManager;
+  }
 
 }

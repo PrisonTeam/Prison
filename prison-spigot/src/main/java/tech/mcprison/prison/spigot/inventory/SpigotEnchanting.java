@@ -26,17 +26,21 @@ import tech.mcprison.prison.spigot.SpigotUtil;
  * Created by DMP9 on 04/02/2017.
  */
 public class SpigotEnchanting extends SpigotInventory implements EnchantingInventory {
-    public SpigotEnchanting(org.bukkit.inventory.EnchantingInventory wrapper) {
-        super(wrapper);
-    }
 
-    @Override public ItemStack getItem() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.EnchantingInventory) getWrapper()).getItem());
-    }
+  public SpigotEnchanting(org.bukkit.inventory.EnchantingInventory wrapper) {
+    super(wrapper);
+  }
 
-    @Override public void setItem(ItemStack item) {
-        ((org.bukkit.inventory.EnchantingInventory) getWrapper())
-            .setItem(SpigotUtil.prisonItemStackToBukkit(item));
-    }
+  @Override
+  public ItemStack getItem() {
+    return SpigotUtil.bukkitItemStackToPrison(
+        ((org.bukkit.inventory.EnchantingInventory) getWrapper()).getItem());
+  }
+
+  @Override
+  public void setItem(ItemStack item) {
+    ((org.bukkit.inventory.EnchantingInventory) getWrapper())
+        .setItem(SpigotUtil.prisonItemStackToBukkit(item));
+  }
+
 }

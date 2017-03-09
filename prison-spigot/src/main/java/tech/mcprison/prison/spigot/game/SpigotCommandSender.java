@@ -29,46 +29,53 @@ import tech.mcprison.prison.util.Text;
  */
 public class SpigotCommandSender implements CommandSender {
 
-    private org.bukkit.command.CommandSender bukkitSender;
+  private org.bukkit.command.CommandSender bukkitSender;
 
-    public SpigotCommandSender(org.bukkit.command.CommandSender sender) {
-        this.bukkitSender = sender;
-    }
+  public SpigotCommandSender(org.bukkit.command.CommandSender sender) {
+    this.bukkitSender = sender;
+  }
 
-    @Override public String getName() {
-        return bukkitSender.getName();
-    }
+  @Override
+  public String getName() {
+    return bukkitSender.getName();
+  }
 
-    @Override public void dispatchCommand(String command) {
-        Bukkit.getServer().dispatchCommand(bukkitSender, command);
-    }
+  @Override
+  public void dispatchCommand(String command) {
+    Bukkit.getServer().dispatchCommand(bukkitSender, command);
+  }
 
-    @Override public boolean doesSupportColors() {
-        return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
-    }
+  @Override
+  public boolean doesSupportColors() {
+    return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
+  }
 
-    @Override public boolean hasPermission(String perm) {
-        return bukkitSender.hasPermission(perm);
-    }
+  @Override
+  public boolean hasPermission(String perm) {
+    return bukkitSender.hasPermission(perm);
+  }
 
-    @Override public void sendMessage(String message) {
-        bukkitSender.sendMessage(Text.translateAmpColorCodes(message));
-    }
+  @Override
+  public void sendMessage(String message) {
+    bukkitSender.sendMessage(Text.translateAmpColorCodes(message));
+  }
 
-    @Override public void sendMessage(String[] messages) {
-        for (String s : messages) {
-            sendMessage(s);
-        }
+  @Override
+  public void sendMessage(String[] messages) {
+    for (String s : messages) {
+      sendMessage(s);
     }
+  }
 
-    @Override public void sendRaw(String json) {
-        if (bukkitSender instanceof Player) {
-            ((Player) bukkitSender).sendRaw(json);
-        }
+  @Override
+  public void sendRaw(String json) {
+    if (bukkitSender instanceof Player) {
+      ((Player) bukkitSender).sendRaw(json);
     }
+  }
 
-    public org.bukkit.command.CommandSender getWrapper() {
-        return bukkitSender;
-    }
+  public org.bukkit.command.CommandSender getWrapper() {
+    return bukkitSender;
+  }
 
 }

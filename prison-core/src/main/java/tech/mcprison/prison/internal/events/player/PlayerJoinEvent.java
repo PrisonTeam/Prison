@@ -28,14 +28,14 @@ import tech.mcprison.prison.internal.Player;
  */
 public class PlayerJoinEvent {
 
-    private Player player;
+  private Player player;
 
-    public PlayerJoinEvent(Player player) {
-        this.player = player;
-    }
+  public PlayerJoinEvent(Player player) {
+    this.player = player;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public Player getPlayer() {
+    return player;
+  }
 
 }

@@ -23,14 +23,14 @@ package tech.mcprison.prison.internal.scoreboard;
  */
 public interface Objective {
 
-    DisplaySlot getDisplaySlot();
+  DisplaySlot getDisplaySlot();
 
-    void setDisplaySlot(DisplaySlot displaySlot);
+  void setDisplaySlot(DisplaySlot displaySlot);
 
-    String getDisplayName();
+  String getDisplayName();
 
-    void setDisplayName(String displayName);
+  void setDisplayName(String displayName);
 
-    Score getScore(String entry);
+  Score getScore(String entry);
 
 }

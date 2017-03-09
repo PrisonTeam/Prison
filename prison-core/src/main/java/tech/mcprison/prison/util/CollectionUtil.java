@@ -35,32 +35,32 @@ public class CollectionUtil {
      * Constructor
      */
 
-    private CollectionUtil() {
-    }
+  private CollectionUtil() {
+  }
 
     /*
      * Methods
      */
 
-    /**
-     * Creates a map out of an infinite amount of parameters. Every odd parameter (1, 3, 5, etc.) is a key,
-     * and every even parameter (2, 4, 6, etc.) is a value.
-     *
-     * @return A {@link Map}.
-     */
-    public static <K, V> Map<K, V> map(K key1, V value1, Object... objects) {
-        Map<K, V> ret = new LinkedHashMap<K, V>();
+  /**
+   * Creates a map out of an infinite amount of parameters. Every odd parameter (1, 3, 5, etc.) is a
+   * key, and every even parameter (2, 4, 6, etc.) is a value.
+   *
+   * @return A {@link Map}.
+   */
+  public static <K, V> Map<K, V> map(K key1, V value1, Object... objects) {
+    Map<K, V> ret = new LinkedHashMap<K, V>();
 
-        ret.put(key1, value1);
+    ret.put(key1, value1);
 
-        Iterator<Object> iter = Arrays.asList(objects).iterator();
-        while (iter.hasNext()) {
-            K key = (K) iter.next();
-            V value = (V) iter.next();
-            ret.put(key, value);
-        }
-
-        return ret;
+    Iterator<Object> iter = Arrays.asList(objects).iterator();
+    while (iter.hasNext()) {
+      K key = (K) iter.next();
+      V value = (V) iter.next();
+      ret.put(key, value);
     }
+
+    return ret;
+  }
 
 }

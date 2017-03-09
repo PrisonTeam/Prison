@@ -18,8 +18,19 @@
 
 package tech.mcprison.prison.commands;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.handlers.*;
+import tech.mcprison.prison.commands.handlers.BlockArgumentHandler;
+import tech.mcprison.prison.commands.handlers.DoubleArgumentHandler;
+import tech.mcprison.prison.commands.handlers.IntegerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.PlayerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.StringArgumentHandler;
+import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
@@ -27,242 +38,240 @@ import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
 public class CommandHandler {
 
-    // TODO unregisterCommands method, to fix argument duplication on module re-enable
+  // TODO unregisterCommands method, to fix argument duplication on module re-enable
 
-    private Prison plugin;
-    private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
-        new HashMap<Class<?>, ArgumentHandler<?>>();
-    private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
+  private Prison plugin;
+  private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
+      new HashMap<Class<?>, ArgumentHandler<?>>();
+  private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
-    private PermissionHandler permissionHandler = (sender, permissions) -> {
-        for (String perm : permissions) {
-            if (!sender.hasPermission(perm)) {
-                return false;
-            }
+  private PermissionHandler permissionHandler = (sender, permissions) -> {
+    for (String perm : permissions) {
+      if (!sender.hasPermission(perm)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  private HelpHandler helpHandler = new HelpHandler() {
+    private String formatArgument(CommandArgument argument) {
+      String def = argument.getDefault();
+      if (def.equals(" ")) {
+        def = "";
+      } else if (def.startsWith("?")) {
+        String varName = def.substring(1);
+        def = argument.getHandler().getVariableUserFriendlyName(varName);
+        if (def == null) {
+          throw new IllegalArgumentException(
+              "The ArgumentVariable '" + varName + "' is not registered.");
         }
-        return true;
-    };
+        def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
+      } else {
+        def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
+      }
 
-    private HelpHandler helpHandler = new HelpHandler() {
-        private String formatArgument(CommandArgument argument) {
-            String def = argument.getDefault();
-            if (def.equals(" ")) {
-                def = "";
-            } else if (def.startsWith("?")) {
-                String varName = def.substring(1);
-                def = argument.getHandler().getVariableUserFriendlyName(varName);
-                if (def == null) {
-                    throw new IllegalArgumentException(
-                        "The ArgumentVariable '" + varName + "' is not registered.");
-                }
-                def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
-            } else {
-                def = ChatColor.GOLD + " | " + ChatColor.WHITE + def;
-            }
+      return ChatColor.AQUA + "[" + argument.getName() + def + ChatColor.AQUA + "] "
+          + ChatColor.DARK_AQUA + argument.getDescription();
+    }
 
-            return ChatColor.AQUA + "[" + argument.getName() + def + ChatColor.AQUA + "] "
-                + ChatColor.DARK_AQUA + argument.getDescription();
+    @Override
+    public String[] getHelpMessage(RegisteredCommand command) {
+      ArrayList<String> message = new ArrayList<String>();
+
+      if (command.isSet()) {
+        message.add(ChatColor.DARK_AQUA + command.getDescription());
+      }
+
+      message.add(getUsage(command));
+
+      if (command.isSet()) {
+        for (CommandArgument argument : command.getArguments()) {
+          message.add(formatArgument(argument));
         }
-
-        @Override public String[] getHelpMessage(RegisteredCommand command) {
-            ArrayList<String> message = new ArrayList<String>();
-
-            if (command.isSet()) {
-                message.add(ChatColor.DARK_AQUA + command.getDescription());
-            }
-
-            message.add(getUsage(command));
-
-            if (command.isSet()) {
-                for (CommandArgument argument : command.getArguments()) {
-                    message.add(formatArgument(argument));
-                }
-                if (command.getWildcard() != null) {
-                    message.add(formatArgument(command.getWildcard()));
-                }
-                List<Flag> flags = command.getFlags();
-                if (flags.size() > 0) {
-                    message.add(ChatColor.DARK_AQUA + "Flags:");
-                    for (Flag flag : flags) {
-                        StringBuilder args = new StringBuilder();
-                        for (FlagArgument argument : flag.getArguments()) {
-                            args.append(" [" + argument.getName() + "]");
-                        }
-                        message.add("-" + flag.getIdentifier() + ChatColor.AQUA + args.toString());
-                        for (FlagArgument argument : flag.getArguments()) {
-                            message.add(formatArgument(argument));
-                        }
-                    }
-                }
-            }
-
-
-            List<RegisteredCommand> subcommands = command.getSuffixes();
-            if (subcommands.size() > 0) {
-                message.add(ChatColor.DARK_AQUA + "Subcommands:");
-                for (RegisteredCommand scommand : subcommands) {
-                    message.add(scommand.getUsage());
-                }
-            }
-
-            return message.toArray(new String[0]);
+        if (command.getWildcard() != null) {
+          message.add(formatArgument(command.getWildcard()));
         }
-
-        @Override public String getUsage(RegisteredCommand command) {
-            StringBuilder usage = new StringBuilder();
-            usage.append(command.getLabel());
-
-            RegisteredCommand parent = command.getParent();
-            while (parent != null) {
-                usage.insert(0, parent.getLabel() + " ");
-                parent = parent.getParent();
+        List<Flag> flags = command.getFlags();
+        if (flags.size() > 0) {
+          message.add(ChatColor.DARK_AQUA + "Flags:");
+          for (Flag flag : flags) {
+            StringBuilder args = new StringBuilder();
+            for (FlagArgument argument : flag.getArguments()) {
+              args.append(" [" + argument.getName() + "]");
             }
-
-            usage.insert(0, "/");
-
-            if (!command.isSet()) {
-                return usage.toString();
+            message.add("-" + flag.getIdentifier() + ChatColor.AQUA + args.toString());
+            for (FlagArgument argument : flag.getArguments()) {
+              message.add(formatArgument(argument));
             }
-
-            usage.append(ChatColor.AQUA);
-
-            for (CommandArgument argument : command.getArguments()) {
-                usage.append(" [" + argument.getName() + "]");
-            }
-
-            usage.append(ChatColor.WHITE);
-
-            for (Flag flag : command.getFlags()) {
-                usage.append(" (-" + flag.getIdentifier() + ChatColor.AQUA);
-                for (FlagArgument arg : flag.getArguments()) {
-                    usage.append(" [" + arg.getName() + "]");
-                }
-                usage.append(ChatColor.WHITE + ")");
-            }
-
-            if (command.getWildcard() != null) {
-                usage.append(ChatColor.AQUA + " [" + command.getWildcard().getName() + "]");
-            }
-
-            return usage.toString();
+          }
         }
-    };
+      }
 
-    private String helpSuffix = "help";
-
-    public CommandHandler() {
-        this.plugin = Prison.get();
-
-        registerArgumentHandler(String.class, new StringArgumentHandler());
-        registerArgumentHandler(int.class, new IntegerArgumentHandler());
-        registerArgumentHandler(double.class, new DoubleArgumentHandler());
-        registerArgumentHandler(Player.class, new PlayerArgumentHandler());
-        registerArgumentHandler(World.class, new WorldArgumentHandler());
-        registerArgumentHandler(BlockType.class, new BlockArgumentHandler());
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> ArgumentHandler<? extends T> getArgumentHandler(Class<T> clazz) {
-        return (ArgumentHandler<? extends T>) argumentHandlers.get(clazz);
-    }
-
-    public HelpHandler getHelpHandler() {
-        return helpHandler;
-    }
-
-    public void setHelpHandler(HelpHandler helpHandler) {
-        this.helpHandler = helpHandler;
-    }
-
-    public PermissionHandler getPermissionHandler() {
-        return permissionHandler;
-    }
-
-    public void setPermissionHandler(PermissionHandler permissionHandler) {
-        this.permissionHandler = permissionHandler;
-    }
-
-    public <T> void registerArgumentHandler(Class<? extends T> clazz,
-        ArgumentHandler<T> argHandler) {
-        if (argumentHandlers.get(clazz) != null) {
-            throw new IllegalArgumentException(
-                "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
+      List<RegisteredCommand> subcommands = command.getSuffixes();
+      if (subcommands.size() > 0) {
+        message.add(ChatColor.DARK_AQUA + "Subcommands:");
+        for (RegisteredCommand scommand : subcommands) {
+          message.add(scommand.getUsage());
         }
+      }
 
-        argHandler.handler = this;
-        argumentHandlers.put(clazz, argHandler);
+      return message.toArray(new String[0]);
     }
 
-    public void registerCommands(Object commands) {
-        for (Method method : commands.getClass().getDeclaredMethods()) {
-            Command commandAnno = method.getAnnotation(Command.class);
-            if (commandAnno == null) {
-                continue;
-            }
+    @Override
+    public String getUsage(RegisteredCommand command) {
+      StringBuilder usage = new StringBuilder();
+      usage.append(command.getLabel());
 
-            String[] identifiers = commandAnno.identifier().split(" ");
-            if (identifiers.length == 0) {
-                throw new RegisterCommandMethodException(method, "Invalid identifiers");
-            }
+      RegisteredCommand parent = command.getParent();
+      while (parent != null) {
+        usage.insert(0, parent.getLabel() + " ");
+        parent = parent.getParent();
+      }
 
-            Optional<PluginCommand> rootPcommandOptional =
-                plugin.getPlatform().getCommand(identifiers[0]);
-            PluginCommand rootPcommand;
+      usage.insert(0, "/");
 
-            if (!rootPcommandOptional.isPresent()) {
-                rootPcommand = new PluginCommand(identifiers[0], commandAnno.description(),
-                    "/" + identifiers[0]);
-                plugin.getPlatform().registerCommand(rootPcommand);
-            } else {
-                rootPcommand = rootPcommandOptional.get();
-            }
+      if (!command.isSet()) {
+        return usage.toString();
+      }
 
-            RegisteredCommand mainCommand = rootCommands
-                .computeIfAbsent(rootPcommand, k -> new RootCommand(rootPcommand, this));
+      usage.append(ChatColor.AQUA);
 
-            for (int i = 1; i < identifiers.length; i++) {
-                String suffix = identifiers[i];
-                if (mainCommand.doesSuffixCommandExist(suffix)) {
-                    mainCommand = mainCommand.getSuffixCommand(suffix);
-                } else {
-                    RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
-                    mainCommand.addSuffixCommand(suffix, newCommand);
-                    mainCommand = newCommand;
-                }
-            }
+      for (CommandArgument argument : command.getArguments()) {
+        usage.append(" [" + argument.getName() + "]");
+      }
 
-            mainCommand.set(commands, method);
+      usage.append(ChatColor.WHITE);
+
+      for (Flag flag : command.getFlags()) {
+        usage.append(" (-" + flag.getIdentifier() + ChatColor.AQUA);
+        for (FlagArgument arg : flag.getArguments()) {
+          usage.append(" [" + arg.getName() + "]");
         }
+        usage.append(ChatColor.WHITE + ")");
+      }
+
+      if (command.getWildcard() != null) {
+        usage.append(ChatColor.AQUA + " [" + command.getWildcard().getName() + "]");
+      }
+
+      return usage.toString();
+    }
+  };
+
+  private String helpSuffix = "help";
+
+  public CommandHandler() {
+    this.plugin = Prison.get();
+
+    registerArgumentHandler(String.class, new StringArgumentHandler());
+    registerArgumentHandler(int.class, new IntegerArgumentHandler());
+    registerArgumentHandler(double.class, new DoubleArgumentHandler());
+    registerArgumentHandler(Player.class, new PlayerArgumentHandler());
+    registerArgumentHandler(World.class, new WorldArgumentHandler());
+    registerArgumentHandler(BlockType.class, new BlockArgumentHandler());
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> ArgumentHandler<? extends T> getArgumentHandler(Class<T> clazz) {
+    return (ArgumentHandler<? extends T>) argumentHandlers.get(clazz);
+  }
+
+  public HelpHandler getHelpHandler() {
+    return helpHandler;
+  }
+
+  public void setHelpHandler(HelpHandler helpHandler) {
+    this.helpHandler = helpHandler;
+  }
+
+  public PermissionHandler getPermissionHandler() {
+    return permissionHandler;
+  }
+
+  public void setPermissionHandler(PermissionHandler permissionHandler) {
+    this.permissionHandler = permissionHandler;
+  }
+
+  public <T> void registerArgumentHandler(Class<? extends T> clazz,
+      ArgumentHandler<T> argHandler) {
+    if (argumentHandlers.get(clazz) != null) {
+      throw new IllegalArgumentException(
+          "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
     }
 
-    public String getHelpSuffix() {
-        return helpSuffix;
-    }
+    argHandler.handler = this;
+    argumentHandlers.put(clazz, argHandler);
+  }
 
-    public void setHelpSuffix(String suffix) {
-        this.helpSuffix = suffix;
-    }
+  public void registerCommands(Object commands) {
+    for (Method method : commands.getClass().getDeclaredMethods()) {
+      Command commandAnno = method.getAnnotation(Command.class);
+      if (commandAnno == null) {
+        continue;
+      }
 
-    public boolean onCommand(CommandSender sender, PluginCommand command, String label,
-        String[] args) {
-        RootCommand rootCommand = rootCommands.get(command);
-        if (rootCommand == null) {
-            return false;
+      String[] identifiers = commandAnno.identifier().split(" ");
+      if (identifiers.length == 0) {
+        throw new RegisterCommandMethodException(method, "Invalid identifiers");
+      }
+
+      Optional<PluginCommand> rootPcommandOptional =
+          plugin.getPlatform().getCommand(identifiers[0]);
+      PluginCommand rootPcommand;
+
+      if (!rootPcommandOptional.isPresent()) {
+        rootPcommand = new PluginCommand(identifiers[0], commandAnno.description(),
+            "/" + identifiers[0]);
+        plugin.getPlatform().registerCommand(rootPcommand);
+      } else {
+        rootPcommand = rootPcommandOptional.get();
+      }
+
+      RegisteredCommand mainCommand = rootCommands
+          .computeIfAbsent(rootPcommand, k -> new RootCommand(rootPcommand, this));
+
+      for (int i = 1; i < identifiers.length; i++) {
+        String suffix = identifiers[i];
+        if (mainCommand.doesSuffixCommandExist(suffix)) {
+          mainCommand = mainCommand.getSuffixCommand(suffix);
+        } else {
+          RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
+          mainCommand.addSuffixCommand(suffix, newCommand);
+          mainCommand = newCommand;
         }
+      }
 
-        if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
-            Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
-            return true;
-        }
-
-        rootCommand.execute(sender, args);
-
-        return true;
+      mainCommand.set(commands, method);
     }
+  }
+
+  public String getHelpSuffix() {
+    return helpSuffix;
+  }
+
+  public void setHelpSuffix(String suffix) {
+    this.helpSuffix = suffix;
+  }
+
+  public boolean onCommand(CommandSender sender, PluginCommand command, String label,
+      String[] args) {
+    RootCommand rootCommand = rootCommands.get(command);
+    if (rootCommand == null) {
+      return false;
+    }
+
+    if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
+      Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+          .sendTo(sender, Localizable.Level.ERROR);
+      return true;
+    }
+
+    rootCommand.execute(sender, args);
+
+    return true;
+  }
 }

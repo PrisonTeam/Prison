@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison;
 
+import java.util.Optional;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
@@ -29,8 +30,6 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
 
-import java.util.Optional;
-
 /**
  * Root commands for managing the platform as a whole, in-game.
  *
@@ -39,109 +38,109 @@ import java.util.Optional;
  */
 public class PrisonCommand {
 
-    @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
-    public void versionCommand(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("/prison version");
-        display
-            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
-                Prison.API_LEVEL);
+  @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
+  public void versionCommand(CommandSender sender) {
+    ChatDisplay display = new ChatDisplay("/prison version");
+    display
+        .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+            Prison.API_LEVEL);
 
-        display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
-        display.text("&7Integrations:");
+    display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+    display.text("&7Integrations:");
 
-        String permissions =
-            Prison.get().getPlatform().getCapabilities().get(Capability.PERMISSIONS) ?
-                "&aYes" :
-                "&cNone";
-
-        display.text(Text.tab("&7Permissions: " + permissions));
-
-        String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
+    String permissions =
+        Prison.get().getPlatform().getCapabilities().get(Capability.PERMISSIONS) ?
             "&aYes" :
             "&cNone";
 
-        display.text(Text.tab("&7Economy: " + economy));
+    display.text(Text.tab("&7Permissions: " + permissions));
 
-        display.send(sender);
+    String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
+        "&aYes" :
+        "&cNone";
+
+    display.text(Text.tab("&7Economy: " + economy));
+
+    display.send(sender);
+  }
+
+  @Command(identifier = "prison modules", description = "List and manage Prison's modules.", onlyPlayers = false)
+  public void modulesCommand(CommandSender sender) {
+    ChatDisplay display = new ChatDisplay("/prison modules");
+    //        display
+    //            .addComponent(new TextComponent("&7To enable a module, use /prison modules enable."));
+    //        display
+    //            .addComponent(new TextComponent("&7To disable a module, use /prison modules disable."));
+    display.emptyLine();
+
+    BulletedListComponent.BulletedListBuilder builder =
+        new BulletedListComponent.BulletedListBuilder();
+    for (Module module : Prison.get().getModuleManager().getModules()) {
+      builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
+          module.getVersion(), module.getStatus().getMessage());
     }
 
-    @Command(identifier = "prison modules", description = "List and manage Prison's modules.", onlyPlayers = false)
-    public void modulesCommand(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("/prison modules");
-        //        display
-        //            .addComponent(new TextComponent("&7To enable a module, use /prison modules enable."));
-        //        display
-        //            .addComponent(new TextComponent("&7To disable a module, use /prison modules disable."));
-        display.emptyLine();
+    display.addComponent(builder.build());
 
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        for (Module module : Prison.get().getModuleManager().getModules()) {
-            builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
-                module.getVersion(), module.getStatus().getMessage());
-        }
+    display.send(sender);
+  }
 
-        display.addComponent(builder.build());
+  // FIXME THESE COMMANDS ARE BROKEN
+  // Modules can't load and unload on the fly.
 
-        display.send(sender);
+  //    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
+  public void moduleEnableCommand(CommandSender sender,
+      @Arg(name = "moduleName") String moduleName) {
+    Optional<Module> moduleOptional = getModule(moduleName);
+    if (!moduleOptional.isPresent()) {
+      Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
+      return;
     }
 
-    // FIXME THESE COMMANDS ARE BROKEN
-    // Modules can't load and unload on the fly.
+    Module module = moduleOptional.get();
 
-    //    @Command(identifier = "prison modules enable", description = "Enable a module.", onlyPlayers = false)
-    public void moduleEnableCommand(CommandSender sender,
-        @Arg(name = "moduleName") String moduleName) {
-        Optional<Module> moduleOptional = getModule(moduleName);
-        if (!moduleOptional.isPresent()) {
-            Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
-            return;
-        }
-
-        Module module = moduleOptional.get();
-
-        if (module.isEnabled()) {
-            Output.get()
-                .sendWarn(sender, "&7The module &c%s &7is already enabled.", module.getName());
-            return;
-        }
-
-        boolean result = Prison.get().getModuleManager().enableModule(module);
-        if (result) {
-            Output.get()
-                .sendInfo(sender, "&7The module &3%s &7has been enabled.", module.getName());
-        } else {
-            Output.get().sendError(sender,
-                "&7Failed to enable the module &c%s &7. &8Check the console for details.",
-                module.getName());
-        }
+    if (module.isEnabled()) {
+      Output.get()
+          .sendWarn(sender, "&7The module &c%s &7is already enabled.", module.getName());
+      return;
     }
 
-    //    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
-    public void moduleDisableCommand(CommandSender sender,
-        @Arg(name = "moduleName") String moduleName) {
-        Optional<Module> moduleOptional = getModule(moduleName);
-        if (!moduleOptional.isPresent()) {
-            Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
-            return;
-        }
+    boolean result = Prison.get().getModuleManager().enableModule(module);
+    if (result) {
+      Output.get()
+          .sendInfo(sender, "&7The module &3%s &7has been enabled.", module.getName());
+    } else {
+      Output.get().sendError(sender,
+          "&7Failed to enable the module &c%s &7. &8Check the console for details.",
+          module.getName());
+    }
+  }
 
-        Module module = moduleOptional.get();
-
-        if (!module.isEnabled()) {
-            Output.get().sendWarn(sender, "&7The module &c%s &7is already disabled.", moduleName);
-            return;
-        }
-
-        Prison.get().getModuleManager().disableModule(module);
-        Output.get().sendInfo(sender, "&7The module &3%s &7has been disabled.", module.getName());
+  //    @Command(identifier = "prison modules disable", description = "Disable a module.", onlyPlayers = false)
+  public void moduleDisableCommand(CommandSender sender,
+      @Arg(name = "moduleName") String moduleName) {
+    Optional<Module> moduleOptional = getModule(moduleName);
+    if (!moduleOptional.isPresent()) {
+      Output.get().sendError(sender, "&7The module &c%s &7does not exist.", moduleName);
+      return;
     }
 
-    // Get a module by name or by package name
-    private Optional<Module> getModule(String name) {
-        ModuleManager manager = Prison.get().getModuleManager();
-        return Optional.ofNullable(
-            manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
+    Module module = moduleOptional.get();
+
+    if (!module.isEnabled()) {
+      Output.get().sendWarn(sender, "&7The module &c%s &7is already disabled.", moduleName);
+      return;
     }
+
+    Prison.get().getModuleManager().disableModule(module);
+    Output.get().sendInfo(sender, "&7The module &3%s &7has been disabled.", module.getName());
+  }
+
+  // Get a module by name or by package name
+  private Optional<Module> getModule(String name) {
+    ModuleManager manager = Prison.get().getModuleManager();
+    return Optional.ofNullable(
+        manager.getModule(name).orElse(manager.getModuleByPackageName(name).orElse(null)));
+  }
 
 }

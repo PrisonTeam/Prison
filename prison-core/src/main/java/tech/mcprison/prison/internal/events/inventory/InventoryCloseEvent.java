@@ -28,11 +28,12 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  */
 public class InventoryCloseEvent extends InventoryEvent {
 
-    public InventoryCloseEvent(Viewable transaction) {
-        super(transaction);
-    }
+  public InventoryCloseEvent(Viewable transaction) {
+    super(transaction);
+  }
 
-    public Player getPlayer() {
-        return getView().getPlayer();
-    }
+  public Player getPlayer() {
+    return getView().getPlayer();
+  }
+
 }

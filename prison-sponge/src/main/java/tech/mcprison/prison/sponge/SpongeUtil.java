@@ -31,56 +31,59 @@ import tech.mcprison.prison.util.Text;
  */
 public class SpongeUtil {
 
-    // Convention: If name conflicts, Prison classes should be imported, while Sponge classes should use fully qualified names.
+  // Convention: If name conflicts, Prison classes should be imported, while Sponge classes should use fully qualified names.
 
-    private SpongeUtil() {
+  private SpongeUtil() {
+  }
+
+  /**
+   * Message may include &-prefixed color codes.
+   */
+  public static org.spongepowered.api.text.Text prisonTextToSponge(String message) {
+    return TextSerializers.LEGACY_FORMATTING_CODE
+        .deserialize(Text.translateAmpColorCodes(message));
+  }
+
+  public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
+    return TextSerializers.LEGACY_FORMATTING_CODE.serialize(message);
+  }
+
+  public static Direction prisonBlockFaceToSponge(BlockFace blockFace) {
+
+    switch (blockFace) {
+      case TOP:
+        return Direction.UP;
+      case BOTTOM:
+        return Direction.DOWN;
+      default:
+        return Direction.valueOf(blockFace.name());
     }
 
-    /**
-     * Message may include &-prefixed color codes.
-     */
-    public static org.spongepowered.api.text.Text prisonTextToSponge(String message) {
-        return TextSerializers.LEGACY_FORMATTING_CODE
-            .deserialize(Text.translateAmpColorCodes(message));
-    }
+  }
 
-    public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
-        return TextSerializers.LEGACY_FORMATTING_CODE.serialize(message);
-    }
+  public static Location spongeLocationToPrison(
+      org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc) {
 
-    public static Direction prisonBlockFaceToSponge(BlockFace blockFace) {
-        if (blockFace == BlockFace.TOP) {
-            return Direction.UP;
-        } else if (blockFace == BlockFace.BOTTOM) {
-            return Direction.DOWN;
-        } else {
-            return Direction.valueOf(blockFace.name());
-        }
-    }
+    return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
+        spongeLoc.getY(), spongeLoc.getZ());
+  }
 
-    public static Location spongeLocationToPrison(
-        org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc) {
-        return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
-            spongeLoc.getY(), spongeLoc.getZ());
-    }
+  public static Location spongeLocationToPrison(
+      org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc,
+      Vector3d rotation) {
+    float yaw = (float) ((rotation.getY() + 90) % 360);
+    float pitch = (float) ((rotation.getX()) * -1);
 
-    public static Location spongeLocationToPrison(
-        org.spongepowered.api.world.Location<org.spongepowered.api.world.World> spongeLoc,
-        Vector3d rotation) {
-        float yaw = (float) ((rotation.getY() + 90) % 360);
-        float pitch = (float) ((rotation.getX()) * -1);
+    return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
+        spongeLoc.getY(), spongeLoc.getZ(), pitch, yaw);
+  }
 
-        return new Location(new SpongeWorld(spongeLoc.getExtent()), spongeLoc.getX(),
-            spongeLoc.getY(), spongeLoc.getZ(), pitch, yaw);
-    }
+  public static org.spongepowered.api.world.Location<org.spongepowered.api.world.World> prisonLocationToSponge(
+      Location prisonLoc) {
 
-    public static org.spongepowered.api.world.Location<org.spongepowered.api.world.World> prisonLocationToSponge(
-        Location prisonLoc) {
-        return new org.spongepowered.api.world.Location<org.spongepowered.api.world.World>(
-            ((SpongeWorld) prisonLoc.getWorld()).getSpongeWorld(), prisonLoc.getX(),
-            prisonLoc.getY(), prisonLoc.getZ());
-    }
-
-
+    return new org.spongepowered.api.world.Location<>(
+        ((SpongeWorld) prisonLoc.getWorld()).getSpongeWorld(), prisonLoc.getX(),
+        prisonLoc.getY(), prisonLoc.getZ());
+  }
 
 }

@@ -27,34 +27,39 @@ import tech.mcprison.prison.internal.scoreboard.Score;
  */
 public class SpigotObjective implements Objective {
 
-    private org.bukkit.scoreboard.Objective bObjective;
+  private org.bukkit.scoreboard.Objective bObjective;
 
-    public SpigotObjective(org.bukkit.scoreboard.Objective bObjective) {
-        this.bObjective = bObjective;
-    }
+  public SpigotObjective(org.bukkit.scoreboard.Objective bObjective) {
+    this.bObjective = bObjective;
+  }
 
-    @Override public DisplaySlot getDisplaySlot() {
-        return DisplaySlot.valueOf(bObjective.getDisplaySlot().name());
-    }
+  @Override
+  public DisplaySlot getDisplaySlot() {
+    return DisplaySlot.valueOf(bObjective.getDisplaySlot().name());
+  }
 
-    @Override public void setDisplaySlot(DisplaySlot displaySlot) {
-        bObjective.setDisplaySlot(org.bukkit.scoreboard.DisplaySlot.valueOf(displaySlot.name()));
-    }
+  @Override
+  public void setDisplaySlot(DisplaySlot displaySlot) {
+    bObjective.setDisplaySlot(org.bukkit.scoreboard.DisplaySlot.valueOf(displaySlot.name()));
+  }
 
-    @Override public String getDisplayName() {
-        return bObjective.getDisplayName();
-    }
+  @Override
+  public String getDisplayName() {
+    return bObjective.getDisplayName();
+  }
 
-    @Override public void setDisplayName(String displayName) {
-        bObjective.setDisplayName(displayName);
-    }
+  @Override
+  public void setDisplayName(String displayName) {
+    bObjective.setDisplayName(displayName);
+  }
 
-    @Override public Score getScore(String entry) {
-        return new SpigotScore(bObjective.getScore(entry));
-    }
+  @Override
+  public Score getScore(String entry) {
+    return new SpigotScore(bObjective.getScore(entry));
+  }
 
-    public org.bukkit.scoreboard.Objective getWrapper() {
-        return bObjective;
-    }
+  public org.bukkit.scoreboard.Objective getWrapper() {
+    return bObjective;
+  }
 
 }

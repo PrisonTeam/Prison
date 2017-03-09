@@ -19,7 +19,8 @@
 package tech.mcprison.prison.commands;
 
 public interface HelpHandler {
-    public String[] getHelpMessage(RegisteredCommand command);
 
-    public String getUsage(RegisteredCommand command);
+  public String[] getHelpMessage(RegisteredCommand command);
+
+  public String getUsage(RegisteredCommand command);
 }

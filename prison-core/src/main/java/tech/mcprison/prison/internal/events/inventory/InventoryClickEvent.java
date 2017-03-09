@@ -28,131 +28,132 @@ import tech.mcprison.prison.util.InventoryType;
  * @author DMP9
  */
 public class InventoryClickEvent extends InventoryInteractEvent {
-    protected Click click;
-    protected InventoryType.SlotType type;
-    protected int slot;
-    protected Action action;
-    protected int hotbar = -1;
-    protected ItemStack current = null;
 
-    public InventoryClickEvent(Viewable transaction, InventoryType.SlotType type, int slot,
-        Click click, Action action) {
-        super(transaction);
-        this.type = type;
-        this.slot = slot;
-        this.click = click;
-        this.action = action;
-    }
+  protected Click click;
+  protected InventoryType.SlotType type;
+  protected int slot;
+  protected Action action;
+  protected int hotbar = -1;
+  protected ItemStack current = null;
 
-    public InventoryClickEvent(Viewable transaction, InventoryType.SlotType type, int slot,
-        Click click, Action action, int key) {
-        super(transaction);
-        this.type = type;
-        this.slot = slot;
-        this.click = click;
-        this.action = action;
-        this.hotbar = key;
-    }
+  public InventoryClickEvent(Viewable transaction, InventoryType.SlotType type, int slot,
+      Click click, Action action) {
+    super(transaction);
+    this.type = type;
+    this.slot = slot;
+    this.click = click;
+    this.action = action;
+  }
 
-    public InventoryEvent.Action getAction() {
-        return action;
-    }
+  public InventoryClickEvent(Viewable transaction, InventoryType.SlotType type, int slot,
+      Click click, Action action, int key) {
+    super(transaction);
+    this.type = type;
+    this.slot = slot;
+    this.click = click;
+    this.action = action;
+    this.hotbar = key;
+  }
 
-    public ItemStack getCurrentItem() {
-        if (getSlotType() == InventoryType.SlotType.NONE) {
-            return current;
-        }
-        return getView().getItem(slot);
-    }
+  public InventoryEvent.Action getAction() {
+    return action;
+  }
 
-    public void setCurrentItem(ItemStack stack) {
-        if (type == InventoryType.SlotType.NONE) {
-            current = stack;
-        } else {
-            getView().setItem(slot, stack);
-        }
+  public ItemStack getCurrentItem() {
+    if (getSlotType() == InventoryType.SlotType.NONE) {
+      return current;
     }
+    return getView().getItem(slot);
+  }
 
-    public ItemStack getCursor() {
-        return getView().getCursor();
+  public void setCurrentItem(ItemStack stack) {
+    if (type == InventoryType.SlotType.NONE) {
+      current = stack;
+    } else {
+      getView().setItem(slot, stack);
     }
+  }
 
-    public int getHotbarButton() {
-        return hotbar;
-    }
+  public ItemStack getCursor() {
+    return getView().getCursor();
+  }
 
-    public int getRawSlot() {
-        return slot;
-    }
+  public int getHotbarButton() {
+    return hotbar;
+  }
 
-    public int getSlot() {
-        return getView().convertSlot(getRawSlot());
-    }
+  public int getRawSlot() {
+    return slot;
+  }
 
-    public InventoryType.SlotType getSlotType() {
-        return getSlotType();
-    }
+  public int getSlot() {
+    return getView().convertSlot(getRawSlot());
+  }
 
-    public boolean isLeftClick() {
-        return (click == Click.LEFT) || (click == Click.SHIFT_LEFT) || (click == Click.DOUBLE_CLICK)
-            || (click == Click.CREATIVE);
-    }
+  public InventoryType.SlotType getSlotType() {
+    return getSlotType();
+  }
 
-    public boolean isRightClick() {
-        return (click == Click.RIGHT) || (click == Click.SHIFT_RIGHT);
-    }
+  public boolean isLeftClick() {
+    return (click == Click.LEFT) || (click == Click.SHIFT_LEFT) || (click == Click.DOUBLE_CLICK)
+        || (click == Click.CREATIVE);
+  }
 
-    public boolean isShiftClick() {
-        return (click == Click.SHIFT_LEFT) || (click == Click.SHIFT_RIGHT) || (click
-            == Click.CONTROL_DROP);
-    }
+  public boolean isRightClick() {
+    return (click == Click.RIGHT) || (click == Click.SHIFT_RIGHT);
+  }
 
-    public enum Click {
-        /**
-         * The left (or primary) mouse button.
-         */
-        LEFT, /**
-         * Holding shift while pressing the left mouse button.
-         */
-        SHIFT_LEFT, /**
-         * The right mouse button.
-         */
-        RIGHT, /**
-         * Holding shift while pressing the right mouse button.
-         */
-        SHIFT_RIGHT, /**
-         * Clicking the left mouse button on the grey area around the inventory.
-         */
-        WINDOW_BORDER_LEFT, /**
-         * Clicking the right mouse button on the grey area around the inventory.
-         */
-        WINDOW_BORDER_RIGHT, /**
-         * The middle mouse button, or a "scrollwheel click".
-         */
-        MIDDLE, /**
-         * One of the number keys 1-9, correspond to slots on the hotbar.
-         */
-        NUMBER_KEY, /**
-         * Pressing the left mouse button twice in quick succession.
-         */
-        DOUBLE_CLICK, /**
-         * The "Drop" key (defaults to Q).
-         */
-        DROP, /**
-         * Holding Ctrl while pressing the "Drop" key (defaults to Q).
-         */
-        CONTROL_DROP, /**
-         * Any action done with the Creative inventory open.
-         */
-        CREATIVE, /**
-         * A type of inventory manipulation not yet recognized by Bukkit.
-         * <p>
-         * This is only for transitional purposes on a new Minecraft update, and
-         * should never be relied upon.
-         * <p>
-         * Any Click.UNKNOWN is called on a best-effort basis.
-         */
-        UNKNOWN,;
-    }
+  public boolean isShiftClick() {
+    return (click == Click.SHIFT_LEFT) || (click == Click.SHIFT_RIGHT) || (click
+        == Click.CONTROL_DROP);
+  }
+
+  public enum Click {
+    /**
+     * The left (or primary) mouse button.
+     */
+    LEFT, /**
+     * Holding shift while pressing the left mouse button.
+     */
+    SHIFT_LEFT, /**
+     * The right mouse button.
+     */
+    RIGHT, /**
+     * Holding shift while pressing the right mouse button.
+     */
+    SHIFT_RIGHT, /**
+     * Clicking the left mouse button on the grey area around the inventory.
+     */
+    WINDOW_BORDER_LEFT, /**
+     * Clicking the right mouse button on the grey area around the inventory.
+     */
+    WINDOW_BORDER_RIGHT, /**
+     * The middle mouse button, or a "scrollwheel click".
+     */
+    MIDDLE, /**
+     * One of the number keys 1-9, correspond to slots on the hotbar.
+     */
+    NUMBER_KEY, /**
+     * Pressing the left mouse button twice in quick succession.
+     */
+    DOUBLE_CLICK, /**
+     * The "Drop" key (defaults to Q).
+     */
+    DROP, /**
+     * Holding Ctrl while pressing the "Drop" key (defaults to Q).
+     */
+    CONTROL_DROP, /**
+     * Any action done with the Creative inventory open.
+     */
+    CREATIVE, /**
+     * A type of inventory manipulation not yet recognized by Bukkit.
+     * <p>
+     * This is only for transitional purposes on a new Minecraft update, and
+     * should never be relied upon.
+     * <p>
+     * Any Click.UNKNOWN is called on a best-effort basis.
+     */
+    UNKNOWN
+  }
 
 }

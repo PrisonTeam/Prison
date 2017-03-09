@@ -28,38 +28,40 @@ import tech.mcprison.prison.internal.events.Cancelable;
  * @author DMP9
  */
 public class FurnaceSmeltEvent implements Cancelable {
-    ItemStack result;
-    ItemStack source;
-    Block block;
-    boolean canceled;
 
-    public FurnaceSmeltEvent(Block furnace, ItemStack source, ItemStack result) {
-        block = furnace;
-        this.result = result;
-        this.source = source;
-    }
+  ItemStack result;
+  ItemStack source;
+  Block block;
+  boolean canceled;
 
-    public ItemStack getResult() {
-        return result;
-    }
+  public FurnaceSmeltEvent(Block furnace, ItemStack source, ItemStack result) {
+    block = furnace;
+    this.result = result;
+    this.source = source;
+  }
 
-    public void setResult(ItemStack result) {
-        this.result = result;
-    }
+  public ItemStack getResult() {
+    return result;
+  }
 
-    public ItemStack getSource() {
-        return source;
-    }
+  public void setResult(ItemStack result) {
+    this.result = result;
+  }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
+  public ItemStack getSource() {
+    return source;
+  }
 
-    public void setCanceled(boolean cancel) {
-        canceled = cancel;
-    }
+  public boolean isCanceled() {
+    return canceled;
+  }
 
-    public Block getBlock() {
-        return block;
-    }
+  public void setCanceled(boolean cancel) {
+    canceled = cancel;
+  }
+
+  public Block getBlock() {
+    return block;
+  }
+
 }

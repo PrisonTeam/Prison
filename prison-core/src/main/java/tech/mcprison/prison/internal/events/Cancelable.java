@@ -26,8 +26,8 @@ package tech.mcprison.prison.internal.events;
  */
 public interface Cancelable {
 
-    boolean isCanceled();
+  boolean isCanceled();
 
-    void setCanceled(boolean canceled);
+  void setCanceled(boolean canceled);
 
 }

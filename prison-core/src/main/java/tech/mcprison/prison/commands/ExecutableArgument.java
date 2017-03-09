@@ -22,5 +22,6 @@ package tech.mcprison.prison.commands;
 import tech.mcprison.prison.internal.CommandSender;
 
 public interface ExecutableArgument {
-    public Object execute(CommandSender sender, Arguments args) throws CommandError;
+
+  public Object execute(CommandSender sender, Arguments args) throws CommandError;
 }

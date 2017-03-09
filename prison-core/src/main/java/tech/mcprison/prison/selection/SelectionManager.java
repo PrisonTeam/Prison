@@ -18,46 +18,46 @@
 
 package tech.mcprison.prison.selection;
 
+import java.util.HashMap;
+import java.util.Map;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.BlockType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class SelectionManager {
 
-    public static final ItemStack SELECTION_TOOL =
-        new ItemStack("&6Selection Wand", 1, BlockType.BLAZE_ROD, "&7Corner 1 - Left click",
-            "&7Corner 2 - Right click");
-    private Map<String, Selection> selectionMap;
+  public static final ItemStack SELECTION_TOOL =
+      new ItemStack("&6Selection Wand", 1, BlockType.BLAZE_ROD, "&7Corner 1 - Left click",
+          "&7Corner 2 - Right click");
+  private Map<String, Selection> selectionMap;
 
-    public SelectionManager() {
-        this.selectionMap = new HashMap<>();
-        new SelectionListener().init();
-    }
+  public SelectionManager() {
+    this.selectionMap = new HashMap<>();
+    new SelectionListener().init();
+  }
 
-    /**
-     * ... then lobbest thou thy Holy Selection Tool of Antioch towards thy foe, who being naughty in My sight, shall snuff it.
-     *
-     * @param player The {@link Player} to give the selection tool to
-     */
-    public void bestowSelectionTool(Player player) {
-        player.give(SELECTION_TOOL);
-    }
+  /**
+   * ... then lobbest thou thy Holy Selection Tool of Antioch towards thy foe, who being naughty in
+   * My sight, shall snuff it.
+   *
+   * @param player The {@link Player} to give the selection tool to
+   */
+  public void bestowSelectionTool(Player player) {
+    player.give(SELECTION_TOOL);
+  }
 
-    public Selection getSelection(Player player) {
-        if (!selectionMap.containsKey(player.getName())) {
-            selectionMap.put(player.getName(), new Selection());
-        }
-        return selectionMap.get(player.getName());
+  public Selection getSelection(Player player) {
+    if (!selectionMap.containsKey(player.getName())) {
+      selectionMap.put(player.getName(), new Selection());
     }
+    return selectionMap.get(player.getName());
+  }
 
-    public void setSelection(Player player, Selection selection) {
-        selectionMap.put(player.getName(), selection);
-    }
+  public void setSelection(Player player, Selection selection) {
+    selectionMap.put(player.getName(), selection);
+  }
 
 }

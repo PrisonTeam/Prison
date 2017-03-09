@@ -27,10 +27,12 @@ import tech.mcprison.prison.internal.ItemStack;
  * @since API 0.1
  */
 public interface Recipe {
-    /**
-     * Gets the result of this recipe
-     *
-     * @return the resulting item
-     */
-    ItemStack getResult();
+
+  /**
+   * Gets the result of this recipe
+   *
+   * @return the resulting item
+   */
+  ItemStack getResult();
+
 }

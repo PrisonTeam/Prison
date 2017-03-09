@@ -21,6 +21,7 @@ package tech.mcprison.prison.commands;
 import tech.mcprison.prison.internal.CommandSender;
 
 public interface ArgumentVerifier<T> {
-    public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-        String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError, VerifyError;
+
+  public void verify(CommandSender sender, CommandArgument argument, String verifyName,
+      String[] verifyArgs, T value, String valueRaw) throws java.lang.VerifyError, VerifyError;
 }

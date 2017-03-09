@@ -24,19 +24,21 @@ import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 
 public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
-    public DoubleArgumentHandler() {
-    }
 
-    @Override public Double transform(CommandSender sender, CommandArgument argument, String value)
-        throws TransformError {
-        value = value.replace("$", "");
-        value = value.replace("%", "");
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            throw new TransformError(
-                Prison.get().getLocaleManager().getLocalizable("numberParseError")
-                    .withReplacements(value).localizeFor(sender));
-        }
+  public DoubleArgumentHandler() {
+  }
+
+  @Override
+  public Double transform(CommandSender sender, CommandArgument argument, String value)
+      throws TransformError {
+    value = value.replace("$", "");
+    value = value.replace("%", "");
+    try {
+      return Double.parseDouble(value);
+    } catch (NumberFormatException e) {
+      throw new TransformError(
+          Prison.get().getLocaleManager().getLocalizable("numberParseError")
+              .withReplacements(value).localizeFor(sender));
     }
+  }
 }

@@ -19,11 +19,10 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import com.google.common.collect.ImmutableSet;
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.Viewable;
-
 import java.util.Map;
 import java.util.Set;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
  * Currently undocumented.
@@ -31,55 +30,57 @@ import java.util.Set;
  * @author DMP9
  */
 public class InventoryDragEvent extends InventoryInteractEvent {
-    boolean right;
-    ItemStack newCursor;
-    ItemStack oldCursor;
-    Map<Integer, ItemStack> slots;
-    Set<Integer> parsedSlots;
 
-    public InventoryDragEvent(Viewable transaction, ItemStack newCursor, ItemStack oldCursor,
-        boolean right, Map<Integer, ItemStack> slots) {
-        super(transaction);
-        this.right = right;
-        this.newCursor = newCursor;
-        this.oldCursor = oldCursor;
-        this.slots = slots;
-        ImmutableSet.Builder<Integer> b = ImmutableSet.builder();
-        for (Integer slot : slots.keySet()) {
-            b.add(transaction.convertSlot(slot));
-        }
-        this.parsedSlots = b.build();
-    }
+  boolean right;
+  ItemStack newCursor;
+  ItemStack oldCursor;
+  Map<Integer, ItemStack> slots;
+  Set<Integer> parsedSlots;
 
-    public ItemStack getCursor() {
-        return newCursor;
+  public InventoryDragEvent(Viewable transaction, ItemStack newCursor, ItemStack oldCursor,
+      boolean right, Map<Integer, ItemStack> slots) {
+    super(transaction);
+    this.right = right;
+    this.newCursor = newCursor;
+    this.oldCursor = oldCursor;
+    this.slots = slots;
+    ImmutableSet.Builder<Integer> b = ImmutableSet.builder();
+    for (Integer slot : slots.keySet()) {
+      b.add(transaction.convertSlot(slot));
     }
+    this.parsedSlots = b.build();
+  }
 
-    public void setCursor(ItemStack newCursor) {
-        this.newCursor = newCursor;
-    }
+  public ItemStack getCursor() {
+    return newCursor;
+  }
 
-    public Set<Integer> getInventorySlots() {
-        return parsedSlots;
-    }
+  public void setCursor(ItemStack newCursor) {
+    this.newCursor = newCursor;
+  }
 
-    public Map<Integer, ItemStack> getNewItems() {
-        return slots;
-    }
+  public Set<Integer> getInventorySlots() {
+    return parsedSlots;
+  }
 
-    public ItemStack getOldCursor() {
-        return oldCursor;
-    }
+  public Map<Integer, ItemStack> getNewItems() {
+    return slots;
+  }
 
-    public Set<Integer> getRawSlots() {
-        return slots.keySet();
-    }
+  public ItemStack getOldCursor() {
+    return oldCursor;
+  }
 
-    public Drag getType() {
-        return right ? Drag.SINGLE : Drag.EVEN;
-    }
+  public Set<Integer> getRawSlots() {
+    return slots.keySet();
+  }
 
-    public enum Drag {
-        SINGLE, EVEN
-    }
+  public Drag getType() {
+    return right ? Drag.SINGLE : Drag.EVEN;
+  }
+
+  public enum Drag {
+    SINGLE, EVEN
+  }
+
 }

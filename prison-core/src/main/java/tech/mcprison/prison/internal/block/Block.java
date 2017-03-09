@@ -18,11 +18,10 @@
 
 package tech.mcprison.prison.internal.block;
 
+import java.util.List;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
 
 /**
  * Represents a block. Only one block may exist for a location in the world.
@@ -32,72 +31,72 @@ import java.util.List;
  */
 public interface Block {
 
-    /**
-     * Returns the location that this block represents.
-     *
-     * @return The {@link Location} of the block.
-     */
-    Location getLocation();
+  /**
+   * Returns the location that this block represents.
+   *
+   * @return The {@link Location} of the block.
+   */
+  Location getLocation();
 
-    /**
-     * Returns the {@link Block} at the position relative to this one.
-     *
-     * @param face The {@link BlockFace} that the relative block touches.
-     * @return The {@link Block} relative to this one.
-     */
-    Block getRelative(BlockFace face);
+  /**
+   * Returns the {@link Block} at the position relative to this one.
+   *
+   * @param face The {@link BlockFace} that the relative block touches.
+   * @return The {@link Block} relative to this one.
+   */
+  Block getRelative(BlockFace face);
 
-    /**
-     * Returns the type of this block.
-     *
-     * @return The {@link BlockType}.
-     */
-    BlockType getType();
+  /**
+   * Returns the type of this block.
+   *
+   * @return The {@link BlockType}.
+   */
+  BlockType getType();
 
-    /**
-     * Sets the block to a different type.
-     *
-     * @param type The new {@link BlockType}.
-     */
-    void setType(BlockType type);
+  /**
+   * Sets the block to a different type.
+   *
+   * @param type The new {@link BlockType}.
+   */
+  void setType(BlockType type);
 
-    /**
-     * Returns a snapshot of the state of this block, which you can edit to your liking.
-     *
-     * @return The current {@link BlockState}.
-     */
-    BlockState getState();
+  /**
+   * Returns a snapshot of the state of this block, which you can edit to your liking.
+   *
+   * @return The current {@link BlockState}.
+   */
+  BlockState getState();
 
-    /**
-     * Returns whether the block is empty (i.e. the type is air).
-     *
-     * @return true if the block is empty, false otherwise.
-     */
-    default boolean isEmpty() {
-        return getType() == BlockType.AIR;
-    }
+  /**
+   * Returns whether the block is empty (i.e. the type is air).
+   *
+   * @return true if the block is empty, false otherwise.
+   */
+  default boolean isEmpty() {
+    return getType() == BlockType.AIR;
+  }
 
-    /**
-     * Breaks the block as if the player has broken it, with drops included.
-     *
-     * @return true if the is broken, false otherwise.
-     */
-    boolean breakNaturally();
+  /**
+   * Breaks the block as if the player has broken it, with drops included.
+   *
+   * @return true if the is broken, false otherwise.
+   */
+  boolean breakNaturally();
 
-    /**
-     * Returns a list of items which would be dropped by destroying this block.
-     *
-     * @return A list of dropped items for this type of block
-     */
-    List<ItemStack> getDrops();
+  /**
+   * Returns a list of items which would be dropped by destroying this block.
+   *
+   * @return A list of dropped items for this type of block
+   */
+  List<ItemStack> getDrops();
 
-    /**
-     * Returns a list of items which would be dropped by destroying this block with
-     * a specific tool.
-     *
-     * @param tool The tool or item in hand used for breaking the block.
-     * @return A list of dropped items for this type of block.
-     */
-    List<ItemStack> getDrops(ItemStack tool);
+  /**
+   * Returns a list of items which would be dropped by destroying this block with
+   * a specific tool.
+   *
+   * @param tool The tool or item in hand used for breaking the block.
+   * @return A list of dropped items for this type of block.
+   */
+  List<ItemStack> getDrops(ItemStack tool);
 
 }

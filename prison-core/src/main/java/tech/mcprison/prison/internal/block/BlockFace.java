@@ -26,6 +26,6 @@ package tech.mcprison.prison.internal.block;
  */
 public enum BlockFace {
 
-    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM;
+  NORTH, SOUTH, EAST, WEST, TOP, BOTTOM
 
 }

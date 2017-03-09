@@ -26,6 +26,6 @@ package tech.mcprison.prison.internal.scoreboard;
  */
 public enum DisplaySlot {
 
-    SIDEBAR
+  SIDEBAR
 
 }

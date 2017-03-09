@@ -19,26 +19,26 @@
 package tech.mcprison.prison.internal.scoreboard;
 
 /**
- * Represents a team in a scoreboard. Teams organize players and can provide prefixes/suffixes to them to denote
- * their team status.
+ * Represents a team in a scoreboard. Teams organize players and can provide prefixes/suffixes to
+ * them to denote their team status.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
 public interface Team {
 
-    void unregister();
+  void unregister();
 
-    String getPrefix();
+  String getPrefix();
 
-    void setPrefix(String prefix);
+  void setPrefix(String prefix);
 
-    String getSuffix();
+  String getSuffix();
 
-    void setSuffix(String suffix);
+  void setSuffix(String suffix);
 
-    void addEntry(String player);
+  void addEntry(String player);
 
-    void removeEntry(String player);
+  void removeEntry(String player);
 
 }

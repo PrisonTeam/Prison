@@ -29,21 +29,26 @@ import tech.mcprison.prison.spigot.block.SpigotBrewingStand;
  * Created by DMP9 on 04/02/2017.
  */
 public class SpigotBrewer extends SpigotInventory implements BrewerInventory {
-    public SpigotBrewer(org.bukkit.inventory.BrewerInventory wrapper) {
-        super(wrapper);
-    }
 
-    @Override public ItemStack getIngredient() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.BrewerInventory) getWrapper()).getIngredient());
-    }
+  public SpigotBrewer(org.bukkit.inventory.BrewerInventory wrapper) {
+    super(wrapper);
+  }
 
-    @Override public void setIngredient(ItemStack ingredient) {
-        ((org.bukkit.inventory.BrewerInventory) getWrapper())
-            .setIngredient(SpigotUtil.prisonItemStackToBukkit(ingredient));
-    }
+  @Override
+  public ItemStack getIngredient() {
+    return SpigotUtil.bukkitItemStackToPrison(
+        ((org.bukkit.inventory.BrewerInventory) getWrapper()).getIngredient());
+  }
 
-    @Override public InventoryHolder getHolder() {
-        return new SpigotBrewingStand((BrewingStand) getWrapper().getHolder());
-    }
+  @Override
+  public void setIngredient(ItemStack ingredient) {
+    ((org.bukkit.inventory.BrewerInventory) getWrapper())
+        .setIngredient(SpigotUtil.prisonItemStackToBukkit(ingredient));
+  }
+
+  @Override
+  public InventoryHolder getHolder() {
+    return new SpigotBrewingStand((BrewingStand) getWrapper().getHolder());
+  }
+
 }

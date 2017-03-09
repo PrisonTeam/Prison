@@ -26,16 +26,16 @@ package tech.mcprison.prison.internal.scoreboard;
  */
 public interface ScoreboardManager {
 
-    /**
-     * Creates a new scoreboard.
-     *
-     * @return The {@link Scoreboard}.
-     */
-    Scoreboard getNewScoreboard();
+  /**
+   * Creates a new scoreboard.
+   *
+   * @return The {@link Scoreboard}.
+   */
+  Scoreboard getNewScoreboard();
 
-    /**
-     * @return The main scoreboard displayed to all users.
-     */
-    Scoreboard getMainScoreboard();
+  /**
+   * @return The main scoreboard displayed to all users.
+   */
+  Scoreboard getMainScoreboard();
 
 }

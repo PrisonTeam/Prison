@@ -28,48 +28,50 @@ import tech.mcprison.prison.internal.events.Cancelable;
  * @author DMP9
  */
 public class FurnaceBurnEvent implements Cancelable {
-    boolean canceled = false;
-    int burnTime = -1;
-    ItemStack fuel = null;
-    boolean burning = false;
-    Block block;
 
-    public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning) {
-        block = furnace;
-        this.fuel = fuel;
-        this.burnTime = burnTime;
-        this.burning = burning;
-    }
+  boolean canceled = false;
+  int burnTime = -1;
+  ItemStack fuel = null;
+  boolean burning = false;
+  Block block;
 
-    public int getBurnTime() {
-        return burnTime;
-    }
+  public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning) {
+    block = furnace;
+    this.fuel = fuel;
+    this.burnTime = burnTime;
+    this.burning = burning;
+  }
 
-    public void setBurnTime(int burnTime) {
-        this.burnTime = burnTime;
-    }
+  public int getBurnTime() {
+    return burnTime;
+  }
 
-    public ItemStack getFuel() {
-        return fuel;
-    }
+  public void setBurnTime(int burnTime) {
+    this.burnTime = burnTime;
+  }
 
-    public boolean isBurning() {
-        return burning;
-    }
+  public ItemStack getFuel() {
+    return fuel;
+  }
 
-    public void setBurning(boolean burning) {
-        this.burning = burning;
-    }
+  public boolean isBurning() {
+    return burning;
+  }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
+  public void setBurning(boolean burning) {
+    this.burning = burning;
+  }
 
-    public void setCanceled(boolean cancel) {
-        canceled = cancel;
-    }
+  public boolean isCanceled() {
+    return canceled;
+  }
 
-    public Block getBlock() {
-        return block;
-    }
+  public void setCanceled(boolean cancel) {
+    canceled = cancel;
+  }
+
+  public Block getBlock() {
+    return block;
+  }
+
 }

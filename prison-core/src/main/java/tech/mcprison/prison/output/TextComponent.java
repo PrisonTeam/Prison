@@ -28,14 +28,15 @@ import tech.mcprison.prison.util.Text;
  */
 public class TextComponent extends DisplayComponent {
 
-    protected String text;
+  protected String text;
 
-    public TextComponent(String text, Object... args) {
-        this.text = String.format(text, args);
-    }
+  public TextComponent(String text, Object... args) {
+    this.text = String.format(text, args);
+  }
 
-    @Override public String text() {
-        return Text.translateAmpColorCodes(text);
-    }
+  @Override
+  public String text() {
+    return Text.translateAmpColorCodes(text);
+  }
 
 }

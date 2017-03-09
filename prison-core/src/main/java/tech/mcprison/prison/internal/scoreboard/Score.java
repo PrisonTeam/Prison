@@ -23,8 +23,8 @@ package tech.mcprison.prison.internal.scoreboard;
  */
 public interface Score {
 
-    int getScore();
+  int getScore();
 
-    void setScore(int score);
+  void setScore(int score);
 
 }

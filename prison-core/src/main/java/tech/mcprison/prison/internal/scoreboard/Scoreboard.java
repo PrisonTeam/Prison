@@ -28,14 +28,14 @@ import java.util.List;
  */
 public interface Scoreboard {
 
-    Objective getObjective(DisplaySlot slot);
+  Objective getObjective(DisplaySlot slot);
 
-    Objective registerNewObjective(String name, String dummy);
+  Objective registerNewObjective(String name, String dummy);
 
-    void resetScores(String name);
+  void resetScores(String name);
 
-    Team registerNewTeam(String name);
+  Team registerNewTeam(String name);
 
-    List<Team> getTeams();
+  List<Team> getTeams();
 
 }

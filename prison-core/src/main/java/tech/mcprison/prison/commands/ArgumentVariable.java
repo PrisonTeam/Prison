@@ -21,6 +21,7 @@ package tech.mcprison.prison.commands;
 import tech.mcprison.prison.internal.CommandSender;
 
 public interface ArgumentVariable<T> {
-    public T var(CommandSender sender, CommandArgument argument, String varName)
-        throws CommandError;
+
+  public T var(CommandSender sender, CommandArgument argument, String varName)
+      throws CommandError;
 }

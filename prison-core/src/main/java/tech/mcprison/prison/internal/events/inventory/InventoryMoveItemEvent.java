@@ -28,45 +28,47 @@ import tech.mcprison.prison.internal.inventory.Inventory;
  * @author DMP9
  */
 public class InventoryMoveItemEvent implements Cancelable {
-    boolean sourceInitiated;
-    boolean canceled = false;
-    Inventory source;
-    Inventory destination;
-    ItemStack item;
 
-    public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
-        Inventory destinationInventory, boolean didSourceInitiate) {
-        this.source = sourceInventory;
-        this.destination = destinationInventory;
-        this.item = itemStack;
-        this.sourceInitiated = didSourceInitiate;
-    }
+  boolean sourceInitiated;
+  boolean canceled = false;
+  Inventory source;
+  Inventory destination;
+  ItemStack item;
 
-    public Inventory getDestination() {
-        return destination;
-    }
+  public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
+      Inventory destinationInventory, boolean didSourceInitiate) {
+    this.source = sourceInventory;
+    this.destination = destinationInventory;
+    this.item = itemStack;
+    this.sourceInitiated = didSourceInitiate;
+  }
 
-    public Inventory getInitiator() {
-        return sourceInitiated ? source : destination;
-    }
+  public Inventory getDestination() {
+    return destination;
+  }
 
-    public ItemStack getItem() {
-        return item;
-    }
+  public Inventory getInitiator() {
+    return sourceInitiated ? source : destination;
+  }
 
-    public void setItem(ItemStack itemStack) {
-        item = itemStack;
-    }
+  public ItemStack getItem() {
+    return item;
+  }
 
-    public Inventory getSource() {
-        return source;
-    }
+  public void setItem(ItemStack itemStack) {
+    item = itemStack;
+  }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
+  public Inventory getSource() {
+    return source;
+  }
 
-    public void setCanceled(boolean cancel) {
-        canceled = cancel;
-    }
+  public boolean isCanceled() {
+    return canceled;
+  }
+
+  public void setCanceled(boolean cancel) {
+    canceled = cancel;
+  }
+
 }

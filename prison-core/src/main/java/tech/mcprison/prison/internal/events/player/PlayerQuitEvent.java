@@ -28,14 +28,14 @@ import tech.mcprison.prison.internal.Player;
  */
 public class PlayerQuitEvent {
 
-    private Player player;
+  private Player player;
 
-    public PlayerQuitEvent(Player player) {
-        this.player = player;
-    }
+  public PlayerQuitEvent(Player player) {
+    this.player = player;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public Player getPlayer() {
+    return player;
+  }
 
 }

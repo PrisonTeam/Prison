@@ -30,14 +30,14 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface Compatibility {
 
-    EquipmentSlot getHand(PlayerInteractEvent e);
+  EquipmentSlot getHand(PlayerInteractEvent e);
 
-    ItemStack getItemInMainHand(PlayerInteractEvent e);
+  ItemStack getItemInMainHand(PlayerInteractEvent e);
 
-    void playIronDoorSound(Location loc);
+  void playIronDoorSound(Location loc);
 
-    enum EquipmentSlot {
-        HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
-    }
+  enum EquipmentSlot {
+    HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
+  }
 
 }

@@ -25,10 +25,10 @@ package tech.mcprison.prison.internal.inventory;
  * @since API 0.1
  */
 public interface InventoryHolder {
-    /**
-     * Gets the {@link Inventory} this {@link InventoryHolder} is holding
-     *
-     * @return
-     */
-    public Inventory getInventory();
+
+  /**
+   * Gets the {@link Inventory} this {@link InventoryHolder} is holding
+   */
+  public Inventory getInventory();
+
 }

@@ -25,22 +25,24 @@ import tech.mcprison.prison.internal.scoreboard.Score;
  */
 public class SpigotScore implements Score {
 
-    private org.bukkit.scoreboard.Score bScore;
+  private org.bukkit.scoreboard.Score bScore;
 
-    public SpigotScore(org.bukkit.scoreboard.Score bScore) {
-        this.bScore = bScore;
-    }
+  public SpigotScore(org.bukkit.scoreboard.Score bScore) {
+    this.bScore = bScore;
+  }
 
-    @Override public int getScore() {
-        return bScore.getScore();
-    }
+  @Override
+  public int getScore() {
+    return bScore.getScore();
+  }
 
-    @Override public void setScore(int score) {
-        bScore.setScore(score);
-    }
+  @Override
+  public void setScore(int score) {
+    bScore.setScore(score);
+  }
 
-    public org.bukkit.scoreboard.Score getWrapper() {
-        return bScore;
-    }
+  public org.bukkit.scoreboard.Score getWrapper() {
+    return bScore;
+  }
 
 }

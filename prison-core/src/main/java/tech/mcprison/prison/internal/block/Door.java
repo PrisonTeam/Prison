@@ -28,37 +28,37 @@ import tech.mcprison.prison.util.BlockType;
  */
 public interface Door extends BlockState {
 
-    /**
-     * Returns whether or not the door is open.
-     *
-     * @return true if it's open, false otherwise.
-     */
-    boolean isOpen();
+  /**
+   * Returns whether or not the door is open.
+   *
+   * @return true if it's open, false otherwise.
+   */
+  boolean isOpen();
 
-    /**
-     * Open or close the door.
-     *
-     * @param open true to open, false to close.
-     */
-    void setOpen(boolean open);
+  /**
+   * Open or close the door.
+   *
+   * @param open true to open, false to close.
+   */
+  void setOpen(boolean open);
 
-    /**
-     * Open the door if it's closed, and close the door if it's open.
-     */
-    default void toggleOpen() {
-        setOpen(!isOpen());
-    }
+  /**
+   * Open the door if it's closed, and close the door if it's open.
+   */
+  default void toggleOpen() {
+    setOpen(!isOpen());
+  }
 
-    /**
-     * Returns true if this is a wooden door, false otherwise.
-     *
-     * @return true if it's a wooden door, false otherwise.
-     */
-    default boolean isWoodenDoor() {
-        BlockType block = getBlock().getType();
-        return block == BlockType.ACACIA_DOOR_BLOCK || block == BlockType.BIRCH_DOOR_BLOCK
-            || block == BlockType.DARK_OAK_DOOR_BLOCK || block == BlockType.JUNGLE_DOOR_BLOCK
-            || block == BlockType.OAK_DOOR_BLOCK || block == BlockType.SPRUCE_DOOR_BLOCK;
-    }
+  /**
+   * Returns true if this is a wooden door, false otherwise.
+   *
+   * @return true if it's a wooden door, false otherwise.
+   */
+  default boolean isWoodenDoor() {
+    BlockType block = getBlock().getType();
+    return block == BlockType.ACACIA_DOOR_BLOCK || block == BlockType.BIRCH_DOOR_BLOCK
+        || block == BlockType.DARK_OAK_DOOR_BLOCK || block == BlockType.JUNGLE_DOOR_BLOCK
+        || block == BlockType.OAK_DOOR_BLOCK || block == BlockType.SPRUCE_DOOR_BLOCK;
+  }
 
 }

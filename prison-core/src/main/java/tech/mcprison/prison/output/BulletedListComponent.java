@@ -18,10 +18,9 @@
 
 package tech.mcprison.prison.output;
 
-import tech.mcprison.prison.util.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+import tech.mcprison.prison.util.Text;
 
 /**
  * A bulleted list component for all your listing needs.
@@ -32,31 +31,31 @@ import java.util.List;
  */
 public class BulletedListComponent extends TextComponent {
 
-    public BulletedListComponent(String text) {
-        super(text);
+  public BulletedListComponent(String text) {
+    super(text);
+  }
+
+  public static class BulletedListBuilder {
+
+    private List<String> bullets;
+
+    public BulletedListBuilder() {
+      this.bullets = new ArrayList<>();
     }
 
-    public static class BulletedListBuilder {
-
-        private List<String> bullets;
-
-        public BulletedListBuilder() {
-            this.bullets = new ArrayList<>();
-        }
-
-        public BulletedListBuilder add(String text, Object... args) {
-            text = String.format(text, args);
-            this.bullets.add("&7•&r " + text);
-            return this;
-        }
-
-        public BulletedListComponent build() {
-            String list = Text.translateAmpColorCodes(
-                Text.implode(bullets.toArray(new String[bullets.size()]), "\n"));
-
-            return new BulletedListComponent(list);
-        }
-
+    public BulletedListBuilder add(String text, Object... args) {
+      text = String.format(text, args);
+      this.bullets.add("&7•&r " + text);
+      return this;
     }
+
+    public BulletedListComponent build() {
+      String list = Text.translateAmpColorCodes(
+          Text.implode(bullets.toArray(new String[bullets.size()]), "\n"));
+
+      return new BulletedListComponent(list);
+    }
+
+  }
 
 }

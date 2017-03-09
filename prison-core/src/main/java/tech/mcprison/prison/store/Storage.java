@@ -28,30 +28,30 @@ import java.util.List;
  */
 public interface Storage {
 
-    /**
-     * Writes the data to disk.
-     *
-     * @param key The key to identify this data by. You will use this to retrieve the data later.
-     * @param obj The object to write out.
-     */
-    void write(String key, Object obj);
+  /**
+   * Writes the data to disk.
+   *
+   * @param key The key to identify this data by. You will use this to retrieve the data later.
+   * @param obj The object to write out.
+   */
+  void write(String key, Object obj);
 
-    /**
-     * Read data from disk into an object.
-     *
-     * @param key  The key that the data is identified by. This is case-sensitive.
-     * @param type The class type of this data.
-     * @return The read object, or null if the operation fails.
-     */
-    <T> T read(String key, Class<T> type);
+  /**
+   * Read data from disk into an object.
+   *
+   * @param key The key that the data is identified by. This is case-sensitive.
+   * @param type The class type of this data.
+   * @return The read object, or null if the operation fails.
+   */
+  <T> T read(String key, Class<T> type);
 
-    /**
-     * Reads every piece of data from the same class type from disk. This is useful
-     * for loading data in bulk.
-     *
-     * @param type The type to load.
-     * @return A list containing each object.
-     */
-    <T> List<T> readAll(Class<T> type);
+  /**
+   * Reads every piece of data from the same class type from disk. This is useful
+   * for loading data in bulk.
+   *
+   * @param type The type to load.
+   * @return A list containing each object.
+   */
+  <T> List<T> readAll(Class<T> type);
 
 }

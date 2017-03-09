@@ -28,25 +28,27 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  * @author DMP9
  */
 public class PrepareItemCraftEvent extends InventoryEvent {
-    CraftingInventory inventory;
-    boolean repair;
 
-    public PrepareItemCraftEvent(Viewable transaction, CraftingInventory inventory,
-        boolean repair) {
-        super(transaction);
-        this.inventory = inventory;
-        this.repair = repair;
-    }
+  CraftingInventory inventory;
+  boolean repair;
 
-    public CraftingInventory getInventory() {
-        return inventory;
-    }
+  public PrepareItemCraftEvent(Viewable transaction, CraftingInventory inventory,
+      boolean repair) {
+    super(transaction);
+    this.inventory = inventory;
+    this.repair = repair;
+  }
 
-    public Recipe getRecipe() {
-        return inventory.getRecipe();
-    }
+  public CraftingInventory getInventory() {
+    return inventory;
+  }
 
-    public boolean isRepair() {
-        return repair;
-    }
+  public Recipe getRecipe() {
+    return inventory.getRecipe();
+  }
+
+  public boolean isRepair() {
+    return repair;
+  }
+
 }

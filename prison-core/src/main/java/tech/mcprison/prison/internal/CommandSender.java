@@ -26,52 +26,52 @@ package tech.mcprison.prison.internal;
  */
 public interface CommandSender {
 
-    /**
-     * Returns the name of the command sender.
-     */
-    String getName();
+  /**
+   * Returns the name of the command sender.
+   */
+  String getName();
 
-    /**
-     * Force a commandSender to send a command
-     */
-    void dispatchCommand(String command);
+  /**
+   * Force a commandSender to send a command
+   */
+  void dispatchCommand(String command);
 
-    /**
-     * Returns true if the command sender can show colors to the viewer.
-     * This is not always the case, especially when using command blocks and online consoles.
-     */
-    boolean doesSupportColors();
+  /**
+   * Returns true if the command sender can show colors to the viewer.
+   * This is not always the case, especially when using command blocks and online consoles.
+   */
+  boolean doesSupportColors();
 
-    /**
-     * Returns true if the command sender has access to the permission specified.
-     *
-     * @param perm The permission to check.
-     */
-    boolean hasPermission(String perm);
+  /**
+   * Returns true if the command sender has access to the permission specified.
+   *
+   * @param perm The permission to check.
+   */
+  boolean hasPermission(String perm);
 
-    /**
-     * Sends a message to the command sender.
-     * If the command sender supports colors, color codes will automatically be parsed and shown.
-     * If not, color codes will simply be stripped from the message.
-     *
-     * @param message The message to send. May include color codes, amp-prefixed.
-     */
-    void sendMessage(String message);
+  /**
+   * Sends a message to the command sender.
+   * If the command sender supports colors, color codes will automatically be parsed and shown.
+   * If not, color codes will simply be stripped from the message.
+   *
+   * @param message The message to send. May include color codes, amp-prefixed.
+   */
+  void sendMessage(String message);
 
-    /**
-     * Sends multiple messages to the command sender.
-     * Each message will be shown on its own line.
-     *
-     * @param messages The array containing each message.
-     * @see #sendMessage(String)
-     */
-    void sendMessage(String[] messages);
+  /**
+   * Sends multiple messages to the command sender.
+   * Each message will be shown on its own line.
+   *
+   * @param messages The array containing each message.
+   * @see #sendMessage(String)
+   */
+  void sendMessage(String[] messages);
 
-    /**
-     * Send a raw JSON message to the sender.
-     *
-     * @param json The JSON message. Must be in proper format.
-     */
-    void sendRaw(String json);
+  /**
+   * Send a raw JSON message to the sender.
+   *
+   * @param json The JSON message. Must be in proper format.
+   */
+  void sendRaw(String json);
 
 }

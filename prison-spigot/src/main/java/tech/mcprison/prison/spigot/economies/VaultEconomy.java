@@ -28,51 +28,56 @@ import tech.mcprison.prison.internal.Player;
  */
 public class VaultEconomy implements Economy {
 
-    net.milkbowl.vault.economy.Economy economy = null;
+  net.milkbowl.vault.economy.Economy economy = null;
 
-    public VaultEconomy() {
-        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+  public VaultEconomy() {
+    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
+        Bukkit.getServer().getServicesManager()
+            .getRegistration(net.milkbowl.vault.economy.Economy.class);
+    if (economyProvider != null) {
+      economy = economyProvider.getProvider();
     }
+  }
 
-    @Override public double getBalance(Player player) {
-        if (economy == null) {
-            return 0;
-        }
-        return economy.getBalance(player.getName());
+  @Override
+  public double getBalance(Player player) {
+    if (economy == null) {
+      return 0;
     }
+    return economy.getBalance(player.getName());
+  }
 
-    @Override public void setBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
-        }
-        economy.bankWithdraw(player.getName(), getBalance(player));
-        economy.bankDeposit(player.getName(), amount);
+  @Override
+  public void setBalance(Player player, double amount) {
+    if (economy == null) {
+      return;
     }
+    economy.bankWithdraw(player.getName(), getBalance(player));
+    economy.bankDeposit(player.getName(), amount);
+  }
 
-    @Override public void addBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
-        }
-        economy.bankDeposit(player.getName(), amount);
+  @Override
+  public void addBalance(Player player, double amount) {
+    if (economy == null) {
+      return;
     }
+    economy.bankDeposit(player.getName(), amount);
+  }
 
-    @Override public void removeBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
-        }
-        economy.bankWithdraw(player.getName(), amount);
+  @Override
+  public void removeBalance(Player player, double amount) {
+    if (economy == null) {
+      return;
     }
+    economy.bankWithdraw(player.getName(), amount);
+  }
 
-    @Override public boolean canAfford(Player player, double amount) {
-        if (economy == null) {
-            return false;
-        }
-        return economy.bankHas(player.getName(), amount).transactionSuccess();
+  @Override
+  public boolean canAfford(Player player, double amount) {
+    if (economy == null) {
+      return false;
     }
+    return economy.bankHas(player.getName(), amount).transactionSuccess();
+  }
 
 }

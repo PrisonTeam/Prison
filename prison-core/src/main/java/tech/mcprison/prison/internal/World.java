@@ -18,10 +18,9 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
 
 /**
  * Represents a world on the Minecraft server.
@@ -31,21 +30,21 @@ import java.util.List;
  */
 public interface World {
 
-    /**
-     * Returns the name of this world.
-     */
-    String getName();
+  /**
+   * Returns the name of this world.
+   */
+  String getName();
 
-    /**
-     * Returns a list of all the players in this world.
-     */
-    List<Player> getPlayers();
+  /**
+   * Returns a list of all the players in this world.
+   */
+  List<Player> getPlayers();
 
-    /**
-     * Returns the {@link Block} at a specified location.
-     *
-     * @param location The {@link Location} of the block.
-     */
-    Block getBlockAt(Location location);
+  /**
+   * Returns the {@link Block} at a specified location.
+   *
+   * @param location The {@link Location} of the block.
+   */
+  Block getBlockAt(Location location);
 
 }

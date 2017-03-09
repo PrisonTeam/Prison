@@ -19,14 +19,13 @@
 package tech.mcprison.prison.sponge;
 
 import com.google.inject.Inject;
+import java.nio.file.Path;
+import java.util.logging.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import tech.mcprison.prison.Prison;
-
-import java.nio.file.Path;
-import java.util.logging.Logger;
 
 /**
  * @author Faizaan A. Datoo
@@ -34,24 +33,28 @@ import java.util.logging.Logger;
 @Plugin(id = "prison-sponge", name = "Prison", description = "An all-in-one solution for a Prison server.", version = "3.1.1.0", url = "http://mc-prison.tech")
 public class SpongePrison {
 
-    @Inject private Logger logger;
+  @Inject
+  private Logger logger;
 
-    @Inject @ConfigDir(sharedRoot = false) private Path configDir;
+  @Inject
+  @ConfigDir(sharedRoot = false)
+  private Path configDir;
 
-    @Listener public void onServerStart(GameStartedServerEvent e) {
-        if (!configDir.toFile().exists()) {
-            configDir.toFile().mkdirs();
-        }
-
-        Prison.get().init(new SpongePlatform(this));
+  @Listener
+  public void onServerStart(GameStartedServerEvent e) {
+    if (!configDir.toFile().exists()) {
+      configDir.toFile().mkdirs();
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
+    Prison.get().init(new SpongePlatform(this));
+  }
 
-    public Path getConfigDir() {
-        return configDir;
-    }
+  public Logger getLogger() {
+    return logger;
+  }
+
+  public Path getConfigDir() {
+    return configDir;
+  }
 
 }

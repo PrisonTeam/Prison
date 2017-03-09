@@ -19,32 +19,38 @@
 package tech.mcprison.prison.commands.handlers;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.*;
+import tech.mcprison.prison.commands.ArgumentHandler;
+import tech.mcprison.prison.commands.ArgumentVariable;
+import tech.mcprison.prison.commands.CommandArgument;
+import tech.mcprison.prison.commands.CommandError;
+import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 
 public class WorldArgumentHandler extends ArgumentHandler<World> {
-    public WorldArgumentHandler() {
-        addVariable("sender", "The command executor", new ArgumentVariable<World>() {
-            @Override
-            public World var(CommandSender sender, CommandArgument argument, String varName)
-                throws CommandError {
-                if (!(sender instanceof Player)) {
-                    throw new CommandError(
-                        Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                            .localizeFor(sender));
-                }
 
-                return ((Player) sender).getLocation().getWorld();
-            }
-        });
-    }
+  public WorldArgumentHandler() {
+    addVariable("sender", "The command executor", new ArgumentVariable<World>() {
+      @Override
+      public World var(CommandSender sender, CommandArgument argument, String varName)
+          throws CommandError {
+        if (!(sender instanceof Player)) {
+          throw new CommandError(
+              Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                  .localizeFor(sender));
+        }
 
-    @Override public World transform(CommandSender sender, CommandArgument argument, String value)
-        throws TransformError {
-        return Prison.get().getPlatform().getWorld(value).orElseThrow(() -> new TransformError(
-            Prison.get().getLocaleManager().getLocalizable("worldNotFound").withReplacements(value)
-                .localizeFor(sender)));
-    }
+        return ((Player) sender).getLocation().getWorld();
+      }
+    });
+  }
+
+  @Override
+  public World transform(CommandSender sender, CommandArgument argument, String value)
+      throws TransformError {
+    return Prison.get().getPlatform().getWorld(value).orElseThrow(() -> new TransformError(
+        Prison.get().getLocaleManager().getLocalizable("worldNotFound").withReplacements(value)
+            .localizeFor(sender)));
+  }
 }

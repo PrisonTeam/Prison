@@ -29,25 +29,27 @@ import tech.mcprison.prison.util.InventoryType;
  * @author DMP9
  */
 public class CraftItemEvent extends InventoryClickEvent {
-    protected Recipe recipe;
 
-    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
-        Click click, Action action) {
-        super(what, type, slot, click, action);
-        this.recipe = recipe;
-    }
+  protected Recipe recipe;
 
-    public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
-        Click click, Action action, int key) {
-        super(what, type, slot, click, action, key);
-        this.recipe = recipe;
-    }
+  public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
+      Click click, Action action) {
+    super(what, type, slot, click, action);
+    this.recipe = recipe;
+  }
 
-    public CraftingInventory getInventory() {
-        return (CraftingInventory) transaction.getTopInventory();
-    }
+  public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
+      Click click, Action action, int key) {
+    super(what, type, slot, click, action, key);
+    this.recipe = recipe;
+  }
 
-    public Recipe getRecipe() {
-        return recipe;
-    }
+  public CraftingInventory getInventory() {
+    return (CraftingInventory) transaction.getTopInventory();
+  }
+
+  public Recipe getRecipe() {
+    return recipe;
+  }
+
 }

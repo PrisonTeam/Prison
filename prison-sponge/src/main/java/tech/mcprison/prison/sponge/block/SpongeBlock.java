@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.sponge.block;
 
+import java.util.Arrays;
+import java.util.List;
 import org.spongepowered.api.world.World;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
@@ -27,52 +29,56 @@ import tech.mcprison.prison.sponge.SpongeUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongeBlock implements Block {
 
-    org.spongepowered.api.world.Location<World> blockLoc;
+  org.spongepowered.api.world.Location<World> blockLoc;
 
-    public SpongeBlock(org.spongepowered.api.world.Location<World> blockLoc) {
-        this.blockLoc = blockLoc;
-    }
+  public SpongeBlock(org.spongepowered.api.world.Location<World> blockLoc) {
+    this.blockLoc = blockLoc;
+  }
 
-    @Override public Location getLocation() {
-        return SpongeUtil.spongeLocationToPrison(blockLoc);
-    }
+  @Override
+  public Location getLocation() {
+    return SpongeUtil.spongeLocationToPrison(blockLoc);
+  }
 
-    @Override public Block getRelative(BlockFace face) {
-        return new SpongeBlock(blockLoc.getRelative(SpongeUtil.prisonBlockFaceToSponge(face)));
-    }
+  @Override
+  public Block getRelative(BlockFace face) {
+    return new SpongeBlock(blockLoc.getRelative(SpongeUtil.prisonBlockFaceToSponge(face)));
+  }
 
-    @Override public BlockType getType() {
-        return Arrays.stream(BlockType.values())
-            .filter(blockType -> blockType.getId().equals(blockLoc.getBlock().getType().getId()))
-            .findFirst().orElse(null);
-    }
+  @Override
+  public BlockType getType() {
+    return Arrays.stream(BlockType.values())
+        .filter(blockType -> blockType.getId().equals(blockLoc.getBlock().getType().getId()))
+        .findFirst().orElse(null);
+  }
 
-    @Override public void setType(BlockType type) {
+  @Override
+  public void setType(BlockType type) {
+  }
 
-    }
+  @Override
+  public BlockState getState() {
+    return null;
+  }
 
-    @Override public BlockState getState() {
-        return null;
-    }
+  @Override
+  public boolean breakNaturally() {
+    return false;
+  }
 
-    @Override public boolean breakNaturally() {
-        return false;
-    }
+  @Override
+  public List<ItemStack> getDrops() {
+    return null;
+  }
 
-    @Override public List<ItemStack> getDrops() {
-        return null;
-    }
-
-    @Override public List<ItemStack> getDrops(ItemStack tool) {
-        return null;
-    }
+  @Override
+  public List<ItemStack> getDrops(ItemStack tool) {
+    return null;
+  }
 
 }

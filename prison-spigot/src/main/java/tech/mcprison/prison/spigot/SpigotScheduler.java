@@ -26,36 +26,42 @@ import tech.mcprison.prison.internal.Scheduler;
  */
 public class SpigotScheduler implements Scheduler {
 
-    private SpigotPrison plugin;
-    private BukkitScheduler scheduler;
+  private SpigotPrison plugin;
+  private BukkitScheduler scheduler;
 
-    public SpigotScheduler(SpigotPrison plugin) {
-        this.plugin = plugin;
-        this.scheduler = plugin.getServer().getScheduler();
-    }
+  public SpigotScheduler(SpigotPrison plugin) {
+    this.plugin = plugin;
+    this.scheduler = plugin.getServer().getScheduler();
+  }
 
-    @Override public int runTaskLater(Runnable run, long delay) {
-        return scheduler.runTaskLater(plugin, run, delay).getTaskId();
-    }
+  @Override
+  public int runTaskLater(Runnable run, long delay) {
+    return scheduler.runTaskLater(plugin, run, delay).getTaskId();
+  }
 
-    @Override public int runTaskLaterAsync(Runnable run, long delay) {
-        return scheduler.runTaskLaterAsynchronously(plugin, run, delay).getTaskId();
-    }
+  @Override
+  public int runTaskLaterAsync(Runnable run, long delay) {
+    return scheduler.runTaskLaterAsynchronously(plugin, run, delay).getTaskId();
+  }
 
-    @Override public int runTaskTimer(Runnable run, long delay, long interval) {
-        return scheduler.runTaskTimer(plugin, run, delay, interval).getTaskId();
-    }
+  @Override
+  public int runTaskTimer(Runnable run, long delay, long interval) {
+    return scheduler.runTaskTimer(plugin, run, delay, interval).getTaskId();
+  }
 
-    @Override public int runTaskTimerAsync(Runnable run, long delay, long interval) {
-        return scheduler.runTaskTimerAsynchronously(plugin, run, delay, interval).getTaskId();
-    }
+  @Override
+  public int runTaskTimerAsync(Runnable run, long delay, long interval) {
+    return scheduler.runTaskTimerAsynchronously(plugin, run, delay, interval).getTaskId();
+  }
 
-    @Override public void cancelTask(int taskId) {
-        scheduler.cancelTask(taskId);
-    }
+  @Override
+  public void cancelTask(int taskId) {
+    scheduler.cancelTask(taskId);
+  }
 
-    @Override public void cancelAll() {
-        scheduler.cancelTasks(plugin);
-    }
+  @Override
+  public void cancelAll() {
+    scheduler.cancelTasks(plugin);
+  }
 
 }

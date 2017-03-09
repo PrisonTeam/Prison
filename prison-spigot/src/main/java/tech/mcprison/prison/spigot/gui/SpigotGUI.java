@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.spigot.gui;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
@@ -28,76 +30,81 @@ import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class SpigotGUI implements GUI {
 
-    private Map<Integer, Button> buttons;
-    private String title;
-    private int numSlots;
+  private Map<Integer, Button> buttons;
+  private String title;
+  private int numSlots;
 
-    private Inventory bukkitInventory;
+  private Inventory bukkitInventory;
 
-    public SpigotGUI(String title, int numSlots) {
-        this.buttons = new HashMap<>();
-        this.title = title;
-        this.numSlots = numSlots;
+  public SpigotGUI(String title, int numSlots) {
+    this.buttons = new HashMap<>();
+    this.title = title;
+    this.numSlots = numSlots;
+  }
+
+  @Override
+  public void show(Player... players) {
+    for (Player player : players) {
+      org.bukkit.entity.Player bPlayer = Bukkit.getServer().getPlayer(player.getName());
+      bPlayer.openInventory(bukkitInventory);
+    }
+    GUIListener.get().registerInventory(this);
+  }
+
+  @Override
+  public GUI build() {
+    bukkitInventory = Bukkit.getServer()
+        .createInventory(null, numSlots, ChatColor.translateAlternateColorCodes('&', title));
+    for (Map.Entry<Integer, Button> button : buttons.entrySet()) {
+      bukkitInventory.setItem(button.getKey(), buttonToItemStack(button.getValue()));
     }
 
-    @Override public void show(Player... players) {
-        for (Player player : players) {
-            org.bukkit.entity.Player bPlayer = Bukkit.getServer().getPlayer(player.getName());
-            bPlayer.openInventory(bukkitInventory);
-        }
-        GUIListener.get().registerInventory(this);
-    }
+    return this;
+  }
 
-    @Override public GUI build() {
-        bukkitInventory = Bukkit.getServer()
-            .createInventory(null, numSlots, ChatColor.translateAlternateColorCodes('&', title));
-        for (Map.Entry<Integer, Button> button : buttons.entrySet()) {
-            bukkitInventory.setItem(button.getKey(), buttonToItemStack(button.getValue()));
-        }
+  private ItemStack buttonToItemStack(Button button) {
+    ItemStack stack =
+        new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
+    ItemMeta meta = stack.getItemMeta();
+    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + button.getName()));
+    meta.setLore(button.getLore());
+    stack.setItemMeta(meta);
+    return stack;
+  }
 
-        return this;
-    }
+  @Override
+  public String getTitle() {
+    return title;
+  }
 
-    private ItemStack buttonToItemStack(Button button) {
-        ItemStack stack =
-            new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
-        ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + button.getName()));
-        meta.setLore(button.getLore());
-        stack.setItemMeta(meta);
-        return stack;
-    }
+  @Override
+  public int getNumRows() {
+    return numSlots / 9;
+  }
 
-    @Override public String getTitle() {
-        return title;
-    }
+  @Override
+  public Map<Integer, Button> getButtons() {
+    return buttons;
+  }
 
-    @Override public int getNumRows() {
-        return numSlots / 9;
-    }
+  @Override
+  public GUI addButton(int slot, Button button) {
+    buttons.put(slot, button);
+    return this;
+  }
 
-    @Override public Map<Integer, Button> getButtons() {
-        return buttons;
-    }
+  @Override
+  public tech.mcprison.prison.internal.inventory.Inventory getInventory() {
+    return new SpigotInventory(bukkitInventory);
+  }
 
-    @Override public GUI addButton(int slot, Button button) {
-        buttons.put(slot, button);
-        return this;
-    }
+  public Inventory getWrapper() {
+    return bukkitInventory;
+  }
 
-    @Override public tech.mcprison.prison.internal.inventory.Inventory getInventory() {
-        return new SpigotInventory(bukkitInventory);
-    }
-
-    public Inventory getWrapper() {
-        return bukkitInventory;
-    }
 }

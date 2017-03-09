@@ -27,31 +27,32 @@ import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
  */
 public class SelectionListener {
 
-    public void init() {
-        Prison.get().getEventBus().register(this);
-    }
+  public void init() {
+    Prison.get().getEventBus().register(this);
+  }
 
-    @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
-        if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL)) {
-            return;
-        }
-        e.setCanceled(true);
-
-        if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-            // Set first position
-            Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
-            sel.setMin(e.getClicked());
-            Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
-            e.getPlayer()
-                .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
-        } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            // Set second position
-            Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
-            sel.setMax(e.getClicked());
-            Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
-            e.getPlayer()
-                .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
-        }
+  @Subscribe
+  public void onPlayerInteract(PlayerInteractEvent e) {
+    if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL)) {
+      return;
     }
+    e.setCanceled(true);
+
+    if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+      // Set first position
+      Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
+      sel.setMin(e.getClicked());
+      Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
+      e.getPlayer()
+          .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
+    } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+      // Set second position
+      Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
+      sel.setMax(e.getClicked());
+      Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
+      e.getPlayer()
+          .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
+    }
+  }
 
 }

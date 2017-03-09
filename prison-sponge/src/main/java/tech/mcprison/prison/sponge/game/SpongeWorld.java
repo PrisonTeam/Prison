@@ -19,40 +19,42 @@
 package tech.mcprison.prison.sponge.game;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongeWorld implements World {
 
-    org.spongepowered.api.world.World spongeWorld;
+  private org.spongepowered.api.world.World spongeWorld;
 
-    public SpongeWorld(org.spongepowered.api.world.World spongeWorld) {
-        this.spongeWorld = spongeWorld;
-    }
+  public SpongeWorld(org.spongepowered.api.world.World spongeWorld) {
+    this.spongeWorld = spongeWorld;
+  }
 
-    @Override public String getName() {
-        return spongeWorld.getName();
-    }
+  @Override
+  public String getName() {
+    return spongeWorld.getName();
+  }
 
-    @Override public List<Player> getPlayers() {
-        return spongeWorld.getPlayers().stream().map(SpongePlayer::new)
-            .collect(Collectors.toList());
-    }
+  @Override
+  public List<Player> getPlayers() {
+    return spongeWorld.getPlayers().stream().map(SpongePlayer::new)
+        .collect(Collectors.toList());
+  }
 
-    @Override public Block getBlockAt(Location location) {
-        return null;
-    }
+  @Override
+  public Block getBlockAt(Location location) {
+    return null;
+  }
 
-    public org.spongepowered.api.world.World getSpongeWorld() {
-        return spongeWorld;
-    }
+  public org.spongepowered.api.world.World getSpongeWorld() {
+    return spongeWorld;
+  }
 
 }

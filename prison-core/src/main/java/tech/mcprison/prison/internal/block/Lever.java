@@ -26,19 +26,19 @@ package tech.mcprison.prison.internal.block;
  */
 public interface Lever extends BlockState {
 
-    /**
-     * Returns whether the lever is on or off.
-     * On is defined as emitting a redstone signal.
-     *
-     * @return true if the lever is on, false if it's off.
-     */
-    boolean isOn();
+  /**
+   * Returns whether the lever is on or off.
+   * On is defined as emitting a redstone signal.
+   *
+   * @return true if the lever is on, false if it's off.
+   */
+  boolean isOn();
 
-    /**
-     * Set a lever as on (i.e. emitting redstone current) or off.
-     *
-     * @param on true to power it, false otherwise.
-     */
-    void setOn(boolean on);
+  /**
+   * Set a lever as on (i.e. emitting redstone current) or off.
+   *
+   * @param on true to power it, false otherwise.
+   */
+  void setOn(boolean on);
 
 }

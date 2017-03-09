@@ -31,46 +31,48 @@ import tech.mcprison.prison.util.Location;
  */
 public class PlayerInteractEvent implements Cancelable {
 
-    private Player player;
-    private ItemStack itemInHand;
-    private Action action;
-    private Location clicked;
-    private boolean canceled = false;
+  private Player player;
+  private ItemStack itemInHand;
+  private Action action;
+  private Location clicked;
+  private boolean canceled = false;
 
-    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
-        Location clicked) {
-        this.player = player;
-        this.itemInHand = itemInHand;
-        this.action = action;
-        this.clicked = clicked;
-    }
+  public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
+      Location clicked) {
+    this.player = player;
+    this.itemInHand = itemInHand;
+    this.action = action;
+    this.clicked = clicked;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
+  public Player getPlayer() {
+    return player;
+  }
 
-    public ItemStack getItemInHand() {
-        return itemInHand;
-    }
+  public ItemStack getItemInHand() {
+    return itemInHand;
+  }
 
-    public Action getAction() {
-        return action;
-    }
+  public Action getAction() {
+    return action;
+  }
 
-    public Location getClicked() {
-        return clicked;
-    }
+  public Location getClicked() {
+    return clicked;
+  }
 
-    @Override public boolean isCanceled() {
-        return canceled;
-    }
+  @Override
+  public boolean isCanceled() {
+    return canceled;
+  }
 
-    @Override public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
+  @Override
+  public void setCanceled(boolean canceled) {
+    this.canceled = canceled;
+  }
 
-    public enum Action {
-        LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
-    }
+  public enum Action {
+    LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK
+  }
 
 }

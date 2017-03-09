@@ -19,61 +19,62 @@
 package tech.mcprison.prison.internal;
 
 /**
- * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own thread.
+ * Allows tasks to be scheduled to run later or at intervals, on the server thread or on its own
+ * thread.
  *
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
 public interface Scheduler {
 
-    /**
-     * Run a task on the server thread, after a certain amount of time.
-     *
-     * @param run   The {@link Runnable} with the task inside.
-     * @param delay The time to wait, in seconds, until the task is run.
-     * @return The task ID.
-     */
-    int runTaskLater(Runnable run, long delay);
+  /**
+   * Run a task on the server thread, after a certain amount of time.
+   *
+   * @param run The {@link Runnable} with the task inside.
+   * @param delay The time to wait, in seconds, until the task is run.
+   * @return The task ID.
+   */
+  int runTaskLater(Runnable run, long delay);
 
-    /**
-     * Run a task on its own thread, after a certain amount of time.
-     *
-     * @param run   The {@link Runnable} with the task inside.
-     * @param delay The time to wait, in seconds, until the task is run.
-     * @return The task ID.
-     */
-    int runTaskLaterAsync(Runnable run, long delay);
+  /**
+   * Run a task on its own thread, after a certain amount of time.
+   *
+   * @param run The {@link Runnable} with the task inside.
+   * @param delay The time to wait, in seconds, until the task is run.
+   * @return The task ID.
+   */
+  int runTaskLaterAsync(Runnable run, long delay);
 
-    /**
-     * Run a task on the server thread, at the specified interval.
-     *
-     * @param run      The {@link Runnable} with the task inside.
-     * @param delay    The time to wait, in seconds, until the timer is started.
-     * @param interval The time between runs, in seconds.
-     * @return The task ID.
-     */
-    int runTaskTimer(Runnable run, long delay, long interval);
+  /**
+   * Run a task on the server thread, at the specified interval.
+   *
+   * @param run The {@link Runnable} with the task inside.
+   * @param delay The time to wait, in seconds, until the timer is started.
+   * @param interval The time between runs, in seconds.
+   * @return The task ID.
+   */
+  int runTaskTimer(Runnable run, long delay, long interval);
 
-    /**
-     * Run a task on its own thread, at the specified interval.
-     *
-     * @param run      The {@link Runnable} with the task inside.
-     * @param delay    The time to wait, in seconds, until the timer is started.
-     * @param interval The time between runs, in seconds.
-     * @return The task ID.
-     */
-    int runTaskTimerAsync(Runnable run, long delay, long interval);
+  /**
+   * Run a task on its own thread, at the specified interval.
+   *
+   * @param run The {@link Runnable} with the task inside.
+   * @param delay The time to wait, in seconds, until the timer is started.
+   * @param interval The time between runs, in seconds.
+   * @return The task ID.
+   */
+  int runTaskTimerAsync(Runnable run, long delay, long interval);
 
-    /**
-     * Cancel a certain task.
-     *
-     * @param taskId The task's ID.
-     */
-    void cancelTask(int taskId);
+  /**
+   * Cancel a certain task.
+   *
+   * @param taskId The task's ID.
+   */
+  void cancelTask(int taskId);
 
-    /**
-     * Cancels all tasks registered through this scheduler.
-     */
-    void cancelAll();
+  /**
+   * Cancels all tasks registered through this scheduler.
+   */
+  void cancelAll();
 
 }
