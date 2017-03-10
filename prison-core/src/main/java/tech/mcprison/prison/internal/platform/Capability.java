@@ -27,19 +27,19 @@ package tech.mcprison.prison.internal.platform;
  */
 public enum Capability {
 
-  /**
-   * The capability of showing GUIs to players.
-   */
-  GUI,
+    /**
+     * The capability of showing GUIs to players.
+     */
+    GUI,
 
-  /**
-   * The presence of a server economy.
-   */
-  ECONOMY,
+    /**
+     * The presence of a server economy.
+     */
+    ECONOMY,
 
-  /**
-   * The presence of a server permissions system.
-   */
-  PERMISSIONS
+    /**
+     * The presence of a server permissions system.
+     */
+    PERMISSIONS
 
 }

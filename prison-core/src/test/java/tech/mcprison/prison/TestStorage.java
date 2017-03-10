@@ -107,6 +107,11 @@ public class TestStorage implements Storage {
         return ret;
     }
 
+    @Override public void delete(String key, Class type) {
+        File file = new File(getCollectionFolder(type), key + ".json");
+        file.delete();
+    }
+
     private String getCollectionName(Class<?> clazz) {
         return clazz.getSimpleName();
     }

@@ -25,22 +25,20 @@ import tech.mcprison.prison.internal.block.Door;
  */
 public class SpigotDoor extends SpigotBlockState implements Door {
 
-  public SpigotDoor(SpigotBlock block) {
-    super(block);
-  }
+    public SpigotDoor(SpigotBlock block) {
+        super(block);
+    }
 
-  @Override
-  public boolean isOpen() {
-    org.bukkit.material.Door door = (org.bukkit.material.Door) block.getWrapper().getState()
-        .getData();
-    return door.isOpen();
-  }
+    @Override public boolean isOpen() {
+        org.bukkit.material.Door door =
+            (org.bukkit.material.Door) block.getWrapper().getState().getData();
+        return door.isOpen();
+    }
 
-  @Override
-  public void setOpen(boolean open) {
-    org.bukkit.material.Door door = (org.bukkit.material.Door) block.getWrapper().getState()
-        .getData();
-    door.setOpen(open);
-  }
+    @Override public void setOpen(boolean open) {
+        org.bukkit.material.Door door =
+            (org.bukkit.material.Door) block.getWrapper().getState().getData();
+        door.setOpen(open);
+    }
 
 }

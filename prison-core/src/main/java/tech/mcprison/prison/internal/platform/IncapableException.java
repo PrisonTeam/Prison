@@ -26,19 +26,19 @@ package tech.mcprison.prison.internal.platform;
  */
 public class IncapableException extends RuntimeException {
 
-  private Capability capability;
+    private Capability capability;
 
-  public IncapableException(Capability capability) {
-    this.capability = capability;
-  }
+    public IncapableException(Capability capability) {
+        this.capability = capability;
+    }
 
-  /**
-   * Returns the capability that the implementation lacks.
-   *
-   * @return The {@link Capability}.
-   */
-  public Capability getCapability() {
-    return capability;
-  }
+    /**
+     * Returns the capability that the implementation lacks.
+     *
+     * @return The {@link Capability}.
+     */
+    public Capability getCapability() {
+        return capability;
+    }
 
 }

@@ -26,10 +26,10 @@ import tech.mcprison.prison.util.Location;
  */
 public interface DoubleChest extends InventoryHolder {
 
-  InventoryHolder getLeftSide();
+    InventoryHolder getLeftSide();
 
-  InventoryHolder getRightSide();
+    InventoryHolder getRightSide();
 
-  Location getLocation();
+    Location getLocation();
 
 }

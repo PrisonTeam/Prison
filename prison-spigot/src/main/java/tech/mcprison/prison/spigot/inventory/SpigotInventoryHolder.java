@@ -26,14 +26,14 @@ import tech.mcprison.prison.internal.inventory.InventoryHolder;
  */
 public class SpigotInventoryHolder implements InventoryHolder {
 
-  org.bukkit.inventory.InventoryHolder wrapper;
+    org.bukkit.inventory.InventoryHolder wrapper;
 
-  public SpigotInventoryHolder(org.bukkit.inventory.InventoryHolder wrapper) {
-    this.wrapper = wrapper;
-  }
+    public SpigotInventoryHolder(org.bukkit.inventory.InventoryHolder wrapper) {
+        this.wrapper = wrapper;
+    }
 
-  public Inventory getInventory() {
-    return SpigotInventory.fromWrapper(wrapper.getInventory());
-  }
+    public Inventory getInventory() {
+        return SpigotInventory.fromWrapper(wrapper.getInventory());
+    }
 
 }

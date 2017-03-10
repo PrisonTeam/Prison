@@ -25,8 +25,8 @@ import tech.mcprison.prison.internal.inventory.AnvilInventory;
  */
 public class SpigotAnvil extends SpigotInventory implements AnvilInventory {
 
-  public SpigotAnvil(org.bukkit.inventory.AnvilInventory wrapper) {
-    super(wrapper);
-  }
+    public SpigotAnvil(org.bukkit.inventory.AnvilInventory wrapper) {
+        super(wrapper);
+    }
 
 }

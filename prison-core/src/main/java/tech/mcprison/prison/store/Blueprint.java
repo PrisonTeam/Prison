@@ -18,12 +18,13 @@
 
 package tech.mcprison.prison.store;
 
+import tech.mcprison.prison.util.ClassUtil;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import tech.mcprison.prison.util.ClassUtil;
 
 /**
  * Holds a collection of variable names and types that can be used to construct
@@ -34,43 +35,43 @@ import tech.mcprison.prison.util.ClassUtil;
  */
 public class Blueprint {
 
-  private Map<String, Class<?>> variables;
+    private Map<String, Class<?>> variables;
 
-  /**
-   * Create a new blueprint with a pre-defined set of variables.
-   *
-   * @param variables A map containing the name of each variable and its type.
-   */
-  public Blueprint(Map<String, Class<?>> variables) {
-    this.variables = variables;
-  }
-
-  /**
-   * Creates a new blueprint with an empty set of variables.
-   */
-  public Blueprint() {
-    this.variables = new HashMap<>();
-  }
-
-  /**
-   * Serializes a Class to a Blueprint.
-   *
-   * @param clazz The class to serialize.
-   */
-  public Blueprint(Class<?> clazz) {
-    this.variables = new HashMap<>();
-
-    List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
-    for (Field field : fields) {
-      field.setAccessible(true);
-      String name = field.getName();
-      Class<?> type = field.getType();
-      variables.put(name, type);
+    /**
+     * Create a new blueprint with a pre-defined set of variables.
+     *
+     * @param variables A map containing the name of each variable and its type.
+     */
+    public Blueprint(Map<String, Class<?>> variables) {
+        this.variables = variables;
     }
-  }
 
-  public Map<String, Class<?>> getVariables() {
-    return variables;
-  }
+    /**
+     * Creates a new blueprint with an empty set of variables.
+     */
+    public Blueprint() {
+        this.variables = new HashMap<>();
+    }
+
+    /**
+     * Serializes a Class to a Blueprint.
+     *
+     * @param clazz The class to serialize.
+     */
+    public Blueprint(Class<?> clazz) {
+        this.variables = new HashMap<>();
+
+        List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            Class<?> type = field.getType();
+            variables.put(name, type);
+        }
+    }
+
+    public Map<String, Class<?>> getVariables() {
+        return variables;
+    }
 
 }

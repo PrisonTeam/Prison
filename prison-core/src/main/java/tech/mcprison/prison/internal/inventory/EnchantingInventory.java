@@ -28,18 +28,18 @@ import tech.mcprison.prison.internal.ItemStack;
  */
 public interface EnchantingInventory extends Inventory {
 
-  /**
-   * Gets the {@link ItemStack} that is being enchanted
-   *
-   * @return the item being enchanted
-   */
-  ItemStack getItem();
+    /**
+     * Gets the {@link ItemStack} that is being enchanted
+     *
+     * @return the item being enchanted
+     */
+    ItemStack getItem();
 
-  /**
-   * Sets the {@link ItemStack} being enchanted
-   *
-   * @param item the new item to be enchanted
-   */
-  void setItem(ItemStack item);
+    /**
+     * Sets the {@link ItemStack} being enchanted
+     *
+     * @param item the new item to be enchanted
+     */
+    void setItem(ItemStack item);
 
 }

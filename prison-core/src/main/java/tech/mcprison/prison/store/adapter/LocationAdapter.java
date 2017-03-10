@@ -18,18 +18,12 @@
 
 package tech.mcprison.prison.store.adapter;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.*;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.util.Location;
+
+import java.lang.reflect.Type;
 
 /**
  * A serializer and deserializer for locations.
@@ -40,45 +34,45 @@ import tech.mcprison.prison.util.Location;
  */
 public class LocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
 
-  public static final String WORLD = "world";
-  public static final String X = "x";
-  public static final String Y = "y";
-  public static final String Z = "z";
-  public static final String PITCH = "pitch";
-  public static final String YAW = "yaw";
+    public static final String WORLD = "world";
+    public static final String X = "x";
+    public static final String Y = "y";
+    public static final String Z = "z";
+    public static final String PITCH = "pitch";
+    public static final String YAW = "yaw";
 
-  @Override
-  public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
-    if (!json.isJsonObject()) {
-      return null;
+    @Override
+    public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+        if (!json.isJsonObject()) {
+            return null;
+        }
+        JsonObject object = json.getAsJsonObject();
+
+        String worldName = object.getAsJsonPrimitive(WORLD).getAsString();
+        World world = Prison.get().getPlatform().getWorld(worldName).orElse(null);
+
+        double x = object.getAsJsonPrimitive(X).getAsDouble();
+        double y = object.getAsJsonPrimitive(Y).getAsDouble();
+        double z = object.getAsJsonPrimitive(Z).getAsDouble();
+        float pitch = object.getAsJsonPrimitive(PITCH).getAsFloat();
+        float yaw = object.getAsJsonPrimitive(YAW).getAsFloat();
+
+        return new Location(world, x, y, z, pitch, yaw);
     }
-    JsonObject object = json.getAsJsonObject();
 
-    String worldName = object.getAsJsonPrimitive(WORLD).getAsString();
-    World world = Prison.get().getPlatform().getWorld(worldName).orElse(null);
+    @Override
+    public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject object = new JsonObject();
 
-    double x = object.getAsJsonPrimitive(X).getAsDouble();
-    double y = object.getAsJsonPrimitive(Y).getAsDouble();
-    double z = object.getAsJsonPrimitive(Z).getAsDouble();
-    float pitch = object.getAsJsonPrimitive(PITCH).getAsFloat();
-    float yaw = object.getAsJsonPrimitive(YAW).getAsFloat();
+        object.add(WORLD, new JsonPrimitive(src.getWorld().getName()));
+        object.add(X, new JsonPrimitive(src.getX()));
+        object.add(Y, new JsonPrimitive(src.getY()));
+        object.add(Z, new JsonPrimitive(src.getZ()));
+        object.add(PITCH, new JsonPrimitive(src.getPitch()));
+        object.add(YAW, new JsonPrimitive(src.getYaw()));
 
-    return new Location(world, x, y, z, pitch, yaw);
-  }
-
-  @Override
-  public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
-    JsonObject object = new JsonObject();
-
-    object.add(WORLD, new JsonPrimitive(src.getWorld().getName()));
-    object.add(X, new JsonPrimitive(src.getX()));
-    object.add(Y, new JsonPrimitive(src.getY()));
-    object.add(Z, new JsonPrimitive(src.getZ()));
-    object.add(PITCH, new JsonPrimitive(src.getPitch()));
-    object.add(YAW, new JsonPrimitive(src.getYaw()));
-
-    return object;
-  }
+        return object;
+    }
 
 }

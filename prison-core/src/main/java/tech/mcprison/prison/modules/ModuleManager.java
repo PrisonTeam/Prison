@@ -18,11 +18,12 @@
 
 package tech.mcprison.prison.modules;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
 
 /**
  * Keeps track of each module and each module's status.
@@ -32,149 +33,147 @@ import tech.mcprison.prison.output.Output;
  */
 public class ModuleManager {
 
-  private List<Module> modules;
+    private List<Module> modules;
 
-  public ModuleManager() {
-    modules = new ArrayList<>();
-  }
-
-  /**
-   * Register a new module.
-   */
-  public void registerModule(Module module) {
-    if (getModule(module.getName()).isPresent()) {
-      return; // Already added
-    }
-    modules.add(module);
-    enableModule(module);
-  }
-
-  private void validateVersion(Module module) {
-    if (module.getApiTarget() == Prison.API_LEVEL) {
-      return; // Version matches, no need to continue
+    public ModuleManager() {
+        modules = new ArrayList<>();
     }
 
-    module.getStatus().setMessage("&6Version mismatch (update module)");
-    Output.get().logWarn(
-        "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
-            + ", while prison-core is on API " + Prison.API_LEVEL
-            + ". This may cause problems.");
-  }
-
-  /**
-   * Enable an already loaded module.
-   *
-   * @param module The {@link Module} to enable.
-   * @return true if the enable succeeded, false otherwise.
-   */
-  public boolean enableModule(Module module) {
-    long startTime = System.currentTimeMillis();
-    Output.get().logInfo("%s enable start...", module.getName());
-
-    module.setEnabled(true);
-    module.enable();
-    validateVersion(module);
-
-    if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
-      // Anything else and we assume that the enable failed.
-      Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
-          (System.currentTimeMillis() - startTime));
-      return false;
+    /**
+     * Register a new module.
+     */
+    public void registerModule(Module module) {
+        if (getModule(module.getName()).isPresent()) {
+            return; // Already added
+        }
+        modules.add(module);
+        enableModule(module);
     }
 
-    Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
-        (System.currentTimeMillis() - startTime));
-    return true;
-  }
+    private void validateVersion(Module module) {
+        if (module.getApiTarget() == Prison.API_LEVEL) {
+            return; // Version matches, no need to continue
+        }
 
-  /**
-   * Unregister a module. This will disable it and then remove it from the list.
-   *
-   * @param module The {@link Module} to enable.
-   */
-  public void unregisterModule(Module module) {
-    disableModule(module);
-    getModule(module.getName()).ifPresent(modules::remove);
-  }
-
-  /**
-   * Disable an already loaded module.
-   *
-   * @param module The {@link Module} to disable.
-   */
-  public void disableModule(Module module) {
-    module.disable();
-    module.getStatus().toDisabled();
-  }
-
-  /**
-   * Unregister all modules.
-   *
-   * @see #unregisterModule(Module)
-   */
-  public void unregisterAll() {
-    modules.forEach(this::disableModule);
-    modules.clear();
-  }
-
-  /**
-   * Returns the {@link Module} with the specified name.
-   */
-  public Optional<Module> getModule(String name) {
-    return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
-        .findFirst();
-  }
-
-  /**
-   * Returns the {@link Module} with the specified package name.
-   */
-  public Optional<Module> getModuleByPackageName(String name) {
-    return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
-        .findFirst();
-  }
-
-  /**
-   * Returns a list of all modules.
-   */
-  public List<Module> getModules() {
-    return modules;
-  }
-
-  /**
-   * Returns the status of a module (enabled or error message), in the form of a color-coded string.
-   * This is meant to show to users.
-   *
-   * @deprecated Use {@link Module#getStatus()} instead.
-   */
-  @Deprecated
-  public String getStatus(String moduleName) {
-    Optional<Module> moduleOptional = getModule(moduleName);
-    return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
-  }
-
-  /**
-   * Set the status of a module.
-   *
-   * @param moduleName The name of the module.
-   * @param newStatus The module's status. May include color codes, amp-prefixed.
-   * @deprecated Use {@link Module#getStatus()} instead.
-   */
-  @Deprecated
-  public void setStatus(String moduleName, String newStatus) {
-    Optional<Module> moduleOptional = getModule(moduleName);
-    if (!moduleOptional.isPresent()) {
-      return;
-    }
-    Module module = moduleOptional.get();
-
-    if (newStatus.toLowerCase().contains("enabled")) {
-      module.getStatus().toEnabled();
-    } else if (newStatus.toLowerCase().contains("disabled")) {
-      module.getStatus().toDisabled();
-    } else {
-      module.getStatus().toFailed(newStatus);
+        module.getStatus().setMessage("&6Version mismatch (update module)");
+        Output.get().logWarn(
+            "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
+                + ", while prison-core is on API " + Prison.API_LEVEL
+                + ". This may cause problems.");
     }
 
-  }
+    /**
+     * Enable an already loaded module.
+     *
+     * @param module The {@link Module} to enable.
+     * @return true if the enable succeeded, false otherwise.
+     */
+    public boolean enableModule(Module module) {
+        long startTime = System.currentTimeMillis();
+        Output.get().logInfo("%s enable start...", module.getName());
+
+        module.setEnabled(true);
+        module.enable();
+        validateVersion(module);
+
+        if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
+            // Anything else and we assume that the enable failed.
+            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
+                (System.currentTimeMillis() - startTime));
+            return false;
+        }
+
+        Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
+            (System.currentTimeMillis() - startTime));
+        return true;
+    }
+
+    /**
+     * Unregister a module. This will disable it and then remove it from the list.
+     *
+     * @param module The {@link Module} to enable.
+     */
+    public void unregisterModule(Module module) {
+        disableModule(module);
+        getModule(module.getName()).ifPresent(modules::remove);
+    }
+
+    /**
+     * Disable an already loaded module.
+     *
+     * @param module The {@link Module} to disable.
+     */
+    public void disableModule(Module module) {
+        module.disable();
+        module.getStatus().toDisabled();
+    }
+
+    /**
+     * Unregister all modules.
+     *
+     * @see #unregisterModule(Module)
+     */
+    public void unregisterAll() {
+        modules.forEach(this::disableModule);
+        modules.clear();
+    }
+
+    /**
+     * Returns the {@link Module} with the specified name.
+     */
+    public Optional<Module> getModule(String name) {
+        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
+            .findFirst();
+    }
+
+    /**
+     * Returns the {@link Module} with the specified package name.
+     */
+    public Optional<Module> getModuleByPackageName(String name) {
+        return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
+            .findFirst();
+    }
+
+    /**
+     * Returns a list of all modules.
+     */
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    /**
+     * Returns the status of a module (enabled or error message), in the form of a color-coded string.
+     * This is meant to show to users.
+     *
+     * @deprecated Use {@link Module#getStatus()} instead.
+     */
+    @Deprecated public String getStatus(String moduleName) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
+    }
+
+    /**
+     * Set the status of a module.
+     *
+     * @param moduleName The name of the module.
+     * @param newStatus  The module's status. May include color codes, amp-prefixed.
+     * @deprecated Use {@link Module#getStatus()} instead.
+     */
+    @Deprecated public void setStatus(String moduleName, String newStatus) {
+        Optional<Module> moduleOptional = getModule(moduleName);
+        if (!moduleOptional.isPresent()) {
+            return;
+        }
+        Module module = moduleOptional.get();
+
+        if (newStatus.toLowerCase().contains("enabled")) {
+            module.getStatus().toEnabled();
+        } else if (newStatus.toLowerCase().contains("disabled")) {
+            module.getStatus().toDisabled();
+        } else {
+            module.getStatus().toFailed(newStatus);
+        }
+
+    }
 
 }

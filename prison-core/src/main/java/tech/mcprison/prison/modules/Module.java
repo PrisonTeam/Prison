@@ -18,9 +18,10 @@
 
 package tech.mcprison.prison.modules;
 
-import java.io.File;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
+
+import java.io.File;
 
 /**
  * Represents a module, which is a part of Prison that can be enabled and
@@ -35,120 +36,120 @@ public abstract class Module implements IDataFolderOwner {
      * Fields & Constants
      */
 
-  private String name, version;
-  private File dataFolder;
-  private int apiTarget;
-  private ModuleStatus status;
+    private String name, version;
+    private File dataFolder;
+    private int apiTarget;
+    private ModuleStatus status;
 
     /*
      * Constructor
      */
 
-  /**
-   * Initialize your module.
-   *
-   * @param name The name of the module.
-   * @param version The version of the module.
-   * @param target The API level to target.
-   */
-  public Module(String name, String version, int target) {
-    this.name = name;
-    this.version = version;
-    this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
-    this.apiTarget = target;
-    this.status = new ModuleStatus();
-    if (!this.dataFolder.exists()) {
-      this.dataFolder.mkdir();
+    /**
+     * Initialize your module.
+     *
+     * @param name    The name of the module.
+     * @param version The version of the module.
+     * @param target  The API level to target.
+     */
+    public Module(String name, String version, int target) {
+        this.name = name;
+        this.version = version;
+        this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
+        this.apiTarget = target;
+        this.status = new ModuleStatus();
+        if (!this.dataFolder.exists()) {
+            this.dataFolder.mkdir();
+        }
     }
-  }
 
     /*
      * Methods, to be overridden
      */
 
-  /**
-   * Called when the module is to be enabled.
-   */
-  public void enable() {
-  }
+    /**
+     * Called when the module is to be enabled.
+     */
+    public void enable() {
+    }
 
-  /**
-   * Called when a module is to be disabled.
-   */
-  public void disable() {
-  }
+    /**
+     * Called when a module is to be disabled.
+     */
+    public void disable() {
+    }
 
-  /**
-   * Tell the module loader that this module failed to start.
-   *
-   * @param reason The reason why this failed to start. May include amp-prefixed color codes.
-   */
-  protected void fail(String reason) {
-    getStatus().toFailed(reason);
-  }
+    /**
+     * Tell the module loader that this module failed to start.
+     *
+     * @param reason The reason why this failed to start. May include amp-prefixed color codes.
+     */
+    protected void fail(String reason) {
+        getStatus().toFailed(reason);
+    }
 
     /*
      * Getters & Setters
      */
 
-  public String getName() {
-    return name;
-  }
-
-  public String getVersion() {
-    return version;
-  }
-
-  public int getApiTarget() {
-    return apiTarget;
-  }
-
-  public Output getLogger() {
-    return Output.get();
-  }
-
-  /**
-   * Returns the module manager, which stores instances of all registered {@link
-   * Module}s and manages their state.
-   *
-   * @return The {@link ModuleManager}.
-   */
-  public ModuleManager getModuleManager() {
-    return Prison.get().getModuleManager();
-  }
-
-  /**
-   * The package name is used to identify the module on an internal level.
-   */
-  public String getPackageName() {
-    return "Prison" + name;
-  }
-
-  public boolean isEnabled() {
-    return status.getStatus() == ModuleStatus.Status.ENABLED;
-  }
-
-  public void setEnabled(boolean enabled) {
-    if (enabled) {
-      getStatus().toEnabled();
-    } else {
-      getStatus().toDisabled();
+    public String getName() {
+        return name;
     }
-  }
 
-  public ModuleStatus getStatus() {
-    return status;
-  }
+    public String getVersion() {
+        return version;
+    }
 
-  /**
-   * Returns this module's data folder, where all data can be stored.
-   * It is located in the Prison data folder, and has the name of the module.
-   * It is automatically generated.
-   *
-   * @return The {@link File} representing the data folder.
-   */
-  public File getDataFolder() {
-    return dataFolder;
-  }
+    public int getApiTarget() {
+        return apiTarget;
+    }
+
+    public Output getLogger() {
+        return Output.get();
+    }
+
+    /**
+     * Returns the module manager, which stores instances of all registered {@link
+     * Module}s and manages their state.
+     *
+     * @return The {@link ModuleManager}.
+     */
+    public ModuleManager getModuleManager() {
+        return Prison.get().getModuleManager();
+    }
+
+    /**
+     * The package name is used to identify the module on an internal level.
+     */
+    public String getPackageName() {
+        return "Prison" + name;
+    }
+
+    public boolean isEnabled() {
+        return status.getStatus() == ModuleStatus.Status.ENABLED;
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (enabled) {
+            getStatus().toEnabled();
+        } else {
+            getStatus().toDisabled();
+        }
+    }
+
+    public ModuleStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Returns this module's data folder, where all data can be stored.
+     * It is located in the Prison data folder, and has the name of the module.
+     * It is automatically generated.
+     *
+     * @return The {@link File} representing the data folder.
+     */
+    public File getDataFolder() {
+        return dataFolder;
+    }
 
 }

@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.io.File;
-import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +27,9 @@ import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 
+import java.io.File;
+import java.lang.reflect.Field;
+
 /**
  * The plugin class for the Spigot implementation.
  *
@@ -36,77 +37,74 @@ import tech.mcprison.prison.spigot.gui.GUIListener;
  */
 public class SpigotPrison extends JavaPlugin {
 
-  Field commandMap;
-  Field knownCommands;
-  SpigotScheduler scheduler;
-  Compatibility compatibility;
-  File dataDirectory;
+    Field commandMap;
+    Field knownCommands;
+    SpigotScheduler scheduler;
+    Compatibility compatibility;
+    File dataDirectory;
 
-  @Override
-  public void onLoad() {
-    if (!getDataFolder().exists()) {
-      getDataFolder().mkdir();
-    }
-  }
-
-  @Override
-  public void onEnable() {
-    this.saveDefaultConfig();
-    initDataDir();
-    initCommandMap();
-    initCompatibility();
-    this.scheduler = new SpigotScheduler(this);
-    GUIListener.get().init(this);
-    Prison.get().init(new SpigotPlatform(this));
-    new SpigotListener(this).init();
-  }
-
-  @Override
-  public void onDisable() {
-    this.scheduler.cancelAll();
-    Prison.get().deinit();
-  }
-
-  private void initDataDir() {
-    dataDirectory = new File(getDataFolder(), "data");
-    if (!dataDirectory.exists()) {
-      dataDirectory.mkdir();
-    }
-  }
-
-  private void initCommandMap() {
-    try {
-      commandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-      commandMap.setAccessible(true);
-      knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
-      knownCommands.setAccessible(true);
-    } catch (NoSuchFieldException e) {
-      getLogger().severe(
-          "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
-      e.printStackTrace();
-    }
-  }
-
-  private void initCompatibility() {
-    String[] version = Bukkit.getVersion().split("\\.");
-    int majorVersionint = Integer.parseInt(version[0]);
-    int minorVersionInt = Integer.parseInt(version[1]);
-
-    if (majorVersionint == 1) {
-      if (minorVersionInt <= 8) {
-        compatibility = new Spigot18();
-      } else if (minorVersionInt >= 9) {
-        compatibility = new Spigot19();
-      } else {
-        getLogger().severe(
-            "Care to explain what version of Minecraft you're using? contact@mc-prison.tech plz tell us");
-      }
+    @Override public void onLoad() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir();
+        }
     }
 
-    getLogger().info("Using version adapter " + compatibility.getClass().getName());
-  }
+    @Override public void onEnable() {
+        this.saveDefaultConfig();
+        initDataDir();
+        initCommandMap();
+        initCompatibility();
+        this.scheduler = new SpigotScheduler(this);
+        GUIListener.get().init(this);
+        Prison.get().init(new SpigotPlatform(this));
+        new SpigotListener(this).init();
+    }
 
-  public File getDataDirectory() {
-    return dataDirectory;
-  }
+    @Override public void onDisable() {
+        this.scheduler.cancelAll();
+        Prison.get().deinit();
+    }
+
+    private void initDataDir() {
+        dataDirectory = new File(getDataFolder(), "data");
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdir();
+        }
+    }
+
+    private void initCommandMap() {
+        try {
+            commandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            commandMap.setAccessible(true);
+            knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
+            knownCommands.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            getLogger().severe(
+                "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
+            e.printStackTrace();
+        }
+    }
+
+    private void initCompatibility() {
+        String[] version = Bukkit.getVersion().split("\\.");
+        int majorVersionint = Integer.parseInt(version[0]);
+        int minorVersionInt = Integer.parseInt(version[1]);
+
+        if (majorVersionint == 1) {
+            if (minorVersionInt <= 8) {
+                compatibility = new Spigot18();
+            } else if (minorVersionInt >= 9) {
+                compatibility = new Spigot19();
+            } else {
+                getLogger().severe(
+                    "Care to explain what version of Minecraft you're using? contact@mc-prison.tech plz tell us");
+            }
+        }
+
+        getLogger().info("Using version adapter " + compatibility.getClass().getName());
+    }
+
+    public File getDataDirectory() {
+        return dataDirectory;
+    }
 }

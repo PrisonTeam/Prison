@@ -30,58 +30,58 @@ import java.util.List;
  */
 public class Data {
 
-  private Object obj;
+    private Object obj;
 
-  public Data(Object obj) {
-    this.obj = obj;
-  }
+    public Data(Object obj) {
+        this.obj = obj;
+    }
 
-  public Object get() {
-    return obj;
-  }
+    public Object get() {
+        return obj;
+    }
 
-  public void set(Object obj) {
-    this.obj = obj;
-  }
+    public void set(Object obj) {
+        this.obj = obj;
+    }
 
-  public void empty() {
-    set(null);
-  }
+    public void empty() {
+        set(null);
+    }
 
-  public <T> T as(Class<T> type) {
-    return type.cast(obj);
-  }
+    public <T> T as(Class<T> type) {
+        return type.cast(obj);
+    }
 
-  public int asInt() {
-    return as(Integer.class);
-  }
+    public int asInt() {
+        return as(Integer.class);
+    }
 
-  public float asFloat() {
-    return as(Float.class);
-  }
+    public float asFloat() {
+        return as(Float.class);
+    }
 
-  public boolean asBoolean() {
-    return as(Boolean.class);
-  }
+    public boolean asBoolean() {
+        return as(Boolean.class);
+    }
 
-  public double asDouble() {
-    return as(Double.class);
-  }
+    public double asDouble() {
+        return as(Double.class);
+    }
 
-  public byte asByte() {
-    return as(Byte.class);
-  }
+    public byte asByte() {
+        return as(Byte.class);
+    }
 
-  public String asString() {
-    return as(String.class);
-  }
+    public String asString() {
+        return as(String.class);
+    }
 
-  public String toJson() {
-    return GsonSingleton.getInstance().getGson().toJson(obj);
-  }
+    public String toJson() {
+        return GsonSingleton.getInstance().getGson().toJson(obj);
+    }
 
-  public <T> List<T> asList(Class<T> listType) {
-    return (List<T>) get();
-  }
+    public <T> List<T> asList(Class<T> listType) {
+        return (List<T>) get();
+    }
 
 }

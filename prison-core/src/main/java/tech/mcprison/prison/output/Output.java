@@ -18,9 +18,10 @@
 
 package tech.mcprison.prison.output;
 
-import java.util.Arrays;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+
+import java.util.Arrays;
 
 /**
  * Standardized output to the console and to players.
@@ -30,112 +31,113 @@ import tech.mcprison.prison.internal.CommandSender;
  */
 public class Output {
 
-  // Fields
-  private static Output instance;
-  public String INFO_PREFIX = "&3Info &8» &7";
-  public String WARNING_PREFIX = "&6Warning &8» &7";
-  public String ERROR_PREFIX = "&cError &8» &7";
+    // Fields
+    private static Output instance;
+    public String INFO_PREFIX = "&3Info &8» &7";
+    public String WARNING_PREFIX = "&6Warning &8» &7";
+    public String ERROR_PREFIX = "&cError &8» &7";
 
-  // Constructor
+    // Constructor
 
-  private Output() {
-    instance = this;
-  }
-
-  // Public methods
-
-  public static Output get() {
-    if (instance == null) {
-      new Output();
+    private Output() {
+        instance = this;
     }
-    return instance;
-  }
 
-  /**
-   * Log a message with a specified {@link LogLevel}
-   */
-  public void log(String message, LogLevel level, Object... args) {
-    Prison.get().getPlatform().log("&3Prison &7» " + (level == LogLevel.INFO ?
-        "&f" :
-        level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
-  }
+    // Public methods
 
-  /**
-   * Log an informational message to the console.
-   *
-   * @param message The informational message. May include color codes, but the default is white.
-   */
-  public void logInfo(String message, Object... args) {
-    Prison.get().getPlatform().log("&3Prison &7» &f" + String.format(message, args));
-  }
-
-  /**
-   * Log a warning to the console.
-   *
-   * @param message The message describing the warning. May include color codes, but the default is
-   * orange.
-   * @param throwable The exceptions thrown, if any.
-   */
-  public void logWarn(String message, Throwable... throwable) {
-    Prison.get().getPlatform().log("&3Prison &7» &6" + message);
-
-    if (throwable.length > 0) {
-      Arrays.stream(throwable).forEach(Throwable::printStackTrace);
+    public static Output get() {
+        if (instance == null) {
+            new Output();
+        }
+        return instance;
     }
-  }
 
-  /**
-   * Log an error to the console.
-   *
-   * @param message The message describing the error. May include color codes, but the default is
-   * red.
-   * @param throwable The exceptions thrown, if any.
-   */
-  public void logError(String message, Throwable... throwable) {
-    Prison.get().getPlatform().log("&3Prison &7» &c" + message);
-
-    if (throwable.length > 0) {
-      Arrays.stream(throwable).forEach(Throwable::printStackTrace);
+    /**
+     * Log a message with a specified {@link LogLevel}
+     */
+    public void log(String message, LogLevel level, Object... args) {
+        Prison.get().getPlatform().log("&3Prison &7» " + (level == LogLevel.INFO ?
+            "&f" :
+            level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
     }
-  }
 
-  /**
-   * Send a message to a {@link CommandSender}
-   */
-  public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
-    String prefix = level == LogLevel.INFO ? INFO_PREFIX
-        : level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
-    sender.sendMessage(prefix + String.format(message, args));
-  }
+    /**
+     * Log an informational message to the console.
+     *
+     * @param message The informational message. May include color codes, but the default is white.
+     */
+    public void logInfo(String message, Object... args) {
+        Prison.get().getPlatform().log("&3Prison &7» &f" + String.format(message, args));
+    }
 
-  /**
-   * Send information to a {@link CommandSender}.
-   *
-   * @param sender The {@link CommandSender} receiving the message.
-   * @param message The message to send. This may include color codes, but the default is grey.
-   */
-  public void sendInfo(CommandSender sender, String message, Object... args) {
-    sender.sendMessage(INFO_PREFIX + String.format(message, args));
-  }
+    /**
+     * Log a warning to the console.
+     *
+     * @param message   The message describing the warning. May include color codes, but the default is
+     *                  orange.
+     * @param throwable The exceptions thrown, if any.
+     */
+    public void logWarn(String message, Throwable... throwable) {
+        Prison.get().getPlatform().log("&3Prison &7» &6" + message);
 
-  /**
-   * Send a warning to a {@link CommandSender}.
-   *
-   * @param sender The {@link CommandSender} receiving the message.
-   * @param message The message to send. This may include color codes, but the default is grey.
-   */
-  public void sendWarn(CommandSender sender, String message, Object... args) {
-    sender.sendMessage(WARNING_PREFIX + String.format(message, args));
-  }
+        if (throwable.length > 0) {
+            Arrays.stream(throwable).forEach(Throwable::printStackTrace);
+        }
+    }
 
-  /**
-   * Send an error to a {@link CommandSender}.
-   *
-   * @param sender The {@link CommandSender} receiving the message.
-   * @param message The message to send. This may include color codes, but the default is grey.
-   */
-  public void sendError(CommandSender sender, String message, Object... args) {
-    sender.sendMessage(ERROR_PREFIX + String.format(message, args));
-  }
+    /**
+     * Log an error to the console.
+     *
+     * @param message   The message describing the error. May include color codes, but the default is
+     *                  red.
+     * @param throwable The exceptions thrown, if any.
+     */
+    public void logError(String message, Throwable... throwable) {
+        Prison.get().getPlatform().log("&3Prison &7» &c" + message);
+
+        if (throwable.length > 0) {
+            Arrays.stream(throwable).forEach(Throwable::printStackTrace);
+        }
+    }
+
+    /**
+     * Send a message to a {@link CommandSender}
+     */
+    public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
+        String prefix = level == LogLevel.INFO ?
+            INFO_PREFIX :
+            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
+        sender.sendMessage(prefix + String.format(message, args));
+    }
+
+    /**
+     * Send information to a {@link CommandSender}.
+     *
+     * @param sender  The {@link CommandSender} receiving the message.
+     * @param message The message to send. This may include color codes, but the default is grey.
+     */
+    public void sendInfo(CommandSender sender, String message, Object... args) {
+        sender.sendMessage(INFO_PREFIX + String.format(message, args));
+    }
+
+    /**
+     * Send a warning to a {@link CommandSender}.
+     *
+     * @param sender  The {@link CommandSender} receiving the message.
+     * @param message The message to send. This may include color codes, but the default is grey.
+     */
+    public void sendWarn(CommandSender sender, String message, Object... args) {
+        sender.sendMessage(WARNING_PREFIX + String.format(message, args));
+    }
+
+    /**
+     * Send an error to a {@link CommandSender}.
+     *
+     * @param sender  The {@link CommandSender} receiving the message.
+     * @param message The message to send. This may include color codes, but the default is grey.
+     */
+    public void sendError(CommandSender sender, String message, Object... args) {
+        sender.sendMessage(ERROR_PREFIX + String.format(message, args));
+    }
 
 }

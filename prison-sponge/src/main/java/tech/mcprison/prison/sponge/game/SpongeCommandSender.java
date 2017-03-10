@@ -18,59 +18,53 @@
 
 package tech.mcprison.prison.sponge.game;
 
-import java.util.Arrays;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.sponge.SpongeUtil;
 
+import java.util.Arrays;
+
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongeCommandSender implements CommandSender {
 
-  private CommandSource spongeSender;
+    private CommandSource spongeSender;
 
-  public SpongeCommandSender(CommandSource spongeSender) {
-    this.spongeSender = spongeSender;
-  }
+    public SpongeCommandSender(CommandSource spongeSender) {
+        this.spongeSender = spongeSender;
+    }
 
-  @Override
-  public String getName() {
-    return spongeSender.getName();
-  }
+    @Override public String getName() {
+        return spongeSender.getName();
+    }
 
-  @Override
-  public void dispatchCommand(String command) {
-    Sponge.getGame().getCommandManager().process(spongeSender, command);
-  }
+    @Override public void dispatchCommand(String command) {
+        Sponge.getGame().getCommandManager().process(spongeSender, command);
+    }
 
-  @Override
-  public boolean doesSupportColors() {
-    return true;
-  }
+    @Override public boolean doesSupportColors() {
+        return true;
+    }
 
-  @Override
-  public boolean hasPermission(String perm) {
-    return spongeSender.hasPermission(perm);
-  }
+    @Override public boolean hasPermission(String perm) {
+        return spongeSender.hasPermission(perm);
+    }
 
-  @Override
-  public void sendMessage(String message) {
-    Text msgText = SpongeUtil.prisonTextToSponge(message);
-    spongeSender.sendMessage(msgText);
-  }
+    @Override public void sendMessage(String message) {
+        Text msgText = SpongeUtil.prisonTextToSponge(message);
+        spongeSender.sendMessage(msgText);
+    }
 
-  @Override
-  public void sendMessage(String[] messages) {
-    Arrays.stream(messages).forEach(this::sendMessage);
-  }
+    @Override public void sendMessage(String[] messages) {
+        Arrays.stream(messages).forEach(this::sendMessage);
+    }
 
-  @Override
-  public void sendRaw(String json) {
-    Sponge.getGame().getCommandManager()
-        .process(Sponge.getServer().getConsole(), "tellraw " + getName() + " " + json);
-  }
+    @Override public void sendRaw(String json) {
+        Sponge.getGame().getCommandManager()
+            .process(Sponge.getServer().getConsole(), "tellraw " + getName() + " " + json);
+    }
 
 }

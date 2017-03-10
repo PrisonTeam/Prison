@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.util.Collections;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,6 +30,9 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.InventoryType;
 import tech.mcprison.prison.util.Location;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Utilities for converting Prison-Core types to Spigot types.
  *
@@ -39,123 +40,123 @@ import tech.mcprison.prison.util.Location;
  */
 public class SpigotUtil {
 
-  private SpigotUtil() {
-  }
+    private SpigotUtil() {
+    }
 
   /*
    * BlockType and Material
    */
 
-  public static BlockType materialToBlockType(Material material) {
-    return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
-  }
+    public static BlockType materialToBlockType(Material material) {
+        return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
+    }
 
-  public static Material blockTypeToMaterial(BlockType type) {
-    return Material.getMaterial(type.getLegacyId()); // To be safe, we use legacy ID
-  }
+    public static Material blockTypeToMaterial(BlockType type) {
+        return Material.getMaterial(type.getLegacyId()); // To be safe, we use legacy ID
+    }
 
   /*
    * Location
    */
 
-  public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
-    return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
-        bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
-        bukkitLocation.getYaw());
-  }
+    public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
+        return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
+            bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
+            bukkitLocation.getYaw());
+    }
 
-  public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
-    return new org.bukkit.Location(Bukkit.getWorld(prisonLocation.getWorld().getName()),
-        prisonLocation.getX(), prisonLocation.getY(), prisonLocation.getZ(),
-        prisonLocation.getYaw(), prisonLocation.getPitch());
-  }
+    public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
+        return new org.bukkit.Location(Bukkit.getWorld(prisonLocation.getWorld().getName()),
+            prisonLocation.getX(), prisonLocation.getY(), prisonLocation.getZ(),
+            prisonLocation.getYaw(), prisonLocation.getPitch());
+    }
 
   /*
    * ItemStack
    */
 
-  public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
-      ItemStack bukkitStack) {
-    ItemMeta meta = bukkitStack.getItemMeta();
-    if (!bukkitStack.hasItemMeta()) {
-      meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+    public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
+        ItemStack bukkitStack) {
+        ItemMeta meta = bukkitStack.getItemMeta();
+        if (!bukkitStack.hasItemMeta()) {
+            meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        }
+
+        String displayName;
+
+        if (meta.hasDisplayName()) {
+            displayName = meta.getDisplayName();
+        } else {
+            displayName = StringUtils
+                .capitalize(bukkitStack.getType().name().replaceAll("_", " ").toLowerCase());
+        }
+
+        int amount = bukkitStack.getAmount();
+
+        BlockType type = materialToBlockType(bukkitStack.getType());
+
+        List<String> lore = meta.hasLore() ? meta.getLore() : Collections.emptyList();
+        String[] lore_arr = lore.toArray(new String[lore.size()]);
+
+        return new tech.mcprison.prison.internal.ItemStack(displayName, amount, type, lore_arr);
     }
 
-    String displayName;
+    public static ItemStack prisonItemStackToBukkit(
+        tech.mcprison.prison.internal.ItemStack prisonStack) {
+        ItemStack bukkitStack =
+            new ItemStack(blockTypeToMaterial(prisonStack.getMaterial()), prisonStack.getAmount());
+        ItemMeta meta = bukkitStack.getItemMeta();
+        meta.setDisplayName(prisonStack.getName());
+        meta.setLore(prisonStack.getLore());
+        bukkitStack.setItemMeta(meta);
 
-    if (meta.hasDisplayName()) {
-      displayName = meta.getDisplayName();
-    } else {
-      displayName = StringUtils
-          .capitalize(bukkitStack.getType().name().replaceAll("_", " ").toLowerCase());
+        return bukkitStack;
     }
-
-    int amount = bukkitStack.getAmount();
-
-    BlockType type = materialToBlockType(bukkitStack.getType());
-
-    List<String> lore = meta.hasLore() ? meta.getLore() : Collections.emptyList();
-    String[] lore_arr = lore.toArray(new String[lore.size()]);
-
-    return new tech.mcprison.prison.internal.ItemStack(displayName, amount, type, lore_arr);
-  }
-
-  public static ItemStack prisonItemStackToBukkit(
-      tech.mcprison.prison.internal.ItemStack prisonStack) {
-    ItemStack bukkitStack =
-        new ItemStack(blockTypeToMaterial(prisonStack.getMaterial()), prisonStack.getAmount());
-    ItemMeta meta = bukkitStack.getItemMeta();
-    meta.setDisplayName(prisonStack.getName());
-    meta.setLore(prisonStack.getLore());
-    bukkitStack.setItemMeta(meta);
-
-    return bukkitStack;
-  }
 
   /*
    * InventoryType
    */
 
-  public static InventoryType bukkitInventoryTypeToPrison(
-      org.bukkit.event.inventory.InventoryType type) {
-    return InventoryType.valueOf(type.toString());
-  }
-
-  public static org.bukkit.event.inventory.InventoryType prisonInventoryTypeToBukkit(
-      InventoryType type) {
-
-    return org.bukkit.event.inventory.InventoryType.valueOf(type.toString());
-  }
-
-  public static InventoryType.SlotType bukkitSlotTypeToPrison(
-      org.bukkit.event.inventory.InventoryType.SlotType type) {
-
-    switch (type) {
-      case ARMOR:
-        return InventoryType.SlotType.ARMOR;
-      case CONTAINER:
-        return InventoryType.SlotType.DEFAULT;
-      case CRAFTING:
-        return InventoryType.SlotType.CRAFTING;
-      case FUEL:
-        return InventoryType.SlotType.FUEL;
-      case OUTSIDE:
-        return InventoryType.SlotType.NONE;
-      case QUICKBAR:
-        return InventoryType.SlotType.HOTBAR;
-      case RESULT:
-        return InventoryType.SlotType.RESULT;
-      default:
-        return null;
+    public static InventoryType bukkitInventoryTypeToPrison(
+        org.bukkit.event.inventory.InventoryType type) {
+        return InventoryType.valueOf(type.toString());
     }
-  }
+
+    public static org.bukkit.event.inventory.InventoryType prisonInventoryTypeToBukkit(
+        InventoryType type) {
+
+        return org.bukkit.event.inventory.InventoryType.valueOf(type.toString());
+    }
+
+    public static InventoryType.SlotType bukkitSlotTypeToPrison(
+        org.bukkit.event.inventory.InventoryType.SlotType type) {
+
+        switch (type) {
+            case ARMOR:
+                return InventoryType.SlotType.ARMOR;
+            case CONTAINER:
+                return InventoryType.SlotType.DEFAULT;
+            case CRAFTING:
+                return InventoryType.SlotType.CRAFTING;
+            case FUEL:
+                return InventoryType.SlotType.FUEL;
+            case OUTSIDE:
+                return InventoryType.SlotType.NONE;
+            case QUICKBAR:
+                return InventoryType.SlotType.HOTBAR;
+            case RESULT:
+                return InventoryType.SlotType.RESULT;
+            default:
+                return null;
+        }
+    }
 
   /*
    * Property
    */
 
-  public static InventoryView.Property prisonPropertyToBukkit(Viewable.Property property) {
-    return InventoryView.Property.valueOf(property.toString());
-  }
+    public static InventoryView.Property prisonPropertyToBukkit(Viewable.Property property) {
+        return InventoryView.Property.valueOf(property.toString());
+    }
 
 }

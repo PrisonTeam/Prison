@@ -28,29 +28,25 @@ import tech.mcprison.prison.spigot.inventory.SpigotBrewer;
  */
 public class SpigotBrewingStand implements BrewingStand {
 
-  org.bukkit.block.BrewingStand wrapper;
+    org.bukkit.block.BrewingStand wrapper;
 
-  public SpigotBrewingStand(org.bukkit.block.BrewingStand wrapper) {
-    this.wrapper = wrapper;
-  }
+    public SpigotBrewingStand(org.bukkit.block.BrewingStand wrapper) {
+        this.wrapper = wrapper;
+    }
 
-  @Override
-  public int getBrewingTime() {
-    return wrapper.getBrewingTime();
-  }
+    @Override public int getBrewingTime() {
+        return wrapper.getBrewingTime();
+    }
 
-  @Override
-  public void setBrewingTime(int brewTime) {
-    wrapper.setBrewingTime(brewTime);
-  }
+    @Override public void setBrewingTime(int brewTime) {
+        wrapper.setBrewingTime(brewTime);
+    }
 
-  @Override
-  public BrewerInventory getInventory() {
-    return new SpigotBrewer(wrapper.getInventory());
-  }
+    @Override public BrewerInventory getInventory() {
+        return new SpigotBrewer(wrapper.getInventory());
+    }
 
-  @Override
-  public Block getBlock() {
-    return new SpigotBlock(wrapper.getBlock());
-  }
+    @Override public Block getBlock() {
+        return new SpigotBlock(wrapper.getBlock());
+    }
 }

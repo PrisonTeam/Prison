@@ -18,60 +18,56 @@
 
 package tech.mcprison.prison.spigot.scoreboard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import tech.mcprison.prison.internal.scoreboard.DisplaySlot;
 import tech.mcprison.prison.internal.scoreboard.Objective;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.internal.scoreboard.Team;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class SpigotScoreboard implements Scoreboard {
 
-  private org.bukkit.scoreboard.Scoreboard bScoreboard;
+    private org.bukkit.scoreboard.Scoreboard bScoreboard;
 
-  public SpigotScoreboard(org.bukkit.scoreboard.Scoreboard bScoreboard) {
-    this.bScoreboard = bScoreboard;
-  }
+    public SpigotScoreboard(org.bukkit.scoreboard.Scoreboard bScoreboard) {
+        this.bScoreboard = bScoreboard;
+    }
 
-  @Override
-  public Objective getObjective(DisplaySlot slot) {
-    return new SpigotObjective( //
-        bScoreboard.getObjective( //
-            org.bukkit.scoreboard.DisplaySlot.valueOf(slot.name()) //
-        ));
-  }
+    @Override public Objective getObjective(DisplaySlot slot) {
+        return new SpigotObjective( //
+            bScoreboard.getObjective( //
+                org.bukkit.scoreboard.DisplaySlot.valueOf(slot.name()) //
+            ));
+    }
 
-  @Override
-  public Objective registerNewObjective(String name, String criteria) {
-    return new SpigotObjective(bScoreboard.registerNewObjective(name, criteria));
-  }
+    @Override public Objective registerNewObjective(String name, String criteria) {
+        return new SpigotObjective(bScoreboard.registerNewObjective(name, criteria));
+    }
 
-  @Override
-  public void resetScores(String name) {
-    bScoreboard.resetScores(name);
-  }
+    @Override public void resetScores(String name) {
+        bScoreboard.resetScores(name);
+    }
 
-  @Override
-  public Team registerNewTeam(String name) {
-    return new SpigotTeam(bScoreboard.registerNewTeam(name));
-  }
+    @Override public Team registerNewTeam(String name) {
+        return new SpigotTeam(bScoreboard.registerNewTeam(name));
+    }
 
-  @Override
-  public List<Team> getTeams() {
-    Set<org.bukkit.scoreboard.Team> teams = bScoreboard.getTeams();
-    List<Team> ret = new ArrayList<>();
+    @Override public List<Team> getTeams() {
+        Set<org.bukkit.scoreboard.Team> teams = bScoreboard.getTeams();
+        List<Team> ret = new ArrayList<>();
 
-    teams.forEach((team -> ret.add(new SpigotTeam(team))));
+        teams.forEach((team -> ret.add(new SpigotTeam(team))));
 
-    return ret;
-  }
+        return ret;
+    }
 
-  public org.bukkit.scoreboard.Scoreboard getWrapper() {
-    return bScoreboard;
-  }
+    public org.bukkit.scoreboard.Scoreboard getWrapper() {
+        return bScoreboard;
+    }
 
 }

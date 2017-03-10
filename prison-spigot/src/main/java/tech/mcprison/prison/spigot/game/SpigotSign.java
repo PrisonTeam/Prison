@@ -18,51 +18,48 @@
 
 package tech.mcprison.prison.spigot.game;
 
-import java.util.List;
 import org.apache.commons.lang.Validate;
 import tech.mcprison.prison.internal.Sign;
 import tech.mcprison.prison.util.Location;
+
+import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class SpigotSign implements Sign {
 
-  private org.bukkit.block.Sign bSign;
+    private org.bukkit.block.Sign bSign;
 
-  public SpigotSign(org.bukkit.block.Sign bSign) {
-    this.bSign = bSign;
-  }
-
-  @Override
-  public Location getLocation() {
-    org.bukkit.Location bLoc = bSign.getLocation();
-    return new Location(new SpigotWorld(bLoc.getWorld()), bLoc.getX(), bLoc.getY(),
-        bLoc.getZ());
-  }
-
-  @Override
-  public String[] getLines() {
-    return bSign.getLines();
-  }
-
-  @Override
-  public void setLines(List<String> lines) {
-    for (int i = 0; i < 4; i++) {
-      bSign.setLine(i, lines.get(i));
+    public SpigotSign(org.bukkit.block.Sign bSign) {
+        this.bSign = bSign;
     }
-    bSign.update();
-  }
 
-  @Override
-  public void setLine(int line, String value) {
-    Validate.isTrue(line >= 0 && line < 4, "line must be 0 <= line < 4");
-    bSign.setLine(line, value);
-    bSign.update();
-  }
+    @Override public Location getLocation() {
+        org.bukkit.Location bLoc = bSign.getLocation();
+        return new Location(new SpigotWorld(bLoc.getWorld()), bLoc.getX(), bLoc.getY(),
+            bLoc.getZ());
+    }
 
-  public org.bukkit.block.Sign getWrapper() {
-    return bSign;
-  }
+    @Override public String[] getLines() {
+        return bSign.getLines();
+    }
+
+    @Override public void setLines(List<String> lines) {
+        for (int i = 0; i < 4; i++) {
+            bSign.setLine(i, lines.get(i));
+        }
+        bSign.update();
+    }
+
+    @Override public void setLine(int line, String value) {
+        Validate.isTrue(line >= 0 && line < 4, "line must be 0 <= line < 4");
+        bSign.setLine(line, value);
+        bSign.update();
+    }
+
+    public org.bukkit.block.Sign getWrapper() {
+        return bSign;
+    }
 
 }

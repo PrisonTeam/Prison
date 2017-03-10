@@ -34,79 +34,66 @@ import tech.mcprison.prison.util.InventoryType;
  */
 public class SpigotInventoryView implements Viewable {
 
-  InventoryView wrapper;
+    InventoryView wrapper;
 
-  public SpigotInventoryView(InventoryView wrapper) {
-    this.wrapper = wrapper;
-  }
+    public SpigotInventoryView(InventoryView wrapper) {
+        this.wrapper = wrapper;
+    }
 
-  public InventoryView getWrapper() {
-    return wrapper;
-  }
+    public InventoryView getWrapper() {
+        return wrapper;
+    }
 
-  @Override
-  public void close() {
-    wrapper.close();
-  }
+    @Override public void close() {
+        wrapper.close();
+    }
 
-  @Override
-  public int convertSlot(int rawSlot) {
-    return wrapper.convertSlot(rawSlot);
-  }
+    @Override public int convertSlot(int rawSlot) {
+        return wrapper.convertSlot(rawSlot);
+    }
 
-  @Override
-  public int countSlots() {
-    return wrapper.countSlots();
-  }
+    @Override public int countSlots() {
+        return wrapper.countSlots();
+    }
 
-  @Override
-  public Inventory getBottomInventory() {
-    return new SpigotInventory(wrapper.getBottomInventory());
-  }
+    @Override public Inventory getBottomInventory() {
+        return new SpigotInventory(wrapper.getBottomInventory());
+    }
 
-  @Override
-  public ItemStack getCursor() {
-    return SpigotUtil.bukkitItemStackToPrison(wrapper.getCursor());
-  }
+    @Override public ItemStack getCursor() {
+        return SpigotUtil.bukkitItemStackToPrison(wrapper.getCursor());
+    }
 
-  @Override
-  public void setCursor(ItemStack item) {
-    wrapper.setCursor(SpigotUtil.prisonItemStackToBukkit(item));
-  }
+    @Override public void setCursor(ItemStack item) {
+        wrapper.setCursor(SpigotUtil.prisonItemStackToBukkit(item));
+    }
 
-  @Override
-  public ItemStack getItem(int slot) {
-    return SpigotUtil.bukkitItemStackToPrison(wrapper.getItem(slot));
-  }
+    @Override public ItemStack getItem(int slot) {
+        return SpigotUtil.bukkitItemStackToPrison(wrapper.getItem(slot));
+    }
 
-  @Override
-  public Player getPlayer() {
-    return new SpigotPlayer((org.bukkit.entity.Player) wrapper.getPlayer());
-  }
+    @Override public Player getPlayer() {
+        return new SpigotPlayer((org.bukkit.entity.Player) wrapper.getPlayer());
+    }
 
-  @Override
-  public String getTitle() {
-    return wrapper.getTitle();
-  }
+    @Override public String getTitle() {
+        return wrapper.getTitle();
+    }
 
-  @Override
-  public Inventory getTopInventory() {
-    return new SpigotInventory(wrapper.getTopInventory());
-  }
+    @Override public Inventory getTopInventory() {
+        return new SpigotInventory(wrapper.getTopInventory());
+    }
 
-  @Override
-  public InventoryType getType() {
-    return SpigotUtil.bukkitInventoryTypeToPrison(wrapper.getType());
-  }
+    @Override public InventoryType getType() {
+        return SpigotUtil.bukkitInventoryTypeToPrison(wrapper.getType());
+    }
 
-  @Override
-  public void setItem(int slot, ItemStack item) {
-    wrapper.setItem(slot, SpigotUtil.prisonItemStackToBukkit(item));
-  }
+    @Override public void setItem(int slot, ItemStack item) {
+        wrapper.setItem(slot, SpigotUtil.prisonItemStackToBukkit(item));
+    }
 
-  @Override
-  public boolean setProperty(Property prop, int value) {
-    return wrapper.setProperty(SpigotUtil.prisonPropertyToBukkit(prop), value);
-  }
+    @Override public boolean setProperty(Property prop, int value) {
+        return wrapper.setProperty(SpigotUtil.prisonPropertyToBukkit(prop), value);
+    }
 
 }

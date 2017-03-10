@@ -29,23 +29,23 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  */
 public class PrepareAnvilEvent extends InventoryEvent {
 
-  ItemStack result;
+    ItemStack result;
 
-  public PrepareAnvilEvent(Viewable transaction, ItemStack result) {
-    super(transaction);
-    this.result = result;
-  }
+    public PrepareAnvilEvent(Viewable transaction, ItemStack result) {
+        super(transaction);
+        this.result = result;
+    }
 
-  public AnvilInventory getInventory() {
-    return (AnvilInventory) transaction.getTopInventory();
-  }
+    public AnvilInventory getInventory() {
+        return (AnvilInventory) transaction.getTopInventory();
+    }
 
-  public ItemStack getResult() {
-    return result;
-  }
+    public ItemStack getResult() {
+        return result;
+    }
 
-  public void setResult(ItemStack result) {
-    this.result = result;
-  }
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
 
 }

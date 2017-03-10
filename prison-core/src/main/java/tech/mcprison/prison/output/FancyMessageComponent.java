@@ -28,19 +28,18 @@ import tech.mcprison.prison.chat.FancyMessage;
  */
 public class FancyMessageComponent extends DisplayComponent {
 
-  protected FancyMessage message;
+    protected FancyMessage message;
 
-  public FancyMessageComponent(FancyMessage message) {
-    this.message = message;
-  }
+    public FancyMessageComponent(FancyMessage message) {
+        this.message = message;
+    }
 
-  @Override
-  public String text() {
-    return message.toJSONString();
-  }
+    @Override public String text() {
+        return message.toJSONString();
+    }
 
-  public String plainText() {
-    return message.toOldMessageFormat();
-  }
+    public String plainText() {
+        return message.toOldMessageFormat();
+    }
 
 }

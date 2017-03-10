@@ -18,12 +18,13 @@
 
 package tech.mcprison.prison.store;
 
+import tech.mcprison.prison.util.ClassUtil;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import tech.mcprison.prison.util.ClassUtil;
 
 /**
  * Represents a {@link Blueprint} that has been populated by an instantiated object.
@@ -34,92 +35,92 @@ import tech.mcprison.prison.util.ClassUtil;
  */
 public class PopulatedBlueprint extends Blueprint {
 
-  private Map<String, Data> dataMap;
+    private Map<String, Data> dataMap;
 
-  /**
-   * Initialize from an existing {@link Blueprint} object.
-   * You would use this if you plan to manually set the data map.
-   *
-   * @param blueprint The {@link Blueprint} to initialize from.
-   */
-  public PopulatedBlueprint(Blueprint blueprint) {
-    super(blueprint.getVariables());
-    dataMap = new HashMap<>();
-  }
-
-  /**
-   * Initialize from an object, which will be serialized into a PopulatedBlueprint.
-   *
-   * @param obj The object to be serialized into a PopulatedBlueprint.
-   */
-  public PopulatedBlueprint(Object obj) {
-    super(obj.getClass());
-    dataMap = new HashMap<>();
-
-    for (Map.Entry<String, Class<?>> entry : getVariables().entrySet()) {
-      String name = entry.getKey();
-      Class<?> type = entry.getValue();
-
-      try {
-        Field field = obj.getClass().getField(name);
-        field.setAccessible(true);
-
-        if (!field.getType().equals(type)) {
-          throw new IllegalStateException("field of incorrect type");
-        }
-
-        dataMap.put(name, new Data(field.get(obj)));
-
-      } catch (NoSuchFieldException | IllegalAccessException e) {
-        e.printStackTrace();
-        continue;
-      }
+    /**
+     * Initialize from an existing {@link Blueprint} object.
+     * You would use this if you plan to manually set the data map.
+     *
+     * @param blueprint The {@link Blueprint} to initialize from.
+     */
+    public PopulatedBlueprint(Blueprint blueprint) {
+        super(blueprint.getVariables());
+        dataMap = new HashMap<>();
     }
-  }
 
-  /**
-   * Uses a <b>no-argument constructor</b> in a class to initialize it using the data contained
-   * within this populated blueprint. The class must have a no-argument constructor!
-   *
-   * @param clazz The class type to deserialize this PopulatedBlueprint into.
-   * @return The deserialized object, or null if the operation fails.
-   */
-  public <T> T deserialize(Class<T> clazz) {
-    try {
-      List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
-      T ret = clazz.newInstance();
+    /**
+     * Initialize from an object, which will be serialized into a PopulatedBlueprint.
+     *
+     * @param obj The object to be serialized into a PopulatedBlueprint.
+     */
+    public PopulatedBlueprint(Object obj) {
+        super(obj.getClass());
+        dataMap = new HashMap<>();
 
-      for (Field field : fields) {
-        String fieldName = field.getName();
-        Class<?> type = field.getType();
-        Data value = this.getData(fieldName);
+        for (Map.Entry<String, Class<?>> entry : getVariables().entrySet()) {
+            String name = entry.getKey();
+            Class<?> type = entry.getValue();
 
-        if (value == null) {
-          throw new Exception("missing field value " + fieldName);
+            try {
+                Field field = obj.getClass().getField(name);
+                field.setAccessible(true);
+
+                if (!field.getType().equals(type)) {
+                    throw new IllegalStateException("field of incorrect type");
+                }
+
+                dataMap.put(name, new Data(field.get(obj)));
+
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+                continue;
+            }
         }
-
-        field.set(ret, value.as(type));
-
-      }
-
-      return ret;
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
     }
-  }
 
-  public Map<String, Data> getDataMap() {
-    return dataMap;
-  }
+    /**
+     * Uses a <b>no-argument constructor</b> in a class to initialize it using the data contained
+     * within this populated blueprint. The class must have a no-argument constructor!
+     *
+     * @param clazz The class type to deserialize this PopulatedBlueprint into.
+     * @return The deserialized object, or null if the operation fails.
+     */
+    public <T> T deserialize(Class<T> clazz) {
+        try {
+            List<Field> fields = ClassUtil.getAllFields(new LinkedList<>(), clazz);
+            T ret = clazz.newInstance();
 
-  public Data getData(String name) {
-    return dataMap.get(name);
-  }
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                Class<?> type = field.getType();
+                Data value = this.getData(fieldName);
 
-  public void setData(String name, Data data) {
-    dataMap.put(name, data);
-  }
+                if (value == null) {
+                    throw new Exception("missing field value " + fieldName);
+                }
+
+                field.set(ret, value.as(type));
+
+            }
+
+            return ret;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Map<String, Data> getDataMap() {
+        return dataMap;
+    }
+
+    public Data getData(String name) {
+        return dataMap.get(name);
+    }
+
+    public void setData(String name, Data data) {
+        dataMap.put(name, data);
+    }
 
 }

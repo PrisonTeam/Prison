@@ -49,5 +49,11 @@ public class StorageTest {
 
         Assert.assertTrue(data.equals(readData));
 
+        Prison.get().getPlatform().getStorage().delete("sirfaizdat", TestData.class);
+
+        readData = Prison.get().getPlatform().getStorage().read("sirfaizdat", TestData.class);
+
+        Assert.assertNull(readData);
+
     }
 }

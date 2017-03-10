@@ -27,20 +27,18 @@ import tech.mcprison.prison.spigot.SpigotUtil;
  */
 public class SpigotBeacon extends SpigotInventory implements BeaconInventory {
 
-  public SpigotBeacon(org.bukkit.inventory.BeaconInventory wrapper) {
-    super(wrapper);
-  }
+    public SpigotBeacon(org.bukkit.inventory.BeaconInventory wrapper) {
+        super(wrapper);
+    }
 
-  @Override
-  public ItemStack getItem() {
-    return SpigotUtil.bukkitItemStackToPrison(
-        ((org.bukkit.inventory.BeaconInventory) getWrapper()).getItem());
-  }
+    @Override public ItemStack getItem() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.BeaconInventory) getWrapper()).getItem());
+    }
 
-  @Override
-  public void setItem(ItemStack item) {
-    ((org.bukkit.inventory.BeaconInventory) getWrapper())
-        .setItem(SpigotUtil.prisonItemStackToBukkit(item));
-  }
+    @Override public void setItem(ItemStack item) {
+        ((org.bukkit.inventory.BeaconInventory) getWrapper())
+            .setItem(SpigotUtil.prisonItemStackToBukkit(item));
+    }
 
 }

@@ -18,10 +18,11 @@
 
 package tech.mcprison.prison.gui;
 
+import tech.mcprison.prison.util.BlockType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * A button is an item in an inventory GUI. When it is clicked, an action is performed.
@@ -31,64 +32,64 @@ import tech.mcprison.prison.util.BlockType;
  */
 public class Button {
 
-  private BlockType item;
-  private Action action;
-  private String name;
-  private List<String> lore;
-  private boolean closeOnClick = false;
+    private BlockType item;
+    private Action action;
+    private String name;
+    private List<String> lore;
+    private boolean closeOnClick = false;
 
-  /**
-   * @param item The item that this button will show.
-   * @param action The action implementation; this code is run when the button is clicked.
-   * @param name The name of the button (shown as the item name).
-   * @param closeOnClick Whether to close the GUI on click.
-   */
-  public Button(BlockType item, Action action, String name, boolean closeOnClick) {
-    this.item = item;
-    this.action = action;
-    this.name = name;
-    this.closeOnClick = closeOnClick;
-    this.lore = new ArrayList<>();
-  }
+    /**
+     * @param item         The item that this button will show.
+     * @param action       The action implementation; this code is run when the button is clicked.
+     * @param name         The name of the button (shown as the item name).
+     * @param closeOnClick Whether to close the GUI on click.
+     */
+    public Button(BlockType item, Action action, String name, boolean closeOnClick) {
+        this.item = item;
+        this.action = action;
+        this.name = name;
+        this.closeOnClick = closeOnClick;
+        this.lore = new ArrayList<>();
+    }
 
-  /**
-   * @param item The item that this button will show.
-   * @param action The action implementation; this code is run when the button is clicked.
-   * @param name The name of the button (shown as the item name).
-   * @param closeOnClick Whether to close the GUI on click.
-   * @param lore The lore text to put under the button.
-   */
-  public Button(BlockType item, Action action, String name, boolean closeOnClick,
-      String... lore) {
-    this.item = item;
-    this.action = action;
-    this.name = name;
-    this.closeOnClick = closeOnClick;
-    this.lore = Arrays.asList(lore);
-  }
+    /**
+     * @param item         The item that this button will show.
+     * @param action       The action implementation; this code is run when the button is clicked.
+     * @param name         The name of the button (shown as the item name).
+     * @param closeOnClick Whether to close the GUI on click.
+     * @param lore         The lore text to put under the button.
+     */
+    public Button(BlockType item, Action action, String name, boolean closeOnClick,
+        String... lore) {
+        this.item = item;
+        this.action = action;
+        this.name = name;
+        this.closeOnClick = closeOnClick;
+        this.lore = Arrays.asList(lore);
+    }
 
-  public BlockType getItem() {
-    return item;
-  }
+    public BlockType getItem() {
+        return item;
+    }
 
-  public Action getAction() {
-    return action;
-  }
+    public Action getAction() {
+        return action;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public List<String> getLore() {
-    return lore;
-  }
+    public List<String> getLore() {
+        return lore;
+    }
 
-  public void addLore(String lore) {
-    this.lore.add(lore);
-  }
+    public void addLore(String lore) {
+        this.lore.add(lore);
+    }
 
-  public boolean isCloseOnClick() {
-    return closeOnClick;
-  }
+    public boolean isCloseOnClick() {
+        return closeOnClick;
+    }
 
 }

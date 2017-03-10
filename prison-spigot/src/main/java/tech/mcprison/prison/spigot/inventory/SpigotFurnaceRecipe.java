@@ -28,21 +28,19 @@ import tech.mcprison.prison.util.BlockType;
  */
 public class SpigotFurnaceRecipe extends SpigotRecipe implements FurnaceRecipe {
 
-  public SpigotFurnaceRecipe(org.bukkit.inventory.FurnaceRecipe wrapper) {
-    super(wrapper);
-  }
+    public SpigotFurnaceRecipe(org.bukkit.inventory.FurnaceRecipe wrapper) {
+        super(wrapper);
+    }
 
-  @Override
-  public ItemStack getInput() {
-    return SpigotUtil.bukkitItemStackToPrison(
-        ((org.bukkit.inventory.FurnaceRecipe) getWrapper()).getInput());
-  }
+    @Override public ItemStack getInput() {
+        return SpigotUtil.bukkitItemStackToPrison(
+            ((org.bukkit.inventory.FurnaceRecipe) getWrapper()).getInput());
+    }
 
-  @Override
-  public FurnaceRecipe setInput(BlockType input) {
-    ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
-        .setInput(SpigotUtil.blockTypeToMaterial(input));
-    return this;
-  }
+    @Override public FurnaceRecipe setInput(BlockType input) {
+        ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
+            .setInput(SpigotUtil.blockTypeToMaterial(input));
+        return this;
+    }
 
 }

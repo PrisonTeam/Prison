@@ -18,9 +18,10 @@
 
 package tech.mcprison.prison.util;
 
+import tech.mcprison.prison.Prison;
+
 import java.util.Collection;
 import java.util.Map;
-import tech.mcprison.prison.Prison;
 
 /**
  * All of the blocks in the game.
@@ -31,8 +32,8 @@ import tech.mcprison.prison.Prison;
  */
 public enum BlockType {
 
-  // This was auto-generated from WorldEdit's blocks.json
-  // @formatter:off
+    // This was auto-generated from WorldEdit's blocks.json
+    // @formatter:off
   AIR(0, "minecraft:air", 0), STONE(1, "minecraft:stone", 0), GRANITE(1, "minecraft:stone",
       1), POLISHED_GRANITE(1, "minecraft:stone", 2), DIORITE(1, "minecraft:stone",
       3), POLISHED_DIORITE(1, "minecraft:stone", 4), ANDESITE(1, "minecraft:stone",
@@ -400,99 +401,98 @@ public enum BlockType {
       0), WAIT_DISC(2267, "minecraft:record_wait", 0);
   // @formatter:on
 
-  private int legacyId;
-  private String id;
-  private short data;
+    private int legacyId;
+    private String id;
+    private short data;
 
-  BlockType(int legacyId, String id) {
-    this.legacyId = legacyId;
-    this.id = id;
-    this.data = 0;
-  }
-
-  BlockType(int legacyId, String id, int data) {
-    this.legacyId = legacyId;
-    this.id = id;
-    this.data = (short) data;
-  }
-
-  public static BlockType getBlock(int legacyId) {
-    for (BlockType block : values()) {
-      if (block.getLegacyId() == legacyId) {
-        return block;
-      }
+    BlockType(int legacyId, String id) {
+        this.legacyId = legacyId;
+        this.id = id;
+        this.data = 0;
     }
-    return null;
-  }
 
-  public static BlockType getBlock(String id) {
-    for (BlockType block : values()) {
-      if (block.getId().equalsIgnoreCase(id)) {
-        return block;
-      }
+    BlockType(int legacyId, String id, int data) {
+        this.legacyId = legacyId;
+        this.id = id;
+        this.data = (short) data;
     }
-    boolean isInt = false;
-    try {
-      Integer.parseInt(id.replaceAll(":", ""));
-      isInt = true;
-    } catch (Exception e) {
-      isInt = false;
+
+    public static BlockType getBlock(int legacyId) {
+        for (BlockType block : values()) {
+            if (block.getLegacyId() == legacyId) {
+                return block;
+            }
+        }
+        return null;
     }
-    if (isInt) {
-      if (!id.contains(":")) {
-        return getBlockWithData(Integer.parseInt(id), (short) 0);
-      }
-      return getBlockWithData(Integer.parseInt(id.split(":")[0]),
-          Short.parseShort(id.split(":")[1]));
+
+    public static BlockType getBlock(String id) {
+        for (BlockType block : values()) {
+            if (block.getId().equalsIgnoreCase(id)) {
+                return block;
+            }
+        }
+        boolean isInt = false;
+        try {
+            Integer.parseInt(id.replaceAll(":", ""));
+            isInt = true;
+        } catch (Exception e) {
+            isInt = false;
+        }
+        if (isInt) {
+            if (!id.contains(":")) {
+                return getBlockWithData(Integer.parseInt(id), (short) 0);
+            }
+            return getBlockWithData(Integer.parseInt(id.split(":")[0]),
+                Short.parseShort(id.split(":")[1]));
+        }
+        for (Map.Entry<BlockType, Collection<String>> entry : Prison.get().getItemManager()
+            .getItems().entrySet()) {
+            if (entry.getValue().contains(id.toLowerCase())) {
+                return entry.getKey();
+            }
+        }
+        return getBlockByName(id);
     }
-    for (Map.Entry<BlockType, Collection<String>> entry : Prison.get().getItemManager()
-        .getItems().entrySet()) {
-      if (entry.getValue().contains(id.toLowerCase())) {
-        return entry.getKey();
-      }
+
+    public static BlockType getBlockByName(String name) {
+        for (BlockType block : values()) {
+            if (block.name().equalsIgnoreCase(name)) {
+                return block;
+            }
+        }
+        return null;
     }
-    return getBlockByName(id);
-  }
 
-  public static BlockType getBlockByName(String name) {
-    for (BlockType block : values()) {
-      if (block.name().equalsIgnoreCase(name)) {
-        return block;
-      }
+    public static BlockType getBlockWithData(int id, short data) {
+        for (BlockType block : values()) {
+            if (block.getLegacyId() == id && block.getData() == data) {
+                return block;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 
-  public static BlockType getBlockWithData(int id, short data) {
-    for (BlockType block : values()) {
-      if (block.getLegacyId() == id && block.getData() == data) {
-        return block;
-      }
+    public static boolean isDoor(BlockType block) {
+        return block == ACACIA_DOOR_BLOCK || block == BIRCH_DOOR_BLOCK
+            || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK
+            || block == JUNGLE_DOOR_BLOCK || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;
     }
-    return null;
-  }
 
-  public static boolean isDoor(BlockType block) {
-    return block == ACACIA_DOOR_BLOCK || block == BIRCH_DOOR_BLOCK
-        || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK
-        || block == JUNGLE_DOOR_BLOCK || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;
-  }
+    public int getLegacyId() {
+        return legacyId;
+    }
 
-  public int getLegacyId() {
-    return legacyId;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public short getData() {
+        return data;
+    }
 
-  public short getData() {
-    return data;
-  }
-
-  @Override
-  public String toString() {
-    return id + ":" + data;
-  }
+    @Override public String toString() {
+        return id + ":" + data;
+    }
 
 }

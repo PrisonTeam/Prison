@@ -20,8 +20,9 @@ package tech.mcprison.prison.util;
 
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
-import java.lang.reflect.Method;
 import tech.mcprison.prison.output.Output;
+
+import java.lang.reflect.Method;
 
 /**
  * A custom exception handler that prints out a pretty and informational message to the console when
@@ -33,18 +34,17 @@ import tech.mcprison.prison.output.Output;
  */
 public class EventExceptionHandler implements SubscriberExceptionHandler {
 
-  @Override
-  public void handleException(Throwable exception, SubscriberExceptionContext context) {
-    Method method = context.getSubscriberMethod();
-    Output.get().logError("&c&l!!! Event Exception!!!");
-    Output.get().logError(
-        "&cException thrown by subscriber method " + method.getName() + '(' + method
-            .getParameterTypes()[0].getName() + ')' + " on listener " + context.getSubscriber()
-            .getClass().getName());
-    Output.get().logError("&6Here's the stack trace:", exception);
-    Output.get().logError(
-        "&6Report this entire message to the developers if you can't solve the problem yourself.");
-    Output.get().logError("&c&l!!! Event Exception!!!");
-  }
+    @Override public void handleException(Throwable exception, SubscriberExceptionContext context) {
+        Method method = context.getSubscriberMethod();
+        Output.get().logError("&c&l!!! Event Exception!!!");
+        Output.get().logError(
+            "&cException thrown by subscriber method " + method.getName() + '(' + method
+                .getParameterTypes()[0].getName() + ')' + " on listener " + context.getSubscriber()
+                .getClass().getName());
+        Output.get().logError("&6Here's the stack trace:", exception);
+        Output.get().logError(
+            "&6Report this entire message to the developers if you can't solve the problem yourself.");
+        Output.get().logError("&c&l!!! Event Exception!!!");
+    }
 
 }

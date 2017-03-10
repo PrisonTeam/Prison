@@ -29,43 +29,43 @@ import tech.mcprison.prison.util.BlockType;
  */
 public class FurnaceExtractEvent {
 
-  int itemAmount;
-  int expToDrop;
-  Block block;
-  BlockType blockType;
-  Player player;
+    int itemAmount;
+    int expToDrop;
+    Block block;
+    BlockType blockType;
+    Player player;
 
-  public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount,
-      int exp) {
-    this.player = player;
-    this.block = block;
-    this.blockType = itemType;
-    this.itemAmount = itemAmount;
-    this.expToDrop = exp;
-  }
+    public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount,
+        int exp) {
+        this.player = player;
+        this.block = block;
+        this.blockType = itemType;
+        this.itemAmount = itemAmount;
+        this.expToDrop = exp;
+    }
 
-  public int getItemAmount() {
-    return itemAmount;
-  }
+    public int getItemAmount() {
+        return itemAmount;
+    }
 
-  public BlockType getItemType() {
-    return blockType;
-  }
+    public BlockType getItemType() {
+        return blockType;
+    }
 
-  public Player getPlayer() {
-    return player;
-  }
+    public Player getPlayer() {
+        return player;
+    }
 
-  public int getExpToDrop() {
-    return expToDrop;
-  }
+    public int getExpToDrop() {
+        return expToDrop;
+    }
 
-  public void setExpToDrop(int exp) {
-    expToDrop = exp;
-  }
+    public void setExpToDrop(int exp) {
+        expToDrop = exp;
+    }
 
-  public Block getBlock() {
-    return block;
-  }
+    public Block getBlock() {
+        return block;
+    }
 
 }

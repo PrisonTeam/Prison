@@ -27,14 +27,12 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
  */
 public class SpigotScoreboardManager implements ScoreboardManager {
 
-  @Override
-  public Scoreboard getNewScoreboard() {
-    return new SpigotScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-  }
+    @Override public Scoreboard getNewScoreboard() {
+        return new SpigotScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+    }
 
-  @Override
-  public Scoreboard getMainScoreboard() {
-    return new SpigotScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-  }
+    @Override public Scoreboard getMainScoreboard() {
+        return new SpigotScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    }
 
 }

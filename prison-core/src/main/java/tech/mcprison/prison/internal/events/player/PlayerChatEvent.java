@@ -29,45 +29,43 @@ import tech.mcprison.prison.internal.events.Cancelable;
  */
 public class PlayerChatEvent implements Cancelable {
 
-  private Player player;
-  private String message;
-  private String format;
-  private boolean canceled = false;
+    private Player player;
+    private String message;
+    private String format;
+    private boolean canceled = false;
 
-  public PlayerChatEvent(Player player, String message, String format) {
-    this.player = player;
-    this.message = message;
-    this.format = format;
-  }
+    public PlayerChatEvent(Player player, String message, String format) {
+        this.player = player;
+        this.message = message;
+        this.format = format;
+    }
 
-  public Player getPlayer() {
-    return player;
-  }
+    public Player getPlayer() {
+        return player;
+    }
 
-  public String getMessage() {
-    return message;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public void setMessage(String message) {
-    this.message = message;
-  }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-  public String getFormat() {
-    return format;
-  }
+    public String getFormat() {
+        return format;
+    }
 
-  public void setFormat(String format) {
-    this.format = format;
-  }
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
-  @Override
-  public boolean isCanceled() {
-    return canceled;
-  }
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
 
-  @Override
-  public void setCanceled(boolean canceled) {
-    this.canceled = canceled;
-  }
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
 
 }

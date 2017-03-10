@@ -25,8 +25,8 @@ import tech.mcprison.prison.internal.inventory.InventoryHolder;
  */
 public interface BrewingStand extends BlockState, InventoryHolder {
 
-  int getBrewingTime();
+    int getBrewingTime();
 
-  void setBrewingTime(int brewTime);
+    void setBrewingTime(int brewTime);
 
 }

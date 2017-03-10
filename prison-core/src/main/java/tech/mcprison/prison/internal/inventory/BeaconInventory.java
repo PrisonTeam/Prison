@@ -28,18 +28,18 @@ import tech.mcprison.prison.internal.ItemStack;
  */
 public interface BeaconInventory {
 
-  /**
-   * Gets the {@link ItemStack} powering this beacon
-   *
-   * @return the item powering the beacon.
-   */
-  ItemStack getItem();
+    /**
+     * Gets the {@link ItemStack} powering this beacon
+     *
+     * @return the item powering the beacon.
+     */
+    ItemStack getItem();
 
-  /**
-   * Sets the {@link ItemStack} powering this beacon.
-   *
-   * @param item the item that should be used to power this beacon.
-   */
-  void setItem(ItemStack item);
+    /**
+     * Sets the {@link ItemStack} powering this beacon.
+     *
+     * @param item the item that should be used to power this beacon.
+     */
+    void setItem(ItemStack item);
 
 }

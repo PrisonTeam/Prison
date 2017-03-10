@@ -30,25 +30,25 @@ import java.util.List;
  */
 public class ClassUtil {
 
-  private ClassUtil() {
+    private ClassUtil() {
 
-  }
-
-  /**
-   * Recursively adds all fields in a class and its superclasses to a list.
-   *
-   * @param fields The list to start with.
-   * @param type The class to get the fields from.
-   * @return A list with all the fields within.
-   */
-  public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-    fields.addAll(Arrays.asList(type.getDeclaredFields()));
-
-    if (type.getSuperclass() != null) {
-      fields = getAllFields(fields, type.getSuperclass());
     }
 
-    return fields;
-  }
+    /**
+     * Recursively adds all fields in a class and its superclasses to a list.
+     *
+     * @param fields The list to start with.
+     * @param type   The class to get the fields from.
+     * @return A list with all the fields within.
+     */
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+        if (type.getSuperclass() != null) {
+            fields = getAllFields(fields, type.getSuperclass());
+        }
+
+        return fields;
+    }
 
 }

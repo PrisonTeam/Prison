@@ -25,18 +25,17 @@ import tech.mcprison.prison.internal.CommandSender;
 
 public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
 
-  public IntegerArgumentHandler() {
-  }
-
-  @Override
-  public Integer transform(CommandSender sender, CommandArgument argument, String value)
-      throws TransformError {
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException e) {
-      throw new TransformError(
-          Prison.get().getLocaleManager().getLocalizable("numberParseError")
-              .withReplacements(value).localizeFor(sender));
+    public IntegerArgumentHandler() {
     }
-  }
+
+    @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new TransformError(
+                Prison.get().getLocaleManager().getLocalizable("numberParseError")
+                    .withReplacements(value).localizeFor(sender));
+        }
+    }
 }

@@ -28,37 +28,35 @@ import tech.mcprison.prison.util.Location;
  */
 public class BlockBreakEvent implements Cancelable {
 
-  private BlockType block;
-  private Location blockLocation;
-  private Player player;
-  private boolean canceled = false;
+    private BlockType block;
+    private Location blockLocation;
+    private Player player;
+    private boolean canceled = false;
 
-  public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
-    this.block = block;
-    this.blockLocation = blockLocation;
-    this.player = player;
-  }
+    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
+        this.block = block;
+        this.blockLocation = blockLocation;
+        this.player = player;
+    }
 
-  @Override
-  public boolean isCanceled() {
-    return canceled;
-  }
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
 
-  @Override
-  public void setCanceled(boolean canceled) {
-    this.canceled = canceled;
-  }
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
 
-  public BlockType getBlock() {
-    return block;
-  }
+    public BlockType getBlock() {
+        return block;
+    }
 
-  public Location getBlockLocation() {
-    return blockLocation;
-  }
+    public Location getBlockLocation() {
+        return blockLocation;
+    }
 
-  public Player getPlayer() {
-    return player;
-  }
+    public Player getPlayer() {
+        return player;
+    }
 
 }

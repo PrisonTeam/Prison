@@ -28,19 +28,16 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Spigot18 implements Compatibility {
 
-  @Override
-  public EquipmentSlot getHand(PlayerInteractEvent e) {
-    return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
-  }
+    @Override public EquipmentSlot getHand(PlayerInteractEvent e) {
+        return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
+    }
 
-  @Override
-  public ItemStack getItemInMainHand(PlayerInteractEvent e) {
-    return e.getPlayer().getItemInHand();
-  }
+    @Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {
+        return e.getPlayer().getItemInHand();
+    }
 
-  @Override
-  public void playIronDoorSound(Location loc) {
-    loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
-  }
+    @Override public void playIronDoorSound(Location loc) {
+        loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
+    }
 
 }

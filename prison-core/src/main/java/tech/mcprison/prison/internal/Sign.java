@@ -18,8 +18,9 @@
 
 package tech.mcprison.prison.internal;
 
-import java.util.List;
 import tech.mcprison.prison.util.Location;
+
+import java.util.List;
 
 /**
  * Represents a sign in a Minecraft world.
@@ -28,35 +29,35 @@ import tech.mcprison.prison.util.Location;
  */
 public interface Sign {
 
-  /**
-   * Returns the location of this sign.
-   *
-   * @return the {@link Location}.
-   */
-  Location getLocation();
+    /**
+     * Returns the location of this sign.
+     *
+     * @return the {@link Location}.
+     */
+    Location getLocation();
 
-  /**
-   * Returns the lines of text on this sign.
-   * Each entry in the array is its own line.
-   *
-   * @return the String array.
-   */
-  String[] getLines();
+    /**
+     * Returns the lines of text on this sign.
+     * Each entry in the array is its own line.
+     *
+     * @return the String array.
+     */
+    String[] getLines();
 
-  /**
-   * Sets the lines of the sign, overwriting everything else on the sign.
-   * Ampersand-prefixed color codes are automatically parsed.
-   *
-   * @param lines the new {@link List}.
-   */
-  void setLines(List<String> lines);
+    /**
+     * Sets the lines of the sign, overwriting everything else on the sign.
+     * Ampersand-prefixed color codes are automatically parsed.
+     *
+     * @param lines the new {@link List}.
+     */
+    void setLines(List<String> lines);
 
-  /**
-   * Sets a certain line of the sign to another text value.
-   *
-   * @param line The line number.
-   * @param value The value of this line. Ampersand-prefixed color codes are automatically parsed.
-   */
-  void setLine(int line, String value);
+    /**
+     * Sets a certain line of the sign to another text value.
+     *
+     * @param line  The line number.
+     * @param value The value of this line. Ampersand-prefixed color codes are automatically parsed.
+     */
+    void setLine(int line, String value);
 
 }

@@ -18,11 +18,12 @@
 
 package tech.mcprison.prison.internal;
 
+import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.ChatColor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.ChatColor;
 
 /**
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
@@ -32,73 +33,70 @@ import tech.mcprison.prison.util.ChatColor;
  */
 public class ItemStack {
 
-  String name;
-  int amount;
-  BlockType material;
-  private List<String> lore;
+    String name;
+    int amount;
+    BlockType material;
+    private List<String> lore;
 
-  public ItemStack(String name, int amount, BlockType material, String... lore) {
-    this.name = name;
-    this.amount = amount;
-    this.material = material;
-    this.lore = new ArrayList<>(Arrays.asList(lore));
-  }
-
-  /**
-   * Returns the display name of the item stack. This may include colors.
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * Returns the amount of items in this stack.
-   */
-  public int getAmount() {
-    return amount;
-  }
-
-  /**
-   * Returns the type of items in this stack.
-   */
-  public BlockType getMaterial() {
-    return material;
-  }
-
-  public List<String> getLore() {
-    return lore;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof ItemStack)) {
-      return false;
+    public ItemStack(String name, int amount, BlockType material, String... lore) {
+        this.name = name;
+        this.amount = amount;
+        this.material = material;
+        this.lore = new ArrayList<>(Arrays.asList(lore));
     }
 
-    ItemStack itemStack = (ItemStack) o;
+    /**
+     * Returns the display name of the item stack. This may include colors.
+     */
+    public String getName() {
+        return name;
+    }
 
-    String myName = ChatColor.stripColor(name);  // Remove colors from my name
-    String theirName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
-        itemStack.getName()));  // Remove colors from their name
+    /**
+     * Returns the amount of items in this stack.
+     */
+    public int getAmount() {
+        return amount;
+    }
 
-    return myName.equals(theirName) && material == itemStack.material;
+    /**
+     * Returns the type of items in this stack.
+     */
+    public BlockType getMaterial() {
+        return material;
+    }
 
-  }
+    public List<String> getLore() {
+        return lore;
+    }
 
-  @Override
-  public int hashCode() {
-    int result = name.hashCode();
-    result = 31 * result + material.hashCode();
-    return result;
-  }
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ItemStack)) {
+            return false;
+        }
 
-  @Override
-  public String toString() {
-    return "ItemStack{" + "name='" + name + '\'' + ", amount=" + amount + ", material="
-        + material + '}';
-  }
+        ItemStack itemStack = (ItemStack) o;
+
+        String myName = ChatColor.stripColor(name);  // Remove colors from my name
+        String theirName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
+            itemStack.getName()));  // Remove colors from their name
+
+        return myName.equals(theirName) && material == itemStack.material;
+
+    }
+
+    @Override public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + material.hashCode();
+        return result;
+    }
+
+    @Override public String toString() {
+        return "ItemStack{" + "name='" + name + '\'' + ", amount=" + amount + ", material="
+            + material + '}';
+    }
 
 }

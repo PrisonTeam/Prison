@@ -29,35 +29,35 @@ import tech.mcprison.prison.internal.inventory.BrewerInventory;
  */
 public class BrewEvent implements Cancelable {
 
-  private boolean canceled = false;
-  private BrewerInventory contents = null;
-  private int fuelLevel = 0;
-  private Block block = null;
+    private boolean canceled = false;
+    private BrewerInventory contents = null;
+    private int fuelLevel = 0;
+    private Block block = null;
 
-  public BrewEvent(Block block, BrewerInventory contents, int fuelLevel) {
-    this.contents = contents;
-    this.fuelLevel = fuelLevel;
-    this.block = block;
-  }
+    public BrewEvent(Block block, BrewerInventory contents, int fuelLevel) {
+        this.contents = contents;
+        this.fuelLevel = fuelLevel;
+        this.block = block;
+    }
 
-  public BrewerInventory getContents() {
-    return contents;
-  }
+    public BrewerInventory getContents() {
+        return contents;
+    }
 
-  public int getFuelLevel() {
-    return fuelLevel;
-  }
+    public int getFuelLevel() {
+        return fuelLevel;
+    }
 
-  public Block getBlock() {
-    return block;
-  }
+    public Block getBlock() {
+        return block;
+    }
 
-  public boolean isCanceled() {
-    return canceled;
-  }
+    public boolean isCanceled() {
+        return canceled;
+    }
 
-  public void setCanceled(boolean cancel) {
-    canceled = cancel;
-  }
+    public void setCanceled(boolean cancel) {
+        canceled = cancel;
+    }
 
 }

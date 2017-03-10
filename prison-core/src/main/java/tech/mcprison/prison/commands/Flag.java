@@ -18,44 +18,43 @@
 
 package tech.mcprison.prison.commands;
 
+import tech.mcprison.prison.internal.CommandSender;
+
 import java.util.ArrayList;
 import java.util.List;
-import tech.mcprison.prison.internal.CommandSender;
 
 public class Flag implements ExecutableArgument {
 
-  private final String identifier;
-  private final String description;
-  private List<FlagArgument> arguments = new ArrayList<FlagArgument>();
+    private final String identifier;
+    private final String description;
+    private List<FlagArgument> arguments = new ArrayList<FlagArgument>();
 
-  public Flag(String identifier, String description) {
-    this.identifier = identifier;
-    this.description = description;
-  }
+    public Flag(String identifier, String description) {
+        this.identifier = identifier;
+        this.description = description;
+    }
 
-  public void addArgument(FlagArgument argument) {
-    arguments.add(argument);
-  }
+    public void addArgument(FlagArgument argument) {
+        arguments.add(argument);
+    }
 
-  @Override
-  public Object execute(CommandSender sender, Arguments args) {
-    return args.flagExists(this);
-  }
+    @Override public Object execute(CommandSender sender, Arguments args) {
+        return args.flagExists(this);
+    }
 
-  public List<FlagArgument> getArguments() {
-    return arguments;
-  }
+    public List<FlagArgument> getArguments() {
+        return arguments;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public String getIdentifier() {
-    return identifier;
-  }
+    public String getIdentifier() {
+        return identifier;
+    }
 
-  @Override
-  public int hashCode() {
-    return identifier.hashCode();
-  }
+    @Override public int hashCode() {
+        return identifier.hashCode();
+    }
 }

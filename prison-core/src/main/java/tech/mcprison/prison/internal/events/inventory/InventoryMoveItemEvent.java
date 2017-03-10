@@ -29,46 +29,46 @@ import tech.mcprison.prison.internal.inventory.Inventory;
  */
 public class InventoryMoveItemEvent implements Cancelable {
 
-  boolean sourceInitiated;
-  boolean canceled = false;
-  Inventory source;
-  Inventory destination;
-  ItemStack item;
+    boolean sourceInitiated;
+    boolean canceled = false;
+    Inventory source;
+    Inventory destination;
+    ItemStack item;
 
-  public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
-      Inventory destinationInventory, boolean didSourceInitiate) {
-    this.source = sourceInventory;
-    this.destination = destinationInventory;
-    this.item = itemStack;
-    this.sourceInitiated = didSourceInitiate;
-  }
+    public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
+        Inventory destinationInventory, boolean didSourceInitiate) {
+        this.source = sourceInventory;
+        this.destination = destinationInventory;
+        this.item = itemStack;
+        this.sourceInitiated = didSourceInitiate;
+    }
 
-  public Inventory getDestination() {
-    return destination;
-  }
+    public Inventory getDestination() {
+        return destination;
+    }
 
-  public Inventory getInitiator() {
-    return sourceInitiated ? source : destination;
-  }
+    public Inventory getInitiator() {
+        return sourceInitiated ? source : destination;
+    }
 
-  public ItemStack getItem() {
-    return item;
-  }
+    public ItemStack getItem() {
+        return item;
+    }
 
-  public void setItem(ItemStack itemStack) {
-    item = itemStack;
-  }
+    public void setItem(ItemStack itemStack) {
+        item = itemStack;
+    }
 
-  public Inventory getSource() {
-    return source;
-  }
+    public Inventory getSource() {
+        return source;
+    }
 
-  public boolean isCanceled() {
-    return canceled;
-  }
+    public boolean isCanceled() {
+        return canceled;
+    }
 
-  public void setCanceled(boolean cancel) {
-    canceled = cancel;
-  }
+    public void setCanceled(boolean cancel) {
+        canceled = cancel;
+    }
 
 }

@@ -30,24 +30,24 @@ import tech.mcprison.prison.util.Location;
  */
 public class GsonSingleton {
 
-  private static GsonSingleton instance = new GsonSingleton();
-  private Gson gson;
+    private static GsonSingleton instance = new GsonSingleton();
+    private Gson gson;
 
-  private GsonSingleton() {
-    GsonBuilder builder = new GsonBuilder();
-    builder.setPrettyPrinting();
-    builder.disableHtmlEscaping();
-    builder.setExclusionStrategies(new GsonExclusionStrategy());
-    builder.registerTypeAdapter(Location.class, new LocationAdapter());
-    gson = builder.create();
-  }
+    private GsonSingleton() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.disableHtmlEscaping();
+        builder.setExclusionStrategies(new GsonExclusionStrategy());
+        builder.registerTypeAdapter(Location.class, new LocationAdapter());
+        gson = builder.create();
+    }
 
-  public static GsonSingleton getInstance() {
-    return instance;
-  }
+    public static GsonSingleton getInstance() {
+        return instance;
+    }
 
-  public Gson getGson() {
-    return gson;
-  }
+    public Gson getGson() {
+        return gson;
+    }
 
 }

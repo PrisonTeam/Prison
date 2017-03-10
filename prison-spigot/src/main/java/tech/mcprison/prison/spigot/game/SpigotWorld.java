@@ -18,9 +18,6 @@
 
 package tech.mcprison.prison.spigot.game;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
@@ -29,37 +26,38 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.util.Location;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * @author Faizaan A. Datoo
  */
 public class SpigotWorld implements World {
 
-  private org.bukkit.World bukkitWorld;
+    private org.bukkit.World bukkitWorld;
 
-  public SpigotWorld(org.bukkit.World bukkitWorld) {
-    this.bukkitWorld = bukkitWorld;
-  }
+    public SpigotWorld(org.bukkit.World bukkitWorld) {
+        this.bukkitWorld = bukkitWorld;
+    }
 
-  @Override
-  public String getName() {
-    return bukkitWorld.getName();
-  }
+    @Override public String getName() {
+        return bukkitWorld.getName();
+    }
 
-  @Override
-  public List<Player> getPlayers() {
-    return Bukkit.getServer().getOnlinePlayers().stream()
-        .filter(player -> player.getWorld().getName().equals(bukkitWorld.getName()))
-        .map((Function<org.bukkit.entity.Player, SpigotPlayer>) SpigotPlayer::new)
-        .collect(Collectors.toList());
-  }
+    @Override public List<Player> getPlayers() {
+        return Bukkit.getServer().getOnlinePlayers().stream()
+            .filter(player -> player.getWorld().getName().equals(bukkitWorld.getName()))
+            .map((Function<org.bukkit.entity.Player, SpigotPlayer>) SpigotPlayer::new)
+            .collect(Collectors.toList());
+    }
 
-  @Override
-  public Block getBlockAt(Location location) {
-    return new SpigotBlock(bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
-  }
+    @Override public Block getBlockAt(Location location) {
+        return new SpigotBlock(bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    }
 
-  public org.bukkit.World getWrapper() {
-    return bukkitWorld;
-  }
+    public org.bukkit.World getWrapper() {
+        return bukkitWorld;
+    }
 
 }

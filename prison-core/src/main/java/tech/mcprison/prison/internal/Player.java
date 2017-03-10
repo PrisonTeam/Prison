@@ -18,12 +18,13 @@
 
 package tech.mcprison.prison.internal;
 
-import java.util.Optional;
-import java.util.UUID;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Represents a player on the Minecraft server.
@@ -33,75 +34,74 @@ import tech.mcprison.prison.util.Location;
  */
 public interface Player extends CommandSender, InventoryHolder {
 
-  /**
-   * Returns the unique identifier for this player.
-   */
-  UUID getUUID();
+    /**
+     * Returns the unique identifier for this player.
+     */
+    UUID getUUID();
 
-  /**
-   * Returns the player's display name (nickname), which may include colors.
-   */
-  String getDisplayName();
+    /**
+     * Returns the player's display name (nickname), which may include colors.
+     */
+    String getDisplayName();
 
-  /**
-   * Sets the player's display name (nickname).
-   *
-   * @param newDisplayName The new display name. May include colors, amp-prefixed.
-   */
-  void setDisplayName(String newDisplayName);
+    /**
+     * Sets the player's display name (nickname).
+     *
+     * @param newDisplayName The new display name. May include colors, amp-prefixed.
+     */
+    void setDisplayName(String newDisplayName);
 
-  /**
-   * Adds an {@link ItemStack} to the player's inventory.
-   */
-  void give(ItemStack itemStack);
+    /**
+     * Adds an {@link ItemStack} to the player's inventory.
+     */
+    void give(ItemStack itemStack);
 
-  /**
-   * Returns the player's current {@link Location}.
-   */
-  Location getLocation();
+    /**
+     * Returns the player's current {@link Location}.
+     */
+    Location getLocation();
 
-  /**
-   * Teleports the player to another location.
-   *
-   * @param location The new {@link Location}.
-   */
-  void teleport(Location location);
+    /**
+     * Teleports the player to another location.
+     *
+     * @param location The new {@link Location}.
+     */
+    void teleport(Location location);
 
-  /**
-   * @return Returns true if the player is online, false otherwise.
-   */
-  boolean isOnline();
+    /**
+     * @return Returns true if the player is online, false otherwise.
+     */
+    boolean isOnline();
 
-  /**
-   * Sets the player's visible scoreboard.
-   *
-   * @param scoreboard The {@link Scoreboard} to show the player.
-   */
-  void setScoreboard(Scoreboard scoreboard);
+    /**
+     * Sets the player's visible scoreboard.
+     *
+     * @param scoreboard The {@link Scoreboard} to show the player.
+     */
+    void setScoreboard(Scoreboard scoreboard);
 
-  /**
-   * Returns the player's current {@link Gamemode}
-   */
-  Gamemode getGamemode();
+    /**
+     * Returns the player's current {@link Gamemode}
+     */
+    Gamemode getGamemode();
 
-  /**
-   * Changes the player's {@link Gamemode} to the specified value
-   *
-   * @param gamemode the new gamemode
-   */
-  void setGamemode(Gamemode gamemode);
+    /**
+     * Changes the player's {@link Gamemode} to the specified value
+     *
+     * @param gamemode the new gamemode
+     */
+    void setGamemode(Gamemode gamemode);
 
-  /**
-   * Returns this player's locale.
-   *
-   * @return An {@link Optional} containing the locale of this player, or empty if it couldn't be
-   * retrieved.
-   */
-  Optional<String> getLocale();
+    /**
+     * Returns this player's locale.
+     *
+     * @return An {@link Optional} containing the locale of this player, or empty if it couldn't be
+     * retrieved.
+     */
+    Optional<String> getLocale();
 
-  @Override
-  default boolean doesSupportColors() {
-    return true;
-  }
+    @Override default boolean doesSupportColors() {
+        return true;
+    }
 
 }

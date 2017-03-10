@@ -29,24 +29,22 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  */
 public class InventoryInteractEvent extends InventoryEvent implements Cancelable {
 
-  private boolean cancel = false;
+    private boolean cancel = false;
 
-  public InventoryInteractEvent(Viewable transaction) {
-    super(transaction);
-  }
+    public InventoryInteractEvent(Viewable transaction) {
+        super(transaction);
+    }
 
-  @Override
-  public boolean isCanceled() {
-    return cancel;
-  }
+    @Override public boolean isCanceled() {
+        return cancel;
+    }
 
-  @Override
-  public void setCanceled(boolean canceled) {
-    cancel = canceled;
-  }
+    @Override public void setCanceled(boolean canceled) {
+        cancel = canceled;
+    }
 
-  public Player getWhoClicked() {
-    return transaction.getPlayer();
-  }
+    public Player getWhoClicked() {
+        return transaction.getPlayer();
+    }
 
 }

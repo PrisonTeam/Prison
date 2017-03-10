@@ -18,26 +18,27 @@
 
 package tech.mcprison.prison.sponge;
 
-import java.util.List;
 import tech.mcprison.prison.store.Storage;
+
+import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class SpongeStorage implements Storage {
+    @Override public void write(String key, Object obj) {
 
-  @Override
-  public void write(String key, Object obj) {
-  }
+    }
 
-  @Override
-  public <T> T read(String key, Class<T> type) {
-    return null;
-  }
+    @Override public <T> T read(String key, Class<T> type) {
+        return null;
+    }
 
-  @Override
-  public <T> List<T> readAll(Class<T> type) {
-    return null;
-  }
+    @Override public <T> List<T> readAll(Class<T> type) {
+        return null;
+    }
 
+    @Override public void delete(String key, Class type) {
+
+    }
 }

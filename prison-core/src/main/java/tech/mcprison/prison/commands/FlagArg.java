@@ -23,9 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface FlagArg {
+@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.PARAMETER) public @interface FlagArg {
 
-  String value();
+    String value();
 }

@@ -27,54 +27,54 @@ import tech.mcprison.prison.util.BlockType;
 
 public class BlockArgumentHandler extends ArgumentHandler<BlockType> {
 
-  public BlockArgumentHandler() {
-  }
-
-  @Override
-  public BlockType transform(CommandSender sender, CommandArgument argument, String value)
-      throws TransformError {
-    BlockType m = null;
-
-    // Try block legacy (numerical) ID first
-    try {
-      m = BlockType.getBlock(Integer.parseInt(value));
-    } catch (NumberFormatException ignored) {
+    public BlockArgumentHandler() {
     }
 
-    if (m != null) {
-      return m;
+    @Override
+    public BlockType transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
+        BlockType m = null;
+
+        // Try block legacy (numerical) ID first
+        try {
+            m = BlockType.getBlock(Integer.parseInt(value));
+        } catch (NumberFormatException ignored) {
+        }
+
+        if (m != null) {
+            return m;
+        }
+
+        // Now try new block IDs
+
+        m = BlockType.getBlock(value);
+
+        if (m != null) {
+            return m;
+        }
+
+        // Now try id:data format
+        if (value.contains(":")) {
+            int id;
+            short data;
+            try {
+                id = Integer.parseInt(value.split(":")[0]);
+                data = Short.parseShort(value.split(":")[1]);
+            } catch (NumberFormatException ignored) {
+                throw new TransformError(
+                    Prison.get().getLocaleManager().getLocalizable("blockParseError")
+                        .withReplacements(value).localizeFor(sender));
+            }
+            m = BlockType.getBlockWithData(id, data);
+        }
+
+        if (m != null) {
+            return m;
+        }
+
+        // No more checks, just fail
+
+        throw new TransformError(Prison.get().getLocaleManager().getLocalizable("blockParseError")
+            .withReplacements(value).localizeFor(sender));
     }
-
-    // Now try new block IDs
-
-    m = BlockType.getBlock(value);
-
-    if (m != null) {
-      return m;
-    }
-
-    // Now try id:data format
-    if (value.contains(":")) {
-      int id;
-      short data;
-      try {
-        id = Integer.parseInt(value.split(":")[0]);
-        data = Short.parseShort(value.split(":")[1]);
-      } catch (NumberFormatException ignored) {
-        throw new TransformError(
-            Prison.get().getLocaleManager().getLocalizable("blockParseError")
-                .withReplacements(value).localizeFor(sender));
-      }
-      m = BlockType.getBlockWithData(id, data);
-    }
-
-    if (m != null) {
-      return m;
-    }
-
-    // No more checks, just fail
-
-    throw new TransformError(Prison.get().getLocaleManager().getLocalizable("blockParseError")
-        .withReplacements(value).localizeFor(sender));
-  }
 }

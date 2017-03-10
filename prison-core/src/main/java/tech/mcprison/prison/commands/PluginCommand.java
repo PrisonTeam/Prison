@@ -23,31 +23,31 @@ package tech.mcprison.prison.commands;
  */
 public class PluginCommand {
 
-  private String label, description, usage;
+    private String label, description, usage;
 
-  public PluginCommand(String label, String description, String usage) {
-    this.label = label;
-    this.description = description;
-    this.usage = usage;
-  }
+    public PluginCommand(String label, String description, String usage) {
+        this.label = label;
+        this.description = description;
+        this.usage = usage;
+    }
 
-  public String getLabel() {
-    return label;
-  }
+    public String getLabel() {
+        return label;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public String getUsage() {
-    return usage;
-  }
+    public String getUsage() {
+        return usage;
+    }
 
-  public void setUsage(String usage) {
-    this.usage = usage;
-  }
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
 }

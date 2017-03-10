@@ -29,43 +29,43 @@ import tech.mcprison.prison.util.Location;
  */
 public class Selection {
 
-  private Location min, max;
+    private Location min, max;
 
-  public Selection() {
-  }
+    public Selection() {
+    }
 
-  public Selection(Location min, Location max) {
-    this.min = min;
-    this.max = max;
-  }
+    public Selection(Location min, Location max) {
+        this.min = min;
+        this.max = max;
+    }
 
-  public Location getMin() {
-    return min;
-  }
+    public Location getMin() {
+        return min;
+    }
 
-  public void setMin(Location min) {
-    this.min = min;
-  }
+    public void setMin(Location min) {
+        this.min = min;
+    }
 
-  public Location getMax() {
-    return max;
-  }
+    public Location getMax() {
+        return max;
+    }
 
-  public void setMax(Location max) {
-    this.max = max;
-  }
+    public void setMax(Location max) {
+        this.max = max;
+    }
 
-  /**
-   * Returns whether or not both the minimum and maximum locations are set.
-   *
-   * @return true if they are, false otherwise.
-   */
-  public boolean isComplete() {
-    return min != null && max != null;
-  }
+    /**
+     * Returns whether or not both the minimum and maximum locations are set.
+     *
+     * @return true if they are, false otherwise.
+     */
+    public boolean isComplete() {
+        return min != null && max != null;
+    }
 
-  public Bounds asBounds() {
-    return new Bounds(min, max);
-  }
+    public Bounds asBounds() {
+        return new Bounds(min, max);
+    }
 
 }

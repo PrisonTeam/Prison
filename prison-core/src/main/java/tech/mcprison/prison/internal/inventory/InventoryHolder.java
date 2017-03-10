@@ -26,9 +26,9 @@ package tech.mcprison.prison.internal.inventory;
  */
 public interface InventoryHolder {
 
-  /**
-   * Gets the {@link Inventory} this {@link InventoryHolder} is holding
-   */
-  public Inventory getInventory();
+    /**
+     * Gets the {@link Inventory} this {@link InventoryHolder} is holding
+     */
+    public Inventory getInventory();
 
 }

@@ -26,20 +26,18 @@ import tech.mcprison.prison.internal.inventory.Inventory;
  */
 public class SpigotDoubleChest extends SpigotInventory implements DoubleChestInventory {
 
-  public SpigotDoubleChest(org.bukkit.inventory.DoubleChestInventory wrapper) {
-    super(wrapper);
-  }
+    public SpigotDoubleChest(org.bukkit.inventory.DoubleChestInventory wrapper) {
+        super(wrapper);
+    }
 
-  @Override
-  public Inventory getLeftSide() {
-    return new SpigotInventory(
-        ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
-  }
+    @Override public Inventory getLeftSide() {
+        return new SpigotInventory(
+            ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
+    }
 
-  @Override
-  public Inventory getRightSide() {
-    return new SpigotInventory(
-        ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
-  }
+    @Override public Inventory getRightSide() {
+        return new SpigotInventory(
+            ((org.bukkit.inventory.DoubleChestInventory) getWrapper()).getLeftSide());
+    }
 
 }

@@ -19,65 +19,60 @@
 package tech.mcprison.prison.commands.handlers;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.ArgumentHandler;
-import tech.mcprison.prison.commands.ArgumentVerifier;
-import tech.mcprison.prison.commands.CommandArgument;
-import tech.mcprison.prison.commands.InvalidVerifyArgument;
-import tech.mcprison.prison.commands.TransformError;
+import tech.mcprison.prison.commands.*;
 import tech.mcprison.prison.commands.VerifyError;
 import tech.mcprison.prison.internal.CommandSender;
 
 public class StringArgumentHandler extends ArgumentHandler<String> {
 
-  public StringArgumentHandler() {
-    addVerifier("min", new ArgumentVerifier<String>() {
-      @Override
-      public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-          String[] verifyArgs, String value, String valueRaw) throws VerifyError {
-        if (verifyArgs.length != 1) {
-          throw new InvalidVerifyArgument(argument.getName());
-        }
+    public StringArgumentHandler() {
+        addVerifier("min", new ArgumentVerifier<String>() {
+            @Override
+            public void verify(CommandSender sender, CommandArgument argument, String verifyName,
+                String[] verifyArgs, String value, String valueRaw) throws VerifyError {
+                if (verifyArgs.length != 1) {
+                    throw new InvalidVerifyArgument(argument.getName());
+                }
 
-        try {
-          int min = Integer.parseInt(verifyArgs[0]);
-          if (value.length() < min) {
-            throw new VerifyError(
-                Prison.get().getLocaleManager().getLocalizable("tooFewCharacters")
-                    .withReplacements(valueRaw, String.valueOf(min))
-                    .localizeFor(sender));
-          }
-        } catch (NumberFormatException e) {
-          throw new InvalidVerifyArgument(argument.getName());
-        }
-      }
-    });
+                try {
+                    int min = Integer.parseInt(verifyArgs[0]);
+                    if (value.length() < min) {
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("tooFewCharacters")
+                                .withReplacements(valueRaw, String.valueOf(min))
+                                .localizeFor(sender));
+                    }
+                } catch (NumberFormatException e) {
+                    throw new InvalidVerifyArgument(argument.getName());
+                }
+            }
+        });
 
-    addVerifier("max", new ArgumentVerifier<String>() {
-      @Override
-      public void verify(CommandSender sender, CommandArgument argument, String verifyName,
-          String[] verifyArgs, String value, String valueRaw) throws VerifyError {
-        if (verifyArgs.length != 1) {
-          throw new InvalidVerifyArgument(argument.getName());
-        }
+        addVerifier("max", new ArgumentVerifier<String>() {
+            @Override
+            public void verify(CommandSender sender, CommandArgument argument, String verifyName,
+                String[] verifyArgs, String value, String valueRaw) throws VerifyError {
+                if (verifyArgs.length != 1) {
+                    throw new InvalidVerifyArgument(argument.getName());
+                }
 
-        try {
-          int max = Integer.parseInt(verifyArgs[0]);
-          if (value.length() > max) {
-            throw new VerifyError(
-                Prison.get().getLocaleManager().getLocalizable("tooManyCharacters")
-                    .withReplacements(valueRaw, String.valueOf(max))
-                    .localizeFor(sender));
-          }
-        } catch (NumberFormatException e) {
-          throw new InvalidVerifyArgument(argument.getName());
-        }
-      }
-    });
-  }
+                try {
+                    int max = Integer.parseInt(verifyArgs[0]);
+                    if (value.length() > max) {
+                        throw new VerifyError(
+                            Prison.get().getLocaleManager().getLocalizable("tooManyCharacters")
+                                .withReplacements(valueRaw, String.valueOf(max))
+                                .localizeFor(sender));
+                    }
+                } catch (NumberFormatException e) {
+                    throw new InvalidVerifyArgument(argument.getName());
+                }
+            }
+        });
+    }
 
-  @Override
-  public String transform(CommandSender sender, CommandArgument argument, String value)
-      throws TransformError {
-    return value;
-  }
+    @Override public String transform(CommandSender sender, CommandArgument argument, String value)
+        throws TransformError {
+        return value;
+    }
 }

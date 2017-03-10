@@ -29,31 +29,29 @@ import tech.mcprison.prison.internal.events.Cancelable;
  */
 public class PlayerKickEvent implements Cancelable {
 
-  private Player player;
-  private String reason;
-  private boolean canceled = false;
+    private Player player;
+    private String reason;
+    private boolean canceled = false;
 
-  public PlayerKickEvent(Player player, String reason) {
-    this.player = player;
-    this.reason = reason;
-  }
+    public PlayerKickEvent(Player player, String reason) {
+        this.player = player;
+        this.reason = reason;
+    }
 
-  public Player getPlayer() {
-    return player;
-  }
+    public Player getPlayer() {
+        return player;
+    }
 
-  public String getReason() {
-    return reason;
-  }
+    public String getReason() {
+        return reason;
+    }
 
-  @Override
-  public boolean isCanceled() {
-    return canceled;
-  }
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
 
-  @Override
-  public void setCanceled(boolean canceled) {
-    this.canceled = canceled;
-  }
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
 
 }

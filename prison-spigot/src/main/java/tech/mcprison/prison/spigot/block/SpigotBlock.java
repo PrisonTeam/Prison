@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.spigot.block;
 
-import java.util.ArrayList;
-import java.util.List;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
@@ -28,82 +26,77 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Faizaan A. Datoo
  */
 public class SpigotBlock implements Block {
 
-  private org.bukkit.block.Block bBlock;
+    private org.bukkit.block.Block bBlock;
 
-  public SpigotBlock(org.bukkit.block.Block bBlock) {
-    this.bBlock = bBlock;
-  }
-
-  @Override
-  public Location getLocation() {
-    return SpigotUtil.bukkitLocationToPrison(bBlock.getLocation());
-  }
-
-  @Override
-  public Block getRelative(BlockFace face) {
-    return new SpigotBlock(bBlock.getRelative(org.bukkit.block.BlockFace.valueOf(face.name())));
-  }
-
-  @Override
-  public BlockType getType() {
-    return SpigotUtil.materialToBlockType(bBlock.getType());
-  }
-
-  @Override
-  public void setType(BlockType type) {
-    bBlock.setType(SpigotUtil.blockTypeToMaterial(type));
-  }
-
-  @Override
-  public BlockState getState() {
-    switch (getType()) {
-      case LEVER:
-        return new SpigotLever(this);
-      case ACACIA_DOOR_BLOCK:
-      case OAK_DOOR_BLOCK:
-      case BIRCH_DOOR_BLOCK:
-      case SPRUCE_DOOR_BLOCK:
-      case DARK_OAK_DOOR_BLOCK:
-      case IRON_DOOR_BLOCK:
-      case JUNGLE_DOOR_BLOCK:
-        return new SpigotDoor(this);
-      default:
-        return new SpigotBlockState(this);
+    public SpigotBlock(org.bukkit.block.Block bBlock) {
+        this.bBlock = bBlock;
     }
-  }
 
-  @Override
-  public boolean breakNaturally() {
-    return bBlock.breakNaturally();
-  }
+    @Override public Location getLocation() {
+        return SpigotUtil.bukkitLocationToPrison(bBlock.getLocation());
+    }
 
-  @Override
-  public List<ItemStack> getDrops() {
-    List<ItemStack> ret = new ArrayList<>();
+    @Override public Block getRelative(BlockFace face) {
+        return new SpigotBlock(bBlock.getRelative(org.bukkit.block.BlockFace.valueOf(face.name())));
+    }
 
-    bBlock.getDrops()
-        .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+    @Override public BlockType getType() {
+        return SpigotUtil.materialToBlockType(bBlock.getType());
+    }
 
-    return ret;
-  }
+    @Override public void setType(BlockType type) {
+        bBlock.setType(SpigotUtil.blockTypeToMaterial(type));
+    }
 
-  @Override
-  public List<ItemStack> getDrops(ItemStack tool) {
-    List<ItemStack> ret = new ArrayList<>();
+    @Override public BlockState getState() {
+        switch (getType()) {
+            case LEVER:
+                return new SpigotLever(this);
+            case ACACIA_DOOR_BLOCK:
+            case OAK_DOOR_BLOCK:
+            case BIRCH_DOOR_BLOCK:
+            case SPRUCE_DOOR_BLOCK:
+            case DARK_OAK_DOOR_BLOCK:
+            case IRON_DOOR_BLOCK:
+            case JUNGLE_DOOR_BLOCK:
+                return new SpigotDoor(this);
+            default:
+                return new SpigotBlockState(this);
+        }
+    }
 
-    bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
-        .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+    @Override public boolean breakNaturally() {
+        return bBlock.breakNaturally();
+    }
 
-    return ret;
-  }
+    @Override public List<ItemStack> getDrops() {
+        List<ItemStack> ret = new ArrayList<>();
 
-  public org.bukkit.block.Block getWrapper() {
-    return bBlock;
-  }
+        bBlock.getDrops()
+            .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+
+        return ret;
+    }
+
+    @Override public List<ItemStack> getDrops(ItemStack tool) {
+        List<ItemStack> ret = new ArrayList<>();
+
+        bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
+            .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+
+        return ret;
+    }
+
+    public org.bukkit.block.Block getWrapper() {
+        return bBlock;
+    }
 
 }

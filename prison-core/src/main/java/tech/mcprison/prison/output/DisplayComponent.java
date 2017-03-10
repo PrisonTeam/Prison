@@ -33,26 +33,26 @@ public abstract class DisplayComponent {
    * Fields & Constants
    */
 
-  protected ChatDisplay display;
+    protected ChatDisplay display;
 
   /*
    * Methods
    */
 
-  /**
-   * Returns the text that is being appended to the {@link ChatDisplay}.
-   * This should return the raw JSON if {@link tech.mcprison.prison.chat.FancyMessage} is involved.
-   * To retrieve a raw JSON string, call {@link FancyMessage#toJSONString()}.
-   *
-   * @return The string of text to add.
-   */
-  public abstract String text();
+    /**
+     * Returns the text that is being appended to the {@link ChatDisplay}.
+     * This should return the raw JSON if {@link tech.mcprison.prison.chat.FancyMessage} is involved.
+     * To retrieve a raw JSON string, call {@link FancyMessage#toJSONString()}.
+     *
+     * @return The string of text to add.
+     */
+    public abstract String text();
 
     /*
      * Getters & Setters
      */
 
-  void setDisplay(ChatDisplay display) {
-    this.display = display;
-  }
+    void setDisplay(ChatDisplay display) {
+        this.display = display;
+    }
 }

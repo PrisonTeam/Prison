@@ -25,22 +25,20 @@ import tech.mcprison.prison.internal.block.Lever;
  */
 public class SpigotLever extends SpigotBlockState implements Lever {
 
-  public SpigotLever(SpigotBlock block) {
-    super(block);
-  }
+    public SpigotLever(SpigotBlock block) {
+        super(block);
+    }
 
-  @Override
-  public boolean isOn() {
-    org.bukkit.material.Lever lever = (org.bukkit.material.Lever) block.getWrapper().getState()
-        .getData();
-    return lever.isPowered();
-  }
+    @Override public boolean isOn() {
+        org.bukkit.material.Lever lever =
+            (org.bukkit.material.Lever) block.getWrapper().getState().getData();
+        return lever.isPowered();
+    }
 
-  @Override
-  public void setOn(boolean on) {
-    org.bukkit.material.Lever lever = (org.bukkit.material.Lever) block.getWrapper().getState()
-        .getData();
-    lever.setPowered(on);
-  }
+    @Override public void setOn(boolean on) {
+        org.bukkit.material.Lever lever =
+            (org.bukkit.material.Lever) block.getWrapper().getState().getData();
+        lever.setPowered(on);
+    }
 
 }

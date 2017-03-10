@@ -30,68 +30,68 @@ public class ModuleStatus {
    * Enums
    */
 
-  private Status status;
+    private Status status;
 
   /*
    * Fields & Constants
    */
 
-  private String message;
+    private String message;
 
-  /**
-   * Quickly set a module to the {@link Status#ENABLED} status, and set the message to "Enabled" in
-   * green (a).
-   */
-  public void toEnabled() {
-    setStatus(Status.ENABLED);
-    setMessage("&aEnabled");
-  }
+    /**
+     * Quickly set a module to the {@link Status#ENABLED} status, and set the message to "Enabled" in
+     * green (a).
+     */
+    public void toEnabled() {
+        setStatus(Status.ENABLED);
+        setMessage("&aEnabled");
+    }
 
     /*
      * Methods
      */
 
-  /**
-   * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "Disabled"
-   * in red (c).
-   */
-  public void toDisabled() {
-    setStatus(Status.DISABLED);
-    setMessage("&cDisabled");
-  }
+    /**
+     * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "Disabled"
+     * in red (c).
+     */
+    public void toDisabled() {
+        setStatus(Status.DISABLED);
+        setMessage("&cDisabled");
+    }
 
-  /**
-   * Quickly set a module to the {@link Status#FAILED} status.
-   *
-   * @param reason The message to set. Supports amp-prefixed color codes.
-   */
-  public void toFailed(String reason) {
-    setStatus(Status.FAILED);
-    setMessage(reason);
-  }
+    /**
+     * Quickly set a module to the {@link Status#FAILED} status.
+     *
+     * @param reason The message to set. Supports amp-prefixed color codes.
+     */
+    public void toFailed(String reason) {
+        setStatus(Status.FAILED);
+        setMessage(reason);
+    }
 
-  public Status getStatus() {
-    return status;
-  }
+    public Status getStatus() {
+        return status;
+    }
 
     /*
      * Getters & Setters
      */
 
-  public void setStatus(Status status) {
-    this.status = status;
-  }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-  public String getMessage() {
-    return message;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public void setMessage(String message) {
-    this.message = message;
-  }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-  public enum Status {
-    ENABLED, DISABLED, FAILED
-  }
+    public enum Status {
+        ENABLED, DISABLED, FAILED
+    }
 
 }

@@ -27,18 +27,18 @@ package tech.mcprison.prison.internal.scoreboard;
  */
 public interface Team {
 
-  void unregister();
+    void unregister();
 
-  String getPrefix();
+    String getPrefix();
 
-  void setPrefix(String prefix);
+    void setPrefix(String prefix);
 
-  String getSuffix();
+    String getSuffix();
 
-  void setSuffix(String suffix);
+    void setSuffix(String suffix);
 
-  void addEntry(String player);
+    void addEntry(String player);
 
-  void removeEntry(String player);
+    void removeEntry(String player);
 
 }

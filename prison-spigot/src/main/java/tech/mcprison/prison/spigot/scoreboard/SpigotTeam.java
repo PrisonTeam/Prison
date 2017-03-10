@@ -25,49 +25,42 @@ import tech.mcprison.prison.internal.scoreboard.Team;
  */
 public class SpigotTeam implements Team {
 
-  private org.bukkit.scoreboard.Team bTeam;
+    private org.bukkit.scoreboard.Team bTeam;
 
-  public SpigotTeam(org.bukkit.scoreboard.Team bTeam) {
-    this.bTeam = bTeam;
-  }
+    public SpigotTeam(org.bukkit.scoreboard.Team bTeam) {
+        this.bTeam = bTeam;
+    }
 
-  @Override
-  public void unregister() {
-    bTeam.unregister();
-  }
+    @Override public void unregister() {
+        bTeam.unregister();
+    }
 
-  @Override
-  public String getPrefix() {
-    return bTeam.getPrefix();
-  }
+    @Override public String getPrefix() {
+        return bTeam.getPrefix();
+    }
 
-  @Override
-  public void setPrefix(String prefix) {
-    bTeam.setPrefix(prefix);
-  }
+    @Override public void setPrefix(String prefix) {
+        bTeam.setPrefix(prefix);
+    }
 
-  @Override
-  public String getSuffix() {
-    return bTeam.getSuffix();
-  }
+    @Override public String getSuffix() {
+        return bTeam.getSuffix();
+    }
 
-  @Override
-  public void setSuffix(String suffix) {
-    bTeam.setSuffix(suffix);
-  }
+    @Override public void setSuffix(String suffix) {
+        bTeam.setSuffix(suffix);
+    }
 
-  @Override
-  public void addEntry(String player) {
-    bTeam.addEntry(player);
-  }
+    @Override public void addEntry(String player) {
+        bTeam.addEntry(player);
+    }
 
-  @Override
-  public void removeEntry(String player) {
-    bTeam.removeEntry(player);
-  }
+    @Override public void removeEntry(String player) {
+        bTeam.removeEntry(player);
+    }
 
-  public org.bukkit.scoreboard.Team getWrapper() {
-    return bTeam;
-  }
+    public org.bukkit.scoreboard.Team getWrapper() {
+        return bTeam;
+    }
 
 }
