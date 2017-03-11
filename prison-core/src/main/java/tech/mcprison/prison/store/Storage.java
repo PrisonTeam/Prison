@@ -1,27 +1,10 @@
-/*
- *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package tech.mcprison.prison.store;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * A storage adapter, implemented on a per-platform level. Use this to access and write stored data.
+ * Access the storage API.
  *
  * @author Faizaan A. Datoo
  * @since 1.0
@@ -29,37 +12,36 @@ import java.util.List;
 public interface Storage {
 
     /**
-     * Writes the data to disk.
-     *
-     * @param key The key to identify this data by. You will use this to retrieve the data later.
-     * @param obj The object to write out.
+     * @return true if the storage backend is up and running, and false if something went wrong. If this
+     * is false, it is probably not safe to attempt to read/write data.
      */
-    void write(String key, Object obj);
+    boolean isConnected();
 
     /**
-     * Read data from disk into an object.
+     * Attempts to retrieve a database from the storage system.
      *
-     * @param key  The key that the data is identified by. This is case-sensitive.
-     * @param type The class type of this data.
-     * @return The read object, or null if the operation fails.
+     * @param name The name of the database to retrieve.
+     * @return An optional containing the database if it was found, or an empty optional if it doesn't exist.
      */
-    <T> T read(String key, Class<T> type);
+    Optional<Database> getDatabase(String name);
 
     /**
-     * Reads every piece of data from the same class type from disk. This is useful
-     * for loading data in bulk.
-     *
-     * @param type The type to load.
-     * @return A list containing each object.
+     * Create a new database. If a database exists by the provided name,
+     * this method will do nothing.
+     * @param name The name of the new database.
      */
-    <T> List<T> readAll(Class<T> type);
+    void createDatabase(String name);
 
     /**
-     * Remove a piece of data completely.
-     *
-     * @param key  The key that the data is identified by. This is case-sensitive.
-     * @param type The class type this was.
+     * Deletes a database. If no database exists by the provided nmae,
+     * this method will do nothing.
+     * @param name The name of the database to delete.
      */
-    void delete(String key, Class type);
+    void deleteDatabase(String name);
+
+    /**
+     * @return A list of all databases in the storage system.
+     */
+    List<Database> getDatabases();
 
 }

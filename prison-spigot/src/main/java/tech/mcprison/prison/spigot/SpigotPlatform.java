@@ -47,7 +47,6 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.permissions.VaultPermission;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
-import tech.mcprison.prison.spigot.store.SpigotFileStorage;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -67,12 +66,10 @@ class SpigotPlatform implements Platform {
     private List<Player> players = new ArrayList<>();
 
     private ScoreboardManager scoreboardManager;
-    private Storage storage;
 
     SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
-        this.storage = new SpigotFileStorage(new File(getPluginDirectory(), "data"));
     }
 
     @Override public Optional<World> getWorld(String name) {
@@ -242,7 +239,7 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public Storage getStorage() {
-        return storage;
+        return null;
     }
 
     private boolean isDoor(Material block) {

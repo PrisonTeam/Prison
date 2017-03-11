@@ -129,7 +129,7 @@ public class TestPlatform implements Platform {
     }
 
     @Override public Storage getStorage() {
-        return new TestStorage(new File(getPluginDirectory(), "data"));
+        return null;
     }
 
 }
