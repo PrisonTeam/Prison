@@ -41,4 +41,5 @@ public interface Database {
      */
     String getName();
 
+    void dispose();
 }

@@ -54,4 +54,5 @@ public interface Collection {
      */
     List<Document> getAll();
 
+    void dispose();
 }
