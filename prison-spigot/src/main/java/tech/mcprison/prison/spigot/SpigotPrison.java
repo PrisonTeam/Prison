@@ -87,18 +87,15 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initCompatibility() {
         String[] version = Bukkit.getVersion().split("\\.");
-        int majorVersionint = Integer.parseInt(version[0]);
         int minorVersionInt = Integer.parseInt(version[1]);
 
-        if (majorVersionint == 1) {
-            if (minorVersionInt <= 8) {
-                compatibility = new Spigot18();
-            } else if (minorVersionInt >= 9) {
-                compatibility = new Spigot19();
-            } else {
-                getLogger().severe(
-                    "Care to explain what version of Minecraft you're using? contact@mc-prison.tech plz tell us");
-            }
+        if (minorVersionInt <= 8) {
+            compatibility = new Spigot18();
+        } else if (minorVersionInt >= 9) {
+            compatibility = new Spigot19();
+        } else {
+            getLogger().severe(
+                "This shouldn't even be possible, so something is clearly very wrong with your version.");
         }
 
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
