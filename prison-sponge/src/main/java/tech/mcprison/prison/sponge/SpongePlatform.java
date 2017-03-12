@@ -44,11 +44,9 @@ import java.util.stream.Collectors;
 public class SpongePlatform implements Platform {
 
     private SpongePrison plugin;
-    private Storage storage;
 
     public SpongePlatform(SpongePrison plugin) {
         this.plugin = plugin;
-        this.storage = new SpongeStorage();
     }
 
     @Override public Optional<World> getWorld(String name) {
@@ -151,7 +149,7 @@ public class SpongePlatform implements Platform {
     }
 
     @Override public Storage getStorage() {
-        return storage;
+        return null;
     }
 
 }

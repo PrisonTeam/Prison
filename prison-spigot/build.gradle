@@ -47,6 +47,9 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency(group: 'com.google.code.gson', name: 'gson', version: '2.7'))
+        include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.0'))
+        include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.0'))
+        include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'))
         include(project(':prison-core'))
     }
 

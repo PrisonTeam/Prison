@@ -54,5 +54,8 @@ public interface Collection {
      */
     List<Document> getAll();
 
+    /**
+     * Disposes of all cached data in this collection. Note that this does not remove any files.
+     */
     void dispose();
 }

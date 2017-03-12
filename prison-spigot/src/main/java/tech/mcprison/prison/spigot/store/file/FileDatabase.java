@@ -1,29 +1,27 @@
-package tech.mcprison.prison.spigot.store;
+package tech.mcprison.prison.spigot.store.file;
 
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Database;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotDatabase implements Database {
+public class FileDatabase implements Database {
 
     private File dbDir;
     private Map<String, Collection> collectionMap;
 
-    public SpigotDatabase(File dbDir) {
+    public FileDatabase(File dbDir) {
         this.dbDir = dbDir;
+        this.collectionMap = new HashMap<>();
 
         File[] collectionDirs = dbDir.listFiles(File::isDirectory);
         if(collectionDirs != null) {
             for(File collDir : collectionDirs) {
-                collectionMap.put(collDir.getName(), new SpigotCollection(collDir));
+                collectionMap.put(collDir.getName(), new FileCollection(collDir));
             }
         }
     }
@@ -37,8 +35,9 @@ public class SpigotDatabase implements Database {
         if(collDir.exists()) {
             return;
         }
+        collDir.mkdir();
 
-        collectionMap.put(name, new SpigotCollection(collDir));
+        collectionMap.put(name, new FileCollection(collDir));
     }
 
     @Override public void deleteCollection(String name) {

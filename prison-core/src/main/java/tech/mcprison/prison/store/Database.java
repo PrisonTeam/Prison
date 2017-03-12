@@ -14,6 +14,7 @@ public interface Database {
 
     /**
      * Attempts to retrieve a collection from the database.
+     *
      * @param name The name of the collection.
      * @return An optional containing the collection if it could be found, or an empty optional if it doesn't exist.
      */
@@ -21,12 +22,14 @@ public interface Database {
 
     /**
      * Create a new collection. If a collection with the provided name already exists, this method will do nothing.
+     *
      * @param name The name of the collection.
      */
     void createCollection(String name);
 
     /**
      * Deletes a collection. If a collection with the provided name does not exist, this method will do nothing.
+     *
      * @param name The name of the collection.
      */
     void deleteCollection(String name);
@@ -41,5 +44,8 @@ public interface Database {
      */
     String getName();
 
+    /**
+     * Dispose of the cached data in this database. This does not remove any files.
+     */
     void dispose();
 }

@@ -38,6 +38,7 @@ import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -47,6 +48,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.permissions.VaultPermission;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
+import tech.mcprison.prison.spigot.store.file.FileStorage;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -66,10 +68,23 @@ class SpigotPlatform implements Platform {
     private List<Player> players = new ArrayList<>();
 
     private ScoreboardManager scoreboardManager;
+    private Storage storage;
 
     SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
+        this.storage = initStorage();
+    }
+
+    private Storage initStorage() {
+        String confStorage = plugin.getConfig().getString("storage", "file");
+        if (confStorage.equalsIgnoreCase("file")) {
+            return new FileStorage(plugin.dataDirectory);
+        } else {
+            Output.get().logError("Unknown file storage type in configuration \"" + confStorage
+                + "\". Using file storage.");
+            return new FileStorage(plugin.dataDirectory);
+        }
     }
 
     @Override public Optional<World> getWorld(String name) {
@@ -239,7 +254,7 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public Storage getStorage() {
-        return null;
+        return storage;
     }
 
     private boolean isDoor(Material block) {
