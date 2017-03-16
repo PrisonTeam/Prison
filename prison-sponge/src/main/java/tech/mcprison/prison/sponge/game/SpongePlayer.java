@@ -93,4 +93,8 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
         return null;
     }
 
+    @Override public void updateInventory() {
+        // Not needed for sponge :)
+    }
+
 }
