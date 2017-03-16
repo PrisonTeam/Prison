@@ -1,4 +1,4 @@
-﻿/*
+/*
  *  Prison is a Minecraft plugin for the prison game mode.
  *  Copyright (C) 2017 The Prison Team
  *
