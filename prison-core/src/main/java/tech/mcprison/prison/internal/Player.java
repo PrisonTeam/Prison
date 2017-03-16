@@ -104,4 +104,10 @@ public interface Player extends CommandSender, InventoryHolder {
         return true;
     }
 
+    /**
+     * Rebuilds this players inventory so that, if it has been modified, the client has an up-to-date
+     * inventory. May not be necessary on all platforms but should be used where ever the player inventory
+     * is modified
+     */
+    void updateInventory(); 
 }

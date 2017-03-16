@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  Prison is a Minecraft plugin for the prison game mode.
  *  Copyright (C) 2017 The Prison Team
  *
@@ -232,6 +232,10 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
             return Class.forName("net.minecraft.server." + PACKAGE_VERSION + className);
         }
 
+    }
+
+    @Override public void updateInventory() {
+        bukkitPlayer.updateInventory();
     }
 
 }
