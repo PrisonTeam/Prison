@@ -44,6 +44,9 @@ public class TestPlayer implements Player {
         return "Testing";
     }
 
+    @Override public void updateInventory() {
+    }
+
     @Override public void dispatchCommand(String command) {
 
     }
