@@ -234,4 +234,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
 
     }
 
+    @Override public void updateInventory() {
+        bukkitPlayer.updateInventory();
+    }
+
 }
