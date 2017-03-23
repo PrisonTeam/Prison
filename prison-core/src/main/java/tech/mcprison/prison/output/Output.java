@@ -33,9 +33,9 @@ public class Output {
 
     // Fields
     private static Output instance;
-    public String INFO_PREFIX = "&3Info &8» &7";
-    public String WARNING_PREFIX = "&6Warning &8» &7";
-    public String ERROR_PREFIX = "&cError &8» &7";
+    public String INFO_PREFIX = "&3Info &8> &7";
+    public String WARNING_PREFIX = "&6Warning &8> &7";
+    public String ERROR_PREFIX = "&cError &8> &7";
 
     // Constructor
 
@@ -56,7 +56,7 @@ public class Output {
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-        Prison.get().getPlatform().log("&3Prison &7» " + (level == LogLevel.INFO ?
+        Prison.get().getPlatform().log("&3Prison &7> " + (level == LogLevel.INFO ?
             "&f" :
             level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
     }

@@ -119,6 +119,13 @@ public interface Platform {
     List<PluginCommand> getCommands();
 
     /**
+     * Runs a command as the console (i.e. with all privileges).
+     *
+     * @param cmd The command to run, without the '/'.
+     */
+    void dispatchCommand(String cmd);
+
+    /**
      * Returns the {@link Scheduler}, which can be used to schedule tasks.
      */
     Scheduler getScheduler();

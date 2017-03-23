@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.store.file;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
@@ -25,11 +26,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class FileCollection implements Collection {
 
-    private static ObjectMapper mapper;
+    private static Gson gson;
 
     static {
-        mapper = new ObjectMapper();
-        mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
+        gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     private File collDir;
@@ -65,7 +65,7 @@ public class FileCollection implements Collection {
 
         try {
             String json = new String(Files.readAllBytes(file.toPath()));
-            return mapper.readValue(json, Document.class);
+            return gson.fromJson(json, Document.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -84,7 +84,7 @@ public class FileCollection implements Collection {
         }
 
         try {
-            String json = mapper.writeValueAsString(document);
+            String json = gson.toJson(document);
             file.createNewFile();
             Files.write(file.toPath(), json.getBytes());
         } catch (IOException e) {
@@ -116,7 +116,7 @@ public class FileCollection implements Collection {
     @Override public List<Document> getAll() {
         File[] files = collDir.listFiles((dir, name) -> name.endsWith(".json"));
         if (files != null) {
-            for(File file : files) {
+            for (File file : files) {
                 get(file.getName().split("\\.")[0]);
             }
         }

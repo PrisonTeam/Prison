@@ -102,6 +102,9 @@ public class SpongePlatform implements Platform {
         return null;
     }
 
+    @Override public void dispatchCommand(String cmd) {
+    }
+
     @Override public Scheduler getScheduler() {
         return null;
     }

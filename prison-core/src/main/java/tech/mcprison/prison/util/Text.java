@@ -225,7 +225,7 @@ public class Text {
     public static String titleize(String txt) {
         txt = translateAmpColorCodes("&3" + txt);
 
-        String center = translateAmpColorCodes("&7« " + txt + " &7»");
+        String center = translateAmpColorCodes("&7< " + txt + " &7>");
 
         int centerlen = center.length();
         int pivot = headingLine.length() / 2;

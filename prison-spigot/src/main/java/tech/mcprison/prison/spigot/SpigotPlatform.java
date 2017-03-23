@@ -204,6 +204,10 @@ class SpigotPlatform implements Platform {
         return commands;
     }
 
+    @Override public void dispatchCommand(String cmd) {
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+    }
+
     @Override public Scheduler getScheduler() {
         return plugin.scheduler;
     }

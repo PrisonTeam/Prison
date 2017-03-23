@@ -93,6 +93,9 @@ public class TestPlatform implements Platform {
         return Collections.emptyList();
     }
 
+    @Override public void dispatchCommand(String cmd) {
+    }
+
     @Override public Scheduler getScheduler() {
         return null;
     }
