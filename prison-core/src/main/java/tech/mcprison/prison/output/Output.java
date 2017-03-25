@@ -33,9 +33,10 @@ public class Output {
 
     // Fields
     private static Output instance;
-    public String INFO_PREFIX = "&3Info &8> &7";
-    public String WARNING_PREFIX = "&6Warning &8> &7";
-    public String ERROR_PREFIX = "&cError &8> &7";
+    public String PREFIX_TEMPLATE = "&8| %s &8|";
+    public String INFO_PREFIX = gen("&3Info") + " &7";
+    public String WARNING_PREFIX = gen("&6Warning") + " &7";
+    public String ERROR_PREFIX = gen("&cError") + " &7";
 
     // Constructor
 
@@ -56,7 +57,7 @@ public class Output {
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-        Prison.get().getPlatform().log("&3Prison &7> " + (level == LogLevel.INFO ?
+        Prison.get().getPlatform().log(gen("&3Prison") + " " + (level == LogLevel.INFO ?
             "&f" :
             level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
     }
@@ -67,7 +68,7 @@ public class Output {
      * @param message The informational message. May include color codes, but the default is white.
      */
     public void logInfo(String message, Object... args) {
-        Prison.get().getPlatform().log("&3Prison &7» &f" + String.format(message, args));
+        log(message, LogLevel.INFO, args);
     }
 
     /**
@@ -78,7 +79,7 @@ public class Output {
      * @param throwable The exceptions thrown, if any.
      */
     public void logWarn(String message, Throwable... throwable) {
-        Prison.get().getPlatform().log("&3Prison &7» &6" + message);
+        log(message, LogLevel.WARNING);
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
@@ -93,7 +94,7 @@ public class Output {
      * @param throwable The exceptions thrown, if any.
      */
     public void logError(String message, Throwable... throwable) {
-        Prison.get().getPlatform().log("&3Prison &7» &c" + message);
+        log(message, LogLevel.ERROR);
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
@@ -138,6 +139,12 @@ public class Output {
      */
     public void sendError(CommandSender sender, String message, Object... args) {
         sender.sendMessage(ERROR_PREFIX + String.format(message, args));
+    }
+
+    // Private methods
+
+    private String gen(String name) {
+        return String.format(PREFIX_TEMPLATE, name);
     }
 
 }

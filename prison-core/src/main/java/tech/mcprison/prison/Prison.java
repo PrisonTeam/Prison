@@ -105,7 +105,6 @@ public class Prison implements IDataFolderOwner {
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
-        getErrorManager().throwError(new Error("Could not be awesome enough.").appendStackTrace("While printing message", new Exception("Awesomeness isn't enough")));
         return true;
     }
 
