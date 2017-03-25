@@ -32,6 +32,8 @@ import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
+import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

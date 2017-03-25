@@ -20,6 +20,7 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
+import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.*;
 import tech.mcprison.prison.internal.platform.Capability;
@@ -132,7 +133,7 @@ public class TestPlatform implements Platform {
     }
 
     @Override public Storage getStorage() {
-        return null;
+        return new FileStorage(getPluginDirectory());
     }
 
 }
