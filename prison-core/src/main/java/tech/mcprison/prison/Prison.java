@@ -20,6 +20,7 @@ package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
 import tech.mcprison.prison.commands.CommandHandler;
+import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -104,6 +105,7 @@ public class Prison implements IDataFolderOwner {
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
+        getErrorManager().throwError(new Error("Could not be awesome enough.").appendStackTrace("While printing message", new Exception("Awesomeness isn't enough")));
         return true;
     }
 
@@ -135,6 +137,7 @@ public class Prison implements IDataFolderOwner {
     private void initManagers() {
         // Now we initialize the API
         this.localeManager = new LocaleManager(this);
+        this.errorManager = new ErrorManager(this);
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();

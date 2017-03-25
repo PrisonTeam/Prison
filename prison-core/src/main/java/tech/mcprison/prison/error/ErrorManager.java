@@ -1,5 +1,6 @@
 package tech.mcprison.prison.error;
 
+import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.IDataFolderOwner;
 import tech.mcprison.prison.output.Output;
@@ -38,7 +39,7 @@ public class ErrorManager {
 
     public void throwError(Error err) {
         List<String> lines = new ArrayList<>();
-        addWithLineSep(HEADER, lines);
+        addWithLineSep("\n\n" + HEADER, lines);
 
         addWithLineSep("An error has occurred within " + owner.getName() + ".", lines);
         addWithLineSep("Description: " + err.getDescription(), lines);
@@ -48,40 +49,42 @@ public class ErrorManager {
             stackTraceNumber++;
             addWithLineSep("==> Stack Trace #" + stackTraceNumber, lines);
             addWithLineSep(stackTrace.toString(), lines);
+            addWithLineSep("", lines);
         }
 
         addWithLineSep(FOOTER, lines);
 
-        for (String line : lines) {
-            Prison.get().getPlatform().log(line);
-        }
+        Output.get().logError("An error has occurred.");
+
+        Prison.get().getPlatform().log(StringUtils.join(lines, ""));
 
         Output.get().logInfo("Attempting to write error file...");
         createFile(lines);
 
         Output.get().logInfo(
-            "Please report this error to the developer, at http://github.com/MC-Prison/Prison/issues.");
+            "Please report this error to the developer, at http://github.com/MC-Prison/Prison/issues.\n\n");
     }
 
     private void createFile(List<String> lines) {
         try {
             String name = "error_" + getDateTime() + ".txt";
             File dumpFile = new File(errorDir, name);
-            if (!dumpFile.exists() && !dumpFile.createNewFile()) {
-                return;
+            if (!dumpFile.exists()) {
+                dumpFile.createNewFile();
             }
 
             Files.write(dumpFile.toPath(), lines);
             Output.get().logInfo("Created error file dump Prison/errors/" + name + ".");
 
         } catch (IOException e) {
+            e.printStackTrace();
             Output.get()
                 .logInfo("Could not write error file. Copy-paste the above error block instead.");
         }
     }
 
     private String getDateTime() {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         df.setTimeZone(TimeZone.getDefault());
         return df.format(new Date());
     }
