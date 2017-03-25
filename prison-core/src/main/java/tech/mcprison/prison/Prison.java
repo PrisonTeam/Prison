@@ -82,7 +82,7 @@ public class Prison implements IDataFolderOwner {
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public void init(Platform platform) {
+    public boolean init(Platform platform) {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
@@ -90,32 +90,44 @@ public class Prison implements IDataFolderOwner {
         Output.get().logInfo("Enable start...");
 
         // Initialize various parts of the API. The magic happens here :)
-        initDataFolder();
-        initManagers();
-
-        Optional<Database> metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
-        if(!metaDatabaseOptional.isPresent()) {
-            getPlatform().getStorage().createDatabase("meta");
-            metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
+        if(!initDataFolder()) {
+            return false;
         }
-        metaDatabase = metaDatabaseOptional.orElseThrow(RuntimeException::new);
+        initManagers();
+        if(!initMetaDatabase()) {
+            return false;
+        }
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
-        Alerts.getInstance().sendAlert("This is a test alert.");
+        return true;
     }
 
     // Initialization steps
 
-    private void initDataFolder() {
+    private boolean initDataFolder() {
         // Creates the /Prison/Core directory, for core configuration.
         this.dataFolder = new File(platform.getPluginDirectory(), "Core");
-        if (!this.dataFolder.exists()) {
-            this.dataFolder.mkdir();
+        return this.dataFolder.exists() || this.dataFolder.mkdir();
+    }
+
+    private boolean initMetaDatabase() {
+        Optional<Database> metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
+        if(!metaDatabaseOptional.isPresent()) {
+            getPlatform().getStorage().createDatabase("meta");
+            metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
+
+            if(!metaDatabaseOptional.isPresent()) {
+                Output.get().logError("Could not create the meta database. This means that something is wrong with the data storage for the plugin.");
+                Output.get().logError("The plugin will now disable.");
+                return false;
+            }
         }
+        metaDatabase = metaDatabaseOptional.get();
+        return true;
     }
 
     private void initManagers() {
