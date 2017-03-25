@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.internal;
 
+import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
@@ -45,10 +46,24 @@ public class ItemStack {
         this.lore = new ArrayList<>(Arrays.asList(lore));
     }
 
+    public ItemStack(int amount, BlockType material, String... lore) {
+        this.amount = amount;
+        this.material = material;
+        this.lore = new ArrayList<>(Arrays.asList(lore));
+    }
+
     /**
-     * Returns the display name of the item stack. This may include colors.
+     * Returns the name of the item stack, derived from its BlockType name.
      */
     public String getName() {
+        return StringUtils
+            .capitalize(material.name().replaceAll("_", " ").toLowerCase());
+    }
+
+    /**
+     * Returns the display name of the item stack. This may include colors and may also be null!
+     */
+    public String getDisplayName() {
         return name;
     }
 
@@ -74,18 +89,27 @@ public class ItemStack {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ItemStack)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         ItemStack itemStack = (ItemStack) o;
 
-        String myName = ChatColor.stripColor(name);  // Remove colors from my name
-        String theirName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
-            itemStack.getName()));  // Remove colors from their name
-
-        return myName.equals(theirName) && material == itemStack.material;
-
+        if (amount != itemStack.amount) {
+            return false;
+        }
+        if (getName() != null ?
+            !getName().equals(itemStack.getName()) :
+            itemStack.getName() != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(itemStack.name) : itemStack.name != null) {
+            return false;
+        }
+        if (material != itemStack.material) {
+            return false;
+        }
+        return lore != null ? lore.equals(itemStack.lore) : itemStack.lore == null;
     }
 
     @Override public int hashCode() {
