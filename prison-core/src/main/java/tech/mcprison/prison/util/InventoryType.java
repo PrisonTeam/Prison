@@ -113,14 +113,14 @@ public enum InventoryType {
         DEFAULT, /**
          * A slot in the bottom 9 slots ("hotbar").
          */
-        HOTBAR, /**
-         * A slot representing no slots. This is generally the area outside the inventory.
-         */
         NONE, /**
          * The fuel slot in a furnace inventory, or the ingredient slot in a
          * brewing stand inventory.
          */
-        FUEL
+        FUEL,
+        CONTAINER,
+        QUICKBAR,
+        OUTSIDE,
     }
 
 }

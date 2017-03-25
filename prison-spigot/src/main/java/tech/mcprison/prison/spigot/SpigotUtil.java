@@ -77,9 +77,15 @@ public class SpigotUtil {
 
     public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
         ItemStack bukkitStack) {
-        ItemMeta meta = bukkitStack.getItemMeta();
+        if(bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
+            return new tech.mcprison.prison.internal.ItemStack("", 0, BlockType.AIR);
+        }
+
+        ItemMeta meta;
         if (!bukkitStack.hasItemMeta()) {
             meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        } else {
+            meta = bukkitStack.getItemMeta();
         }
 
         String displayName;
@@ -131,24 +137,7 @@ public class SpigotUtil {
     public static InventoryType.SlotType bukkitSlotTypeToPrison(
         org.bukkit.event.inventory.InventoryType.SlotType type) {
 
-        switch (type) {
-            case ARMOR:
-                return InventoryType.SlotType.ARMOR;
-            case CONTAINER:
-                return InventoryType.SlotType.DEFAULT;
-            case CRAFTING:
-                return InventoryType.SlotType.CRAFTING;
-            case FUEL:
-                return InventoryType.SlotType.FUEL;
-            case OUTSIDE:
-                return InventoryType.SlotType.NONE;
-            case QUICKBAR:
-                return InventoryType.SlotType.HOTBAR;
-            case RESULT:
-                return InventoryType.SlotType.RESULT;
-            default:
-                return null;
-        }
+        return InventoryType.SlotType.valueOf(type.name());
     }
 
   /*

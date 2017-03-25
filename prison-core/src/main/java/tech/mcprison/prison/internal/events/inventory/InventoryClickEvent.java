@@ -91,7 +91,7 @@ public class InventoryClickEvent extends InventoryInteractEvent {
     }
 
     public InventoryType.SlotType getSlotType() {
-        return getSlotType();
+        return type;
     }
 
     public boolean isLeftClick() {
