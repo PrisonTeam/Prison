@@ -123,6 +123,10 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         return Optional.empty();
     }
 
+    @Override public boolean isOp() {
+        return bukkitPlayer.isOp();
+    }
+
     public org.bukkit.entity.Player getWrapper() {
         return bukkitPlayer;
     }

@@ -19,6 +19,7 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
+import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -27,10 +28,12 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
+import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -56,6 +59,7 @@ public class Prison implements IDataFolderOwner {
     private EventBus eventBus;
     private LocaleManager localeManager;
     private ItemManager itemManager;
+    private Database metaDatabase;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -89,11 +93,19 @@ public class Prison implements IDataFolderOwner {
         initDataFolder();
         initManagers();
 
+        Optional<Database> metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
+        if(!metaDatabaseOptional.isPresent()) {
+            getPlatform().getStorage().createDatabase("meta");
+            metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
+        }
+        metaDatabase = metaDatabaseOptional.orElseThrow(RuntimeException::new);
+
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
+        Alerts.getInstance().sendAlert("This is a test alert.");
     }
 
     // Initialization steps
@@ -205,4 +217,10 @@ public class Prison implements IDataFolderOwner {
         return itemManager;
     }
 
+    /**
+     * Returns the meta database, which is used to store data from within the core.
+     */
+    public Database getMetaDatabase() {
+        return metaDatabase;
+    }
 }

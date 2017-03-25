@@ -85,6 +85,10 @@ public class SpongePlayer extends SpongeCommandSender implements Player {
         return null;
     }
 
+    @Override public boolean isOp() {
+        return false;
+    }
+
     @Override public boolean doesSupportColors() {
         return spongePlayer.isChatColorsEnabled();
     }

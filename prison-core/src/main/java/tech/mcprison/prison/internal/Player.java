@@ -100,6 +100,12 @@ public interface Player extends CommandSender, InventoryHolder {
      */
     Optional<String> getLocale();
 
+    /**
+     * Returns whether the player is a server operator or not.
+     * @return true if the player is an operator, false otherwise.
+     */
+    boolean isOp();
+
     @Override default boolean doesSupportColors() {
         return true;
     }

@@ -111,6 +111,10 @@ public class TestPlayer implements Player {
         return Optional.of("en_US");
     }
 
+    @Override public boolean isOp() {
+        return true;
+    }
+
     @Override public Inventory getInventory() {
         return null;
     }
