@@ -71,8 +71,9 @@ public class Bounds {
      *
      * @return A double.
      */
+    // A=2(wl+hl+hw)
     public double getArea() {
-        return getWidth() * getHeight() * getLength();
+        return 2 * (getWidth() * getLength() + getHeight() * getLength() + getHeight() * getWidth());
     }
 
     /**
