@@ -19,8 +19,8 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
-import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
+import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.IDataFolderOwner;
@@ -59,6 +59,7 @@ public class Prison implements IDataFolderOwner {
     private EventBus eventBus;
     private LocaleManager localeManager;
     private ItemManager itemManager;
+    private ErrorManager errorManager;
     private Database metaDatabase;
 
     /**
@@ -90,11 +91,11 @@ public class Prison implements IDataFolderOwner {
         Output.get().logInfo("Enable start...");
 
         // Initialize various parts of the API. The magic happens here :)
-        if(!initDataFolder()) {
+        if (!initDataFolder()) {
             return false;
         }
         initManagers();
-        if(!initMetaDatabase()) {
+        if (!initMetaDatabase()) {
             return false;
         }
 
@@ -116,12 +117,13 @@ public class Prison implements IDataFolderOwner {
 
     private boolean initMetaDatabase() {
         Optional<Database> metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
-        if(!metaDatabaseOptional.isPresent()) {
+        if (!metaDatabaseOptional.isPresent()) {
             getPlatform().getStorage().createDatabase("meta");
             metaDatabaseOptional = getPlatform().getStorage().getDatabase("meta");
 
-            if(!metaDatabaseOptional.isPresent()) {
-                Output.get().logError("Could not create the meta database. This means that something is wrong with the data storage for the plugin.");
+            if (!metaDatabaseOptional.isPresent()) {
+                Output.get().logError(
+                    "Could not create the meta database. This means that something is wrong with the data storage for the plugin.");
                 Output.get().logError("The plugin will now disable.");
                 return false;
             }
@@ -152,6 +154,10 @@ public class Prison implements IDataFolderOwner {
 
     // Getters
 
+    @Override public String getName() {
+        return "PrisonCore";
+    }
+
     /**
      * Returns the Platform in use, which contains methods for interacting with the Minecraft server
      * on whichever implementation is currently being used.
@@ -181,6 +187,15 @@ public class Prison implements IDataFolderOwner {
      */
     public LocaleManager getLocaleManager() {
         return localeManager;
+    }
+
+    /**
+     * Returns the core's {@link ErrorManager}. For modules, you should use your own module's error manager via {@link Module#getErrorManager()}.
+     *
+     * @return The core's error manager instance.
+     */
+    public ErrorManager getErrorManager() {
+        return errorManager;
     }
 
     /**

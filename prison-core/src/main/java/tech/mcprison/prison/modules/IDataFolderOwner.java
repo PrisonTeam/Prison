@@ -28,6 +28,8 @@ import java.io.File;
  */
 public interface IDataFolderOwner {
 
+    String getName();
+
     File getDataFolder();
 
 }

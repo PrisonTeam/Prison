@@ -19,6 +19,7 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.output.Output;
 
 import java.io.File;
@@ -40,6 +41,7 @@ public abstract class Module implements IDataFolderOwner {
     private File dataFolder;
     private int apiTarget;
     private ModuleStatus status;
+    private ErrorManager errorManager;
 
     /*
      * Constructor
@@ -61,6 +63,7 @@ public abstract class Module implements IDataFolderOwner {
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdir();
         }
+        this.errorManager = new ErrorManager(this);
     }
 
     /*
@@ -116,6 +119,10 @@ public abstract class Module implements IDataFolderOwner {
      */
     public ModuleManager getModuleManager() {
         return Prison.get().getModuleManager();
+    }
+
+    public ErrorManager getErrorManager() {
+        return errorManager;
     }
 
     /**
