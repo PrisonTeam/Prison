@@ -28,4 +28,4 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 ## What's the status on Prison v3.0?
 
-Prison v3.0 is currently under heavy development. Our current planned release date is on Sunday, March 19th. This date may or may not change due to the developers of this project actually having lives. You can follow the development on the issues page, or build prison using the PrisonBuild tool (see the [Developer Documentation](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)). Remember, good things come to those who wait. 
+Prison v3.0 is currently under heavy development. Our current planned release date is in mid-April 2017. This date may or may not change due to the developers of this project actually having lives. You can follow the development on the issues page, or build prison using the PrisonBuild tool (see the [Developer Documentation](https://github.com/MC-Prison/Prison/wiki/Developer%20Documentation)). Remember, good things come to those who wait. 
