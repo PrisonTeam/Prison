@@ -7,5 +7,5 @@ softdepend: [Essentials, Vault, LuckPerms]
 
 permissions:
   prison.alerts:
-    description: Permission to view alerts.
+    description: Permissions to view alerts.
     default: op

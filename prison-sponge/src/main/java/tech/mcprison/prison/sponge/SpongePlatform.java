@@ -79,7 +79,7 @@ public class SpongePlatform implements Platform {
         return null;
     }
 
-    @Override public Permission getPermission() {
+    @Override public Permissions getPermissions() {
         return null;
     }
 

@@ -20,18 +20,18 @@ package tech.mcprison.prison.spigot.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import tech.mcprison.prison.internal.Permission;
+import tech.mcprison.prison.internal.Permissions;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultPermission implements Permission {
+public class VaultPermissions implements Permissions {
 
-    net.milkbowl.vault.permission.Permission permissions = null;
+    private net.milkbowl.vault.permission.Permission permissions = null;
 
-    public VaultPermission() {
+    public VaultPermissions() {
         RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
             Bukkit.getServer().getServicesManager()
                 .getRegistration(net.milkbowl.vault.permission.Permission.class);

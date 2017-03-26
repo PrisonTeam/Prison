@@ -64,8 +64,8 @@ public class PrisonAPI {
         return Prison.get().getPlatform().getEconomy();
     }
 
-    public static Permission getPermission() {
-        return Prison.get().getPlatform().getPermission();
+    public static Permissions getPermission() {
+        return Prison.get().getPlatform().getPermissions();
     }
 
     public static String getPluginVersion() {

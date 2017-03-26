@@ -84,10 +84,10 @@ public interface Platform {
      * Returns the server's permissions utilities. If there is no permissions plugin, then {@link
      * Capability#PERMISSIONS} will be false for the internal.
      *
-     * @return The {@link Permission} instance if the server supports it, or null fi there is no
+     * @return The {@link Permissions} instance if the server supports it, or null fi there is no
      * supported server permissions plugin.
      */
-    Permission getPermission();
+    Permissions getPermissions();
 
     /**
      * Returns the plugin's version.

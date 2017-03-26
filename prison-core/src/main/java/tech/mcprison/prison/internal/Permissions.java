@@ -26,7 +26,7 @@ import tech.mcprison.prison.internal.platform.Platform;
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public interface Permission {
+public interface Permissions {
 
     /**
      * Adds a permission to this player, if the server permits. <p> This method will do nothing if the
