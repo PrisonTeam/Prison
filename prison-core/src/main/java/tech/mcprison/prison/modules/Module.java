@@ -21,7 +21,6 @@ package tech.mcprison.prison.modules;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.error.ErrorManager;
-import tech.mcprison.prison.output.Output;
 
 import java.io.File;
 
@@ -32,7 +31,7 @@ import java.io.File;
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public abstract class Module implements IDataFolderOwner {
+public abstract class Module implements IComponent {
 
     /*
      * Fields & Constants

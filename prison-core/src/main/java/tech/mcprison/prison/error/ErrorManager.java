@@ -2,7 +2,7 @@ package tech.mcprison.prison.error;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.modules.IDataFolderOwner;
+import tech.mcprison.prison.modules.IComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
 
@@ -26,10 +26,10 @@ public class ErrorManager {
 
     private static final String HEADER = Text.titleize("Begin Error");
     private static final String FOOTER = Text.titleize("End Error");
-    private IDataFolderOwner owner;
+    private IComponent owner;
     private File errorDir;
 
-    public ErrorManager(IDataFolderOwner owner) {
+    public ErrorManager(IComponent owner) {
         this.owner = owner;
         this.errorDir = new File(owner.getDataFolder(), "errors");
         if (!this.errorDir.exists()) {

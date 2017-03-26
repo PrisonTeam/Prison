@@ -21,12 +21,12 @@ package tech.mcprison.prison.modules;
 import java.io.File;
 
 /**
- * Represents something that can have a data folder.
+ * Represents something that can have a name and data folder.
  *
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface IDataFolderOwner {
+public interface IComponent {
 
     String getName();
 
