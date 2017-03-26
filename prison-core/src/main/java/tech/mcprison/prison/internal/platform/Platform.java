@@ -22,6 +22,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.*;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
@@ -66,8 +67,9 @@ public interface Platform {
      *
      * @param location The {@link Location} of the sign.
      * @return the {@link Sign}.
+     * @deprecated Use the {@link tech.mcprison.prison.internal.block.Sign} block state, using the {@link World#getBlockAt(Location)} method and casting the {@link Block#getState()} method.
      */
-    Sign getSign(Location location);
+    @Deprecated Sign getSign(Location location);
 
     /**
      * Returns the server's economy.

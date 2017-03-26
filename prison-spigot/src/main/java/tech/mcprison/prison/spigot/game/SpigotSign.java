@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * @author Faizaan A. Datoo
  */
+@Deprecated
 public class SpigotSign implements Sign {
 
     private org.bukkit.block.Sign bSign;

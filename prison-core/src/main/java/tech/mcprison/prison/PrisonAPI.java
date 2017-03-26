@@ -60,10 +60,6 @@ public class PrisonAPI {
         return Prison.get().getPlatform().getOnlinePlayers();
     }
 
-    public static Sign getSign(Location location) {
-        return Prison.get().getPlatform().getSign(location);
-    }
-
     public static Economy getEconomy() {
         return Prison.get().getPlatform().getEconomy();
     }

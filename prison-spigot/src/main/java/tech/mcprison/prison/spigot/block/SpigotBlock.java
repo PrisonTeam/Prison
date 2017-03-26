@@ -60,6 +60,8 @@ public class SpigotBlock implements Block {
         switch (getType()) {
             case LEVER:
                 return new SpigotLever(this);
+            case SIGN:
+                return new SpigotSign(this);
             case ACACIA_DOOR_BLOCK:
             case OAK_DOOR_BLOCK:
             case BIRCH_DOOR_BLOCK:
