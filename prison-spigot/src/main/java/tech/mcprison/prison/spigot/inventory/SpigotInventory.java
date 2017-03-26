@@ -28,7 +28,7 @@ import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.InventoryType;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 
 import java.util.*;
 

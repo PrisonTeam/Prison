@@ -26,7 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.InventoryType;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.util.Location;
 
 import java.util.Collections;

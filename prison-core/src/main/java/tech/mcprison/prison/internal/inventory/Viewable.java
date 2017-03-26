@@ -20,7 +20,6 @@ package tech.mcprison.prison.internal.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.InventoryType;
 
 /**
  * Currently undocumented.

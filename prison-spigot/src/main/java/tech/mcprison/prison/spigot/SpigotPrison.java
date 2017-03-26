@@ -66,7 +66,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initDataDir() {
-        dataDirectory = new File(getDataFolder(), "data");
+        dataDirectory = new File(getDataFolder(), "data_storage");
         if (!dataDirectory.exists()) {
             dataDirectory.mkdir();
         }

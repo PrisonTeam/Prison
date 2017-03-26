@@ -20,7 +20,7 @@ package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.inventory.Viewable;
-import tech.mcprison.prison.util.InventoryType;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 
 /**
  * Currently undocumented.

@@ -19,6 +19,7 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.output.Output;
 
@@ -57,7 +58,7 @@ public abstract class Module implements IDataFolderOwner {
     public Module(String name, String version, int target) {
         this.name = name;
         this.version = version;
-        this.dataFolder = new File(Prison.get().getPlatform().getPluginDirectory(), name);
+        this.dataFolder = new File(PrisonAPI.getModuleManager().getModuleRoot(), name.toLowerCase().replace(" ", "_"));
         this.apiTarget = target;
         this.status = new ModuleStatus();
         if (!this.dataFolder.exists()) {
@@ -105,10 +106,6 @@ public abstract class Module implements IDataFolderOwner {
 
     public int getApiTarget() {
         return apiTarget;
-    }
-
-    public Output getLogger() {
-        return Output.get();
     }
 
     /**

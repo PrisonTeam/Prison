@@ -19,8 +19,10 @@
 package tech.mcprison.prison.modules;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.output.Output;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +36,14 @@ import java.util.Optional;
 public class ModuleManager {
 
     private List<Module> modules;
+    private File moduleRoot;
 
     public ModuleManager() {
         modules = new ArrayList<>();
+        moduleRoot = new File(PrisonAPI.getPluginDirectory(), "module_conf");
+        if (!moduleRoot.exists()) {
+            moduleRoot.mkdir();
+        }
     }
 
     /**
@@ -59,7 +66,7 @@ public class ModuleManager {
         Output.get().logWarn(
             "API level mismatch! " + module.getPackageName() + " is on API " + module.getApiTarget()
                 + ", while prison-core is on API " + Prison.API_LEVEL
-                + ". This may cause problems.");
+                + ".\nThis may cause problems.");
     }
 
     /**
@@ -139,6 +146,10 @@ public class ModuleManager {
      */
     public List<Module> getModules() {
         return modules;
+    }
+
+    public File getModuleRoot() {
+        return moduleRoot;
     }
 
     /**

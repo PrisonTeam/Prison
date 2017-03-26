@@ -25,7 +25,7 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.util.InventoryType;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 
 /**
  * Currently undocumented.

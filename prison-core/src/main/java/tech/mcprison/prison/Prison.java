@@ -113,8 +113,8 @@ public class Prison implements IDataFolderOwner {
     // Initialization steps
 
     private boolean initDataFolder() {
-        // Creates the /Prison/Core directory, for core configuration.
-        this.dataFolder = new File(platform.getPluginDirectory(), "Core");
+        // Creates the /Prison directory, for core configuration.
+        this.dataFolder = getPlatform().getPluginDirectory();
         return this.dataFolder.exists() || this.dataFolder.mkdir();
     }
 
@@ -173,7 +173,7 @@ public class Prison implements IDataFolderOwner {
     }
 
     /**
-     * Returns the core data folder, which is located at "/plugins/Prison/Core". This contains the
+     * Returns the core data folder, which is located at "/plugins/Prison". This contains the
      * core config.json and messages.json files, as well as other global data.
      *
      * @return the {@link File}.

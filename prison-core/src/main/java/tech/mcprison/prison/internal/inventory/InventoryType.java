@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.util;
+package tech.mcprison.prison.internal.inventory;
 
 /**
  * An enum with the different types of inventory available in minecraft
