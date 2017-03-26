@@ -18,8 +18,10 @@
 
 package tech.mcprison.prison;
 
+import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.modules.Module;
@@ -84,6 +86,13 @@ public class PrisonCommand {
         display.addComponent(builder.build());
 
         display.send(sender);
+    }
+
+    @Command(identifier = "prison testalert", onlyPlayers = false)
+    public void testAlertCommand(CommandSender sender, @Arg(name = "text") @Wildcard String text) {
+        sender.sendMessage("Sending...");
+        Alerts.getInstance().sendAlert(text);
+        sender.sendMessage("Alert sent.");
     }
 
     // FIXME THESE COMMANDS ARE BROKEN

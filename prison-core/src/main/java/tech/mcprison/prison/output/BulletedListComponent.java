@@ -46,7 +46,7 @@ public class BulletedListComponent extends TextComponent {
 
         public BulletedListBuilder add(String text, Object... args) {
             text = String.format(text, args);
-            this.bullets.add("&7•&r " + text);
+            this.bullets.add("&7*&r " + text);
             return this;
         }
 

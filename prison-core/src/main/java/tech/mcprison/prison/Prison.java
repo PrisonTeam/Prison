@@ -19,6 +19,7 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
+import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
@@ -99,6 +100,7 @@ public class Prison implements IDataFolderOwner {
         if (!initMetaDatabase()) {
             return false;
         }
+        Alerts.getInstance(); // init
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
