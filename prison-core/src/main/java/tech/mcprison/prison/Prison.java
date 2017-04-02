@@ -88,7 +88,7 @@ public class Prison implements IComponent {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
-        Output.get().logInfo("Using platform &3%s&f.", platform.getClass().getName());
+        sendBanner();
         Output.get().logInfo("Enable start...");
 
         // Initialize various parts of the API. The magic happens here :)
@@ -110,6 +110,19 @@ public class Prison implements IComponent {
     }
 
     // Initialization steps
+
+    private void sendBanner() {
+        PrisonAPI.log("");
+        PrisonAPI.log("&6 _____      _                 ");
+        PrisonAPI.log("&6|  __ \\    (_)                ");
+        PrisonAPI.log("&6| |__) | __ _ ___  ___  _ __  ");
+        PrisonAPI.log("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+        PrisonAPI.log("&6| |   | |  | \\__ \\ (_) | | | |");
+        PrisonAPI.log("&6|_|   |_|  |_|___/\\___/|_| |_|");
+        PrisonAPI.log("");
+        PrisonAPI.log("Loading version %s on platform %s...", PrisonAPI.getPluginVersion(),
+            platform.getClass().getSimpleName());
+    }
 
     private boolean initDataFolder() {
         // Creates the /Prison directory, for core configuration.
