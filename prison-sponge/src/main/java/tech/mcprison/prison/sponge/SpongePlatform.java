@@ -121,6 +121,10 @@ public class SpongePlatform implements Platform {
         Sponge.getServer().getConsole().sendMessage(text);
     }
 
+    @Override public void debug(String message, Object... format) {
+
+    }
+
     @Override public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
         capabilities.put(Capability.ECONOMY, true);

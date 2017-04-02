@@ -244,6 +244,14 @@ class SpigotPlatform implements Platform {
         }
     }
 
+    @Override public void debug(String message, Object... format) {
+        if (!plugin.debug) {
+            return;
+        }
+
+        log(String.format(Output.get().PREFIX_TEMPLATE, "&eDebug"), message, format);
+    }
+
     @Override public void showTitle(Player player, String title, String subtitle, int fade) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
         play.sendTitle(title, subtitle);

@@ -108,6 +108,10 @@ public class PrisonAPI {
         Prison.get().getPlatform().log(message, format);
     }
 
+    public static void debug(String message, Object... format) {
+        Prison.get().getPlatform().debug(message, format);
+    }
+
     public static Map<Capability, Boolean> getCapabilities() {
         return Prison.get().getPlatform().getCapabilities();
     }

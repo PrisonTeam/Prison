@@ -158,6 +158,14 @@ public interface Platform {
     void log(String message, Object... format);
 
     /**
+     * Logs a debug message to the console if the user has debug messages enabled.
+     *
+     * @param message The message. May include color codes, amp-prefixed.
+     * @param format  The The objects inserted via {@link String#format(String, Object...)}.
+     */
+    void debug(String message, Object... format);
+
+    /**
      * Returns a map of capabilities and whether or not this internal has them.
      */
     Map<Capability, Boolean> getCapabilities();

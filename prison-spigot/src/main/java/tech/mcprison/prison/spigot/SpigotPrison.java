@@ -42,6 +42,7 @@ public class SpigotPrison extends JavaPlugin {
     SpigotScheduler scheduler;
     Compatibility compatibility;
     File dataDirectory;
+    boolean debug;
 
     @Override public void onLoad() {
         if (!getDataFolder().exists()) {
@@ -51,6 +52,7 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override public void onEnable() {
         this.saveDefaultConfig();
+        debug = getConfig().getBoolean("debug");
         initDataDir();
         initCommandMap();
         initCompatibility();
