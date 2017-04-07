@@ -63,15 +63,6 @@ public interface Platform {
     List<Player> getOnlinePlayers();
 
     /**
-     * Returns a sign in the world.
-     *
-     * @param location The {@link Location} of the sign.
-     * @return the {@link Sign}.
-     * @deprecated Use the {@link tech.mcprison.prison.internal.block.Sign} block state, using the {@link World#getBlockAt(Location)} method and casting the {@link Block#getState()} method.
-     */
-    @Deprecated Sign getSign(Location location);
-
-    /**
      * Returns the server's economy.
      * If there is no economy, then {@link Capability#ECONOMY} will be false for the internal.
      *

@@ -43,7 +43,6 @@ import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.game.SpigotSign;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -83,6 +82,7 @@ class SpigotPlatform implements Platform {
         } else {
             Output.get().logError("Unknown file storage type in configuration \"" + confStorage
                 + "\". Using file storage.");
+            Output.get().logWarn("Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
             return new FileStorage(plugin.dataDirectory);
         }
     }
@@ -129,13 +129,6 @@ class SpigotPlatform implements Platform {
     @Override public List<Player> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream()
             .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
-    }
-
-    @Override public Sign getSign(Location location) {
-        org.bukkit.block.Sign sign = (org.bukkit.block.Sign) new org.bukkit.Location(
-            Bukkit.getWorld(location.getWorld().getName()), location.getX(), location.getY(),
-            location.getZ()).getBlock().getState();
-        return new SpigotSign(sign);
     }
 
     @Override public Economy getEconomy() {

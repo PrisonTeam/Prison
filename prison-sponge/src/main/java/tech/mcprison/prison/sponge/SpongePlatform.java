@@ -71,10 +71,6 @@ public class SpongePlatform implements Platform {
             .collect(Collectors.toList());
     }
 
-    @Override public Sign getSign(Location location) {
-        return null;
-    }
-
     @Override public Economy getEconomy() {
         return null;
     }
