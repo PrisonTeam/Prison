@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.spigot.Metrics.SimplePie;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
@@ -42,6 +43,7 @@ public class SpigotPrison extends JavaPlugin {
     SpigotScheduler scheduler;
     Compatibility compatibility;
     File dataDirectory;
+    Metrics metrics;
     boolean debug;
 
     @Override public void onLoad() {
@@ -65,6 +67,16 @@ public class SpigotPrison extends JavaPlugin {
     @Override public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
+    }
+
+    public void initMetrics() {
+        this.metrics = new Metrics(this);
+        this.metrics.addCustomChart(new SimplePie("three_platform") {
+            @Override
+            public String getValue() {
+                return "Spigot";
+            }
+        });
     }
 
     private void initDataDir() {
