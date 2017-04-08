@@ -21,8 +21,10 @@ package tech.mcprison.prison.internal.platform;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.*;
-import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.Permissions;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
@@ -34,7 +36,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Represents a internal that Prison has been implemented for.
+ * Represents an internal platform that Prison has been implemented for.
+ * The internal platform is responsible for connecting Prison's APIs to the underlying server API.
  *
  * @author Faizaan A. Datoo
  * @author Camouflage100
@@ -155,6 +158,15 @@ public interface Platform {
      * @param format  The The objects inserted via {@link String#format(String, Object...)}.
      */
     void debug(String message, Object... format);
+
+    /**
+     * Runs the converter for this platform.
+     *
+     * @return The output of the converter. It will be sent to whoever ran the converter system (e.g. usually a command sender).
+     */
+    default String runConverter() {
+        return "This operation is unsupported on this platform.";
+    }
 
     /**
      * Returns a map of capabilities and whether or not this internal has them.

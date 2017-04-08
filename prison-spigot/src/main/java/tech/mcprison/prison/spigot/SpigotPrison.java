@@ -45,6 +45,13 @@ public class SpigotPrison extends JavaPlugin {
     boolean debug;
 
     @Override public void onLoad() {
+        if(getDataFolder().exists()) {
+            File file = new File(getDataFolder(), "old.txt");
+            if(file.exists()) {
+                File old = getDataFolder();
+                old.renameTo(new File(getDataFolder().getParent(), "Prison.old"));
+            }
+        }
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }

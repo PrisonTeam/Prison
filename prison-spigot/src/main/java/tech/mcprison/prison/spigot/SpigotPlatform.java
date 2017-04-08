@@ -32,12 +32,19 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.PluginCommand;
+import tech.mcprison.prison.convert.ConversionManager;
+import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.*;
+import tech.mcprison.prison.internal.Permissions;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.output.BulletedListComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
@@ -82,7 +89,8 @@ class SpigotPlatform implements Platform {
         } else {
             Output.get().logError("Unknown file storage type in configuration \"" + confStorage
                 + "\". Using file storage.");
-            Output.get().logWarn("Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
+            Output.get().logWarn(
+                "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
             return new FileStorage(plugin.dataDirectory);
         }
     }
@@ -243,6 +251,28 @@ class SpigotPlatform implements Platform {
         }
 
         log(String.format(Output.get().PREFIX_TEMPLATE, "&eDebug"), message, format);
+    }
+
+    @Override public String runConverter() {
+        File file = new File(plugin.getDataFolder().getParent(), "Prison.old");
+        if (!file.exists()) {
+            return Output.get().format(
+                "I cloud not find a 'Prison.old' folder to convert. You probably haven't had Prison 2 installed before, so you don't need to convert :)",
+                LogLevel.WARNING);
+        }
+
+        List<ConversionResult> results = ConversionManager.getInstance().runConversion();
+
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
+        for (ConversionResult result : results) {
+            String status =
+                result.getStatus() == ConversionResult.Status.Success ? "&aSuccess" : "&cFailure";
+            builder.add(
+                result.getAgentName() + " &8- " + status + " &7(" + result.getReason() + "&7)");
+        }
+
+        return builder.build().text();
     }
 
     @Override public void showTitle(Player player, String title, String subtitle, int fade) {

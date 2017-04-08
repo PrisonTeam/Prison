@@ -53,6 +53,13 @@ public class Output {
         return instance;
     }
 
+    public String format(String message, LogLevel level, Object... args) {
+        String prefix = level == LogLevel.INFO ?
+            INFO_PREFIX :
+            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
+        return prefix + String.format(message, args);
+    }
+
     /**
      * Log a message with a specified {@link LogLevel}
      */

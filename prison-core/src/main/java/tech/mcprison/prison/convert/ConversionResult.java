@@ -8,20 +8,26 @@ package tech.mcprison.prison.convert;
  */
 public class ConversionResult {
 
+    private String agentName;
     private Status status;
     private String reason;
 
-    public ConversionResult(Status status, String reason) {
+    public ConversionResult(String agentName, Status status, String reason) {
+        this.agentName = agentName;
         this.status = status;
         this.reason = reason;
     }
 
-    public static ConversionResult success() {
-        return new ConversionResult(Status.Success, "OK");
+    public static ConversionResult success(String agentName) {
+        return new ConversionResult(agentName, Status.Success, "OK");
     }
 
-    public static ConversionResult failure(String reason) {
-        return new ConversionResult(Status.Failure, reason);
+    public static ConversionResult failure(String agentName, String reason) {
+        return new ConversionResult(agentName, Status.Failure, reason);
+    }
+
+    public String getAgentName() {
+        return agentName;
     }
 
     public Status getStatus() {
