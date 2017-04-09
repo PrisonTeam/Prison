@@ -45,12 +45,6 @@ public class SpongePrison {
         if (!configDir.toFile().exists()) {
             configDir.toFile().mkdirs();
         }
-        this.metrics.addCustomChart(new SimplePie("three_platform") {
-            @Override
-            public String getValue() {
-                return "Sponge";
-            }
-        });
         Prison.get().init(new SpongePlatform(this));
     }
 

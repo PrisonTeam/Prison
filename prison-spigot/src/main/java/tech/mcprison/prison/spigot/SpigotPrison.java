@@ -71,12 +71,6 @@ public class SpigotPrison extends JavaPlugin {
 
     public void initMetrics() {
         this.metrics = new Metrics(this);
-        this.metrics.addCustomChart(new SimplePie("three_platform") {
-            @Override
-            public String getValue() {
-                return "Spigot";
-            }
-        });
     }
 
     private void initDataDir() {

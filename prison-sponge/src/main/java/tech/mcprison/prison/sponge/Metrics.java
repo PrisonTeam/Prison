@@ -1,4 +1,4 @@
-package tech.mcprison.prison.sponge;
+﻿package tech.mcprison.prison.sponge;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -56,11 +56,7 @@ public class Metrics {
     // The version of this bStats class
     public static final int B_STATS_VERSION = 1;
 
-    // Cuz i'm a rebel, I send it to the bukkit url >:)
-    // Sends to the bukkit url to collect all the stats
-    // in one place, instead of across two different pages.
-    // Platforms are tracked using the associated pie chart
-    private static final String URL = "https://bStats.org/submitData/bukkit";
+    private static final String URL = "https://bStats.org/submitData/sponge";
 
     // We use this flag to ensure only one instance of this class exist
     private static boolean created = false;
