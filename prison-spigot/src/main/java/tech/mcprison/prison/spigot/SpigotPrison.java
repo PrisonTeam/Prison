@@ -28,6 +28,7 @@ import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 /**
@@ -45,15 +46,22 @@ public class SpigotPrison extends JavaPlugin {
     boolean debug;
 
     @Override public void onLoad() {
+        // The meta file is used to see if the folder needs converting.
+        // If the folder doesn't contain it, it's probably not a Prison 3 thing.
+        File metaFile = new File(getDataFolder(), ".meta");
         if(getDataFolder().exists()) {
-            File file = new File(getDataFolder(), "old.txt");
-            if(file.exists()) {
+            if(!metaFile.exists()) {
                 File old = getDataFolder();
                 old.renameTo(new File(getDataFolder().getParent(), "Prison.old"));
             }
         }
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
+            try {
+                metaFile.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Could not create .meta file, this will cause problems with the converter!");
+            }
         }
     }
 
