@@ -140,9 +140,9 @@ public class SpongePlatform implements Platform {
             .sendTitle(titleObj);
     }
 
-    @Override public void showActionBar(Player player, String text) {
+    @Override public void showActionBar(Player player, String text, int duration) {
         Text textObj = SpongeUtil.prisonTextToSponge(text);
-
+        // FIXME Doesn't consider duration
         Sponge.getServer().getPlayer(player.getUUID()).orElseThrow(IllegalStateException::new)
             .sendMessage(ChatTypes.ACTION_BAR, textObj);
     }

@@ -120,8 +120,8 @@ public class PrisonAPI {
         Prison.get().getPlatform().showTitle(player, title, subtitle, fade);
     }
 
-    public static void showActionBar(Player player, String text) {
-        Prison.get().getPlatform().showActionBar(player, text);
+    public static void showActionBar(Player player, String text, int duration) {
+        Prison.get().getPlatform().showActionBar(player, text, duration);
     }
 
     public static ScoreboardManager getScoreboardManager() {

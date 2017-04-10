@@ -62,10 +62,6 @@ public class TestPlatform implements Platform {
         return null;
     }
 
-    @Override public Sign getSign(Location location) {
-        return null;
-    }
-
     @Override public Economy getEconomy() {
         return null;
     }
@@ -128,7 +124,7 @@ public class TestPlatform implements Platform {
 
     }
 
-    @Override public void showActionBar(Player player, String text) {
+    @Override public void showActionBar(Player player, String text, int duration) {
 
     }
 

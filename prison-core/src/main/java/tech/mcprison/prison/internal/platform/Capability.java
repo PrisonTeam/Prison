@@ -40,6 +40,11 @@ public enum Capability {
     /**
      * The presence of a server permissions system.
      */
-    PERMISSIONS
+    PERMISSIONS,
+
+    /**
+     * The ability to show action bars.
+     */
+    ACTION_BARS
 
 }

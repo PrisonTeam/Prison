@@ -55,6 +55,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.store.file.FileStorage;
+import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -80,6 +81,7 @@ class SpigotPlatform implements Platform {
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
         this.storage = initStorage();
+        ActionBarUtil.init(plugin);
     }
 
     private Storage initStorage() {
@@ -280,8 +282,9 @@ class SpigotPlatform implements Platform {
         play.sendTitle(title, subtitle);
     }
 
-    @Override public void showActionBar(Player player, String text) {
+    @Override public void showActionBar(Player player, String text, int duration) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
+        ActionBarUtil.sendActionBar(play, Text.translateAmpColorCodes(text), duration);
     }
 
     @Override public ScoreboardManager getScoreboardManager() {
@@ -301,6 +304,7 @@ class SpigotPlatform implements Platform {
 
     @Override public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
+        capabilities.put(Capability.ACTION_BARS, true);
         capabilities.put(Capability.GUI, true);
         capabilities.put(Capability.ECONOMY, getEconomy() != null);
         capabilities.put(Capability.PERMISSIONS, getPermissions() != null);
