@@ -27,6 +27,7 @@ import tech.mcprison.prison.Prison;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
+import tech.mcprison.prison.sponge.Metrics.SimplePie;
 
 /**
  * @author Faizaan A. Datoo
@@ -38,11 +39,12 @@ public class SpongePrison {
 
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
 
+    @Inject private Metrics metrics;
+
     @Listener public void onServerStart(GameStartedServerEvent e) {
         if (!configDir.toFile().exists()) {
             configDir.toFile().mkdirs();
         }
-
         Prison.get().init(new SpongePlatform(this));
     }
 
