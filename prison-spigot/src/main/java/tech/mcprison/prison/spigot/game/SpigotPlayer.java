@@ -27,6 +27,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.ChatColor;
@@ -65,21 +66,7 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     }
 
     @Override public void give(ItemStack itemStack) {
-        org.bukkit.inventory.ItemStack bStack =
-            new org.bukkit.inventory.ItemStack(itemStack.getMaterial().getLegacyId(),
-                itemStack.getAmount());
-        ItemMeta meta = bStack.getItemMeta();
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemStack.getName()));
-
-        String[] colorLore = new String[itemStack.getLore().size()];
-        for (int i = 0; i < colorLore.length; i++) {
-            colorLore[i] = ChatColor.translateAlternateColorCodes('&', itemStack.getLore().get(i));
-        }
-        meta.setLore(Arrays.asList(colorLore));
-
-        bStack.setItemMeta(meta);
-
-        bukkitPlayer.getInventory().addItem(bStack);
+        bukkitPlayer.getInventory().addItem(SpigotUtil.prisonItemStackToBukkit(itemStack));
     }
 
     @Override public Location getLocation() {

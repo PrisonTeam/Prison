@@ -21,6 +21,7 @@ package tech.mcprison.prison.selection;
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Faizaan A. Datoo
@@ -32,7 +33,10 @@ public class SelectionListener {
     }
 
     @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
-        if (!e.getItemInHand().equals(SelectionManager.SELECTION_TOOL)) {
+        String ourDisplayName = e.getItemInHand().getDisplayName();
+        String toolDisplayName = SelectionManager.SELECTION_TOOL.getDisplayName();
+
+        if(ourDisplayName == null || !ourDisplayName.equals(Text.translateAmpColorCodes(toolDisplayName))) {
             return;
         }
         e.setCanceled(true);

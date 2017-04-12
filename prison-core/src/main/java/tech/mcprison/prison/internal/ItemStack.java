@@ -20,11 +20,9 @@ package tech.mcprison.prison.internal;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.ChatColor;
+import tech.mcprison.prison.util.Text;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
@@ -34,16 +32,18 @@ import java.util.List;
  */
 public class ItemStack {
 
-    String name;
+    String displayName = null;
     int amount;
     BlockType material;
     private List<String> lore;
+    private Map<Integer, Integer> enchantments;
 
-    public ItemStack(String name, int amount, BlockType material, String... lore) {
-        this.name = name;
+    public ItemStack(String displayName, int amount, BlockType material, String... lore) {
+        this.displayName = displayName;
         this.amount = amount;
         this.material = material;
         this.lore = new ArrayList<>(Arrays.asList(lore));
+        this.enchantments = new HashMap<>();
     }
 
     public ItemStack(int amount, BlockType material, String... lore) {
@@ -64,7 +64,7 @@ public class ItemStack {
      * Returns the display name of the item stack. This may include colors and may also be null!
      */
     public String getDisplayName() {
-        return name;
+        return displayName;
     }
 
     /**
@@ -85,42 +85,30 @@ public class ItemStack {
         return lore;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+    public Map<Integer, Integer> getEnchantments() {
+        return enchantments;
+    }
 
-        ItemStack itemStack = (ItemStack) o;
+    public void addEnchantment(int enchantment, int level) {
+        enchantments.put(enchantment, level);
+    }
 
-        if (amount != itemStack.amount) {
-            return false;
-        }
-        if (getName() != null ?
-            !getName().equals(itemStack.getName()) :
-            itemStack.getName() != null) {
-            return false;
-        }
-        if (name != null ? !name.equals(itemStack.name) : itemStack.name != null) {
-            return false;
-        }
-        if (material != itemStack.material) {
-            return false;
-        }
-        return lore != null ? lore.equals(itemStack.lore) : itemStack.lore == null;
+    public boolean hasEnchantments() {
+        return !enchantments.isEmpty();
+    }
+
+    public boolean hasEnchantment(int enchantment) {
+        return enchantments.containsKey(enchantment);
     }
 
     @Override public int hashCode() {
-        int result = name.hashCode();
+        int result = amount;
         result = 31 * result + material.hashCode();
         return result;
     }
 
     @Override public String toString() {
-        return "ItemStack{" + "name='" + name + '\'' + ", amount=" + amount + ", material="
-            + material + '}';
+        return "ItemStack{" + "displayName='" + displayName + '\'' + ", amount=" + amount
+            + ", material=" + material + ", lore=" + lore + ", enchantments=" + enchantments + '}';
     }
-
 }

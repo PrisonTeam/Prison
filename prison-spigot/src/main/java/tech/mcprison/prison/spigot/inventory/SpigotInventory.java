@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot.inventory;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.inventory.BrewerInventory;
+import org.bukkit.material.MaterialData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -97,7 +98,10 @@ public class SpigotInventory implements Inventory {
     }
 
     @Override public boolean contains(BlockType type) {
-        return wrapper.contains(SpigotUtil.blockTypeToMaterial(type));
+        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        stack.setData(materialData);
+        return wrapper.contains(stack);
     }
 
     @Override public Iterator<ItemStack> getIterator() {
@@ -168,7 +172,10 @@ public class SpigotInventory implements Inventory {
     }
 
     @Override public void clear(BlockType type) {
-        wrapper.remove(SpigotUtil.blockTypeToMaterial(type));
+        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        stack.setData(materialData);
+        wrapper.remove(stack);
     }
 
     @Override public void clear(ItemStack stack) {
@@ -180,7 +187,10 @@ public class SpigotInventory implements Inventory {
     }
 
     @Override public int first(BlockType type) {
-        return wrapper.first(SpigotUtil.blockTypeToMaterial(type));
+        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        stack.setData(materialData);
+        return wrapper.first(stack);
     }
 
     @Override public int firstEmpty() {

@@ -23,12 +23,15 @@ import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,8 +53,9 @@ public class SpigotUtil {
         return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
     }
 
-    public static Material blockTypeToMaterial(BlockType type) {
-        return Material.getMaterial(type.getLegacyId()); // To be safe, we use legacy ID
+    public static MaterialData blockTypeToMaterial(BlockType type) {
+        Material material = Material.getMaterial(type.getLegacyId());
+        return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
     }
 
   /*
@@ -105,22 +109,35 @@ public class SpigotUtil {
 
     public static ItemStack prisonItemStackToBukkit(
         tech.mcprison.prison.internal.ItemStack prisonStack) {
+        int amount = prisonStack.getAmount();
+        MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
+
         ItemStack bukkitStack =
-            new ItemStack(blockTypeToMaterial(prisonStack.getMaterial()), prisonStack.getAmount());
+            new ItemStack(materialData.getItemType(), amount);
+        bukkitStack.setData(materialData);
+
         ItemMeta meta;
-        if (!bukkitStack.hasItemMeta()) {
+        if (bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta()) {
             meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
         } else {
             meta = bukkitStack.getItemMeta();
         }
 
-        if (prisonStack.getDisplayName() != null) {
-            meta.setDisplayName(prisonStack.getDisplayName());
+        if (meta != null) {
+            if (prisonStack.getDisplayName() != null) {
+                meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
+            }
+            if (prisonStack.getLore() != null) {
+                List<String> colored = new ArrayList<>();
+                for(String uncolor : prisonStack.getLore()) {
+                    colored.add(Text.translateAmpColorCodes(uncolor));
+                }
+                meta.setLore(colored);
+            }
+            bukkitStack.setItemMeta(meta);
+        } else {
+            System.out.println("meta null");
         }
-        if (prisonStack.getLore() != null) {
-            meta.setLore(prisonStack.getLore());
-        }
-        bukkitStack.setItemMeta(meta);
 
         return bukkitStack;
     }

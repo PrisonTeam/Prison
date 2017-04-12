@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.spigot.block;
 
+import org.bukkit.material.MaterialData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
@@ -53,7 +54,9 @@ public class SpigotBlock implements Block {
     }
 
     @Override public void setType(BlockType type) {
-        bBlock.setType(SpigotUtil.blockTypeToMaterial(type));
+        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+        bBlock.setType(materialData.getItemType());
+        bBlock.setData(materialData.getData());
     }
 
     @Override public BlockState getState() {

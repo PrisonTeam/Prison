@@ -31,7 +31,11 @@ import org.bukkit.inventory.ItemStack;
 public class Spigot19 implements Compatibility {
 
     @Override public EquipmentSlot getHand(PlayerInteractEvent e) {
-        return EquipmentSlot.valueOf(e.getHand().name());
+        if (e.getHand() == null) {
+            return null;
+        } else {
+            return EquipmentSlot.valueOf(e.getHand().name());
+        }
     }
 
     @Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {

@@ -418,9 +418,15 @@ public enum BlockType {
     }
 
     public static BlockType getBlock(int legacyId) {
+        return getBlock(legacyId, (short) 0);
+    }
+
+    public static BlockType getBlock(int legacyId, short data) {
         for (BlockType block : values()) {
             if (block.getLegacyId() == legacyId) {
-                return block;
+                if(block.getData() == data) {
+                    return block;
+                }
             }
         }
         return null;
