@@ -1,4 +1,4 @@
-﻿package tech.mcprison.prison.sponge;
+package tech.mcprison.prison.sponge;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

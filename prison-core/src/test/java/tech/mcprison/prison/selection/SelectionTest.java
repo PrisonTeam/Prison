@@ -31,6 +31,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 import java.io.File;
 
@@ -45,7 +46,7 @@ public class SelectionTest {
     @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Before public void setUp() throws Exception {
-        Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), true));
+        Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), false));
     }
 
     @Test public void testSelection() throws Exception {
@@ -54,17 +55,20 @@ public class SelectionTest {
         World ourWorld = new TestWorld("TestWorld");
         TestPlayer ourPlayer = new TestPlayer();
 
+        ItemStack coloredToolItemStack = SelectionManager.SELECTION_TOOL;
+        coloredToolItemStack.setDisplayName(Text.translateAmpColorCodes(coloredToolItemStack.getDisplayName()));
+
         Prison.get().getEventBus().post(
-            new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
+            new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
                 PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
-        assertTrue(ourPlayer.getInput().contains("&7First position set to &8(10.0, 20.0, 30.0)"));
+        assertTrue(ourPlayer.getInput().contains("&7First position set to &8(10, 20, 30)"));
 
         Prison.get().getEventBus().post(
-            new PlayerInteractEvent(ourPlayer, SelectionManager.SELECTION_TOOL,
+            new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
                 PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
 
-        assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30.0, 20.0, 40.0)"));
+        assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30, 20, 40)"));
     }
 
     @Test public void testSelectionToolCheck() throws Exception {

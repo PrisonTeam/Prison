@@ -89,6 +89,10 @@ public class ItemStack {
         return enchantments;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public void addEnchantment(int enchantment, int level) {
         enchantments.put(enchantment, level);
     }

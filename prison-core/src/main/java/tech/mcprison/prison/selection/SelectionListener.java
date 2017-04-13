@@ -36,7 +36,8 @@ public class SelectionListener {
         String ourDisplayName = e.getItemInHand().getDisplayName();
         String toolDisplayName = SelectionManager.SELECTION_TOOL.getDisplayName();
 
-        if(ourDisplayName == null || !ourDisplayName.equals(Text.translateAmpColorCodes(toolDisplayName))) {
+        if (ourDisplayName == null || !ourDisplayName
+            .equals(Text.translateAmpColorCodes(toolDisplayName))) {
             return;
         }
         e.setCanceled(true);
@@ -47,14 +48,14 @@ public class SelectionListener {
             sel.setMin(e.getClicked());
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
-                .sendMessage("&7First position set to &8" + e.getClicked().toCoordinates());
+                .sendMessage("&7First position set to &8" + e.getClicked().toBlockCoordinates());
         } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMax(e.getClicked());
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
-                .sendMessage("&7Second position set to &8" + e.getClicked().toCoordinates());
+                .sendMessage("&7Second position set to &8" + e.getClicked().toBlockCoordinates());
         }
     }
 

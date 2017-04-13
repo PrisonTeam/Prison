@@ -56,6 +56,7 @@ public class TestPlayer implements Player {
     }
 
     @Override public void sendMessage(String message) {
+        System.out.println(message);
         input.add(message);
     }
 
