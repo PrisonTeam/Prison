@@ -178,4 +178,13 @@ public class Location {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
+    /**
+     * Returns the values in coordinate (x, y, z) format, to the nearest block (i.e. no decimals).
+     *
+     * @return The {@link String} containing coordinates.
+     */
+    public String toBlockCoordinates() {
+        return "(" + Math.round(x) + ", " + Math.round(y) + ", " + Math.round(z) + ")";
+    }
+
 }
