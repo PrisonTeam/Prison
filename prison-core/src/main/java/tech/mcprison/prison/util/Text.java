@@ -19,10 +19,7 @@
 package tech.mcprison.prison.util;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -107,43 +104,84 @@ public class Text {
         }
     }
 
-    /**
-     * Combine an array of strings, inserting a string to separate them (the glue).
-     *
-     * @param text The array of strings to combine.
-     * @param glue The glue to put between the combined strings.
-     * @return The combined string.
-     */
-    public static String implode(String[] text, String glue) {
-        StringBuilder builder = new StringBuilder();
-        for (String t : text) {
-            builder.append(t).append(glue);
+    public static String implode(final Object[] list, final String glue, final String format) {
+        StringBuilder ret = new StringBuilder();
+        for (int i = 0; i < list.length; i++) {
+            Object item = list[i];
+            String str = (item == null ? "NULL" : item.toString());
+
+            if (i != 0) {
+                ret.append(glue);
+            }
+            if (format != null) {
+                ret.append(String.format(format, str));
+            } else {
+                ret.append(str);
+            }
         }
-        return replaceLast(builder.toString(), glue, "");
+        return ret.toString();
     }
 
-    /*
-     * Time-related utilities
-     */
-
-    /**
-     * Combines an array of strings, inserting a comma between each entry.
-     *
-     * @param text The array of strings to combine.
-     * @return The combined string.
-     */
-    public static String implodeWithComma(String[] text) {
-        return implode(text, ",");
+    public static String implode(final Object[] list, final String glue) {
+        return implode(list, glue, null);
     }
 
-    /**
-     * Combines an array of strings, inserting a comma between each entry and a dot at the end.
-     *
-     * @param text The array of strings to combine.
-     * @return The combined string.
-     */
-    public static String implodeCommaAndDot(String[] text) {
-        return implodeWithComma(text) + ".";
+    public static String implode(final Collection<?> coll, final String glue, final String format) {
+        return implode(coll.toArray(new Object[0]), glue, format);
+    }
+
+    public static String implode(final Collection<?> coll, final String glue) {
+        return implode(coll, glue, null);
+    }
+
+    public static String implodeCommaAndDot(final Collection<?> objects, final String format,
+        final String comma, final String and, final String dot) {
+        if (objects.size() == 0) {
+            return "";
+        }
+        if (objects.size() == 1) {
+            return implode(objects, comma, format);
+        }
+
+        List<Object> ourObjects = new ArrayList<>(objects);
+
+        String lastItem = ourObjects.get(ourObjects.size() - 1).toString();
+        String nextToLastItem = ourObjects.get(ourObjects.size() - 2).toString();
+        if (format != null) {
+            lastItem = String.format(format, lastItem);
+            nextToLastItem = String.format(format, nextToLastItem);
+        }
+        String merge = nextToLastItem + and + lastItem;
+        ourObjects.set(ourObjects.size() - 2, merge);
+        ourObjects.remove(ourObjects.size() - 1);
+
+        return implode(ourObjects, comma, format) + dot;
+    }
+
+    public static String implodeCommaAndDot(final Collection<?> objects, final String comma,
+        final String and, final String dot) {
+        return implodeCommaAndDot(objects, null, comma, and, dot);
+    }
+
+    public static String implodeCommaAnd(final Collection<?> objects, final String comma,
+        final String and) {
+        return implodeCommaAndDot(objects, comma, and, "");
+    }
+
+    public static String implodeCommaAndDot(final Collection<?> objects, final String color) {
+        return implodeCommaAndDot(objects, color + ", ", color + " and ", color + ".");
+    }
+
+    public static String implodeCommaAnd(final Collection<?> objects, final String color) {
+        return implodeCommaAndDot(objects, color + ", ", color + " and ", "");
+    }
+
+    public static String implodeCommaAndDot(final Collection<?> objects) {
+        return implodeCommaAndDot(objects, "");
+    }
+
+    public static String implodeCommaAnd(final Collection<?> objects) {
+        return implodeCommaAnd(objects, "");
     }
 
     /**
@@ -283,7 +321,7 @@ public class Text {
             return "just now";
         }
 
-        ret += implodeWithComma(unitCountParts.toArray(new String[unitCountParts.size()]));
+        ret += implodeCommaAnd(unitCountParts);
         ret += " ";
         if (millis <= 0) {
             ret += "ago";
