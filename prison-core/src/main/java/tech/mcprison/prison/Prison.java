@@ -124,9 +124,13 @@ public class Prison implements IComponent {
             betaVersion);
         checkPublicBetaVersion();
 
-        if(updateVersion != null) {
-            Alerts.getInstance().sendAlert("&3Prison 3 %s is now available. &7To download it, go to &b%s&7.", updateVersion, updateUrl);
+        if (updateVersion != null) {
+            Alerts.getInstance()
+                .sendAlert("&3Prison 3 %s is now available. &7To download it, go to &b%s&7.",
+                    updateVersion, updateUrl);
         }
+
+        scheduleAlertNagger();
 
         return true;
     }
@@ -195,9 +199,8 @@ public class Prison implements IComponent {
             if (!betaVersion.equalsIgnoreCase(latest)) {
                 updateVersion = latest;
                 updateUrl = latestUrl;
-                Output.get().logInfo(
-                    "&3Prison 3 " + updateVersion + " is now ready for download. &7Download it from &b"
-                        + updateUrl);
+                Output.get().logInfo("&3Prison 3 " + updateVersion
+                    + " is now ready for download. &7Download it from &b" + updateUrl);
             } else {
                 Output.get().logInfo("Your beta is up to date.");
             }
@@ -205,13 +208,18 @@ public class Prison implements IComponent {
             Output.get()
                 .logError("Could not check for updates. The update server is probably down.");
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             Output.get().logError("The update server is experiencing issues right now. Sorry!");
         }
     }
 
     private void scheduleAlertNagger() {
-
+        // Nag the user with alerts every 5 minutes
+        PrisonAPI.getScheduler().runTaskTimerAsync(() -> {
+            PrisonAPI.getOnlinePlayers().stream()
+                .filter(player -> player.hasPermission("prison.admin"))
+                .forEach(Alerts.getInstance().getCommands()::prisonAlertsCommand);
+        }, 60 * 5, 60 * 5);
     }
 
     // End initialization steps

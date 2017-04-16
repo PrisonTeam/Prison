@@ -25,6 +25,7 @@ public class Alerts {
 
     private static Alerts instance;
     private List<Alert> alerts;
+    private AlertCommands commands;
 
     /*
      * Constructor
@@ -32,8 +33,8 @@ public class Alerts {
 
     private Alerts() {
         alerts = new ArrayList<>();
+        this.commands = new AlertCommands();
 
-        new AlertCommands();
         Prison.get().getEventBus().register(this);
     }
 
@@ -96,6 +97,10 @@ public class Alerts {
             instance = new Alerts();
         }
         return instance;
+    }
+
+    public AlertCommands getCommands() {
+        return commands;
     }
 
     public List<Alert> getAlertsFor(UUID uid) {
