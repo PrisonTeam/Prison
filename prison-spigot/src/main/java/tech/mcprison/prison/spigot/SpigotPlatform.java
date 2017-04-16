@@ -252,7 +252,7 @@ class SpigotPlatform implements Platform {
             return;
         }
 
-        log(String.format(Output.get().PREFIX_TEMPLATE, "&eDebug"), message, format);
+        log(Output.get().gen("&eDebug") + " &7", message, format);
     }
 
     @Override public String runConverter() {
@@ -264,6 +264,10 @@ class SpigotPlatform implements Platform {
         }
 
         List<ConversionResult> results = ConversionManager.getInstance().runConversion();
+
+        if(results.size() == 0) {
+            return Text.translateAmpColorCodes("&7There are no conversions to be run at this time.");
+        }
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();

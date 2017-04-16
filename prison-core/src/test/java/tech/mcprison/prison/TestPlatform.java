@@ -59,7 +59,7 @@ public class TestPlatform implements Platform {
     }
 
     @Override public List<Player> getOnlinePlayers() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override public Economy getEconomy() {

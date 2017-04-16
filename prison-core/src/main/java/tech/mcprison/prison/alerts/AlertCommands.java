@@ -2,7 +2,9 @@ package tech.mcprison.prison.alerts;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
@@ -19,7 +21,14 @@ public class AlertCommands {
     }
 
     @Command(identifier = "prison alerts", description = "Lists your alerts.", permissions = "prison.admin")
-    public void prisonAlertsCommand(Player player) {
+    public void prisonAlertsCommand(CommandSender sender) {
+        if(!(sender instanceof Player)) {
+            Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                .sendTo(sender, Localizable.Level.ERROR);
+            return;
+        }
+        Player player = (Player) sender;
+
         ChatDisplay display = new ChatDisplay("Alerts");
 
         List<Alert> alerts = Alerts.getInstance().getAlertsFor(player.getUUID());
@@ -40,7 +49,14 @@ public class AlertCommands {
     }
 
     @Command(identifier = "prison alerts clear", description = "Clears your alerts.", permissions = "prison.admin")
-    public void prisonAlertsClearCommand(Player player) {
+    public void prisonAlertsClearCommand(CommandSender sender) {
+        if(!(sender instanceof Player)) {
+            Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                .sendTo(sender, Localizable.Level.ERROR);
+            return;
+        }
+        Player player = (Player) sender;
+
         List<Alert> alerts = Alerts.getInstance().getAlertsFor(player.getUUID());
         if (alerts.size() == 0) {
             Output.get().sendInfo(player, "You have no alerts.");
@@ -52,7 +68,14 @@ public class AlertCommands {
     }
 
     @Command(identifier = "prison alerts clearall", description = "Clears the alerts for the whole server.", permissions = "prison.admin")
-    public void prisonAlertsClearAllCommand(Player player) {
+    public void prisonAlertsClearAllCommand(CommandSender sender) {
+        if(!(sender instanceof Player)) {
+            Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
+                .sendTo(sender, Localizable.Level.ERROR);
+            return;
+        }
+        Player player = (Player) sender;
+
         Alerts.getInstance().clearAll();
         Output.get().sendInfo(player, "All alerts have been cleared.");
     }

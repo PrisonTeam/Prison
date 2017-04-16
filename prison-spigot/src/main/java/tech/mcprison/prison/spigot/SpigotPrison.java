@@ -82,8 +82,8 @@ public class SpigotPrison extends JavaPlugin {
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
-                "An old installation of Prison has been detected. In this public beta release of Prison 3, there is no converter system yet. However, your old data "
-                    + "is safely stored in a folder called 'Prison.old' in your plugins directory. You will be notified when your data is ready to be converted.");
+                "&7An old installation of Prison has been detected. In this public beta release of Prison 3, there is no converter system yet. However, &3your old data "
+                    + "is safely stored in a folder called 'Prison.old' in your plugins directory&7. You will be notified when your data is ready to be converted.");
         }
     }
 

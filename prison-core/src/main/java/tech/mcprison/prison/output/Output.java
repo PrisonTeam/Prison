@@ -150,7 +150,7 @@ public class Output {
 
     // Private methods
 
-    private String gen(String name) {
+    public String gen(String name) {
         return String.format(PREFIX_TEMPLATE, name);
     }
 

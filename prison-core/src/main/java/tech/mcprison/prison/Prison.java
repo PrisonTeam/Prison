@@ -19,6 +19,9 @@
 package tech.mcprison.prison;
 
 import com.google.common.eventbus.EventBus;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.ErrorManager;
@@ -34,6 +37,10 @@ import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Optional;
 
 /**
@@ -62,6 +69,11 @@ public class Prison implements IComponent {
     private ItemManager itemManager;
     private ErrorManager errorManager;
     private Database metaDatabase;
+
+    private String betaVersion = "Public Beta 1";
+    private String betaUpdateServer = "https://mc-prison.tech/update.json";
+    private String updateVersion = null; // Will have a value if update is available
+    private String updateUrl = null; // Will have a value if update is available
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -106,6 +118,16 @@ public class Prison implements IComponent {
         Output.get()
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
+
+        Alerts.getInstance().sendAlert(
+            "&7Welcome to &3Prison 3 %s&7. Please report any bugs and suggestions to the feature page, at &bhttp://github.com/MC-Prison/Prison/issues&7. Enjoy :) ~ &6The MC-Prison Team",
+            betaVersion);
+        checkPublicBetaVersion();
+
+        if(updateVersion != null) {
+            Alerts.getInstance().sendAlert("&3Prison 3 %s is now available. &7To download it, go to &b%s&7.", updateVersion, updateUrl);
+        }
+
         return true;
     }
 
@@ -156,6 +178,40 @@ public class Prison implements IComponent {
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
         this.itemManager = new ItemManager();
+    }
+
+    private void checkPublicBetaVersion() {
+        Output.get().logInfo("Checking for beta updates...");
+        try {
+            URL url = new URL(betaUpdateServer);
+            URLConnection conn = url.openConnection();
+            conn.addRequestProperty("User-Agent",
+                "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+            JsonReader reader = new JsonReader(new InputStreamReader(conn.getInputStream()));
+            JsonObject obj = (JsonObject) new JsonParser().parse(reader);
+            String latest = obj.get("latest").getAsString();
+            String latestUrl = obj.get("latest_url").getAsString();
+
+            if (!betaVersion.equalsIgnoreCase(latest)) {
+                updateVersion = latest;
+                updateUrl = latestUrl;
+                Output.get().logInfo(
+                    "&3Prison 3 " + updateVersion + " is now ready for download. &7Download it from &b"
+                        + updateUrl);
+            } else {
+                Output.get().logInfo("Your beta is up to date.");
+            }
+        } catch (IOException e) {
+            Output.get()
+                .logError("Could not check for updates. The update server is probably down.");
+            e.printStackTrace();
+        } catch(Exception e) {
+            Output.get().logError("The update server is experiencing issues right now. Sorry!");
+        }
+    }
+
+    private void scheduleAlertNagger() {
+
     }
 
     // End initialization steps
