@@ -31,7 +31,7 @@ public interface Scheduler {
      * Run a task on the server thread, after a certain amount of time.
      *
      * @param run   The {@link Runnable} with the task inside.
-     * @param delay The time to wait, in seconds, until the task is run.
+     * @param delay The time to wait, in ticks, until the task is run.
      * @return The task ID.
      */
     int runTaskLater(Runnable run, long delay);
@@ -40,7 +40,7 @@ public interface Scheduler {
      * Run a task on its own thread, after a certain amount of time.
      *
      * @param run   The {@link Runnable} with the task inside.
-     * @param delay The time to wait, in seconds, until the task is run.
+     * @param delay The time to wait, in ticks, until the task is run.
      * @return The task ID.
      */
     int runTaskLaterAsync(Runnable run, long delay);
@@ -49,8 +49,8 @@ public interface Scheduler {
      * Run a task on the server thread, at the specified interval.
      *
      * @param run      The {@link Runnable} with the task inside.
-     * @param delay    The time to wait, in seconds, until the timer is started.
-     * @param interval The time between runs, in seconds.
+     * @param delay    The time to wait, in ticks, until the timer is started.
+     * @param interval The time between runs, in ticks.
      * @return The task ID.
      */
     int runTaskTimer(Runnable run, long delay, long interval);
@@ -59,8 +59,8 @@ public interface Scheduler {
      * Run a task on its own thread, at the specified interval.
      *
      * @param run      The {@link Runnable} with the task inside.
-     * @param delay    The time to wait, in seconds, until the timer is started.
-     * @param interval The time between runs, in seconds.
+     * @param delay    The time to wait, in ticks, until the timer is started.
+     * @param interval The time between runs, in ticks.
      * @return The task ID.
      */
     int runTaskTimerAsync(Runnable run, long delay, long interval);

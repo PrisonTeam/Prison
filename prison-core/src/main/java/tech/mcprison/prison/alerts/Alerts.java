@@ -25,7 +25,6 @@ public class Alerts {
 
     private static Alerts instance;
     private List<Alert> alerts;
-    private AlertCommands commands;
 
     /*
      * Constructor
@@ -33,8 +32,8 @@ public class Alerts {
 
     private Alerts() {
         alerts = new ArrayList<>();
-        this.commands = new AlertCommands();
 
+        new AlertCommands();
         Prison.get().getEventBus().register(this);
     }
 
@@ -68,7 +67,7 @@ public class Alerts {
         alerts.clear();
     }
 
-    private void showAlerts(Player player) {
+    public void showAlerts(Player player) {
         int alerts = Alerts.getInstance().getAlertsFor(player.getUUID()).size();
         if (alerts > 0) {
             Output.get().sendInfo(player,
@@ -97,10 +96,6 @@ public class Alerts {
             instance = new Alerts();
         }
         return instance;
-    }
-
-    public AlertCommands getCommands() {
-        return commands;
     }
 
     public List<Alert> getAlertsFor(UUID uid) {

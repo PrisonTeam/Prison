@@ -219,8 +219,8 @@ public class Prison implements IComponent {
             PrisonAPI.getOnlinePlayers().stream().filter(
                 player -> player.hasPermission("prison.admin")
                     && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-                .forEach(Alerts.getInstance().getCommands()::prisonAlertsCommand);
-        }, 60 * 5, 60 * 5);
+                .forEach(Alerts.getInstance()::showAlerts);
+        }, 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps
