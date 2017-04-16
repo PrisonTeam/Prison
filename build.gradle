@@ -57,7 +57,7 @@ subprojects {
 
     archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
-    version = '0.7.0-SNAPSHOT'
+    version = '0.10.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
