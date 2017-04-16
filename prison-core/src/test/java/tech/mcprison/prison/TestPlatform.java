@@ -94,7 +94,7 @@ public class TestPlatform implements Platform {
     }
 
     @Override public Scheduler getScheduler() {
-        return null;
+        return new TestScheduler();
     }
 
     @Override public GUI createGUI(String title, int numRows) {
