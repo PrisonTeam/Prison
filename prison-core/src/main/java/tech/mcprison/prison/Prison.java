@@ -216,8 +216,9 @@ public class Prison implements IComponent {
     private void scheduleAlertNagger() {
         // Nag the user with alerts every 5 minutes
         PrisonAPI.getScheduler().runTaskTimerAsync(() -> {
-            PrisonAPI.getOnlinePlayers().stream()
-                .filter(player -> player.hasPermission("prison.admin"))
+            PrisonAPI.getOnlinePlayers().stream().filter(
+                player -> player.hasPermission("prison.admin")
+                    && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
                 .forEach(Alerts.getInstance().getCommands()::prisonAlertsCommand);
         }, 60 * 5, 60 * 5);
     }
