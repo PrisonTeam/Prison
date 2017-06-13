@@ -185,6 +185,8 @@ public class Prison implements IComponent {
     }
 
     private void checkPublicBetaVersion() {
+        if (true) return;
+        // TODO Need to fix this. Need to finish the website and put it back online :|
         Output.get().logInfo("Checking for beta updates...");
         try {
             URL url = new URL(betaUpdateServer);
@@ -215,12 +217,10 @@ public class Prison implements IComponent {
 
     private void scheduleAlertNagger() {
         // Nag the user with alerts every 5 minutes
-        PrisonAPI.getScheduler().runTaskTimerAsync(() -> {
-            PrisonAPI.getOnlinePlayers().stream().filter(
-                player -> player.hasPermission("prison.admin")
-                    && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-                .forEach(Alerts.getInstance()::showAlerts);
-        }, 60 * 20 * 5, 60 * 20 * 5);
+        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream().filter(
+            player -> player.hasPermission("prison.admin")
+                && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
+            .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps

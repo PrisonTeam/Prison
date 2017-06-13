@@ -26,10 +26,10 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.internal.inventory.InventoryType;
 
 import java.util.*;
 
@@ -99,7 +99,8 @@ public class SpigotInventory implements Inventory {
 
     @Override public boolean contains(BlockType type) {
         MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        org.bukkit.inventory.ItemStack stack =
+            new org.bukkit.inventory.ItemStack(materialData.getItemType());
         stack.setData(materialData);
         return wrapper.contains(stack);
     }
@@ -173,7 +174,8 @@ public class SpigotInventory implements Inventory {
 
     @Override public void clear(BlockType type) {
         MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        org.bukkit.inventory.ItemStack stack =
+            new org.bukkit.inventory.ItemStack(materialData.getItemType());
         stack.setData(materialData);
         wrapper.remove(stack);
     }
@@ -188,7 +190,8 @@ public class SpigotInventory implements Inventory {
 
     @Override public int first(BlockType type) {
         MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-        org.bukkit.inventory.ItemStack stack = new org.bukkit.inventory.ItemStack(materialData.getItemType());
+        org.bukkit.inventory.ItemStack stack =
+            new org.bukkit.inventory.ItemStack(materialData.getItemType());
         stack.setData(materialData);
         return wrapper.first(stack);
     }

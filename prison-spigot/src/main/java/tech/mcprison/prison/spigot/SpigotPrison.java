@@ -23,6 +23,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.alerts.Alerts;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
@@ -75,6 +76,7 @@ public class SpigotPrison extends JavaPlugin {
         initDataDir();
         initCommandMap();
         initCompatibility();
+        initMetrics();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
         Prison.get().init(new SpigotPlatform(this));
@@ -121,14 +123,12 @@ public class SpigotPrison extends JavaPlugin {
         int minorVersionInt = 9;
         try {
             minorVersionInt = Integer.parseInt(version[1]);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             try {
-                minorVersionInt = Integer.parseInt(version[1].subtring(0, version[1].indexOf(')'));
-            }
-            catch (Exception ex) {
-                getLogger().severe(
-                    "Unable to determine server version. Assuming spigot 1.9 or greater.");
+                minorVersionInt =
+                    Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
+            } catch (Exception ex) {
+                Output.get().logError("Unable to determine server version. Assuming spigot 1.9 or greater.");
             }
         }
 

@@ -29,7 +29,7 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  */
 public class PrepareAnvilEvent extends InventoryEvent {
 
-    ItemStack result;
+    private ItemStack result;
 
     public PrepareAnvilEvent(Viewable transaction, ItemStack result) {
         super(transaction);
@@ -37,7 +37,7 @@ public class PrepareAnvilEvent extends InventoryEvent {
     }
 
     public AnvilInventory getInventory() {
-        return (AnvilInventory) transaction.getTopInventory();
+        return (AnvilInventory) getView().getTopInventory();
     }
 
     public ItemStack getResult() {

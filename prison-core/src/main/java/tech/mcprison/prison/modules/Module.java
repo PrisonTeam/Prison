@@ -57,7 +57,8 @@ public abstract class Module implements IComponent {
     public Module(String name, String version, int target) {
         this.name = name;
         this.version = version;
-        this.dataFolder = new File(PrisonAPI.getModuleManager().getModuleRoot(), name.toLowerCase().replace(" ", "_"));
+        this.dataFolder = new File(PrisonAPI.getModuleManager().getModuleRoot(),
+            name.toLowerCase().replace(" ", "_"));
         this.apiTarget = target;
         this.status = new ModuleStatus();
         if (!this.dataFolder.exists()) {

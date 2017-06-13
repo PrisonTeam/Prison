@@ -17,6 +17,13 @@ public class ConversionManager {
         this.agents = new ArrayList<>();
     }
 
+    public static ConversionManager getInstance() {
+        if (instance == null) {
+            instance = new ConversionManager();
+        }
+        return instance;
+    }
+
     public void registerConversionAgent(ConversionAgent agent) {
         agents.add(agent);
     }
@@ -28,13 +35,6 @@ public class ConversionManager {
             results.add(result);
         }
         return results;
-    }
-
-    public static ConversionManager getInstance() {
-        if (instance == null) {
-            instance = new ConversionManager();
-        }
-        return instance;
     }
 
 

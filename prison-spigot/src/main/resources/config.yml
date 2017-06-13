@@ -12,16 +12,10 @@ storageType: "json"
 #storageType: "mongo"
 #storageType: "sql"
 
-# Login credentials for MongoDB
-mongo:
-  host: localhost
-  database: prison
-  username: root
-  password: root
-  port: 3306
-
-# Login credentials for SQL.
-sql:
+# Login credentials for either SQL or MongoDB
+database:
+  enabled: false
+  type: sql # sql or mongo
   host: localhost
   database: prison
   username: root

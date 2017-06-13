@@ -29,11 +29,11 @@ import tech.mcprison.prison.internal.events.Cancelable;
  */
 public class FurnaceBurnEvent implements Cancelable {
 
-    boolean canceled = false;
-    int burnTime = -1;
-    ItemStack fuel = null;
-    boolean burning = false;
-    Block block;
+    private boolean canceled = false;
+    private int burnTime = -1;
+    private ItemStack fuel = null;
+    private boolean burning = false;
+    private Block block;
 
     public FurnaceBurnEvent(Block furnace, ItemStack fuel, int burnTime, boolean burning) {
         block = furnace;

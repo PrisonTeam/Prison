@@ -20,7 +20,6 @@ package tech.mcprison.prison.internal;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Text;
 
 import java.util.*;
 
@@ -32,9 +31,9 @@ import java.util.*;
  */
 public class ItemStack {
 
-    String displayName = null;
-    int amount;
-    BlockType material;
+    private String displayName = null;
+    private int amount;
+    private BlockType material;
     private List<String> lore;
     private Map<Integer, Integer> enchantments;
 
@@ -56,8 +55,7 @@ public class ItemStack {
      * Returns the name of the item stack, derived from its BlockType name.
      */
     public String getName() {
-        return StringUtils
-            .capitalize(material.name().replaceAll("_", " ").toLowerCase());
+        return StringUtils.capitalize(material.name().replaceAll("_", " ").toLowerCase());
     }
 
     /**
@@ -65,6 +63,10 @@ public class ItemStack {
      */
     public String getDisplayName() {
         return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     /**
@@ -87,10 +89,6 @@ public class ItemStack {
 
     public Map<Integer, Integer> getEnchantments() {
         return enchantments;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public void addEnchantment(int enchantment, int level) {

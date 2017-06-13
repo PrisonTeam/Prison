@@ -265,8 +265,9 @@ class SpigotPlatform implements Platform {
 
         List<ConversionResult> results = ConversionManager.getInstance().runConversion();
 
-        if(results.size() == 0) {
-            return Text.translateAmpColorCodes("&7There are no conversions to be run at this time.");
+        if (results.size() == 0) {
+            return Text
+                .translateAmpColorCodes("&7There are no conversions to be run at this time.");
         }
 
         BulletedListComponent.BulletedListBuilder builder =

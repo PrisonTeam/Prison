@@ -128,24 +128,11 @@ public class Location {
 
         Location location = (Location) o;
 
-        if (Double.compare(location.x, x) != 0) {
-            return false;
-        }
-        if (Double.compare(location.y, y) != 0) {
-            return false;
-        }
-        if (Double.compare(location.z, z) != 0) {
-            return false;
-        }
-        if (Float.compare(location.pitch, pitch) != 0) {
-            return false;
-        }
-        if (Float.compare(location.yaw, yaw) != 0) {
-            return false;
-        }
-        return world != null ?
+        return Double.compare(location.x, x) == 0 && Double.compare(location.y, y) == 0
+            && Double.compare(location.z, z) == 0 && Float.compare(location.pitch, pitch) == 0
+            && Float.compare(location.yaw, yaw) == 0 && (world != null ?
             world.getName().equals(location.world.getName()) :
-            location.world == null;
+            location.world == null);
 
     }
 

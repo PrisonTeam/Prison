@@ -468,6 +468,17 @@ public class Vector implements Cloneable {
      * @param x The new X component.
      * @return This vector.
      */
+    public Vector setX(double x) {
+        this.x = x;
+        return this;
+    }
+
+    /**
+     * Set the X component.
+     *
+     * @param x The new X component.
+     * @return This vector.
+     */
     public Vector setX(float x) {
         this.x = x;
         return this;
@@ -480,17 +491,6 @@ public class Vector implements Cloneable {
      * @return This vector.
      */
     public Vector setX(int x) {
-        this.x = x;
-        return this;
-    }
-
-    /**
-     * Set the X component.
-     *
-     * @param x The new X component.
-     * @return This vector.
-     */
-    public Vector setX(double x) {
         this.x = x;
         return this;
     }
@@ -520,6 +520,17 @@ public class Vector implements Cloneable {
      * @param y The new Y component.
      * @return This vector.
      */
+    public Vector setY(double y) {
+        this.y = y;
+        return this;
+    }
+
+    /**
+     * Set the Y component.
+     *
+     * @param y The new Y component.
+     * @return This vector.
+     */
     public Vector setY(float y) {
         this.y = y;
         return this;
@@ -532,17 +543,6 @@ public class Vector implements Cloneable {
      * @return This vector.
      */
     public Vector setY(int y) {
-        this.y = y;
-        return this;
-    }
-
-    /**
-     * Set the Y component.
-     *
-     * @param y The new Y component.
-     * @return This vector.
-     */
-    public Vector setY(double y) {
         this.y = y;
         return this;
     }
@@ -572,6 +572,17 @@ public class Vector implements Cloneable {
      * @param z The new Z component.
      * @return This vector.
      */
+    public Vector setZ(double z) {
+        this.z = z;
+        return this;
+    }
+
+    /**
+     * Set the Z component.
+     *
+     * @param z The new Z component.
+     * @return This vector.
+     */
     public Vector setZ(float z) {
         this.z = z;
         return this;
@@ -584,17 +595,6 @@ public class Vector implements Cloneable {
      * @return This vector.
      */
     public Vector setZ(int z) {
-        this.z = z;
-        return this;
-    }
-
-    /**
-     * Set the Z component.
-     *
-     * @param z The new Z component.
-     * @return This vector.
-     */
-    public Vector setZ(double z) {
         this.z = z;
         return this;
     }

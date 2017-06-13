@@ -26,7 +26,7 @@ import tech.mcprison.prison.internal.block.BlockState;
  */
 public class SpigotBlockState implements BlockState {
 
-    SpigotBlock block;
+    public SpigotBlock block;
 
     public SpigotBlockState(SpigotBlock block) {
         this.block = block;

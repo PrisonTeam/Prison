@@ -24,10 +24,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -112,8 +112,7 @@ public class SpigotUtil {
         int amount = prisonStack.getAmount();
         MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
 
-        ItemStack bukkitStack =
-            new ItemStack(materialData.getItemType(), amount);
+        ItemStack bukkitStack = new ItemStack(materialData.getItemType(), amount);
         bukkitStack.setData(materialData);
 
         ItemMeta meta;
@@ -129,14 +128,12 @@ public class SpigotUtil {
             }
             if (prisonStack.getLore() != null) {
                 List<String> colored = new ArrayList<>();
-                for(String uncolor : prisonStack.getLore()) {
+                for (String uncolor : prisonStack.getLore()) {
                     colored.add(Text.translateAmpColorCodes(uncolor));
                 }
                 meta.setLore(colored);
             }
             bukkitStack.setItemMeta(meta);
-        } else {
-            System.out.println("meta null");
         }
 
         return bukkitStack;

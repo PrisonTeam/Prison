@@ -19,8 +19,8 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.internal.inventory.InventoryType;
+import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
  * Currently undocumented.
@@ -29,12 +29,12 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
  */
 public class InventoryClickEvent extends InventoryInteractEvent {
 
-    protected Click click;
-    protected InventoryType.SlotType type;
-    protected int slot;
-    protected Action action;
-    protected int hotbar = -1;
-    protected ItemStack current = null;
+    private Click click;
+    private InventoryType.SlotType type;
+    private int slot;
+    private Action action;
+    private int hotbar = -1;
+    private ItemStack current = null;
 
     public InventoryClickEvent(Viewable transaction, InventoryType.SlotType type, int slot,
         Click click, Action action) {

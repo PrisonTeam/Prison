@@ -39,10 +39,8 @@ public class SpigotScoreboard implements Scoreboard {
     }
 
     @Override public Objective getObjective(DisplaySlot slot) {
-        return new SpigotObjective( //
-            bScoreboard.getObjective( //
-                org.bukkit.scoreboard.DisplaySlot.valueOf(slot.name()) //
-            ));
+        return new SpigotObjective(
+            bScoreboard.getObjective(org.bukkit.scoreboard.DisplaySlot.valueOf(slot.name())));
     }
 
     @Override public Objective registerNewObjective(String name, String criteria) {

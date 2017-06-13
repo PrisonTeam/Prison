@@ -1,7 +1,5 @@
 package tech.mcprison.prison.alerts;
 
-import tech.mcprison.prison.store.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

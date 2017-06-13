@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Internal class: Represents a component of a JSON-serializable {@link FancyMessage}.
  */
-final class MessagePart implements JsonRepresentedObject, Cloneable {
+public final class MessagePart implements JsonRepresentedObject, Cloneable {
 
     static final BiMap<ChatColor, String> stylesToNames;
 

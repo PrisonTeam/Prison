@@ -29,11 +29,11 @@ import tech.mcprison.prison.internal.inventory.Inventory;
  */
 public class InventoryMoveItemEvent implements Cancelable {
 
-    boolean sourceInitiated;
-    boolean canceled = false;
-    Inventory source;
-    Inventory destination;
-    ItemStack item;
+    private boolean sourceInitiated;
+    private boolean canceled = false;
+    private Inventory source;
+    private Inventory destination;
+    private ItemStack item;
 
     public InventoryMoveItemEvent(Inventory sourceInventory, ItemStack itemStack,
         Inventory destinationInventory, boolean didSourceInitiate) {

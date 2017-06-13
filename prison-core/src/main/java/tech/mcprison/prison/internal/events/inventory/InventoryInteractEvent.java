@@ -44,7 +44,7 @@ public class InventoryInteractEvent extends InventoryEvent implements Cancelable
     }
 
     public Player getWhoClicked() {
-        return transaction.getPlayer();
+        return getView().getPlayer();
     }
 
 }

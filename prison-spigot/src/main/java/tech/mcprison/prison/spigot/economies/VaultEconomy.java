@@ -28,7 +28,7 @@ import tech.mcprison.prison.internal.Player;
  */
 public class VaultEconomy implements Economy {
 
-    net.milkbowl.vault.economy.Economy economy = null;
+    private net.milkbowl.vault.economy.Economy economy = null;
 
     public VaultEconomy() {
         RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
@@ -69,10 +69,7 @@ public class VaultEconomy implements Economy {
     }
 
     @Override public boolean canAfford(Player player, double amount) {
-        if (economy == null) {
-            return false;
-        }
-        return economy.bankHas(player.getName(), amount).transactionSuccess();
+        return economy != null && economy.bankHas(player.getName(), amount).transactionSuccess();
     }
 
 }

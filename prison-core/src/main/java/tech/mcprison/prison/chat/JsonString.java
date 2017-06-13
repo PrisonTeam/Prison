@@ -29,7 +29,7 @@ import java.util.Map;
  * Writes by this object will not write name values nor begin/end objects in the JSON stream.
  * All writes merely write the represented string value.
  */
-final class JsonString implements JsonRepresentedObject {
+public final class JsonString implements JsonRepresentedObject {
 
     private String _value;
 

@@ -24,7 +24,10 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 /**
- * Created by DMP9 on 23/01/2017.
+ * Platform-independent event, which is posted when a player breaks a block.
+ *
+ * @author DMP9
+ * @since API 0.1
  */
 public class BlockBreakEvent implements Cancelable {
 

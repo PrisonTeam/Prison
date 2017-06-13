@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class InventoryEvent {
 
-    protected Viewable transaction;
+    private Viewable transaction;
 
 
     public InventoryEvent(Viewable transaction) {

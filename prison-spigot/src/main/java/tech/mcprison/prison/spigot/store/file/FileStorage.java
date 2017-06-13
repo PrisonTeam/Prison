@@ -22,7 +22,7 @@ public class FileStorage implements Storage {
         // We'll initialize each of them here.
         File[] databaseFiles = this.rootDir.listFiles(File::isDirectory);
         if (databaseFiles != null) {
-            for(File dbFile : databaseFiles) {
+            for (File dbFile : databaseFiles) {
                 databaseMap.put(dbFile.getName(), new FileDatabase(dbFile));
             }
         }
@@ -38,7 +38,7 @@ public class FileStorage implements Storage {
 
     @Override public void createDatabase(String name) {
         File directory = new File(rootDir, name);
-        if(directory.exists()) {
+        if (directory.exists()) {
             return; // A database by this name already exists. As promised, do nothing.
         }
 
@@ -48,12 +48,12 @@ public class FileStorage implements Storage {
 
     @Override public void deleteDatabase(String name) {
         File directory = new File(rootDir, name);
-        if(!directory.exists()) {
+        if (!directory.exists()) {
             return; // A database by this name does not exist. As promised, do nothing.
         }
 
         Database db = databaseMap.get(name);
-        if(db == null) {
+        if (db == null) {
             return; // Still doesn't exist. Do nothing.
         }
 

@@ -19,8 +19,8 @@ public class FileDatabase implements Database {
         this.collectionMap = new HashMap<>();
 
         File[] collectionDirs = dbDir.listFiles(File::isDirectory);
-        if(collectionDirs != null) {
-            for(File collDir : collectionDirs) {
+        if (collectionDirs != null) {
+            for (File collDir : collectionDirs) {
                 collectionMap.put(collDir.getName(), new FileCollection(collDir));
             }
         }
@@ -32,7 +32,7 @@ public class FileDatabase implements Database {
 
     @Override public void createCollection(String name) {
         File collDir = new File(dbDir, name);
-        if(collDir.exists()) {
+        if (collDir.exists()) {
             return;
         }
         collDir.mkdir();
@@ -42,7 +42,7 @@ public class FileDatabase implements Database {
 
     @Override public void deleteCollection(String name) {
         File collDir = new File(dbDir, name);
-        if(!collDir.exists()) {
+        if (!collDir.exists()) {
             return;
         }
 

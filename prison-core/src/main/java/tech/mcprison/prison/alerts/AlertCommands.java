@@ -22,7 +22,7 @@ public class AlertCommands {
 
     @Command(identifier = "prison alerts", description = "Lists your alerts.", permissions = "prison.admin")
     public void prisonAlertsCommand(CommandSender sender) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
@@ -50,7 +50,7 @@ public class AlertCommands {
 
     @Command(identifier = "prison alerts clear", description = "Clears your alerts.", permissions = "prison.admin")
     public void prisonAlertsClearCommand(CommandSender sender) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
@@ -69,7 +69,7 @@ public class AlertCommands {
 
     @Command(identifier = "prison alerts clearall", description = "Clears the alerts for the whole server.", permissions = "prison.admin")
     public void prisonAlertsClearAllCommand(CommandSender sender) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;

@@ -186,8 +186,8 @@ public interface Platform {
     /**
      * Send an actionbar to a player
      *
-     * @param player The player that you want to send the actionbar to
-     * @param text   The text of the actionbar
+     * @param player   The player that you want to send the actionbar to
+     * @param text     The text of the actionbar
      * @param duration The amount of time to show the action bar, in seconds. Set to -1 for no duration (i.e. vanilla standard duration of ~3 seconds).
      */
     void showActionBar(Player player, String text, int duration);

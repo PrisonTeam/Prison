@@ -22,10 +22,10 @@ import org.bukkit.inventory.InventoryView;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.internal.inventory.InventoryType;
 
 /**
  * Currently undocumented.

@@ -32,11 +32,11 @@ import java.util.Set;
  */
 public class InventoryDragEvent extends InventoryInteractEvent {
 
-    boolean right;
-    ItemStack newCursor;
-    ItemStack oldCursor;
-    Map<Integer, ItemStack> slots;
-    Set<Integer> parsedSlots;
+    private boolean right;
+    private ItemStack newCursor;
+    private ItemStack oldCursor;
+    private Map<Integer, ItemStack> slots;
+    private Set<Integer> parsedSlots;
 
     public InventoryDragEvent(Viewable transaction, ItemStack newCursor, ItemStack oldCursor,
         boolean right, Map<Integer, ItemStack> slots) {

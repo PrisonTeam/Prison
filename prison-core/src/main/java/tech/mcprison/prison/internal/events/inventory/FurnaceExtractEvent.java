@@ -29,11 +29,11 @@ import tech.mcprison.prison.util.BlockType;
  */
 public class FurnaceExtractEvent {
 
-    int itemAmount;
-    int expToDrop;
-    Block block;
-    BlockType blockType;
-    Player player;
+    private int itemAmount;
+    private int expToDrop;
+    private Block block;
+    private BlockType blockType;
+    private Player player;
 
     public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount,
         int exp) {

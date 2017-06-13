@@ -19,8 +19,8 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.internal.inventory.InventoryType;
+import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
  * Currently undocumented.
@@ -29,7 +29,7 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
  */
 public class InventoryCreativeEvent extends InventoryClickEvent {
 
-    ItemStack item;
+    private ItemStack item;
 
     public InventoryCreativeEvent(Viewable transaction, InventoryType.SlotType type, int slot,
         ItemStack newItem) {

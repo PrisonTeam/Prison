@@ -102,6 +102,7 @@ public interface Player extends CommandSender, InventoryHolder {
 
     /**
      * Returns whether the player is a server operator or not.
+     *
      * @return true if the player is an operator, false otherwise.
      */
     boolean isOp();
@@ -115,5 +116,5 @@ public interface Player extends CommandSender, InventoryHolder {
      * inventory. May not be necessary on all platforms but should be used where ever the player inventory
      * is modified
      */
-    void updateInventory(); 
+    void updateInventory();
 }

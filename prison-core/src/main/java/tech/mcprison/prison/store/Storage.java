@@ -28,6 +28,7 @@ public interface Storage {
     /**
      * Create a new database. If a database exists by the provided name,
      * this method will do nothing.
+     *
      * @param name The name of the new database.
      */
     void createDatabase(String name);
@@ -35,6 +36,7 @@ public interface Storage {
     /**
      * Deletes a database. If no database exists by the provided nmae,
      * this method will do nothing.
+     *
      * @param name The name of the database to delete.
      */
     void deleteDatabase(String name);

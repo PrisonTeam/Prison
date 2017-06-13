@@ -1,7 +1,5 @@
 package tech.mcprison.prison.error;
 
-import tech.mcprison.prison.util.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 

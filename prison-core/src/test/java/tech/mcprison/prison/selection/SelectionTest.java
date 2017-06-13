@@ -33,8 +33,6 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -56,17 +54,16 @@ public class SelectionTest {
         TestPlayer ourPlayer = new TestPlayer();
 
         ItemStack coloredToolItemStack = SelectionManager.SELECTION_TOOL;
-        coloredToolItemStack.setDisplayName(Text.translateAmpColorCodes(coloredToolItemStack.getDisplayName()));
+        coloredToolItemStack
+            .setDisplayName(Text.translateAmpColorCodes(coloredToolItemStack.getDisplayName()));
 
-        Prison.get().getEventBus().post(
-            new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
-                PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
+            PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertTrue(ourPlayer.getInput().contains("&7First position set to &8(10, 20, 30)"));
 
-        Prison.get().getEventBus().post(
-            new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
-                PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
+        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
+            PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
 
         assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30, 20, 40)"));
     }

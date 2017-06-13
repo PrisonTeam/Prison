@@ -2,7 +2,7 @@ If you are making a bug report, fill out the form below. If you are making a sug
 
 ### Which module are you submitting this issue for?
 
-Example: Core, mines, ranks, shops, cells, Spigot, Sponge, etc.
+Example: Core, Mines, Ranks, Shops, Cells, Gangs, Spigot, Sponge, etc.
 
 ### Describe the issue you are experiencing.
 Include details such as what you did, what happened, and what you think should have happened.

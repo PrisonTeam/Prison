@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.error.Error;
-import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.lang.reflect.Field;
@@ -68,7 +67,8 @@ public class ActionBarUtil {
             Method m5 = pc.getClass().getDeclaredMethod("sendPacket", c5);
             m5.invoke(pc, ppoc);
         } catch (Exception ex) {
-            Prison.get().getErrorManager().throwError(new Error("Could not send action bar.").appendStackTrace("during NMS calls", ex));
+            Prison.get().getErrorManager().throwError(
+                new Error("Could not send action bar.").appendStackTrace("during NMS calls", ex));
         }
     }
 

@@ -49,7 +49,7 @@ public class CollectionUtil {
      * @return A {@link Map}.
      */
     public static <K, V> Map<K, V> map(K key1, V value1, Object... objects) {
-        Map<K, V> ret = new LinkedHashMap<K, V>();
+        Map<K, V> ret = new LinkedHashMap<>();
 
         ret.put(key1, value1);
 

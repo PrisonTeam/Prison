@@ -41,6 +41,13 @@ public class Alerts {
      * Methods
      */
 
+    public static Alerts getInstance() {
+        if (instance == null) {
+            instance = new Alerts();
+        }
+        return instance;
+    }
+
     public void sendAlert(String alertMsg, Object... format) {
         String msg = String.format(alertMsg, format);
         Alert alert = new Alert(alerts.size(), msg);
@@ -48,7 +55,8 @@ public class Alerts {
 
         for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
             if (player.hasPermission("prison.admin") || player.isOp()) {
-                Output.get().sendInfo(player, "You have a new alert from Prison. &3Type /prison alerts to read it.");
+                Output.get().sendInfo(player,
+                    "You have a new alert from Prison. &3Type /prison alerts to read it.");
             }
         }
     }
@@ -67,6 +75,10 @@ public class Alerts {
         alerts.clear();
     }
 
+    /*
+     * Listeners
+     */
+
     public void showAlerts(Player player) {
         int alerts = Alerts.getInstance().getAlertsFor(player.getUUID()).size();
         if (alerts > 0) {
@@ -77,7 +89,7 @@ public class Alerts {
     }
 
     /*
-     * Listeners
+     * Getters
      */
 
     @Subscribe public void onPlayerJoin(PlayerJoinEvent e) {
@@ -85,17 +97,6 @@ public class Alerts {
             // He should see alerts
             showAlerts(e.getPlayer());
         }
-    }
-
-    /*
-     * Getters
-     */
-
-    public static Alerts getInstance() {
-        if (instance == null) {
-            instance = new Alerts();
-        }
-        return instance;
     }
 
     public List<Alert> getAlertsFor(UUID uid) {

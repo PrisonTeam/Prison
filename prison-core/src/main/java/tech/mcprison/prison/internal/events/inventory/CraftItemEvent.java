@@ -19,9 +19,9 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.inventory.CraftingInventory;
+import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Recipe;
 import tech.mcprison.prison.internal.inventory.Viewable;
-import tech.mcprison.prison.internal.inventory.InventoryType;
 
 /**
  * Currently undocumented.
@@ -30,7 +30,7 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
  */
 public class CraftItemEvent extends InventoryClickEvent {
 
-    protected Recipe recipe;
+    private Recipe recipe;
 
     public CraftItemEvent(Recipe recipe, Viewable what, InventoryType.SlotType type, int slot,
         Click click, Action action) {
@@ -45,7 +45,7 @@ public class CraftItemEvent extends InventoryClickEvent {
     }
 
     public CraftingInventory getInventory() {
-        return (CraftingInventory) transaction.getTopInventory();
+        return (CraftingInventory) getView().getTopInventory();
     }
 
     public Recipe getRecipe() {

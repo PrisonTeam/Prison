@@ -29,14 +29,14 @@ import tech.mcprison.prison.internal.inventory.Viewable;
  */
 public class InventoryOpenEvent extends InventoryEvent implements Cancelable {
 
-    boolean canceled = false;
+    private boolean canceled = false;
 
     public InventoryOpenEvent(Viewable transaction) {
         super(transaction);
     }
 
     public Player getPlayer() {
-        return transaction.getPlayer();
+        return getView().getPlayer();
     }
 
     public boolean isCanceled() {

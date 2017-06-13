@@ -29,10 +29,10 @@ import tech.mcprison.prison.internal.events.Cancelable;
  */
 public class FurnaceSmeltEvent implements Cancelable {
 
-    ItemStack result;
-    ItemStack source;
-    Block block;
-    boolean canceled;
+    private ItemStack result;
+    private ItemStack source;
+    private Block block;
+    private boolean canceled;
 
     public FurnaceSmeltEvent(Block furnace, ItemStack source, ItemStack result) {
         block = furnace;

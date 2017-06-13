@@ -21,7 +21,6 @@ package tech.mcprison.prison.spigot.game;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -30,14 +29,12 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
-import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -120,6 +117,10 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
 
     @Override public Inventory getInventory() {
         return new SpigotPlayerInventory(getWrapper().getInventory());
+    }
+
+    @Override public void updateInventory() {
+        bukkitPlayer.updateInventory();
     }
 
     /**
@@ -223,10 +224,6 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
             return Class.forName("net.minecraft.server." + PACKAGE_VERSION + className);
         }
 
-    }
-
-    @Override public void updateInventory() {
-        bukkitPlayer.updateInventory();
     }
 
 }

@@ -117,10 +117,7 @@ public enum InventoryType {
          * The fuel slot in a furnace inventory, or the ingredient slot in a
          * brewing stand inventory.
          */
-        FUEL,
-        CONTAINER,
-        QUICKBAR,
-        OUTSIDE,
+        FUEL, CONTAINER, QUICKBAR, OUTSIDE,
     }
 
 }
