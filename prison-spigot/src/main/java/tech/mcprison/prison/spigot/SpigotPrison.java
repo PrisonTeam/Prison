@@ -118,15 +118,24 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initCompatibility() {
         String[] version = Bukkit.getVersion().split("\\.");
-        int minorVersionInt = Integer.parseInt(version[1]);
+        int minorVersionInt = 9;
+        try {
+            minorVersionInt = Integer.parseInt(version[1]);
+        }
+        catch (NumberFormatException e) {
+            try {
+                minorVersionInt = Integer.parseInt(version[1].subtring(0, version[1].indexOf(')'));
+            }
+            catch (Exception ex) {
+                getLogger().severe(
+                    "Unable to determine server version. Assuming spigot 1.9 or greater.");
+            }
+        }
 
         if (minorVersionInt <= 8) {
             compatibility = new Spigot18();
         } else if (minorVersionInt >= 9) {
             compatibility = new Spigot19();
-        } else {
-            getLogger().severe(
-                "This shouldn't even be possible, so something is clearly very wrong with your version.");
         }
 
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
