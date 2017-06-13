@@ -1,7 +1,6 @@
 ![Prison](https://static.mc-prison.tech/assets/images/banner.png)
 
-[![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://dmp9.uk/jenkins/job/Prison/job/Prison/badge/icon)](https://dmp9.uk/jenkins/job/Prison)
+[![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison)
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 
 1. [What is Prison?](#what-is-prison)
@@ -28,4 +27,4 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 ## What's the status on Prison v3.0?
 
-Prison v3.0 is currently in Public Beta. You may download it [from here](https://mc-prison.tech/). We need your help to test it, so please report any bugs to the issues page.
+Prison v3.0 is currently in Public Beta. You may download it [from here](https://mc-prison.tech/beta-builds/). We need your help to test it, so please report any bugs to the issues page.
