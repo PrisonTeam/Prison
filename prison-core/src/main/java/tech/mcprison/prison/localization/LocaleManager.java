@@ -30,7 +30,7 @@
 package tech.mcprison.prison.localization;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.modules.IComponent;
+import tech.mcprison.prison.modules.PluginEntity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -93,17 +93,17 @@ public class LocaleManager {
         ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR"));
     }
 
-    private final IComponent module;
+    private final PluginEntity module;
     HashMap<String, Properties> configs = new HashMap<>();
     private String defaultLocale = DEFAULT_LOCALE;
 
     /**
-     * Constructs a new {@link LocaleManager} owned by the given {@link IComponent}.
+     * Constructs a new {@link LocaleManager} owned by the given {@link PluginEntity}.
      *
      * @param module The module owning the new {@link LocaleManager}.
      * @since 1.0
      */
-    public LocaleManager(IComponent module) {
+    public LocaleManager(PluginEntity module) {
         this.module = module;
         loadShippedLocales();
         loadCustomLocales(); // custom locales will override
@@ -204,7 +204,7 @@ public class LocaleManager {
      * @return The plugin owning this {@link LocaleManager}
      * @since 1.0
      */
-    public IComponent getOwningPlugin() {
+    public PluginEntity getOwningPlugin() {
         return module;
     }
 

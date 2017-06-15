@@ -27,7 +27,7 @@ import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
-import tech.mcprison.prison.modules.IComponent;
+import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
@@ -51,7 +51,7 @@ import java.util.Optional;
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public class Prison implements IComponent {
+public class Prison implements PluginEntity {
 
     // Singleton
 

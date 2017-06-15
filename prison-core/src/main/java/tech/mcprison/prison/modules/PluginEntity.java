@@ -26,7 +26,7 @@ import java.io.File;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface IComponent {
+public interface PluginEntity {
 
     String getName();
 

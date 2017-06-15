@@ -31,7 +31,7 @@ import java.io.File;
  * @author Faizaan A. Datoo
  * @since API 0.1
  */
-public abstract class Module implements IComponent {
+public abstract class Module implements PluginEntity {
 
     /*
      * Fields & Constants
