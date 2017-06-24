@@ -27,12 +27,13 @@ import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
-import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
+import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
@@ -68,6 +69,7 @@ public class Prison implements PluginEntity {
     private LocaleManager localeManager;
     private ItemManager itemManager;
     private ErrorManager errorManager;
+    private TroubleshootManager troubleshootManager;
     private Database metaDatabase;
 
     private String betaVersion = "Public Beta 1";
@@ -182,10 +184,13 @@ public class Prison implements PluginEntity {
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
         this.itemManager = new ItemManager();
+        this.troubleshootManager = new TroubleshootManager();
     }
 
     private void checkPublicBetaVersion() {
-        if (true) return;
+        if (true) {
+            return;
+        }
         // TODO Need to fix this. Need to finish the website and put it back online :|
         Output.get().logInfo("Checking for beta updates...");
         try {
@@ -217,8 +222,8 @@ public class Prison implements PluginEntity {
 
     private void scheduleAlertNagger() {
         // Nag the user with alerts every 5 minutes
-        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream().filter(
-            player -> player.hasPermission("prison.admin")
+        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
+            .filter(player -> player.hasPermission("prison.admin")
                 && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
             .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
@@ -331,4 +336,12 @@ public class Prison implements PluginEntity {
     public Database getMetaDatabase() {
         return metaDatabase;
     }
+
+    /**
+     * Returns the troubleshoot manager, which is used to register {@link tech.mcprison.prison.troubleshoot.Troubleshooter}s.
+     */
+    public TroubleshootManager getTroubleshootManager() {
+        return troubleshootManager;
+    }
+
 }

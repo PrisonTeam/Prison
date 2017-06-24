@@ -18,12 +18,16 @@
 
 package tech.mcprison.prison;
 
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.troubleshoot.TroubleshootResult;
+import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -72,6 +76,36 @@ public class PrisonCommand {
                 module.getVersion(), module.getStatus().getMessage());
         }
 
+        display.addComponent(builder.build());
+
+        display.send(sender);
+    }
+
+    @Command(identifier = "prison troubleshoot", description = "Run a troubleshooter.", onlyPlayers = false)
+    public void troubleshootCommand(CommandSender sender, @Arg(name = "name") String name) {
+        TroubleshootResult result = PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
+        if(result == null) {
+            Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
+            return;
+        }
+
+        ChatDisplay display = new ChatDisplay("Result Summary");
+        display.text("&7Troubleshooter name: &b%s", name.toLowerCase());
+        display.text("&7Result type: &b%s", result.getResult().name());
+        display.text("&7Result details: &b%s", result.getDescription());
+        display.send(sender);
+
+    }
+
+    @Command(identifier = "prison troubleshoot list", description = "List the troubleshooters.", onlyPlayers = false)
+    public void troubleshootListCommand(CommandSender sender) {
+        ChatDisplay display = new ChatDisplay("Troubleshooters");
+        display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
+
+        BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
+        for(Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager().getTroubleshooters()) {
+            builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
+        }
         display.addComponent(builder.build());
 
         display.send(sender);
