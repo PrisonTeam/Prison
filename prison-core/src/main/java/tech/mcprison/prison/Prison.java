@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
+import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -34,6 +35,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
+import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
@@ -132,6 +134,7 @@ public class Prison implements PluginEntity {
                     updateVersion, updateUrl);
         }
 
+        registerInbuiltTroubleshooters();
         scheduleAlertNagger();
 
         return true;
@@ -183,8 +186,15 @@ public class Prison implements PluginEntity {
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
-        this.itemManager = new ItemManager();
         this.troubleshootManager = new TroubleshootManager();
+
+        try {
+            this.itemManager = new ItemManager();
+        } catch (Exception e) {
+            this.errorManager.throwError(new Error("Error while loading items.csv. Try running /prison troubleshoot item_scan.")
+                .appendStackTrace("when loading items.csv", e));
+            Output.get().logError("Try running /prison troubleshoot item_scan.");
+        }
     }
 
     private void checkPublicBetaVersion() {
@@ -218,6 +228,10 @@ public class Prison implements PluginEntity {
         } catch (Exception e) {
             Output.get().logError("The update server is experiencing issues right now. Sorry!");
         }
+    }
+
+    private void registerInbuiltTroubleshooters() {
+        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
     }
 
     private void scheduleAlertNagger() {

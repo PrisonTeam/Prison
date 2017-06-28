@@ -83,17 +83,18 @@ public class PrisonCommand {
 
     @Command(identifier = "prison troubleshoot", description = "Run a troubleshooter.", onlyPlayers = false)
     public void troubleshootCommand(CommandSender sender, @Arg(name = "name") String name) {
-        TroubleshootResult result = PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
-        if(result == null) {
+        TroubleshootResult result =
+            PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
+        if (result == null) {
             Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
             return;
         }
 
         ChatDisplay display = new ChatDisplay("Result Summary");
-        display.text("&7Troubleshooter name: &b%s", name.toLowerCase());
-        display.text("&7Result type: &b%s", result.getResult().name());
-        display.text("&7Result details: &b%s", result.getDescription());
-        display.send(sender);
+        display.text("&7Troubleshooter name: &b%s", name.toLowerCase()) //
+            .text("&7Result type: &b%s", result.getResult().name()) //
+            .text("&7Result details: &b%s", result.getDescription()) //
+            .send(sender);
 
     }
 
@@ -102,8 +103,10 @@ public class PrisonCommand {
         ChatDisplay display = new ChatDisplay("Troubleshooters");
         display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
 
-        BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
-        for(Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager().getTroubleshooters()) {
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
+        for (Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager()
+            .getTroubleshooters()) {
             builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
         }
         display.addComponent(builder.build());
