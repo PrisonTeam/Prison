@@ -23,7 +23,7 @@ import tech.mcprison.prison.internal.ItemStack;
 /**
  * Represents a brewing inventory, typically created by a {@link tech.mcprison.prison.internal.block.BrewingStand}
  *
- * @since API 0.1
+ * @since API 1.0
  */
 public interface BrewerInventory extends Inventory {
 

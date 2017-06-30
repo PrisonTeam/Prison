@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.block;
  * One of the six sides of a block.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public enum BlockFace {
 

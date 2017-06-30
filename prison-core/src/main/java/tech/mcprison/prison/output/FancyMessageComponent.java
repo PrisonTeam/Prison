@@ -24,7 +24,7 @@ import tech.mcprison.prison.chat.FancyMessage;
  * A component wrapper for {@link tech.mcprison.prison.chat.FancyMessage}s.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class FancyMessageComponent extends DisplayComponent {
 

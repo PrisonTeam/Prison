@@ -29,7 +29,7 @@ import java.util.LinkedList;
  * in-chat menus and data displays.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class ChatDisplay {
 

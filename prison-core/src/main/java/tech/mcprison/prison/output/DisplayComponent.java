@@ -25,7 +25,7 @@ import tech.mcprison.prison.chat.FancyMessage;
  * Display components add some text to the display in a certain way.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public abstract class DisplayComponent {
 

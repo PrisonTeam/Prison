@@ -28,7 +28,7 @@ import java.util.List;
  * Represents a block. Only one block may exist for a location in the world.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface Block {
 

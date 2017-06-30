@@ -28,7 +28,7 @@ import java.util.List;
  * Use the {@link BulletedListBuilder} to create it.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class BulletedListComponent extends TextComponent {
 

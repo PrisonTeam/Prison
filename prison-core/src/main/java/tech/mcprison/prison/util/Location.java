@@ -25,7 +25,7 @@ import tech.mcprison.prison.internal.block.Block;
  * Represents a location in a Minecraft world.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class Location {
 

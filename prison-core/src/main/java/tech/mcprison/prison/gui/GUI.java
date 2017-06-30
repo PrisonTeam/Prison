@@ -28,7 +28,7 @@ import java.util.Map;
  * A GUI is an inventory with buttons that players may click to perform certain actions.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface GUI extends InventoryHolder {
 

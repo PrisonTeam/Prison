@@ -28,7 +28,7 @@ package tech.mcprison.prison.internal.block;
  * block to another type entirely, causing your BlockState to become invalid.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface BlockState {
 

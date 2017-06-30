@@ -24,7 +24,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents the barebones for crafting recipe
  *
  * @author Dylan M. Perks
- * @since API 0.1
+ * @since API 1.0
  */
 public interface Recipe {
 

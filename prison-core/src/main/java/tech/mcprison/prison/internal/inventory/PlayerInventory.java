@@ -24,7 +24,7 @@ import tech.mcprison.prison.internal.ItemStack;
  * Represents an {@link Inventory} belonging to a Player
  *
  * @author Dylan M. Perks
- * @since API 0.1
+ * @since API 1.0
  */
 public interface PlayerInventory extends Inventory {
 

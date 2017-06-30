@@ -32,7 +32,7 @@ import java.util.Map;
  * This class takes care of the items.csv containing 8000+ different name combinations for blocks.
  *
  * @author Dylan M. Perks
- * @since API 0.1
+ * @since API 1.0
  */
 public class ItemManager {
 

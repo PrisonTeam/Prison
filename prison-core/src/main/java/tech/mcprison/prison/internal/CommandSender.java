@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal;
  * Represents any entity that may send commands and receive output.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface CommandSender {
 

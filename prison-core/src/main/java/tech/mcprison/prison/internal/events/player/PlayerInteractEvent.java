@@ -27,7 +27,7 @@ import tech.mcprison.prison.util.Location;
  * Platform-independent event, which is posted when a player clicks something.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class PlayerInteractEvent implements Cancelable {
 

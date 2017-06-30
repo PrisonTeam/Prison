@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.scoreboard;
  * Represents the display slot of a scoreboard.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public enum DisplaySlot {
 

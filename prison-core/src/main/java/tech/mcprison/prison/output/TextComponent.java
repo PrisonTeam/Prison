@@ -24,7 +24,7 @@ import tech.mcprison.prison.util.Text;
  * A component for boring plain old text.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class TextComponent extends DisplayComponent {
 

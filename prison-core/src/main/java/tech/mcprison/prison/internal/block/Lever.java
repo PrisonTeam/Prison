@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.block;
  * Represents the state of a lever.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface Lever extends BlockState {
 

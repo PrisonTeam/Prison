@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Faizaan A. Datoo
  * @author Camouflage100
- * @since API 0.1
+ * @since API 1.0
  */
 public enum BlockType {
 

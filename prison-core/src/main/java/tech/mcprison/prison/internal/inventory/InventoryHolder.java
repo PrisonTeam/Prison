@@ -22,7 +22,7 @@ package tech.mcprison.prison.internal.inventory;
  * Represents a block or entity capable of holding an inventory (e.g. Chest)
  *
  * @author Dylan M. Perks
- * @since API 0.1
+ * @since API 1.0
  */
 public interface InventoryHolder {
 

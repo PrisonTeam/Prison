@@ -23,6 +23,6 @@
  * in your modules, though you may use it if you wish.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 package tech.mcprison.prison.internal.scoreboard;

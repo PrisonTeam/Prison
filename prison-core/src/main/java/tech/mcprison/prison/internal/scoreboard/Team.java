@@ -23,7 +23,7 @@ package tech.mcprison.prison.internal.scoreboard;
  * them to denote their team status.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public interface Team {
 

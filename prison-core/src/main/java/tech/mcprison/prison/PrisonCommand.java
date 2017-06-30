@@ -34,7 +34,7 @@ import tech.mcprison.prison.util.Text;
  * Root commands for managing the platform as a whole, in-game.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class PrisonCommand {
 

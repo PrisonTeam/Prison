@@ -25,7 +25,7 @@ import tech.mcprison.prison.util.BlockType;
  * Represents a recipe used in a furnace, consisting of an input and a result.
  *
  * @author Dylan M. Perks
- * @since API 0.1
+ * @since API 1.0
  */
 public interface FurnaceRecipe extends Recipe {
 

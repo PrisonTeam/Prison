@@ -31,7 +31,7 @@ import java.util.Optional;
  * Keeps track of each module and each module's status.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class ModuleManager {
 

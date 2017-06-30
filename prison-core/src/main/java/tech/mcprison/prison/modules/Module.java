@@ -29,7 +29,7 @@ import java.io.File;
  * disabled independently from the rest of the modules.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public abstract class Module implements PluginEntity {
 

@@ -27,7 +27,7 @@ import tech.mcprison.prison.util.Location;
  * Platform-independent event, which is posted when a player breaks a block.
  *
  * @author DMP9
- * @since API 0.1
+ * @since API 1.0
  */
 public class BlockBreakEvent implements Cancelable {
 

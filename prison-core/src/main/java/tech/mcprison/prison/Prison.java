@@ -52,13 +52,13 @@ import java.util.Optional;
  * {@link Prison#init(Platform)} with a valid {@link Platform} implementation.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class Prison implements PluginEntity {
 
     // Singleton
 
-    public static final int API_LEVEL = 0;
+    public static final int API_LEVEL = 1;
     private static Prison instance = null;
 
     // Fields

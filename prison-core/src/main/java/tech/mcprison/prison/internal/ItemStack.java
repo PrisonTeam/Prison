@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
  *
  * @author Faizaan A. Datoo
- * @since API 0.1
+ * @since API 1.0
  */
 public class ItemStack {
 
