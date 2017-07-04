@@ -19,10 +19,8 @@
 package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Permissions;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -63,14 +61,6 @@ public class TestPlatform implements Platform {
 
     @Override public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
-    }
-
-    @Override public Economy getEconomy() {
-        return null;
-    }
-
-    @Override public Permissions getPermissions() {
-        return null;
     }
 
     @Override public String getPluginVersion() {

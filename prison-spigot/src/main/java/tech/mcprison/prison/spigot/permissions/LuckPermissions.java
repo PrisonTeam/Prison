@@ -5,17 +5,16 @@ import me.lucko.luckperms.api.LuckPermsApi;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
-import tech.mcprison.prison.internal.Permissions;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class LuckPermissions implements Permissions {
+public class LuckPermissions implements PermissionIntegration {
 
     private LuckPermsApi api;
 
@@ -71,6 +70,10 @@ public class LuckPermissions implements Permissions {
 
     @Override public String getProviderName() {
         return "LuckPerms";
+    }
+
+    @Override public boolean hasIntegrated() {
+        return api != null;
     }
 
 }

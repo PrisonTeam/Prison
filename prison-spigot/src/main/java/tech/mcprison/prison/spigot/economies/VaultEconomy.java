@@ -20,13 +20,13 @@ package tech.mcprison.prison.spigot.economies;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import tech.mcprison.prison.economy.Economy;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultEconomy implements Economy {
+public class VaultEconomy implements EconomyIntegration {
 
     private net.milkbowl.vault.economy.Economy economy = null;
 
@@ -74,6 +74,10 @@ public class VaultEconomy implements Economy {
 
     @Override public String getProviderName() {
         return economy.getName();
+    }
+
+    @Override public boolean hasIntegrated() {
+        return economy != null;
     }
 
 }

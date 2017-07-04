@@ -34,9 +34,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
-import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Permissions;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -46,14 +44,10 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
-import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
-import tech.mcprison.prison.spigot.permissions.LuckPermissions;
-import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.store.file.FileStorage;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
@@ -140,26 +134,6 @@ class SpigotPlatform implements Platform {
     @Override public List<Player> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream()
             .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
-    }
-
-    @Override public Economy getEconomy() {
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            return new EssentialsEconomy();
-        } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
-            return new VaultEconomy();
-        } else {
-            return null;
-        }
-    }
-
-    @Override public Permissions getPermissions() {
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("LuckPerms")) {
-            return new LuckPermissions();
-        } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
-            return new VaultPermissions();
-        } else {
-            return null;
-        }
     }
 
     @Override public String getPluginVersion() {
@@ -314,8 +288,6 @@ class SpigotPlatform implements Platform {
         Map<Capability, Boolean> capabilities = new HashMap<>();
         capabilities.put(Capability.ACTION_BARS, true);
         capabilities.put(Capability.GUI, true);
-        capabilities.put(Capability.ECONOMY, getEconomy() != null);
-        capabilities.put(Capability.PERMISSIONS, getPermissions() != null);
         return capabilities;
     }
 

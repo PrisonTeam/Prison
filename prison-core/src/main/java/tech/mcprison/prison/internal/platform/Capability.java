@@ -33,16 +33,6 @@ public enum Capability {
     GUI,
 
     /**
-     * The presence of a server economy.
-     */
-    ECONOMY,
-
-    /**
-     * The presence of a server permissions system.
-     */
-    PERMISSIONS,
-
-    /**
      * The ability to show action bars.
      */
     ACTION_BARS

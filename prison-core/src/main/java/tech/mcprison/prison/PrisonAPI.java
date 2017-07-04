@@ -3,9 +3,8 @@ package tech.mcprison.prison;
 import com.google.common.eventbus.EventBus;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Permissions;
+import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -59,14 +58,6 @@ public class PrisonAPI {
 
     public static Collection<Player> getOnlinePlayers() {
         return Prison.get().getPlatform().getOnlinePlayers();
-    }
-
-    public static Economy getEconomy() {
-        return Prison.get().getPlatform().getEconomy();
-    }
-
-    public static Permissions getPermission() {
-        return Prison.get().getPlatform().getPermissions();
     }
 
     public static String getPluginVersion() {
@@ -131,6 +122,10 @@ public class PrisonAPI {
 
     public static TroubleshootManager getTroubleshootManager() {
         return Prison.get().getTroubleshootManager();
+    }
+
+    public static IntegrationManager getIntegrationManager() {
+        return Prison.get().getIntegrationManager();
     }
 
     public static Storage getStorage() {

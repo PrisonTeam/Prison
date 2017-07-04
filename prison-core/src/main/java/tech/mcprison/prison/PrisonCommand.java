@@ -20,8 +20,8 @@ package tech.mcprison.prison;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -49,14 +49,16 @@ public class PrisonCommand {
         display.text("&7Integrations:");
 
         String permissions =
-            Prison.get().getPlatform().getCapabilities().get(Capability.PERMISSIONS) ?
-                "&a" + Prison.get().getPlatform().getPermissions().getProviderName() :
+            Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
+                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
+                    .get().getProviderName() :
                 "&cNone";
 
         display.text(Text.tab("&7Permissions: " + permissions));
 
-        String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
-            "&a" + Prison.get().getPlatform().getEconomy().getProviderName() :
+        String economy = Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY) ?
+            "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
+                .getProviderName() :
             "&cNone";
 
         display.text(Text.tab("&7Economy: " + economy));
@@ -82,9 +84,10 @@ public class PrisonCommand {
     }
 
     @Command(identifier = "prison troubleshoot", description = "Run a troubleshooter.", onlyPlayers = false)
-    public void troubleshootCommand(CommandSender sender, @Arg(name = "name", def = "list") String name) {
+    public void troubleshootCommand(CommandSender sender,
+        @Arg(name = "name", def = "list") String name) {
         // They just want to list stuff
-        if(name.equals("list")) {
+        if (name.equals("list")) {
             sender.dispatchCommand("prison troubleshoot list");
             return;
         }

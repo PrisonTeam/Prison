@@ -20,14 +20,14 @@ package tech.mcprison.prison.spigot.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import tech.mcprison.prison.internal.Permissions;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultPermissions implements Permissions {
+public class VaultPermissions implements PermissionIntegration {
 
     private net.milkbowl.vault.permission.Permission permissions = null;
 
@@ -51,7 +51,11 @@ public class VaultPermissions implements Permissions {
     }
 
     @Override public String getProviderName() {
-        return permissions.getName();
+        return permissions.getName() + " (Vault)";
+    }
+
+    @Override public boolean hasIntegrated() {
+        return permissions != null;
     }
 
 }

@@ -22,12 +22,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
+import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
+import tech.mcprison.prison.spigot.permissions.LuckPermissions;
+import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +86,7 @@ public class SpigotPrison extends JavaPlugin {
         GUIListener.get().init(this);
         Prison.get().init(new SpigotPlatform(this));
         new SpigotListener(this).init();
+        initIntegrations();
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
@@ -139,6 +145,14 @@ public class SpigotPrison extends JavaPlugin {
         }
 
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
+    }
+
+    private void initIntegrations() {
+        PrisonAPI.getIntegrationManager().register(new EssentialsEconomy());
+        PrisonAPI.getIntegrationManager().register(new VaultEconomy());
+
+        PrisonAPI.getIntegrationManager().register(new LuckPermissions());
+        PrisonAPI.getIntegrationManager().register(new VaultPermissions());
     }
 
     public File getDataDirectory() {

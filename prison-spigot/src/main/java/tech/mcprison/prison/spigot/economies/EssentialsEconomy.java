@@ -18,36 +18,31 @@
 
 package tech.mcprison.prison.spigot.economies;
 
-import com.earth2me.essentials.api.NoLoanPermittedException;
-import com.earth2me.essentials.api.UserDoesNotExistException;
-import tech.mcprison.prison.economy.Economy;
+import org.bukkit.Bukkit;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
-
-import java.math.BigDecimal;
 
 /**
  * Integrates with Essentials Economy.
  *
  * @author Faizaan A. Datoo
  */
-public class EssentialsEconomy implements Economy {
+public class EssentialsEconomy implements EconomyIntegration {
 
-    @Override public double getBalance(Player player) {
-        try {
-            return com.earth2me.essentials.api.Economy.getMoneyExact(player.getName())
-                .doubleValue();
-        } catch (UserDoesNotExistException e) {
-            player.sendMessage("You don't exist in the economy plugin.");
-            return 0.0;
+    private EssEconomyWrapper wrapper = null;
+
+    public EssentialsEconomy() {
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            wrapper = new EssEconomyWrapper();
         }
     }
 
+    @Override public double getBalance(Player player) {
+        return wrapper.getBalance(player);
+    }
+
     @Override public void setBalance(Player player, double amount) {
-        try {
-            com.earth2me.essentials.api.Economy.setMoney(player.getName(), new BigDecimal(amount));
-        } catch (UserDoesNotExistException | NoLoanPermittedException e) {
-            player.sendMessage("You don't exist in the economy plugin.");
-        }
+        wrapper.setBalance(player, amount);
     }
 
     @Override public void addBalance(Player player, double amount) {
@@ -64,6 +59,10 @@ public class EssentialsEconomy implements Economy {
 
     @Override public String getProviderName() {
         return "Essentials";
+    }
+
+    @Override public boolean hasIntegrated() {
+        return wrapper != null;
     }
 
 }

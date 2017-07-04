@@ -23,9 +23,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.title.Title;
 import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.economy.Economy;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Permissions;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -74,14 +72,6 @@ public class SpongePlatform implements Platform {
             .collect(Collectors.toList());
     }
 
-    @Override public Economy getEconomy() {
-        return null;
-    }
-
-    @Override public Permissions getPermissions() {
-        return null;
-    }
-
     @Override public String getPluginVersion() {
         return Sponge.getPluginManager().getPlugin("prison-sponge")
             .orElseThrow(IllegalStateException::new).getVersion().orElse("null");
@@ -126,7 +116,6 @@ public class SpongePlatform implements Platform {
 
     @Override public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
-        capabilities.put(Capability.ECONOMY, true);
         capabilities.put(Capability.GUI, false); // For now
 
         return capabilities;

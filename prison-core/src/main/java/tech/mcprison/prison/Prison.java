@@ -26,6 +26,7 @@ import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
+import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
@@ -72,6 +73,7 @@ public class Prison implements PluginEntity {
     private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
+    private IntegrationManager integrationManager;
     private Database metaDatabase;
 
     private String betaVersion = "Public Beta 1";
@@ -187,6 +189,7 @@ public class Prison implements PluginEntity {
         this.commandHandler = new CommandHandler();
         this.selectionManager = new SelectionManager();
         this.troubleshootManager = new TroubleshootManager();
+        this.integrationManager = new IntegrationManager();
 
         try {
             this.itemManager = new ItemManager();
@@ -356,6 +359,13 @@ public class Prison implements PluginEntity {
      */
     public TroubleshootManager getTroubleshootManager() {
         return troubleshootManager;
+    }
+
+    /**
+     * Returns the integration manager, which returns {@link tech.mcprison.prison.integration.Integration}s.
+     */
+    public IntegrationManager getIntegrationManager() {
+        return integrationManager;
     }
 
 }
