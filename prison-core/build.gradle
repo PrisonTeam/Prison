@@ -34,4 +34,21 @@ shadowJar {
     version = null
 }
 
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username project.properties['ftpUsername']
+                password project.properties['ftpPassword']
+            }
+            url "https://app.deveo.com/mc-prison/projects/prison/repositories/maven/prison"
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 build.dependsOn(shadowJar)
