@@ -37,11 +37,8 @@ shadowJar {
 publishing {
     repositories {
         maven {
-            credentials {
-                username project.properties['ftpUsername']
-                password project.properties['ftpPassword']
-            }
-            url "https://app.deveo.com/mc-prison/projects/prison/repositories/maven/prison"
+            // Since I can't afford a real repository, I just use my local repository and FTP upload it.
+            url "file:///C:/Users/fdato/Developer/Repo"
         }
     }
     publications {
