@@ -50,4 +50,11 @@ public interface Permissions {
      */
     void removePermission(Player holder, String permission);
 
+    /**
+     * Returns the name of the plugin which is providing the economy system.
+     *
+     * @return The name of the plugin which is providing the economy system.
+     */
+    String getProviderName();
+
 }

@@ -72,4 +72,8 @@ public class VaultEconomy implements Economy {
         return economy != null && economy.bankHas(player.getName(), amount).transactionSuccess();
     }
 
+    @Override public String getProviderName() {
+        return economy.getName();
+    }
+
 }

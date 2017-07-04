@@ -50,13 +50,13 @@ public class PrisonCommand {
 
         String permissions =
             Prison.get().getPlatform().getCapabilities().get(Capability.PERMISSIONS) ?
-                "&aYes" :
+                "&a" + Prison.get().getPlatform().getPermissions().getProviderName() :
                 "&cNone";
 
         display.text(Text.tab("&7Permissions: " + permissions));
 
         String economy = Prison.get().getPlatform().getCapabilities().get(Capability.ECONOMY) ?
-            "&aYes" :
+            "&a" + Prison.get().getPlatform().getEconomy().getProviderName() :
             "&cNone";
 
         display.text(Text.tab("&7Economy: " + economy));
@@ -82,7 +82,13 @@ public class PrisonCommand {
     }
 
     @Command(identifier = "prison troubleshoot", description = "Run a troubleshooter.", onlyPlayers = false)
-    public void troubleshootCommand(CommandSender sender, @Arg(name = "name") String name) {
+    public void troubleshootCommand(CommandSender sender, @Arg(name = "name", def = "list") String name) {
+        // They just want to list stuff
+        if(name.equals("list")) {
+            sender.dispatchCommand("prison troubleshoot list");
+            return;
+        }
+
         TroubleshootResult result =
             PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
         if (result == null) {

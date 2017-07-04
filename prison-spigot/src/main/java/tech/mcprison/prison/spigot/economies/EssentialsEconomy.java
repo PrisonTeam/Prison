@@ -62,4 +62,8 @@ public class EssentialsEconomy implements Economy {
         return getBalance(player) >= amount;
     }
 
+    @Override public String getProviderName() {
+        return "Essentials";
+    }
+
 }

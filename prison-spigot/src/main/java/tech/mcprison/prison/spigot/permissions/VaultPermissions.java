@@ -50,4 +50,8 @@ public class VaultPermissions implements Permissions {
         this.permissions.playerRemove(player.getWrapper(), permission);
     }
 
+    @Override public String getProviderName() {
+        return permissions.getName();
+    }
+
 }
