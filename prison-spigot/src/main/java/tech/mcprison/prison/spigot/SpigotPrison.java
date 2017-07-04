@@ -24,11 +24,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
+import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
+import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
@@ -37,6 +39,7 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -134,7 +137,8 @@ public class SpigotPrison extends JavaPlugin {
                 minorVersionInt =
                     Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
             } catch (Exception ex) {
-                Output.get().logError("Unable to determine server version. Assuming spigot 1.9 or greater.");
+                Output.get().logError(
+                    "Unable to determine server version. Assuming spigot 1.9 or greater.");
             }
         }
 
@@ -148,11 +152,24 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initIntegrations() {
-        PrisonAPI.getIntegrationManager().register(new EssentialsEconomy());
-        PrisonAPI.getIntegrationManager().register(new VaultEconomy());
+        registerIntegration("Essentials", EssentialsEconomy.class);
+        registerIntegration("SaneEconomy", SaneEconomy.class);
+        registerIntegration("Vault", VaultEconomy.class);
 
-        PrisonAPI.getIntegrationManager().register(new LuckPermissions());
-        PrisonAPI.getIntegrationManager().register(new VaultPermissions());
+        registerIntegration("LuckPerms", LuckPermissions.class);
+        registerIntegration("Vault", VaultPermissions.class);
+    }
+
+    private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
+        if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
+            try {
+                PrisonAPI.getIntegrationManager().register(integration.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                getLogger()
+                    .log(Level.SEVERE, "Could not initialize integration " + integration.getName(),
+                        e);
+            }
+        }
     }
 
     public File getDataDirectory() {
