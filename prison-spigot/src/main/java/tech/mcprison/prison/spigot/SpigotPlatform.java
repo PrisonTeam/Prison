@@ -52,6 +52,7 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
+import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.store.file.FileStorage;
@@ -152,7 +153,9 @@ class SpigotPlatform implements Platform {
     }
 
     @Override public Permissions getPermissions() {
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("LuckPerms")) {
+            return new LuckPermissions();
+        } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Vault")) {
             return new VaultPermissions();
         } else {
             return null;

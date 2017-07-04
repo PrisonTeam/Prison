@@ -23,14 +23,16 @@ repositories {
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
+    maven { url = "https://repo.lucko.me/" }
     jcenter()
 }
 
 dependencies {
     compile project(':prison-core')
     provided group: 'org.spigotmc', name: 'spigot-api', version: '1.9.4-R0.1-SNAPSHOT'
-    provided fileTree(dir: 'lib', include: ['*.jar'])
     provided group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
+    provided group: 'me.lucko.luckperms', name: 'luckperms-api', version: '3.2'
+    provided fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 processResources {
