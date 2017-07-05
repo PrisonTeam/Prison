@@ -21,7 +21,6 @@ package tech.mcprison.prison.spigot;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
@@ -42,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -58,6 +56,7 @@ public class SpigotPrison extends JavaPlugin {
     Compatibility compatibility;
     File dataDirectory;
     Metrics metrics;
+    Updater updater;
     boolean debug, doAlertAboutConvert = false;
 
     @Override public void onLoad() {
@@ -89,6 +88,7 @@ public class SpigotPrison extends JavaPlugin {
         initCommandMap();
         initCompatibility();
         initMetrics();
+        initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
         Prison.get().init(new SpigotPlatform(this));
@@ -107,16 +107,27 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().deinit();
     }
 
-    public void initMetrics() {
+    private void initMetrics() {
         this.metrics = new Metrics(this);
         this.metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used") {
             @Override public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-                for(Module m : PrisonAPI.getModuleManager().getModules()) {
+                for (Module m : PrisonAPI.getModuleManager().getModules()) {
                     valueMap.put(m.getName(), 1);
                 }
                 return valueMap;
             }
         });
+    }
+
+    private void initUpdater() {
+        this.updater =
+            new Updater(this, 76155, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, updater -> {
+                if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
+                    Alerts.getInstance().sendAlert(
+                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)");
+                }
+            }, false);
+
     }
 
     private void initDataDir() {

@@ -50,6 +50,8 @@ public class Alerts {
 
     public void sendAlert(String alertMsg, Object... format) {
         String msg = String.format(alertMsg, format);
+        Output.get().logInfo(msg);
+
         Alert alert = new Alert(alerts.size(), msg);
         alerts.add(alert);
 
