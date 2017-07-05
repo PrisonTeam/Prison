@@ -1,4 +1,4 @@
-![Prison](https://static.mc-prison.tech/assets/images/banner.png)
+![Prison](https://faizaand.me/img/prison-banner.png)
 
 [![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison)
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
