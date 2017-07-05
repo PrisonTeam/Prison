@@ -42,6 +42,9 @@ public class Text {
             millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
             millisPerSecond);
     private static String headingLine = repeat("-", 52);
+    private static final char COLOR_CHAR = '\u00A7';
+    private static final Pattern STRIP_COLOR_PATTERN =
+        Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
 
     private Text() {
     }
@@ -227,6 +230,23 @@ public class Text {
     public static String translateAmpColorCodes(String text) {
         return translateColorCodes(text, '&');
     }
+
+    /**
+     * Strips the given message of all color codes
+     *
+     * @param text String to strip of color.
+     * @return A copy of the input string, without any coloring.
+     */
+    public static String stripColor(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        text = translateAmpColorCodes(text); // Just to be sure
+
+        return STRIP_COLOR_PATTERN.matcher(text).replaceAll("");
+    }
+
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).

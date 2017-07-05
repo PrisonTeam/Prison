@@ -20,6 +20,7 @@ package tech.mcprison.prison.internal;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Text;
 
 import java.util.*;
 
@@ -101,6 +102,20 @@ public class ItemStack {
 
     public boolean hasEnchantment(int enchantment) {
         return enchantments.containsKey(enchantment);
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ItemStack stack = (ItemStack) o;
+
+        return (displayName != null ? Text.stripColor(displayName).equals(Text.stripColor(Text.stripColor(stack.displayName))) :
+            stack.displayName == null) && material == stack.material;
     }
 
     @Override public int hashCode() {

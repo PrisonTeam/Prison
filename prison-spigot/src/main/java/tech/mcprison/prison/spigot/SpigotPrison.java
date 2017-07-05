@@ -21,10 +21,12 @@ package tech.mcprison.prison.spigot;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -39,6 +41,8 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -105,6 +109,14 @@ public class SpigotPrison extends JavaPlugin {
 
     public void initMetrics() {
         this.metrics = new Metrics(this);
+        this.metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used") {
+            @Override public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+                for(Module m : PrisonAPI.getModuleManager().getModules()) {
+                    valueMap.put(m.getName(), 1);
+                }
+                return valueMap;
+            }
+        });
     }
 
     private void initDataDir() {
