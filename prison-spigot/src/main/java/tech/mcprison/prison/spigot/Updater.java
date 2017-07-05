@@ -55,7 +55,7 @@ public class Updater {
     // Used for locating version numbers in file names
     private static final String DELIMETER = "^v|[\\s_-]v";
     // If the version number contains one of these, don't update.
-    private static final String[] NO_UPDATE_TAG = {"-DEV", "-PRE", "-SNAPSHOT"};
+    private static final String[] NO_UPDATE_TAG = {"-DEV", "-PRE", "-NAPSHOT"};
     // Used for downloading files
     private static final int BYTE_SIZE = 1024;
     // Config key for api key

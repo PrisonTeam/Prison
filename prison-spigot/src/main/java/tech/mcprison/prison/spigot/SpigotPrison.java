@@ -120,11 +120,15 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initUpdater() {
+        if(!getConfig().getBoolean("check-updates")) {
+            return; // Don't check if they don't want it
+        }
+
         this.updater =
             new Updater(this, 76155, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, updater -> {
                 if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
                     Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)");
+                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)", updater.getLatestName());
                 }
             }, false);
 
