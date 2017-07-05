@@ -54,12 +54,10 @@ public class SpigotPrison extends JavaPlugin {
     Field knownCommands;
     SpigotScheduler scheduler;
     Compatibility compatibility;
-    File dataDirectory;
-    Metrics metrics;
-    Updater updater;
-    boolean debug, doAlertAboutConvert = false;
+    private File dataDirectory;
+    private boolean doAlertAboutConvert = false;
 
-    @Override public void onLoad() {
+    @SuppressWarnings("ResultOfMethodCallIgnored") @Override public void onLoad() {
         // The meta file is used to see if the folder needs converting.
         // If the folder doesn't contain it, it's probably not a Prison 3 thing.
         File metaFile = new File(getDataFolder(), ".meta");
@@ -83,7 +81,6 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override public void onEnable() {
         this.saveDefaultConfig();
-        debug = getConfig().getBoolean("debug");
         initDataDir();
         initCommandMap();
         initCompatibility();
@@ -108,8 +105,8 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initMetrics() {
-        this.metrics = new Metrics(this);
-        this.metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used") {
+        Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used") {
             @Override public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
                 for (Module m : PrisonAPI.getModuleManager().getModules()) {
                     valueMap.put(m.getName(), 1);
@@ -120,17 +117,17 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initUpdater() {
-        if(!getConfig().getBoolean("check-updates")) {
+        if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
 
-        this.updater =
-            new Updater(this, 76155, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, updater -> {
-                if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
-                    Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)", updater.getLatestName());
-                }
-            }, false);
+        new Updater(this, 76155, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, updater -> {
+            if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
+                Alerts.getInstance().sendAlert(
+                    "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+                    updater.getLatestName());
+            }
+        }, false);
 
     }
 
@@ -199,7 +196,8 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    public File getDataDirectory() {
+    File getDataDirectory() {
         return dataDirectory;
     }
+
 }
