@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.output;
 
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -35,7 +36,11 @@ public class TextComponent extends DisplayComponent {
     }
 
     @Override public String text() {
-        return Text.translateAmpColorCodes(text);
+        return text;
+    }
+
+    @Override public void send(CommandSender sender) {
+        sender.sendMessage(text());
     }
 
 }

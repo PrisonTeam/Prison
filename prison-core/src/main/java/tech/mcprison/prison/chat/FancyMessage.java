@@ -66,6 +66,15 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         dirty = false;
     }
 
+    public FancyMessage(final FancyMessage... msgs) {
+        messageParts = new ArrayList<>();
+        for(FancyMessage msg : msgs) {
+            messageParts.addAll(msg.messageParts);
+        }
+        jsonString = null;
+        dirty = false;
+    }
+
     /**
      * Creates a JSON message without text.
      */
@@ -203,6 +212,16 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         latest.text = text;
         dirty = true;
         return this;
+    }
+
+    public FancyMessage prefix(TextualComponent text) {
+        messageParts.add(0, new MessagePart(text));
+        dirty = true;
+        return this;
+    }
+
+    public FancyMessage prefix(String text) {
+        return prefix(TextualComponent.rawText(text));
     }
 
     /**
@@ -610,6 +629,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
      * @see #toOldMessageFormat()
      */
     public void send(CommandSender sender) {
+        System.out.println(toJSONString());
         send(sender, toJSONString());
     }
 

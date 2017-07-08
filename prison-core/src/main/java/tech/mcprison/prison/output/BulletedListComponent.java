@@ -19,6 +19,7 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.util.Text;
 
 import java.util.ArrayList;
@@ -33,39 +34,45 @@ import java.util.List;
  */
 public class BulletedListComponent extends DisplayComponent {
 
-    private String text;
+    private List<FancyMessage> messages;
 
-    BulletedListComponent(String text) {
-        this.text = text;
+    BulletedListComponent(List<FancyMessage> messages) {
+        this.messages = messages;
     }
 
     @Override public String text() {
-        return text;
+        // Too lazy to implement this right now
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override public void send(CommandSender sender) {
+        messages.forEach(message -> message.send(sender));
     }
 
     public static class BulletedListBuilder {
 
-        private List<String> bullets;
+        private List<FancyMessage> bullets;
 
         public BulletedListBuilder() {
             this.bullets = new ArrayList<>();
         }
 
         public BulletedListBuilder add(FancyMessage message) {
-            bullets.add(message.toJSONString());
+            bullets.add(message);
             return this;
         }
 
         public BulletedListBuilder add(String text, Object... args) {
             text = String.format(text, args);
-            return add(new FancyMessage(Text.translateAmpColorCodes(text)));
+            return add(new FancyMessage(text));
         }
 
         public BulletedListComponent build() {
-            String list = Text.translateAmpColorCodes(
-                Text.implode(bullets.toArray(new String[bullets.size()]), "\n"));
+            for (FancyMessage bullet : bullets) {
+                bullet.prefix("&7* ");
+            }
 
-            return new BulletedListComponent(list);
+            return new BulletedListComponent(bullets);
         }
 
     }

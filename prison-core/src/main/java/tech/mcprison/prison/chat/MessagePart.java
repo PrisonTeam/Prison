@@ -70,7 +70,7 @@ public final class MessagePart implements JsonRepresentedObject, Cloneable {
     ArrayList<JsonRepresentedObject> translationReplacements =
         new ArrayList<JsonRepresentedObject>();
 
-    MessagePart(final TextualComponent text) {
+    public MessagePart(final TextualComponent text) {
         this.text = text;
     }
 

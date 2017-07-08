@@ -19,6 +19,7 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.internal.CommandSender;
 
 /**
  * A component that can be attached to a {@link ChatDisplay}.
@@ -47,6 +48,14 @@ public abstract class DisplayComponent {
      * @return The string of text to add.
      */
     public abstract String text();
+
+    /**
+     * Sends this {@link DisplayComponent} to the sender.
+     * This is called by the {@link ChatDisplay}, and is called in order of addition to it.
+     *
+     * @param sender The {@link CommandSender} to send this to.
+     */
+    public abstract void send(CommandSender sender);
 
     /*
      * Getters & Setters

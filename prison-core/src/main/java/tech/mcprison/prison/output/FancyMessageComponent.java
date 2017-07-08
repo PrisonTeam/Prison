@@ -19,6 +19,7 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.internal.CommandSender;
 
 /**
  * A component wrapper for {@link tech.mcprison.prison.chat.FancyMessage}s.
@@ -30,16 +31,23 @@ public class FancyMessageComponent extends DisplayComponent {
 
     protected FancyMessage message;
 
+    // Internal use only
+    FancyMessageComponent() {}
+
     public FancyMessageComponent(FancyMessage message) {
         this.message = message;
     }
 
-    @Override public String text() {
-        return message.toJSONString();
+    public FancyMessage getMessage() {
+        return message;
     }
 
-    public String plainText() {
+    @Override public String text() {
         return message.toOldMessageFormat();
+    }
+
+    @Override public void send(CommandSender sender) {
+        message.send(sender);
     }
 
 }

@@ -19,7 +19,6 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.Text;
 
 import java.util.LinkedList;
@@ -72,17 +71,7 @@ public class ChatDisplay {
     public void send(CommandSender sender) {
         sender.sendMessage(title);
         for (DisplayComponent component : displayComponents) {
-
-            if (component instanceof FancyMessageComponent) {
-                if (sender instanceof Player) {
-                    sender.sendMessage(component.text());
-                } else {
-                    sender.sendMessage(((FancyMessageComponent) component).plainText());
-                }
-            } else {
-                sender.sendMessage(component.text());
-            }
-
+            component.send(sender);
         }
     }
 
