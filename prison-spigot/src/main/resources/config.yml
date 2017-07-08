@@ -3,7 +3,7 @@
 # Be sure to check your formatting! #
 # == == == == == === == == == == == #
 
-debug: true
+debug: false
 
 check-updates: true
 

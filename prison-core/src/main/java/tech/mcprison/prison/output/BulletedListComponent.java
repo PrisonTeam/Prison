@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.output;
 
+import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.util.Text;
 
 import java.util.ArrayList;
@@ -30,10 +31,16 @@ import java.util.List;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class BulletedListComponent extends TextComponent {
+public class BulletedListComponent extends DisplayComponent {
 
-    public BulletedListComponent(String text) {
-        super(text);
+    private String text;
+
+    BulletedListComponent(String text) {
+        this.text = text;
+    }
+
+    @Override public String text() {
+        return text;
     }
 
     public static class BulletedListBuilder {
@@ -44,10 +51,14 @@ public class BulletedListComponent extends TextComponent {
             this.bullets = new ArrayList<>();
         }
 
+        public BulletedListBuilder add(FancyMessage message) {
+            bullets.add(message.toJSONString());
+            return this;
+        }
+
         public BulletedListBuilder add(String text, Object... args) {
             text = String.format(text, args);
-            this.bullets.add("&7*&r " + text);
-            return this;
+            return add(new FancyMessage(Text.translateAmpColorCodes(text)));
         }
 
         public BulletedListComponent build() {
