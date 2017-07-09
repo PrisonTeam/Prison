@@ -43,7 +43,7 @@ public class Bounds {
      * @return A double.
      */
     public double getWidth() {
-        return Math.max(min.getX(), max.getX()) - Math.min(min.getX(), max.getX());
+        return (Math.max(min.getX(), max.getX()) - Math.min(min.getX(), max.getX())) + 1;
     }
 
     /**
@@ -53,7 +53,7 @@ public class Bounds {
      * @return A double.
      */
     public double getHeight() {
-        return Math.max(min.getY(), max.getY()) - Math.min(min.getY(), max.getY());
+        return (Math.max(min.getY(), max.getY()) - Math.min(min.getY(), max.getY())) + 1;
     }
 
     /**
@@ -63,7 +63,7 @@ public class Bounds {
      * @return A double.
      */
     public double getLength() {
-        return Math.max(min.getZ(), max.getZ()) - Math.min(min.getZ(), max.getZ());
+        return (Math.max(min.getZ(), max.getZ()) - Math.min(min.getZ(), max.getZ())) + 1;
     }
 
     /**

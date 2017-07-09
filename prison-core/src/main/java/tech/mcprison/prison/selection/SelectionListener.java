@@ -20,7 +20,9 @@ package tech.mcprison.prison.selection;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
 
 /**
@@ -34,10 +36,7 @@ public class SelectionListener {
 
     @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
         ItemStack ourItem = e.getItemInHand();
-        String ourDisplayName = e.getItemInHand().getDisplayName();
-
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
-        String toolDisplayName = SelectionManager.SELECTION_TOOL.getDisplayName();
 
         if (!ourItem.equals(toolItem)) {
             return;
@@ -51,6 +50,8 @@ public class SelectionListener {
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
                 .sendMessage("&7First position set to &8" + e.getClicked().toBlockCoordinates());
+
+            checkForEvent(e.getPlayer(), sel);
         } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
@@ -58,6 +59,14 @@ public class SelectionListener {
             Prison.get().getSelectionManager().setSelection(e.getPlayer(), sel);
             e.getPlayer()
                 .sendMessage("&7Second position set to &8" + e.getClicked().toBlockCoordinates());
+
+            checkForEvent(e.getPlayer(), sel);
+        }
+    }
+
+    private void checkForEvent(Player player, Selection sel) {
+        if (sel.isComplete()) {
+            PrisonAPI.getEventBus().post(new SelectionCompletedEvent(player, sel));
         }
     }
 

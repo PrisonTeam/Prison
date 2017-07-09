@@ -629,7 +629,6 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
      * @see #toOldMessageFormat()
      */
     public void send(CommandSender sender) {
-        System.out.println(toJSONString());
         send(sender, toJSONString());
     }
 
