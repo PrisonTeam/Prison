@@ -42,8 +42,8 @@ public class AlertCommands {
         alerts.forEach(alert -> builder.add(alert.message));
 
         display.addComponent(builder.build());
-        display.text(
-            "&8Type /prison alerts clear to clear your alerts, or /prison alerts clearall to clear ALL alerts (for everyone).");
+        display.text("&8Type /prison alerts clear to clear your alerts.");
+        display.text("&8Type /prison alerts clearall to clear ALL alerts (for everyone).");
 
         display.send(player);
     }

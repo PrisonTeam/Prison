@@ -69,8 +69,6 @@ public class Prison implements PluginEntity {
     private IntegrationManager integrationManager;
     private Database metaDatabase;
 
-    private String betaVersion = "Public Beta 1";
-
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
      * the implementation invokes the {@link Prison#init(Platform)} method.
@@ -116,8 +114,8 @@ public class Prison implements PluginEntity {
                 (System.currentTimeMillis() - startTime));
 
         Alerts.getInstance().sendAlert(
-            "&7Welcome to &3Prison 3 %s&7. Please report any bugs and suggestions to the feature page, at &bhttp://github.com/MC-Prison/Prison/issues&7. Enjoy :) ~ &6The MC-Prison Team",
-            betaVersion);
+            "&7Welcome to &3Prison 3 %s&7. Please report any bugs and suggestions to the feature page, at &bhttp://github.com/MC-Prison/Prison/issues&7.",
+            "Release Candidate 1");
 
         registerInbuiltTroubleshooters();
         scheduleAlertNagger();
