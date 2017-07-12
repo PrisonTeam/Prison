@@ -6,6 +6,28 @@ website: https://mc-prison.tech
 softdepend: [Essentials, Vault, LuckPerms]
 
 permissions:
+  prison.modules:
+    description: Access to the /prison modules command.
+
+  prison.convert:
+    description: Access to the /prison convert command.
+
   prison.alerts:
-    description: Permissions to view alerts.
+    description: Access to the /prison alerts command, and the ability to be notified for new alerts.
+
+  prison.alerts.clear:
+    description: Clear your alerts.
+
+  prison.alerts.clear.all:
+    description: Clear the alerts for the entire server.
+
+  # Permission Kits
+  prison.admin:
+    description: Administrative access to Prison's functionality.
     default: op
+    children:
+      prison.modules: true
+      prison.convert: true
+      prison.alerts: true
+      prison.alerts.clear: true
+      prison.alerts.clear.all: true

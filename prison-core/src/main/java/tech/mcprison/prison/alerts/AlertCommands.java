@@ -20,7 +20,7 @@ public class AlertCommands {
         Prison.get().getCommandHandler().registerCommands(this);
     }
 
-    @Command(identifier = "prison alerts", description = "Lists your alerts.", permissions = "prison.admin")
+    @Command(identifier = "prison alerts", description = "Lists your alerts.", permissions = "prison.alerts")
     public void prisonAlertsCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
@@ -48,7 +48,7 @@ public class AlertCommands {
         display.send(player);
     }
 
-    @Command(identifier = "prison alerts clear", description = "Clears your alerts.", permissions = "prison.admin")
+    @Command(identifier = "prison alerts clear", description = "Clears your alerts.", permissions = "prison.alerts.clear")
     public void prisonAlertsClearCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
@@ -67,7 +67,7 @@ public class AlertCommands {
         Output.get().sendInfo(player, "Your alerts have been cleared.");
     }
 
-    @Command(identifier = "prison alerts clearall", description = "Clears the alerts for the whole server.", permissions = "prison.admin")
+    @Command(identifier = "prison alerts clearall", description = "Clears the alerts for the whole server.", permissions = "prison.alerts.clear.all")
     public void prisonAlertsClearAllCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")

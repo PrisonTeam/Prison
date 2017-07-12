@@ -38,7 +38,7 @@ import tech.mcprison.prison.util.Text;
  */
 public class PrisonCommand {
 
-    @Command(identifier = "prison version", description = "Version information for Prison.", onlyPlayers = false)
+    @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison version");
         display
@@ -66,7 +66,7 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison modules", description = "List and manage Prison's modules.", onlyPlayers = false)
+    @Command(identifier = "prison modules", description = "Lists the modules that hook into Prison to give it functionality.", onlyPlayers = false, permissions = "prison.modules")
     public void modulesCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison modules");
         display.emptyLine();
@@ -83,9 +83,9 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison troubleshoot", description = "Run a troubleshooter.", onlyPlayers = false)
+    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootCommand(CommandSender sender,
-        @Arg(name = "name", def = "list") String name) {
+        @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
         // They just want to list stuff
         if (name.equals("list")) {
             sender.dispatchCommand("prison troubleshoot list");
@@ -107,7 +107,7 @@ public class PrisonCommand {
 
     }
 
-    @Command(identifier = "prison troubleshoot list", description = "List the troubleshooters.", onlyPlayers = false)
+    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootListCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Troubleshooters");
         display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
@@ -123,7 +123,7 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3.", onlyPlayers = false)
+    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
     public void convertCommand(CommandSender sender) {
         sender.sendMessage(Prison.get().getPlatform().runConverter());
     }
