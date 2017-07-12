@@ -67,7 +67,7 @@ public class Bounds {
     }
 
     /**
-     * Returns the area, which is the width, height, and length multiplied together.
+     * Returns the area, which is represented by the formula <code>A=2(wl+hl+hw)</code>.
      *
      * @return A double.
      */
@@ -87,9 +87,9 @@ public class Bounds {
         double minX = Math.min(min.getX(), max.getX());
         double minY = Math.min(min.getY(), max.getY());
         double minZ = Math.min(min.getZ(), max.getZ());
-        double maxX = Math.max(min.getX(), max.getX());
+        double maxX = Math.max(min.getX(), max.getX()) + 1;
         double maxY = Math.max(min.getY(), max.getY());
-        double maxZ = Math.max(min.getZ(), max.getZ());
+        double maxZ = Math.max(min.getZ(), max.getZ()) + 1;
 
         return location.getX() >= minX && location.getX() <= maxX // Within X
             && location.getY() >= minY && location.getY() <= maxY // Within Y
