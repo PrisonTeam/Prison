@@ -67,16 +67,11 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     }
 
     @Override public Location getLocation() {
-        return new Location(new SpigotWorld(bukkitPlayer.getWorld()),
-            bukkitPlayer.getLocation().getX(), bukkitPlayer.getLocation().getY(),
-            bukkitPlayer.getLocation().getZ(), bukkitPlayer.getLocation().getPitch(),
-            bukkitPlayer.getLocation().getYaw());
+        return SpigotUtil.bukkitLocationToPrison(bukkitPlayer.getLocation());
     }
 
     @Override public void teleport(Location location) {
-        bukkitPlayer.teleport(
-            new org.bukkit.Location(Bukkit.getWorld(location.getWorld().getName()), location.getX(),
-                location.getY(), location.getZ(), location.getPitch(), location.getYaw()),
+        bukkitPlayer.teleport(SpigotUtil.prisonLocationToBukkit(location),
             PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
