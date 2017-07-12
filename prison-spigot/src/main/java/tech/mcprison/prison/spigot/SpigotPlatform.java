@@ -236,7 +236,7 @@ class SpigotPlatform implements Platform {
         File file = new File(plugin.getDataFolder().getParent(), "Prison.old");
         if (!file.exists()) {
             return Output.get().format(
-                "I cloud not find a 'Prison.old' folder to convert. You probably haven't had Prison 2 installed before, so you don't need to convert :)",
+                "I could not find a 'Prison.old' folder to convert. You probably haven't had Prison 2 installed before, so you don't need to convert :)",
                 LogLevel.WARNING);
         }
 
