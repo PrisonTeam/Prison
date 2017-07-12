@@ -87,13 +87,17 @@ public class Bounds {
         double minX = Math.min(min.getX(), max.getX());
         double minY = Math.min(min.getY(), max.getY());
         double minZ = Math.min(min.getZ(), max.getZ());
-        double maxX = Math.max(min.getX(), max.getX()) + 1;
+        double maxX = Math.max(min.getX(), max.getX());
         double maxY = Math.max(min.getY(), max.getY());
-        double maxZ = Math.max(min.getZ(), max.getZ()) + 1;
+        double maxZ = Math.max(min.getZ(), max.getZ());
 
-        return location.getX() >= minX && location.getX() <= maxX // Within X
-            && location.getY() >= minY && location.getY() <= maxY // Within Y
-            && location.getZ() >= minZ && location.getZ() <= maxZ; // Within Z
+        double ourX = Math.floor(location.getX());
+        double ourY = Math.floor(location.getY());
+        double ourZ = Math.floor(location.getZ());
+
+        return ourX >= minX && ourX <= maxX // Within X
+            && ourY >= minY && ourY <= maxY // Within Y
+            && ourZ >= minZ && ourZ <= maxZ; // Within Z
     }
 
     public Location getMin() {
