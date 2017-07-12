@@ -43,7 +43,7 @@ public class AlertCommands {
 
         display.addComponent(builder.build());
         display.text("&8Type /prison alerts clear to clear your alerts.");
-        display.text("&8Type /prison alerts clearall to clear ALL alerts (for everyone).");
+        display.text("&8Type /prison alerts clearall to clear everyone's alerts.");
 
         display.send(player);
     }

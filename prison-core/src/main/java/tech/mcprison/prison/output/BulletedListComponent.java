@@ -41,8 +41,9 @@ public class BulletedListComponent extends DisplayComponent {
     }
 
     @Override public String text() {
-        // Too lazy to implement this right now
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<String> messageStrs = new ArrayList<>(messages.size());
+        messages.forEach(message -> messageStrs.add(message.toOldMessageFormat()));
+        return Text.implode(messageStrs, "\n");
     }
 
     @Override public void send(CommandSender sender) {
