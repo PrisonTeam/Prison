@@ -24,6 +24,7 @@ repositories {
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
     maven { url = "https://repo.lucko.me/" }
+    maven { url = "http://repo.bstats.org/content/repositories/releases/" }
     jcenter()
 }
 
@@ -32,6 +33,7 @@ dependencies {
     provided group: 'org.spigotmc', name: 'spigot-api', version: '1.9.4-R0.1-SNAPSHOT'
     provided group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
     provided group: 'me.lucko.luckperms', name: 'luckperms-api', version: '3.2'
+    compile 'org.bstats:bstats-bukkit:1.2'
     provided fileTree(dir: 'lib', include: ['*.jar'])
 }
 
@@ -52,8 +54,11 @@ shadowJar {
         include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.0'))
         include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.0'))
         include(dependency(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'))
+        include(dependency('org.bstats:bstats-bukkit:1.2'))
         include(project(':prison-core'))
     }
+
+    relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
 
     classifier 'Spigot'
     version = null
