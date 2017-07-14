@@ -111,6 +111,8 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initMetrics() {
         Metrics metrics = new Metrics(this);
+
+        // Report the modules being used
         metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (Module m : PrisonAPI.getModuleManager().getModules()) {
@@ -118,6 +120,10 @@ public class SpigotPrison extends JavaPlugin {
             }
             return valueMap;
         }));
+
+        // Report the API level
+        metrics.addCustomChart(
+            new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
     private void initUpdater() {
