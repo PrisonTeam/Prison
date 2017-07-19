@@ -110,6 +110,9 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initMetrics() {
+        if(!getConfig().getBoolean("send-metrics", true)) {
+            return; // Don't check if they don't want it
+        }
         Metrics metrics = new Metrics(this);
 
         // Report the modules being used
