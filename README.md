@@ -27,4 +27,4 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 ## What's the status on Prison v3.0?
 
-Prison v3.0 is currently in Public Beta. You may download it [from here](https://mc-prison.tech/beta-builds/). We need your help to test it, so please report any bugs to the issues page.
+Prison v3.0 is currently in Public Beta. You may download it [from here](https://faizaand.me/prison/). We need your help to test it, so please report any bugs to the issues page.
