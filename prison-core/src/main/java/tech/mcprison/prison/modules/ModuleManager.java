@@ -111,6 +111,7 @@ public class ModuleManager {
      * @param module The {@link Module} to disable.
      */
     public void disableModule(Module module) {
+        if(!module.isEnabled()) return; // Don't disable enabled modules
         module.disable();
         module.getStatus().toDisabled();
     }
