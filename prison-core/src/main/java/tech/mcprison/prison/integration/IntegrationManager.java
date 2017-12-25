@@ -37,6 +37,9 @@ public class IntegrationManager {
      * @return An optional containing the first working integration, or empty if none are found.
      */
     public Optional<Integration> getForType(IntegrationType type) {
+        if(!integrations.containsKey(type)) {
+            return Optional.empty();
+        }
         return integrations.get(type).stream().filter(Integration::hasIntegrated).findFirst();
     }
 
