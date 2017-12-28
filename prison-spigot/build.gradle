@@ -32,7 +32,7 @@ dependencies {
     compile project(':prison-core')
     provided group: 'org.spigotmc', name: 'spigot-api', version: '1.9.4-R0.1-SNAPSHOT'
     provided group: 'net.milkbowl.vault', name: 'VaultAPI', version: '1.6'
-    provided group: 'me.lucko.luckperms', name: 'luckperms-api', version: '3.2'
+    provided group: 'me.lucko.luckperms', name: 'luckperms-api', version: '4.0'
     compile 'org.bstats:bstats-bukkit:1.2'
     provided fileTree(dir: 'lib', include: ['*.jar'])
 }
