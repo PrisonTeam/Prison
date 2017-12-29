@@ -60,7 +60,7 @@ shadowJar {
 
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
 
-    classifier 'Spigot'
+    classifier ''
     version = null
 }
 
