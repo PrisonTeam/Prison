@@ -17,7 +17,7 @@
  */
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.6'
+    id 'org.spongepowered.plugin' version '0.8.1'
 }
 
 group 'tech.mcprison'
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     compile project(':prison-core')
-    provided 'org.spongepowered:spongeapi:5.0.0'
+    compileOnly 'org.spongepowered:spongeapi:6.0.0'
 }
 
 sponge {
