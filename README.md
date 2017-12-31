@@ -1,7 +1,8 @@
-![Prison](https://faizaand.me/img/prison-banner.png)
+![Prison Banner](https://faizaand.me/prison/img/prison-banner.png)
 
-[![Join the chat at https://gitter.im/SirFaizdat/Prison](https://badges.gitter.im/SirFaizdat/Prison.svg)](https://gitter.im/SirFaizdat/Prison)
+[![Join the chat at https://gitter.im/SirFaizdat/Prison](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/396ed5F)
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
+[![Build Status](https://travis-ci.org/MC-Prison/Prison.svg)](https://travis-ci.org/MC-Prison/Prison)
 
 1. [What is Prison?](#what-is-prison)
 2. [Why should I use Prison?](#why-should-i-use-prison)
