@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -216,10 +217,34 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initModules() {
-        Prison.get().getModuleManager()
-            .registerModule(new PrisonMines(getDescription().getVersion()));
-        Prison.get().getModuleManager()
-            .registerModule(new PrisonRanks(getDescription().getVersion()));
+        YamlConfiguration modulesConf = loadConfig("modules.yml");
+
+        if(modulesConf.getBoolean("mines")) {
+            Prison.get().getModuleManager()
+                .registerModule(new PrisonMines(getDescription().getVersion()));
+        } else {
+            Output.get().logInfo("Not loading mines because it's disabled in modules.yml.");
+        }
+
+        if(modulesConf.getBoolean("ranks")) {
+            Prison.get().getModuleManager()
+                .registerModule(new PrisonRanks(getDescription().getVersion()));
+        } else {
+            Output.get().logInfo("Not loading ranks because it's disabled in modules.yml");
+        }
+    }
+
+    private File getBundledFile(String name) {
+        getDataFolder().mkdirs();
+        File file = new File(getDataFolder(), name);
+        if (!file.exists()) {
+            saveResource(name, false);
+        }
+        return file;
+    }
+
+    private YamlConfiguration loadConfig(String file) {
+        return YamlConfiguration.loadConfiguration(getBundledFile(file));
     }
 
     File getDataDirectory() {
