@@ -113,10 +113,6 @@ public class Prison implements PluginEntity {
             .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                 (System.currentTimeMillis() - startTime));
 
-        Alerts.getInstance().sendAlert(
-            "&7Welcome to &3Prison 3 %s&7. Please report any bugs and suggestions to the feature page, at &bhttp://github.com/MC-Prison/Prison/issues&7.",
-            "Release Candidate 1");
-
         registerInbuiltTroubleshooters();
         scheduleAlertNagger();
 
