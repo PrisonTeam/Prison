@@ -18,6 +18,12 @@
 
 package tech.mcprison.prison.spigot;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -26,8 +32,10 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
@@ -37,13 +45,6 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -61,7 +62,9 @@ public class SpigotPrison extends JavaPlugin {
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
 
-    @SuppressWarnings("ResultOfMethodCallIgnored") @Override public void onLoad() {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Override
+    public void onLoad() {
         // The meta file is used to see if the folder needs converting.
         // If the folder doesn't contain it, it's probably not a Prison 3 thing.
         File metaFile = new File(getDataFolder(), ".meta");
@@ -83,7 +86,8 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    @Override public void onEnable() {
+    @Override
+    public void onEnable() {
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
 
@@ -97,6 +101,7 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this));
         new SpigotListener(this).init();
         initIntegrations();
+        initModules();
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
@@ -104,13 +109,14 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    @Override public void onDisable() {
+    @Override
+    public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
     }
 
     private void initMetrics() {
-        if(!getConfig().getBoolean("send-metrics", true)) {
+        if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
         Metrics metrics = new Metrics(this);
@@ -207,6 +213,13 @@ public class SpigotPrison extends JavaPlugin {
                         e);
             }
         }
+    }
+
+    private void initModules() {
+        Prison.get().getModuleManager()
+            .registerModule(new PrisonMines(getDescription().getVersion()));
+        Prison.get().getModuleManager()
+            .registerModule(new PrisonRanks(getDescription().getVersion()));
     }
 
     File getDataDirectory() {
