@@ -67,7 +67,7 @@ public class PrisonMines extends Module {
      */
 
     public PrisonMines(String version) {
-        super("Mines", version, 1);
+        super("Mines", version, 3);
     }
 
     public static PrisonMines get() {

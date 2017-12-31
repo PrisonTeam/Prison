@@ -52,7 +52,7 @@ public class Prison implements PluginEntity {
 
     // Singleton
 
-    public static final int API_LEVEL = 1;
+    public static final int API_LEVEL = 3;
     private static Prison instance = null;
 
     // Fields
