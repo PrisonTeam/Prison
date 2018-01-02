@@ -18,16 +18,13 @@
 
 package tech.mcprison.prison.mines;
 
-import tech.mcprison.prison.mines.managers.LegacyMineManager;
-
 /**
- * A filter usable with certain methods in {@link LegacyMineManager}
+ * A filter usable with certain methods in {@link MineManager}
  */
-@Deprecated
 public interface MinesFilter {
 
     /**
-     * Used in {@link LegacyMineManager#select(MinesFilter)}
+     * Used in {@link MineManager#select(MinesFilter)}
      * <p>
      * Check if this {@link MinesFilter} accepts the {@link Mine}. If it does, continue operating.
      *
@@ -37,7 +34,7 @@ public interface MinesFilter {
     boolean accept(Mine c);
 
     /**
-     * Used in {@link LegacyMineManager#forEach(MinesFilter)}
+     * Used in {@link MineManager#forEach(MinesFilter)}
      * <p>
      * Execute methods related to the specified {@link Mine}.
      *
