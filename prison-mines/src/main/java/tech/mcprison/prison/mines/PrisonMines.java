@@ -26,6 +26,10 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.localization.LocaleManager;
+import tech.mcprison.prison.mines.commands.MinesCommands;
+import tech.mcprison.prison.mines.data.MinesConfig;
+import tech.mcprison.prison.mines.managers.LegacyMineManager;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
@@ -60,7 +64,7 @@ public class PrisonMines extends Module {
     /*
      * Constructor
      */
-    private MineManager mines;
+    private LegacyMineManager mines;
 
     /*
      * Methods
@@ -70,7 +74,7 @@ public class PrisonMines extends Module {
         super("Mines", version, 3);
     }
 
-    public static PrisonMines get() {
+    public static PrisonMines getInstance() {
         return i;
     }
 
@@ -155,7 +159,7 @@ public class PrisonMines extends Module {
      */
 
     private void initMines() {
-        mines = new MineManager().initialize();
+        mines = new LegacyMineManager().initialize();
         Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
     }
 
@@ -171,7 +175,11 @@ public class PrisonMines extends Module {
         return db;
     }
 
-    public MineManager getMines() {
+    public LegacyMineManager getMines() {
+        return mines;
+    }
+
+    public MineManager getMineManager() {
         return mines;
     }
 

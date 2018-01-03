@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.mines;
+package tech.mcprison.prison.mines.data;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.mines.MineException;
+import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.events.MineResetEvent;
-import tech.mcprison.prison.mines.util.Block;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
@@ -63,11 +64,11 @@ public class Mine {
      * @param document The document to load from.
      * @throws Exception If the mine couldn't be loaded from the document.
      */
-    public Mine(Document document) throws Exception {
+    public Mine(Document document) throws MineException {
         Optional<World> worldOptional =
             Prison.get().getPlatform().getWorld((String) document.get("world"));
         if (!worldOptional.isPresent()) {
-            throw new Exception("world doesn't exist");
+            throw new MineException("world doesn't exist");
         }
 
         min = new Location(worldOptional.get(), (double) document.get("minX"),
@@ -136,7 +137,7 @@ public class Mine {
         for (Player p : players) {
             p.teleport(getSpawn().orElse(
                 null)); // Should probably fail with an exception, but an NPE is as good as any..
-            PrisonMines.get().getMinesMessages().getLocalizable("teleported").withReplacements(name)
+            PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported").withReplacements(name)
                 .sendTo(p);
         }
     }
@@ -160,7 +161,7 @@ public class Mine {
             }
             World world = worldOptional.get();
 
-            List<BlockType> blockTypes = PrisonMines.get().getMines().getRandomizedBlocks(this);
+            List<BlockType> blockTypes = PrisonMines.getInstance().getMines().getRandomizedBlocks(this);
             int maxX = Math.max(min.getBlockX(), max.getBlockX());
             int minX = Math.min(min.getBlockX(), max.getBlockX());
             int maxY = Math.max(min.getBlockY(), max.getBlockY());
@@ -173,7 +174,7 @@ public class Mine {
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
                     for (int z = minZ; z <= maxZ; z++) {
-                        if (PrisonMines.get().getConfig().fillMode && !world
+                        if (PrisonMines.getInstance().getConfig().fillMode && !world
                             .getBlockAt(new Location(world, x, y, z)).isEmpty()) {
                             continue; // Skip this block because it is not air
                         }
@@ -183,7 +184,7 @@ public class Mine {
                     }
                 }
             }
-            if (PrisonMines.get().getConfig().asyncReset) {
+            if (PrisonMines.getInstance().getConfig().asyncReset) {
                 asyncGen();
             }
 
@@ -212,7 +213,7 @@ public class Mine {
     private void asyncGen() {
         try {
             Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(() -> PrisonMines.get().getMines().generateBlockList(this), 0L);
+                .runTaskLaterAsync(() -> PrisonMines.getInstance().getMines().generateBlockList(this), 0L);
         } catch (Exception e) {
             Output.get().logWarn("Couldn't generate blocks for mine " + name
                 + " asynchronously. The blocks will be generated synchronously later.", e);

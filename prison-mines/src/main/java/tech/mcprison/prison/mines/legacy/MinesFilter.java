@@ -16,15 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.mines;
+package tech.mcprison.prison.mines.legacy;
+
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.managers.LegacyMineManager;
 
 /**
- * A filter usable with certain methods in {@link MineManager}
+ * A filter usable with certain methods in {@link LegacyMineManager}
  */
 public interface MinesFilter {
 
     /**
-     * Used in {@link MineManager#select(MinesFilter)}
+     * Used in {@link LegacyMineManager#select(MinesFilter)}
      * <p>
      * Check if this {@link MinesFilter} accepts the {@link Mine}. If it does, continue operating.
      *
@@ -34,7 +37,7 @@ public interface MinesFilter {
     boolean accept(Mine c);
 
     /**
-     * Used in {@link MineManager#forEach(MinesFilter)}
+     * Used in {@link LegacyMineManager#forEach(MinesFilter)}
      * <p>
      * Execute methods related to the specified {@link Mine}.
      *

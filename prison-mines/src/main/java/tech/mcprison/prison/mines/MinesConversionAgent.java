@@ -8,6 +8,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionAgent;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.error.Error;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -89,14 +90,14 @@ public class MinesConversionAgent implements ConversionAgent {
                     ourMine.setBounds(bounds);
                     ourMine.setBlocks(blocks);
 
-                    if (PrisonMines.get().getMines().contains(ourMine)) {
+                    if (PrisonMines.getInstance().getMines().contains(ourMine)) {
                         break;
                     }
 
-                    PrisonMines.get().getMines().add(ourMine);
+                    PrisonMines.getInstance().getMines().add(ourMine);
                 }
 
-                PrisonMines.get().getMines().save();
+                PrisonMines.getInstance().getMines().save();
                 alreadyConverted.createNewFile();
                 return new ConversionResult(getName(), ConversionResult.Status.Success,
                     "Converted " + jsonFiles.length + " mines.");
@@ -106,7 +107,7 @@ public class MinesConversionAgent implements ConversionAgent {
                     "Converted 0 mines.");
             }
         } catch (IOException e) {
-            PrisonMines.get().getErrorManager().throwError(
+            PrisonMines.getInstance().getErrorManager().throwError(
                 new Error("Encountered an error while converting mines.")
                     .appendStackTrace("while loading mines", e));
             return new ConversionResult(getName(), ConversionResult.Status.Failure,

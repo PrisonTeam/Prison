@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.mines;
+package tech.mcprison.prison.mines.data;
 
 
 import java.util.ArrayList;

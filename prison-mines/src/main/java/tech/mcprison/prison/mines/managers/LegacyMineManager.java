@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 /**
  * Represents a collection of mines which can be iterated through in a normal <i>for</i> loop
  */
-public class MineManager implements List<Mine> {
+public class LegacyMineManager implements List<Mine> {
     // Base list
     List<Mine> mines;
 
@@ -47,21 +47,21 @@ public class MineManager implements List<Mine> {
     int resetCount = 0;
 
     // NPE
-    private HashMap<UUID, MineManager> players;
+    private HashMap<UUID, LegacyMineManager> players;
 
     // Inherited methods -- don't know why I make things so difficult
 
     /**
-     * Initializes a new instance of {@link MineManager}
+     * Initializes a new instance of {@link LegacyMineManager}
      */
-    public MineManager() {
+    public LegacyMineManager() {
         mines = new ArrayList<>();
         randomizedBlocks = new HashMap<>();
         players = new HashMap<>();
     }
 
     /**
-     * Gets the amount of mines in this {@link MineManager}
+     * Gets the amount of mines in this {@link LegacyMineManager}
      *
      * @return the amount of loaded mines
      */
@@ -70,7 +70,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Returns true if there are no mines in this {@link MineManager}, false otherwise
+     * Returns true if there are no mines in this {@link LegacyMineManager}, false otherwise
      *
      * @return true if size() is equal to 0
      */
@@ -79,7 +79,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Check if there is an exact match of the specified {@link Mine} in this {@link MineManager}
+     * Check if there is an exact match of the specified {@link Mine} in this {@link LegacyMineManager}
      *
      * @param o the mine to check for
      * @return
@@ -89,7 +89,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Gets the iterator of this {@link MineManager}
+     * Gets the iterator of this {@link LegacyMineManager}
      *
      * @return the iterator
      */
@@ -98,7 +98,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Converts this {@link MineManager} to an array
+     * Converts this {@link LegacyMineManager} to an array
      *
      * @return a Mine[] with all the mines contained in this instance
      */
@@ -111,7 +111,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Adds a {@link Mine} to this {@link MineManager} instance
+     * Adds a {@link Mine} to this {@link LegacyMineManager} instance
      *
      * @param c the mine instance
      * @return if the add was successful
@@ -125,7 +125,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Removes an {@link Mine} from this {@link MineManager} instance (if the object is present)
+     * Removes an {@link Mine} from this {@link LegacyMineManager} instance (if the object is present)
      *
      * @param c
      * @return false if the mine was not found in this instance OR if the remove operation wasn't successful
@@ -139,7 +139,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Checks if this {@link MineManager} contains all of the objects in the specified colleciton
+     * Checks if this {@link LegacyMineManager} contains all of the objects in the specified colleciton
      *
      * @param c the collection
      * @return true if all of the objects are contained in this mine, false otherwise
@@ -149,7 +149,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Adds all of the specified {@link Mine}s to this {@link MineManager}
+     * Adds all of the specified {@link Mine}s to this {@link LegacyMineManager}
      *
      * @param c the collection to merge with this instance
      * @return true if the add operation succeeded
@@ -159,7 +159,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Adds all of the specified {@link Mine}s to this {@link MineManager} starting at the specified index
+     * Adds all of the specified {@link Mine}s to this {@link LegacyMineManager} starting at the specified index
      *
      * @param c the collection to merge with this instance
      * @return true if the add operation succeeded
@@ -179,7 +179,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Removes all the mines from this {@link MineManager} except the ones contained
+     * Removes all the mines from this {@link LegacyMineManager} except the ones contained
      * in the given collection
      *
      * @param c the items to keep in this instance
@@ -190,7 +190,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Removes all the mines contained within this {@link MineManager}
+     * Removes all the mines contained within this {@link LegacyMineManager}
      */
     public void clear() {
         mines.clear();
@@ -239,9 +239,9 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Gets the index of an element in this {@link MineManager}
+     * Gets the index of an element in this {@link LegacyMineManager}
      *
-     * @param c the element to get the index of
+     * @param c the element to getInstance the index of
      * @return the index of the element
      */
     public int indexOf(Object c) {
@@ -249,9 +249,9 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Gets the last index of an element in this {@link MineManager}
+     * Gets the last index of an element in this {@link LegacyMineManager}
      *
-     * @param c the element to get the last index of
+     * @param c the element to getInstance the last index of
      * @return the last index of the element
      */
     public int lastIndexOf(Object c) {
@@ -259,7 +259,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Gets a {@link ListIterator} for this {@link MineManager}
+     * Gets a {@link ListIterator} for this {@link LegacyMineManager}
      *
      * @return the iterator
      */
@@ -268,7 +268,7 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Gets a {@link ListIterator} for this {@link MineManager} from the specified index
+     * Gets a {@link ListIterator} for this {@link LegacyMineManager} from the specified index
      *
      * @return the iterator
      */
@@ -283,8 +283,8 @@ public class MineManager implements List<Mine> {
      * @param toIndex   the max index (upper bound of the sublist)
      * @return
      */
-    public MineManager subList(int fromIndex, int toIndex) {
-        return (MineManager) mines.subList(fromIndex, toIndex);
+    public LegacyMineManager subList(int fromIndex, int toIndex) {
+        return (LegacyMineManager) mines.subList(fromIndex, toIndex);
     }
 
     /**
@@ -306,15 +306,15 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Creates a new list from this {@link MineManager}, but only with the elements accepted
+     * Creates a new list from this {@link LegacyMineManager}, but only with the elements accepted
      * by the specified {@link MinesFilter}
      *
      * @param filter the filter to use to create the new list
      * @return the new list
      * @see MinesFilter#accept(Mine)
      */
-    public MineManager select(MinesFilter filter) {
-        MineManager out = new MineManager();
+    public LegacyMineManager select(MinesFilter filter) {
+        LegacyMineManager out = new LegacyMineManager();
         for (Mine c : this) {
             if (filter.accept(c)) {
                 out.add(c);
@@ -324,27 +324,27 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Creates a new list from this {@link MineManager}, but only with the elements accepted
+     * Creates a new list from this {@link LegacyMineManager}, but only with the elements accepted
      * by the specified filter.
      *
      * @param filter the filter that should return true for items to keep, false otherwise.
      * @return the new list
      */
-    public MineManager select(Predicate<? super Mine> filter) {
-        MineManager out = new MineManager();
+    public LegacyMineManager select(Predicate<? super Mine> filter) {
+        LegacyMineManager out = new LegacyMineManager();
         out.addAll(this);
         out.removeIf(x -> !filter.test(x));
         return out;
     }
 
     /**
-     * Loops through this {@link MineManager}, executing the action specified within the given
+     * Loops through this {@link LegacyMineManager}, executing the action specified within the given
      * {@link MinesFilter}
      *
      * @param filter the filter that contains the loop action
      * @return this instance for chaining
      */
-    public MineManager forEach(MinesFilter filter) {
+    public LegacyMineManager forEach(MinesFilter filter) {
         for (Mine c : this) {
             filter.action(c);
         }
@@ -352,14 +352,14 @@ public class MineManager implements List<Mine> {
     }
 
     private void selectiveSend(Player x, Localizable localizable) {
-        if (PrisonMines.get().getWorlds()
+        if (PrisonMines.getInstance().getWorlds()
             .contains(x.getLocation().getWorld().getName().toLowerCase())) {
             localizable.sendTo(x);
         }
     }
 
     /**
-     * Gets the {@link TimerTask} for the reset timer of this {@link MineManager}
+     * Gets the {@link TimerTask} for the reset timer of this {@link LegacyMineManager}
      *
      * @return
      */
@@ -367,7 +367,7 @@ public class MineManager implements List<Mine> {
         return new TimerTask() {
             @Override public void run() {
                 // Perform initial checks
-                if (PrisonMines.get().getConfig().resetTime == 0) {
+                if (PrisonMines.getInstance().getConfig().resetTime == 0) {
                     return;
                 }
                 if (size() == 0) {
@@ -391,38 +391,38 @@ public class MineManager implements List<Mine> {
     private void resetMines() {
         reset();
 
-        if (PrisonMines.get().getConfig().resetMessages) {
+        if (PrisonMines.getInstance().getConfig().resetMessages) {
             // Send it to everyone if it's not multi-world
-            if (!PrisonMines.get().getConfig().multiworld) {
+            if (!PrisonMines.getInstance().getConfig().multiworld) {
                 Prison.get().getPlatform().getOnlinePlayers().forEach(
-                    x -> PrisonMines.get().getMinesMessages().getLocalizable("reset_message")
+                    x -> PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")
                         .sendTo(x));
             } else { // Or those affected if it's multi-world
                 Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
-                    PrisonMines.get().getMinesMessages().getLocalizable("reset_message")));
+                    PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")));
             }
         }
 
         // And reset the count
-        resetCount = PrisonMines.get().getConfig().resetTime;
+        resetCount = PrisonMines.getInstance().getConfig().resetTime;
     }
 
     private void broadcastResetWarnings() {
-        if (!PrisonMines.get().getConfig().resetMessages) {
+        if (!PrisonMines.getInstance().getConfig().resetMessages) {
             return;
         }
 
-        for (int i : PrisonMines.get().getConfig().resetWarningTimes) {
+        for (int i : PrisonMines.getInstance().getConfig().resetWarningTimes) {
             if (resetCount == i) {
-                if (!PrisonMines.get().getConfig().multiworld) {
+                if (!PrisonMines.getInstance().getConfig().multiworld) {
 
                     Prison.get().getPlatform().getOnlinePlayers().forEach(
-                        x -> PrisonMines.get().getMinesMessages().getLocalizable("reset_warning")
+                        x -> PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
                             .withReplacements(Text.getTimeUntilString(resetCount * 1000))
                             .sendTo(x));
                 } else {
                     Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
-                        PrisonMines.get().getMinesMessages().getLocalizable("reset_warning")
+                        PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
                             .withReplacements(Text.getTimeUntilString(resetCount * 1000))));
                 }
             }
@@ -436,7 +436,7 @@ public class MineManager implements List<Mine> {
      * @return the mine with the specified name or false if there is no mine with the name
      */
     public Mine get(String name) {
-        MineManager sublist = select(new MinesFilter() {
+        LegacyMineManager sublist = select(new MinesFilter() {
             @Override public boolean accept(Mine c) {
                 return c.getName().equalsIgnoreCase(name);
             }
@@ -452,12 +452,12 @@ public class MineManager implements List<Mine> {
     }
 
     /**
-     * Initializes this {@link MineManager}. This should only be used for the instance created by
+     * Initializes this {@link LegacyMineManager}. This should only be used for the instance created by
      * {@link PrisonMines}
      *
      * @return the initialized list or null if it couldn't initialize
      */
-    public MineManager initialize() {
+    public LegacyMineManager initialize() {
         mines = new ArrayList<>();
 
         if (!initColl()) {
@@ -467,21 +467,21 @@ public class MineManager implements List<Mine> {
         loadAll();
 
         Output.get().logInfo("Loaded " + size() + " mines");
-        resetCount = PrisonMines.get().getConfig().resetTime;
+        resetCount = PrisonMines.getInstance().getConfig().resetTime;
         return this;
     }
 
     private boolean initColl() {
         Optional<tech.mcprison.prison.store.Collection> collOptional =
-            PrisonMines.get().getDb().getCollection("mines");
+            PrisonMines.getInstance().getDb().getCollection("mines");
 
         if (!collOptional.isPresent()) {
-            PrisonMines.get().getDb().createCollection("mines");
-            collOptional = PrisonMines.get().getDb().getCollection("mines");
+            PrisonMines.getInstance().getDb().createCollection("mines");
+            collOptional = PrisonMines.getInstance().getDb().getCollection("mines");
 
             if (!collOptional.isPresent()) {
                 Output.get().logError("Could not create 'mines' collection.");
-                PrisonMines.get().getStatus()
+                PrisonMines.getInstance().getStatus()
                     .toFailed("Could not create mines collection in storage.");
                 return false;
             }
@@ -498,7 +498,7 @@ public class MineManager implements List<Mine> {
             try {
                 Mine m = new Mine(document);
                 add(m);
-                if (PrisonMines.get().getConfig().asyncReset) {
+                if (PrisonMines.getInstance().getConfig().asyncReset) {
                     generateBlockList(m);
                 }
             } catch (Exception e) {
@@ -631,7 +631,7 @@ public class MineManager implements List<Mine> {
      * @param player  the player to add a teleport rule for
      * @param sublist
      */
-    public void addTeleportRule(Player player, MineManager sublist) {
+    public void addTeleportRule(Player player, LegacyMineManager sublist) {
         if (players == null) {
             players = new HashMap<>();
         }
@@ -645,7 +645,7 @@ public class MineManager implements List<Mine> {
      * @param uuid    the player's uuid to add a teleport rule for
      * @param sublist
      */
-    public void addTeleportRule(UUID uuid, MineManager sublist) {
+    public void addTeleportRule(UUID uuid, LegacyMineManager sublist) {
         if (players == null) {
             players = new HashMap<>();
         }
@@ -677,7 +677,7 @@ public class MineManager implements List<Mine> {
      * @param player the player
      * @return the teleport rule
      */
-    public MineManager getTeleportRule(Player player) {
+    public LegacyMineManager getTeleportRule(Player player) {
         return players.get(player.getUUID());
     }
 
@@ -687,7 +687,7 @@ public class MineManager implements List<Mine> {
      * @param uuid the player's UUID
      * @return the teleport rule
      */
-    public MineManager getTeleportRule(UUID uuid) {
+    public LegacyMineManager getTeleportRule(UUID uuid) {
         return players.get(uuid);
     }
 
@@ -734,7 +734,7 @@ public class MineManager implements List<Mine> {
      * @return true if the player is allowed to mine in this mine, false otherwise.
      */
     public boolean allowedToMine(Player player, Location location) {
-        MineManager sublist = select(new MinesFilter() {
+        LegacyMineManager sublist = select(new MinesFilter() {
             @Override public boolean accept(Mine c) {
                 return c.isInMine(location);
             }
@@ -774,7 +774,7 @@ public class MineManager implements List<Mine> {
      * @return true if the player is allowed to mine in this mine, false otherwise.
      */
     public boolean allowedToMine(UUID uuid, Location location) {
-        MineManager sublist = select(new MinesFilter() {
+        LegacyMineManager sublist = select(new MinesFilter() {
             @Override public boolean accept(Mine c) {
                 return c.isInMine(location);
             }
