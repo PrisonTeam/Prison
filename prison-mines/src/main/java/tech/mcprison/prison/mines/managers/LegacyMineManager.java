@@ -15,16 +15,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tech.mcprison.prison.mines;
+package tech.mcprison.prison.mines.managers;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.gui.Action;
-import tech.mcprison.prison.gui.Button;
-import tech.mcprison.prison.gui.ClickedButton;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.mines.util.Block;
+import tech.mcprison.prison.mines.legacy.MinesFilter;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
