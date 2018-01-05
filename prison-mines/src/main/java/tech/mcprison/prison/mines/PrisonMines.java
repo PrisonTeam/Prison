@@ -27,6 +27,7 @@ import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
@@ -174,9 +175,11 @@ public class PrisonMines extends Module {
         return db;
     }
 
-    public MineManager getMines() {
+    public MineManager getMineManager() {
         return mines;
     }
+
+    public List<Mine> getMines() { return mines.getMines(); }
 
     public LocaleManager getMinesMessages() {
         return localeManager;

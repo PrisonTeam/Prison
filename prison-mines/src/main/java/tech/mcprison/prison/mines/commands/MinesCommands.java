@@ -43,7 +43,7 @@ import java.util.Objects;
 public class MinesCommands {
 
     private boolean performCheckMineExists(CommandSender sender, String name) {
-        if (!PrisonMines.getInstance().getMines().contains(name)) {
+        if (PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_does_not_exist")
                 .sendTo(sender);
             return false;
@@ -89,19 +89,19 @@ public class MinesCommands {
             return;
         }
 
-        if (!PrisonMines.getInstance().getMines().get(name).getWorld().isPresent()) {
+        if (!PrisonMines.getInstance().getMineManager().getMine(name).get().getWorld().isPresent()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("missing_world").sendTo(sender);
             return;
         }
 
         if (!((Player) sender).getLocation().getWorld().getName()
-            .equalsIgnoreCase(PrisonMines.getInstance().getMines().get(name).getWorld().get().getName())) {
+            .equalsIgnoreCase(PrisonMines.getInstance().getMineManager().getMine(name).get().getWorld().get().getName())) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("spawnpoint_same_world")
                 .sendTo(sender);
             return;
         }
 
-        PrisonMines.getInstance().getMines().get(name).setSpawn(((Player) sender).getLocation());
+        PrisonMines.getInstance().getMineManager().getMine(name).get().setSpawn(((Player) sender).getLocation());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
     }
 
@@ -115,7 +115,7 @@ public class MinesCommands {
             return;
         }
 
-        Mine m = PrisonMines.getInstance().getMines().get(mine);
+        Mine m = PrisonMines.getInstance().getMineManager().getMine(mine).get();
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -124,7 +124,7 @@ public class MinesCommands {
             return;
         }
 
-        if (PrisonMines.getInstance().getMines().get(mine).isInMine(blockType)) {
+        if (PrisonMines.getInstance().getMineManager().getMine(mine).get().isInMine(blockType)) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("block_already_added")
                 .sendTo(sender);
             return;
@@ -143,7 +143,7 @@ public class MinesCommands {
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
-        PrisonMines.getInstance().getMines().clearCache();
+        PrisonMines.getInstance().getMineManager().clearCache();
     }
 
     @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, description = "Changes the percentage of a block in a mine.")
@@ -156,7 +156,7 @@ public class MinesCommands {
             return;
         }
 
-        Mine m = PrisonMines.getInstance().getMines().get(mine);
+        Mine m = PrisonMines.getInstance().getMineManager().getMine(mine).get();
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -165,7 +165,7 @@ public class MinesCommands {
             return;
         }
 
-        if (!PrisonMines.getInstance().getMines().get(mine).isInMine(blockType)) {
+        if (!PrisonMines.getInstance().getMineManager().getMine(mine).get().isInMine(blockType)) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("block_not_removed").sendTo(sender);
             return;
         }
@@ -190,7 +190,7 @@ public class MinesCommands {
             return;
         }
 
-        for (Block blockObject : PrisonMines.getInstance().getMines().get(mine).getBlocks()) {
+        for (Block blockObject : PrisonMines.getInstance().getMineManager().getMine(mine).get().getBlocks()) {
             if (blockObject.type == blockType) {
                 blockObject.chance = chance;
             }
@@ -200,7 +200,7 @@ public class MinesCommands {
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
-        PrisonMines.getInstance().getMines().clearCache();
+        PrisonMines.getInstance().getMineManager().clearCache();
 
     }
 
@@ -220,18 +220,18 @@ public class MinesCommands {
             return;
         }
 
-        if (!PrisonMines.getInstance().getMines().get(mine).isInMine(blockType)) {
+        if (!PrisonMines.getInstance().getMineManager().getMine(mine).get().isInMine(blockType)) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("block_not_removed").sendTo(sender);
             return;
         }
 
-        Mine m = PrisonMines.getInstance().getMines().get(mine);
+        Mine m = PrisonMines.getInstance().getMineManager().getMine(mine).get();
         m.getBlocks().removeIf(x -> x.type == blockType);
         PrisonMines.getInstance().getMinesMessages().getLocalizable("block_deleted")
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
-        PrisonMines.getInstance().getMines().clearCache();
+        PrisonMines.getInstance().getMineManager().clearCache();
     }
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
@@ -241,7 +241,7 @@ public class MinesCommands {
             return;
         }
 
-        PrisonMines.getInstance().getMines().remove(PrisonMines.getInstance().getMines().get(name));
+        PrisonMines.getInstance().getMines().remove(PrisonMines.getInstance().getMineManager().getMine(name).get());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
     }
 
@@ -252,7 +252,7 @@ public class MinesCommands {
             return;
         }
 
-        Mine m = PrisonMines.getInstance().getMines().get(name);
+        Mine m = PrisonMines.getInstance().getMineManager().getMine(name).get();
 
         ChatDisplay chatDisplay = new ChatDisplay(m.getName());
 
@@ -312,7 +312,7 @@ public class MinesCommands {
         }
 
         try {
-            PrisonMines.getInstance().getMines().get(name).reset();
+            PrisonMines.getInstance().getMineManager().getMine(name).get().reset();
         } catch (Exception e) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_reset_fail").sendTo(sender);
             Output.get().logError("Couldn't reset mine " + name, e);
@@ -359,9 +359,9 @@ public class MinesCommands {
             return;
         }
 
-        PrisonMines.getInstance().getMines().get(name).setBounds(selection.asBounds());
+        PrisonMines.getInstance().getMineManager().getMine(name).get().setBounds(selection.asBounds());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_redefined").sendTo(sender);
-        PrisonMines.getInstance().getMines().clearCache();
+        PrisonMines.getInstance().getMineManager().clearCache();
     }
 
     @Command(identifier = "mines wand", permissions = "mines.wand", description = "Receive a wand to select a mine area.")
