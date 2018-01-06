@@ -80,7 +80,7 @@ public class PrisonMines extends Module {
         initGson();
         initDb();
         initConfig();
-        localeManager = new LocaleManager(this);
+        localeManager = new LocaleManager(this, "lang/mines");
         errorManager = new ErrorManager(this);
 
         initWorlds();
