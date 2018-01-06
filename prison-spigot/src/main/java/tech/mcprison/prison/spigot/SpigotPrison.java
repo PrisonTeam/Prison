@@ -29,6 +29,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.inventivetalent.update.spiget.SpigetUpdate;
+import org.inventivetalent.update.spiget.UpdateCallback;
+import org.inventivetalent.update.spiget.comparator.VersionComparator;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
@@ -141,13 +144,23 @@ public class SpigotPrison extends JavaPlugin {
             return; // Don't check if they don't want it
         }
 
-        new Updater(this, 76155, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, updater -> {
-            if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
+        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+        updater.setVersionComparator(VersionComparator.EQUAL);
+
+        updater.checkForUpdate(new UpdateCallback() {
+            @Override
+            public void updateAvailable(String newVersion, String downloadUrl,
+                boolean hasDirectDownload) {
                 Alerts.getInstance().sendAlert(
                     "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-                    updater.getLatestName());
+                    newVersion);
             }
-        }, false);
+
+            @Override
+            public void upToDate() {
+                // Plugin is up-to-date
+            }
+        });
 
     }
 
@@ -219,14 +232,14 @@ public class SpigotPrison extends JavaPlugin {
     private void initModules() {
         YamlConfiguration modulesConf = loadConfig("modules.yml");
 
-        if(modulesConf.getBoolean("mines")) {
+        if (modulesConf.getBoolean("mines")) {
             Prison.get().getModuleManager()
                 .registerModule(new PrisonMines(getDescription().getVersion()));
         } else {
             Output.get().logInfo("Not loading mines because it's disabled in modules.yml.");
         }
 
-        if(modulesConf.getBoolean("ranks")) {
+        if (modulesConf.getBoolean("ranks")) {
             Prison.get().getModuleManager()
                 .registerModule(new PrisonRanks(getDescription().getVersion()));
         } else {
