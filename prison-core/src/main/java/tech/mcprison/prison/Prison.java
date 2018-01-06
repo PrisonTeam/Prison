@@ -159,7 +159,7 @@ public class Prison implements PluginEntity {
 
     private void initManagers() {
         // Now we initialize the API
-        this.localeManager = new LocaleManager(this);
+        this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
