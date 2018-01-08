@@ -159,7 +159,7 @@ public class PrisonMines extends Module {
      */
 
     private void initMines() {
-        mines = new MineManager().initialize();
+        mines = MineManager.fromDb();
         Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
     }
 

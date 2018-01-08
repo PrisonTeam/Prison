@@ -17,10 +17,11 @@
 
 package tech.mcprison.prison.mines.managers;
 
+import java.io.IOException;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.mines.legacy.MinesFilter;
+import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.Block;
@@ -31,8 +32,6 @@ import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 import java.util.*;
-import java.util.function.Predicate;
-
 /**
  * Represents a collection of mines which can be iterated through in a normal <i>for</i> loop
  */
@@ -43,13 +42,8 @@ public class MineManager {
     tech.mcprison.prison.store.Collection coll;
 
     // Declarations
-    HashMap<Mine, List<BlockType>> randomizedBlocks;
+    HashMap<String, List<BlockType>> randomizedBlocks;
     int resetCount = 0;
-
-    // NPE
-    private HashMap<UUID, MineManager> players;
-
-    // Inherited methods -- don't know why I make things so difficult
 
     /**
      * Initializes a new instance of {@link MineManager}
@@ -57,8 +51,18 @@ public class MineManager {
     public MineManager(tech.mcprison.prison.store.Collection collection) {
         mines = new ArrayList<>();
         randomizedBlocks = new HashMap<>();
-        players = new HashMap<>();
         coll = collection;
+        mines = new ArrayList<>();
+
+        loadAll();
+
+        Output.get().logInfo("Loaded " + mines.size() + " mines");
+        resetCount = PrisonMines.getInstance().getConfig().resetTime;
+    }
+
+    public void loadRank(String rankFile) throws IOException, MineException {
+        Document document = coll.get(rankFile).orElseThrow(IOException::new);
+        mines.add(new Mine(document));
     }
 
     /**
@@ -153,27 +157,7 @@ public class MineManager {
         }
     }
 
-    /**
-     * Initializes this {@link MineManager}. This should only be used for the instance created by
-     * {@link PrisonMines}
-     *
-     * @return the initialized list or null if it couldn't initialize
-     */
-    public MineManager initialize() {
-        mines = new ArrayList<>();
-
-        if (!initColl()) {
-            return null;
-        }
-
-        loadAll();
-
-        Output.get().logInfo("Loaded " + mines.size() + " mines");
-        resetCount = PrisonMines.getInstance().getConfig().resetTime;
-        return this;
-    }
-
-    private boolean initColl() {
+    public static MineManager fromDb() {
         Optional<tech.mcprison.prison.store.Collection> collOptional =
             PrisonMines.getInstance().getDb().getCollection("mines");
 
@@ -185,12 +169,11 @@ public class MineManager {
                 Output.get().logError("Could not create 'mines' collection.");
                 PrisonMines.getInstance().getStatus()
                     .toFailed("Could not create mines collection in storage.");
-                return false;
+                return null;
             }
         }
 
-        coll = collOptional.get();
-        return true;
+        return new MineManager(collOptional.get());
     }
 
     private void loadAll() {
@@ -263,7 +246,7 @@ public class MineManager {
                 blocks.add(BlockType.AIR);
             }
         }
-        randomizedBlocks.put(m, blocks);
+        randomizedBlocks.put(m.getName(), blocks);
     }
 
     /**
@@ -271,74 +254,8 @@ public class MineManager {
      *
      * @return a hashmap with all the randomized blocks
      */
-    public HashMap<Mine, List<BlockType>> getRandomizedBlocks() {
+    public HashMap<String, List<BlockType>> getRandomizedBlocks() {
         return randomizedBlocks;
-    }
-
-    /**
-     * Adds a teleport rule. Teleport rules allow players only to teleport to/mine in certain mines.
-     *
-     * @param player  the player to add a teleport rule for
-     * @param sublist
-     */
-    public void addTeleportRule(Player player, MineManager sublist) {
-        if (players == null) {
-            players = new HashMap<>();
-        }
-        players.put(player.getUUID(), sublist);
-    }
-
-
-    /**
-     * Adds a teleport rule. Teleport rules allow players only to teleport to/mine in certain mines.
-     *
-     * @param uuid    the player's uuid to add a teleport rule for
-     * @param sublist
-     */
-    public void addTeleportRule(UUID uuid, MineManager sublist) {
-        if (players == null) {
-            players = new HashMap<>();
-        }
-        players.put(uuid, sublist);
-    }
-
-    /**
-     * Removed all teleport rules for the specified player
-     *
-     * @param player
-     */
-    public void removeTeleportRule(Player player) {
-        players.remove(player.getUUID());
-    }
-
-
-    /**
-     * Removed all teleport rules for the specified UUID
-     *
-     * @param uuid
-     */
-    public void removeTeleportRule(UUID uuid) {
-        players.remove(uuid);
-    }
-
-    /**
-     * Gets all the mines that the specified player is allowed to teleport to/mine in
-     *
-     * @param player the player
-     * @return the teleport rule
-     */
-    public MineManager getTeleportRule(Player player) {
-        return players.get(player.getUUID());
-    }
-
-    /**
-     * Gets all the mines that the specified player is allowed to teleport to/mine in
-     *
-     * @param uuid the player's UUID
-     * @return the teleport rule
-     */
-    public MineManager getTeleportRule(UUID uuid) {
-        return players.get(uuid);
     }
 
     /**

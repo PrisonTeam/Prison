@@ -1,6 +1,8 @@
 package tech.mcprison.prison.mines;
 
 import com.google.common.eventbus.Subscribe;
+import tech.mcprison.prison.internal.events.block.BlockBreakEvent;
+import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.selection.SelectionCompletedEvent;
 import tech.mcprison.prison.util.Bounds;
 
@@ -14,6 +16,13 @@ public class MinesListener {
         String dimensions = bounds.getWidth() + "x" + bounds.getHeight() + "x" + bounds.getLength();
         e.getPlayer().sendMessage("&3Ready. &7Your mine will be &8" + dimensions
             + "&7 blocks. Type /mines create to create it.");
+    }
+
+    /**
+     * Autosmelt/autopickup helper
+     */
+    @Subscribe public void onBlockBreak(BlockBreakEvent e){
+
     }
 
 }

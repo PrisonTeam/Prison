@@ -62,7 +62,7 @@ public class Mine {
      * Loads a mine from a document.
      *
      * @param document The document to load from.
-     * @throws Exception If the mine couldn't be loaded from the document.
+     * @throws MineException If the mine couldn't be loaded from the document.
      */
     public Mine(Document document) throws MineException {
         Optional<World> worldOptional =
@@ -161,7 +161,7 @@ public class Mine {
             }
             World world = worldOptional.get();
 
-            List<BlockType> blockTypes = PrisonMines.getInstance().getMines().getRandomizedBlocks(this);
+            List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager().getRandomizedBlocks().get(name);
             int maxX = Math.max(min.getBlockX(), max.getBlockX());
             int minX = Math.min(min.getBlockX(), max.getBlockX());
             int maxY = Math.max(min.getBlockY(), max.getBlockY());
@@ -213,7 +213,7 @@ public class Mine {
     private void asyncGen() {
         try {
             Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(() -> PrisonMines.getInstance().getMines().generateBlockList(this), 0L);
+                .runTaskLaterAsync(() -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
         } catch (Exception e) {
             Output.get().logWarn("Couldn't generate blocks for mine " + name
                 + " asynchronously. The blocks will be generated synchronously later.", e);
