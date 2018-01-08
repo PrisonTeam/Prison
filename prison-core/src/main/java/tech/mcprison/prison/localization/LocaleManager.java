@@ -29,28 +29,27 @@
 
 package tech.mcprison.prison.localization;
 
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.modules.PluginEntity;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.CodeSource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.modules.PluginEntity;
 
 /**
- * Provides localization support for a particular {@link tech.mcprison.prison.modules.Module}.
- * <p>
- * <p>Locales are loaded as <code>.properties</code> files from the
- * {@code /lang} directory of the archive of the plugin owning this
- * {@link LocaleManager}.</p>
- * <p>
- * Adapted for Prison.
+ * Provides localization support for a particular {@link tech.mcprison.prison.modules.Module}. <p>
+ * <p>Locales are loaded as <code>.properties</code> files from the {@code /lang} directory of the
+ * archive of the plugin owning this {@link LocaleManager}.</p> <p> Adapted for Prison.
  *
  * @author Max Roncacé
  * @author Faizaan A. Datoo
@@ -96,6 +95,7 @@ public class LocaleManager {
     private final PluginEntity module;
     HashMap<String, Properties> configs = new HashMap<>();
     private String defaultLocale = DEFAULT_LOCALE;
+    private String internalPath;
 
     /**
      * Constructs a new {@link LocaleManager} owned by the given {@link PluginEntity}.
@@ -103,10 +103,15 @@ public class LocaleManager {
      * @param module The module owning the new {@link LocaleManager}.
      * @since 1.0
      */
-    public LocaleManager(PluginEntity module) {
+    public LocaleManager(PluginEntity module, String internalPath) {
         this.module = module;
+        this.internalPath = internalPath;
         loadShippedLocales();
         loadCustomLocales(); // custom locales will override
+    }
+
+    public LocaleManager(PluginEntity module) {
+        this(module, LOCALE_FOLDER);
     }
 
     private void loadCustomLocales() {
@@ -157,7 +162,7 @@ public class LocaleManager {
                 ZipEntry entry;
                 while ((entry = zip.getNextEntry()) != null) {
                     String entryName = entry.getName();
-                    if (entryName.startsWith(LOCALE_FOLDER + "/") && entryName
+                    if (entryName.startsWith(internalPath) && entryName
                         .endsWith(".properties")) {
                         String[] arr = entryName.split("/");
                         String localeName = arr[arr.length - 1].replace(".properties", "");
@@ -211,8 +216,9 @@ public class LocaleManager {
     /**
      * Gets the default locale of this {@link LocaleManager}.
      *
-     * @return A string representing the default locale. This should follow the {@code ISO 639-1} and
-     * {@code ISO 3166-1} standards, respectively (e.g. {@code en_US}) and defaults to {@code en_US}.
+     * @return A string representing the default locale. This should follow the {@code ISO 639-1}
+     * and {@code ISO 3166-1} standards, respectively (e.g. {@code en_US}) and defaults to {@code
+     * en_US}.
      * @since 1.0
      */
     public String getDefaultLocale() {
@@ -223,8 +229,8 @@ public class LocaleManager {
      * Sets the default locale of this {@link LocaleManager}.
      *
      * @param locale A string representing the default locale. This should follow the {@code ISO
-     *               639-1} and {@code ISO 3166-1} standards, respectively (e.g. {@code en_US} or {@code enUS}) and
-     *               defaults to {@code en_US}.
+     * 639-1} and {@code ISO 3166-1} standards, respectively (e.g. {@code en_US} or {@code enUS})
+     * and defaults to {@code en_US}.
      * @since 1.0
      */
     public void setDefaultLocale(String locale) {

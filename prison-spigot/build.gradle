@@ -25,6 +25,7 @@ repositories {
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
     maven { url = "https://repo.lucko.me/" }
     maven { url = "http://repo.bstats.org/content/repositories/releases/" }
+    maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     jcenter()
 }
 
@@ -33,6 +34,7 @@ dependencies {
     compile project(':prison-mines-legacy')
     compile project(':prison-ranks')
     compile 'org.bstats:bstats-bukkit:1.2'
+    compile 'org.inventivetalent.spiget-update:bukkit:1.4.0'
 
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
@@ -58,6 +60,7 @@ shadowJar {
         include(dependency('com.fasterxml.jackson.core:jackson-core:2.7.0'))
         include(dependency('com.fasterxml.jackson.core:jackson-annotations:2.7.0'))
         include(dependency('org.bstats:bstats-bukkit:1.2'))
+        include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.0'))
         include(project(':prison-core'))
         include(project(':prison-mines-legacy'))
         include(project(':prison-ranks'))
