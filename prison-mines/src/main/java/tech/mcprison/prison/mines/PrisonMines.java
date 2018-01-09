@@ -30,6 +30,7 @@ import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
@@ -65,6 +66,7 @@ public class PrisonMines extends Module {
      * Constructor
      */
     private MineManager mines;
+    private PlayerManager player;
 
     /*
      * Methods
@@ -160,6 +162,7 @@ public class PrisonMines extends Module {
 
     private void initMines() {
         mines = MineManager.fromDb();
+        player = new PlayerManager();
         Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
     }
 
@@ -188,5 +191,7 @@ public class PrisonMines extends Module {
     public List<String> getWorlds() {
         return worlds;
     }
+
+    public PlayerManager getPlayerManager() {return player;}
 
 }
