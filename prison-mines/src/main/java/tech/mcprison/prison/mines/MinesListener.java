@@ -36,7 +36,7 @@ public class MinesListener {
         }
         if (PrisonMines.getInstance().getPlayerManager().hasAutopickup(e.getPlayer())) {
             e.getPlayer().getInventory()
-                .addItem((ItemStack[]) e.getBlockLocation().getBlockAt().getDrops().toArray());
+                .addItem(e.getBlockLocation().getBlockAt().getDrops().toArray(new ItemStack[]{}));
             e.getBlockLocation().getBlockAt().setType(BlockType.AIR);
             e.setCanceled(true);
         }

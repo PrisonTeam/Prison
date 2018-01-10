@@ -33,6 +33,7 @@ public class PlayerManager {
     }
 
     public boolean hasAutosmelt(UUID uuid) {
+        check(uuid);
         return players.get(uuid).autosmelt;
     }
 
@@ -41,6 +42,7 @@ public class PlayerManager {
     }
 
     public boolean hasAutopickup(UUID uuid) {
+        check(uuid);
         return players.get(uuid).autopickup;
     }
 
@@ -49,6 +51,7 @@ public class PlayerManager {
     }
 
     public boolean hasAutoblock(UUID uuid) {
+        check(uuid);
         return players.get(uuid).autoblock;
     }
 
@@ -57,6 +60,7 @@ public class PlayerManager {
     }
 
     public void setAutosmelt(UUID uuid, boolean option) {
+        check(uuid);
         players.get(uuid).autosmelt = option;
     }
 
@@ -65,6 +69,7 @@ public class PlayerManager {
     }
 
     public void setAutopickup(UUID uuid, boolean option) {
+        check(uuid);
         players.get(uuid).autopickup = option;
     }
 
@@ -73,13 +78,13 @@ public class PlayerManager {
     }
 
     public void setAutoblock(UUID uuid, boolean option) {
+        check(uuid);
         players.get(uuid).autoblock = option;
     }
 
-    @Subscribe
-    private void onPlayerJoin(PlayerJoinEvent e) {
-        if (!players.containsKey(e.getPlayer().getUUID())) {
-            players.put(e.getPlayer().getUUID(), new MinesPlayer().init());
+    private void check(UUID uuid){
+        if (!players.containsKey(uuid)){
+            players.put(uuid,new MinesPlayer().init());
         }
     }
 }

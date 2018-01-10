@@ -22,7 +22,7 @@ public class PowertoolCommands {
 
     @Command(identifier = "autoblock", description = "Enables/disables the autoblock tool.", permissions = "mines.autoblock")
     public void autoblockCommand(CommandSender sender) {
-        if (!PrisonMines.getInstance().getPlayerManager().hasAutosmelt((Player) sender)) {
+        if (!PrisonMines.getInstance().getPlayerManager().hasAutoblock((Player) sender)) {
             PrisonMines.getInstance().getPlayerManager().setAutoblock((Player) sender, true);
             PrisonMines.getInstance().getMinesMessages().getLocalizable("autoblock_enabled")
                 .sendTo(sender);
@@ -35,7 +35,7 @@ public class PowertoolCommands {
 
     @Command(identifier = "autopickup", description = "Enables/disables the autopickup tool.", permissions = "mines.autopickup")
     public void autopickupCommand(CommandSender sender) {
-        if (!PrisonMines.getInstance().getPlayerManager().hasAutosmelt((Player) sender)) {
+        if (!PrisonMines.getInstance().getPlayerManager().hasAutopickup((Player) sender)) {
             PrisonMines.getInstance().getPlayerManager().setAutopickup((Player) sender, true);
             PrisonMines.getInstance().getMinesMessages().getLocalizable("autopickup_enabled")
                 .sendTo(sender);

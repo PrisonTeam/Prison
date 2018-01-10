@@ -34,6 +34,7 @@ import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
+import tech.mcprison.prison.mines.commands.PowertoolCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -93,6 +94,7 @@ public class PrisonMines extends Module {
         PrisonAPI.getEventBus().register(new MinesListener());
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
+        //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }

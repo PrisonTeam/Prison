@@ -42,7 +42,7 @@ import tech.mcprison.prison.util.BlockType;
 public class MinesCommands {
 
     private boolean performCheckMineExists(CommandSender sender, String name) {
-        if (PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
+        if (!PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_does_not_exist")
                 .sendTo(sender);
             return false;
@@ -76,7 +76,7 @@ public class MinesCommands {
         }
 
         Mine mine = new Mine().setBounds(selection.asBounds()).setName(name);
-        PrisonMines.getInstance().getMines().add(mine);
+        PrisonMines.getInstance().getMineManager().add(mine);
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_created").sendTo(sender);
     }
 
@@ -248,8 +248,8 @@ public class MinesCommands {
             return;
         }
 
-        PrisonMines.getInstance().getMines()
-            .remove(PrisonMines.getInstance().getMineManager().getMine(name).get());
+        PrisonMines.getInstance().getMineManager()
+            .removeMine(PrisonMines.getInstance().getMineManager().getMine(name).get());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
     }
 
