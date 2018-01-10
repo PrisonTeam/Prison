@@ -97,7 +97,7 @@ public class MinesConversionAgent implements ConversionAgent {
                     PrisonMines.getInstance().getMines().add(ourMine);
                 }
 
-                PrisonMines.getInstance().getMines().save();
+                PrisonMines.getInstance().getMineManager().saveMines();
                 alreadyConverted.createNewFile();
                 return new ConversionResult(getName(), ConversionResult.Status.Success,
                     "Converted " + jsonFiles.length + " mines.");

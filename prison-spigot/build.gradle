@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
     compile project(':prison-core')
-    compile project(':prison-mines-legacy')
+    compile project(':prison-mines')
     compile project(':prison-ranks')
     compile 'org.bstats:bstats-bukkit:1.2'
     compile 'org.inventivetalent.spiget-update:bukkit:1.4.0'
@@ -62,7 +62,7 @@ shadowJar {
         include(dependency('org.bstats:bstats-bukkit:1.2'))
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.0'))
         include(project(':prison-core'))
-        include(project(':prison-mines-legacy'))
+        include(project(':prison-mines'))
         include(project(':prison-ranks'))
     }
 

@@ -166,7 +166,7 @@ public class PrisonMines extends Module {
     }
 
     public void disable() {
-        mines.save();
+        mines.saveMines();
     }
 
     public MinesConfig getConfig() {

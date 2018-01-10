@@ -38,7 +38,9 @@ import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
- * Represents a collection of mines which can be iterated through in a normal <i>for</i> loop
+ * Manages the creation, removal, and management of mines.
+ *
+ * @author Dylan M. Perks
  */
 public class MineManager {
 
@@ -60,14 +62,14 @@ public class MineManager {
         coll = collection;
         mines = new ArrayList<>();
 
-        loadAll();
+        loadMines();
 
         Output.get().logInfo("Loaded " + mines.size() + " mines");
         resetCount = PrisonMines.getInstance().getConfig().resetTime;
     }
 
-    public void loadRank(String rankFile) throws IOException, MineException {
-        Document document = coll.get(rankFile).orElseThrow(IOException::new);
+    public void loadMine(String mineFile) throws IOException, MineException {
+        Document document = coll.get(mineFile).orElseThrow(IOException::new);
         mines.add(new Mine(document));
     }
 
@@ -122,7 +124,7 @@ public class MineManager {
     }
 
     private void resetMines() {
-        reset();
+        mines.forEach(Mine::reset);
 
         if (PrisonMines.getInstance().getConfig().resetMessages) {
             // Send it to everyone if it's not multi-world
@@ -164,6 +166,19 @@ public class MineManager {
         }
     }
 
+    public boolean removeMine(String id){
+        if (getMine(id).isPresent()) {
+            return removeMine(getMine(id).get());
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean removeMine(Mine mine){
+        return mines.remove(mine);
+    }
+
     public static MineManager fromDb() {
         Optional<tech.mcprison.prison.store.Collection> collOptional =
             PrisonMines.getInstance().getDb().getCollection("mines");
@@ -183,7 +198,7 @@ public class MineManager {
         return new MineManager(collOptional.get());
     }
 
-    private void loadAll() {
+    private void loadMines() {
         List<Document> mineDocuments = coll.getAll();
 
         for (Document document : mineDocuments) {
@@ -204,17 +219,14 @@ public class MineManager {
      * Saves all the mines in this list. This should only be used for the instance created by {@link
      * PrisonMines}
      */
-    public void save() {
-        for (Mine mine : mines) {
-            coll.insert(mine.getName(), mine.toDocument());
-        }
+    public void saveMine(Mine mine) {
+        coll.insert(mine.getName(), mine.toDocument());
     }
 
-    /**
-     * Resets all the mines in this list.
-     */
-    public void reset() {
-        mines.forEach(Mine::reset);
+    public void saveMines(){
+        for (Mine m : mines){
+            saveMine(m);
+        }
     }
 
     /**
