@@ -37,6 +37,10 @@ public class BlockBreakEvent implements Cancelable {
     private boolean canceled = false;
     private int exp;
 
+    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
+        this(block,blockLocation,player,0);
+    }
+
     public BlockBreakEvent(BlockType block, Location blockLocation, Player player,int xp) {
         this.block = block;
         this.blockLocation = blockLocation;
