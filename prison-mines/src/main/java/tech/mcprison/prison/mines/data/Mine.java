@@ -18,6 +18,11 @@
 
 package tech.mcprison.prison.mines.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
@@ -29,8 +34,6 @@ import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
-
-import java.util.*;
 
 /**
  * @author Dylan M. Perks
@@ -137,7 +140,8 @@ public class Mine {
         for (Player p : players) {
             p.teleport(getSpawn().orElse(
                 null)); // Should probably fail with an exception, but an NPE is as good as any..
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported").withReplacements(name)
+            PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+                .withReplacements(name)
                 .sendTo(p);
         }
     }
@@ -161,7 +165,8 @@ public class Mine {
             }
             World world = worldOptional.get();
 
-            List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager().getRandomizedBlocks().get(name);
+            List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager()
+                .getRandomizedBlocks().get(name);
             int maxX = Math.max(min.getBlockX(), max.getBlockX());
             int minX = Math.min(min.getBlockX(), max.getBlockX());
             int maxY = Math.max(min.getBlockY(), max.getBlockY());
@@ -213,7 +218,8 @@ public class Mine {
     private void asyncGen() {
         try {
             Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(() -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
+                .runTaskLaterAsync(
+                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
         } catch (Exception e) {
             Output.get().logWarn("Couldn't generate blocks for mine " + name
                 + " asynchronously. The blocks will be generated synchronously later.", e);
@@ -237,7 +243,8 @@ public class Mine {
     /**
      * Gets the spawn for this mine
      *
-     * @return the location of the spawn. {@link Optional#empty()} if no spawn is present OR the world can't be found
+     * @return the location of the spawn. {@link Optional#empty()} if no spawn is present OR the
+     * world can't be found
      */
     public Optional<Location> getSpawn() {
         if (!hasSpawn) {
@@ -281,8 +288,6 @@ public class Mine {
 
     /**
      * Gets the world
-     *
-     * @return
      */
     public Optional<World> getWorld() {
         return Prison.get().getPlatform().getWorld(worldName);
@@ -312,7 +317,8 @@ public class Mine {
     /**
      * Sets the blocks for this mine
      *
-     * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the block appearing as the value.
+     * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
+     * block appearing as the value.
      * @return this instance for chaining
      */
     public Mine setBlocks(HashMap<BlockType, Integer> blockMap) {
@@ -340,11 +346,13 @@ public class Mine {
         return getBounds().getArea();
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         return (obj instanceof Mine) && (((Mine) obj).name).equals(name);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return name.hashCode();
     }
 

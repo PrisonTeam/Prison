@@ -7,7 +7,6 @@ import java.util.List;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.block.BlockBreakEvent;
-import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.internal.inventory.PlayerInventory;
 import tech.mcprison.prison.selection.SelectionCompletedEvent;
 import tech.mcprison.prison.util.BlockType;

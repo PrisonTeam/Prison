@@ -3,6 +3,12 @@ package tech.mcprison.prison.mines;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionAgent;
@@ -14,19 +20,13 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class MinesConversionAgent implements ConversionAgent {
 
-    @Override public ConversionResult convert() {
+    @Override
+    public ConversionResult convert() {
         File oldFolder = new File(PrisonAPI.getPluginDirectory().getParent(), "Prison.old");
         File minesFolder = new File(oldFolder, "mines");
 
@@ -115,7 +115,8 @@ public class MinesConversionAgent implements ConversionAgent {
         }
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return "Mines";
     }
 }

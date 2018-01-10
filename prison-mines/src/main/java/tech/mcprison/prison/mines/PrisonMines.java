@@ -20,6 +20,13 @@ package tech.mcprison.prison.mines;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -34,14 +41,6 @@ import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
 
 /**
  * The Prison 3 Mines Module
@@ -182,7 +181,9 @@ public class PrisonMines extends Module {
         return mines;
     }
 
-    public List<Mine> getMines() { return mines.getMines(); }
+    public List<Mine> getMines() {
+        return mines.getMines();
+    }
 
     public LocaleManager getMinesMessages() {
         return localeManager;
@@ -192,6 +193,8 @@ public class PrisonMines extends Module {
         return worlds;
     }
 
-    public PlayerManager getPlayerManager() {return player;}
+    public PlayerManager getPlayerManager() {
+        return player;
+    }
 
 }

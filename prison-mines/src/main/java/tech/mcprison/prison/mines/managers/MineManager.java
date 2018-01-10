@@ -18,24 +18,30 @@
 package tech.mcprison.prison.mines.managers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.TimerTask;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.Block;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
-import java.util.*;
 /**
  * Represents a collection of mines which can be iterated through in a normal <i>for</i> loop
  */
 public class MineManager {
+
     // Base list
     List<Mine> mines;
 
@@ -88,12 +94,11 @@ public class MineManager {
 
     /**
      * Gets the {@link TimerTask} for the reset timer of this {@link MineManager}
-     *
-     * @return
      */
     public TimerTask getTimerTask() {
         return new TimerTask() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 // Perform initial checks
                 if (PrisonMines.getInstance().getConfig().resetTime == 0) {
                     return;
@@ -123,7 +128,8 @@ public class MineManager {
             // Send it to everyone if it's not multi-world
             if (!PrisonMines.getInstance().getConfig().multiworld) {
                 Prison.get().getPlatform().getOnlinePlayers().forEach(
-                    x -> PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")
+                    x -> PrisonMines.getInstance().getMinesMessages()
+                        .getLocalizable("reset_message")
                         .sendTo(x));
             } else { // Or those affected if it's multi-world
                 Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
@@ -145,7 +151,8 @@ public class MineManager {
                 if (!PrisonMines.getInstance().getConfig().multiworld) {
 
                     Prison.get().getPlatform().getOnlinePlayers().forEach(
-                        x -> PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
+                        x -> PrisonMines.getInstance().getMinesMessages()
+                            .getLocalizable("reset_warning")
                             .withReplacements(Text.getTimeUntilString(resetCount * 1000))
                             .sendTo(x));
                 } else {
@@ -194,8 +201,8 @@ public class MineManager {
     }
 
     /**
-     * Saves all the mines in this list. This should only be used for the instance created by
-     * {@link PrisonMines}
+     * Saves all the mines in this list. This should only be used for the instance created by {@link
+     * PrisonMines}
      */
     public void save() {
         for (Mine mine : mines) {
@@ -262,7 +269,8 @@ public class MineManager {
      * Returns the mine with the specified name.
      *
      * @param name The mine's name, case-sensitive.
-     * @return An optional containing either the {@link Mine} if it could be found, or empty if it does not exist by the specified name.
+     * @return An optional containing either the {@link Mine} if it could be found, or empty if it
+     * does not exist by the specified name.
      */
     public Optional<Mine> getMine(String name) {
         return mines.stream().filter(mine -> mine.getName().equals(name)).findFirst();
@@ -275,6 +283,8 @@ public class MineManager {
         randomizedBlocks.clear();
     }
 
-    public List<Mine> getMines() { return mines; }
+    public List<Mine> getMines() {
+        return mines;
+    }
 
 }

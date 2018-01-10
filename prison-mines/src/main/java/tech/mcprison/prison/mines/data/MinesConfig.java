@@ -28,14 +28,12 @@ import java.util.Arrays;
 public class MinesConfig {
 
     /**
-     * True if randomized blocks for mines should be cached for faster resets.
-     * False otherwise
+     * True if randomized blocks for mines should be cached for faster resets. False otherwise
      */
     public boolean asyncReset = true;
 
     /**
-     * True if reset warnings an reset broadcasts should be enabled.
-     * False otherwise
+     * True if reset warnings an reset broadcasts should be enabled. False otherwise
      */
     public boolean resetMessages = true;
 
@@ -48,8 +46,7 @@ public class MinesConfig {
     public boolean multiworld = false;
 
     /**
-     * True if only blocks that are air should be replaced.
-     * False otherwise
+     * True if only blocks that are air should be replaced. False otherwise
      */
     public boolean fillMode = false;
 
@@ -59,21 +56,19 @@ public class MinesConfig {
     public int resetTime = 600;
 
     /**
-     * The worlds that reset messages should be broadcasted to.
-     * Ignored if multiworld is disabled.
+     * The worlds that reset messages should be broadcasted to. Ignored if multiworld is disabled.
      *
      * @see MinesConfig#multiworld
      */
     public ArrayList<String> worlds =
-        new ArrayList<>(Arrays.<String>asList(new String[] {"plots", "mines"}));
+        new ArrayList<>(Arrays.<String>asList(new String[]{"plots", "mines"}));
 
     /**
-     * The time between mine reset warnings.
-     * Ignored if resetMessages is disabled.
+     * The time between mine reset warnings. Ignored if resetMessages is disabled.
      *
      * @see MinesConfig#resetMessages
      */
     public ArrayList<Integer> resetWarningTimes =
-        new ArrayList<>(Arrays.<Integer>asList(new Integer[] {600, 300, 60}));
+        new ArrayList<>(Arrays.<Integer>asList(new Integer[]{600, 300, 60}));
 
 }

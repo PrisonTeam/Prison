@@ -7,15 +7,18 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 
 public class PlayerManager {
-    public PlayerManager(){
+
+    public PlayerManager() {
         players = new HashMap<>();
     }
 
     public class MinesPlayer {
+
         public boolean autosmelt;
         public boolean autopickup;
         public boolean autoblock;
-        public MinesPlayer init(){
+
+        public MinesPlayer init() {
             autosmelt = false;
             autopickup = false;
             autoblock = false;
@@ -23,25 +26,60 @@ public class PlayerManager {
         }
     }
 
-    HashMap<UUID,MinesPlayer> players;
+    HashMap<UUID, MinesPlayer> players;
 
-    public boolean hasAutosmelt(Player player) { return hasAutosmelt(player.getUUID()); }
-    public boolean hasAutosmelt(UUID uuid){return players.get(uuid).autosmelt;}
+    public boolean hasAutosmelt(Player player) {
+        return hasAutosmelt(player.getUUID());
+    }
 
-    public boolean hasAutopickup(Player player) { return hasAutopickup(player.getUUID()); }
-    public boolean hasAutopickup(UUID uuid){return players.get(uuid).autopickup;}
+    public boolean hasAutosmelt(UUID uuid) {
+        return players.get(uuid).autosmelt;
+    }
 
-    public boolean hasAutoblock(Player player) { return hasAutoblock(player.getUUID()); }
-    public boolean hasAutoblock(UUID uuid){return players.get(uuid).autoblock;}
+    public boolean hasAutopickup(Player player) {
+        return hasAutopickup(player.getUUID());
+    }
 
-    public void setAutosmelt(Player player,boolean option){setAutosmelt(player.getUUID(),option);}
-    public void setAutosmelt(UUID uuid,boolean option){players.get(uuid).autosmelt = option;}
+    public boolean hasAutopickup(UUID uuid) {
+        return players.get(uuid).autopickup;
+    }
 
-    public void setAutopickup(Player player,boolean option){setAutopickup(player.getUUID(),option);}
-    public void setAutopickup(UUID uuid,boolean option){players.get(uuid).autopickup = option;}
+    public boolean hasAutoblock(Player player) {
+        return hasAutoblock(player.getUUID());
+    }
 
-    public void setAutoblock(Player player,boolean option){setAutoblock(player.getUUID(),option);}
-    public void setAutoblock(UUID uuid,boolean option){players.get(uuid).autoblock = option;}
+    public boolean hasAutoblock(UUID uuid) {
+        return players.get(uuid).autoblock;
+    }
 
-    @Subscribe private void onPlayerJoin(PlayerJoinEvent e){ if (!players.containsKey(e.getPlayer().getUUID())){players.put(e.getPlayer().getUUID(),new MinesPlayer().init());}}
+    public void setAutosmelt(Player player, boolean option) {
+        setAutosmelt(player.getUUID(), option);
+    }
+
+    public void setAutosmelt(UUID uuid, boolean option) {
+        players.get(uuid).autosmelt = option;
+    }
+
+    public void setAutopickup(Player player, boolean option) {
+        setAutopickup(player.getUUID(), option);
+    }
+
+    public void setAutopickup(UUID uuid, boolean option) {
+        players.get(uuid).autopickup = option;
+    }
+
+    public void setAutoblock(Player player, boolean option) {
+        setAutoblock(player.getUUID(), option);
+    }
+
+    public void setAutoblock(UUID uuid, boolean option) {
+        players.get(uuid).autoblock = option;
+    }
+
+    @Subscribe
+    private void onPlayerJoin(PlayerJoinEvent e) {
+        if (!players.containsKey(e.getPlayer().getUUID())) {
+            players.put(e.getPlayer().getUUID(), new MinesPlayer().init());
+        }
+    }
 }

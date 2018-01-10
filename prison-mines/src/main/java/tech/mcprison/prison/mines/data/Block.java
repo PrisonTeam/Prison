@@ -24,6 +24,7 @@ import tech.mcprison.prison.util.BlockType;
  * Represents a block in a mine
  */
 public class Block {
+
     /**
      * The {@link BlockType} represented by this {@link Block}
      */
@@ -35,10 +36,6 @@ public class Block {
 
     /**
      * Assigns the type and chance
-     *
-     * @param block
-     * @param chance
-     * @return
      */
     public Block create(BlockType block, double chance) {
         type = block;
