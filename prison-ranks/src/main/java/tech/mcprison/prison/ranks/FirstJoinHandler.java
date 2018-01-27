@@ -54,7 +54,12 @@ public class FirstJoinHandler {
         if (firstRank.isPresent()) {
             player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
         } else {
-            Output.get().logWarn("There are no ranks on the server! New player has no rank.");
+            firstRank = PrisonRanks.getInstance().getDefaultLadder().getByPosition(1);
+            if (firstRank.isPresent()) {
+                player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
+            } else {
+                Output.get().logWarn("There are no ranks on the server! New player has no rank.");
+            }
         }
 
         try {
