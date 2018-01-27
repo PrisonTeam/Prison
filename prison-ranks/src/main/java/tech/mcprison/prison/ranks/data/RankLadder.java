@@ -226,9 +226,11 @@ public class RankLadder {
     /**
      * Finds the lowest rank present in this ladder. It does so by checking to see which position is the lowest.
      *
-     * @return The rank option.
+     * @return The rank option, or an empty optional if there are no ranks in this ladder.
      */
     public Optional<Rank> getLowestRank() {
+        if (ranks.isEmpty()) return Optional.empty();
+
         PositionRank lowest = ranks.get(0);
         for (PositionRank posRank : ranks) {
             if (posRank.getPosition() < lowest.getPosition()) {

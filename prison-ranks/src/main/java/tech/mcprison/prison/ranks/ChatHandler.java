@@ -36,14 +36,13 @@ public class ChatHandler {
             PrisonRanks.getInstance().getPlayerManager().getPlayer(e.getPlayer().getUUID());
         String prefix = "";
 
-        if(player.isPresent()) {
+        if(player.isPresent() && !player.get().getRanks().isEmpty()) {
             StringBuilder builder = new StringBuilder();
             for(Map.Entry<RankLadder, Rank> entry: player.get().getRanks().entrySet()) {
                 builder.append(entry.getValue().tag);
             }
             prefix = builder.toString();
         }
-
 
         String newFormat = e.getFormat().replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
         e.setFormat(newFormat);
