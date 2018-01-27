@@ -18,12 +18,14 @@
 package tech.mcprison.prison.ranks.data;
 
 import com.google.gson.internal.LinkedTreeMap;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.store.Document;
@@ -55,12 +57,12 @@ public class RankLadder {
         this.id = RankUtil.doubleToInt(document.get("id"));
         this.name = (String) document.get("name");
         List<LinkedTreeMap<String, Object>> ranksLocal =
-            (List<LinkedTreeMap<String, Object>>) document.get("ranks");
+                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
 
         this.ranks = new ArrayList<>();
         for (LinkedTreeMap<String, Object> rank : ranksLocal) {
             ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
-                RankUtil.doubleToInt((rank.get("rankId")))));
+                    RankUtil.doubleToInt((rank.get("rankId")))));
         }
     }
 
@@ -80,15 +82,15 @@ public class RankLadder {
      * Add a rank to this ladder.
      *
      * @param position The place in line to put this rank, beginning at 0. The player will be taken
-     * through each rank by order of their positions in the ladder.
-     * @param rank The {@link Rank} to add.
+     *                 through each rank by order of their positions in the ladder.
+     * @param rank     The {@link Rank} to add.
      */
     public void addRank(int position, Rank rank) {
         position = Math.min(position,
-            ranks.size() + 1); // Make sure to cap it off at the upper limit or else problems
+                ranks.size() + 1); // Make sure to cap it off at the upper limit or else problems
         int finalPosition = position;
         ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
-            .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
+                .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
         ranks.add(new PositionRank(position, rank.id));
     }
@@ -107,11 +109,11 @@ public class RankLadder {
      * Removes a rank from this ladder.
      *
      * @param position The position of the rank to be removed. The positions of the rest of the
-     * ranks will be downshifted to fill the gap.
+     *                 ranks will be downshifted to fill the gap.
      */
     public void removeRank(int position) {
         ranks.stream().filter(positionRank -> positionRank.getPosition() > position).forEach(
-            positionRank -> positionRank.setPosition(positionRank.getPosition() - 1)
+                positionRank -> positionRank.setPosition(positionRank.getPosition() - 1)
         );
 
         Iterator<PositionRank> iter = ranks.iterator();
@@ -170,7 +172,7 @@ public class RankLadder {
      */
     public Optional<Rank> getNext(int after) {
         List<Integer> positions =
-            ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
+                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
 
         int newIndex = positions.indexOf(after) + 1;
         if (newIndex >= positions.size()) {
@@ -190,7 +192,7 @@ public class RankLadder {
      */
     public Optional<Rank> getPrevious(int before) {
         List<Integer> positions =
-            ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
+                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
 
         int newIndex = positions.indexOf(before) - 1;
         if (newIndex >= positions.size()) {
@@ -215,6 +217,26 @@ public class RankLadder {
         }
 
         return Optional.empty();
+    }
+
+    // This next method is sort of precautionary. Sure, positions start at 0, but if the user decides to be crazy
+    // and alters the position within the data files, we need to make sure we adjust accordingly. Never trust
+    // editable data!
+
+    /**
+     * Finds the lowest rank present in this ladder. It does so by checking to see which position is the lowest.
+     *
+     * @return The rank option.
+     */
+    public Optional<Rank> getLowestRank() {
+        PositionRank lowest = ranks.get(0);
+        for (PositionRank posRank : ranks) {
+            if (posRank.getPosition() < lowest.getPosition()) {
+                lowest = posRank;
+            }
+        }
+
+        return PrisonRanks.getInstance().getRankManager().getRank(lowest.getRankId());
     }
 
     /**

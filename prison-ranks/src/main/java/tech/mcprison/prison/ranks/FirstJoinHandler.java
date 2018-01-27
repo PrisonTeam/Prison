@@ -49,17 +49,12 @@ public class FirstJoinHandler {
     @Subscribe public void onFirstJoin(FirstJoinEvent event) {
         RankPlayer player = event.getPlayer();
 
-        Optional<Rank> firstRank = PrisonRanks.getInstance().getDefaultLadder().getByPosition(0);
+        Optional<Rank> firstRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank();
 
         if (firstRank.isPresent()) {
             player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
         } else {
-            firstRank = PrisonRanks.getInstance().getDefaultLadder().getByPosition(1);
-            if (firstRank.isPresent()) {
-                player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
-            } else {
-                Output.get().logWarn("There are no ranks on the server! New player has no rank.");
-            }
+            Output.get().logWarn("There are no ranks on the server! New player has no rank.");
         }
 
         try {
