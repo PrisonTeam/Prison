@@ -25,6 +25,7 @@ public class Alerts {
 
     private static Alerts instance;
     private List<Alert> alerts;
+    private boolean enabled = true;
 
     /*
      * Constructor
@@ -52,11 +53,14 @@ public class Alerts {
         String msg = String.format(alertMsg, format);
         Output.get().logInfo(msg);
 
+        // We wait until now to return because we still want to print the alert message.
+        if(!enabled) return;
+
         Alert alert = new Alert(alerts.size(), msg);
         alerts.add(alert);
 
         for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-            if (player.hasPermission("prison.admin") || player.isOp()) {
+            if (player.hasPermission("prison.alerts")) {
                 Output.get().sendInfo(player,
                     "You have a new alert from Prison. &3Type /prison alerts to read it.");
             }
@@ -82,6 +86,8 @@ public class Alerts {
      */
 
     public void showAlerts(Player player) {
+        if(!enabled) return;
+
         int alerts = Alerts.getInstance().getAlertsFor(player.getUUID()).size();
         if (alerts > 0) {
             Output.get().sendInfo(player,
@@ -103,6 +109,7 @@ public class Alerts {
 
     public List<Alert> getAlertsFor(UUID uid) {
         List<Alert> ret = new ArrayList<>();
+        if(!enabled) return ret;
 
         for (Alert alert : alerts) {
             if (!alert.readBy.contains(uid)) {
@@ -111,6 +118,18 @@ public class Alerts {
         }
 
         return ret;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /*
+     * Setters
+     */
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

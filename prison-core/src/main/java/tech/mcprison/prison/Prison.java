@@ -105,7 +105,7 @@ public class Prison implements PluginEntity {
         if (!initMetaDatabase()) {
             return false;
         }
-        Alerts.getInstance(); // init
+        Alerts.getInstance(); // init alerts
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
