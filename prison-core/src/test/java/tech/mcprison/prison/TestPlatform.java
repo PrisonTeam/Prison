@@ -71,6 +71,11 @@ public class TestPlatform implements Platform {
         return pluginDirectory;
     }
 
+    @Override
+    public boolean shouldShowAlerts() {
+        return false;
+    }
+
     @Override public void registerCommand(PluginCommand command) {
 
     }

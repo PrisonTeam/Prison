@@ -95,8 +95,6 @@ public class SpigotPrison extends JavaPlugin {
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
 
-        Alerts.getInstance().setEnabled(getConfig().getBoolean("show-alerts", true));
-
         initDataDir();
         initCommandMap();
         initCompatibility();
