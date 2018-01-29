@@ -122,7 +122,7 @@ working in that language.
 The *System Libraries* of an executable work include anything, other than the
 work as a whole, that (a) is included in the normal form of packaging a Major
 Component, but which is not part of that Major Component, and (b) serves only
-to enabled use of the work with that Major Component, or to implement a Standard
+to enable use of the work with that Major Component, or to implement a Standard
 Interface for which an implementation is available to the public in source code
 form. A *Major Component*, in this context, means a major essential component
 (kernel, window system, and so on) of the specific operating system (if any) on
