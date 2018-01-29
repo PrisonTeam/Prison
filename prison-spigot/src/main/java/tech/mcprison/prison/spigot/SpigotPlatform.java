@@ -277,6 +277,11 @@ class SpigotPlatform implements Platform {
         return storage;
     }
 
+    @Override
+    public boolean shouldShowAlerts() {
+        return plugin.getConfig().getBoolean("show-alerts", true);
+    }
+
     private boolean isDoor(Material block) {
         return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR
             || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR_BLOCK

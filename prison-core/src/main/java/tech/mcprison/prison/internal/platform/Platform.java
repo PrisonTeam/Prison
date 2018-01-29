@@ -198,4 +198,9 @@ public interface Platform {
     }
 
 
+    /**
+     * Returns true if the server should show alerts to in-game players, false otherwise.
+     * This is a configuration option.kkjksdf;erljnkx.jcsmka.f.fdlwe;s.x. frrer5
+     */
+    boolean shouldShowAlerts();
 }
