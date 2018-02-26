@@ -147,4 +147,8 @@ public class SpongePlatform implements Platform {
         return null;
     }
 
+    @Override
+    public boolean shouldShowAlerts() {
+        return true;
+    }
 }

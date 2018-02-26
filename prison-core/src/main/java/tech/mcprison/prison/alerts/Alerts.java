@@ -56,9 +56,9 @@ public class Alerts {
         alerts.add(alert);
 
         for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-            if (player.hasPermission("prison.admin") || player.isOp()) {
+            if (player.hasPermission("prison.alerts")) {
                 Output.get().sendInfo(player,
-                    "You have a new alert from Prison. &3Type /prison alerts to read it.");
+                        "You have a new alert from Prison. &3Type /prison alerts to read it.");
             }
         }
     }
@@ -85,8 +85,8 @@ public class Alerts {
         int alerts = Alerts.getInstance().getAlertsFor(player.getUUID()).size();
         if (alerts > 0) {
             Output.get().sendInfo(player,
-                "You have %d unread alerts from Prison. &3Type /prison alerts to read them.",
-                alerts);
+                    "You have %d unread alerts from Prison. &3Type /prison alerts to read them.",
+                    alerts);
         }
     }
 
@@ -94,7 +94,8 @@ public class Alerts {
      * Getters
      */
 
-    @Subscribe public void onPlayerJoin(PlayerJoinEvent e) {
+    @Subscribe
+    public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("prison.admin")) {
             // He should see alerts
             showAlerts(e.getPlayer());

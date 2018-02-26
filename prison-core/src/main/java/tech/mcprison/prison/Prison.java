@@ -105,16 +105,18 @@ public class Prison implements PluginEntity {
         if (!initMetaDatabase()) {
             return false;
         }
-        Alerts.getInstance(); // init
+        Alerts.getInstance(); // init alerts
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
-            .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                (System.currentTimeMillis() - startTime));
+                .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+                        (System.currentTimeMillis() - startTime));
 
         registerInbuiltTroubleshooters();
-        scheduleAlertNagger();
+
+        if (getPlatform().shouldShowAlerts())
+            scheduleAlertNagger();
 
         return true;
     }
@@ -131,7 +133,7 @@ public class Prison implements PluginEntity {
         PrisonAPI.log("&6|_|   |_|  |_|___/\\___/|_| |_|");
         PrisonAPI.log("");
         PrisonAPI.log("Loading version %s on platform %s...", PrisonAPI.getPluginVersion(),
-            platform.getClass().getSimpleName());
+                platform.getClass().getSimpleName());
     }
 
     private boolean initDataFolder() {
@@ -148,7 +150,7 @@ public class Prison implements PluginEntity {
 
             if (!metaDatabaseOptional.isPresent()) {
                 Output.get().logError(
-                    "Could not create the meta database. This means that something is wrong with the data storage for the plugin.");
+                        "Could not create the meta database. This means that something is wrong with the data storage for the plugin.");
                 Output.get().logError("The plugin will now disable.");
                 return false;
             }
@@ -172,8 +174,8 @@ public class Prison implements PluginEntity {
             this.itemManager = new ItemManager();
         } catch (Exception e) {
             this.errorManager.throwError(new Error(
-                "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
-                .appendStackTrace("when loading items.csv", e));
+                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
+                    .appendStackTrace("when loading items.csv", e));
             Output.get().logError("Try running /prison troubleshoot item_scan.");
         }
     }
@@ -185,9 +187,9 @@ public class Prison implements PluginEntity {
     private void scheduleAlertNagger() {
         // Nag the user with alerts every 5 minutes
         PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
-            .filter(player -> player.hasPermission("prison.admin")
-                && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-            .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
+                .filter(player -> player.hasPermission("prison.admin")
+                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
+                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps
@@ -202,7 +204,8 @@ public class Prison implements PluginEntity {
 
     // Getters
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return "PrisonCore";
     }
 
