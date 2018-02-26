@@ -81,10 +81,17 @@ public class Mine {
 
         hasSpawn = (boolean) document.get("hasSpawn");
         if (hasSpawn) {
-            spawn = new Location(worldOptional.get(), (double) document.get("spawnX"),
-                (double) document.get("spawnY"), (double) document.get("spawnZ"),
-                ((Double) document.get("spawnPitch")).floatValue(),
-                ((Double) document.get("spawnYaw")).floatValue());
+            try {
+                spawn = new Location(worldOptional.get(), (double) document.get("spawnX"),
+                    (double) document.get("spawnY"), (double) document.get("spawnZ"),
+                    ((Double) document.get("spawnPitch")).floatValue(),
+                    ((Double) document.get("spawnYaw")).floatValue());
+            }catch(ClassCastException e){
+                spawn = new Location(worldOptional.get(), (double) document.get("spawnX"),
+                    (double) document.get("spawnY"), (double) document.get("spawnZ"),
+                    ((Float) document.get("spawnPitch")),
+                    ((Float) document.get("spawnYaw")));
+            }
         }
 
         worldName = worldOptional.get().getName();
