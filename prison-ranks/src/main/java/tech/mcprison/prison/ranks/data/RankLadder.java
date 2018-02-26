@@ -45,6 +45,7 @@ public class RankLadder {
     public int id;
     public String name;
     public List<PositionRank> ranks;
+    public int maxPrestige;
 
     /*
      * Document-related
@@ -71,6 +72,7 @@ public class RankLadder {
         ret.put("id", this.id);
         ret.put("name", this.name);
         ret.put("ranks", this.ranks);
+        ret.put("maxPrestige", this.maxPrestige);
         return ret;
     }
 

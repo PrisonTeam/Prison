@@ -242,5 +242,26 @@ public class RanksCommands {
         display.send(sender);
     }
 
+    // set commands
+    @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", onlyPlayers = false, permissions = "ranks.set")
+    public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost){
+        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if (!rank.isPresent()) {
+            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            return;
+        }
+        rank.get().cost = cost;
+        Output.get().sendInfo(sender,"Successfully set the cost of rank '%s' to "+cost,rankName);
+    }
 
+    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
+    public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag){
+        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if (!rank.isPresent()) {
+            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            return;
+        }
+        rank.get().tag = tag;
+        Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
+    }
 }

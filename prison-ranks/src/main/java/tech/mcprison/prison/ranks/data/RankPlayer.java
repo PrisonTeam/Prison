@@ -40,6 +40,7 @@ public class RankPlayer {
 
     public UUID uid;
     public HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
+    public HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
 
     /*
      * Document-related
@@ -52,10 +53,16 @@ public class RankPlayer {
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
+        LinkedTreeMap<String, Object> prestigeLocal =
+            (LinkedTreeMap<String, Object>) document.get("prestige");
 
         this.ranks = new HashMap<>();
         for (String key : ranksLocal.keySet()) {
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
+        }
+        this.prestige = new HashMap<>();
+        for (String key : prestigeLocal.keySet()) {
+            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
         }
     }
 
@@ -63,6 +70,7 @@ public class RankPlayer {
         Document ret = new Document();
         ret.put("uid", this.uid);
         ret.put("ranks", this.ranks);
+        ret.put("prestige", this.prestige);
         return ret;
     }
 
