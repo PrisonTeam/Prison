@@ -223,15 +223,6 @@ public class MineManager {
         coll.insert(mine.getName(), mine.toDocument());
     }
 
-    public void reloadMine(String mine) throws MineException {
-        if (getMine(mine).isPresent()){
-            Mine m = getMine(mine).get();
-            int index = mines.indexOf(m);
-            saveMine(m);
-            mines.set(index,new Mine(coll.get(mine).get()));
-        }
-    }
-
     public void saveMines(){
         for (Mine m : mines){
             saveMine(m);
