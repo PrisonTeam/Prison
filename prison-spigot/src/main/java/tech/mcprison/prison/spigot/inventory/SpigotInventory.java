@@ -116,7 +116,7 @@ public class SpigotInventory implements Inventory {
         ArrayList<ItemStack> prisonStacks = new ArrayList<>();
         Arrays.asList(wrapper.getContents())
             .forEach(x -> prisonStacks.add(SpigotUtil.bukkitItemStackToPrison(x)));
-        return prisonStacks.toArray(new ItemStack[]{});
+        return (ItemStack[]) prisonStacks.toArray();
     }
 
     @Override public void setItems(List<ItemStack> items) {
@@ -149,7 +149,7 @@ public class SpigotInventory implements Inventory {
         for (ItemStack stack : itemStack) {
             stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
         }
-        wrapper.addItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
+        wrapper.addItem((org.bukkit.inventory.ItemStack[]) stacks.toArray());
     }
 
     @Override public void removeItem(ItemStack... itemStack) {
@@ -157,7 +157,7 @@ public class SpigotInventory implements Inventory {
         for (ItemStack stack : itemStack) {
             stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
         }
-        wrapper.removeItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
+        wrapper.removeItem((org.bukkit.inventory.ItemStack[]) stacks.toArray());
     }
 
     @Override public void clearAll() {

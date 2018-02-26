@@ -133,7 +133,6 @@ public interface PlayerInventory extends Inventory {
      */
     ItemStack getItemInLeftHand();
 
-
     /**
      * Sets the item in the players left (off) hand
      *
