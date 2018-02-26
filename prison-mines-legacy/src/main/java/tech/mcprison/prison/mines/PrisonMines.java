@@ -20,6 +20,16 @@ package tech.mcprison.prison.mines;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.convert.ConversionManager;
+import tech.mcprison.prison.error.Error;
+import tech.mcprison.prison.error.ErrorManager;
+import tech.mcprison.prison.localization.LocaleManager;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.store.Database;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,21 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.convert.ConversionManager;
-import tech.mcprison.prison.error.Error;
-import tech.mcprison.prison.error.ErrorManager;
-import tech.mcprison.prison.localization.LocaleManager;
-import tech.mcprison.prison.mines.commands.MinesCommands;
-import tech.mcprison.prison.mines.commands.PowertoolCommands;
-import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.data.MinesConfig;
-import tech.mcprison.prison.mines.managers.MineManager;
-import tech.mcprison.prison.mines.managers.PlayerManager;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.store.Database;
 
 /**
  * The Prison 3 Mines Module
@@ -66,7 +61,6 @@ public class PrisonMines extends Module {
      * Constructor
      */
     private MineManager mines;
-    private PlayerManager player;
 
     /*
      * Methods
@@ -76,7 +70,7 @@ public class PrisonMines extends Module {
         super("Mines", version, 3);
     }
 
-    public static PrisonMines getInstance() {
+    public static PrisonMines get() {
         return i;
     }
 
@@ -86,7 +80,7 @@ public class PrisonMines extends Module {
         initGson();
         initDb();
         initConfig();
-        localeManager = new LocaleManager(this, "lang/mines");
+        localeManager = new LocaleManager(this);
         errorManager = new ErrorManager(this);
 
         initWorlds();
@@ -94,7 +88,6 @@ public class PrisonMines extends Module {
         PrisonAPI.getEventBus().register(new MinesListener());
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
-        //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }
@@ -162,13 +155,12 @@ public class PrisonMines extends Module {
      */
 
     private void initMines() {
-        mines = MineManager.fromDb();
-        player = new PlayerManager();
+        mines = new MineManager().initialize();
         Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
     }
 
     public void disable() {
-        mines.saveMines();
+        mines.save();
     }
 
     public MinesConfig getConfig() {
@@ -179,12 +171,8 @@ public class PrisonMines extends Module {
         return db;
     }
 
-    public MineManager getMineManager() {
+    public MineManager getMines() {
         return mines;
-    }
-
-    public List<Mine> getMines() {
-        return mines.getMines();
     }
 
     public LocaleManager getMinesMessages() {
@@ -193,10 +181,6 @@ public class PrisonMines extends Module {
 
     public List<String> getWorlds() {
         return worlds;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return player;
     }
 
 }

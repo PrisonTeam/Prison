@@ -3,30 +3,29 @@ package tech.mcprison.prison.mines;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.convert.ConversionAgent;
+import tech.mcprison.prison.convert.ConversionResult;
+import tech.mcprison.prison.error.Error;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds;
+import tech.mcprison.prison.util.Location;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.convert.ConversionAgent;
-import tech.mcprison.prison.convert.ConversionResult;
-import tech.mcprison.prison.error.Error;
-import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Bounds;
-import tech.mcprison.prison.util.Location;
 
 /**
  * @author Faizaan A. Datoo
  */
 public class MinesConversionAgent implements ConversionAgent {
 
-    @Override
-    public ConversionResult convert() {
+    @Override public ConversionResult convert() {
         File oldFolder = new File(PrisonAPI.getPluginDirectory().getParent(), "Prison.old");
         File minesFolder = new File(oldFolder, "mines");
 
@@ -90,14 +89,14 @@ public class MinesConversionAgent implements ConversionAgent {
                     ourMine.setBounds(bounds);
                     ourMine.setBlocks(blocks);
 
-                    if (PrisonMines.getInstance().getMines().contains(ourMine)) {
+                    if (PrisonMines.get().getMines().contains(ourMine)) {
                         break;
                     }
 
-                    PrisonMines.getInstance().getMines().add(ourMine);
+                    PrisonMines.get().getMines().add(ourMine);
                 }
 
-                PrisonMines.getInstance().getMineManager().saveMines();
+                PrisonMines.get().getMines().save();
                 alreadyConverted.createNewFile();
                 return new ConversionResult(getName(), ConversionResult.Status.Success,
                     "Converted " + jsonFiles.length + " mines.");
@@ -107,7 +106,7 @@ public class MinesConversionAgent implements ConversionAgent {
                     "Converted 0 mines.");
             }
         } catch (IOException e) {
-            PrisonMines.getInstance().getErrorManager().throwError(
+            PrisonMines.get().getErrorManager().throwError(
                 new Error("Encountered an error while converting mines.")
                     .appendStackTrace("while loading mines", e));
             return new ConversionResult(getName(), ConversionResult.Status.Failure,
@@ -115,8 +114,7 @@ public class MinesConversionAgent implements ConversionAgent {
         }
     }
 
-    @Override
-    public String getName() {
+    @Override public String getName() {
         return "Mines";
     }
 }
