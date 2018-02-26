@@ -89,7 +89,7 @@ public class SpigotListener implements Listener {
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(
                 BlockType.getBlock(e.getBlock().getTypeId()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
-                    block.getZ()), (new SpigotPlayer(e.getPlayer())));
+                    block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
     }
