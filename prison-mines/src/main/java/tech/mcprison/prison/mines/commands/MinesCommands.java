@@ -27,6 +27,7 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
+import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
@@ -106,6 +107,12 @@ public class MinesCommands {
 
         PrisonMines.getInstance().getMineManager().getMine(name).get()
             .setSpawn(((Player) sender).getLocation());
+        try {
+            PrisonMines.getInstance().getMineManager().reloadMine(name);
+        } catch (MineException e) {
+            sender.sendMessage("&cWorld not found.");
+            return;
+        }
         PrisonMines.getInstance().getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
     }
 
@@ -147,6 +154,12 @@ public class MinesCommands {
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
+        try {
+            PrisonMines.getInstance().getMineManager().reloadMine(mine);
+        } catch (MineException e) {
+            sender.sendMessage("&cWorld not found.");
+            return;
+        }
         PrisonMines.getInstance().getMineManager().clearCache();
     }
 
@@ -206,6 +219,12 @@ public class MinesCommands {
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
+        try {
+            PrisonMines.getInstance().getMineManager().reloadMine(mine);
+        } catch (MineException e) {
+            sender.sendMessage("&cWorld not found.");
+            return;
+        }
         PrisonMines.getInstance().getMineManager().clearCache();
 
     }
@@ -238,6 +257,12 @@ public class MinesCommands {
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
 
+        try {
+            PrisonMines.getInstance().getMineManager().reloadMine(mine);
+        } catch (MineException e) {
+            sender.sendMessage("&cWorld not found.");
+            return;
+        }
         PrisonMines.getInstance().getMineManager().clearCache();
     }
 
@@ -375,6 +400,13 @@ public class MinesCommands {
             .setBounds(selection.asBounds());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_redefined")
             .sendTo(sender);
+
+        try {
+            PrisonMines.getInstance().getMineManager().reloadMine(name);
+        } catch (MineException e) {
+            sender.sendMessage("&cWorld not found.");
+            return;
+        }
         PrisonMines.getInstance().getMineManager().clearCache();
     }
 
