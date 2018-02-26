@@ -167,6 +167,11 @@ public class Mine {
 
             List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager()
                 .getRandomizedBlocks().get(name);
+            if (blockTypes == null){
+                PrisonMines.getInstance().getMineManager().generateBlockList(this);
+                blockTypes = PrisonMines.getInstance().getMineManager()
+                    .getRandomizedBlocks().get(name);
+            }
             int maxX = Math.max(min.getBlockX(), max.getBlockX());
             int minX = Math.min(min.getBlockX(), max.getBlockX());
             int maxY = Math.max(min.getBlockY(), max.getBlockY());
