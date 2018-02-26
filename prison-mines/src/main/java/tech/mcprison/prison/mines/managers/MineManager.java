@@ -175,19 +175,6 @@ public class MineManager {
         }
     }
 
-
-    public void reloadMine(String id) throws MineException {
-        if (getMine(id).isPresent()) {
-            Mine mine = getMine(id).get();
-            saveMine(mine);
-            int index = mines.indexOf(mine);
-            mines.set(index, new Mine(coll.get(mine.getName()).get()));
-        }
-        else{
-            return;
-        }
-    }
-
     public boolean removeMine(Mine mine){
         return mines.remove(mine);
     }
