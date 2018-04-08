@@ -129,6 +129,7 @@ public class PlayerManager {
             RankPlayer newPlayer = new RankPlayer();
             newPlayer.uid = event.getPlayer().getUUID();
             newPlayer.ranks = new HashMap<>();
+            newPlayer.prestige = new HashMap<>();
 
             players.add(newPlayer);
 
