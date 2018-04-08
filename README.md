@@ -25,3 +25,10 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 * **Prison is and always will be free.** While we do ask for donations, all of our code, resources, and binaries are provided free of charge to the Minecraft community.
 * **New releases are heavily bug-tested.** We test every single aspect of every new release of Prison before releasing it to the community. If a release doesn't pass our rigorous update checklist, it is iterated upon until it does. What does this mean for you? Solid updates with minimal bugs for your server.
 * **Prison is always expanding.** We are always looking for ways to expand Prison with features that make your server run more smoothly. Additionally, we are always looking for contributions from the community, be it code contributions, feature requests, bug reports, translations, or documentation.
+
+## Get Prison
+| Stable | Experimental (Nightly) |
+| ------ | ---------------------- |
+| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://hub.ultz.co.uk/bamboo/browse/PRIS-P3NIGHT/JOB1/latestSuccessful/artifact/Gradle-Artifacts/prison-spigot/build/libs/Prison.jar) | 
+
+
