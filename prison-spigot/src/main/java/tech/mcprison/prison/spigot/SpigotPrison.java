@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -49,6 +50,7 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
+import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -85,7 +87,7 @@ public class SpigotPrison extends JavaPlugin {
                 metaFile.createNewFile();
             } catch (IOException e) {
                 System.out.println(
-                    "Could not create .meta file, this will cause problems with the converter!");
+                        "Could not create .meta file, this will cause problems with the converter!");
             }
         }
     }
@@ -109,7 +111,7 @@ public class SpigotPrison extends JavaPlugin {
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
-                "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
+                    "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
         }
     }
 
@@ -136,7 +138,7 @@ public class SpigotPrison extends JavaPlugin {
 
         // Report the API level
         metrics.addCustomChart(
-            new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+                new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
     private void initUpdater() {
@@ -150,10 +152,10 @@ public class SpigotPrison extends JavaPlugin {
         updater.checkForUpdate(new UpdateCallback() {
             @Override
             public void updateAvailable(String newVersion, String downloadUrl,
-                boolean hasDirectDownload) {
+                                        boolean hasDirectDownload) {
                 Alerts.getInstance().sendAlert(
-                    "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-                    newVersion);
+                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+                        newVersion);
             }
 
             @Override
@@ -179,7 +181,7 @@ public class SpigotPrison extends JavaPlugin {
             knownCommands.setAccessible(true);
         } catch (NoSuchFieldException e) {
             getLogger().severe(
-                "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
+                    "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
             e.printStackTrace();
         }
     }
@@ -192,10 +194,10 @@ public class SpigotPrison extends JavaPlugin {
         } catch (NumberFormatException e) {
             try {
                 minorVersionInt =
-                    Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
+                        Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
             } catch (Exception ex) {
                 Output.get().logError(
-                    "Unable to determine server version. Assuming spigot 1.9 or greater.");
+                        "Unable to determine server version. Assuming spigot 1.9 or greater.");
             }
         }
 
@@ -215,6 +217,8 @@ public class SpigotPrison extends JavaPlugin {
 
         registerIntegration("LuckPerms", LuckPermissions.class);
         registerIntegration("Vault", VaultPermissions.class);
+
+        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
@@ -223,8 +227,8 @@ public class SpigotPrison extends JavaPlugin {
                 PrisonAPI.getIntegrationManager().register(integration.newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 getLogger()
-                    .log(Level.SEVERE, "Could not initialize integration " + integration.getName(),
-                        e);
+                        .log(Level.WARNING, "Could not initialize integration " + integration.getName(),
+                                e);
             }
         }
     }
@@ -234,14 +238,14 @@ public class SpigotPrison extends JavaPlugin {
 
         if (modulesConf.getBoolean("mines")) {
             Prison.get().getModuleManager()
-                .registerModule(new PrisonMines(getDescription().getVersion()));
+                    .registerModule(new PrisonMines(getDescription().getVersion()));
         } else {
             Output.get().logInfo("Not loading mines because it's disabled in modules.yml.");
         }
 
         if (modulesConf.getBoolean("ranks")) {
             Prison.get().getModuleManager()
-                .registerModule(new PrisonRanks(getDescription().getVersion()));
+                    .registerModule(new PrisonRanks(getDescription().getVersion()));
         } else {
             Output.get().logInfo("Not loading ranks because it's disabled in modules.yml");
         }

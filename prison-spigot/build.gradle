@@ -26,6 +26,7 @@ repositories {
     maven { url = "https://repo.lucko.me/" }
     maven { url = "http://repo.bstats.org/content/repositories/releases/" }
     maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
+    maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     jcenter()
 }
 
@@ -39,6 +40,9 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly 'me.lucko.luckperms:luckperms-api:4.0'
+    compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
+        exclude group: 'org.spigotmc'
+    }
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 
