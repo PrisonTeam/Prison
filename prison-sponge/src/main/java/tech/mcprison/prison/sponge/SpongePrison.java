@@ -19,6 +19,7 @@
 package tech.mcprison.prison.sponge;
 
 import com.google.inject.Inject;
+import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -26,7 +27,6 @@ import org.spongepowered.api.plugin.Plugin;
 import tech.mcprison.prison.Prison;
 
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
 /**
  * @author Faizaan A. Datoo
