@@ -1,4 +1,4 @@
-![Prison Banner](https://faizaand.me/prison/img/prison-banner.png)
+![Prison Banner](https://faizaand.github.io/prison/img/prison-banner.png)
 
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.org/MC-Prison/Prison.svg?branch=master)](https://travis-ci.org/MC-Prison/Prison)
@@ -29,6 +29,6 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 ## Get Prison
 | Stable | Experimental (Nightly) |
 | ------ | ---------------------- |
-| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://hub.ultz.co.uk/bamboo/browse/PRIS-P3NIGHT/latestSuccessful/artifact/JOB1/Gradle-Artifacts/prison-spigot/build/libs/Prison.jar) | 
+| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 
 
