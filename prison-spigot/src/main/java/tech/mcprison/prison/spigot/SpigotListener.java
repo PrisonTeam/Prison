@@ -96,9 +96,14 @@ public class SpigotListener implements Listener {
 
     @EventHandler public void onPlayerInteract(PlayerInteractEvent e) {
         // TODO Accept air events (block is null when air is clicked...)
-        if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) {
-            return;
+
+        // Check to see if we support the Action
+        tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action[] values = tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action.values();
+        boolean has = false;
+        for (tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action value : values) {
+            if(value.name().equals(e.getAction().name())) has = true;
         }
+        if(!has) return; // we don't support this Action
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand

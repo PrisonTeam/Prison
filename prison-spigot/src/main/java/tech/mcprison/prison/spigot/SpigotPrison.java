@@ -18,13 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -50,7 +43,13 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
-import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -218,7 +217,7 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration("LuckPerms", LuckPermissions.class);
         registerIntegration("Vault", VaultPermissions.class);
 
-        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+//        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
