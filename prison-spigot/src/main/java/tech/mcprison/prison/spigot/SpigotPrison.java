@@ -43,6 +43,7 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
+import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 
 import java.io.File;
 import java.io.IOException;
@@ -202,7 +203,7 @@ public class SpigotPrison extends JavaPlugin {
 
         if (minorVersionInt <= 8) {
             compatibility = new Spigot18();
-        } else if (minorVersionInt >= 9) {
+        } else {
             compatibility = new Spigot19();
         }
 
@@ -217,7 +218,7 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration("LuckPerms", LuckPermissions.class);
         registerIntegration("Vault", VaultPermissions.class);
 
-//        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {

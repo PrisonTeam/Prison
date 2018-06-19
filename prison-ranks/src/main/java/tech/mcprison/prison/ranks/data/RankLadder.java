@@ -68,7 +68,9 @@ public class RankLadder {
             ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
                     RankUtil.doubleToInt((rank.get("rankId")))));
         }
-        this.endBehavior = EndBehavior.valueOf((String) document.get("endBehavior"));
+
+        if (document.get("endBehavior") != null)
+            this.endBehavior = EndBehavior.valueOf((String) document.get("endBehavior"));
     }
 
     public Document toDocument() {
