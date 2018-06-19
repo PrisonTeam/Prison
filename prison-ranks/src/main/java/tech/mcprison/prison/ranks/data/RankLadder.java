@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import tech.mcprison.prison.ranks.EndBehavior;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.store.Document;
@@ -48,8 +47,6 @@ public class RankLadder {
     public List<PositionRank> ranks;
     public int maxPrestige;
 
-    public EndBehavior endBehavior;
-
     /*
      * Document-related
      */
@@ -68,9 +65,6 @@ public class RankLadder {
             ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
                     RankUtil.doubleToInt((rank.get("rankId")))));
         }
-
-        if (document.get("endBehavior") != null)
-            this.endBehavior = EndBehavior.valueOf((String) document.get("endBehavior"));
     }
 
     public Document toDocument() {
@@ -79,7 +73,6 @@ public class RankLadder {
         ret.put("name", this.name);
         ret.put("ranks", this.ranks);
         ret.put("maxPrestige", this.maxPrestige);
-        ret.put("endBehavior", this.endBehavior.name());
         return ret;
     }
 
