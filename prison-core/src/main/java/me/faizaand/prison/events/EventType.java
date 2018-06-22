@@ -1,4 +1,4 @@
-package me.faizaand.prison.handlers;
+package me.faizaand.prison.events;
 
 import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.block.Block;
@@ -14,6 +14,7 @@ public enum EventType {
      * Fires when a player joins the server. Types allowed:
      * <ul>
      * <li><b>GamePlayer</b> the player that joined</li>
+     * <li><b>String</b> the join message</li>
      * </ul>
      */
     PlayerJoinEvent(GamePlayer.class),

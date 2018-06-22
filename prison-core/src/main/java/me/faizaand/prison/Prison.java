@@ -22,6 +22,8 @@ import me.faizaand.prison.alerts.Alerts;
 import me.faizaand.prison.commands.CommandHandler;
 import me.faizaand.prison.error.Error;
 import me.faizaand.prison.error.ErrorManager;
+import me.faizaand.prison.events.EventManager;
+import me.faizaand.prison.events.StandardEventManager;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.integration.IntegrationManager;
 import me.faizaand.prison.internal.platform.Platform;
@@ -60,6 +62,7 @@ public class Prison implements PluginEntity {
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
     private LocaleManager localeManager;
+    private EventManager eventManager;
     private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
@@ -160,6 +163,7 @@ public class Prison implements PluginEntity {
         // Now we initialize the API
         this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
+        this.eventManager = new StandardEventManager();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
         this.troubleshootManager = new TroubleshootManager();
@@ -242,6 +246,15 @@ public class Prison implements PluginEntity {
      */
     public ErrorManager getErrorManager() {
         return errorManager;
+    }
+
+    /**
+     * Returns the core's event manager.
+     *
+     * @return the event manager.
+     */
+    public EventManager getEventManager() {
+        return eventManager;
     }
 
     /**
