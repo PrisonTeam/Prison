@@ -29,6 +29,8 @@ import me.faizaand.prison.spigot.compat.Compatibility;
 import me.faizaand.prison.spigot.compat.Spigot18;
 import me.faizaand.prison.spigot.compat.Spigot19;
 import me.faizaand.prison.spigot.gui.GUIListener;
+import me.faizaand.prison.spigot.handlers.BlockBreakEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerJoinEventHandler;
 import me.faizaand.prison.spigot.integrations.economies.EssentialsEconomy;
 import me.faizaand.prison.spigot.integrations.economies.SaneEconomy;
 import me.faizaand.prison.spigot.integrations.economies.VaultEconomy;
@@ -106,6 +108,7 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this));
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         initIntegrations();
+        initEventHandlers();
         initModules();
 
         // Makes sure all new players get their notification if they have an alert
@@ -221,6 +224,11 @@ public class SpigotPrison extends JavaPlugin {
                                 e);
             }
         }
+    }
+
+    private void initEventHandlers() {
+        new PlayerJoinEventHandler();
+        new BlockBreakEventHandler();
     }
 
     private void initModules() {

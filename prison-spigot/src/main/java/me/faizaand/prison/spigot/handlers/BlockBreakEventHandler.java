@@ -5,13 +5,15 @@ import me.faizaand.prison.events.EventHandler;
 import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.events.Subscription;
 import me.faizaand.prison.internal.GamePlayer;
+import me.faizaand.prison.internal.block.Block;
+import me.faizaand.prison.spigot.SpigotUtil;
 import me.lucko.helper.Events;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 
-public class PlayerJoinEventHandler extends EventHandler {
+public class BlockBreakEventHandler extends EventHandler {
 
-    public PlayerJoinEventHandler() {
-        Events.subscribe(PlayerJoinEvent.class).handler(e -> {
+    public BlockBreakEventHandler() {
+        Events.subscribe(BlockBreakEvent.class).handler(e -> {
             for (Subscription sub : getSubscriptions()) {
                 Class<?>[] types = sub.getTypes();
                 Object[] obj = new Object[types.length];
@@ -19,16 +21,16 @@ public class PlayerJoinEventHandler extends EventHandler {
                     Class<?> type = types[i];
                     if (type == GamePlayer.class) {
                         obj[i] = Prison.get().getPlatform().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
-                    } else if (type == String.class) {
-                        obj[i] = e.getJoinMessage();
+                    } else if (type == Block.class) {
+                        obj[i] = Prison.get().getPlatform().getWorldManager().getWorld(e.getBlock().getWorld().getName()).get().getBlockAt(
+                                SpigotUtil.bukkitLocationToPrison(e.getBlock().getLocation())
+                        );
                     }
                 }
-
-                sub.getCallback().apply(obj);
+                e.setCancelled(sub.getCallback().apply(obj));
             }
         });
 
-        Prison.get().getEventManager().registerHandler(EventType.PlayerJoinEvent, this);
+        Prison.get().getEventManager().registerHandler(EventType.BlockBreakEvent, this);
     }
-
 }
