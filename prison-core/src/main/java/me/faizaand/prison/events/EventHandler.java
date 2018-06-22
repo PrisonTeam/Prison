@@ -1,6 +1,7 @@
 package me.faizaand.prison.events;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public abstract class EventHandler {
     }
 
     public List<Subscription> getSubscriptions() {
+        subscriptions.sort(Comparator.comparingInt(o -> o.getPriority().getLevel()));
         return subscriptions;
     }
 

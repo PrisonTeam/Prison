@@ -18,13 +18,12 @@ public class Subscription {
         return types;
     }
 
-    public boolean hasType(Class<?> type) {
-        for (Class<?> t : types) if (t == type) return true;
-        return false;
-    }
-
     public Function<Object[], Boolean> getCallback() {
         return callback;
+    }
+
+    public EventPriority getPriority() {
+        return priority;
     }
 
 }
