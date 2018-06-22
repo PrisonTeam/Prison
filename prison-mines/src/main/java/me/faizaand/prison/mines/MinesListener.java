@@ -1,13 +1,13 @@
 package me.faizaand.prison.mines;
 
-import com.google.common.eventbus.Subscribe;
+import me.faizaand.prison.Prison;
+import me.faizaand.prison.events.EventPriority;
+import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.internal.GameItemStack;
 import me.faizaand.prison.internal.GamePlayer;
-import me.faizaand.prison.internal.events.block.BlockBreakEvent;
+import me.faizaand.prison.internal.block.Block;
 import me.faizaand.prison.internal.inventory.PlayerInventory;
-import me.faizaand.prison.selection.SelectionCompletedEvent;
 import me.faizaand.prison.util.BlockType;
-import me.faizaand.prison.util.Bounds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,33 +18,36 @@ import java.util.List;
  */
 public class MinesListener {
 
-    @Subscribe
-    public void onSelectionComplete(SelectionCompletedEvent e) {
-        Bounds bounds = e.getSelection().asBounds();
-        String dimensions = bounds.getWidth() + "x" + bounds.getHeight() + "x" + bounds.getLength();
-        e.getPlayer().sendMessage("&3Ready. &7Your mine will be &8" + dimensions
-            + "&7 blocks. Type /mines create to create it.");
+    public MinesListener() {
+        Prison.get().getEventManager().subscribe(EventType.BlockBreakEvent, new Class[]{GamePlayer.class, Block.class}, objects -> {
+            GamePlayer player = ((GamePlayer) objects[0]);
+            Block block = ((Block) objects[1]);
+
+            if (PrisonMines.getInstance().getPlayerManager().hasAutosmelt(player)) {
+                smelt(block.getDrops(((PlayerInventory) player.getInventory()).getItemInRightHand()));
+            }
+            if (PrisonMines.getInstance().getPlayerManager().hasAutopickup(player)) {
+                player.getInventory()
+                        .addItem(block.getDrops().toArray(new GameItemStack[]{}));
+                block.setType(BlockType.AIR);
+                return true;
+            }
+            if (PrisonMines.getInstance().getPlayerManager().hasAutoblock(player)) {
+                block(player);
+            }
+
+            return false;
+        }, EventPriority.HIGH);
     }
 
-    /**
-     * Powertool helper
-     */
-    @Subscribe
-    public void onBlockBreak(BlockBreakEvent e) {
-        if (PrisonMines.getInstance().getPlayerManager().hasAutosmelt(e.getPlayer())) {
-            smelt(e.getBlockLocation().getBlockAt()
-                .getDrops(((PlayerInventory) e.getPlayer().getInventory()).getItemInRightHand()));
-        }
-        if (PrisonMines.getInstance().getPlayerManager().hasAutopickup(e.getPlayer())) {
-            e.getPlayer().getInventory()
-                .addItem(e.getBlockLocation().getBlockAt().getDrops().toArray(new GameItemStack[]{}));
-            e.getBlockLocation().getBlockAt().setType(BlockType.AIR);
-            e.setCanceled(true);
-        }
-        if (PrisonMines.getInstance().getPlayerManager().hasAutoblock(e.getPlayer())) {
-            block(e.getPlayer());
-        }
-    }
+//  TODO Figure out selection system
+//    @Subscribe
+//    public void onSelectionComplete(SelectionCompletedEvent e) {
+//        Bounds bounds = e.getSelection().asBounds();
+//        String dimensions = bounds.getWidth() + "x" + bounds.getHeight() + "x" + bounds.getLength();
+//        e.getPlayer().sendMessage("&3Ready. &7Your mine will be &8" + dimensions
+//                + "&7 blocks. Type /mines create to create it.");
+//    }
 
     private void smelt(List<GameItemStack> drops) {
         drops.replaceAll(x -> {
