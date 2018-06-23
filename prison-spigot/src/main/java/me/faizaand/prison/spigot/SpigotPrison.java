@@ -20,11 +20,13 @@ package me.faizaand.prison.spigot;
 
 import me.faizaand.prison.Prison;
 import me.faizaand.prison.alerts.Alerts;
+import me.faizaand.prison.cells.PrisonCells;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.mines.PrisonMines;
 import me.faizaand.prison.modules.Module;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.ranks.PrisonRanks;
+import me.faizaand.prison.shops.PrisonShops;
 import me.faizaand.prison.spigot.gui.GUIListener;
 import me.faizaand.prison.spigot.integrations.economies.EssentialsEconomy;
 import me.faizaand.prison.spigot.integrations.economies.SaneEconomy;
@@ -210,6 +212,21 @@ public class SpigotPrison extends ExtendedJavaPlugin {
         } else {
             Output.get().logInfo("Not loading ranks because it's disabled in modules.yml");
         }
+
+        if (modulesConf.getBoolean("shops")) {
+            Prison.get().getModuleManager()
+                    .registerModule(new PrisonShops(getDescription().getVersion()));
+        } else {
+            Output.get().logInfo("Not loading shops because it's disabled in modules.yml");
+        }
+
+        if (modulesConf.getBoolean("cells")) {
+            Prison.get().getModuleManager()
+                    .registerModule(new PrisonCells(getDescription().getVersion()));
+        } else {
+            Output.get().logInfo("Not loading cells because it's disabled in modules.yml");
+        }
+
     }
 
     @Nonnull

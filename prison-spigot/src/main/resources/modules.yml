@@ -6,3 +6,5 @@
 
 ranks: true
 mines: true
+shops: true
+cells: true
