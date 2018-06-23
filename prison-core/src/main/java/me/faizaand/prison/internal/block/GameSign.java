@@ -8,7 +8,7 @@ import java.util.List;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface Sign extends BlockState {
+public interface GameSign extends BlockState {
 
     List<String> getLines();
 

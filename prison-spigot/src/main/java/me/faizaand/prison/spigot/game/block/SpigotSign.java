@@ -1,14 +1,14 @@
 package me.faizaand.prison.spigot.game.block;
 
 import com.google.common.collect.ImmutableList;
-import me.faizaand.prison.internal.block.Sign;
+import me.faizaand.prison.internal.block.GameSign;
 
 import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotSign extends SpigotBlockState implements Sign {
+public class SpigotSign extends SpigotBlockState implements GameSign {
 
     public SpigotSign(SpigotBlock block) {
         super(block);
