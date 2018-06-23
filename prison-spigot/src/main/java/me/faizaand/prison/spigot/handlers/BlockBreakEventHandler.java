@@ -35,7 +35,5 @@ public class BlockBreakEventHandler extends EventHandler {
                 }
             }
         });
-
-        Prison.get().getEventManager().registerHandler(EventType.BlockBreakEvent, this);
     }
 }

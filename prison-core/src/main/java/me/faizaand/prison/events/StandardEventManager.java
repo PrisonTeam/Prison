@@ -13,8 +13,9 @@ import java.util.function.Function;
 public class StandardEventManager implements EventManager {
 
     private Map<EventType, EventHandler> handlers;
+    private Runnable registrationCallback;
 
-    public StandardEventManager() {
+    public StandardEventManager(Runnable registrationCallback) {
         this.handlers = new HashMap<>();
     }
 
@@ -49,4 +50,7 @@ public class StandardEventManager implements EventManager {
         return Optional.ofNullable(handlers.get(forType));
     }
 
+    public Runnable getRegistrationCallback() {
+        return registrationCallback;
+    }
 }

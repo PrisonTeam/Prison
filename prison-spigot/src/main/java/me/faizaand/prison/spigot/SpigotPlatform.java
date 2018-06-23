@@ -18,8 +18,12 @@
 
 package me.faizaand.prison.spigot;
 
+import me.faizaand.prison.Prison;
 import me.faizaand.prison.convert.ConversionManager;
 import me.faizaand.prison.convert.ConversionResult;
+import me.faizaand.prison.events.EventManager;
+import me.faizaand.prison.events.EventType;
+import me.faizaand.prison.events.StandardEventManager;
 import me.faizaand.prison.internal.Scheduler;
 import me.faizaand.prison.internal.platform.Capability;
 import me.faizaand.prison.internal.platform.CommandManager;
@@ -34,6 +38,10 @@ import me.faizaand.prison.spigot.game.SpigotGuiManager;
 import me.faizaand.prison.spigot.game.SpigotPlayerManager;
 import me.faizaand.prison.spigot.game.SpigotWorldManager;
 import me.faizaand.prison.spigot.game.scoreboard.SpigotScoreboardManager;
+import me.faizaand.prison.spigot.handlers.BlockBreakEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerChatEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerInteractEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerJoinEventHandler;
 import me.faizaand.prison.spigot.store.file.FileStorage;
 import me.faizaand.prison.spigot.util.ActionBarUtil;
 import me.faizaand.prison.store.Storage;
@@ -59,6 +67,7 @@ class SpigotPlatform implements Platform {
     private SpigotWorldManager worldManager;
     private SpigotCommandManager commandManager;
     private SpigotGuiManager guiManager;
+    private EventManager eventManager;
 
     private Storage storage;
 
@@ -70,6 +79,8 @@ class SpigotPlatform implements Platform {
         this.worldManager = new SpigotWorldManager();
         this.commandManager = new SpigotCommandManager();
         this.guiManager = new SpigotGuiManager();
+        this.eventManager = new StandardEventManager(this::initEventHandlers);
+        this.initEventHandlers();
 
         this.storage = initStorage();
         ActionBarUtil.init(plugin);
@@ -105,6 +116,18 @@ class SpigotPlatform implements Platform {
     @Override
     public SpigotGuiManager getGuiManager() {
         return guiManager;
+    }
+
+    @Override
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    private void initEventHandlers() {
+        this.eventManager.registerHandler(EventType.PlayerJoinEvent, new PlayerJoinEventHandler());
+        this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockBreakEventHandler());
+        this.eventManager.registerHandler(EventType.PlayerChatEvent, new PlayerChatEventHandler());
+        this.eventManager.registerHandler(EventType.PlayerInteractBlockEvent, new PlayerInteractEventHandler());
     }
 
     @Override

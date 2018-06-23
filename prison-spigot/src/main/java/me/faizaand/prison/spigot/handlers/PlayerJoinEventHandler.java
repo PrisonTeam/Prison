@@ -19,8 +19,6 @@ public class PlayerJoinEventHandler extends EventHandler {
                 sub.getCallback().apply(obj);
             }
         });
-
-        Prison.get().getEventManager().registerHandler(EventType.PlayerJoinEvent, this);
     }
 
 }

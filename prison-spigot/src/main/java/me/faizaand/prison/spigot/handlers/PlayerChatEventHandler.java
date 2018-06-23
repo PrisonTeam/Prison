@@ -37,8 +37,6 @@ public class PlayerChatEventHandler extends EventHandler {
                 }
             }
         });
-
-        Prison.get().getEventManager().registerHandler(EventType.PlayerChatEvent, this);
     }
 
 }

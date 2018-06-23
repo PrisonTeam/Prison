@@ -20,6 +20,7 @@ package me.faizaand.prison.spigot;
 
 import me.faizaand.prison.Prison;
 import me.faizaand.prison.alerts.Alerts;
+import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.mines.PrisonMines;
 import me.faizaand.prison.modules.Module;
@@ -28,6 +29,7 @@ import me.faizaand.prison.ranks.PrisonRanks;
 import me.faizaand.prison.spigot.gui.GUIListener;
 import me.faizaand.prison.spigot.handlers.BlockBreakEventHandler;
 import me.faizaand.prison.spigot.handlers.PlayerChatEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerInteractEventHandler;
 import me.faizaand.prison.spigot.handlers.PlayerJoinEventHandler;
 import me.faizaand.prison.spigot.integrations.economies.EssentialsEconomy;
 import me.faizaand.prison.spigot.integrations.economies.SaneEconomy;
@@ -36,18 +38,15 @@ import me.faizaand.prison.spigot.integrations.permissions.LuckPermissions;
 import me.faizaand.prison.spigot.integrations.permissions.VaultPermissions;
 import me.faizaand.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import me.lucko.helper.Events;
+import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.inventivetalent.update.spiget.SpigetUpdate;
-import org.inventivetalent.update.spiget.UpdateCallback;
-import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -57,7 +56,7 @@ import java.util.logging.Level;
  *
  * @author Faizaan A. Datoo
  */
-public class SpigotPrison extends JavaPlugin {
+public class SpigotPrison extends ExtendedJavaPlugin {
 
     SpigotScheduler scheduler;
     boolean debug = false;
@@ -67,7 +66,7 @@ public class SpigotPrison extends JavaPlugin {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void onLoad() {
+    public void load() {
         // The meta file is used to see if the folder needs converting.
         // If the folder doesn't contain it, it's probably not a Prison 3 thing.
         File metaFile = new File(getDataFolder(), ".meta");
@@ -90,7 +89,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     @Override
-    public void onEnable() {
+    public void enable() {
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
 
@@ -99,10 +98,11 @@ public class SpigotPrison extends JavaPlugin {
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
+
         Prison.get().init(new SpigotPlatform(this));
+
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         initIntegrations();
-        initEventHandlers();
         initModules();
 
         // Makes sure all new players get their notification if they have an alert
@@ -113,10 +113,12 @@ public class SpigotPrison extends JavaPlugin {
             Alerts.getInstance().sendAlert(
                     "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
         }
+
+        Prison.get().postLoad();
     }
 
     @Override
-    public void onDisable() {
+    public void disable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
     }
@@ -141,29 +143,30 @@ public class SpigotPrison extends JavaPlugin {
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
+    // TODO Reput this in, SPiget's repo is down
     private void initUpdater() {
-        if (!getConfig().getBoolean("check-updates")) {
-            return; // Don't check if they don't want it
-        }
-
-        SpigetUpdate updater = new SpigetUpdate(this, 1223);
-        updater.setVersionComparator(VersionComparator.EQUAL);
-
-        updater.checkForUpdate(new UpdateCallback() {
-            @Override
-            public void updateAvailable(String newVersion, String downloadUrl,
-                                        boolean hasDirectDownload) {
-                Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-                        newVersion);
-            }
-
-            @Override
-            public void upToDate() {
-                // Plugin is up-to-date
-            }
-        });
-
+//        if (!getConfig().getBoolean("check-updates")) {
+//            return; // Don't check if they don't want it
+//        }
+//
+//        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+//        updater.setVersionComparator(VersionComparator.EQUAL);
+//
+//        updater.checkForUpdate(new UpdateCallback() {
+//            @Override
+//            public void updateAvailable(String newVersion, String downloadUrl,
+//                                        boolean hasDirectDownload) {
+//                Alerts.getInstance().sendAlert(
+//                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+//                        newVersion);
+//            }
+//
+//            @Override
+//            public void upToDate() {
+//                // Plugin is up-to-date
+//            }
+//        });
+//
     }
 
     private void initDataDir() {
@@ -196,12 +199,6 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    private void initEventHandlers() {
-        new PlayerJoinEventHandler();
-        new BlockBreakEventHandler();
-        new PlayerChatEventHandler();
-    }
-
     private void initModules() {
         YamlConfiguration modulesConf = loadConfig("modules.yml");
 
@@ -220,7 +217,8 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    private File getBundledFile(String name) {
+    @Nonnull
+    public File getBundledFile(String name) {
         getDataFolder().mkdirs();
         File file = new File(getDataFolder(), name);
         if (!file.exists()) {
@@ -229,7 +227,8 @@ public class SpigotPrison extends JavaPlugin {
         return file;
     }
 
-    private YamlConfiguration loadConfig(String file) {
+    @Nonnull
+    public YamlConfiguration loadConfig(String file) {
         return YamlConfiguration.loadConfiguration(getBundledFile(file));
     }
 

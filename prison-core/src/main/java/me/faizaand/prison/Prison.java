@@ -63,7 +63,6 @@ public class Prison implements PluginEntity {
     private ModuleManager moduleManager;
     private CommandHandler commandHandler;
     private LocaleManager localeManager;
-    private EventManager eventManager;
     private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
@@ -109,6 +108,8 @@ public class Prison implements PluginEntity {
         }
         Alerts.getInstance(); // init alerts
 
+        this.selectionManager = new SelectionManager();
+        
         this.commandHandler.registerCommands(new PrisonCommand());
 
         Output.get()
@@ -121,6 +122,12 @@ public class Prison implements PluginEntity {
             scheduleAlertNagger();
 
         return true;
+    }
+
+    /**
+     * Steps after the initialization of the entire API.
+     */
+    public void postLoad() {
     }
 
     // Initialization steps
@@ -165,12 +172,10 @@ public class Prison implements PluginEntity {
         // Now we initialize the API
         this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
-        this.eventManager = new StandardEventManager();
         this.moduleManager = new ModuleManager();
         this.commandHandler = new CommandHandler();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
-        this.selectionManager = new SelectionManager();
 
         try {
             this.itemManager = new ItemManager();
@@ -257,7 +262,7 @@ public class Prison implements PluginEntity {
      * @return the event manager.
      */
     public EventManager getEventManager() {
-        return eventManager;
+        return getPlatform().getEventManager();
     }
 
     /**

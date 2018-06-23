@@ -1,7 +1,9 @@
 package me.faizaand.prison.events;
 
+import me.faizaand.prison.internal.GameItemStack;
 import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.block.Block;
+import me.faizaand.prison.util.GameLocation;
 
 /**
  * Each event type that we can respond to.
@@ -17,7 +19,7 @@ public enum EventType {
      * <li><b>String</b> the join message</li>
      * </ul>
      */
-    PlayerJoinEvent(GamePlayer.class),
+    PlayerJoinEvent(GamePlayer.class, String.class),
 
     /**
      * Fires when a player breaks a block. Types allowed:
@@ -36,7 +38,7 @@ public enum EventType {
      * <li><b>GamePlayer</b> the player who sent it</li>
      * </ul>
      */
-    PlayerChatEvent,
+    PlayerChatEvent(String.class, String.class, GamePlayer.class),
 
     /**
      * Fires when a player interacts with a block. Types allowed:
@@ -47,7 +49,7 @@ public enum EventType {
      * <li><b>GameLocation</b> the location that was clicked</li>
      * </ul>
      */
-    PlayerInteractBlockEvent;
+    PlayerInteractBlockEvent(GameItemStack.class, GamePlayer.class, Boolean.class, GameLocation.class);
 
     Class<?>[] expectedTypes;
 

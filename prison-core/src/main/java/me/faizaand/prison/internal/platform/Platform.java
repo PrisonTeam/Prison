@@ -18,6 +18,7 @@
 
 package me.faizaand.prison.internal.platform;
 
+import me.faizaand.prison.events.EventManager;
 import me.faizaand.prison.internal.Scheduler;
 import me.faizaand.prison.internal.scoreboard.ScoreboardManager;
 import me.faizaand.prison.store.Storage;
@@ -42,6 +43,8 @@ public interface Platform {
     WorldManager getWorldManager();
 
     GuiManager getGuiManager();
+
+    EventManager getEventManager();
 
     /**
      * Returns the plugin's version.
