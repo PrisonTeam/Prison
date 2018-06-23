@@ -72,16 +72,16 @@ public class PrisonRanks extends Module {
     @Override public void enable() {
         instance = this;
 
-        if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
+        if (!Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
             getStatus().setMessage("no economy plugin");
             return;
         }
 
-        Optional<Database> databaseOptional = PrisonAPI.getStorage().getDatabase("ranksDb");
+        Optional<Database> databaseOptional = Prison.get().getPlatform().getStorage().getDatabase("ranksDb");
         if (!databaseOptional.isPresent()) {
-            PrisonAPI.getStorage().createDatabase("ranks");
-            databaseOptional = PrisonAPI.getStorage().getDatabase("ranks");
+            Prison.get().getPlatform().getStorage().createDatabase("ranks");
+            databaseOptional = Prison.get().getPlatform().getStorage().getDatabase("ranks");
         }
         this.database = databaseOptional.get();
 
@@ -124,7 +124,6 @@ public class PrisonRanks extends Module {
 
         // Load up all else
 
-        new FirstJoinHandler();
         new ChatHandler();
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 

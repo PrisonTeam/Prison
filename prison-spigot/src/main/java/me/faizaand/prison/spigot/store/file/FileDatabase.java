@@ -1,5 +1,6 @@
 package me.faizaand.prison.spigot.store.file;
 
+import me.faizaand.prison.store.Collection;
 import me.faizaand.prison.store.Database;
 
 import java.io.File;
@@ -25,11 +26,13 @@ public class FileDatabase implements Database {
         }
     }
 
-    @Override public Optional<Collection> getCollection(String name) {
+    @Override
+    public Optional<Collection> getCollection(String name) {
         return Optional.ofNullable(collectionMap.get(name));
     }
 
-    @Override public void createCollection(String name) {
+    @Override
+    public void createCollection(String name) {
         File collDir = new File(dbDir, name);
         if (collDir.exists()) {
             return;
@@ -39,7 +42,8 @@ public class FileDatabase implements Database {
         collectionMap.put(name, new FileCollection(collDir));
     }
 
-    @Override public void deleteCollection(String name) {
+    @Override
+    public void deleteCollection(String name) {
         File collDir = new File(dbDir, name);
         if (!collDir.exists()) {
             return;
@@ -51,15 +55,18 @@ public class FileDatabase implements Database {
         collectionMap.remove(name);
     }
 
-    @Override public List<Collection> getCollections() {
+    @Override
+    public List<Collection> getCollections() {
         return new ArrayList<>(collectionMap.values());
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return dbDir.getName();
     }
 
-    @Override public void dispose() {
+    @Override
+    public void dispose() {
         collectionMap.clear();
     }
 

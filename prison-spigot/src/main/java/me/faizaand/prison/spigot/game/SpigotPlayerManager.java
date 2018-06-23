@@ -19,7 +19,7 @@ public class SpigotPlayerManager implements PlayerManager {
 
     private Map<UUID, GamePlayer> players;
 
-    SpigotPlayerManager() {
+    public SpigotPlayerManager() {
         this.players = new HashMap<>();
 
         Events.subscribe(PlayerJoinEvent.class).handler(e ->

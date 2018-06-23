@@ -16,28 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.faizaand.prison.spigot.compat;
-
-import org.bukkit.Location;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-
 /**
- * Different Spigot versions have different methods.
- * The compatibility system ensures that each version can be used with the same code.
- *
- * @author Faizaan A. Datoo
+ * Selections are player-defined boundaries with a minimum and maximum location.
+ * The {@link tech.mcprison.prison.selection.SelectionManager} returns any player's selection.
  */
-public interface Compatibility {
-
-    EquipmentSlot getHand(PlayerInteractEvent e);
-
-    ItemStack getItemInMainHand(PlayerInteractEvent e);
-
-    void playIronDoorSound(Location loc);
-
-    enum EquipmentSlot {
-        HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
-    }
-
-}
+package me.faizaand.prison.selection;

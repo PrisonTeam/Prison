@@ -23,7 +23,6 @@ import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.GameWorld;
 import me.faizaand.prison.mines.MineException;
 import me.faizaand.prison.mines.PrisonMines;
-import me.faizaand.prison.mines.events.MineResetEvent;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.store.Document;
 import me.faizaand.prison.util.BlockType;
@@ -66,22 +65,22 @@ public class Mine {
      */
     public Mine(Document document) throws MineException {
         Optional<GameWorld> worldOptional =
-            Prison.get().getPlatform().getWorld((String) document.get("world"));
+                Prison.get().getPlatform().getWorldManager().getWorld((String) document.get("world"));
         if (!worldOptional.isPresent()) {
             throw new MineException("world doesn't exist");
         }
 
         min = new GameLocation(worldOptional.get(), (double) document.get("minX"),
-            (double) document.get("minY"), (double) document.get("minZ"));
+                (double) document.get("minY"), (double) document.get("minZ"));
         max = new GameLocation(worldOptional.get(), (double) document.get("maxX"),
-            (double) document.get("maxY"), (double) document.get("maxZ"));
+                (double) document.get("maxY"), (double) document.get("maxZ"));
 
         hasSpawn = (boolean) document.get("hasSpawn");
         if (hasSpawn) {
             spawn = new GameLocation(worldOptional.get(), (double) document.get("spawnX"),
-                (double) document.get("spawnY"), (double) document.get("spawnZ"),
-                ((Double) document.get("spawnPitch")).floatValue(),
-                ((Double) document.get("spawnYaw")).floatValue());
+                    (double) document.get("spawnY"), (double) document.get("spawnZ"),
+                    ((Double) document.get("spawnPitch")).floatValue(),
+                    ((Double) document.get("spawnYaw")).floatValue());
         }
 
         worldName = worldOptional.get().getName();
@@ -136,38 +135,31 @@ public class Mine {
     public void teleport(GamePlayer... players) {
         for (GamePlayer p : players) {
             p.teleport(getSpawn().orElse(
-                null)); // Should probably fail with an exception, but an NPE is as good as any..
+                    null)); // Should probably fail with an exception, but an NPE is as good as any..
             PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-                .withReplacements(name)
-                .sendTo(p);
+                    .withReplacements(name)
+                    .sendTo(p);
         }
     }
 
     public boolean reset() {
-        // The all-important event
-        MineResetEvent event = new MineResetEvent(this);
-        Prison.get().getEventBus().post(event);
-        if (event.isCanceled()) {
-            return true;
-        }
-
         try {
             int i = 0;
 
             Optional<GameWorld> worldOptional = getWorld();
             if (!worldOptional.isPresent()) {
                 Output.get().logError("Could not reset mine " + name
-                    + " because the world it was created in does not exist.");
+                        + " because the world it was created in does not exist.");
                 return false;
             }
             GameWorld world = worldOptional.get();
 
             List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager()
-                .getRandomizedBlocks().get(name);
-            if (blockTypes == null){
+                    .getRandomizedBlocks().get(name);
+            if (blockTypes == null) {
                 PrisonMines.getInstance().getMineManager().generateBlockList(this);
                 blockTypes = PrisonMines.getInstance().getMineManager()
-                    .getRandomizedBlocks().get(name);
+                        .getRandomizedBlocks().get(name);
             }
             int maxX = Math.max(min.getBlockX(), max.getBlockX());
             int minX = Math.min(min.getBlockX(), max.getBlockX());
@@ -182,7 +174,7 @@ public class Mine {
                 for (int x = minX; x <= maxX; x++) {
                     for (int z = minZ; z <= maxZ; z++) {
                         if (PrisonMines.getInstance().getConfig().fillMode && !world
-                            .getBlockAt(new GameLocation(world, x, y, z)).isEmpty()) {
+                                .getBlockAt(new GameLocation(world, x, y, z)).isEmpty()) {
                             continue; // Skip this block because it is not air
                         }
 
@@ -203,15 +195,15 @@ public class Mine {
     }
 
     private void teleportOutPlayers(int maxY) {
-        for (GamePlayer player : Prison.get().getPlatform().getOnlinePlayers()) {
+        for (GamePlayer player : Prison.get().getPlatform().getPlayerManager().getOnlinePlayers()) {
             if (getBounds().within(player.getLocation())) {
                 if (hasSpawn) {
                     teleport(player);
                 } else {
                     GameLocation l = player.getLocation();
                     player.teleport(
-                        new GameLocation(l.getWorld(), l.getX(), maxY + 3, l.getZ(), l.getPitch(),
-                            l.getYaw()));
+                            new GameLocation(l.getWorld(), l.getX(), maxY + 3, l.getZ(), l.getPitch(),
+                                    l.getYaw()));
                 }
             }
         }
@@ -220,11 +212,11 @@ public class Mine {
     private void asyncGen() {
         try {
             Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(
-                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
+                    .runTaskLaterAsync(
+                            () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
         } catch (Exception e) {
             Output.get().logWarn("Couldn't generate blocks for mine " + name
-                + " asynchronously. The blocks will be generated synchronously later.", e);
+                    + " asynchronously. The blocks will be generated synchronously later.", e);
         }
     }
 
@@ -292,7 +284,7 @@ public class Mine {
      * Gets the world
      */
     public Optional<GameWorld> getWorld() {
-        return Prison.get().getPlatform().getWorld(worldName);
+        return Prison.get().getPlatform().getWorldManager().getWorld(worldName);
     }
 
     public Bounds getBounds() {
@@ -320,7 +312,7 @@ public class Mine {
      * Sets the blocks for this mine
      *
      * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
-     * block appearing as the value.
+     *                 block appearing as the value.
      * @return this instance for chaining
      */
     public Mine setBlocks(HashMap<BlockType, Integer> blockMap) {

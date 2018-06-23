@@ -1,6 +1,7 @@
 package me.faizaand.prison.spigot.util;
 
 import me.faizaand.prison.Prison;
+import me.faizaand.prison.error.Error;
 import me.faizaand.prison.spigot.SpigotPrison;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

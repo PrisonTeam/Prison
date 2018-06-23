@@ -17,10 +17,13 @@
 
 package me.faizaand.prison.ranks.managers;
 
-import com.google.common.eventbus.Subscribe;
 import me.faizaand.prison.Prison;
-import me.faizaand.prison.internal.events.player.PlayerJoinEvent;
+import me.faizaand.prison.events.EventPriority;
+import me.faizaand.prison.events.EventType;
+import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.output.Output;
+import me.faizaand.prison.ranks.PrisonRanks;
+import me.faizaand.prison.ranks.data.Rank;
 import me.faizaand.prison.ranks.data.RankPlayer;
 import me.faizaand.prison.ranks.events.FirstJoinEvent;
 import me.faizaand.prison.store.Collection;
@@ -51,7 +54,7 @@ public class PlayerManager {
         this.collection = collection;
         this.players = new ArrayList<>();
 
-        Prison.get().getEventBus().register(this);
+        listenPlayerJoin();
     }
 
     /*
@@ -123,26 +126,47 @@ public class PlayerManager {
      * Listeners
      */
 
-    @Subscribe public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!getPlayer(event.getPlayer().getUUID()).isPresent()) {
-            // We need to create a new player data file.
-            RankPlayer newPlayer = new RankPlayer();
-            newPlayer.uid = event.getPlayer().getUUID();
-            newPlayer.ranks = new HashMap<>();
-            newPlayer.prestige = new HashMap<>();
+    public void listenPlayerJoin() {
+        Prison.get().getEventManager().subscribe(EventType.PlayerJoinEvent, obj -> {
+            GamePlayer player = ((GamePlayer) obj[0]);
 
-            players.add(newPlayer);
+            if (!getPlayer(player.getUUID()).isPresent()) {
+                // We need to create a new player data file.
+                RankPlayer newPlayer = new RankPlayer();
+                newPlayer.uid = player.getUUID();
+                newPlayer.ranks = new HashMap<>();
+                newPlayer.prestige = new HashMap<>();
 
-            try {
-                savePlayer(newPlayer);
-            } catch (IOException e) {
-                Output.get().logError(
-                    "Failed to create new player data file for player " + event.getPlayer()
-                        .getName(), e);
-                return;
+                players.add(newPlayer);
+
+                try {
+                    savePlayer(newPlayer);
+                } catch (IOException e) {
+                    Output.get().logError(
+                            "Failed to create new player data file for player " + player
+                                    .getName(), e);
+                    return new Object[]{};
+                }
+
+                handleFirstJoin(newPlayer);
             }
+            return new Object[]{};
+        }, EventPriority.NORMAL);
+    }
 
-            Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+    private void handleFirstJoin(RankPlayer player) {
+        Optional<Rank> firstRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank();
+
+        if (firstRank.isPresent()) {
+            player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
+        } else {
+            Output.get().logWarn("There are no ranks on the server! New player has no rank.");
+        }
+
+        try {
+            PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
+        } catch (IOException e) {
+            Output.get().logError("Could not save player files.", e);
         }
     }
 

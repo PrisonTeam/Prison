@@ -125,12 +125,12 @@ public class MineManager {
         if (PrisonMines.getInstance().getConfig().resetMessages) {
             // Send it to everyone if it's not multi-world
             if (!PrisonMines.getInstance().getConfig().multiworld) {
-                Prison.get().getPlatform().getOnlinePlayers().forEach(
+                Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(
                     x -> PrisonMines.getInstance().getMinesMessages()
                         .getLocalizable("reset_message")
                         .sendTo(x));
             } else { // Or those affected if it's multi-world
-                Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
+                Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(x -> selectiveSend(x,
                     PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")));
             }
         }
@@ -148,13 +148,13 @@ public class MineManager {
             if (resetCount == i) {
                 if (!PrisonMines.getInstance().getConfig().multiworld) {
 
-                    Prison.get().getPlatform().getOnlinePlayers().forEach(
+                    Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(
                         x -> PrisonMines.getInstance().getMinesMessages()
                             .getLocalizable("reset_warning")
                             .withReplacements(Text.getTimeUntilString(resetCount * 1000))
                             .sendTo(x));
                 } else {
-                    Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
+                    Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(x -> selectiveSend(x,
                         PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
                             .withReplacements(Text.getTimeUntilString(resetCount * 1000))));
                 }

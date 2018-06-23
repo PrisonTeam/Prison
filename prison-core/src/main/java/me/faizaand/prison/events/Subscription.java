@@ -5,20 +5,14 @@ import java.util.function.Function;
 public class Subscription {
 
     private EventPriority priority;
-    private Class<?>[] types;
-    private Function<Object[], Boolean> callback;
+    private Function<Object[], Object[]> callback;
 
-    public Subscription(EventPriority priority, Class<?>[] types, Function<Object[], Boolean> callback) {
+    public Subscription(EventPriority priority, Function<Object[], Object[]> callback) {
         this.priority = priority;
-        this.types = types;
         this.callback = callback;
     }
 
-    public Class<?>[] getTypes() {
-        return types;
-    }
-
-    public Function<Object[], Boolean> getCallback() {
+    public Function<Object[], Object[]> getCallback() {
         return callback;
     }
 

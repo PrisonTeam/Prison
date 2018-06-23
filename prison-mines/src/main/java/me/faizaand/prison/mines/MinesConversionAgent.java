@@ -28,7 +28,7 @@ public class MinesConversionAgent implements ConversionAgent {
 
     @Override
     public ConversionResult convert() {
-        File oldFolder = new File(PrisonAPI.getPluginDirectory().getParent(), "Prison.old");
+        File oldFolder = new File(Prison.get().getPlatform().getPluginDirectory().getParent(), "Prison.old");
         File minesFolder = new File(oldFolder, "mines");
 
         File alreadyConverted = new File(minesFolder, ".converted");
@@ -62,7 +62,7 @@ public class MinesConversionAgent implements ConversionAgent {
                     double maxZ = obj.getAsJsonPrimitive("maxZ").getAsInt();
 
                     Optional<GameWorld> prisonWorld =
-                        Prison.get().getPlatform().getWorld(world);
+                        Prison.get().getPlatform().getWorldManager().getWorld(world);
                     if (!prisonWorld.isPresent()) {
                         Output.get().logWarn(String.format(
                             "Can't convert mine %s because its world %s doesn't exist anymore.",

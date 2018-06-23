@@ -16,12 +16,12 @@ public interface EventManager {
      * Subscribes to a specific event.
      *
      * @param type     the type of the event.
-     * @param types    the types of the data you need to respond.
-     * @param callback a callback, that gets the data you requested, and returns true if the event should be canceled, false otherwise.
-     *                 <b>Data is put into the Object[] array in the same order that you put their types into the Class[] array!</b>
+     * @param callback a callback function, that gives you all of the values from the function in the order
+     *                 specified in the {@link EventType} doc, and returns the final state of these values.
+     *                 Returning null cancels the event, if possible.
      * @param priority the priority of this event.
      */
-    void subscribe(EventType type, Class<?>[] types, Function<Object[], Boolean> callback, EventPriority priority);
+    void subscribe(EventType type, Function<Object[], Object[]> callback, EventPriority priority);
 
     /**
      * Registers an event handler that responds to a certain event type.

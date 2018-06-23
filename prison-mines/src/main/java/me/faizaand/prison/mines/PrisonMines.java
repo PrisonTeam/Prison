@@ -90,7 +90,7 @@ public class PrisonMines extends Module {
 
         initWorlds();
         initMines();
-        PrisonAPI.getEventBus().register(new MinesListener());
+        new MinesListener();
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
         //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());

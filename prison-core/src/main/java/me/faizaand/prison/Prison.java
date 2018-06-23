@@ -32,6 +32,7 @@ import me.faizaand.prison.modules.Module;
 import me.faizaand.prison.modules.ModuleManager;
 import me.faizaand.prison.modules.PluginEntity;
 import me.faizaand.prison.output.Output;
+import me.faizaand.prison.selection.SelectionManager;
 import me.faizaand.prison.store.Database;
 import me.faizaand.prison.troubleshoot.TroubleshootManager;
 import me.faizaand.prison.troubleshoot.Troubleshooter;
@@ -67,6 +68,7 @@ public class Prison implements PluginEntity {
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
+    private SelectionManager selectionManager;
     private Database metaDatabase;
 
     /**
@@ -168,6 +170,7 @@ public class Prison implements PluginEntity {
         this.commandHandler = new CommandHandler();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
+        this.selectionManager = new SelectionManager();
 
         try {
             this.itemManager = new ItemManager();
@@ -303,6 +306,10 @@ public class Prison implements PluginEntity {
      */
     public IntegrationManager getIntegrationManager() {
         return integrationManager;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
     }
 
 }

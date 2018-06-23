@@ -17,6 +17,7 @@
 
 package me.faizaand.prison.ranks.managers;
 
+import me.faizaand.prison.Prison;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.ranks.PrisonRanks;
 import me.faizaand.prison.ranks.data.Rank;
@@ -202,7 +203,7 @@ public class RankManager {
                     } catch (IOException e) {
                         Output.get().logError("Couldn't save player file.", e);
                     }
-                    PrisonAPI.debug("GamePlayer %s is now %s", rankPlayer.uid.getLeastSignificantBits(),
+                    Prison.get().getPlatform().debug("GamePlayer %s is now %s", rankPlayer.uid.getLeastSignificantBits(),
                         newRank.get().name);
                 }
             });

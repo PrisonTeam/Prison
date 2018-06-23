@@ -26,7 +26,28 @@ public enum EventType {
      * <li><b>GamePlayer</b> the player that broke it</li>
      * </ul>
      */
-    BlockBreakEvent(Block.class, GamePlayer.class);
+    BlockBreakEvent(Block.class, GamePlayer.class),
+
+    /**
+     * Fires when a player sends a chat message. Types allowed:
+     * <ul>
+     * <li><b>String</b> the message that was sent</li>
+     * <li><b>String</b> the format of the message that was sent</li>
+     * <li><b>GamePlayer</b> the player who sent it</li>
+     * </ul>
+     */
+    PlayerChatEvent,
+
+    /**
+     * Fires when a player interacts with a block. Types allowed:
+     * <ul>
+     * <li><b>GameItemStack</b> the item stack used to interact</li>
+     * <li><b>GamePlayer</b> the player that performed the interaction</li>
+     * <li><b>boolean</b> true if left-hand click, false if right-hand click</li>
+     * <li><b>GameLocation</b> the location that was clicked</li>
+     * </ul>
+     */
+    PlayerInteractBlockEvent;
 
     Class<?>[] expectedTypes;
 

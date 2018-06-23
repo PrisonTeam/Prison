@@ -1,11 +1,12 @@
 package me.faizaand.prison.ranks;
 
-import com.google.common.eventbus.Subscribe;
 import me.faizaand.prison.Prison;
+import me.faizaand.prison.events.EventPriority;
+import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.integration.IntegrationType;
 import me.faizaand.prison.integration.PlaceholderIntegration;
-import me.faizaand.prison.internal.events.player.PlayerChatEvent;
+import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.ranks.data.Rank;
 import me.faizaand.prison.ranks.data.RankLadder;
 import me.faizaand.prison.ranks.data.RankPlayer;
@@ -27,25 +28,35 @@ public class ChatHandler {
      */
 
     public ChatHandler() {
-        Prison.get().getEventBus().register(this);
+
+        // Register our placeholders
+        // TODO Revamp placeholders
         Optional<Integration> placeholderIntegration = Prison.get().getIntegrationManager().getForType(IntegrationType.PLACEHOLDER);
         if (placeholderIntegration.isPresent()) {
             PlaceholderIntegration integration = ((PlaceholderIntegration) placeholderIntegration.get());
             integration.registerPlaceholder("PRISON_RANK",
                     player -> Text.translateAmpColorCodes(getPrefix(player.getUUID())));
         }
+
+        listenPlayerChat();
+
     }
 
     /*
      * Listeners
      */
 
-    @Subscribe
-    public void onPlayerChat(PlayerChatEvent e) {
+    private void listenPlayerChat() {
+        Prison.get().getEventManager().subscribe(EventType.PlayerChatEvent, objects -> {
+            String format = (String) objects[1];
+            GamePlayer player = (GamePlayer) objects[2];
 
-        String prefix = getPrefix(e.getPlayer().getUUID());
-        String newFormat = e.getFormat().replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
-        e.setFormat(newFormat);
+            String prefix = getPrefix(player.getUUID());
+            format = format.replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
+
+            return new Object[] {objects[0], format, objects[2]};
+
+        }, EventPriority.NORMAL);
     }
 
     /*

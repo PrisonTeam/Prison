@@ -19,13 +19,10 @@ public class StandardEventManager implements EventManager {
     }
 
     @Override
-    public void subscribe(EventType type, Class<?>[] types, Function<Object[], Boolean> callback, EventPriority priority) {
+    public void subscribe(EventType type, Function<Object[], Object[]> callback, EventPriority priority) {
         Preconditions.checkArgument(handlers.containsKey(type), "event type %s has no registered handlers", type.name());
 
-        if (!arrayContainsValuesFromOther(type.getExpectedTypes(), types))
-            throw new IllegalArgumentException("unexpected type requested in types array, must be from event's expected types");
-
-        Subscription subscription = new Subscription(priority, types, callback);
+        Subscription subscription = new Subscription(priority, callback);
         handlers.get(type).addSubscription(subscription);
     }
 
@@ -50,15 +47,6 @@ public class StandardEventManager implements EventManager {
     @Override
     public Optional<EventHandler> getHandler(EventType forType) {
         return Optional.ofNullable(handlers.get(forType));
-    }
-
-    private boolean arrayContainsValuesFromOther(Class<?>[] first, Class<?>[] second) {
-        Set<Class<?>> set = new HashSet<>(Arrays.asList(first));
-        for (Class<?> fromSecond : second) {
-            if (!set.contains(fromSecond)) return false;
-        }
-
-        return true;
     }
 
 }

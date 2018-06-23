@@ -25,11 +25,9 @@ import me.faizaand.prison.mines.PrisonMines;
 import me.faizaand.prison.modules.Module;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.ranks.PrisonRanks;
-import me.faizaand.prison.spigot.compat.Compatibility;
-import me.faizaand.prison.spigot.compat.Spigot18;
-import me.faizaand.prison.spigot.compat.Spigot19;
 import me.faizaand.prison.spigot.gui.GUIListener;
 import me.faizaand.prison.spigot.handlers.BlockBreakEventHandler;
+import me.faizaand.prison.spigot.handlers.PlayerChatEventHandler;
 import me.faizaand.prison.spigot.handlers.PlayerJoinEventHandler;
 import me.faizaand.prison.spigot.integrations.economies.EssentialsEconomy;
 import me.faizaand.prison.spigot.integrations.economies.SaneEconomy;
@@ -61,10 +59,7 @@ import java.util.logging.Level;
  */
 public class SpigotPrison extends JavaPlugin {
 
-    Field commandMap;
-    Field knownCommands;
     SpigotScheduler scheduler;
-    Compatibility compatibility;
     boolean debug = false;
 
     private File dataDirectory;
@@ -100,7 +95,6 @@ public class SpigotPrison extends JavaPlugin {
         debug = getConfig().getBoolean("debug", false);
 
         initDataDir();
-        initCompatibility();
         initMetrics();
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
@@ -179,30 +173,6 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    private void initCompatibility() {
-        String[] version = Bukkit.getVersion().split("\\.");
-        int minorVersionInt = 9;
-        try {
-            minorVersionInt = Integer.parseInt(version[1]);
-        } catch (NumberFormatException e) {
-            try {
-                minorVersionInt =
-                        Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
-            } catch (Exception ex) {
-                Output.get().logError(
-                        "Unable to determine server version. Assuming spigot 1.9 or greater.");
-            }
-        }
-
-        if (minorVersionInt <= 8) {
-            compatibility = new Spigot18();
-        } else {
-            compatibility = new Spigot19();
-        }
-
-        getLogger().info("Using version adapter " + compatibility.getClass().getName());
-    }
-
     private void initIntegrations() {
         registerIntegration("Essentials", EssentialsEconomy.class);
         registerIntegration("SaneEconomy", SaneEconomy.class);
@@ -229,6 +199,7 @@ public class SpigotPrison extends JavaPlugin {
     private void initEventHandlers() {
         new PlayerJoinEventHandler();
         new BlockBreakEventHandler();
+        new PlayerChatEventHandler();
     }
 
     private void initModules() {
