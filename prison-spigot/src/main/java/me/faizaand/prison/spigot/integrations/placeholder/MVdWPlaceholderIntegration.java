@@ -1,4 +1,4 @@
-package me.faizaand.prison.spigot.placeholder;
+package me.faizaand.prison.spigot.integrations.placeholder;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import me.faizaand.prison.integration.PlaceholderIntegration;
