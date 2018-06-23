@@ -1,4 +1,7 @@
-![Prison Banner](https://faizaand.github.io/prison/img/prison-banner.png)
+<p align="center">
+<img src="https://faizaand.github.io/images/prison_logo_text.png" width="300px" style="text-align: center;">
+</p>
+<h1 align="center">The Hadron Update</h1>
 
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 [![Build status](https://ci.appveyor.com/api/projects/status/7ktb4ukuiydopjop?svg=true)](https://ci.appveyor.com/project/faizaand/prison)
