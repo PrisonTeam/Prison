@@ -22,6 +22,17 @@ public enum EventType {
     PlayerJoinEvent(GamePlayer.class, String.class),
 
     /**
+     * Fires when a player places a block.
+     * <ul>
+     * <li><b>Block</b> gets the block that was placed</li>
+     * <li><b>GamePlayer</b> gets the player who placed the block</li>
+     * <li><b>GameItemStack</b> gets the item stack that was used to place the block</li>
+     * <li><b>Boolean</b> true if the player can build here, false otherwise.</li>
+     * </ul>
+     */
+    BlockPlaceEvent(Block.class, GamePlayer.class, GameItemStack.class, Boolean.class),
+
+    /**
      * Fires when a player breaks a block. Types allowed:
      * <ul>
      * <li><b>Block</b> the block that was broken</li>
@@ -49,7 +60,13 @@ public enum EventType {
      * <li><b>GameLocation</b> the location that was clicked</li>
      * </ul>
      */
-    PlayerInteractBlockEvent(GameItemStack.class, GamePlayer.class, Boolean.class, GameLocation.class);
+    PlayerInteractBlockEvent(GameItemStack.class, GamePlayer.class, Boolean.class, GameLocation.class),
+
+    /**
+     * Fires when a sign is changed.
+     *
+     */
+    SignChangeEvent(String[].class, GamePlayer.class);
 
     Class<?>[] expectedTypes;
 

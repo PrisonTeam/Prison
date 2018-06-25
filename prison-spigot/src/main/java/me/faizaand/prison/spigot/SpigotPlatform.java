@@ -38,10 +38,7 @@ import me.faizaand.prison.spigot.game.SpigotGuiManager;
 import me.faizaand.prison.spigot.game.SpigotPlayerManager;
 import me.faizaand.prison.spigot.game.SpigotWorldManager;
 import me.faizaand.prison.spigot.game.scoreboard.SpigotScoreboardManager;
-import me.faizaand.prison.spigot.handlers.BlockBreakEventHandler;
-import me.faizaand.prison.spigot.handlers.PlayerChatEventHandler;
-import me.faizaand.prison.spigot.handlers.PlayerInteractEventHandler;
-import me.faizaand.prison.spigot.handlers.PlayerJoinEventHandler;
+import me.faizaand.prison.spigot.handlers.*;
 import me.faizaand.prison.spigot.store.file.FileStorage;
 import me.faizaand.prison.spigot.util.ActionBarUtil;
 import me.faizaand.prison.store.Storage;
@@ -125,6 +122,7 @@ class SpigotPlatform implements Platform {
 
     private void initEventHandlers() {
         this.eventManager.registerHandler(EventType.PlayerJoinEvent, new PlayerJoinEventHandler());
+        this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockPlaceEventHandler());
         this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockBreakEventHandler());
         this.eventManager.registerHandler(EventType.PlayerChatEvent, new PlayerChatEventHandler());
         this.eventManager.registerHandler(EventType.PlayerInteractBlockEvent, new PlayerInteractEventHandler());
