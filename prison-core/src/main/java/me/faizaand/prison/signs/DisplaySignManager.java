@@ -8,6 +8,10 @@ import me.faizaand.prison.internal.block.Block;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.util.BlockType;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class DisplaySignManager {
 
     private static DisplaySignManager ourInstance = new DisplaySignManager();
@@ -17,23 +21,43 @@ public class DisplaySignManager {
     }
 
 
+    private List<DisplaySignAdapter> adapters;
+
     private DisplaySignManager() {
+        this.adapters = new ArrayList<>();
         listenForSignPlace();
+        listenForSignBreak();
     }
 
-    /*
-     * TODO CHECK TO SEE IF SIGNCHANGEEVENT DEALS WITH CREATING/DESTROYING!
+    /**
+     * Note: This applies both to sign placement and updating!
      */
-
     private void listenForSignPlace() {
-        Prison.get().getEventManager().subscribe(EventType.BlockPlaceEvent, objects -> {
-            Block block = (Block) objects[0];
+        Prison.get().getEventManager().subscribe(EventType.SignChangeEvent, objects -> {
+            String[] lines = (String[]) objects[0];
             GamePlayer player = (GamePlayer) objects[1];
+            Block block = (Block) objects[2];
 
-            if(weDontCareAboutEvent(block, player)) {
-                return new Object[] {}; // validation failed, end now
+            if (weDontCareAboutEvent(block, player)) {
+                return new Object[]{}; // validation failed, end now
             }
-            // todo
+
+            if (!lines[0].equalsIgnoreCase("[prison]")) {
+                return new Object[]{}; // we don't care about this one either
+            }
+
+            String identifier = lines[1];
+            String[] params = new String[]{lines[2], lines[3]};
+
+            Optional<DisplaySignAdapter> optional = adapters.stream().filter(a -> a.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
+            if(!optional.isPresent()) {
+                // todo fix this
+                player.sendMessage("You dun' fudged up.");
+                return new Object[] {};
+            }
+
+            DisplaySignAdapter displaySignAdapter = optional.get();
+            displaySignAdapter.addSign(new DisplaySign(block.getLocation(), identifier, params));
 
             return new Object[]{};
         }, EventPriority.NORMAL);
@@ -44,8 +68,8 @@ public class DisplaySignManager {
             Block block = (Block) objects[0];
             GamePlayer player = (GamePlayer) objects[1];
 
-            if(weDontCareAboutEvent(block, player)) {
-                return new Object[] {}; // validation failed, end now
+            if (weDontCareAboutEvent(block, player)) {
+                return new Object[]{}; // validation failed, end now
             }
 
             // todo
@@ -65,7 +89,7 @@ public class DisplaySignManager {
         }
 
         // Make sure
-        if(!player.hasPermission("prison.signs")) {
+        if (!player.hasPermission("prison.signs")) {
             // todo localize
             Output.get().sendError(player, "You lack the necessary permissions to alter signs.");
             return true;

@@ -63,10 +63,14 @@ public enum EventType {
     PlayerInteractBlockEvent(GameItemStack.class, GamePlayer.class, Boolean.class, GameLocation.class),
 
     /**
-     * Fires when a sign is changed.
-     *
+     * Fires when a sign is created or updated.
+     * <ul>
+     * <li><b>String[]</b> the lines of the sign.</li>
+     * <li><b>GamePlayer</b> the player who changed the sign.</li>
+     * <li><b>Block</b> the sign block</li>
+     * </ul>
      */
-    SignChangeEvent(String[].class, GamePlayer.class);
+    SignChangeEvent(String[].class, GamePlayer.class, Block.class);
 
     Class<?>[] expectedTypes;
 
