@@ -1,5 +1,7 @@
 package me.faizaand.prison.signs;
 
+import me.faizaand.prison.util.GameLocation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,10 @@ public class DisplaySignAdapter {
 
     public void addSign(DisplaySign sign) {
         this.signs.add(sign);
+    }
+
+    public void removeSign(GameLocation loc) {
+        this.signs.removeIf(s -> s.getLocation().equals(loc));
     }
 
     public List<DisplaySign> getSigns() {

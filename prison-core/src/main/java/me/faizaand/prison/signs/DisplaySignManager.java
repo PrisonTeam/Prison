@@ -5,6 +5,7 @@ import me.faizaand.prison.events.EventPriority;
 import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.block.Block;
+import me.faizaand.prison.internal.block.GameSign;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.util.BlockType;
 
@@ -19,7 +20,6 @@ public class DisplaySignManager {
     public static DisplaySignManager getInstance() {
         return ourInstance;
     }
-
 
     private List<DisplaySignAdapter> adapters;
 
@@ -50,10 +50,10 @@ public class DisplaySignManager {
             String[] params = new String[]{lines[2], lines[3]};
 
             Optional<DisplaySignAdapter> optional = adapters.stream().filter(a -> a.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
-            if(!optional.isPresent()) {
+            if (!optional.isPresent()) {
                 // todo fix this
                 player.sendMessage("You dun' fudged up.");
-                return new Object[] {};
+                return new Object[]{};
             }
 
             DisplaySignAdapter displaySignAdapter = optional.get();
@@ -72,7 +72,10 @@ public class DisplaySignManager {
                 return new Object[]{}; // validation failed, end now
             }
 
-            // todo
+            GameSign sign = ((GameSign) block.getState());
+            String identifier = sign.getLines().get(0);
+            Optional<DisplaySignAdapter> adapterOptional = getAdapter(identifier);
+            adapterOptional.ifPresent(displaySignAdapter -> displaySignAdapter.removeSign(block.getLocation()));
 
             return new Object[]{};
         }, EventPriority.NORMAL);
@@ -96,6 +99,10 @@ public class DisplaySignManager {
         }
 
         return false;
+    }
+
+    public Optional<DisplaySignAdapter> getAdapter(String identifier) {
+        return adapters.stream().filter(displaySignAdapter -> displaySignAdapter.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
     }
 
 }
