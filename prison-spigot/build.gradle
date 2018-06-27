@@ -37,7 +37,7 @@ dependencies {
     compile project(':prison-shops')
     compile project(':prison-cells')
     compile 'org.bstats:bstats-bukkit:1.2'
-//    compile 'org.inventivetalent.spiget-update:bukkit:1.4.0'
+    compile 'org.inventivetalent.spiget-update:bukkit:1.4.0'
     compile ("me.lucko:helper:5.3.0")
 
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'

@@ -123,6 +123,7 @@ class SpigotPlatform implements Platform {
     private void initEventHandlers() {
         this.eventManager.registerHandler(EventType.PlayerJoinEvent, new PlayerJoinEventHandler());
         this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockPlaceEventHandler());
+        this.eventManager.registerHandler(EventType.SignChangeEvent, new SignChangeEventHandler());
         this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockBreakEventHandler());
         this.eventManager.registerHandler(EventType.PlayerChatEvent, new PlayerChatEventHandler());
         this.eventManager.registerHandler(EventType.PlayerInteractBlockEvent, new PlayerInteractEventHandler());

@@ -40,6 +40,9 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.inventivetalent.update.spiget.SpigetUpdate;
+import org.inventivetalent.update.spiget.UpdateCallback;
+import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -140,30 +143,29 @@ public class SpigotPrison extends ExtendedJavaPlugin {
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
-    // TODO Reput this in, SPiget's repo is down
     private void initUpdater() {
-//        if (!getConfig().getBoolean("check-updates")) {
-//            return; // Don't check if they don't want it
-//        }
-//
-//        SpigetUpdate updater = new SpigetUpdate(this, 1223);
-//        updater.setVersionComparator(VersionComparator.EQUAL);
-//
-//        updater.checkForUpdate(new UpdateCallback() {
-//            @Override
-//            public void updateAvailable(String newVersion, String downloadUrl,
-//                                        boolean hasDirectDownload) {
-//                Alerts.getInstance().sendAlert(
-//                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-//                        newVersion);
-//            }
-//
-//            @Override
-//            public void upToDate() {
-//                // Plugin is up-to-date
-//            }
-//        });
-//
+        if (!getConfig().getBoolean("check-updates")) {
+            return; // Don't check if they don't want it
+        }
+
+        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+        updater.setVersionComparator(VersionComparator.EQUAL);
+
+        updater.checkForUpdate(new UpdateCallback() {
+            @Override
+            public void updateAvailable(String newVersion, String downloadUrl,
+                                        boolean hasDirectDownload) {
+                Alerts.getInstance().sendAlert(
+                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+                        newVersion);
+            }
+
+            @Override
+            public void upToDate() {
+                // Plugin is up-to-date
+            }
+        });
+
     }
 
     private void initDataDir() {
