@@ -25,13 +25,16 @@ public interface Storage {
      */
     Optional<Database> getDatabase(String name);
 
+
+    // todo make this return something useful like the Database it created.
+
     /**
      * Create a new database. If a database exists by the provided name,
      * this method will do nothing.
      *
      * @param name The name of the new database.
      */
-    void createDatabase(String name);
+    Database createDatabase(String name);
 
     /**
      * Deletes a database. If no database exists by the provided nmae,

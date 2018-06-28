@@ -84,6 +84,8 @@ public class PrisonRanks extends Module {
             databaseOptional = Prison.get().getPlatform().getStorage().getDatabase("ranks");
         }
         this.database = databaseOptional.get();
+        // todo fail gracefully if database failed to load
+        // getStatus().tOFailed
 
         // Load up the ranks
 

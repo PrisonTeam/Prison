@@ -24,8 +24,9 @@ public interface Database {
      * Create a new collection. If a collection with the provided name already exists, this method will do nothing.
      *
      * @param name The name of the collection.
+     * @return the collection that was created or null if the creation failed.
      */
-    void createCollection(String name);
+    Collection createCollection(String name);
 
     /**
      * Deletes a collection. If a collection with the provided name does not exist, this method will do nothing.

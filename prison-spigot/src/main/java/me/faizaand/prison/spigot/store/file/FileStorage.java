@@ -28,25 +28,29 @@ public class FileStorage implements Storage {
         }
     }
 
-    @Override public boolean isConnected() {
+    @Override
+    public boolean isConnected() {
         return rootDir.exists();
     }
 
-    @Override public Optional<Database> getDatabase(String name) {
+    @Override
+    public Optional<Database> getDatabase(String name) {
         return Optional.ofNullable(databaseMap.get(name));
     }
 
-    @Override public void createDatabase(String name) {
-        File directory = new File(rootDir, name);
-        if (directory.exists()) {
-            return; // A database by this name already exists. As promised, do nothing.
-        }
+    @Override
+    public Database createDatabase(String name) {
+        if (getDatabase(name).isPresent()) return getDatabase(name).get();
 
-        directory.mkdir();
+        File directory = new File(rootDir, name);
+        if (!directory.mkdir()) return null;
+
         databaseMap.put(name, new FileDatabase(directory));
+        return databaseMap.get(name);
     }
 
-    @Override public void deleteDatabase(String name) {
+    @Override
+    public void deleteDatabase(String name) {
         File directory = new File(rootDir, name);
         if (!directory.exists()) {
             return; // A database by this name does not exist. As promised, do nothing.
@@ -62,7 +66,8 @@ public class FileStorage implements Storage {
         databaseMap.remove(name);
     }
 
-    @Override public List<Database> getDatabases() {
+    @Override
+    public List<Database> getDatabases() {
         return new ArrayList<>(databaseMap.values());
     }
 }

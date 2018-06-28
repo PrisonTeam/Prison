@@ -32,14 +32,15 @@ public class FileDatabase implements Database {
     }
 
     @Override
-    public void createCollection(String name) {
+    public Collection createCollection(String name) {
+        if(getCollection(name).isPresent()) return getCollection(name).get();
         File collDir = new File(dbDir, name);
-        if (collDir.exists()) {
-            return;
+        if (!collDir.mkdir()) {
+            return null;
         }
-        collDir.mkdir();
 
         collectionMap.put(name, new FileCollection(collDir));
+        return collectionMap.get(name);
     }
 
     @Override
