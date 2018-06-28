@@ -49,7 +49,7 @@ public class FileCollection implements Collection {
     @Override public Optional<Document> get(String key) {
         try {
             return Optional.ofNullable(documentCache.get(key));
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | CacheLoader.InvalidCacheLoadException e) {
             return Optional.empty();
         }
     }

@@ -209,6 +209,7 @@ public class Prison implements PluginEntity {
      */
     public void deinit() {
         moduleManager.unregisterAll();
+        DisplaySignManager.getInstance().save();
     }
 
     // Getters

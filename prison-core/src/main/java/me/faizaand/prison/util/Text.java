@@ -314,17 +314,28 @@ public class Text {
     /**
      * Takes a millisecond amount and converts it into a pretty, human-readable string.
      *
-     * @param millis The time until (or since if this is negative) something occurs.
+     * @param millis The time until (or since, if this is negative) something occurs.
      * @return The human-readable string.
      */
     public static String getTimeUntilString(long millis) {
+        return getTimeUntilString(millis, 3);
+    }
+
+    /**
+     * Takes a millisecond amount and converts it into a pretty, human-readable string.
+     *
+     * @param millis The time until (or since, if this is negative) something occurs.
+     * @param unitMax the maximum amount of units to include.
+     * @return The human-readable string.
+     */
+    public static String getTimeUntilString(long millis, int unitMax) {
         String ret = "";
 
         double millisLeft = (double) Math.abs(millis);
 
         List<String> unitCountParts = new ArrayList<>();
         for (Map.Entry<String, Long> entry : unitMillis.entrySet()) {
-            if (unitCountParts.size() == 3) {
+            if (unitCountParts.size() == unitMax) {
                 break;
             }
             String unitName = entry.getKey();

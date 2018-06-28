@@ -37,9 +37,7 @@ public class ResetTimeSignAdapter extends DisplaySignAdapter {
             state.setLine(0, Text.translateAmpColorCodes("&3Mine: &a" + mineOpt.get().getName()));
             state.setLine(1, "Resetting in");
 
-            // todo either keep numbers on same line or just cut it off at the comma or and
-
-            String timeUntil = Text.getTimeUntilString(resetCount * 1000);
+            String timeUntil = Text.getTimeUntilString(resetCount * 1000, 1);
             if (timeUntil.length() > 15) {
                 state.setLine(2, Text.translateAmpColorCodes("&c" + timeUntil.substring(0, 15)));
                 state.setLine(3, Text.translateAmpColorCodes("&c" + timeUntil.substring(15)));

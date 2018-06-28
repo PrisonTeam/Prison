@@ -7,7 +7,10 @@ import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.block.Block;
 import me.faizaand.prison.internal.block.GameSign;
 import me.faizaand.prison.output.Output;
+import me.faizaand.prison.store.Collection;
+import me.faizaand.prison.store.Document;
 import me.faizaand.prison.util.BlockType;
+import me.faizaand.prison.util.GameLocation;
 
 import java.util.*;
 
@@ -21,11 +24,76 @@ public class DisplaySignManager {
 
     private List<DisplaySignAdapter> adapters;
 
+    private Collection signsColl;
+
     private DisplaySignManager() {
         this.adapters = new ArrayList<>();
         listenForSignPlace();
         listenForSignBreak();
         scheduleRefresh();
+
+        // we want to do this after all the other plugins boot up so that we can have
+        // all our signs loaded. just in case any third party modules are installed.
+        Prison.get().getPlatform().getScheduler().runTaskLater(this::load, 0L);
+    }
+
+    private void load() {
+        Optional<Collection> collOpt = Prison.get().getMetaDatabase().getCollection("signs");
+        if (!collOpt.isPresent()) {
+            Prison.get().getMetaDatabase().createCollection("signs");
+            collOpt = Prison.get().getMetaDatabase().getCollection("signs");
+        }
+        this.signsColl = collOpt.get();
+
+        // we can store/load them by location block coordinates
+        List<Document> signDocs = signsColl.getAll();
+
+        for (Document signDoc : signDocs) {
+            String location = (String) signDoc.get("location");
+            String identifier = ((String) signDoc.get("identifier"));
+            String[] params = ((ArrayList<String>) signDoc.get("params")).toArray(new String[]{});
+
+            // parse the location
+            // [0] - world, [1,2,3] - x,y,z
+            String[] coords = location.split(",");
+            GameLocation loc = new GameLocation(
+                    Prison.get().getPlatform().getWorldManager().getWorld(coords[0]).orElse(null),
+                    Double.parseDouble(coords[1]),
+                    Double.parseDouble(coords[2]),
+                    Double.parseDouble(coords[3]));
+
+            if (!getAdapter(identifier).isPresent()) {
+                Output.get().logWarn("A sign at " + loc.toString() + " has an identifier with no adapter. Skipping...");
+                continue;
+            }
+
+            DisplaySign sign = new DisplaySign(loc, identifier, params);
+            getAdapter(identifier).get().addSign(sign);
+        }
+    }
+
+    public void save() {
+        for (DisplaySignAdapter adapter : adapters) {
+            for (DisplaySign displaySign : adapter.getSigns()) {
+                saveSign(displaySign);
+            }
+        }
+    }
+
+    private void saveSign(DisplaySign displaySign) {
+        Document signDoc = new Document();
+
+        GameLocation location = displaySign.getLocation();
+        signDoc.put("location", location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ());
+        signDoc.put("identifier", displaySign.getIdentifier());
+        signDoc.put("params", displaySign.getParams());
+
+        this.signsColl.insert(getSignName(location), signDoc);
+    }
+
+    private String getSignName(GameLocation location) {
+        String format = "%s_%d%d%d";
+        return String.format(format, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     /**
@@ -56,7 +124,9 @@ public class DisplaySignManager {
             }
 
             DisplaySignAdapter displaySignAdapter = optional.get();
-            displaySignAdapter.addSign(new DisplaySign(block.getLocation(), identifier, params));
+            DisplaySign sign = new DisplaySign(block.getLocation(), identifier, params);
+            displaySignAdapter.addSign(sign);
+            saveSign(sign);
 
             return new Object[]{};
         }, EventPriority.NORMAL);
@@ -71,13 +141,28 @@ public class DisplaySignManager {
                 return new Object[]{}; // validation failed, end now
             }
 
-            GameSign sign = ((GameSign) block.getState());
-            String identifier = sign.getLines().get(0);
-            Optional<DisplaySignAdapter> adapterOptional = getAdapter(identifier);
+            DisplaySign sign = getSignAt(block.getLocation());
+            if (sign == null) {
+                return new Object[]{};
+            }
+
+            this.signsColl.remove(getSignName(block.getLocation()));
+
+            Optional<DisplaySignAdapter> adapterOptional = getAdapter(sign.getIdentifier());
             adapterOptional.ifPresent(displaySignAdapter -> displaySignAdapter.removeSign(block.getLocation()));
 
             return new Object[]{};
         }, EventPriority.NORMAL);
+    }
+
+    private DisplaySign getSignAt(GameLocation loc) {
+        for (DisplaySignAdapter adapter : adapters) {
+            for (DisplaySign sign : adapter.getSigns()) {
+                if (sign.getLocation().equals(loc)) return sign;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -105,7 +190,7 @@ public class DisplaySignManager {
         Prison.get().getPlatform().getScheduler().runTaskTimer(() -> {
             for (DisplaySignAdapter adapter : adapters) {
                 long timeElapsed = timeSinceLast.getOrDefault(adapter.getIdentifier(), 0L);
-                if (timeElapsed > adapter.getRefreshRate()) {
+                if (timeElapsed >= adapter.getRefreshRate()) {
                     // time to refresh!
                     adapter.refreshSigns();
                     timeSinceLast.put(adapter.getIdentifier(), 0L);
