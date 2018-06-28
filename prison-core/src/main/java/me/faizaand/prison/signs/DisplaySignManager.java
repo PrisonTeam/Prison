@@ -9,9 +9,7 @@ import me.faizaand.prison.internal.block.GameSign;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.util.BlockType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DisplaySignManager {
 
@@ -27,6 +25,7 @@ public class DisplaySignManager {
         this.adapters = new ArrayList<>();
         listenForSignPlace();
         listenForSignBreak();
+        scheduleRefresh();
     }
 
     /**
@@ -99,6 +98,30 @@ public class DisplaySignManager {
         }
 
         return false;
+    }
+
+    private void scheduleRefresh() {
+        Map<String, Long> timeSinceLast = new HashMap<>(); // adapter identifier, duration since last refresh
+        Prison.get().getPlatform().getScheduler().runTaskTimer(() -> {
+            for (DisplaySignAdapter adapter : adapters) {
+                long timeElapsed = timeSinceLast.getOrDefault(adapter.getIdentifier(), 0L);
+                if (timeElapsed > adapter.getRefreshRate()) {
+                    // time to refresh!
+                    adapter.refreshSigns();
+                    timeSinceLast.put(adapter.getIdentifier(), 0L);
+                } else {
+                    timeElapsed++;
+                    timeSinceLast.put(adapter.getIdentifier(), timeElapsed);
+                }
+            }
+        }, 20L, 20L);
+    }
+
+    public void registerAdapter(DisplaySignAdapter adapter) {
+        if (getAdapter(adapter.getIdentifier()).isPresent())
+            throw new IllegalArgumentException("an adapter for identifier " + adapter.getIdentifier() + " has already been registered.");
+
+        this.adapters.add(adapter);
     }
 
     public Optional<DisplaySignAdapter> getAdapter(String identifier) {

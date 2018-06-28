@@ -18,7 +18,6 @@
 
 package me.faizaand.prison.spigot;
 
-import me.faizaand.prison.Prison;
 import me.faizaand.prison.convert.ConversionManager;
 import me.faizaand.prison.convert.ConversionResult;
 import me.faizaand.prison.events.EventManager;
@@ -121,10 +120,10 @@ class SpigotPlatform implements Platform {
     }
 
     private void initEventHandlers() {
-        this.eventManager.registerHandler(EventType.PlayerJoinEvent, new PlayerJoinEventHandler());
-        this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockPlaceEventHandler());
-        this.eventManager.registerHandler(EventType.SignChangeEvent, new SignChangeEventHandler());
+        this.eventManager.registerHandler(EventType.BlockPlaceEvent, new BlockPlaceEventHandler());
         this.eventManager.registerHandler(EventType.BlockBreakEvent, new BlockBreakEventHandler());
+        this.eventManager.registerHandler(EventType.SignChangeEvent, new SignChangeEventHandler());
+        this.eventManager.registerHandler(EventType.PlayerJoinEvent, new PlayerJoinEventHandler());
         this.eventManager.registerHandler(EventType.PlayerChatEvent, new PlayerChatEventHandler());
         this.eventManager.registerHandler(EventType.PlayerInteractBlockEvent, new PlayerInteractEventHandler());
     }

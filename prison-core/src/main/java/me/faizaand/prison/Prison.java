@@ -33,6 +33,7 @@ import me.faizaand.prison.modules.ModuleManager;
 import me.faizaand.prison.modules.PluginEntity;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.selection.SelectionManager;
+import me.faizaand.prison.signs.DisplaySignManager;
 import me.faizaand.prison.store.Database;
 import me.faizaand.prison.troubleshoot.TroubleshootManager;
 import me.faizaand.prison.troubleshoot.Troubleshooter;
@@ -54,7 +55,7 @@ public class Prison implements PluginEntity {
 
     // Singleton
 
-    public static final int API_LEVEL = 3;
+    public static final int API_LEVEL = 4;
     private static Prison instance = null;
 
     // Fields
@@ -107,6 +108,7 @@ public class Prison implements PluginEntity {
             return false;
         }
         Alerts.getInstance(); // init alerts
+        DisplaySignManager.getInstance(); // init display signs
 
         this.selectionManager = new SelectionManager();
         

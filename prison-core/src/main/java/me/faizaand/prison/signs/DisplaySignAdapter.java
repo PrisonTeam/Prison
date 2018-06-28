@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @since 4.0
  */
-public class DisplaySignAdapter {
+public abstract class DisplaySignAdapter {
 
     private String identifier;
     private long refreshRate;
@@ -21,6 +21,8 @@ public class DisplaySignAdapter {
         this.refreshRate = refreshRate;
         this.signs = new ArrayList<>();
     }
+
+    public abstract void refreshSigns();
 
     public String getIdentifier() {
         return identifier;
