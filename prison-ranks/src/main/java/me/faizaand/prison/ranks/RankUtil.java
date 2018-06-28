@@ -25,7 +25,6 @@ import me.faizaand.prison.output.Output;
 import me.faizaand.prison.ranks.data.Rank;
 import me.faizaand.prison.ranks.data.RankLadder;
 import me.faizaand.prison.ranks.data.RankPlayer;
-import me.faizaand.prison.ranks.events.RankUpEvent;
 
 import java.io.IOException;
 import java.text.NumberFormat;
