@@ -40,6 +40,8 @@ import java.util.*;
  */
 public class MineManager {
 
+    // todo mines should be able to have individual reset times
+
     // Base list
     List<Mine> mines;
 
@@ -47,7 +49,7 @@ public class MineManager {
 
     // Declarations
     HashMap<String, List<BlockType>> randomizedBlocks;
-    int resetCount = 0;
+    public int resetCount = 0;
 
     /**
      * Initializes a new instance of {@link MineManager}
@@ -85,7 +87,7 @@ public class MineManager {
 
     private void selectiveSend(GamePlayer x, Localizable localizable) {
         if (PrisonMines.getInstance().getWorlds()
-            .contains(x.getLocation().getWorld().getName().toLowerCase())) {
+                .contains(x.getLocation().getWorld().getName().toLowerCase())) {
             localizable.sendTo(x);
         }
     }
@@ -126,12 +128,12 @@ public class MineManager {
             // Send it to everyone if it's not multi-world
             if (!PrisonMines.getInstance().getConfig().multiworld) {
                 Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(
-                    x -> PrisonMines.getInstance().getMinesMessages()
-                        .getLocalizable("reset_message")
-                        .sendTo(x));
+                        x -> PrisonMines.getInstance().getMinesMessages()
+                                .getLocalizable("reset_message")
+                                .sendTo(x));
             } else { // Or those affected if it's multi-world
                 Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(x -> selectiveSend(x,
-                    PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")));
+                        PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")));
             }
         }
 
@@ -149,35 +151,34 @@ public class MineManager {
                 if (!PrisonMines.getInstance().getConfig().multiworld) {
 
                     Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(
-                        x -> PrisonMines.getInstance().getMinesMessages()
-                            .getLocalizable("reset_warning")
-                            .withReplacements(Text.getTimeUntilString(resetCount * 1000))
-                            .sendTo(x));
+                            x -> PrisonMines.getInstance().getMinesMessages()
+                                    .getLocalizable("reset_warning")
+                                    .withReplacements(Text.getTimeUntilString(resetCount * 1000))
+                                    .sendTo(x));
                 } else {
                     Prison.get().getPlatform().getPlayerManager().getOnlinePlayers().forEach(x -> selectiveSend(x,
-                        PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
-                            .withReplacements(Text.getTimeUntilString(resetCount * 1000))));
+                            PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
+                                    .withReplacements(Text.getTimeUntilString(resetCount * 1000))));
                 }
             }
         }
     }
 
-    public boolean removeMine(String id){
+    public boolean removeMine(String id) {
         if (getMine(id).isPresent()) {
             return removeMine(getMine(id).get());
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    public boolean removeMine(Mine mine){
+    public boolean removeMine(Mine mine) {
         return mines.remove(mine);
     }
 
     public static MineManager fromDb() {
         Optional<me.faizaand.prison.store.Collection> collOptional =
-            PrisonMines.getInstance().getDb().getCollection("mines");
+                PrisonMines.getInstance().getDb().getCollection("mines");
 
         if (!collOptional.isPresent()) {
             PrisonMines.getInstance().getDb().createCollection("mines");
@@ -186,7 +187,7 @@ public class MineManager {
             if (!collOptional.isPresent()) {
                 Output.get().logError("Could not create 'mines' collection.");
                 PrisonMines.getInstance().getStatus()
-                    .toFailed("Could not create mines collection in storage.");
+                        .toFailed("Could not create mines collection in storage.");
                 return null;
             }
         }
@@ -206,7 +207,7 @@ public class MineManager {
                 }
             } catch (Exception e) {
                 Output.get()
-                    .logError("&cFailed to load mine " + document.getOrDefault("name", "null"), e);
+                        .logError("&cFailed to load mine " + document.getOrDefault("name", "null"), e);
             }
         }
     }
@@ -219,8 +220,8 @@ public class MineManager {
         coll.insert(mine.getName(), mine.toDocument());
     }
 
-    public void saveMines(){
-        for (Mine m : mines){
+    public void saveMines() {
+        for (Mine m : mines) {
             saveMine(m);
         }
     }
