@@ -21,6 +21,7 @@ package me.faizaand.prison.spigot;
 import me.faizaand.prison.Prison;
 import me.faizaand.prison.alerts.Alerts;
 import me.faizaand.prison.cells.PrisonCells;
+import me.faizaand.prison.economy.PrisonEconomy;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.mines.PrisonMines;
 import me.faizaand.prison.modules.Module;
@@ -49,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 /**
@@ -63,6 +65,7 @@ public class SpigotPrison extends ExtendedJavaPlugin {
 
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
+    private YamlConfiguration modulesConf;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -198,37 +201,31 @@ public class SpigotPrison extends ExtendedJavaPlugin {
         }
     }
 
+
     private void initModules() {
-        YamlConfiguration modulesConf = loadConfig("modules.yml");
+        modulesConf = loadConfig("modules.yml");
 
-        if (modulesConf.getBoolean("mines")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonMines(getDescription().getVersion()));
+        loadModuleIfEnabled("economy", () -> new PrisonEconomy(getDescription().getVersion()), false);
+        loadModuleIfEnabled("mines", () -> new PrisonMines(getDescription().getVersion()), true);
+        loadModuleIfEnabled("ranks", () -> new PrisonRanks(getDescription().getVersion()), true);
+        loadModuleIfEnabled("shops", () -> new PrisonShops(getDescription().getVersion()), false);
+        loadModuleIfEnabled("cells", () -> new PrisonCells(getDescription().getVersion()), false);
+    }
+
+    /**
+     * Attempts to load a module if it's enabled in modules.yml. If modules.yml does not specify this module,
+     * it will use the loadByDefault value passed into the method.
+     *
+     * @param name           the name of the module, as in modules.yml.
+     * @param moduleSupplier supplies the main class of this module.
+     * @param loadByDefault  used as the default loading boolean if the modules.yml file doesn't include one.
+     */
+    private void loadModuleIfEnabled(String name, Supplier<Module> moduleSupplier, boolean loadByDefault) {
+        if (modulesConf.getBoolean(name, loadByDefault)) {
+            Prison.get().getModuleManager().registerModule(moduleSupplier.get());
         } else {
-            Output.get().logInfo("Not loading mines because it's disabled in modules.yml.");
+            Output.get().logInfo("Not loading " + name + " because it's disabled in modules.yml.");
         }
-
-        if (modulesConf.getBoolean("ranks")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonRanks(getDescription().getVersion()));
-        } else {
-            Output.get().logInfo("Not loading ranks because it's disabled in modules.yml");
-        }
-
-        if (modulesConf.getBoolean("shops")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonShops(getDescription().getVersion()));
-        } else {
-            Output.get().logInfo("Not loading shops because it's disabled in modules.yml");
-        }
-
-        if (modulesConf.getBoolean("cells")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonCells(getDescription().getVersion()));
-        } else {
-            Output.get().logInfo("Not loading cells because it's disabled in modules.yml");
-        }
-
     }
 
     @Nonnull

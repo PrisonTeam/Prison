@@ -32,6 +32,7 @@ repositories {
 
 dependencies {
     compile project(':prison-core')
+    compile project(':prison-economy')
     compile project(':prison-mines')
     compile project(':prison-ranks')
     compile project(':prison-shops')
@@ -70,6 +71,7 @@ shadowJar {
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.0'))
         include(dependency('me.lucko:helper:5.3.0'))
         include(project(':prison-core'))
+        include(project(':prison-economy'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
         include(project(':prison-shops'))

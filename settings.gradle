@@ -24,4 +24,5 @@ include 'prison-mines'
 include 'prison-ranks'
 include 'prison-shops'
 include 'prison-cells'
+include 'prison-economy'
 
