@@ -31,8 +31,8 @@ public class PrisonEconomy extends Module {
             return;
         }
 
-
-
+        new EconomyListener();
+        new EconomyCommands();
     }
 
     @Override
@@ -56,6 +56,10 @@ public class PrisonEconomy extends Module {
 
     public static PrisonEconomy getInstance() {
         return instance;
+    }
+
+    public EconomyManager getEconomyManager() {
+        return economyManager;
     }
 
     public Database getDatabase() {
