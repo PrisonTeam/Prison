@@ -92,6 +92,7 @@ public class ModuleManager {
 
         Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
             (System.currentTimeMillis() - startTime));
+        Prison.get().getSupportZipManager().tryRegister(module);
         return true;
     }
 
@@ -114,6 +115,7 @@ public class ModuleManager {
         if(!module.isEnabled()) return; // Don't disable enabled modules
         module.disable();
         module.getStatus().toDisabled();
+        Prison.get().getSupportZipManager().tryUnregister(module);
     }
 
     /**

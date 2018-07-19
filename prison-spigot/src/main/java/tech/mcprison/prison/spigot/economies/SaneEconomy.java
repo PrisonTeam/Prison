@@ -52,7 +52,7 @@ public class SaneEconomy implements EconomyIntegration {
     }
 
     @Override public boolean hasIntegrated() {
-        return false;
+        return economyManager != null;
     }
 
 }

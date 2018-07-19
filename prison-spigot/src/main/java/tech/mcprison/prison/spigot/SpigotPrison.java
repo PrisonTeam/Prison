@@ -140,6 +140,7 @@ public class SpigotPrison extends JavaPlugin {
         // Report the API level
         metrics.addCustomChart(
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+
     }
 
     private void initUpdater() {

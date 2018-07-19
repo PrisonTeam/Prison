@@ -62,7 +62,7 @@ public class ErrorManager {
         createFile(lines);
 
         Output.get().logInfo(
-            "Please report this error to the developer, at http://github.com/MC-Prison/Prison/issues.\n\n");
+            "Please report this error to the developer, at http://github.com/PrisonTeam/Prison/issues.\n\n");
     }
 
     private void createFile(List<String> lines) {

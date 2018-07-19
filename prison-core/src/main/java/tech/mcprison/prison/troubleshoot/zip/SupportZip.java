@@ -5,49 +5,44 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.error.Error;
 
 public class SupportZip {
-    public static String create(List<String> include) throws IOException {
+
+    public static String create() throws IOException {
         String name = getFileName();
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(new File(PrisonAPI.getPluginDirectory(),name)));
+        ZipOutputStream out = new ZipOutputStream(
+            new FileOutputStream(new File(PrisonAPI.getPluginDirectory(), name)));
         SupportZipManager mgr = Prison.get().getSupportZipManager();
-        if (include.size() == 0){
-            include = new ArrayList<>(mgr.providers.keySet());
-        }
-        for (Entry<String,SupportZipProvider> provider : mgr.providers.entrySet()){
-            if (include.contains(provider.getKey().toLowerCase())){
-                for (SupportZipEntry entry : provider.getValue().generateSupportZipEntries()){
-                    ZipEntry zipEntry = new ZipEntry(provider.getKey()+"/"+entry.getPath());
-                    out.putNextEntry(zipEntry);
-                    byte[] data = entry.getData();
-                    out.write(data, 0, data.length);
-                    out.closeEntry();
-                }
+        for (Entry<String, SupportZipProvider> provider : mgr.providers.entrySet()) {
+            SupportZipEntry[] array = null;
+            try {
+                array = provider.getValue().generateSupportZipEntries();
+            }catch(Exception e){
+                Error error = new Error("Something went wrong while adding \""+provider.getKey()+"\" to the Support ZIP. It will not be included in the ZIP.");
+                error.appendStackTrace("",e);
+                Prison.get().getErrorManager().throwError(error);
+            }
+            for (SupportZipEntry entry : array) {
+                ZipEntry zipEntry = new ZipEntry(provider.getKey() + "/" + entry.getPath());
+                out.putNextEntry(zipEntry);
+                byte[] data = entry.getData();
+                out.write(data, 0, data.length);
+                out.closeEntry();
             }
         }
         out.close();
         return name;
     }
-    public static List<String> processProviders(String params){
-        String[] split = params.split(" ");
-        SupportZipManager mgr = Prison.get().getSupportZipManager();
-        ArrayList<String> result = new ArrayList<>();
-        for (String param : split){
-            if (mgr.providers.containsKey(param.toLowerCase()) && !result.contains(param.toLowerCase())){
-                result.add(param.toLowerCase());
-            }
-        }
-        return result;
-    }
-    private static String getFileName(){
-        return "prison-support"+ new SimpleDateFormat("ddmonyyyy").format(Date.from(Instant.now()))+".zip";
+
+    private static String getFileName() {
+        return "prison-support" + new SimpleDateFormat("ddmonyyyy-HH-mm").format(Date.from(Instant.now()))
+            + ".zip";
     }
 }
