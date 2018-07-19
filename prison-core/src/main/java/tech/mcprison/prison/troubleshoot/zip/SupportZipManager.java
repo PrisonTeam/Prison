@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.modules.Module;
 
@@ -26,6 +27,7 @@ public class SupportZipManager {
             Prison.get().getErrorManager().throwError(error);
         }
         register(new ServerInfoProvider());
+        PrisonAPI.getCommandHandler().registerCommands(new SupportZipCommands());
     }
     public void tryRegister(Module module){
         if (module instanceof SupportZipProvider){
