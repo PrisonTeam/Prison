@@ -1,6 +1,7 @@
 package tech.mcprison.prison.store;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -54,6 +55,10 @@ public interface Collection {
      */
     List<Document> getAll();
 
+    /**
+     * Returns this collection as a map
+     */
+    Map<String,Document> map();
     /**
      * Disposes of all cached data in this collection. Note that this does not remove any files.
      */

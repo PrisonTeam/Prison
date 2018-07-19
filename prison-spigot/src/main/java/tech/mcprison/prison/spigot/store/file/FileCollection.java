@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.Map;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
@@ -118,6 +119,17 @@ public class FileCollection implements Collection {
             }
         }
         return new ArrayList<>(documentCache.asMap().values());
+    }
+
+    @Override
+    public Map<String, Document> map() {
+        File[] files = collDir.listFiles((dir, name) -> name.endsWith(".json"));
+        if (files != null) {
+            for (File file : files) {
+                get(file.getName().split("\\.")[0]);
+            }
+        }
+        return documentCache.asMap();
     }
 
     @Override public void dispose() {

@@ -34,6 +34,7 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
+import tech.mcprison.prison.troubleshoot.zip.SupportZipManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
@@ -68,6 +69,7 @@ public class Prison implements PluginEntity {
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
     private Database metaDatabase;
+    private SupportZipManager supportZipManager;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -169,6 +171,7 @@ public class Prison implements PluginEntity {
         this.selectionManager = new SelectionManager();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
+        this.supportZipManager = new SupportZipManager();
 
         try {
             this.itemManager = new ItemManager();
@@ -294,6 +297,11 @@ public class Prison implements PluginEntity {
     public ItemManager getItemManager() {
         return itemManager;
     }
+
+    /**
+     * Returns the support zip manager, which manages the creation of support zips.
+     */
+    public SupportZipManager getSupportZipManager(){return supportZipManager;}
 
     /**
      * Returns the meta database, which is used to store data from within the core.
