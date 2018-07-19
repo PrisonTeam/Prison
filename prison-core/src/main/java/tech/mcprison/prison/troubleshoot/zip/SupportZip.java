@@ -42,7 +42,7 @@ public class SupportZip {
     }
 
     private static String getFileName() {
-        return "prison-support" + new SimpleDateFormat("ddmonyyyy-HH-mm").format(Date.from(Instant.now()))
+        return "prison-support" + new SimpleDateFormat("ddMMMyyyy-HH-mm").format(Date.from(Instant.now()))
             + ".zip";
     }
 }
