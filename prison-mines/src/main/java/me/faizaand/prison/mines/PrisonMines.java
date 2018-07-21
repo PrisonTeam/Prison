@@ -33,7 +33,7 @@ import me.faizaand.prison.mines.managers.MineManager;
 import me.faizaand.prison.mines.managers.PlayerManager;
 import me.faizaand.prison.modules.Module;
 import me.faizaand.prison.output.Output;
-import me.faizaand.prison.signs.DisplaySignManager;
+import me.faizaand.prison.gui.signs.DisplaySignManager;
 import me.faizaand.prison.store.Database;
 
 import java.io.File;
@@ -93,9 +93,6 @@ public class PrisonMines extends Module {
         initWorlds();
         initMines();
         new MinesListener();
-
-        Prison.get().getCommandHandler().registerCommands(new MinesCommands());
-        //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
         DisplaySignManager.getInstance().registerAdapter(new ResetTimeSignAdapter());
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());

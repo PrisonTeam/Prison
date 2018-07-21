@@ -4,8 +4,8 @@ import me.faizaand.prison.internal.block.GameSign;
 import me.faizaand.prison.mines.PrisonMines;
 import me.faizaand.prison.mines.data.Mine;
 import me.faizaand.prison.output.Output;
-import me.faizaand.prison.signs.DisplaySign;
-import me.faizaand.prison.signs.DisplaySignAdapter;
+import me.faizaand.prison.gui.signs.DisplaySign;
+import me.faizaand.prison.gui.signs.DisplaySignAdapter;
 import me.faizaand.prison.util.Text;
 
 import java.util.Optional;

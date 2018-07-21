@@ -19,11 +19,10 @@
 package me.faizaand.prison;
 
 import me.faizaand.prison.alerts.Alerts;
-import me.faizaand.prison.commands.CommandHandler;
 import me.faizaand.prison.error.Error;
 import me.faizaand.prison.error.ErrorManager;
 import me.faizaand.prison.events.EventManager;
-import me.faizaand.prison.events.StandardEventManager;
+import me.faizaand.prison.gui.signs.DisplaySignManager;
 import me.faizaand.prison.integration.Integration;
 import me.faizaand.prison.integration.IntegrationManager;
 import me.faizaand.prison.internal.platform.Platform;
@@ -33,7 +32,6 @@ import me.faizaand.prison.modules.ModuleManager;
 import me.faizaand.prison.modules.PluginEntity;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.selection.SelectionManager;
-import me.faizaand.prison.signs.DisplaySignManager;
 import me.faizaand.prison.store.Database;
 import me.faizaand.prison.troubleshoot.TroubleshootManager;
 import me.faizaand.prison.troubleshoot.Troubleshooter;
@@ -62,7 +60,6 @@ public class Prison implements PluginEntity {
     private Platform platform;
     private File dataFolder;
     private ModuleManager moduleManager;
-    private CommandHandler commandHandler;
     private LocaleManager localeManager;
     private ItemManager itemManager;
     private ErrorManager errorManager;
@@ -112,8 +109,6 @@ public class Prison implements PluginEntity {
 
         this.selectionManager = new SelectionManager();
         
-        this.commandHandler.registerCommands(new PrisonCommand());
-
         Output.get()
                 .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
                         (System.currentTimeMillis() - startTime));
@@ -175,7 +170,6 @@ public class Prison implements PluginEntity {
         this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
         this.moduleManager = new ModuleManager();
-        this.commandHandler = new CommandHandler();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
 
@@ -276,16 +270,6 @@ public class Prison implements PluginEntity {
      */
     public ModuleManager getModuleManager() {
         return moduleManager;
-    }
-
-    /**
-     * Returns the command handler, where command methods can be registered using the {@link
-     * CommandHandler#registerCommands(Object)} method.
-     *
-     * @return The {@link CommandHandler}.
-     */
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
     }
 
     /**

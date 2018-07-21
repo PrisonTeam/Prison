@@ -1,4 +1,4 @@
-package me.faizaand.prison.signs;
+package me.faizaand.prison.gui.signs;
 
 import me.faizaand.prison.util.GameLocation;
 

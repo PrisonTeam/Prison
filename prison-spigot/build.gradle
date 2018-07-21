@@ -78,7 +78,7 @@ shadowJar {
         include(project(':prison-cells'))
     }
 
-    relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
+    relocate 'org.bstats.bukkit', 'me.faizaand.prison.spigot'
 
     classifier ''
     version = null

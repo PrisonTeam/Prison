@@ -38,8 +38,6 @@ public interface Platform {
 
     PlayerManager getPlayerManager();
 
-    CommandManager getCommandManager();
-
     WorldManager getWorldManager();
 
     GuiManager getGuiManager();

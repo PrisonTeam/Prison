@@ -18,18 +18,6 @@
 
 package me.faizaand.prison;
 
-import me.faizaand.prison.commands.Arg;
-import me.faizaand.prison.commands.Command;
-import me.faizaand.prison.integration.IntegrationType;
-import me.faizaand.prison.internal.CommandSender;
-import me.faizaand.prison.modules.Module;
-import me.faizaand.prison.output.BulletedListComponent;
-import me.faizaand.prison.output.ChatDisplay;
-import me.faizaand.prison.output.Output;
-import me.faizaand.prison.troubleshoot.TroubleshootResult;
-import me.faizaand.prison.troubleshoot.Troubleshooter;
-import me.faizaand.prison.util.Text;
-
 /**
  * Root commands for managing the platform as a whole, in-game.
  *
@@ -37,95 +25,5 @@ import me.faizaand.prison.util.Text;
  * @since API 1.0
  */
 public class PrisonCommand {
-
-    @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
-    public void versionCommand(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("/prison version");
-        display
-                .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
-                        Prison.API_LEVEL);
-
-        display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
-        display.text("&7Integrations:");
-
-        String permissions =
-                Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
-                        "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
-                                .get().getProviderName() :
-                        "&cNone";
-
-        display.text(Text.tab("&7Permissions: " + permissions));
-
-        String economy = Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY) ?
-                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
-                        .getProviderName() :
-                "&cNone";
-
-        display.text(Text.tab("&7Economy: " + economy));
-
-        display.send(sender);
-    }
-
-    @Command(identifier = "prison modules", description = "Lists the modules that hook into Prison to give it functionality.", onlyPlayers = false, permissions = "prison.modules")
-    public void modulesCommand(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("/prison modules");
-        display.emptyLine();
-
-        BulletedListComponent.BulletedListBuilder builder =
-                new BulletedListComponent.BulletedListBuilder();
-        for (Module module : Prison.get().getModuleManager().getModules()) {
-            builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
-                    module.getVersion(), module.getStatus().getMessage());
-        }
-
-        display.addComponent(builder.build());
-
-        display.send(sender);
-    }
-
-    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", onlyPlayers = false, permissions = "prison.troubleshoot")
-    public void troubleshootCommand(CommandSender sender,
-                                    @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
-        // They just want to list stuff
-        if (name.equals("list")) {
-            sender.dispatchCommand("prison troubleshoot list");
-            return;
-        }
-
-        TroubleshootResult result =
-                Prison.get().getTroubleshootManager().invokeTroubleshooter(name, sender);
-        if (result == null) {
-            Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
-            return;
-        }
-
-        ChatDisplay display = new ChatDisplay("Result Summary");
-        display.text("&7Troubleshooter name: &b%s", name.toLowerCase()) //
-                .text("&7Result type: &b%s", result.getResult().name()) //
-                .text("&7Result details: &b%s", result.getDescription()) //
-                .send(sender);
-
-    }
-
-    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", onlyPlayers = false, permissions = "prison.troubleshoot")
-    public void troubleshootListCommand(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("Troubleshooters");
-        display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
-
-        BulletedListComponent.BulletedListBuilder builder =
-                new BulletedListComponent.BulletedListBuilder();
-        for (Troubleshooter troubleshooter : Prison.get().getTroubleshootManager()
-                .getTroubleshooters()) {
-            builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
-        }
-        display.addComponent(builder.build());
-
-        display.send(sender);
-    }
-
-    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
-    public void convertCommand(CommandSender sender) {
-        sender.sendMessage(Prison.get().getPlatform().runConverter());
-    }
 
 }

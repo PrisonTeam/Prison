@@ -1,11 +1,10 @@
-package me.faizaand.prison.signs;
+package me.faizaand.prison.gui.signs;
 
 import me.faizaand.prison.Prison;
 import me.faizaand.prison.events.EventPriority;
 import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.internal.GamePlayer;
 import me.faizaand.prison.internal.block.Block;
-import me.faizaand.prison.internal.block.GameSign;
 import me.faizaand.prison.output.Output;
 import me.faizaand.prison.store.Collection;
 import me.faizaand.prison.store.Document;

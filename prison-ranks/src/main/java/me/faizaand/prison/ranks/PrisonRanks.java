@@ -119,11 +119,6 @@ public class PrisonRanks extends Module {
 
         // Load up the commands
 
-        Prison.get().getCommandHandler().registerCommands(new RankUpCommand());
-        Prison.get().getCommandHandler().registerCommands(new CommandCommands());
-        Prison.get().getCommandHandler().registerCommands(new RanksCommands());
-        Prison.get().getCommandHandler().registerCommands(new LadderCommands());
-
         // Load up all else
 
         new ChatHandler();

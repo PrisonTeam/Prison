@@ -25,14 +25,12 @@ import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.events.StandardEventManager;
 import me.faizaand.prison.internal.Scheduler;
 import me.faizaand.prison.internal.platform.Capability;
-import me.faizaand.prison.internal.platform.CommandManager;
 import me.faizaand.prison.internal.platform.Platform;
 import me.faizaand.prison.internal.platform.PlayerManager;
 import me.faizaand.prison.internal.scoreboard.ScoreboardManager;
 import me.faizaand.prison.output.BulletedListComponent;
 import me.faizaand.prison.output.LogLevel;
 import me.faizaand.prison.output.Output;
-import me.faizaand.prison.spigot.game.SpigotCommandManager;
 import me.faizaand.prison.spigot.game.SpigotGuiManager;
 import me.faizaand.prison.spigot.game.SpigotPlayerManager;
 import me.faizaand.prison.spigot.game.SpigotWorldManager;
@@ -61,7 +59,6 @@ class SpigotPlatform implements Platform {
     private ScoreboardManager scoreboardManager;
     private SpigotPlayerManager playerManager;
     private SpigotWorldManager worldManager;
-    private SpigotCommandManager commandManager;
     private SpigotGuiManager guiManager;
     private EventManager eventManager;
 
@@ -73,7 +70,6 @@ class SpigotPlatform implements Platform {
         this.scoreboardManager = new SpigotScoreboardManager();
         this.playerManager = new SpigotPlayerManager();
         this.worldManager = new SpigotWorldManager();
-        this.commandManager = new SpigotCommandManager();
         this.guiManager = new SpigotGuiManager();
         this.eventManager = new StandardEventManager(this::initEventHandlers);
         this.initEventHandlers();
@@ -102,11 +98,6 @@ class SpigotPlatform implements Platform {
 
     public SpigotWorldManager getWorldManager() {
         return worldManager;
-    }
-
-    @Override
-    public CommandManager getCommandManager() {
-        return commandManager;
     }
 
     @Override
