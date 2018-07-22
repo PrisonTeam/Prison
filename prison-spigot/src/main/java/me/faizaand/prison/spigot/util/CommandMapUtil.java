@@ -21,6 +21,10 @@ import javax.annotation.Nonnull;
 
 /**
  * Utility for interacting with the server's {@link CommandMap} instance.
+ * Adapted from lucko's helper library, licensed under the MIT license.
+ * https://github.com/lucko/helper
+ *
+ * @author lucko
  */
 public final class CommandMapUtil {
 

@@ -22,6 +22,7 @@ import me.faizaand.prison.internal.CommandSender;
 import me.faizaand.prison.util.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * @author Faizaan A. Datoo
@@ -43,7 +44,7 @@ public class SpigotCommandSender implements CommandSender {
     }
 
     @Override public boolean doesSupportColors() {
-        return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
+        return (this instanceof Player) || (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 
     @Override public boolean hasPermission(String perm) {

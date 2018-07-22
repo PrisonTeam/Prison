@@ -19,6 +19,7 @@
 package me.faizaand.prison.internal.platform;
 
 import me.faizaand.prison.events.EventManager;
+import me.faizaand.prison.internal.GameConsole;
 import me.faizaand.prison.internal.Scheduler;
 import me.faizaand.prison.internal.scoreboard.ScoreboardManager;
 import me.faizaand.prison.store.Storage;
@@ -59,8 +60,15 @@ public interface Platform {
      * Runs a command as the console (i.e. with all privileges).
      *
      * @param cmd The command to run, without the '/'.
+     * @deprecated use {@link me.faizaand.prison.internal.GameConsole#dispatchCommand(String)}
      */
+    @Deprecated
     void dispatchCommand(String cmd);
+
+    /**
+     * Returns the instance of the console.
+     */
+    GameConsole getConsole();
 
     /**
      * Returns the {@link Scheduler}, which can be used to schedule tasks.

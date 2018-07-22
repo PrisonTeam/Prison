@@ -23,6 +23,7 @@ import me.faizaand.prison.convert.ConversionResult;
 import me.faizaand.prison.events.EventManager;
 import me.faizaand.prison.events.EventType;
 import me.faizaand.prison.events.StandardEventManager;
+import me.faizaand.prison.internal.GameConsole;
 import me.faizaand.prison.internal.Scheduler;
 import me.faizaand.prison.internal.platform.Capability;
 import me.faizaand.prison.internal.platform.Platform;
@@ -31,6 +32,7 @@ import me.faizaand.prison.internal.scoreboard.ScoreboardManager;
 import me.faizaand.prison.output.BulletedListComponent;
 import me.faizaand.prison.output.LogLevel;
 import me.faizaand.prison.output.Output;
+import me.faizaand.prison.spigot.game.SpigotConsole;
 import me.faizaand.prison.spigot.game.SpigotGuiManager;
 import me.faizaand.prison.spigot.game.SpigotPlayerManager;
 import me.faizaand.prison.spigot.game.SpigotWorldManager;
@@ -55,6 +57,7 @@ import java.util.Map;
 class SpigotPlatform implements Platform {
 
     private SpigotPrison plugin;
+    private SpigotConsole console;
 
     private ScoreboardManager scoreboardManager;
     private SpigotPlayerManager playerManager;
@@ -74,6 +77,7 @@ class SpigotPlatform implements Platform {
         this.eventManager = new StandardEventManager(this::initEventHandlers);
         this.initEventHandlers();
 
+        this.console = new SpigotConsole();
         this.storage = initStorage();
         ActionBarUtil.init(plugin);
     }
@@ -132,6 +136,11 @@ class SpigotPlatform implements Platform {
     @Override
     public void dispatchCommand(String cmd) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+    }
+
+    @Override
+    public GameConsole getConsole() {
+        return console;
     }
 
     @Override
