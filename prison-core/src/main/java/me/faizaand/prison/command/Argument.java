@@ -12,23 +12,19 @@ public class Argument {
     private String name;
     private boolean required = false;
     private String description;
-    private Class<?> type;
-    private Predicate<String> validator;
 
-    public static Argument newRequiredArg(String name, String description, Class<?> type, Predicate<String> validator) {
-        return new Argument(name, true, description, type, validator);
+    public static Argument newRequiredArg(String name, String description) {
+        return new Argument(name, true, description);
     }
 
-    public static Argument newOptionalArg(String name, String description, Class<?> type, Predicate<String> validator) {
-        return new Argument(name, false, description, type, validator);
+    public static Argument newOptionalArg(String name, String description) {
+        return new Argument(name, false, description);
     }
 
-    public Argument(String name, boolean required, String description, Class<?> type, Predicate<String> validator) {
+    public Argument(String name, boolean required, String description) {
         this.name = name;
         this.required = required;
         this.description = description;
-        this.type = type;
-        this.validator = validator;
     }
 
     public String getName() {
@@ -43,11 +39,4 @@ public class Argument {
         return description;
     }
 
-    public Class<?> getType() {
-        return type;
-    }
-
-    public Predicate<String> getValidator() {
-        return validator;
-    }
 }
