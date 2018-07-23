@@ -2,11 +2,14 @@
 <img src="https://faizaand.github.io/images/prison_logo_text.png" width="300px" style="text-align: center;">
 </p>
 <h1 align="center">The Hadron Update</h1>
-[![Documentation](https://static.ultz.co.uk/PrisonMoveDoc.png)](https://confluence.onultz.com/display/PRIS)
 
-[![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
-[![Build status](https://ci.appveyor.com/api/projects/status/7ktb4ukuiydopjop?svg=true)](https://ci.appveyor.com/project/faizaand/prison)
-[![Discord](https://discordapp.com/api/guilds/332602419483770890/widget.png)](https://discord.gg/396ed5F)
+<p align="center">
+  <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"/></a>
+  <a href="https://ci.appveyor.com/project/faizaand/prison"><img src="https://ci.appveyor.com/api/projects/status/7ktb4ukuiydopjop?svg=true"/></a>
+  <a href="https://discord.gg/396ed5F"><img src="https://discordapp.com/api/guilds/332602419483770890/widget.png"/></a>
+  <a href="https://faizaan.xyz/prison"><img src="https://img.shields.io/badge/docs-for%20users-green.svg"/></a>
+  <a href="https://faizaan.xyz/prison/developer-documentation"><img src="https://img.shields.io/badge/docs-for%20developers-orange.svg"/></a>
+</p>
 
 1. [What is Prison?](#what-is-prison?)
 2. [Why should I use Prison?](#why-should-i-use-prison?)
