@@ -1,7 +1,6 @@
 <p align="center">
 <img src="https://faizaand.github.io/images/prison_logo_text.png" width="300px" style="text-align: center;">
 </p>
-<h1 align="center">The Hadron Update</h1>
 
 <p align="center">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"/></a>
