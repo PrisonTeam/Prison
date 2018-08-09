@@ -1,0 +1,64 @@
+/*
+ *  Prison is a Minecraft plugin for the prison game mode.
+ *  Copyright (C) 2017 The Prison Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package xyz.faizaan.prison.internal.events.block;
+
+import xyz.faizaan.prison.internal.Player;
+import xyz.faizaan.prison.internal.events.Cancelable;
+import xyz.faizaan.prison.util.BlockType;
+import xyz.faizaan.prison.util.Location;
+
+/**
+ * Platform-independent event, which is posted when a player places a block.
+ *
+ * @since API 1.0
+ */
+public class BlockPlaceEvent implements Cancelable {
+
+    private BlockType block;
+    private Location blockLocation;
+    private Player player;
+    private boolean canceled = false;
+
+    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
+        this.block = block;
+        this.blockLocation = blockLocation;
+        this.player = player;
+    }
+
+    @Override public boolean isCanceled() {
+        return canceled;
+    }
+
+    @Override public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public BlockType getBlock() {
+        return block;
+    }
+
+    public Location getBlockLocation() {
+        return blockLocation;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+}
