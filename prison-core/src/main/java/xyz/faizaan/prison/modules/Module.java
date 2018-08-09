@@ -19,7 +19,6 @@
 package xyz.faizaan.prison.modules;
 
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.error.ErrorManager;
 
 import java.io.File;
@@ -57,7 +56,7 @@ public abstract class Module implements PluginEntity {
     public Module(String name, String version, int target) {
         this.name = name;
         this.version = version;
-        this.dataFolder = new File(PrisonAPI.getModuleManager().getModuleRoot(),
+        this.dataFolder = new File(Prison.get().getModuleManager().getModuleRoot(),
             name.toLowerCase().replace(" ", "_"));
         this.apiTarget = target;
         this.status = new ModuleStatus();

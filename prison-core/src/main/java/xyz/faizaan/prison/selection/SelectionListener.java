@@ -20,7 +20,6 @@ package xyz.faizaan.prison.selection;
 
 import com.google.common.eventbus.Subscribe;
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.internal.ItemStack;
 import xyz.faizaan.prison.internal.Player;
 import xyz.faizaan.prison.internal.events.player.PlayerInteractEvent;
@@ -66,7 +65,7 @@ public class SelectionListener {
 
     private void checkForEvent(Player player, Selection sel) {
         if (sel.isComplete()) {
-            PrisonAPI.getEventBus().post(new SelectionCompletedEvent(player, sel));
+            Prison.get().getEventBus().post(new SelectionCompletedEvent(player, sel));
         }
     }
 

@@ -27,7 +27,6 @@ import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.alerts.Alerts;
 import xyz.faizaan.prison.integration.Integration;
 import xyz.faizaan.prison.mines.PrisonMines;
@@ -131,7 +130,7 @@ public class SpigotPrison extends JavaPlugin {
         // Report the modules being used
         metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
-            for (Module m : PrisonAPI.getModuleManager().getModules()) {
+            for (Module m : Prison.get().getModuleManager().getModules()) {
                 valueMap.put(m.getName(), 1);
             }
             return valueMap;
@@ -225,7 +224,7 @@ public class SpigotPrison extends JavaPlugin {
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
         if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
             try {
-                PrisonAPI.getIntegrationManager().register(integration.newInstance());
+                Prison.get().getIntegrationManager().register(integration.newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 getLogger()
                         .log(Level.WARNING, "Could not initialize integration " + integration.getName(),

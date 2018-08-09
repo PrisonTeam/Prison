@@ -1,6 +1,6 @@
 package xyz.faizaan.prison.troubleshoot.inbuilt;
 
-import xyz.faizaan.prison.PrisonAPI;
+import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.internal.CommandSender;
 import xyz.faizaan.prison.troubleshoot.TroubleshootResult;
 import xyz.faizaan.prison.troubleshoot.Troubleshooter;
@@ -29,7 +29,7 @@ public class ItemTroubleshooter extends Troubleshooter {
             // OK, so something's wrong
             // Let's try deleting the file and telling the user to relaunch.
 
-            File itemsCsv = new File(PrisonAPI.getPluginDirectory(), "items.csv");
+            File itemsCsv = new File(Prison.get().getPlatform().getPluginDirectory(), "items.csv");
             boolean deleted = itemsCsv.delete();
             if (deleted) {
                 return new TroubleshootResult(TroubleshootResult.Result.USER_ACTION,

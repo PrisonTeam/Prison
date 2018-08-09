@@ -93,7 +93,7 @@ public class PrisonCommand {
         }
 
         TroubleshootResult result =
-            PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
+            Prison.get().getTroubleshootManager().invokeTroubleshooter(name, sender);
         if (result == null) {
             Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
             return;
@@ -114,7 +114,7 @@ public class PrisonCommand {
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
-        for (Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager()
+        for (Troubleshooter troubleshooter : Prison.get().getTroubleshootManager()
             .getTroubleshooters()) {
             builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
         }

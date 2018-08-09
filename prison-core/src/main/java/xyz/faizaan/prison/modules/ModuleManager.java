@@ -19,7 +19,6 @@
 package xyz.faizaan.prison.modules;
 
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.output.Output;
 
 import java.io.File;
@@ -40,7 +39,7 @@ public class ModuleManager {
 
     public ModuleManager() {
         modules = new ArrayList<>();
-        moduleRoot = new File(PrisonAPI.getPluginDirectory(), "module_conf");
+        moduleRoot = new File(Prison.get().getPlatform().getPluginDirectory(), "module_conf");
         if (!moduleRoot.exists()) {
             moduleRoot.mkdir();
         }

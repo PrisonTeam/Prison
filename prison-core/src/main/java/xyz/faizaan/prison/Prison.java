@@ -126,15 +126,15 @@ public class Prison implements PluginEntity {
     // Initialization steps
 
     private void sendBanner() {
-        PrisonAPI.log("");
-        PrisonAPI.log("&6 _____      _                 ");
-        PrisonAPI.log("&6|  __ \\    (_)                ");
-        PrisonAPI.log("&6| |__) | __ _ ___  ___  _ __  ");
-        PrisonAPI.log("&6|  ___/ '__| / __|/ _ \\| '_ \\");
-        PrisonAPI.log("&6| |   | |  | \\__ \\ (_) | | | |");
-        PrisonAPI.log("&6|_|   |_|  |_|___/\\___/|_| |_|");
-        PrisonAPI.log("");
-        PrisonAPI.log("Loading version %s on platform %s...", PrisonAPI.getPluginVersion(),
+        Prison.get().getPlatform().log("");
+        Prison.get().getPlatform().log("&6 _____      _                 ");
+        Prison.get().getPlatform().log("&6|  __ \\    (_)                ");
+        Prison.get().getPlatform().log("&6| |__) | __ _ ___  ___  _ __  ");
+        Prison.get().getPlatform().log("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+        Prison.get().getPlatform().log("&6| |   | |  | \\__ \\ (_) | | | |");
+        Prison.get().getPlatform().log("&6|_|   |_|  |_|___/\\___/|_| |_|");
+        Prison.get().getPlatform().log("");
+        Prison.get().getPlatform().log("Loading version %s on platform %s...", Prison.get().getPlatform().getPluginVersion(),
                 platform.getClass().getSimpleName());
     }
 
@@ -183,12 +183,12 @@ public class Prison implements PluginEntity {
     }
 
     private void registerInbuiltTroubleshooters() {
-        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
+        Prison.get().getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
     }
 
     private void scheduleAlertNagger() {
         // Nag the user with alerts every 5 minutes
-        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
+        Prison.get().getPlatform().getScheduler().runTaskTimerAsync(() -> Prison.get().getPlatform().getOnlinePlayers().stream()
                 .filter(player -> player.hasPermission("prison.admin")
                         && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
                 .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);

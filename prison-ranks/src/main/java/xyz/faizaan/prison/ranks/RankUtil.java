@@ -18,7 +18,6 @@
 package xyz.faizaan.prison.ranks;
 
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.integration.EconomyIntegration;
 import xyz.faizaan.prison.integration.IntegrationType;
 import xyz.faizaan.prison.internal.Player;
@@ -65,7 +64,7 @@ public class RankUtil {
      */
     public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
 
-        Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
+        Player prisonPlayer = Prison.get().getPlatform().getPlayer(player.uid).orElse(null);
         RankLadder ladder =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
 
@@ -97,7 +96,7 @@ public class RankUtil {
         // We're going to be making a transaction here
         // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
 
-        EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
+        EconomyIntegration economy = (EconomyIntegration) Prison.get().getIntegrationManager()
             .getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
         if (!economy.canAfford(prisonPlayer, nextRank.cost)) {
             return new RankUpResult(RANKUP_CANT_AFFORD, nextRank);
@@ -119,7 +118,7 @@ public class RankUtil {
         for (String cmd : nextRank.rankUpCommands) {
             String formatted = cmd.replace("{player}", prisonPlayer.getName())
                 .replace("{player_uid}", player.uid.toString());
-            PrisonAPI.dispatchCommand(formatted);
+            Prison.get().getPlatform().dispatchCommand(formatted);
         }
 
         Prison.get().getEventBus().post(

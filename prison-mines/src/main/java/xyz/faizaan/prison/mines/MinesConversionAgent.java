@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.convert.ConversionAgent;
 import xyz.faizaan.prison.convert.ConversionResult;
 import xyz.faizaan.prison.error.Error;
@@ -29,7 +28,7 @@ public class MinesConversionAgent implements ConversionAgent {
 
     @Override
     public ConversionResult convert() {
-        File oldFolder = new File(PrisonAPI.getPluginDirectory().getParent(), "Prison.old");
+        File oldFolder = new File(Prison.get().getPlatform().getPluginDirectory().getParent(), "Prison.old");
         File minesFolder = new File(oldFolder, "mines");
 
         File alreadyConverted = new File(minesFolder, ".converted");

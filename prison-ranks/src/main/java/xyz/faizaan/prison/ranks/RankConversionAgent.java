@@ -2,7 +2,7 @@ package xyz.faizaan.prison.ranks;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import xyz.faizaan.prison.PrisonAPI;
+import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.convert.ConversionAgent;
 import xyz.faizaan.prison.convert.ConversionResult;
 import xyz.faizaan.prison.error.Error;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class RankConversionAgent implements ConversionAgent {
 
     @Override public ConversionResult convert() {
-        File oldFolder = new File(PrisonAPI.getPluginDirectory().getParent(), "Prison.old");
+        File oldFolder = new File(Prison.get().getPlatform().getPluginDirectory().getParent(), "Prison.old");
         File ranksFolder = new File(oldFolder, "ranks");
 
         File alreadyConverted = new File(ranksFolder, ".converted");

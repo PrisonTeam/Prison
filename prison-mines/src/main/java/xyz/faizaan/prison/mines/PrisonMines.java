@@ -21,7 +21,6 @@ package xyz.faizaan.prison.mines;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import xyz.faizaan.prison.Prison;
-import xyz.faizaan.prison.PrisonAPI;
 import xyz.faizaan.prison.convert.ConversionManager;
 import xyz.faizaan.prison.error.Error;
 import xyz.faizaan.prison.error.ErrorManager;
@@ -91,7 +90,7 @@ public class PrisonMines extends Module {
 
         initWorlds();
         initMines();
-        PrisonAPI.getEventBus().register(new MinesListener());
+        Prison.get().getEventBus().register(new MinesListener());
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
         //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
