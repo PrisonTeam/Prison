@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2017 The MC-Prison Team
+ * Prison is a Minecraft plugin for the prison game mode.
+ * Copyright (C) 2018 The Prison Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
