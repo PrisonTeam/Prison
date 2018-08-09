@@ -31,6 +31,7 @@ import xyz.faizaan.prison.mines.data.Block;
 import xyz.faizaan.prison.mines.data.Mine;
 import xyz.faizaan.prison.output.BulletedListComponent;
 import xyz.faizaan.prison.output.ChatDisplay;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.output.Output;
 import xyz.faizaan.prison.selection.Selection;
 import xyz.faizaan.prison.util.BlockType;
@@ -58,21 +59,21 @@ public class MinesCommands {
         Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
         if (!selection.isComplete()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("select_bounds")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         if (!selection.getMin().getWorld().getName()
             .equalsIgnoreCase(selection.getMax().getWorld().getName())) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("world_diff")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         if (PrisonMines.getInstance().getMines().stream()
             .anyMatch(mine -> mine.getName().equalsIgnoreCase(name))) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_exists")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -139,7 +140,7 @@ public class MinesCommands {
         m.getBlocks().forEach(block1 -> totalComp[0] += block1.chance);
         if (totalComp[0] > 100) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_full")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -192,7 +193,7 @@ public class MinesCommands {
         });
         if (totalComp[0] > 100) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_full")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 

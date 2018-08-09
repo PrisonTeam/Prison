@@ -62,8 +62,9 @@ public class RankUtil {
      *
      * @param player     The {@link RankPlayer} to rank up.
      * @param ladderName The name of the ladder to rank up this player on.
+     * @param charge Whether or not the player should be charged for the rankup.
      */
-    public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
+    public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName, boolean charge) {
 
         Player prisonPlayer = Prison.get().getPlatform().getPlayer(player.uid).orElse(null);
         RankLadder ladder =
@@ -94,16 +95,20 @@ public class RankUtil {
             nextRank = nextRankOptional.get();
         }
 
-        // We're going to be making a transaction here
-        // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
+        if(charge) {
 
-        EconomyIntegration economy = (EconomyIntegration) Prison.get().getIntegrationManager()
-            .getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-        if (!economy.canAfford(prisonPlayer, nextRank.cost)) {
-            return new RankUpResult(RANKUP_CANT_AFFORD, nextRank);
+            // We're going to be making a transaction here
+            // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
+
+            EconomyIntegration economy = (EconomyIntegration) Prison.get().getIntegrationManager()
+                    .getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+            if (!economy.canAfford(prisonPlayer, nextRank.cost)) {
+                return new RankUpResult(RANKUP_CANT_AFFORD, nextRank);
+            }
+
+            economy.removeBalance(prisonPlayer, nextRank.cost);
+
         }
-
-        economy.removeBalance(prisonPlayer, nextRank.cost);
 
         player.addRank(ladder, nextRank);
 

@@ -21,6 +21,7 @@ package xyz.faizaan.prison.ranks.commands;
 import xyz.faizaan.prison.commands.Arg;
 import xyz.faizaan.prison.commands.Command;
 import xyz.faizaan.prison.internal.Player;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.output.Output;
 import xyz.faizaan.prison.ranks.PrisonRanks;
 import xyz.faizaan.prison.ranks.RankUtil;
@@ -48,11 +49,10 @@ public class RankUpCommand {
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
+        String perm = "ranks.rankup." + ladderName.toLowerCase();
         if (!ladderName.equalsIgnoreCase("default") && !sender
-            .hasPermission("ranks.rankup." + ladderName.toLowerCase())) {
-            Output.get()
-                .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
-                    "ranks.rankup." + ladderName.toLowerCase());
+            .hasPermission(perm)) {
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rankup_need_permission").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -61,7 +61,7 @@ public class RankUpCommand {
 
         // The ladder doesn't exist
         if (!ladderOptional.isPresent()) {
-            Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -72,8 +72,7 @@ public class RankUpCommand {
 
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {
-            Output.get().sendError(sender,
-                "You don't exist! The server has no records of you. Try rejoining, or contact a server administrator for help.");
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("you_not_exist").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -81,7 +80,7 @@ public class RankUpCommand {
 
         RankPlayer player = playerOptional.get();
 
-        RankUtil.RankUpResult result = RankUtil.rankUpPlayer(player, ladderName);
+        RankUtil.RankUpResult result = RankUtil.rankUpPlayer(player, ladderName, true);
 
         switch (result.status) {
             case RankUtil.RANKUP_SUCCESS:

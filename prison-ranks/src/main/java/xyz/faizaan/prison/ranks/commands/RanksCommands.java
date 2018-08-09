@@ -22,10 +22,8 @@ import xyz.faizaan.prison.chat.FancyMessage;
 import xyz.faizaan.prison.commands.Arg;
 import xyz.faizaan.prison.commands.Command;
 import xyz.faizaan.prison.internal.CommandSender;
-import xyz.faizaan.prison.output.BulletedListComponent;
-import xyz.faizaan.prison.output.ChatDisplay;
-import xyz.faizaan.prison.output.FancyMessageComponent;
-import xyz.faizaan.prison.output.Output;
+import xyz.faizaan.prison.internal.Player;
+import xyz.faizaan.prison.output.*;
 import xyz.faizaan.prison.ranks.PrisonRanks;
 import xyz.faizaan.prison.ranks.data.Rank;
 import xyz.faizaan.prison.ranks.data.RankLadder;
@@ -56,26 +54,25 @@ public class RanksCommands {
 
     @Command(identifier = "ranks create", description = "Creates a new rank", onlyPlayers = false, permissions = "ranks.create")
     public void createRank(CommandSender sender,
-        @Arg(name = "name", description = "The name of this rank.") String name,
-        @Arg(name = "cost", description = "The cost of this rank.") double cost,
-        @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
-            String ladder,
-        @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
-            String tag) {
+                           @Arg(name = "name", description = "The name of this rank.") String name,
+                           @Arg(name = "cost", description = "The cost of this rank.") double cost,
+                           @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
+                                   String ladder,
+                           @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
+                                   String tag) {
 
         // Ensure a rank with the name doesn't already exist
         if (PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
-            Output.get()
-                .sendWarn(sender, "A rank by this name already exists. Try a different name.");
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_exist").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         // Fetch the ladder first, so we can see if it exists
 
         Optional<RankLadder> rankLadderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
+                PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
         if (!rankLadderOptional.isPresent()) {
-            Output.get().sendWarn(sender, "A ladder by the name of '%s' does not exist.", ladder);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladder).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -86,7 +83,7 @@ public class RanksCommands {
 
         // Create the rank
         Optional<Rank> newRankOptional =
-            PrisonRanks.getInstance().getRankManager().createRank(name, tag, cost);
+                PrisonRanks.getInstance().getRankManager().createRank(name, tag, cost);
 
         // Ensure it was created
         if (!newRankOptional.isPresent()) {
@@ -101,7 +98,7 @@ public class RanksCommands {
             PrisonRanks.getInstance().getRankManager().saveRank(newRank);
         } catch (IOException e) {
             Output.get().sendError(sender,
-                "The new rank could not be saved to disk. Check the console for details.");
+                    "The new rank could not be saved to disk. Check the console for details.");
             Output.get().logError("Rank could not be written to disk.", e);
         }
 
@@ -112,14 +109,14 @@ public class RanksCommands {
             PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
         } catch (IOException e) {
             Output.get().sendError(sender,
-                "The '%s' ladder could not be saved to disk. Check the console for details.",
-                rankLadderOptional.get().name);
+                    "The '%s' ladder could not be saved to disk. Check the console for details.",
+                    rankLadderOptional.get().name);
             Output.get().logError("Ladder could not be written to disk.", e);
         }
 
         // Tell the player the good news!
         Output.get()
-            .sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
+                .sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
 
     }
 
@@ -128,38 +125,36 @@ public class RanksCommands {
         // Check to ensure the rank exists
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         Rank rank = rankOptional.get();
 
         if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.id)
-            && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
-            Output.get().sendError(sender,
-                "You can't remove this rank because it's the only rank in the default ladder.");
+                && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("cant_remove_rank").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         boolean success = PrisonRanks.getInstance().getRankManager().removeRank(rank);
 
         if (success) {
-            Output.get().sendInfo(sender, "The rank '%s' has been removed successfully.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_removed_success").withReplacements(rankName).sendTo(sender);
         } else {
-            Output.get()
-                .sendError(sender, "The rank '%s' could not be deleted due to an error.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_removed_fail").sendTo(sender, LogLevel.ERROR);
         }
     }
 
     @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", onlyPlayers = false, permissions = "ranks.list")
     public void listRanks(CommandSender sender,
-        @Arg(name = "ladderName", def = "default") String ladderName) {
+                          @Arg(name = "ladderName", def = "default") String ladderName) {
 
         Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+                PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if (!ladder.isPresent()) {
-            Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -169,7 +164,7 @@ public class RanksCommands {
         display.text("&8Click on a rank's name to view more info.");
 
         BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+                new BulletedListComponent.BulletedListBuilder();
         for (RankLadder.PositionRank pos : ranks) {
             Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
             if (!rankOptional.isPresent()) {
@@ -178,21 +173,21 @@ public class RanksCommands {
             Rank rank = rankOptional.get();
 
             String text =
-                String.format("&3%s&r &8- &7%s", rank.tag, Text.numberToDollars(rank.cost));
+                    String.format("&3%s&r &8- &7%s", rank.tag, Text.numberToDollars(rank.cost));
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
-                .tooltip("&7Click to view info.");
+                    .tooltip("&7Click to view info.");
             builder.add(msg);
         }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
-                .tooltip("&7Create a new rank.")));
+                new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
+                        .tooltip("&7Create a new rank.")));
 
         List<String> others = new ArrayList<>();
         for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
             if (!other.name.equals(ladderName) && (other.name.equals("default") || sender
-                .hasPermission("ranks.rankup." + other.name.toLowerCase()))) {
+                    .hasPermission("ranks.rankup." + other.name.toLowerCase()))) {
                 if (sender.hasPermission("ranks.admin")) {
                     others.add("/ranks list " + other.name);
                 } else {
@@ -223,18 +218,18 @@ public class RanksCommands {
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements("rankName").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         List<RankLadder> ladders =
-            PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.get().id);
+                PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.get().id);
 
         ChatDisplay display = new ChatDisplay("Rank " + rank.get().tag);
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
-            Text.implodeCommaAndDot(
-                ladders.stream().map(rankLadder -> rankLadder.name).collect(Collectors.toList())));
+                Text.implodeCommaAndDot(
+                        ladders.stream().map(rankLadder -> rankLadder.name).collect(Collectors.toList())));
 
         display.text("&3Cost: &7%s", Text.numberToDollars(rank.get().cost));
 
@@ -246,14 +241,14 @@ public class RanksCommands {
             display.text("&6Rank Name: &7%s", rank.get().name);
 
             List<RankPlayer> players =
-                PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                    .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank.get()))
-                    .collect(Collectors.toList());
+                    PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+                            .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank.get()))
+                            .collect(Collectors.toList());
             display.text("&7There are &6%s &7with this rank.", players.size() + " players");
 
             FancyMessage del =
-                new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.get().name)
-                    .tooltip("&7Click to delete this rank.\n&cYou may not reverse this action.");
+                    new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.get().name)
+                            .tooltip("&7Click to delete this rank.\n&cYou may not reverse this action.");
             display.addComponent(new FancyMessageComponent(del));
         }
 
@@ -262,24 +257,38 @@ public class RanksCommands {
 
     // set commands
     @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", onlyPlayers = false, permissions = "ranks.set")
-    public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost){
+    public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         rank.get().cost = cost;
-        Output.get().sendInfo(sender,"Successfully set the cost of rank '%s' to "+cost,rankName);
+        PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_cost_changed").withReplacements(rankName, String.valueOf(cost)).sendTo(sender);
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
-    public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag){
+    public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         rank.get().tag = tag;
-        Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
+        PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_tag_changed").withReplacements(rankName, tag).sendTo(sender);
     }
+
+    // promotion and demotion commands
+    @Command(identifier = "ranks promote", description = "Promote a player to the next rank, free of charge", onlyPlayers = false, permissions = "ranks.promote")
+    public void promote(CommandSender sender, @Arg(name = "player") Player player) {
+        Optional<RankPlayer> playerOptional = PrisonRanks.getInstance().getPlayerManager().getPlayer(player.getUUID());
+        if (!playerOptional.isPresent()) {
+            PrisonRanks.getInstance().getRanksMessages().getLocalizable("player_not_exist").withReplacements(player.getName()).sendTo(sender, LogLevel.ERROR);
+            return;
+        }
+
+        // todo should finish this eh
+
+    }
+
 }

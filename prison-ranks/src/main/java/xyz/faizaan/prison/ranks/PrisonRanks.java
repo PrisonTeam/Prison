@@ -21,6 +21,7 @@ package xyz.faizaan.prison.ranks;
 import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.convert.ConversionManager;
 import xyz.faizaan.prison.integration.IntegrationType;
+import xyz.faizaan.prison.localization.LocaleManager;
 import xyz.faizaan.prison.modules.Module;
 import xyz.faizaan.prison.modules.ModuleStatus;
 import xyz.faizaan.prison.output.Output;
@@ -51,6 +52,7 @@ public class PrisonRanks extends Module {
     private RankManager rankManager;
     private LadderManager ladderManager;
     private PlayerManager playerManager;
+    private LocaleManager localeManager;
 
     private Database database;
 
@@ -85,6 +87,8 @@ public class PrisonRanks extends Module {
             databaseOptional = Prison.get().getPlatform().getStorage().getDatabase("ranks");
         }
         this.database = databaseOptional.get();
+
+        this.localeManager = new LocaleManager(this, "lang/ranks");
 
         // Load up the ranks
 
@@ -185,6 +189,10 @@ public class PrisonRanks extends Module {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public LocaleManager getRanksMessages() {
+        return localeManager;
     }
 
     public RankLadder getDefaultLadder() {
