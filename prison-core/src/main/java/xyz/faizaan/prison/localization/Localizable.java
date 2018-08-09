@@ -23,6 +23,7 @@ import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.internal.CommandSender;
 import xyz.faizaan.prison.internal.Player;
 import xyz.faizaan.prison.internal.World;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.output.Output;
 
 import java.util.Arrays;
@@ -279,9 +280,9 @@ public class Localizable {
      * @param level  The message level to set this to.
      * @since 1.0
      */
-    public void sendTo(CommandSender sender, Level level) {
+    public void sendTo(CommandSender sender, LogLevel level) {
         switch (level) {
-            case WARN:
+            case WARNING:
                 Output.get().sendWarn(sender, localizeFor(sender));
                 break;
             case ERROR:
@@ -308,7 +309,7 @@ public class Localizable {
      * @since 1.0
      */
     public void sendTo(CommandSender sender) {
-        sendTo(sender, Level.INFO);
+        sendTo(sender, LogLevel.INFO);
     }
 
     /**
@@ -349,10 +350,6 @@ public class Localizable {
      */
     private String fromNullableString(String nullable) {
         return nullable != null ? nullable : "";
-    }
-
-    public enum Level {
-        INFO, WARN, ERROR
     }
 
 }

@@ -34,7 +34,7 @@ public class Output {
     // Fields
     private static Output instance;
     public String PREFIX_TEMPLATE = "&8| %s &8|";
-    public String INFO_PREFIX = gen("&3Info") + " &7";
+    public String INFO_PREFIX = gen("&3Info") + " &7"; // todo make these prefixes configurable
     public String WARNING_PREFIX = gen("&6Warning") + " &7";
     public String ERROR_PREFIX = gen("&cError") + " &7";
 
@@ -118,6 +118,10 @@ public class Output {
         sender.sendMessage(prefix + String.format(message, args));
     }
 
+    public void sendTranslatedMessage(CommandSender sender, String key, LogLevel level, String... args) {
+        Prison.get().getLocaleManager().getLocalizable(key).withReplacements(args).sendTo(sender, level);
+    }
+
     /**
      * Send information to a {@link CommandSender}.
      *
@@ -126,6 +130,10 @@ public class Output {
      */
     public void sendInfo(CommandSender sender, String message, Object... args) {
         sender.sendMessage(INFO_PREFIX + String.format(message, args));
+    }
+
+    public void sendTranslatedInfo(CommandSender sender, String key, String... args) {
+        Prison.get().getLocaleManager().getLocalizable(key).withReplacements(args).sendTo(sender, LogLevel.INFO);
     }
 
     /**
@@ -138,6 +146,10 @@ public class Output {
         sender.sendMessage(WARNING_PREFIX + String.format(message, args));
     }
 
+    public void sendTranslatedWarn(CommandSender sender, String key, String... args) {
+        Prison.get().getLocaleManager().getLocalizable(key).withReplacements(args).sendTo(sender, LogLevel.WARNING);
+    }
+
     /**
      * Send an error to a {@link CommandSender}.
      *
@@ -146,6 +158,10 @@ public class Output {
      */
     public void sendError(CommandSender sender, String message, Object... args) {
         sender.sendMessage(ERROR_PREFIX + String.format(message, args));
+    }
+
+    public void sendTranslatedError(CommandSender sender, String key, String... args) {
+        Prison.get().getLocaleManager().getLocalizable(key).withReplacements(args).sendTo(sender, LogLevel.ERROR);
     }
 
     // Private methods
