@@ -23,7 +23,7 @@ import xyz.faizaan.prison.commands.handlers.*;
 import xyz.faizaan.prison.internal.CommandSender;
 import xyz.faizaan.prison.internal.Player;
 import xyz.faizaan.prison.internal.World;
-import xyz.faizaan.prison.localization.Localizable;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.util.BlockType;
 import xyz.faizaan.prison.util.ChatColor;
 
@@ -256,7 +256,7 @@ public class CommandHandler {
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return true;
         }
 

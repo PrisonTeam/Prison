@@ -25,6 +25,7 @@ import xyz.faizaan.prison.internal.Player;
 import xyz.faizaan.prison.localization.Localizable;
 import xyz.faizaan.prison.output.BulletedListComponent;
 import xyz.faizaan.prison.output.ChatDisplay;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.output.Output;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class AlertCommands {
     public void prisonAlertsCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;
@@ -70,7 +71,7 @@ public class AlertCommands {
     public void prisonAlertsClearCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;
@@ -89,7 +90,7 @@ public class AlertCommands {
     public void prisonAlertsClearAllCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;

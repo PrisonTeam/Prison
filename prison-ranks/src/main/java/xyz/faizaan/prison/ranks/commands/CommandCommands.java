@@ -23,15 +23,14 @@ import xyz.faizaan.prison.commands.Arg;
 import xyz.faizaan.prison.commands.Command;
 import xyz.faizaan.prison.commands.Wildcard;
 import xyz.faizaan.prison.internal.CommandSender;
-import xyz.faizaan.prison.output.BulletedListComponent;
-import xyz.faizaan.prison.output.ChatDisplay;
-import xyz.faizaan.prison.output.FancyMessageComponent;
-import xyz.faizaan.prison.output.Output;
+import xyz.faizaan.prison.output.*;
 import xyz.faizaan.prison.ranks.PrisonRanks;
 import xyz.faizaan.prison.ranks.data.Rank;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static xyz.faizaan.prison.ranks.PrisonRanks.loc;
 
 /**
  * @author Faizaan A. Datoo
@@ -47,7 +46,7 @@ public class CommandCommands {
 
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         Rank rank = rankOptional.get();
@@ -57,20 +56,21 @@ public class CommandCommands {
         }
         rank.rankUpCommands.add(command);
 
+
         Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.name);
 
     }
 
     @Command(identifier = "ranks command remove", description = "Removes a command from a rank.", onlyPlayers = false, permissions = "ranks.command")
     public void commandRemove(CommandSender sender, @Arg(name = "rank") String rankName,
-        @Arg(name = "command") @Wildcard String command) {
+                              @Arg(name = "command") @Wildcard String command) {
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
 
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         Rank rank = rankOptional.get();
@@ -81,11 +81,9 @@ public class CommandCommands {
         boolean did = rank.rankUpCommands.remove(command);
 
         if (!did) {
-            Output.get()
-                .sendWarn(sender, "The rank doesn't contain that command. Nothing was changed.");
+            loc("command_remove_unchanged").sendTo(sender, LogLevel.WARNING);
         } else {
-            Output.get()
-                .sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.name);
+            loc("command_remove_success").withReplacements(command, rank.name).sendTo(sender);
         }
 
     }
@@ -94,32 +92,32 @@ public class CommandCommands {
     public void commandList(CommandSender sender, @Arg(name = "rank") String rankName) {
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.name);
+            loc("command_list_fail").withReplacements(rankName).sendTo(sender);
             return;
         }
 
         ChatDisplay display = new ChatDisplay("RankUpCommand for " + rank.tag);
         display.text("&8Click a command to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+                new BulletedListComponent.BulletedListBuilder();
 
         for (String command : rank.rankUpCommands) {
             FancyMessage msg = new FancyMessage("&3/" + command)
-                .command("/ranks command remove " + rankName + " " + command)
-                .tooltip("Click to remove.");
+                    .command("/ranks command remove " + rankName + " " + command)
+                    .tooltip("Click to remove.");
             builder.add(msg);
         }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/ranks command add " + rankName + " /")
-                .tooltip("&7Add a new command.")));
+                new FancyMessage("&7[&a+&7] Add").suggest("/ranks command add " + rankName + " /")
+                        .tooltip("&7Add a new command.")));
         display.send(sender);
     }
 

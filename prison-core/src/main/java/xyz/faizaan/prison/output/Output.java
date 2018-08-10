@@ -55,8 +55,8 @@ public class Output {
 
     public String format(String message, LogLevel level, Object... args) {
         String prefix = level == LogLevel.INFO ?
-            INFO_PREFIX :
-            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
+                INFO_PREFIX :
+                level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
         return prefix + String.format(message, args);
     }
 
@@ -65,8 +65,8 @@ public class Output {
      */
     public void log(String message, LogLevel level, Object... args) {
         Prison.get().getPlatform().log(gen("&3Prison") + " " + (level == LogLevel.INFO ?
-            "&f" :
-            level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
+                "&f" :
+                level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
     }
 
     /**
@@ -113,8 +113,8 @@ public class Output {
      */
     public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
         String prefix = level == LogLevel.INFO ?
-            INFO_PREFIX :
-            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
+                INFO_PREFIX :
+                level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
         sender.sendMessage(prefix + String.format(message, args));
     }
 
@@ -129,7 +129,8 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendInfo(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(INFO_PREFIX + String.format(message, args));
+        if (args.length == 0) sender.sendMessage(INFO_PREFIX + message);
+        else sender.sendMessage(INFO_PREFIX + String.format(message, args));
     }
 
     public void sendTranslatedInfo(CommandSender sender, String key, String... args) {
@@ -143,7 +144,8 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendWarn(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(WARNING_PREFIX + String.format(message, args));
+        if (args.length == 0) sender.sendMessage(WARNING_PREFIX + message);
+        else sender.sendMessage(WARNING_PREFIX + String.format(message, args));
     }
 
     public void sendTranslatedWarn(CommandSender sender, String key, String... args) {
@@ -157,7 +159,8 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendError(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(ERROR_PREFIX + String.format(message, args));
+        if (args.length == 0) sender.sendMessage(ERROR_PREFIX + message);
+        else sender.sendMessage(ERROR_PREFIX + String.format(message, args));
     }
 
     public void sendTranslatedError(CommandSender sender, String key, String... args) {

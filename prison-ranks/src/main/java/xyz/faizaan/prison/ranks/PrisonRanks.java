@@ -22,6 +22,7 @@ import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.convert.ConversionManager;
 import xyz.faizaan.prison.integration.IntegrationType;
 import xyz.faizaan.prison.localization.LocaleManager;
+import xyz.faizaan.prison.localization.Localizable;
 import xyz.faizaan.prison.modules.Module;
 import xyz.faizaan.prison.modules.ModuleStatus;
 import xyz.faizaan.prison.output.Output;
@@ -201,6 +202,10 @@ public class PrisonRanks extends Module {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public static Localizable loc(String key) {
+        return instance.getRanksMessages().getLocalizable(key);
     }
 
 }

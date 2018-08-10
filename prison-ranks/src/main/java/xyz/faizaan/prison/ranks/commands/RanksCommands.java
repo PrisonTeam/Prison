@@ -18,6 +18,8 @@
 
 package xyz.faizaan.prison.ranks.commands;
 
+import static xyz.faizaan.prison.ranks.PrisonRanks.loc;
+
 import xyz.faizaan.prison.chat.FancyMessage;
 import xyz.faizaan.prison.commands.Arg;
 import xyz.faizaan.prison.commands.Command;
@@ -63,7 +65,7 @@ public class RanksCommands {
 
         // Ensure a rank with the name doesn't already exist
         if (PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_exist").sendTo(sender, LogLevel.ERROR);
+            loc("rank_exist").withReplacements(name).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -72,7 +74,7 @@ public class RanksCommands {
         Optional<RankLadder> rankLadderOptional =
                 PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
         if (!rankLadderOptional.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladder).sendTo(sender, LogLevel.ERROR);
+            loc("ladder_not_exist").withReplacements(ladder).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -87,7 +89,7 @@ public class RanksCommands {
 
         // Ensure it was created
         if (!newRankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank could not be created.");
+            loc("rank_create_fail").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -97,8 +99,7 @@ public class RanksCommands {
         try {
             PrisonRanks.getInstance().getRankManager().saveRank(newRank);
         } catch (IOException e) {
-            Output.get().sendError(sender,
-                    "The new rank could not be saved to disk. Check the console for details.");
+            loc("rank_create_save_fail").sendTo(sender, LogLevel.ERROR);
             Output.get().logError("Rank could not be written to disk.", e);
         }
 
@@ -108,16 +109,12 @@ public class RanksCommands {
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
         } catch (IOException e) {
-            Output.get().sendError(sender,
-                    "The '%s' ladder could not be saved to disk. Check the console for details.",
-                    rankLadderOptional.get().name);
+            loc("ladder_save_fail").withReplacements(rankLadderOptional.get().name).sendTo(sender, LogLevel.ERROR);
             Output.get().logError("Ladder could not be written to disk.", e);
         }
 
         // Tell the player the good news!
-        Output.get()
-                .sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
-
+        loc("rank_create_success").withReplacements(name, ladder).sendTo(sender);
     }
 
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", onlyPlayers = false, permissions = "ranks.delete")
@@ -125,7 +122,7 @@ public class RanksCommands {
         // Check to ensure the rank exists
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -133,16 +130,16 @@ public class RanksCommands {
 
         if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.id)
                 && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("cant_remove_rank").sendTo(sender, LogLevel.ERROR);
+            loc("cant_remove_rank").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         boolean success = PrisonRanks.getInstance().getRankManager().removeRank(rank);
 
         if (success) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_removed_success").withReplacements(rankName).sendTo(sender);
+            loc("rank_removed_success").withReplacements(rankName).sendTo(sender);
         } else {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_removed_fail").sendTo(sender, LogLevel.ERROR);
+            loc("rank_removed_fail").sendTo(sender, LogLevel.ERROR);
         }
     }
 
@@ -154,7 +151,7 @@ public class RanksCommands {
                 PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if (!ladder.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
+            loc("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -218,7 +215,7 @@ public class RanksCommands {
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements("rankName").sendTo(sender, LogLevel.ERROR);
+            loc("rank_not_exist").withReplacements("rankName").sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -260,22 +257,22 @@ public class RanksCommands {
     public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         rank.get().cost = cost;
-        PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_cost_changed").withReplacements(rankName, String.valueOf(cost)).sendTo(sender);
+        loc("rank_cost_changed").withReplacements(rankName, String.valueOf(cost)).sendTo(sender);
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag) {
         Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rank.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
+            loc("rank_not_exist").withReplacements(rankName).sendTo(sender, LogLevel.ERROR);
             return;
         }
         rank.get().tag = tag;
-        PrisonRanks.getInstance().getRanksMessages().getLocalizable("rank_tag_changed").withReplacements(rankName, tag).sendTo(sender);
+        loc("rank_tag_changed").withReplacements(rankName, tag).sendTo(sender);
     }
 
     // promotion and demotion commands
@@ -283,7 +280,7 @@ public class RanksCommands {
     public void promote(CommandSender sender, @Arg(name = "player") Player player) {
         Optional<RankPlayer> playerOptional = PrisonRanks.getInstance().getPlayerManager().getPlayer(player.getUUID());
         if (!playerOptional.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("player_not_exist").withReplacements(player.getName()).sendTo(sender, LogLevel.ERROR);
+            loc("player_not_exist").withReplacements(player.getName()).sendTo(sender, LogLevel.ERROR);
             return;
         }
 

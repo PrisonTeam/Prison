@@ -30,6 +30,8 @@ import xyz.faizaan.prison.ranks.data.RankPlayer;
 
 import java.util.Optional;
 
+import static xyz.faizaan.prison.ranks.PrisonRanks.loc;
+
 /**
  * The commands for this module.
  *
@@ -42,37 +44,38 @@ public class RankUpCommand {
      */
 
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", permissions = {
-        "ranks.user"}) public void rankUp(Player sender,
-                                          @Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")
-            String ladderName) {
+            "ranks.user"})
+    public void rankUp(Player sender,
+                       @Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")
+                               String ladderName) {
 
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
         String perm = "ranks.rankup." + ladderName.toLowerCase();
         if (!ladderName.equalsIgnoreCase("default") && !sender
-            .hasPermission(perm)) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("rankup_need_permission").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
+                .hasPermission(perm)) {
+            loc("rankup_need_permission").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         Optional<RankLadder> ladderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+                PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         // The ladder doesn't exist
         if (!ladderOptional.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
+            loc("ladder_not_exist").withReplacements(ladderName).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         // RETRIEVE THE PLAYER
 
         Optional<RankPlayer> playerOptional =
-            PrisonRanks.getInstance().getPlayerManager().getPlayer(sender.getUUID());
+                PrisonRanks.getInstance().getPlayerManager().getPlayer(sender.getUUID());
 
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {
-            PrisonRanks.getInstance().getRanksMessages().getLocalizable("you_not_exist").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
+            loc("you_not_exist").withReplacements(perm).sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -84,23 +87,23 @@ public class RankUpCommand {
 
         switch (result.status) {
             case RankUtil.RANKUP_SUCCESS:
-                Output.get().sendInfo(sender, "Congratulations! You have ranked up to rank '%s'.",
-                    result.rank.name);
+                loc("rankup_success").withReplacements(result.rank.name).sendTo(sender);
                 break;
             case RankUtil.RANKUP_CANT_AFFORD:
                 Output.get().sendError(sender,
-                    "You don't have enough money to rank up! The next rank costs %s.",
-                    RankUtil.doubleToDollarString(result.rank.cost));
+                        "You don't have enough money to rank up! The next rank costs %s.",
+                        RankUtil.doubleToDollarString(result.rank.cost));
+                loc("rankup_cant_afford").withReplacements(RankUtil.doubleToDollarString(result.rank.cost)).sendTo(sender, LogLevel.ERROR);
                 break;
             case RankUtil.RANKUP_HIGHEST:
-                Output.get().sendInfo(sender, "You are already at the highest rank!");
+                loc("rankup_highest").sendTo(sender, LogLevel.ERROR);
                 break;
             case RankUtil.RANKUP_FAILURE:
-                Output.get().sendError(sender,
-                    "Failed to retrieve or write data. Your files may be corrupted. Alert a server administrator.");
+                loc("rankup_failure").sendTo(sender, LogLevel.ERROR);
                 break;
             case RankUtil.RANKUP_NO_RANKS:
                 Output.get().sendError(sender, "There are no ranks in this ladder.");
+                loc("rankup_no_ranks").sendTo(sender, LogLevel.ERROR);
                 break;
         }
 

@@ -21,6 +21,7 @@ package xyz.faizaan.prison.commands;
 import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.internal.CommandSender;
 import xyz.faizaan.prison.localization.Localizable;
+import xyz.faizaan.prison.output.LogLevel;
 import xyz.faizaan.prison.output.Output;
 
 import java.lang.annotation.Annotation;
@@ -69,7 +70,7 @@ public class RegisteredCommand {
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -139,7 +140,7 @@ public class RegisteredCommand {
             }
         } catch (Exception e) {
             Prison.get().getLocaleManager().getLocalizable("internalErrorOccurred")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             e.printStackTrace();
         }
     }
