@@ -20,7 +20,9 @@ package xyz.faizaan.prison.ranks;
 
 import xyz.faizaan.prison.Prison;
 import xyz.faizaan.prison.convert.ConversionManager;
+import xyz.faizaan.prison.integration.Integration;
 import xyz.faizaan.prison.integration.IntegrationType;
+import xyz.faizaan.prison.integration.PlaceholderIntegration;
 import xyz.faizaan.prison.localization.LocaleManager;
 import xyz.faizaan.prison.localization.Localizable;
 import xyz.faizaan.prison.modules.Module;
@@ -30,12 +32,16 @@ import xyz.faizaan.prison.ranks.commands.CommandCommands;
 import xyz.faizaan.prison.ranks.commands.LadderCommands;
 import xyz.faizaan.prison.ranks.commands.RankUpCommand;
 import xyz.faizaan.prison.ranks.commands.RanksCommands;
+import xyz.faizaan.prison.ranks.data.Rank;
 import xyz.faizaan.prison.ranks.data.RankLadder;
+import xyz.faizaan.prison.ranks.data.RankPlayer;
 import xyz.faizaan.prison.ranks.managers.LadderManager;
 import xyz.faizaan.prison.ranks.managers.PlayerManager;
 import xyz.faizaan.prison.ranks.managers.RankManager;
 import xyz.faizaan.prison.store.Collection;
 import xyz.faizaan.prison.store.Database;
+import xyz.faizaan.prison.util.ChatColor;
+import xyz.faizaan.prison.util.Text;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -73,7 +79,8 @@ public class PrisonRanks extends Module {
         return instance;
     }
 
-    @Override public void enable() {
+    @Override
+    public void enable() {
         instance = this;
 
         if (!Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
@@ -133,6 +140,7 @@ public class PrisonRanks extends Module {
         new FirstJoinHandler();
         new ChatHandler();
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
+        registerPlaceholders();
 
     }
 
@@ -168,11 +176,49 @@ public class PrisonRanks extends Module {
         }
     }
 
+    private void registerPlaceholders() {
+        Optional<Integration> placeholderIntegration = Prison.get().getIntegrationManager().getForType(IntegrationType.PLACEHOLDER);
+        if (!placeholderIntegration.isPresent()) return;
+        PlaceholderIntegration pli = (PlaceholderIntegration) placeholderIntegration.get();
+
+        // only for default ladder
+        pli.registerPlaceholder("current_rank",
+                player -> {
+                    Optional<RankPlayer> rankPlayer = playerManager.getPlayer(player.getUUID());
+                    if (!rankPlayer.isPresent()) return ChatColor.GRAY + "???";
+                    Optional<Rank> rank = rankPlayer.get().getRank(getDefaultLadder());
+                    if (!rank.isPresent()) return "None";
+                    else return Text.translateAmpColorCodes(rank.get().tag);
+                });
+        pli.registerPlaceholder("next_rank",
+                player -> {
+                    Optional<RankPlayer> rankPlayer = playerManager.getPlayer(player.getUUID());
+                    if (!rankPlayer.isPresent()) return ChatColor.GRAY + "???";
+                    Optional<Rank> rank = rankPlayer.get().getRank(getDefaultLadder());
+                    if (!rank.isPresent()) return "None";
+                    Optional<Rank> next = getDefaultLadder().getNext(rank.get().id);
+                    if (!next.isPresent()) return ChatColor.GREEN + "Max";
+                    else return Text.translateAmpColorCodes(next.get().tag);
+                });
+        pli.registerPlaceholder("next_rank_cost",
+                player -> {
+                    Optional<RankPlayer> rankPlayer = playerManager.getPlayer(player.getUUID());
+                    if (!rankPlayer.isPresent()) return ChatColor.GRAY + "???";
+                    Optional<Rank> rank = rankPlayer.get().getRank(getDefaultLadder());
+                    if (!rank.isPresent()) return "None";
+                    Optional<Rank> next = getDefaultLadder().getNext(rank.get().id);
+                    if (!next.isPresent()) return ChatColor.GREEN + "Max";
+                    else return RankUtil.doubleToDollarString(next.get().cost);
+                });
+
+    }
+
     /*
      * Getters & Setters
      */
 
-    @Override public void disable() {
+    @Override
+    public void disable() {
         try {
             rankManager.saveRanks();
         } catch (IOException e) {

@@ -90,9 +90,6 @@ public class RankUpCommand {
                 loc("rankup_success").withReplacements(result.rank.name).sendTo(sender);
                 break;
             case RankUtil.RANKUP_CANT_AFFORD:
-                Output.get().sendError(sender,
-                        "You don't have enough money to rank up! The next rank costs %s.",
-                        RankUtil.doubleToDollarString(result.rank.cost));
                 loc("rankup_cant_afford").withReplacements(RankUtil.doubleToDollarString(result.rank.cost)).sendTo(sender, LogLevel.ERROR);
                 break;
             case RankUtil.RANKUP_HIGHEST:

@@ -49,8 +49,6 @@ public class ChatHandler {
         Optional<Integration> placeholderIntegration = Prison.get().getIntegrationManager().getForType(IntegrationType.PLACEHOLDER);
         if (placeholderIntegration.isPresent()) {
             PlaceholderIntegration integration = ((PlaceholderIntegration) placeholderIntegration.get());
-            integration.registerPlaceholder("PRISON_RANK",
-                    player -> Text.translateAmpColorCodes(getPrefix(player.getUUID())));
         }
     }
 
@@ -62,7 +60,9 @@ public class ChatHandler {
     public void onPlayerChat(PlayerChatEvent e) {
 
         String prefix = getPrefix(e.getPlayer().getUUID());
-        String newFormat = e.getFormat().replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
+        String newFormat = e.getFormat()
+                .replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix))
+                .replace("{current_rank}", Text.translateAmpColorCodes(prefix));
         e.setFormat(newFormat);
     }
 
@@ -70,7 +70,7 @@ public class ChatHandler {
      * Util
      */
 
-    private String getPrefix(UUID uid) {
+    public static String getPrefix(UUID uid) {
         Optional<RankPlayer> player =
                 PrisonRanks.getInstance().getPlayerManager().getPlayer(uid);
         String prefix = "";
