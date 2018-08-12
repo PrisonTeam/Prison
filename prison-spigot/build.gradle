@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group 'tech.mcprison'
+group 'xyz.faizaan'
 
 repositories {
     mavenCentral()
@@ -27,6 +27,7 @@ repositories {
     maven { url = "http://repo.bstats.org/content/repositories/releases/" }
     maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
+    maven { url = "http://repo.extendedclip.com/content/repositories/placeholderapi/" }
     jcenter()
 }
 
@@ -43,6 +44,7 @@ dependencies {
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
+    compileOnly 'me.clip:placeholderapi:2.8.7'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 

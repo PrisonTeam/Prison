@@ -43,6 +43,7 @@ import xyz.faizaan.prison.spigot.gui.GUIListener;
 import xyz.faizaan.prison.spigot.permissions.LuckPermissions;
 import xyz.faizaan.prison.spigot.permissions.VaultPermissions;
 import xyz.faizaan.prison.spigot.placeholder.MVdWPlaceholderIntegration;
+import xyz.faizaan.prison.spigot.placeholder.PlaceholderAPIIntegration;
 
 import java.io.File;
 import java.io.IOException;
@@ -219,6 +220,7 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration("Vault", VaultPermissions.class);
 
         registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+        registerIntegration("PlaceholderAPI", PlaceholderAPIIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
