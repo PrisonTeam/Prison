@@ -20,6 +20,9 @@ permissions:
   prison.alerts:
     description: Access to the /prison alerts command, and the ability to be notified for new alerts.
 
+  prison.reload:
+    description: Access to the /prison reload command.
+
   prison.alerts.clear:
     description: Clear your alerts.
 
@@ -34,6 +37,7 @@ permissions:
       prison.modules: true
       prison.convert: true
       prison.alerts: true
+      prison.reload: true
       prison.alerts.clear: true
       prison.alerts.clear.all: true
 

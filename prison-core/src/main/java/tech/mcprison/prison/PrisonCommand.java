@@ -22,6 +22,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -42,24 +43,24 @@ public class PrisonCommand {
     public void versionCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison version");
         display
-            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
-                Prison.API_LEVEL);
+                .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+                        Prison.API_LEVEL);
 
         display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
         display.text("&7Integrations:");
 
         String permissions =
-            Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
-                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
-                    .get().getProviderName() :
-                "&cNone";
+                Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
+                        "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
+                                .get().getProviderName() :
+                        "&cNone";
 
         display.text(Text.tab("&7Permissions: " + permissions));
 
         String economy = Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY) ?
-            "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
-                .getProviderName() :
-            "&cNone";
+                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
+                        .getProviderName() :
+                "&cNone";
 
         display.text(Text.tab("&7Economy: " + economy));
 
@@ -72,10 +73,10 @@ public class PrisonCommand {
         display.emptyLine();
 
         BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+                new BulletedListComponent.BulletedListBuilder();
         for (Module module : Prison.get().getModuleManager().getModules()) {
             builder.add("&3%s &8(%s) &3v%s &8- %s", module.getName(), module.getPackageName(),
-                module.getVersion(), module.getStatus().getMessage());
+                    module.getVersion(), module.getStatus().getMessage());
         }
 
         display.addComponent(builder.build());
@@ -85,7 +86,7 @@ public class PrisonCommand {
 
     @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootCommand(CommandSender sender,
-        @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
+                                    @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
         // They just want to list stuff
         if (name.equals("list")) {
             sender.dispatchCommand("prison troubleshoot list");
@@ -93,7 +94,7 @@ public class PrisonCommand {
         }
 
         TroubleshootResult result =
-            PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
+                PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
         if (result == null) {
             Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
             return;
@@ -101,9 +102,9 @@ public class PrisonCommand {
 
         ChatDisplay display = new ChatDisplay("Result Summary");
         display.text("&7Troubleshooter name: &b%s", name.toLowerCase()) //
-            .text("&7Result type: &b%s", result.getResult().name()) //
-            .text("&7Result details: &b%s", result.getDescription()) //
-            .send(sender);
+                .text("&7Result type: &b%s", result.getResult().name()) //
+                .text("&7Result details: &b%s", result.getDescription()) //
+                .send(sender);
 
     }
 
@@ -113,9 +114,9 @@ public class PrisonCommand {
         display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
 
         BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+                new BulletedListComponent.BulletedListBuilder();
         for (Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager()
-            .getTroubleshooters()) {
+                .getTroubleshooters()) {
             builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
         }
         display.addComponent(builder.build());
@@ -126,6 +127,13 @@ public class PrisonCommand {
     @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
     public void convertCommand(CommandSender sender) {
         sender.sendMessage(Prison.get().getPlatform().runConverter());
+    }
+
+    @Command(identifier = "prison reloadConf", description = "Reload some (but not all) Prison config.yml settings.", onlyPlayers = false, permissions = "prison.reload")
+    public void reloadConfCommand(CommandSender sender) {
+        Prison.get().getPlatform().reloadConf();
+        Output.get().sendInfo(sender, "Successfully reloaded the configuration! &8If the setting you wanted to reload still hasn't changed, you need to " +
+                "restart your server for the changes to take effect.");
     }
 
 }

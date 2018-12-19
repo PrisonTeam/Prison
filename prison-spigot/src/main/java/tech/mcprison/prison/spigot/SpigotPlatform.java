@@ -79,6 +79,11 @@ class SpigotPlatform implements Platform {
         ActionBarUtil.init(plugin);
     }
 
+    @Override
+    public void reloadConf() {
+        plugin.reloadConfig();
+    }
+
     private Storage initStorage() {
         String confStorage = plugin.getConfig().getString("storage", "file");
         if (confStorage.equalsIgnoreCase("file")) {

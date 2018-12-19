@@ -44,6 +44,14 @@ import java.util.UUID;
 public interface Platform {
 
     /**
+     * Reloads the configuration on platforms that support it.
+     * @throws UnsupportedOperationException if the platform does not support configuration reloading.
+     */
+    default void reloadConf() {
+        throw new UnsupportedOperationException("not supported yet");
+    }
+
+    /**
      * Returns the world with the specified name.
      */
     Optional<World> getWorld(String name);

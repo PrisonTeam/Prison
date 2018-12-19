@@ -122,7 +122,7 @@ public class SpigotPrison extends JavaPlugin {
         this.scheduler.cancelAll();
         Prison.get().deinit();
     }
-    
+
     // By popular demand...
     private void initOutputPrefixes() {
         String configInfoPrefix = getConfig().getString("prefixes.info", "&3Info");
@@ -280,6 +280,17 @@ public class SpigotPrison extends JavaPlugin {
 
     File getDataDirectory() {
         return dataDirectory;
+    }
+
+    @Override
+    public void reloadConfig() {
+        // Reloads SOME, but not all of the configurable settings.
+        super.reloadConfig();
+        initOutputPrefixes();
+        debug = getConfig().getBoolean("debug", false);
+
+        if (Prison.get().getLocaleManager() != null)
+            Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
     }
 
 }
