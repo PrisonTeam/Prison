@@ -35,7 +35,7 @@ dependencies {
     compile project(':prison-mines')
     compile project(':prison-ranks')
     compile 'org.bstats:bstats-bukkit:1.2'
-    compile 'org.inventivetalent.spiget-update:bukkit:1.4.0'
+    compile 'org.inventivetalent.spiget-update:bukkit:1.4.1'
 
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
@@ -64,7 +64,7 @@ shadowJar {
         include(dependency('com.fasterxml.jackson.core:jackson-core:2.7.0'))
         include(dependency('com.fasterxml.jackson.core:jackson-annotations:2.7.0'))
         include(dependency('org.bstats:bstats-bukkit:1.2'))
-        include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.0'))
+        include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.1'))
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
