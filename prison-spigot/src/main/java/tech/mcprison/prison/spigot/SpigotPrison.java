@@ -96,6 +96,7 @@ public class SpigotPrison extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
+        initOutputPrefixes();
 
         initDataDir();
         initCommandMap();
@@ -120,6 +121,18 @@ public class SpigotPrison extends JavaPlugin {
     public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
+    }
+    
+    // By popular demand...
+    private void initOutputPrefixes() {
+        String configInfoPrefix = getConfig().getString("prefixes.info", "&3Info");
+        String configWarningPrefix = getConfig().getString("prefixes.warning", "&6Warning");
+        String configErrorPrefix = getConfig().getString("prefixes.error", "&cError");
+
+        Output.get().INFO_PREFIX = Output.get().gen(configInfoPrefix);
+        Output.get().WARNING_PREFIX = Output.get().gen(configWarningPrefix);
+        Output.get().ERROR_PREFIX = Output.get().gen(configErrorPrefix);
+
     }
 
     private void initMetrics() {

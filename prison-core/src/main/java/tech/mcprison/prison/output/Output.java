@@ -33,10 +33,10 @@ public class Output {
 
     // Fields
     private static Output instance;
-    public String PREFIX_TEMPLATE = "&8| %s &8|";
-    public String INFO_PREFIX = gen("&3Info") + " &7";
-    public String WARNING_PREFIX = gen("&6Warning") + " &7";
-    public String ERROR_PREFIX = gen("&cError") + " &7";
+    public String PREFIX_TEMPLATE = "&8| %s &8| &7";
+    public String INFO_PREFIX = gen("&3Info");
+    public String WARNING_PREFIX = gen("&6Warning");
+    public String ERROR_PREFIX = gen("&cError");
 
     // Constructor
 
