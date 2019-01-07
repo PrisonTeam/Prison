@@ -159,6 +159,9 @@ public class SpigotPrison extends JavaPlugin {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
+        if (getDescription().getVersion().toLowerCase().contains("SNAPSHOT")) {
+            return; // Don't check if they are running a development build
+        }
 
         SpigetUpdate updater = new SpigetUpdate(this, 1223);
         updater.setVersionComparator(VersionComparator.EQUAL);
