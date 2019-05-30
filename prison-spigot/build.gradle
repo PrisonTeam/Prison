@@ -44,7 +44,7 @@ dependencies {
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
-    compile 'me.clip:placeholderapi:2.9.1'
+    compileOnly 'me.clip:placeholderapi:2.9.1'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 
