@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.spigot;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -44,6 +45,7 @@ import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
+import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 
 import java.io.File;
 import java.io.IOException;
@@ -212,6 +214,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initIntegrations() {
+
         registerIntegration("Essentials", EssentialsEconomy.class);
         registerIntegration("SaneEconomy", SaneEconomy.class);
         registerIntegration("Vault", VaultEconomy.class);
@@ -220,6 +223,8 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration("Vault", VaultPermissions.class);
 
         registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+
+        registerIntegration("PlaceholderAPI", PlaceHolderAPIIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
