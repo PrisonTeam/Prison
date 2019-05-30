@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;

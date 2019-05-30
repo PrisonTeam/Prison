@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.placeholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -50,7 +51,7 @@ public class PlaceHolderAPIIntegration extends PlaceholderExpansion implements P
 
 	@Override
 	public String getVersion(){
-		return "1.0.0";
+		return PrisonAPI.getPluginVersion();
 	}
 
 	@Override
@@ -69,14 +70,15 @@ public class PlaceHolderAPIIntegration extends PlaceholderExpansion implements P
 		String prefix = "";
 
 		if (player.isPresent() && !player.get().getRanks().isEmpty()) {
-			StringBuilder builder = new StringBuilder();
-			for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
-				builder.append(entry.getValue().name);
-			}
-			prefix = builder.toString();
+				StringBuilder builder = new StringBuilder();
+				for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
+					builder.append(entry.getValue().name);
+					builder.append(", ");
+				}
+				prefix = builder.toString();
 		}
 
-		return prefix;
+		return prefix.substring(0, prefix.length() - 2);
 	}
 
 }
