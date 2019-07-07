@@ -58,27 +58,88 @@ public class PlaceHolderAPIIntegration extends PlaceholderExpansion implements P
 	public String onRequest(OfflinePlayer player, String identifier){
 
 		if(identifier.equals("rank")){
-			return get(player.getUniqueId());
+			return getNames(player.getUniqueId());
+		}else if(identifier.equals("rankup_cost")){
+			return getNextCost(player.getUniqueId());
+		}else if(identifier.equals("rankup_rank")) {
+			return getNextName(player.getUniqueId());
 		}
 
 		return null;
 	}
 
-	private String get(UUID uid) {
+	private String getNames(UUID uid) {
+
 		Optional<RankPlayer> player =
 				PrisonRanks.getInstance().getPlayerManager().getPlayer(uid);
 		String prefix = "";
 
 		if (player.isPresent() && !player.get().getRanks().isEmpty()) {
-				StringBuilder builder = new StringBuilder();
-				for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
-					builder.append(entry.getValue().name);
-					builder.append(", ");
-				}
-				prefix = builder.toString();
+			StringBuilder builder = new StringBuilder();
+			for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
+				builder.append(entry.getValue().name);
+				builder.append(", ");
+			}
+			prefix = builder.toString();
+
 		}
 
-		return prefix.substring(0, prefix.length() - 2);
+		if(prefix.length() > 0) {
+			return prefix.substring(0, prefix.length() - 2);
+		}else{
+			return "";
+		}
+
+	}
+
+	private String getNextCost(UUID uid) {
+
+		Optional<RankPlayer> player =
+				PrisonRanks.getInstance().getPlayerManager().getPlayer(uid);
+		String prefix = "";
+
+		if (player.isPresent() && !player.get().getRanks().isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
+				if(entry.getKey().getNext(entry.getKey().getPositionOfRank(entry.getValue())).isPresent()) {
+					builder.append(entry.getKey().getNext(entry.getKey().getPositionOfRank(entry.getValue())).get().cost);
+					builder.append(", ");
+				}
+			}
+			prefix = builder.toString();
+		}
+
+		if(prefix.length() > 0) {
+			return prefix.substring(0, prefix.length() - 2);
+		}else{
+			return "";
+		}
+
+	}
+
+	private String getNextName(UUID uid) {
+
+		Optional<RankPlayer> player =
+				PrisonRanks.getInstance().getPlayerManager().getPlayer(uid);
+		String prefix = "";
+
+		if (player.isPresent() && !player.get().getRanks().isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			for (Map.Entry<RankLadder, Rank> entry : player.get().getRanks().entrySet()) {
+				if(entry.getKey().getNext(entry.getKey().getPositionOfRank(entry.getValue())).isPresent()) {
+					builder.append(entry.getKey().getNext(entry.getKey().getPositionOfRank(entry.getValue())).get().name);
+					builder.append(", ");
+				}
+			}
+			prefix = builder.toString();
+		}
+
+		if(prefix.length() > 0) {
+			return prefix.substring(0, prefix.length() - 2);
+		}else{
+			return "";
+		}
+
 	}
 
 }
