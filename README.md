@@ -7,7 +7,7 @@
 
 1. [What is Prison?](#what-is-prison)
 2. [Why should I use Prison?](#why-should-i-use-prison)
-3. [What's the status on Prison v3.0?](#whats-the-status-on-prison-v30)
+3. [Get Prison](#get-prison)
 
 ## What is Prison?
 
