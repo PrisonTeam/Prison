@@ -13,6 +13,35 @@ long term, but I hope to at least bring this project up to date (support 1.13.x)
 and address some of the outstanding bugs.  If I can leave this in a slightly 
 better state from what I found it, then I will consider this a success.
 
+## tag v3.5.2-alpha.1 - 2019-11-13
+
+First set of changes I'm able to contribute to the project. 
+
+Please note that I'm having issues getting the Gradle unit tests to run.  Once I get them
+working I will enable them in the commit below dealing with mine resets.  
+
+* **TP of Players out of the Mines upon Rest** In an effort to help start to address the
+known bug [![Mine doesn't teleport to safety #82](https://github.com/PrisonTeam/Prison/issues/82)] 
+I rewrote the player teleport function to clean it up and to hopefully address the issue.
+I personally was unable to get it to fail under minecraft 1.13.2, but I have reports
+that it is failing under mc 1.8.8.  This issue needs to be tested farther to see if it has
+any effect on systems that are failing.  Please see 
+[![Commit 99baa99](https://github.com/rbluer/Prison/commit/96baa99545cdf61f4de6131d665803ea52aac847)]
+and related source code form more information. 
+
+* **New functionality!! Decimals in Block chances now supported!** 
+I added support to display and use two decimal positions on block chances. This mostly 
+involved using doubles instead of integers in most of the calculations.  Otherwise 
+not really much had to change.
+See [![Commit 0942811](https://github.com/rbluer/Prison/commit/09428114b8cf434f88b6e9bf6ab1bfba2c48c3a8)] for
+more information.
+
+
+**Build artifacts:**
+  I think I spoke too soon on the sponge build artifact; I have no way to test it so 
+  probably won't include any future build artifacts unless requested.
+  Be aware that this build artifact is not production grade and still needs more testing.
+  * **prison_v3.5.2-alpha.1.jar** 
 
 ## tag v3.5.1 - 2019-11-11
 
