@@ -230,7 +230,9 @@ public class MineManager {
     }
 
     /**
-     * Generates blocks for the specified mine and caches the result
+     * Generates blocks for the specified mine and caches the result.
+     * 
+     * The random chance is now calculated upon a double instead of integer.
      *
      * @param m the mine to randomize
      */
@@ -250,7 +252,7 @@ public class MineManager {
         double target = ((maxY + 1) - minY) * ((maxX + 1) - minX) * ((maxZ + 1) - minZ);
 
         for (int i = 0; i < target; i++) {
-            int chance = random.nextInt(101);
+        	double chance = random.nextDouble() * 100.0d;
             boolean set = false;
             for (Block block : m.getBlocks()) {
                 if (chance <= block.chance) {

@@ -18,8 +18,11 @@
 
 package tech.mcprison.prison.mines.commands;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
@@ -111,10 +114,12 @@ public class MinesCommands {
 
     @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, description = "Adds a block to a mine.")
     public void addBlockCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to add the block to.")
-            String mine, @Arg(name = "block", description = "The block's name or ID.") String block,
-        @Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
-            double chance) {
+    			@Arg(name = "mineName", description = "The name of the mine to add the block to.")
+            			String mine, 
+            	@Arg(name = "block", description = "The block's name or ID.") 
+    					String block,
+            	@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
+    					double chance) {
         if (!performCheckMineExists(sender, mine)) {
             return;
         }
@@ -136,7 +141,7 @@ public class MinesCommands {
 
         final double[] totalComp = {chance};
         m.getBlocks().forEach(block1 -> totalComp[0] += block1.chance);
-        if (totalComp[0] > 100) {
+        if (totalComp[0] > 100.0d) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_full")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
@@ -176,7 +181,7 @@ public class MinesCommands {
         }
 
         // If it's 0, just delete it!
-        if (chance <= 0) {
+        if (chance <= 0.0d) {
             delBlockCommand(sender, mine, block);
             return;
         }
@@ -189,7 +194,7 @@ public class MinesCommands {
                 totalComp[0] += block1.chance;
             }
         });
-        if (totalComp[0] > 100) {
+        if (totalComp[0] > 100.0d) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_full")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
@@ -290,13 +295,15 @@ public class MinesCommands {
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
-        int totalChance = 0;
+        DecimalFormat dFmt = new DecimalFormat("##0.00");
+        double totalChance = 0.0d;
         for (Block block : m.getBlocks()) {
-            totalChance += Math.round(block.chance);
+            double chance = Math.round(block.chance * 100.0d) / 100.0d;
+            totalChance += chance;
 
             String blockName =
                 StringUtils.capitalize(block.type.name().replaceAll("_", " ").toLowerCase());
-            String percent = Math.round(block.chance) + "%";
+            String percent = dFmt.format(chance) + "%";
             FancyMessage msg = new FancyMessage(String.format("&7%s - %s", percent, blockName))
                 .suggest("/mines block set " + m.getName() + " " + block.type.getId()
                     .replace("minecraft:", "") + " %")
@@ -304,8 +311,8 @@ public class MinesCommands {
             builder.add(msg);
         }
 
-        if (totalChance < 100) {
-            builder.add("&e%s - Air", (100 - totalChance) + "%");
+        if (totalChance < 100.0d) {
+            builder.add("&e%s - Air", dFmt.format(100.0d - totalChance) + "%");
         }
 
         return builder.build();
