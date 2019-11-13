@@ -136,7 +136,24 @@ public class Mine {
         return ret;
     }
 
-    public void teleport(Player... players) {
+    /** 
+     * <p>This function has been deprecated due to a few issues.  First it will only pass 
+     * at most one player so no need to loop them.  Secondly the use of Optional is asking
+     * for failures since Optional should never be passed a null value.  Thirdly, 
+     * since all players always have a valid location, there should never be a 
+     * situation of lacking a location.  And finally, NPE is never a good "reason" or way
+     * of handling an exception, especially in a production environment.</p>
+     * 
+     *  <p>Overall this just is not production quality code and could possibly lead to 
+     *  issues that are difficult to track down, and could possibly explain the current failures to
+     *  teleport players out of mines when manually reset.</p>
+     *  
+     *  <p>Note: Remove the deprecated function before the next release.</p>
+     *  
+     * @param players
+     */
+    @Deprecated
+    private void teleport(Player... players) {
         for (Player p : players) {
             p.teleport(getSpawn().orElse(
                 null)); // Should probably fail with an exception, but an NPE is as good as any..
@@ -179,7 +196,8 @@ public class Mine {
             int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
             int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
 
-            teleportOutPlayers(maxY);
+            teleportAllPlayersOut( world, maxY );
+//            teleportOutPlayers(maxY);
 
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
@@ -205,6 +223,72 @@ public class Mine {
         }
     }
 
+    /**
+     * <p>This function teleports players out of existing mines if they are within 
+     * their boundaries within the world where the Mine exists.</p>
+     * 
+     * <p>Using only players within the existing world of the current mine, each
+     * player is checked to see if they are within the mine, and if they are they
+     * are teleported either to the mine's spawn location, or straight up from their
+     * current location to the top of the mine (assumes air space will exist there).</p>
+     * 
+     * <p>This function eliminates possible bug of players being teleported from other
+     * worlds, and also eliminates the possibility that the destination could
+     * ever be null.</p>
+     * 
+     * @param world - world 
+     * @param targetY
+     */
+    private void teleportAllPlayersOut(World world, int targetY) {
+    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    							Prison.get().getPlatform().getOnlinePlayers());
+    	for (Player player : players) {
+            if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
+            		getBounds().within(player.getLocation())) {
+            	
+            	Location destination = null;
+            	if (this.hasSpawn && getWorld().isPresent()) {
+            		destination = this.spawn;
+            	} else {
+            		destination = player.getLocation();
+            		destination.setY( targetY );
+            	}
+            			
+            	player.teleport( destination );
+                PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+                		.withReplacements(this.name).sendTo(player);
+            }
+        }
+    }
+    
+    /**
+     * <p>This is a temporary fix until the Bounds.within() checks for the
+     * same world.  For now, it is assumed that Bounds.min and Bounds.max are 
+     * the same world, but that may not always be the case.</p>
+     * 
+     * @param w1 First world to compare to
+     * @param w2 Second world to compare to
+     * @return true if they are the same world
+     */
+    private boolean isSameWorld(World w1, World w2) {
+    	// TODO Need to fix Bounds.within() to test for same worlds:
+    	return w1 == null && w2 == null ||
+    			w1 != null && w2 != null &&
+    			w1.getName().equalsIgnoreCase(w2.getName());
+    }
+    
+    /**
+     * <p>This function has been deprecated since it could incorrectly force a teleport 
+     * on a player that is not within the mine; they just need to be within the same
+     * coordinates in another world. Overall it's not clean with calling the teleport
+     * function and could be the cause of the current failure to teleport players out
+     * of the mines.</p>
+     * 
+     * <p>Note: Remove the deprecated function before the next release.</p>
+     * @param maxY
+     */
+    @SuppressWarnings( "unused" )
+	@Deprecated
     private void teleportOutPlayers(int maxY) {
         for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
             if (getBounds().within(player.getLocation())) {

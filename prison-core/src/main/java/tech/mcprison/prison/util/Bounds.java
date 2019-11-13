@@ -78,26 +78,40 @@ public class Bounds {
     }
 
     /**
-     * Returns whether or not a single point is within these boundaries.
+     * Returns whether or not a single point is within these boundaries.  Ensure the same worlds
+     * are being compared too.
      *
      * @param location The {@link Location} to check.
      * @return true if the location is within the bounds, false otherwise.
      */
     public boolean within(Location location) {
-        double minX = Math.min(min.getX(), max.getX());
-        double minY = Math.min(min.getY(), max.getY());
-        double minZ = Math.min(min.getZ(), max.getZ());
-        double maxX = Math.max(min.getX(), max.getX());
-        double maxY = Math.max(min.getY(), max.getY());
-        double maxZ = Math.max(min.getZ(), max.getZ());
+    	boolean results = false;
+    	
+    	// TODO fix Bounds.within() get working with junit tests (currently it won't run) until then cannot test changes:
+    	// If the worlds don't match, then don't waste time calculating if the passed 
+    	// location is within the Bounds. Some unit tests pass in nulls.
+//    	if ( min.getWorld() == null && max.getWorld() == null && location.getWorld() == null ||
+//    		 min.getWorld() != null && max.getWorld() != null && location.getWorld() != null &&
+//    		 min.getWorld().getName().equalsIgnoreCase( max.getWorld().getName()) &&
+//    		 min.getWorld().getName().equalsIgnoreCase( location.getWorld().getName() )) {
+    		
+    		double minX = Math.min(min.getX(), max.getX());
+    		double minY = Math.min(min.getY(), max.getY());
+    		double minZ = Math.min(min.getZ(), max.getZ());
+    		double maxX = Math.max(min.getX(), max.getX());
+    		double maxY = Math.max(min.getY(), max.getY());
+    		double maxZ = Math.max(min.getZ(), max.getZ());
+    		
+    		double ourX = Math.floor(location.getX());
+    		double ourY = Math.floor(location.getY());
+    		double ourZ = Math.floor(location.getZ());
+    		
+    		results = ourX >= minX && ourX <= maxX // Within X
+    				&& ourY >= minY && ourY <= maxY // Within Y
+    				&& ourZ >= minZ && ourZ <= maxZ; // Within Z
+//    	}
 
-        double ourX = Math.floor(location.getX());
-        double ourY = Math.floor(location.getY());
-        double ourZ = Math.floor(location.getZ());
-
-        return ourX >= minX && ourX <= maxX // Within X
-            && ourY >= minY && ourY <= maxY // Within Y
-            && ourZ >= minZ && ourZ <= maxZ; // Within Z
+        return results;
     }
 
     public Location getMin() {
