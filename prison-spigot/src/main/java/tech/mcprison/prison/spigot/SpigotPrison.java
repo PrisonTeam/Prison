@@ -142,8 +142,9 @@ public class SpigotPrison extends JavaPlugin {
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
-    private void initUpdater() {
-        if (!getConfig().getBoolean("check-updates")) {
+    @SuppressWarnings( "unused" )
+	private void initUpdater() {
+        if (true || !getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
 
