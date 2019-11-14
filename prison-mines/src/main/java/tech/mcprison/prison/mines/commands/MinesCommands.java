@@ -19,6 +19,8 @@
 package tech.mcprison.prison.mines.commands;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +36,8 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.BulletedListComponent;
+import tech.mcprison.prison.output.ButtonComponent;
+import tech.mcprison.prison.output.ButtonComponent.Style;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
@@ -245,6 +249,88 @@ public class MinesCommands {
 
         PrisonMines.getInstance().getMineManager().clearCache();
     }
+
+    @Command(identifier = "mines block search", permissions = "mines.block", description = "Searches for a block to add to a mine.")
+    public void searchBlockCommand(CommandSender sender,
+        @Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
+        @Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+
+    	if (search == null)
+    	{
+    		PrisonMines.getInstance().getMinesMessages().getLocalizable("block_search_blank").sendTo(sender);
+    	}
+    	
+    	ChatDisplay display = blockSearchBuilder(search, page);
+        
+        display.send(sender);
+
+        PrisonMines.getInstance().getMineManager().clearCache();
+    }
+
+	private ChatDisplay blockSearchBuilder(String search, String page)
+	{
+		List<BlockType> blocks = new ArrayList<>();
+    	for (BlockType block : BlockType.values())
+		{
+			if (block.getId().contains(search.toLowerCase()) || 
+					block.name().toLowerCase().contains(search.toLowerCase()))
+			{
+				blocks.add(block);
+			}
+		}
+    	
+    	int curPage = 1;
+    	int pageSize = 10;
+    	int pages = (blocks.size() / pageSize) + 1;
+    	try
+		{
+			curPage = Integer.parseInt(page);
+		}
+		catch ( NumberFormatException e )
+		{
+			// Ignore: Not an integer, will use the default value.
+		}
+    	curPage = ( curPage < 1 ? 1 : (curPage > pages ? pages : curPage ));
+    	int pageStart = (curPage - 1) * pageSize;
+    	int pageEnd = ((pageStart + pageSize) > blocks.size() ? blocks.size() : pageStart + pageSize);
+
+    	
+        ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
+        display.text("&8Click a block to add it to a mine.");
+        
+        BulletedListComponent.BulletedListBuilder builder =
+        						new BulletedListComponent.BulletedListBuilder();
+        for ( int i = pageStart; i < pageEnd; i++ )
+        {
+        	BlockType block = blocks.get(i);
+            FancyMessage msg =
+                    new FancyMessage(
+                    		String.format("&7%s %s - (%s)", 
+                    				Integer.toString(i), block.name(), block.getId().replace("minecraft:", "")))
+                    .suggest("/mines block add <mine> " + block.name() + " %")
+                        .tooltip("&7Click to add block to a mine.");
+                builder.add(msg);
+        }
+        display.addComponent(builder.build());
+        
+        if ( curPage > 1 )
+        {
+        	display.addComponent( 
+        			new ButtonComponent( "<-- Previous Page", '-', Style.NEGATIVE)
+        			.runCommand("/mines block search " + search + " " + (curPage - 1), 
+        					"View the prior page of search results") );
+        }
+        
+        if ( curPage < pages )
+        {
+        	display.addComponent( 
+        			new ButtonComponent( "Next Page -->", '+', Style.POSITIVE)
+        			.runCommand("/mines block search " + search + " " + (curPage + 1), 
+        					"View the prior page of search results") );
+        }
+		return display;
+	}
+
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
     public void deleteCommand(CommandSender sender,
