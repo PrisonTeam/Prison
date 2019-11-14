@@ -13,6 +13,34 @@ long term, but I hope to at least bring this project up to date (support 1.13.x)
 and address some of the outstanding bugs.  If I can leave this in a slightly 
 better state from what I found it, then I will consider this a success.
 
+## tag v3.5.2-alpha.2 - 2019-11-14
+
+* **New functionality!! Block search!!**
+You can now search for blocks to add to the mines!  It uses the BlockTypes and is able
+to search on the ID and the enumeration name.  It displays up to 10 at a times and 
+provides Next Page and Previous Page controls to page through the results.
+If you click on a BlockType, it will suggest the command for adding blocks:
+** /mines block add <mine> <blockTypeSelected> %**  All the user needs to do is 
+fill in the percent and change the "<mine>" to a valid mine name. 
+
+* **Disabled the checking for updates (temporary)**
+Until I can figure out how to get it to work over this fork, it will always 
+report that the obsolete version 3.1.1 is a newer version. This also generates in game
+messages that will annoy the players.  
+
+* **Tested the manual mine reset under Spigot 1.8.8 and could not reproduce the failure**
+I spent some time testing the manual and automatic mine reseting conditions under a 
+Spigot 1.8.8 build using the older Prison Plugin v3.1.1 and could not get it to fail. 
+I also tested fairly extensively the Prison Plugin v3.5.2-alpha.1 under Spigot 1.8.8 and
+could not get it to fail either.  So still not sure what was causing those failures
+(could be a conflicting plugin too), but the changes I made appear to be solid too.
+I hear a few accounts that others were having issues with Spigot 1.8.8.
+
+**Build artifacts:**
+  Be aware that this build artifact is not production grade and still needs more testing.
+  * **prison_v3.5.2-alpha.2.jar** 
+
+
 ## tag v3.5.2-alpha.1 - 2019-11-13
 
 First set of changes I'm able to contribute to the project. 
