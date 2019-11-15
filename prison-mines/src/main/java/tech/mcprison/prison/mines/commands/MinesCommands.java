@@ -144,14 +144,14 @@ public class MinesCommands {
         }
 
         final double[] totalComp = {chance};
-        m.getBlocks().forEach(block1 -> totalComp[0] += block1.chance);
+        m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
         if (totalComp[0] > 100.0d) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_full")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
         }
 
-        m.getBlocks().add(new Block().create(blockType, chance));
+        m.getBlocks().add(new Block(blockType, chance));
         PrisonMines.getInstance().getMinesMessages().getLocalizable("block_added")
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
@@ -192,10 +192,10 @@ public class MinesCommands {
 
         final double[] totalComp = {chance};
         m.getBlocks().forEach(block1 -> {
-            if (block1.type == blockType) {
-                totalComp[0] -= block1.chance;
+            if (block1.getType() == blockType) {
+                totalComp[0] -= block1.getChance();
             } else {
-                totalComp[0] += block1.chance;
+                totalComp[0] += block1.getChance();
             }
         });
         if (totalComp[0] > 100.0d) {
@@ -206,8 +206,8 @@ public class MinesCommands {
 
         for (Block blockObject : PrisonMines.getInstance().getMineManager().getMine(mine).get()
             .getBlocks()) {
-            if (blockObject.type == blockType) {
-                blockObject.chance = chance;
+            if (blockObject.getType() == blockType) {
+                blockObject.setChance(chance);
             }
         }
 
@@ -242,7 +242,7 @@ public class MinesCommands {
         }
 
         Mine m = PrisonMines.getInstance().getMineManager().getMine(mine).get();
-        m.getBlocks().removeIf(x -> x.type == blockType);
+        m.getBlocks().removeIf(x -> x.getType() == blockType);
         PrisonMines.getInstance().getMinesMessages().getLocalizable("block_deleted")
             .withReplacements(block, mine).sendTo(sender);
         getBlocksList(m).send(sender);
@@ -365,8 +365,7 @@ public class MinesCommands {
         chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
             Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
 
-        String spawnPoint =
-            m.getSpawn().isPresent() ? m.getSpawn().get().toBlockCoordinates() : "&cnot set";
+        String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
 
         chatDisplay.text("&3Blocks:");
@@ -384,14 +383,14 @@ public class MinesCommands {
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
         for (Block block : m.getBlocks()) {
-            double chance = Math.round(block.chance * 100.0d) / 100.0d;
+            double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
             totalChance += chance;
 
             String blockName =
-                StringUtils.capitalize(block.type.name().replaceAll("_", " ").toLowerCase());
+                StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
             String percent = dFmt.format(chance) + "%";
             FancyMessage msg = new FancyMessage(String.format("&7%s - %s", percent, blockName))
-                .suggest("/mines block set " + m.getName() + " " + block.type.getId()
+                .suggest("/mines block set " + m.getName() + " " + block.getType().getId()
                     .replace("minecraft:", "") + " %")
                 .tooltip("&7Click to edit the block's chance.");
             builder.add(msg);

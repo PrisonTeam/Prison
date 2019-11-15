@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.mines;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -34,7 +36,6 @@ import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
-import tech.mcprison.prison.mines.commands.PowertoolCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;

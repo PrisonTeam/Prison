@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimerTask;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
@@ -34,7 +35,6 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -234,40 +234,27 @@ public class MineManager {
      * 
      * The random chance is now calculated upon a double instead of integer.
      *
-     * @param m the mine to randomize
+     * @param mine the mine to randomize
      */
-    public void generateBlockList(Mine m) {
+    public void generateBlockList(Mine mine) {
         Random random = new Random();
         ArrayList<BlockType> blocks = new ArrayList<>();
 
-        Location min = m.getBounds().getMin();
-        Location max = m.getBounds().getMax();
-
-        int maxX = Math.max(min.getBlockX(), max.getBlockX());
-        int minX = Math.min(min.getBlockX(), max.getBlockX());
-        int maxY = Math.max(min.getBlockY(), max.getBlockY());
-        int minY = Math.min(min.getBlockY(), max.getBlockY());
-        int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
-        int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
-        double target = ((maxY + 1) - minY) * ((maxX + 1) - minX) * ((maxZ + 1) - minZ);
-
-        for (int i = 0; i < target; i++) {
+        for (int i = 0; i < mine.getBounds().getTotalBlockCount(); i++) {
         	double chance = random.nextDouble() * 100.0d;
-            boolean set = false;
-            for (Block block : m.getBlocks()) {
-                if (chance <= block.chance) {
-                    blocks.add(block.type);
-                    set = true;
+            
+            BlockType value = BlockType.AIR;
+            for (Block block : mine.getBlocks()) {
+                if (chance <= block.getChance()) {
+                    value = block.getType();
                     break;
                 } else {
-                    chance -= block.chance;
+                    chance -= block.getChance();
                 }
             }
-            if (!set) {
-                blocks.add(BlockType.AIR);
-            }
+            blocks.add(value);
         }
-        randomizedBlocks.put(m.getName(), blocks);
+        randomizedBlocks.put(mine.getName(), blocks);
     }
 
     /**
