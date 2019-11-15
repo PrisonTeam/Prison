@@ -142,13 +142,13 @@ public class SpigotPrison extends JavaPlugin {
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
-    @SuppressWarnings( "unused" )
 	private void initUpdater() {
-        if (true || !getConfig().getBoolean("check-updates")) {
+        if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
 
-        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+        SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
+//        SpigetUpdate updater = new SpigetUpdate(this, 1223);
         updater.setVersionComparator(VersionComparator.EQUAL);
 
         updater.checkForUpdate(new UpdateCallback() {
@@ -156,7 +156,7 @@ public class SpigotPrison extends JavaPlugin {
             public void updateAvailable(String newVersion, String downloadUrl,
                                         boolean hasDirectDownload) {
                 Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+                        "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
                         newVersion);
             }
 
