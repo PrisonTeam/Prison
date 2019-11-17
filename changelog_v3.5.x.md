@@ -13,6 +13,73 @@ long term, but I hope to at least bring this project up to date (support 1.13.x)
 and address some of the outstanding bugs.  If I can leave this in a slightly 
 better state from what I found it, then I will consider this a success.
 
+## tag v3.5.2-alpha.3 - 2019-11-??
+
+Note: This tag has not been committed yet, so there is no date yet, and no 
+build artifacts.  All the testing has to pass before I will generate this tag
+and the related artifacts. 
+
+* **Added back the spiget updater.**  
+Figured out how it worked so was able to 
+hook it back up.  Basically when you add a resource to spigotmc.org your 
+resource (project) gets assigned a number.  Let's call it a spigotMC resource ID
+for now.  So that is the value that needs to be passed to the SpigetUpdater 
+constructor.  No where in the documentation, or anywhere else, does it explain
+what that is... oof!!
+
+* **Created a SpigotMC.org resource for this fork**  
+[SpigotMC.org - Prison - The Updated Edition](https://www.spigotmc.org/resources/prison-the-updated-edition.72740/)
+Created a new resource on spigotmc.org and added some of the build artifacts.
+Will manually maintain this and update the stats as I can.
+
+
+* **Major refactoring with prison-mines package!!**
+I took some time to start a first pass on refactoring of the prison-mines package.
+I did not go too deep since I was wanting to ensure I did not break anything, and
+also I was wanting to get a better feel of what is going on and how things work.
+I think overall I am happy with what I achieved since I did eliminate 
+duplication in source code, eliminated repetitive calculations such that many 
+are performed when the mine first loads to reduce computational loads when the 
+mines are reset.  I also found a few possible bugs (did not mark them, just fixed them).
+Removed old comments and obsolete code.  
+
+
+* **The need for major testing!  Only testing prison-mines package.**
+Due to the refactoring, I'm forced (forcing myself) to go through all the supported
+Spigot supported Minecraft versions and test the user interface to ensure all is 
+still working!  This will also give me a chance to confirm all versions do work for 
+these basic user interface commands.
+
+Unfortunately this is taking a while so it will result in a delay in pushing out any changes for the v3.5.2-alpha.3 build artifacts.
+
+
+* **Built test servers**
+I've build test servers for the following version of spigot and minecraft. These will
+be used going forward to ensure the code works, and also to help reproduce issues 
+so I can fix problems as they are reported.
+
+
+* **Minecraft 1.8.8** - Passed!
+* **Minecraft 1.9.4**
+* **Minecraft 1.10.2**
+* **Minecraft 1.11**
+* **Minecraft 1.12.2**
+* **Minecraft 1.13.2** - In Progress...
+* **Minecraft 1.14.2**
+
+
+* **Create Test plans**
+To better ensure all test servers are tested consistently, I've started to create test plans to use during online testing.  These will evolve.  But they are important for
+consistency.
+
+- <a href="test-plans/test-plans-README.md">test-plans-README.md</a>
+- <a href="test-plans/test-plans-prison-mine.md">test-plans-prison-mine.md</a>
+
+
+**Build artifacts:**
+   This tag has NOT been finalized yet, so there are no build artifacts.
+   
+
 ## tag v3.5.2-alpha.2 - 2019-11-14
 
 * **New functionality!! Block search!!**

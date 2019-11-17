@@ -32,10 +32,26 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 **Note as of version 3.5.0** the build artifacts can be found under "code / releases" 
 within this GitHub fork. At this time I'm not sure if the build artifacts will ever be 
 hosted on a third party repository.
- 
 
+
+ 
+Note: The following builds have not been hooked up yet for this fork, and therefore do not work.
 | Stable | Experimental (Nightly) |
 | ------ | ---------------------- |
 | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 
+## More Information on this Fork and the Current Project
 
+You can find more information about the progress of this project within the following resources:
+
+
+- <a href="changelog_v3.5.x.md">changelog_v3.5.x.md</a>
+- <a href="test-plans/test-plans-README.md">test-plans-README.md</a>
+- <a href="test-plans/test-plans-prison-mine.md">test-plans-prison-mine.md</a>
+
+I created a resource page on 
+[SpigotMC.org - Prison - The Updated Edition](https://www.spigotmc.org/resources/prison-the-updated-edition.72740/) too. 
+I'll be posting build artifacts there as they are generated.
+
+
+ 
