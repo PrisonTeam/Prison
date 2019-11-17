@@ -181,9 +181,22 @@ public class Mine {
                     }
                 }
             }
-            if (PrisonMines.getInstance().getConfig().asyncReset) {
-                asyncGen();
-            }
+            
+            // NOTE: This is not making sense, since block list was generated about 20 lines ago?
+            // Why generate blocks after resetting the mine, of which they will NOT be used since the 
+            // list will be generated above when the mines reset again?  This could be adding to 
+            // lag and sluggishness on mine reset events, which could cause players to fall back in to
+            // the mine and suffocate?
+            // I'm about to remove this code, but I'm thinking it is left over from a refactoring 
+            // and was not removed?  Comment out for now.
+//            if (PrisonMines.getInstance().getConfig().asyncReset) {
+//                asyncGen();
+//            }
+
+            // If a player falls back in to the mine before it is fully done being reset, 
+            // such as could happen if there is lag or a lot going on within the server, 
+            // this will TP anyone out who would otherwise suffocate.  I hope! lol
+            teleportAllPlayersOut( world, getBounds().getyBlockMax() );
 
             return true;
         } catch (Exception e) {
