@@ -13,20 +13,17 @@ long term, but I hope to at least bring this project up to date (support 1.13.x)
 and address some of the outstanding bugs.  If I can leave this in a slightly 
 better state from what I found it, then I will consider this a success.
 
+
 ## tag v3.5.2-alpha.4 - 2019-11-18
 
-Note: This tag has not been committed yet, so there is no date yet, and no 
-build artifacts.  All the testing has to pass before I will generate this tag
-and the related artifacts. 
-
 * **Found another possible cause for suffocation after a mine reset**
-I think I identified what could have been causing suffocation events to happen
+I think I identified what could have been causing some of the suffocation events to happen
 during a mine reset.  It was not related so much to a bug or code, so it wouldn't
 be something that could be detected with debugging.  What it appears to have been
 is related to the speed in which the mines reset, or more exactly, the 
 server lag or load.  If the player is TP'd and then the mines are slow at being reset,
 then the player may fall back in to the mine where they would be suffocated.
-The solution is simple: Add a second TP to catch any players that may have fallen 
+Maybe one solution is simple: Add a second TP to catch any players that may have fallen 
 back in.
 Also found code that generated a second block list after the mine reset and commented
 that out (for now).  That could have been contributing to server load and lag if there
@@ -34,6 +31,8 @@ were many mines setup, which could result in more players falling back in to the
 
 Of course, the best solution, if this is the case, is to always set a spawn location
 for all of your mines! :)
+
+Note: I did hear the suffocation issue was happening with a spawn defined, so there may be yet another situation out there.  But at least we could be eliminating possible issues.
 
 * **Added back the spiget updater.**  
 Figured out how it worked so was able to 
