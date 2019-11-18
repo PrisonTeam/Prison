@@ -15,8 +15,10 @@ Work on testing each item below.  Depending upon what changes were made, all sec
 
 If testing on multiple server versions, then reload this page between tests so you can use the checkboxes to keep
 track of what you tested.  If you encounter a bug, issues, or something that is suspicious, log it right away
-so it is not forgotten.
+so it is not forgotten or missed.
 
+##### Ensure you have the correct permission to use the following commands.
+The easiest thing to do, is just OP yourself on the test servers.
 
 ##### Mine selection tool
 
@@ -30,12 +32,13 @@ so it is not forgotten.
 
 - <input type="checkbox"/> Confirm `/mines create <mineName>` works after selecting the area with a wand.
 - <input type="checkbox"/> Confirm it was created with `/mines list`
+- <input type="checkbox"/> 
 - <input type="checkbox"/> Try something random.  Report if causes issues.
 
 ##### Mines List
 - <input type="checkbox"/> Confirm `/mines list` works.
 - <input type="checkbox"/> Should show your newly created mine.
-- <input type="checkbox"/> Clicking on the mine name should show the Mines Info 
+- <input type="checkbox"/> Clicking on the mine name should show the Mines Info.  New mines will show 100.00% Air.
 - <input type="checkbox"/> 
 
 
@@ -43,13 +46,21 @@ so it is not forgotten.
 - <input type="checkbox"/> Confirm `/mines info <mineName>` works.
 - <input type="checkbox"/> Confirm that the mines list generates this command properly
 - <input type="checkbox"/> Confirm the command works.  Test clicking on a block name to confirm that works.
-- <input type="checkbox"/> Not sure what will happen if there are many kinds of blocks in a mine.
+- <input type="checkbox"/> Not sure what will happen if there are many kinds of blocks in a mine. (ie.. like 20+ blocks or more).
+- <input type="checkbox"/> Add some blocks to the mine and test a few times. 
 - <input type="checkbox"/> 
 - <input type="checkbox"/> 
 
 ##### Mines Set Area
 - <input type="checkbox"/> Confirm `/mines set area <mineName>` works, first select a new area bigger or smaller than an existing mine with the wand.
-- <input type="checkbox"/> Do a `/mines reset <mineName>` to confirm the new size
+- <input type="checkbox"/> **New Feature??** Should add message indicating how large the mine is, or do a check to ensure if the size did change or not. It looks like it will use the preexisting size if you just created the mine.
+- <input type="checkbox"/> Do a `/mines reset <mineName>` to confirm the new size.  Add blocks to mine and reset to better see the mine size.
+- <input type="checkbox"/> 
+
+
+##### Set a Mine's Spawn
+- <input type="checkbox"/> Confirm `/mines set spawn <mineName>` works.
+- <input type="checkbox"/> Confirm it works by standing in the mine during a reset: manual or auto.
 - <input type="checkbox"/> 
 
 
@@ -59,13 +70,17 @@ so it is not forgotten.
 - <input type="checkbox"/> **New Feature??** Wow... no confirmation.  Add confirmation?
 - <input type="checkbox"/> **New Feature??** Does not clear the old blocks... maybe should set to 100% air and reset before deleting.  Have a parameter of "clear" to perform this task?
 - <input type="checkbox"/> **New Feature??** Settings are deleted from the file system. Probably should move in to a sub folder named "deleted" so there could be an option to undelete a mine?  If accidentally done, could be difficult to tweak it again.
+- <input type="checkbox"/> Confirm the mine was deleted with `/mines list`
+- <input type="checkbox"/> 
 - <input type="checkbox"/> Try something random.  Report if causes issues.
 
 ##### Adding blocks to a Mine
 
-- <input type="checkbox"/> Try adding with `/mines block add <blockType> <percent>`
+- <input type="checkbox"/> Try adding with `/mines block add <blockType> <percent>` such as what is generated with block search.
 - <input type="checkbox"/> Try adding with `/mines block search <searchTerm>`
-- <input type="checkbox"/> 
+- <input type="checkbox"/> This should not add a zero percent chance block.
+- <input type="checkbox"/> **New Feature??** Do not add a zero percent! Currently it does, which is in error.
+- <input type="checkbox"/>  **New Feature??** Allow block edit add a block if it does not already exist.
 - <input type="checkbox"/> 
 - <input type="checkbox"/> Try something random.  Report if causes issues.
 
@@ -74,6 +89,7 @@ so it is not forgotten.
 - <input type="checkbox"/> Try using `/mines block remove <mineName> <block>`.
 - <input type="checkbox"/> Type using info on the mine, then click a block to edit it, and set the percent to ZERO.
 - <input type="checkbox"/> Confirm that it's been removed; it should show the updated block listing.
+- <input type="checkbox"/> **New Feature??** If a non-block type is added to a mine, it cannot be removed. Allow it to be removed if it is in there.
 - <input type="checkbox"/> 
 - <input type="checkbox"/> Try something random.  Report if causes issues.
 
@@ -102,11 +118,6 @@ so it is not forgotten.
 - <input type="checkbox"/> **New Feature??** Try to figure out how to validate if it a block and not an object.  Object are selectable, but never spawnable within the mines.  So if we can eliminate them from the listing, then the search will be tighter.
 - <input type="checkbox"/> 
 
-**Example of including images:**
-![Optional alt text if image cannot be shown](assets/68833714-22f1ab80-0682-11ea-86ae-ba5b72ed5c21.png "Sample of generated /mines add block command with default values replaced and cursor after the mine name (looks like a pipe)")
-
-<img src="assets/68833714-22f1ab80-0682-11ea-86ae-ba5b72ed5c21.png" height="36" />
-
 ##### TP players out upon mine reset
 
 **TP conditions** 
@@ -117,6 +128,9 @@ so it is not forgotten.
 - <input type="checkbox"/> Log off when in a mine - **Fails** - Suffocation when reconnects
 - <input type="checkbox"/> Set a home and TP back, or use /back - **Fails ??** - Should be prevented due to unsafe teleport?
 - <input type="checkbox"/> Try something random.  Report if causes issues.
+- <input type="checkbox"/> **New Feature??** If the player is standing one block below the mine and it resets, they will not be TP'd out and will suffocate.  May need to expand the is-in-the-mine check to include one lower block.
+- <input type="checkbox"/> 
+- <input type="checkbox"/> 
 
 
 ###### Tests with HTML in Mark Down
@@ -131,4 +145,9 @@ so it is not forgotten.
   </li>
 </ul>
 
+
+**Example of including images:**
+![Optional alt text if image cannot be shown](assets/68833714-22f1ab80-0682-11ea-86ae-ba5b72ed5c21.png "Sample of generated /mines add block command with default values replaced and cursor after the mine name (looks like a pipe)")
+
+<img src="assets/68833714-22f1ab80-0682-11ea-86ae-ba5b72ed5c21.png" height="36" />
 

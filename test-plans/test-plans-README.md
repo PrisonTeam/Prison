@@ -1,5 +1,7 @@
 **Test-Plans Plan**
 
+* **Module prison-mine:** [test-plans-prison-mine.md](test-plans-prison-mine.md)
+
 Currently I find myself with a big unknown sitting on my lap.  I want to make a good impact on this project, but
 at this time I'm on my own since everyone who used to be involved are off exploring new universes and having 
 a great time.  I think that is awesome.  But, the fact remains if I'm going to touch code within this project, 
@@ -16,19 +18,23 @@ that professionals savor within this realm.  My point here, is, I'm not a profes
 miss something obvious or not even consider something critical.  But this is a plan, and like all plans, 
 this can be adjusted to better suite the evolution of our knowledge.
 
-Here is the scope of the mother of all intimidations: the number of versions supported in this plugin!  These
-are the test servers that I built.  There are too many to hit every spigot and minecraft release.  My 
-direction is to test on the latest update of a release.  For example, we support minecraft version 1.8, but I'm
-only going to test it on 1.8.8 since that would help to ensure as many bugs within the Spigot api are fixed
-as possible.  That way this project is less about supporting the behavior of known bugs, and more on providing
-fun features to help make our servers awesome!  Right? :)
+
+Here is the scope of the mother of all intimidations: the number of versions supported in this 
+plugin!  The following are the test servers that I built, hitting only the latest release of each 
+major minecraft version.  There are too many possible combinations of releases that have been
+published to include as an actual test severe.  My 
+direction is to test on the latest update of a release.  For example, we support minecraft 
+version 1.8, but I'm only going to test it on 1.8.8 since that would help to ensure as 
+many bugs within the Spigot api are fixed as possible.  That way this project is less about 
+supporting the behavior of known bugs, and more on providing
+fun features to help make our servers awesome!  Right? :)  I hope so.
 * **Minecraft 1.8.8**
 * **Minecraft 1.9.4**
 * **Minecraft 1.10.2**
 * **Minecraft 1.11**
 * **Minecraft 1.12.2**
 * **Minecraft 1.13.2**
-* **Minecraft 1.14.2**
+* **Minecraft 1.14.2** - Failures. Cannot support right now.
 
 It really should be noted that this is a lot of ground to cover.  If you are running a server that is using
 a version other than one of these and you hit a problem, I could spin up and test on that.  Honestly,
