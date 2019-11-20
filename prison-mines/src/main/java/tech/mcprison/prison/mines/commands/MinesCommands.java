@@ -144,6 +144,11 @@ public class MinesCommands {
             return;
         }
 
+        if ( chance <= 0 ) {
+        	sender.sendMessage( "The percent chance must have a value greater than zero." );
+        	return;
+        }
+        
         final double[] totalComp = {chance};
         m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
         if (totalComp[0] > 100.0d) {
