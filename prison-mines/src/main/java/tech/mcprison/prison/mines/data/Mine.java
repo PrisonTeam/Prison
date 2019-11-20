@@ -161,9 +161,8 @@ public class Mine {
             World world = worldOptional.get();
 
             MineManager manager = PrisonMines.getInstance().getMineManager();
-            if ( !manager.getRandomizedBlocks().containsKey( name ) ) {
-            	manager.generateBlockList(this);
-            }
+            // Generate new set of randomized blocks each time:
+            manager.generateBlockList(this);
             List<BlockType> blockTypes = manager.getRandomizedBlocks().get(name);
 
             teleportAllPlayersOut( world, getBounds().getyBlockMax() );
