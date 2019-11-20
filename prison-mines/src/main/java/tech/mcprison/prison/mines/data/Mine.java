@@ -232,7 +232,7 @@ public class Mine {
             		destination = this.spawn;
             	} else {
             		destination = player.getLocation();
-            		destination.setY( targetY );
+            		destination.setY( targetY + 1 );
             	}
             			
             	player.teleport( destination );
