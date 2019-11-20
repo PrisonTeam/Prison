@@ -74,14 +74,13 @@ be used going forward to ensure the code works, and also to help reproduce issue
 so I can fix problems as they are reported.  The following versions were only tested
 with the prison-mine modules; nothing else.
 
-
-* **Minecraft 1.8.8** - Passed!
-* **Minecraft 1.9.4** - Passed!
-* **Minecraft 1.10.2** - Passed!
-* **Minecraft 1.11** - Passed!
-* **Minecraft 1.12.2** - Passed!
-* **Minecraft 1.13.2** - Passed!
-* **Minecraft 1.14.2** - Failure in /mines block add. Testing stopped.
+    * **Minecraft 1.8.8** - Passed!
+    * **Minecraft 1.9.4** - Passed!
+    * **Minecraft 1.10.2** - Passed!
+    * **Minecraft 1.11** - Passed!
+    * **Minecraft 1.12.2** - Passed!
+    * **Minecraft 1.13.2** - Passed!
+    * **Minecraft 1.14.2** - Failure in /mines block add. Testing stopped.
 
   Note: Minecraft 1.11.2 was released but does not work with the spigot's 1.11 support.
     
