@@ -40,6 +40,7 @@ import tech.mcprison.prison.output.ButtonComponent;
 import tech.mcprison.prison.output.ButtonComponent.Style;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
 
@@ -313,21 +314,28 @@ public class MinesCommands {
         }
         display.addComponent(builder.build());
         
+        // Need to construct a dynamic row of buttons. It may have no buttons, both, or
+        // a combination of previous page or next page.  But it will always have a page
+        // count between the two.
+        RowComponent row = new RowComponent();
         if ( curPage > 1 )
         {
-        	display.addComponent( 
-        			new ButtonComponent( "<-- Previous Page", '-', Style.NEGATIVE)
+        	row.addFancy( 
+        			new ButtonComponent( "&e<-- Prev Page", '-', Style.NEGATIVE)
         			.runCommand("/mines block search " + search + " " + (curPage - 1), 
-        					"View the prior page of search results") );
+        					"View the prior page of search results").getFancyMessage() );
         }
-        
+        row.addFancy( 
+        		new FancyMessage(" &9< &3Page " + curPage + " of " + pages + " &9> ") );
         if ( curPage < pages )
         {
-        	display.addComponent( 
-        			new ButtonComponent( "Next Page -->", '+', Style.POSITIVE)
+   			row.addFancy( 
+        			new ButtonComponent( "&eNext Page -->", '+', Style.POSITIVE)
         			.runCommand("/mines block search " + search + " " + (curPage + 1), 
-        					"View the prior page of search results") );
+        					"View the prior page of search results").getFancyMessage() );
         }
+        display.addComponent( row );
+        
 		return display;
 	}
 
@@ -463,6 +471,8 @@ public class MinesCommands {
             return;
         }
 
+        // TODO check to see if they are the same boundaries, if not, don't change...
+        
         PrisonMines.getInstance().getMineManager().getMine(name).get()
             .setBounds(selection.asBounds());
         PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_redefined")

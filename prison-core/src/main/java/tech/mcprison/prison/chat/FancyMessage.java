@@ -74,7 +74,21 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         jsonString = null;
         dirty = false;
     }
+    
+    public FancyMessage(final List<FancyMessage> msgs) {
+    	messageParts = new ArrayList<>();
+    	for(FancyMessage msg : msgs) {
+    		messageParts.addAll(msg.messageParts);
+    	}
+    	jsonString = null;
+    	dirty = false;
+    }
 
+    public void addFancy(FancyMessage fancyMessage) {
+    	messageParts.addAll( fancyMessage.messageParts );
+    	dirty = true;
+    }
+    
     /**
      * Creates a JSON message without text.
      */
