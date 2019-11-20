@@ -106,6 +106,10 @@ public class Bounds {
     /**
      * Returns whether or not a single point is within these boundaries.  Ensure the same worlds
      * are being compared too.
+     * 
+     * Found an issue where if there is a one block gap under the mine, then technically the player
+     * is not standing within the mine, but their head is within it.  So there is a risk they will 
+     * suffocate upon a reset.  Therefore, we must subtract one from the mine's min y axis.
      *
      * @param location The {@link Location} to check.
      * @return true if the location is within the bounds, false otherwise.
@@ -127,7 +131,7 @@ public class Bounds {
     		double ourZ = Math.floor(location.getZ());
     		
     		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= getyMin() && ourY <= getyMax() // Within Y
+    				&& ourY >= (getyMin() - 1) && ourY <= getyMax() // Within Y
     				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
 //    	}
 
