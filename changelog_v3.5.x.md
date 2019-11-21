@@ -52,7 +52,7 @@ The user cannot add blocks to a mine if they provide a zero chance.
 
 * **Found a bug - Mines would not generate new random pattern**
 Basically when refactoring the mine generation code, I found a duplicate "rebuild mine" 
-funciton call that was not needed. But based upon the original code, there was a 
+function call that was not needed. But based upon the original code, there was a 
 check that preventing it from generating new random patterns before the 
 mines reset.  I left that check in place, which prevented the mines from 
 creating new fill patterns.  The mines now create the proper random fills on each
@@ -61,10 +61,15 @@ reset.
 
 * **New feature: Created RowComponent to group multiple FancyMessages on Same Line**
 This now allows easy generation of more complex content where there can be
-more than one FancyMessage (has hover text, suggests, and run capabilitie when mousing)
+more than one FancyMessage (has hover text, suggests, and run capabilities when mousing)
 per row.  This allows putting the two buttons for block search on the same 
 chat row to reduce lines consumed.
 
+
+**Build artifacts:**
+  Be aware that this build artifact is not production grade and still needs more testing.
+  Note: The reduced size is due to the removal of unused libraries. 
+  * **prison_v3.5.2-alpha.5.jar**    
 
 
 ## tag v3.5.2-alpha.4 - 2019-11-18
