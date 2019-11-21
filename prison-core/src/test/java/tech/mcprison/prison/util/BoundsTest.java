@@ -38,11 +38,15 @@ public class BoundsTest {
 
         assertTrue(bounds.equals(otherBounds));
     }
+    
+    @Test public void fail() throws Exception {
+    	assertTrue( true );
+    }
 
     @Test public void within() throws Exception {
 //    	TestWorld world1 = new TestWorld("test1");
 //    	TestWorld world2 = new TestWorld("test2");
-    	Location loc1 = new Location(null, 0.0, 0.0, 0.0);
+    	Location loc1 = new Location(null, 0.0, 4.0, 0.0);
     	Location loc2 = new Location(null, 10.0, 10.0, 10.0);
     	Location loc3 = new Location(null, 5.0, 5.0, 5.0);
     	
@@ -52,13 +56,28 @@ public class BoundsTest {
 
         toCheck.setY(11.0);
         assertFalse("Y should be out of bounds", bounds.within(toCheck));
-        toCheck.setY(-1.0);
+        toCheck.setY(1.0);
         assertFalse("Y should be out of bounds", bounds.within(toCheck));
         
         toCheck.setY(10.0);
         assertTrue("Y should be within bounds", bounds.within(toCheck));
-        toCheck.setY(0.0);
+        toCheck.setY(6.0);
         assertTrue("Y should be within bounds", bounds.within(toCheck));
+        
+        // Feet of player is at the bottom layer of the mine:
+        toCheck.setY( 4.0 );
+        assertTrue("Y should be within bounds", bounds.within(toCheck));
+        
+        // Feet of player is one layer below of the mine and should be marked as 
+        // within the mine since the player's head is within the mine:
+        toCheck.setY( 3.0 );
+        assertTrue("Y should be within bounds", bounds.within(toCheck));
+              
+        // Feet of player is one layer below of the mine and should be marked as 
+        // within the mine since the player's head is within the mine:
+        toCheck.setY( 2.0 );
+        assertFalse("Y should be out of bounds", bounds.within(toCheck));
+        
         
         // TODO disable until junit is functional
 //        loc1.setWorld(world1);
