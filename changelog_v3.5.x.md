@@ -14,6 +14,59 @@ and address some of the outstanding bugs.  If I can leave this in a slightly
 better state from what I found it, then I will consider this a success.
 
 
+## tag v3.5.2-alpha.5 - 2019-11-21
+
+* **Update gson library from v1.7 to v1.8.6**
+Updated library.
+
+
+* **Removed the unused library com.fasterxml.jackson**
+This library was not used anywhere so it was removed from the gradle configs.
+
+
+* **Removed the unused library json-simple v1.1.1**
+This is also an obsolete and archived project. Removed to reduce compile time
+and bloat of the build.
+
+
+* **TP Player if feet are one block below mine**
+Technically they would not be standing within the mine, but since their head is within the
+mine they could suffocate when the mine resets.  So include the layer below the mine
+to determine if the player needs to be TP'd out.
+
+
+* **Created a unit test for player being one block below the mine**
+This is to ensure the player will be properly identified as being within the mine, although
+they are standing one layer below the mine.
+
+
+* **TP Player up one block higher**
+The player needs to be TP'd one block higher if a spawn does not exist.
+The former vertical target needed to be one block higher. This got lost
+within the prior refactoring.
+
+
+* **Prevent adding new blocks that have a chance of zero**
+The user cannot add blocks to a mine if they provide a zero chance. 
+
+
+* **Found a bug - Mines would not generate new random pattern**
+Basically when refactoring the mine generation code, I found a duplicate "rebuild mine" 
+funciton call that was not needed. But based upon the original code, there was a 
+check that preventing it from generating new random patterns before the 
+mines reset.  I left that check in place, which prevented the mines from 
+creating new fill patterns.  The mines now create the proper random fills on each
+reset.
+
+
+* **New feature: Created RowComponent to group multiple FancyMessages on Same Line**
+This now allows easy generation of more complex content where there can be
+more than one FancyMessage (has hover text, suggests, and run capabilitie when mousing)
+per row.  This allows putting the two buttons for block search on the same 
+chat row to reduce lines consumed.
+
+
+
 ## tag v3.5.2-alpha.4 - 2019-11-18
 
 * **Found another possible cause for suffocation after a mine reset**
