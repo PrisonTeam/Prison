@@ -60,9 +60,6 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency('com.google.code.gson:gson:2.8.6'))
-        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.7.0'))
-        include(dependency('com.fasterxml.jackson.core:jackson-core:2.7.0'))
-        include(dependency('com.fasterxml.jackson.core:jackson-annotations:2.7.0'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(project(':prison-core'))
