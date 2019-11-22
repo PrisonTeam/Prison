@@ -219,7 +219,7 @@ public class MineManager {
      * Saves all the mines in this list. This should only be used for the instance created by {@link
      * PrisonMines}
      */
-    public void saveMine(Mine mine) {
+    private void saveMine(Mine mine) {
         coll.insert(mine.getName(), mine.toDocument());
     }
 

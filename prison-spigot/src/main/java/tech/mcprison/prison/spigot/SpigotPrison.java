@@ -68,7 +68,7 @@ public class SpigotPrison extends JavaPlugin {
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+//    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onLoad() {
         // The meta file is used to see if the folder needs converting.
