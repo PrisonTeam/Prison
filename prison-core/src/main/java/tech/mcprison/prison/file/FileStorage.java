@@ -1,9 +1,7 @@
 package tech.mcprison.prison.file;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,20 +12,13 @@ import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.store.Storage;
 
 /**
- * <p><b>BIG FAT WARNING !!!</b> This class IS identical to the REAL class 
- * <code>tech.mcprison.prison.spigot.store.file.FileStorage</code> and it is 
- * SUPPOSED to be 100% the same.  This is being updated until for now, until
- * it can be eliminated.
- * </p>
- * 
  * 
  * @author Faizaan A. Datoo
  */
 public class FileStorage 
+	extends FileVirtualDelete
 	implements Storage 
 {
-	public static final String FILE_LOGICAL_DELETE_PREFIX = ".deleted_";
-	
     private File rootDir;
     private Map<String, Database> databaseMap;
 
@@ -149,7 +140,7 @@ public class FileStorage
 
         if (directory.exists() && db != null) {
         	// Perform a logical delete on the database so it can be manually recovered if this is an error:
-        	renameAsDeleted( directory );
+        	virtualDelete( directory );
         	
         	// This dispose just removes the entries from the collection and deletes nothing from the file system:
         	db.dispose();
@@ -161,38 +152,6 @@ public class FileStorage
         return results;
     }
 
-    /**
-     * <p>This function will rename a source with a prefix of <code>.deleted_</code> and a 
-     * suffix of <code>_</code><i>timestamp</i>.  The prefix is used to logically delete
-     * resources since it would be rather rare that a user would delete a whole 
-     * sub-storage system.  This provides the ability to manually undo a mistake.
-     * </p>
-     * 
-     * @param source
-     * @return
-     */
-    private boolean renameAsDeleted( File source )
-    {
-        // It would be rare to delete a database.  Instead just rename it to deleted incase it needs to be recovered:
-        SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH:mm:ss.SSSZ");
-        File newName = new File( source.getParentFile(), FILE_LOGICAL_DELETE_PREFIX + source.getName() + sdf.format( new Date() ));
-        return source.renameTo( newName );
-    }
-    
-    /**
-     * <p>This function will return a boolean value to indicate if it has been logically 
-     * deleted.  It will ONLY inspect the beginning of the file name which much have
-     * a prefix of <code>.deleted_</code>.  The trailing timestamp is ignored.
-     * </p>
-     * 
-     * @param source
-     * @return
-     */
-    private boolean isDeleted( File source )
-    {
-    	return source.getName().toLowerCase().startsWith( FILE_LOGICAL_DELETE_PREFIX );
-    }
-    
     /**
      * <p>This function returns a List of FileDatabase values.  It does not return the
      * keys.

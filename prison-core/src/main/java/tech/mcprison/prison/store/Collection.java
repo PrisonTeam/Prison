@@ -40,14 +40,14 @@ public interface Collection {
      */
     void remove(String key);
 
-    /**
-     * Filters through each document in the collection and attempts to find a match based on whatever is stored
-     * in the passed in document.
-     *
-     * @param document A document containing everything the filter matches should contain.
-     * @return A list of matching documents. May be empty, but will never be null.
-     */
-    List<Document> filter(Document document);
+//    /**
+//     * Filters through each document in the collection and attempts to find a match based on whatever is stored
+//     * in the passed in document.
+//     *
+//     * @param document A document containing everything the filter matches should contain.
+//     * @return A list of matching documents. May be empty, but will never be null.
+//     */
+//    List<Document> filter(Document document);
 
     /**
      * @return Returns a list of all documents in this collection.

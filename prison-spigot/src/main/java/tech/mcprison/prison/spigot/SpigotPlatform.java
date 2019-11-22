@@ -18,6 +18,16 @@
 
 package tech.mcprison.prison.spigot;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,10 +40,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
+import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -49,15 +61,10 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
-import tech.mcprison.prison.spigot.store.file.FileStorage;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Faizaan A. Datoo
@@ -81,15 +88,16 @@ class SpigotPlatform implements Platform {
 
     private Storage initStorage() {
         String confStorage = plugin.getConfig().getString("storage", "file");
-        if (confStorage.equalsIgnoreCase("file")) {
-            return new FileStorage(plugin.getDataDirectory());
-        } else {
+        Storage storage = new FileStorage(plugin.getDataDirectory());
+        
+        if (!confStorage.equalsIgnoreCase("file")) {
             Output.get().logError("Unknown file storage type in configuration \"" + confStorage
                 + "\". Using file storage.");
             Output.get().logWarn(
                 "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
-            return new FileStorage(plugin.getDataDirectory());
         }
+        
+        return storage;
     }
 
     @Override public Optional<World> getWorld(String name) {

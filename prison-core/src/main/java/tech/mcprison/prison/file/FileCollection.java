@@ -1,14 +1,5 @@
 package tech.mcprison.prison.file;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import tech.mcprison.prison.store.Collection;
-import tech.mcprison.prison.store.Document;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +8,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import tech.mcprison.prison.store.Collection;
+import tech.mcprison.prison.store.Document;
 
 /**
  * @author Faizaan A. Datoo
@@ -98,17 +98,18 @@ public class FileCollection implements Collection {
         documentCache.invalidate(key);
     }
 
-    @Override public List<Document> filter(Document document) {
-        List<Document> ret = new ArrayList<>();
-
-        for (Document doc : getAll()) {
-            if (Maps.difference(document, doc).entriesInCommon().size() == document.size()) {
-                ret.add(doc);
-            }
-        }
-
-        return ret;
-    }
+    // Not used... remove:
+//    @Override public List<Document> filter(Document document) {
+//        List<Document> ret = new ArrayList<>();
+//
+//        for (Document doc : getAll()) {
+//            if (Maps.difference(document, doc).entriesInCommon().size() == document.size()) {
+//                ret.add(doc);
+//            }
+//        }
+//
+//        return ret;
+//    }
 
     @Override public List<Document> getAll() {
         File[] files = collDir.listFiles((dir, name) -> name.endsWith(".json"));
