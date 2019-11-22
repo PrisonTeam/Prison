@@ -192,6 +192,9 @@ public class Mine {
 //                asyncGen();
 //            }
 
+            // free up memory:
+            manager.clearCache();
+            
             // If a player falls back in to the mine before it is fully done being reset, 
             // such as could happen if there is lag or a lot going on within the server, 
             // this will TP anyone out who would otherwise suffocate.  I hope! lol
@@ -259,16 +262,16 @@ public class Mine {
     }
     
 
-    private void asyncGen() {
-        try {
-            Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(
-                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
-        } catch (Exception e) {
-            Output.get().logWarn("Couldn't generate blocks for mine " + name
-                + " asynchronously. The blocks will be generated synchronously later.", e);
-        }
-    }
+//    private void asyncGen() {
+//        try {
+//            Prison.get().getPlatform().getScheduler()
+//                .runTaskLaterAsync(
+//                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
+//        } catch (Exception e) {
+//            Output.get().logWarn("Couldn't generate blocks for mine " + name
+//                + " asynchronously. The blocks will be generated synchronously later.", e);
+//        }
+//    }
 
 
     /**
