@@ -22,10 +22,12 @@ package tech.mcprison.prison.mines.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import tech.mcprison.prison.file.FileIOData;
+
 /**
  * Represents the Mines configuration file.
  */
-public class MinesConfig {
+public class MinesConfig implements FileIOData {
 
     /**
      * True if randomized blocks for mines should be cached for faster resets. False otherwise
