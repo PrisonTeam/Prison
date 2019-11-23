@@ -10,4 +10,5 @@ import java.util.HashMap;
  * @since 1.0
  */
 public class Document extends HashMap<String, Object> {
+	private static final long serialVersionUID = 1L;
 }

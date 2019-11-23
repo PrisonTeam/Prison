@@ -37,6 +37,15 @@ public class FileStorage
         refresh();
     }
     
+    /**
+     * <p>Refresh is a function that will clear the databaseMap collection if it contains anything,
+     * then load all possible FileDatabase objects, ignoring those that been virtually deleted.
+     * </p>
+     * 
+     *  <p>It will print an info message to the system console listing all of the FileDatabase
+     *  directories that have been logically/virtually deleted.
+     *  </p>
+     */
     public void refresh() {
     	databaseMap.clear();
     	
