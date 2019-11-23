@@ -117,19 +117,26 @@ public class FileStorage
     }
 
     /**
-     * This function will perform a logical delete on a FileDatabase (a folder).
+     * <p>This function will perform a logical delete on a FileDatabase (a folder).
      * The actual directory has to exist on the file system and has to have an
      * entry within the databaseMap before the attempt is made.
+     * </p>
      * 
-     * Upon deleting, the reference within the databaseMap will be removed and the
+     * <p>Upon deleting, the reference within the databaseMap will be removed and the
      * directory will be renamed with a prefix of <code>.deleted_</code> and a 
      * suffix of <code>_</code><i>timestamp</i>.
+     * </p>
      * 
-     * If the user changes their mind, then need to rename the folder on the 
-     * file system, then restart the server.  It is not recommended to do a /reload, 
+     * <p>If the user changes their mind, then they need to rename the folder on the 
+     * file system manually, then restart the server.  It is not recommended to do a /reload, 
      * although that may work.
+     * </p>
+     * 
+     * <p>Note: There really is no way for the user to ever delete a FileDatabase from
+     * what I can tell. lol </p>
      * 
      * @param name
+     * @return boolean value indicating if the delete was successful
      */
     @Override
     public boolean deleteDatabase(String name) {
@@ -147,6 +154,10 @@ public class FileStorage
         	//directory.delete();
         	databaseMap.remove(name);
         	results = true;
+        } else {
+        	String message = "The attempt to delete a FileDatabase named " + name + 
+        			" failed because either the directory does not exist or it was not in the databaseMap.";
+        	Output.get().logWarn( message );
         }
         
         return results;
