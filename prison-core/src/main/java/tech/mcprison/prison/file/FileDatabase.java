@@ -137,7 +137,7 @@ public class FileDatabase
         	virtualDelete( collDir );
         	
         	// This dispose just removes the entries from the collection and deletes nothing from the file system:
-        	coll.dispose();
+        	//coll.dispose();
         	//results = collDir.delete();
         	collectionMap.remove(name);
         	results = true;

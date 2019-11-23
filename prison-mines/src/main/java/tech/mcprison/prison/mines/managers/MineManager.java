@@ -33,6 +33,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -180,19 +181,14 @@ public class MineManager {
     }
 
     public static MineManager fromDb() {
-        Optional<tech.mcprison.prison.store.Collection> collOptional =
-            PrisonMines.getInstance().getDb().getCollection("mines");
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+        Optional<Collection> collOptional = pMines.getDb().getCollection("mines");
 
         if (!collOptional.isPresent()) {
-            PrisonMines.getInstance().getDb().createCollection("mines");
-            collOptional = PrisonMines.getInstance().getDb().getCollection("mines");
-
-            if (!collOptional.isPresent()) {
-                Output.get().logError("Could not create 'mines' collection.");
-                PrisonMines.getInstance().getStatus()
-                    .toFailed("Could not create mines collection in storage.");
-                return null;
-            }
+        	Output.get().logError("Could not create 'mines' collection.");
+        	pMines.getStatus().toFailed("Could not create mines collection in storage.");
+        	return null;
         }
 
         return new MineManager(collOptional.get());
@@ -216,11 +212,11 @@ public class MineManager {
     }
 
     /**
-     * Saves all the mines in this list. This should only be used for the instance created by {@link
+     * Saves the specified mine. This should only be used for the instance created by {@link
      * PrisonMines}
      */
     private void saveMine(Mine mine) {
-        coll.insert(mine.getName(), mine.toDocument());
+        coll.save(mine.toDocument());
     }
 
     public void saveMines(){

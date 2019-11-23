@@ -1,132 +1,105 @@
 package tech.mcprison.prison.file;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
 /**
- * @author Faizaan A. Datoo
+ * <p>This makes no sense to cache anything.  Let the operations performed at this level 
+ * be live against the file system to keep this simple, improve performance, and to 
+ * reduce the amount of memory used.
+ * </p>
  */
-public class FileCollection implements Collection {
-
-    private static Gson gson;
-
-    static {
-        gson = new GsonBuilder().disableHtmlEscaping().create();
-    }
-
+public class FileCollection 
+	extends JsonFileIO
+	implements Collection 
+{
     private File collDir;
-    private LoadingCache<String, Document> documentCache;
-
+    
     public FileCollection(File collDir) {
+    	// This may be within a module. If so then pass these values...
+    	super(null, null);
+    	
         this.collDir = collDir;
-        this.documentCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES)
-            .build(new CacheLoader<String, Document>() {
-                @Override public Document load(String key) throws Exception {
-                    return readFromDisk(key);
-                }
-            });
     }
-
-    @Override public String getName() {
+    
+    /**
+     * <p>This is the name of the collection.</p>
+     * 
+     * @return the collection's name
+     */
+    @Override 
+    public String getName() {
         return collDir.getName();
     }
 
-    @Override public Optional<Document> get(String key) {
-        try {
-            return Optional.ofNullable(documentCache.get(key));
-        } catch (ExecutionException e) {
-            return Optional.empty();
-        }
+    /**
+     * <p>Refresh is a function that will clear the databaseMap collection if it contains anything,
+     * then load all possible FileDatabase objects, ignoring those that been virtually deleted.
+     * </p>
+     * 
+     *  <p>It will print an info message to the system console listing all of the FileDatabase
+     *  directories that have been logically/virtually deleted.
+     *  </p>
+     */
+    @Override
+    public List<Document> getAll() {
+    	List<Document> allDocs = new ArrayList<>();
+    	
+    	// Each folder in the root directory is its own database.
+    	// We'll initialize each of them here.
+    	File[] collectionFiles = this.collDir.listFiles((dir, name) -> name.endsWith(".json"));
+    	if (collectionFiles != null) {
+    		for (File dbFile : collectionFiles) {
+    			if ( isDeleted( dbFile ) ) {
+    				String message = "FileCollection.getAll skipping logically deleted FileDocument: " + 
+    							dbFile.getAbsolutePath();
+    				Output.get().logInfo( message );
+    			} else {
+    				Document doc = (Document) readJsonFile(dbFile, new Document());
+    				if ( doc != null )
+    				{
+    					allDocs.add( doc );
+    				}
+    			}
+    		}
+    	}
+    	
+    	return allDocs;
     }
+    
 
-    private Document readFromDisk(String key) {
-        File file = getFile(key);
-        if (!file.exists()) {
-            return null;
-        }
-
-        try {
-            String json = new String(Files.readAllBytes(file.toPath()));
-            return gson.fromJson(json, Document.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override 
+    public Optional<Document> get(String key) {
+    	File dbFile = new File(collDir, key + ".json");
+    	Document doc = (Document) readJsonFile(dbFile, new Document());
+    	
+        return Optional.ofNullable(doc);
     }
-
-    @Override public void insert(String key, Document document) {
-        writeToDisk(key, document);
-        documentCache.put(key, document);
+    
+    @Override 
+    public void save(Document document)
+    {
+    	save((String)document.get("name"), document);
     }
-
-    private void writeToDisk(String key, Document document) {
-        File file = getFile(key);
-        if (file.exists()) {
-            file.delete();
-        }
-
-        try {
-            String json = gson.toJson(document);
-            file.createNewFile();
-            Files.write(file.toPath(), json.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    
+    @Override 
+    public void save(String filename, Document document)
+    {
+    	File dbFile = new File(collDir, filename + ".json");
+    	saveJsonFile( dbFile, document );
     }
-
-    @Override public void remove(String key) {
-        File file = getFile(key);
-        if (file.exists()) {
-            file.delete();
-        }
-
-        documentCache.invalidate(key);
-    }
-
-    // Not used... remove:
-//    @Override public List<Document> filter(Document document) {
-//        List<Document> ret = new ArrayList<>();
-//
-//        for (Document doc : getAll()) {
-//            if (Maps.difference(document, doc).entriesInCommon().size() == document.size()) {
-//                ret.add(doc);
-//            }
-//        }
-//
-//        return ret;
-//    }
-
-    @Override public List<Document> getAll() {
-        File[] files = collDir.listFiles((dir, name) -> name.endsWith(".json"));
-        if (files != null) {
-            for (File file : files) {
-                get(file.getName().split("\\.")[0]);
-            }
-        }
-        return new ArrayList<>(documentCache.asMap().values());
-    }
-
-    @Override public void dispose() {
-        documentCache.invalidateAll();
-    }
-
-    private File getFile(String key) {
-        return new File(collDir, key + ".json");
+    
+    @Override 
+    public boolean delete(String name)
+    {
+    	File dbFile = new File(collDir, name + ".json");
+    	return virtualDelete( dbFile );
     }
 
 }

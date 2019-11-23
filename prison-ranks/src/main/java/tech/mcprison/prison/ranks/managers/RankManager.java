@@ -91,7 +91,7 @@ public class RankManager {
      * @throws IOException If the rank could not be serialized, or if the rank could not be saved to the file.
      */
     public void saveRank(Rank rank, String saveFile) throws IOException {
-        collection.insert(saveFile, rank.toDocument());
+        collection.save(saveFile, rank.toDocument());
     }
 
     /**
@@ -229,7 +229,7 @@ public class RankManager {
         loadedRanks.remove(rank);
 
         // ... and remove the rank's save files.
-        collection.remove("rank_" + rank.id);
+        collection.delete("rank_" + rank.id);
         return true;
     }
 

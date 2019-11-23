@@ -88,7 +88,8 @@ public class PlayerManager {
      * @see #savePlayer(RankPlayer) To save with the default conventional filename.
      */
     public void savePlayer(RankPlayer player, String playerFile) throws IOException {
-        collection.insert(playerFile, player.toDocument());
+        collection.save(playerFile, player.toDocument());
+//        collection.insert(playerFile, player.toDocument());
     }
 
     public void savePlayer(RankPlayer player) throws IOException {

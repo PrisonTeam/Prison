@@ -12,6 +12,7 @@ import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.Output;
 
 public abstract class FileIO
+	extends FileVirtualDelete
 {
 
 	private final SimpleDateFormat sdf;

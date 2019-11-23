@@ -515,7 +515,7 @@ public class MineManager implements List<Mine> {
      */
     public void save() {
         for (Mine mine : this) {
-            coll.insert(mine.getName(), mine.toDocument());
+            coll.save(mine.toDocument());
         }
     }
 

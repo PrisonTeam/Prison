@@ -90,7 +90,7 @@ public class LadderManager {
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
     public void saveLadder(RankLadder ladder, String fileKey) throws IOException {
-        collection.insert(fileKey, ladder.toDocument());
+        collection.save(fileKey, ladder.toDocument());
     }
 
     /**
@@ -180,7 +180,8 @@ public class LadderManager {
         loadedLadders.remove(ladder);
 
         // ... and remove the ladder's save files.
-        collection.remove("ladder_" + ladder.id);
+        collection.delete("ladder_" + ladder.id);
+//        collection.remove("ladder_" + ladder.id);
         return true;
     }
 
