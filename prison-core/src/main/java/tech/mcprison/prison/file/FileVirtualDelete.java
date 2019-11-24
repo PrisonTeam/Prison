@@ -21,7 +21,7 @@ public abstract class FileVirtualDelete
 	
     /**
      * <p>This function will rename a source with a prefix of <code>.deleted_</code> and a 
-     * suffix of <code>_</code><i>timestamp</i>.  The prefix is used to logically delete
+     * suffix of <code>_</code><i>timestamp</i><code>.del</code>.  The prefix is used to logically delete
      * resources since it would be rather rare that a user would delete a whole 
      * sub-storage system.  This provides the ability to manually undo a mistake.
      * </p>
@@ -32,8 +32,9 @@ public abstract class FileVirtualDelete
     protected boolean virtualDelete( File source )
     {
         // It would be rare to delete a database.  Instead just rename it to deleted incase it needs to be recovered:
-        SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH:mm:ss.SSSZ");
-        File newName = new File( source.getParentFile(), FILE_LOGICAL_DELETE_PREFIX + source.getName() + sdf.format( new Date() ));
+        SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
+        String name = FILE_LOGICAL_DELETE_PREFIX + source.getName() + sdf.format( new Date() ) + ".del";
+        File newName = new File( source.getParentFile(), name);
         return source.renameTo( newName );
     }
     

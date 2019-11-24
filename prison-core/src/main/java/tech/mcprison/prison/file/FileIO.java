@@ -32,7 +32,7 @@ public abstract class FileIO
 		this.errorManager = errorManager;
 		this.status = status;
 
-		this.sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.SSSZ");
+		this.sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 	}
 
 	
