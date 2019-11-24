@@ -75,17 +75,20 @@ public class MineManager {
     }
 
     /**
-     * Adds a {@link Mine} to this {@link MineManager} instance
+     * Adds a {@link Mine} to this {@link MineManager} instance.
+     * 
+     * Also saves the mine to the file system.
      *
      * @param c the mine instance
      * @return if the add was successful
      */
     public boolean add(Mine c) {
-        if (mines.contains(c)) {
-            return false;
-        } else {
-            return mines.add(c);
+    	boolean results = false;
+        if (!mines.contains(c)){
+        	saveMine( c );
+            results = mines.add(c);
         }
+        return results;
     }
 
     private void selectiveSend(Player x, Localizable localizable) {
@@ -177,7 +180,8 @@ public class MineManager {
     }
 
     public boolean removeMine(Mine mine){
-        return mines.remove(mine);
+        mines.remove(mine);
+        return coll.delete( mine.getName() );
     }
 
     public static MineManager fromDb() {
@@ -215,7 +219,7 @@ public class MineManager {
      * Saves the specified mine. This should only be used for the instance created by {@link
      * PrisonMines}
      */
-    private void saveMine(Mine mine) {
+    public void saveMine(Mine mine) {
         coll.save(mine.toDocument());
     }
 

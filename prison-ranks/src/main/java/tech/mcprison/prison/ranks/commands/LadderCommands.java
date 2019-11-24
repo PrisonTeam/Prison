@@ -38,14 +38,13 @@ public class LadderCommands {
 
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladderOptional.get());
+            
+            Output.get().sendInfo(sender, "The ladder '%s' has been created.", ladderName);
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while creating your ladder. &8Check the console for details.");
             Output.get().logError("Could not save ladder.", e);
-            return;
         }
-
-        Output.get().sendInfo(sender, "The ladder '%s' has been created.", ladderName);
     }
 
     @Command(identifier = "ranks ladder delete", description = "Deletes a rank ladder.", onlyPlayers = false, permissions = "ranks.ladder")
@@ -58,9 +57,9 @@ public class LadderCommands {
             return;
         }
 
-        boolean success = PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get());
-        if (success) {
+        if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get()) ) {
             Output.get().sendInfo(sender, "The ladder '%s' has been deleted.", ladderName);
+
         } else {
             Output.get().sendError(sender,
                 "An error occurred while removing your ladder. &8Check the console for details.");
@@ -143,15 +142,14 @@ public class LadderCommands {
 
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
+            
+            Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s'.", rank.get().name,
+            		ladder.get().name);
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
             Output.get().logError("Error while saving ladder.", e);
-            return;
         }
-
-        Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s'.", rank.get().name,
-            ladder.get().name);
     }
 
     @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", onlyPlayers = false, permissions = "ranks.ladder")
@@ -174,15 +172,15 @@ public class LadderCommands {
 
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
+
+            Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.get().name,
+            		ladder.get().name);
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while removing a rank from your ladder. &8Check the console for details.");
             Output.get().logError("Error while saving ladder.", e);
-            return;
         }
 
-        Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.get().name,
-            ladder.get().name);
     }
 
 }

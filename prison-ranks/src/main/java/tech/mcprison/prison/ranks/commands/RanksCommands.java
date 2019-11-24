@@ -92,16 +92,16 @@ public class RanksCommands {
         rankLadderOptional.get().addRank(newRank);
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
+            
+            // Tell the player the good news!
+            Output.get()
+            	.sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "The '%s' ladder could not be saved to disk. Check the console for details.",
                 rankLadderOptional.get().name);
             Output.get().logError("Ladder could not be written to disk.", e);
         }
-
-        // Tell the player the good news!
-        Output.get()
-            .sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
 
     }
 
@@ -123,9 +123,8 @@ public class RanksCommands {
             return;
         }
 
-        boolean success = PrisonRanks.getInstance().getRankManager().removeRank(rank);
-
-        if (success) {
+        if ( PrisonRanks.getInstance().getRankManager().removeRank(rank) ) {
+        	
             Output.get().sendInfo(sender, "The rank '%s' has been removed successfully.", rankName);
         } else {
             Output.get()
@@ -245,23 +244,48 @@ public class RanksCommands {
     // set commands
     @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", onlyPlayers = false, permissions = "ranks.set")
     public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost){
-        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rank.isPresent()) {
+        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if (!rankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
-        rank.get().cost = cost;
-        Output.get().sendInfo(sender,"Successfully set the cost of rank '%s' to "+cost,rankName);
+        
+        Rank rank = rankOptional.get();
+        rank.cost = cost;
+        
+        // Save the rank
+        try {
+            PrisonRanks.getInstance().getRankManager().saveRank(rank);
+
+            Output.get().sendInfo(sender,"Successfully set the cost of rank '%s' to "+cost,rankName);
+        } catch (IOException e) {
+            Output.get().sendError(sender,
+                "The rank could not be saved to disk. The change in rank cost has not been saved. Check the console for details.");
+            Output.get().logError("Rank could not be written to disk.", e);
+        }
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag){
-        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rank.isPresent()) {
+        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if (!rankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
-        rank.get().tag = tag;
-        Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
+        
+        Rank rank = rankOptional.get();
+        rank.tag = tag;
+        
+        // Save the rank
+        try {
+            PrisonRanks.getInstance().getRankManager().saveRank(rank);
+
+            Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
+        } catch (IOException e) {
+            Output.get().sendError(sender,
+                "The rank could not be saved to disk. The tag change for the rank has not been saved. Check the console for details.");
+            Output.get().logError("Rank could not be written to disk.", e);
+        }
+
     }
 }
