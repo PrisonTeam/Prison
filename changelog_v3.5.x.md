@@ -14,6 +14,180 @@ and address some of the outstanding bugs.  If I can leave this in a slightly
 better state from what I found it, then I will consider this a success.
 
 
+## tag v3.5.2-alpha.6 - 2019-11-24
+
+* **Guava Caching - Google Caching - Redundancy**
+
+These are notes pertaining to a Gauva library that is not making much sense.
+I'm trying to rationalize its removal for a much simpler DAO interface which can 
+ then better focus on simplicity and reduced failures, along with improved performance.
+ There is a cache that is between the file system and the mines data. I'm sure the same 
+ technologies are in place for the prison-roles too. This is causing 
+ me much trouble since I am trying to figure out why it is there.  These are the reasons
+ why it does not make sense to me.
+   1. All mines are loaded in to memory when the server starts.  "All mines."
+   2. All mines remain in memory while the server is running.
+   3. There is no reason to reload from the files system, and even if someone manually 
+       modified the file system version, the cache will not reflect those changes.
+   4. The cache is a Map. It's not a mirror image of what is on the file system.  It is 
+   not a mirror image of the mines that are stored in memory.
+   5. I cannot find anything that uses the cache other than initial mines loader.
+   6. It is consuming memory with no purpose.
+   7. The data is in duplication of the actual Mines data.
+   8. Overhead to maintain the cache and evict stale objects (read: all objects 
+   after 5 minutes)
+   9. Yet another library that really is not needed that is bloating the plugin's 
+   jar file.
+   10. Added level of complexity, which could possibly hide bugs or make it far more 
+   difficult for less experienced programmers to maintain the project, which could lead
+   to serious and fatal bugs or loss of customer's data.
+   11. When coupled with the project's Document, Collections, and Database abstraction it 
+   makes it really difficult to figure out how data is getting pass through the layers, and
+   what transactions are operating upon the data.  Hence could be more difficult to debug
+   or track down intermittent failures.
+   12. When writing a changed Mine to the file system, the cache is updated, but nothing 
+   will reuse it.  It has an access count of 1 which is generally hit when the server starts.
+   13. Instead of an active cache, the plugin would be better served with a robust DAO.
+   14. Focus needs to be redirected to simplicity in the use of JSON objects.  Way too much 
+   manual manipulation of the data is happening to coercion it in to either the Java objects,
+   or the json structure.  The plugin should allow the JSON tools deal with the ORM since
+   they are really good at that, and it would help reduce plugin complexity and improve
+   performance and reliability.
+   15. There has been a few reports of missing data.  I cannot help think that the 
+   possible cause could be hidden somewhere in the layers of abstraction dealing with
+   the files on the file system.
+   16. Simplification could help extend the plugin's data storage to a SQL database, or
+   a no-SQL database.  Hence how the DAO could extend the flexibility.
+   17. Side effect of the cache is that there is almost full duplication of the FileCollection 
+   code within the source code for testing.  Unit testing should not be performed against 
+   file system objects since that defeats the purpose of the unit tests.  Also I'm not really 
+   sure why the duplication exists, but it is in duplication and could become a liability. 
+   I did not review what's in the test source, so I don't know its true purpose.
+   18. Another issue is with updates to the file system for Mines. I'm not 100% sure what's
+   going on, but when changes are made in one mine, all mines appear to be saved at the same 
+   time.  Mine data files should only be saved when their data changes. Saving all mines is 
+   possibly risky since the original is being deleted before the update is written. (I will
+   be fixing that at least).
+
+So I think I made a good point for Guava's removal: so be it.
+
+But... (there's always a but) If there is a good reason to use a cache on something that 
+can benefit it, then it will be brought back, but only for those resources that can benefit.
+
+
+* **Update the FileStorage Class**
+Provided Java docs and also the logging of warnings.
+Altered the behavior so it actually does not delete a FileDatabase but instead it virtually deletes it.  
+This provides the user with a way to undelete something if the realize later they should not have 
+deleted it  To undelete it, they would have to manually rename the underlying directory and then 
+restart the server.
+Also cleaned up the nature of some of the code so the functions have one exit point.
+Updated Storage so the functions are declared as public and so createDatabase and deleteDatabase returns 
+a boolean value to indicate if it was successful so the code using these functions know if it should 
+generate warnings.
+
+**Warning:** There is an identical copy of FileStorage, FileCollection, and FileDatabase located within the prison-core/src/test/java directory which must mirror the real ones in the prison-spigot module.
+
+
+* **Refactored the Virtual Delete**
+I created an abstract class that has the virtual delete code in it so now anything that needs to use
+that functionality can extend from that class.  I updated FileStorage so it now extends from
+FileVirtualDelete.
+
+
+* **Refactored FileStorage, FileCollection, and FileDatabase**
+I deleted these three source files from the prison-spigot module.  Not sure why they were even there?
+That never really made sense, nor did I try to figure that out since it appeared like a simple refactoring
+would work well.
+I then moved the the prison-core source for these three classes from src/**test**/java to
+src/**main**/java.  
+Had to update the include for prison-spigot module's SpigotPlatform.  Everything compiles well and works. 
+
+
+* **Found and fixed a fatal bug in PrisonMines.enable()**
+Within PrisonMines.enable() the errorManager was being instantiated AFTER initConfig but if there was a 
+failure with initConfig, then it would have hit a Null Pointer Exception since that was what the value 
+of errorManager was, a null since it was not initialized yet.
+
+
+* **Created FileIO, JsonFileIO, and FileIOData**
+Created a couple of classes and an interface to deal better with saving and loading of the data and to also 
+better encapsulate the generation of the JSON files.  The MinesConfig class was the first class to get 
+this hooked up with, which simplified a great deal of the code that deals with files.
+
+
+* **Minor updates to PrisonMines class**
+asyncGen is not being used right now, so commented it out to eliminate warnings.  May revisit in the future with actual mine resets instead of just precomputing.
+Also clear the precomputed new blocks for the mines.  Frees up memory between resets of the mines.
+
+
+* **Major changes for the FileCollection and Document related classes**
+This was a major change that encompasses the removal of Guava, the caching library.
+Everything should work the same as before, but with the exception of saving the individual 
+files as change occur; that will be added in next.  This touched basically every module
+including the prison-ranks.
+
+
+* **Clear generated mine blocks between resets**
+Will free up some memory. Not convinced there is much of performance gain by precomputing it
+or generating it asynchronously.  Will have to revisit and take measurements on timings.
+Good chance that just staggering mine resets would do more for overall performance than 
+trying to push them all through at the same time.
+
+
+* **Update FileStorage and FileDatabase**
+These changes are fairly similar in nature and the two classes are so very similar. 
+Maybe in the future they can be merged so there is the same code base handling both of them.
+
+
+* **Various clean up items**
+Like removal of useless comments that are in the wrong places.  Fixing includes that are including
+packages that are not being used.  Removal of warnings.  Etc... just mostly items that will result
+is easier to read code without any functional changes (and no program changes in most places).
+
+
+* **Simple refactorings**
+There were a few items that I refactored back in to their controlling class. For example ranks 
+and ladders add on an id to generate their file names.  I created a filename function for those
+classes so externally all users of those classes do not have to know what the business rules are
+for constructing the filenames. This also can help to eliminate errors in the future; only one
+location for constructing filename.
+
+
+* **Need to update gradle - Was at v4.4.1 - Upgraded to v4.10.3**
+Currently this project is using Gradle v4.4.1 and it needs to be updated to v5.6.4 or 
+even v6.0.1 which is the current latest release.
+But to do that it must be incrementally updated to each minor version and you cannot just 
+jump ahead or there will be failures.  At each step you need to evaluate your build scripts and
+then make needed adjustments before moving onward.
+
+    * **Versions Upgraded To:**: **v4.4.1**, **v4.5.1**, **v4.6**, **v4.7**, **v4.8.1**, **v4.9**, **v4.10.3**, 
+    * **Versions to be Upgraded To**: v5.0, v5.1.1, v5.2.1, v5.3.1, v5.4.1, v5.5.1, v5.6.4, v6.0, v6.0.1  
+    * <code>gradlew wrapper --gradle-version 4.5.1</code> :: Sets the new wrapper version  
+    * <code>gradlew --version</code> :: Will actually install the new version  
+    * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+
+
+  * v5.0 Incompatibility issues:
+    * v4.6 hit an incompatibility with v5.0 with command line warnings - Added the gradle.properties to better control the logging of errors.
+    * v4.7 hit another incompatibility with v5.0 with the lack of annotationProcessor for resources that are using annotations. - Later versions of Gradle identified the source of this issue and I was able to add an annotationProcessor to the prison-sponge's build.gradle settings.
+    * v4.9 hit another incompatibility with v5.0. The 'deferred configurable' behavior of the 'publishing {}' block has been deprecated. From what I can tell, it should be all right? 
+    * v4.10.3 hit another incompatibility with the  AbstractFileCollection.getBuildDependencies() method has been deprecated. 
+
+I'm going to call it quits for now with upgrading gradle. v4.10.3 is closer to a current release and I need more time to review the last few issues.
+
+
+
+**Build artifacts:**  
+  Be aware that this build artifact is not production grade and still needs more testing.
+  * **prison_v3.5.2-alpha.6.jar**    
+
+**NOTE:** I may not release this build artifact until I get a decent amount of testing done 
+first. So much core code has changed, that I do not want to risk any unexpected issues. 
+Of course no one should ever use an alpha release on a *production* server, but it
+happens.
+
+
 ## tag v3.5.2-alpha.5 - 2019-11-21
 
 * **Update gson library from v1.7 to v1.8.6**
