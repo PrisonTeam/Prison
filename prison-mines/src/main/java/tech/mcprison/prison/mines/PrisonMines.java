@@ -54,21 +54,13 @@ public class PrisonMines extends Module {
     private MinesConfig config;
     private List<String> worlds;
     private LocaleManager localeManager;
-//    private Gson gson;
     private Database db;
     private ErrorManager errorManager;
     
     private JsonFileIO jsonFileIO;
 
-    /*
-     * Constructor
-     */
     private MineManager mines;
     private PlayerManager player;
-
-    /*
-     * Methods
-     */
 
     public PrisonMines(String version) {
         super("Mines", version, 3);
@@ -84,7 +76,6 @@ public class PrisonMines extends Module {
         errorManager = new ErrorManager(this);
         this.jsonFileIO = new JsonFileIO( errorManager, getStatus() );
         
-        //initGson();
         initDb();
         initConfig();
         localeManager = new LocaleManager(this, "lang/mines");
@@ -163,10 +154,6 @@ public class PrisonMines extends Module {
             worlds.add(iterator.next().toLowerCase());
         }
     }
-
-    /*
-     * Getters & Setters
-     */
 
     private void initMines() {
         mines = MineManager.fromDb();
