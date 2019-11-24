@@ -49,7 +49,8 @@ public class RankPlayer {
     public RankPlayer() {
     }
 
-    public RankPlayer(Document document) {
+    @SuppressWarnings( "unchecked" )
+	public RankPlayer(Document document) {
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
@@ -78,6 +79,19 @@ public class RankPlayer {
      * Methods
      */
 
+    /**
+     * <p>This is a helper function to ensure that the given file name is 
+     * always generated correctly and consistently.
+     * </p>
+     * 
+     * @return "player_" plus the least significant bits of the UID
+     */
+    public String filename()
+    {
+    	return "player_" + uid.getLeastSignificantBits();
+    }
+    
+    
     /**
      * Add a rank to this player.
      * If a rank on this ladder is already attached, it will automatically be removed and replaced with this new one.

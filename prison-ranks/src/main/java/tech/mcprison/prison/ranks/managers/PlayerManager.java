@@ -93,18 +93,29 @@ public class PlayerManager {
     }
 
     public void savePlayer(RankPlayer player) throws IOException {
-        this.savePlayer(player, "player_" + player.uid.getLeastSignificantBits());
+        this.savePlayer(player, player.filename());
     }
 
     /**
-     * Saves every player in the registry.
+     * Saves every player in the registry.  If one player fails to save, it will not
+     * prevent the others from being saved.
      *
      * @throws IOException If one of the players could not be saved.
      * @see #savePlayer(RankPlayer, String)
      */
     public void savePlayers() throws IOException {
         for (RankPlayer player : players) {
-            savePlayer(player);
+        	
+        	// Catch exceptions if a failed save so other players can be saved:
+            try {
+				savePlayer(player);
+			}
+			catch ( Exception e )
+			{
+				String message = "An error occurred while saving the player files: "  +
+						player.filename();
+				Output.get().logError(message, e);
+			}
         }
     }
 
@@ -136,14 +147,14 @@ public class PlayerManager {
 
             try {
                 savePlayer(newPlayer);
-            } catch (IOException e) {
-                Output.get().logError(
-                    "Failed to create new player data file for player " + event.getPlayer()
-                        .getName(), e);
-                return;
-            }
 
-            Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+                Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+            } 
+            catch (IOException e) {
+                Output.get().logError(
+                    "Failed to create new player data file for player " + 
+                    		event.getPlayer().getName() + "  target filename: " + newPlayer.filename(), e);
+            }
         }
     }
 

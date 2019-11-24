@@ -267,7 +267,8 @@ class SpigotPlatform implements Platform {
         return builder.build().text();
     }
 
-    @Override public void showTitle(Player player, String title, String subtitle, int fade) {
+    @SuppressWarnings( "deprecation" )
+	@Override public void showTitle(Player player, String title, String subtitle, int fade) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
         play.sendTitle(title, subtitle);
     }

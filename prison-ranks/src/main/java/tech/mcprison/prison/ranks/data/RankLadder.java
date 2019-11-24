@@ -54,7 +54,8 @@ public class RankLadder {
     public RankLadder() {
     }
 
-    public RankLadder(Document document) {
+    @SuppressWarnings( "unchecked" )
+	public RankLadder(Document document) {
         this.id = RankUtil.doubleToInt(document.get("id"));
         this.name = (String) document.get("name");
         List<LinkedTreeMap<String, Object>> ranksLocal =
@@ -79,6 +80,7 @@ public class RankLadder {
     /*
      * Methods
      */
+
 
     /**
      * Add a rank to this ladder.
