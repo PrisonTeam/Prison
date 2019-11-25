@@ -18,6 +18,14 @@ public class RowComponent
 		fancy.addFancy(fancyMessage);
 	}
 	
+	public void addTextComponent(String text, Object... args)
+	{
+		TextComponent tComp = new TextComponent(text, args);
+		FancyMessage fm = new FancyMessage(tComp.text);
+		
+		addFancy( fm );
+	}
+	
 	@Override
 	public String text()
 	{

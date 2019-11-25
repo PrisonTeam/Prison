@@ -391,9 +391,17 @@ public class MinesCommands {
         String maxCoords = m.getBounds().getMax().toBlockCoordinates();
         chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
 
-        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
+//        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+//            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
 
+        RowComponent row = new RowComponent();
+        row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+                Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
+        
+        row.addTextComponent( "    &3Volume: &7%d &3Blocks", Math.round(m.getBounds().getTotalBlockCount()) );
+        chatDisplay.addComponent( row );
+        
+        
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
 
