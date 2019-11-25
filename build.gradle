@@ -22,7 +22,7 @@ You are building Prison.
 
 Note that you are probably using
 a development build and therefore
-a buggy build. Don't use it on a
+a buggy build. Don\'t use it on a
 production server unless you know
 what you are doing! You have been
 WARNED.
@@ -56,7 +56,7 @@ subprojects {
 
     archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
-    version = '3.5.2-alpha.5'
+    version = '3.5.2-alpha.6'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
