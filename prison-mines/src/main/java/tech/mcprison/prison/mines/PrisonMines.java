@@ -166,8 +166,15 @@ public class PrisonMines extends Module {
 		return jsonFileIO;
 	}
 
+    /**
+     * <p>Mines are now saved whenever changes are made.  Do not save the Mines on server
+     * shutdown since they will never be in a dirty state; they will always be saved.
+     * </p>
+     * 
+     */
 	public void disable() {
-        mines.saveMines();
+		
+//        mines.saveMines();
     }
 
     public MinesConfig getConfig() {
