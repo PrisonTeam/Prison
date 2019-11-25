@@ -79,14 +79,31 @@ public class MineManager {
      * 
      * Also saves the mine to the file system.
      *
-     * @param c the mine instance
+     * @param mine the mine instance
      * @return if the add was successful
      */
-    public boolean add(Mine c) {
+    public boolean add(Mine mine) {
+    	return add(mine, true);
+    }
+    
+    /**
+     * Adds a {@link Mine} to this {@link MineManager} instance.
+     * 
+     * Also saves the mine to the file system.
+     *
+     * @param mine the mine instance
+     * @param save - bypass the option to save. Useful for when initially loading the mines since
+     *               no data has changed.
+     * @return if the add was successful
+     */
+    public boolean add(Mine mine, boolean save) {
     	boolean results = false;
-        if (!mines.contains(c)){
-        	saveMine( c );
-            results = mines.add(c);
+        if (!mines.contains(mine)){
+        	if ( save ) {
+        		saveMine( mine );
+        	}
+        	
+            results = mines.add(mine);
         }
         return results;
     }
@@ -204,7 +221,7 @@ public class MineManager {
         for (Document document : mineDocuments) {
             try {
                 Mine m = new Mine(document);
-                add(m);
+                add(m, false);
                 if (PrisonMines.getInstance().getConfig().asyncReset) {
                     generateBlockList(m);
                 }
