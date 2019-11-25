@@ -22,6 +22,8 @@ import tech.mcprison.prison.Prison;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * All of the blocks in the game.
@@ -431,10 +433,28 @@ public enum BlockType {
         }
         return null;
     }
+    
+    /**
+     * <p>Must search first on block name since the block id has potential for duplicates which
+     * will corrupt the block list for the mine. If at all possible, only search by the block name.
+     * </p>
+     * 
+     * @param key Block name, id, or number.
+     * @return
+     */
+    public static BlockType getBlock(String key) {
+    	BlockType blockType = getBlockByName( key );
+    	if ( blockType == null ) {
+    		blockType = getBlockById( key );
+    	}
 
-    public static BlockType getBlock(String id) {
+        return blockType;
+    }
+
+    private static BlockType getBlockById(String id) {
         for (BlockType block : values()) {
-            if (block.getId().equalsIgnoreCase(id)) {
+            if (block.getId().equalsIgnoreCase(id) || block.name().equalsIgnoreCase(id) ||
+            		block.getId().equalsIgnoreCase( "minecraft:" + id )) {
                 return block;
             }
         }
@@ -452,8 +472,8 @@ public enum BlockType {
             return getBlockWithData(Integer.parseInt(id.split(":")[0]),
                 Short.parseShort(id.split(":")[1]));
         }
-        for (Map.Entry<BlockType, Collection<String>> entry : Prison.get().getItemManager()
-            .getItems().entrySet()) {
+        Set<Entry<BlockType, Collection<String>>> entrySet = Prison.get().getItemManager().getItems().entrySet();
+        for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
             if (entry.getValue().contains(id.toLowerCase())) {
                 return entry.getKey();
             }
@@ -461,7 +481,7 @@ public enum BlockType {
         return getBlockByName(id);
     }
 
-    public static BlockType getBlockByName(String name) {
+    private static BlockType getBlockByName(String name) {
         for (BlockType block : values()) {
             if (block.name().equalsIgnoreCase(name)) {
                 return block;

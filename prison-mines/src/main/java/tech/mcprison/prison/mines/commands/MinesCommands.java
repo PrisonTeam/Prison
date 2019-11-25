@@ -143,7 +143,7 @@ public class MinesCommands {
             return;
         }
 
-        if (pMines.getMineManager().getMine(mine).get().isInMine(blockType)) {
+        if (m.isInMine(blockType)) {
         	pMines.getMinesMessages().getLocalizable("block_already_added")
                 .sendTo(sender);
             return;
@@ -192,7 +192,7 @@ public class MinesCommands {
             return;
         }
 
-        if (!pMines.getMineManager().getMine(mine).get().isInMine(blockType)) {
+        if (!m.isInMine(blockType)) {
         	pMines.getMinesMessages().getLocalizable("block_not_removed")
                 .sendTo(sender);
             return;
@@ -200,7 +200,8 @@ public class MinesCommands {
 
         // If it's 0, just delete it!
         if (chance <= 0.0d) {
-            delBlockCommand(sender, mine, block);
+        	deleteBlock( sender, pMines, m, blockType );
+//            delBlockCommand(sender, mine, block);
             return;
         }
 
@@ -218,8 +219,7 @@ public class MinesCommands {
             return;
         }
 
-        for (Block blockObject : pMines.getMineManager().getMine(mine).get()
-            .getBlocks()) {
+        for (Block blockObject : m.getBlocks()) {
             if (blockObject.getType() == blockType) {
                 blockObject.setChance(chance);
             }
@@ -245,6 +245,8 @@ public class MinesCommands {
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
+
+        Mine m = pMines.getMineManager().getMine(mine).get();
         
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -253,22 +255,26 @@ public class MinesCommands {
             return;
         }
 
-        if (pMines.getMineManager().getMine(mine).get().isInMine(blockType)) {
+        if (m.isInMine(blockType)) {
         	pMines.getMinesMessages().getLocalizable("block_not_removed")
                 .sendTo(sender);
             return;
         }
 
-        Mine m = pMines.getMineManager().getMine(mine).get();
-        m.getBlocks().removeIf(x -> x.getType() == blockType);
+        deleteBlock( sender, pMines, m, blockType );
+    }
+
+	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, BlockType blockType )
+	{
+		m.getBlocks().removeIf(x -> x.getType() == blockType);
         pMines.getMineManager().saveMine( m );
         
         pMines.getMinesMessages().getLocalizable("block_deleted")
-            .withReplacements(block, mine).sendTo(sender);
+            .withReplacements(blockType.name(), m.getName()).sendTo(sender);
         getBlocksList(m).send(sender);
 
         pMines.getMineManager().clearCache();
-    }
+	}
 
     @Command(identifier = "mines block search", permissions = "mines.block", description = "Searches for a block to add to a mine.")
     public void searchBlockCommand(CommandSender sender,
@@ -326,7 +332,7 @@ public class MinesCommands {
         	BlockType block = blocks.get(i);
             FancyMessage msg =
                     new FancyMessage(
-                    		String.format("&7%s %s - (%s)", 
+                    		String.format("&7%s %s  (%s)", 
                     				Integer.toString(i), block.name(), block.getId().replace("minecraft:", "")))
                     .suggest("/mines block add <mine> " + block.name() + " %")
                         .tooltip("&7Click to add block to a mine.");
@@ -426,9 +432,9 @@ public class MinesCommands {
             String blockName =
                 StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
             String percent = dFmt.format(chance) + "%";
-            FancyMessage msg = new FancyMessage(String.format("&7%s - %s", percent, blockName))
-                .suggest("/mines block set " + m.getName() + " " + block.getType().getId()
-                    .replace("minecraft:", "") + " %")
+            FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
+            					percent, block.getType().name(), blockName))
+                .suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
                 .tooltip("&7Click to edit the block's chance.");
             builder.add(msg);
         }
