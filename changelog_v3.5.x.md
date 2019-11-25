@@ -14,6 +14,11 @@ and address some of the outstanding bugs.  If I can leave this in a slightly
 better state from what I found it, then I will consider this a success.
 
 
+## tag v3.5.2-beta.1 - Next tag will be beta!!
+
+We are done with alpha tagging!  Time to focus on getting this released!
+
+
 ## tag v3.5.2-alpha.6 - 2019-11-24
 
 * **Guava Caching - Google Caching - Redundancy**
@@ -168,7 +173,7 @@ then make needed adjustments before moving onward.
     * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
 
 
-  * v5.0 Incompatibility issues:
+  * Gradle v4.10.3 v5.0 Incompatibility issues:
     * v4.6 hit an incompatibility with v5.0 with command line warnings - Added the gradle.properties to better control the logging of errors.
     * v4.7 hit another incompatibility with v5.0 with the lack of annotationProcessor for resources that are using annotations. - Later versions of Gradle identified the source of this issue and I was able to add an annotationProcessor to the prison-sponge's build.gradle settings.
     * v4.9 hit another incompatibility with v5.0. The 'deferred configurable' behavior of the 'publishing {}' block has been deprecated. From what I can tell, it should be all right? 
@@ -176,6 +181,10 @@ then make needed adjustments before moving onward.
 
 I'm going to call it quits for now with upgrading gradle. v4.10.3 is closer to a current release and I need more time to review the last few issues.
 
+
+* **Few minor bug fixes**
+A few changes that fixed when the mines and ranks were being saved.  There were a few issues 
+with them saving when there were no changes made (server start and shutdown).
 
 
 **Build artifacts:**  
