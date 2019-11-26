@@ -43,6 +43,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.MaterialType;
 
 /**
  * @author Dylan M. Perks
@@ -137,7 +138,7 @@ public class MinesCommands {
         Mine m = pMines.getMineManager().getMine(mine).get();
 
         BlockType blockType = BlockType.getBlock(block);
-        if (blockType == null) {
+        if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
         	pMines.getMinesMessages().getLocalizable("not_a_block")
                 .withReplacements(block).sendTo(sender);
             return;
@@ -299,8 +300,9 @@ public class MinesCommands {
 		List<BlockType> blocks = new ArrayList<>();
     	for (BlockType block : BlockType.values())
 		{
-			if (block.getId().contains(search.toLowerCase()) || 
-					block.name().toLowerCase().contains(search.toLowerCase()))
+			if ( block.getMaterialType() == MaterialType.BLOCK && 
+					(block.getId().contains(search.toLowerCase()) || 
+					block.name().toLowerCase().contains(search.toLowerCase())) )
 			{
 				blocks.add(block);
 			}
