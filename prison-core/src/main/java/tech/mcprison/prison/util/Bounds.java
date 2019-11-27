@@ -26,7 +26,7 @@ package tech.mcprison.prison.util;
  */
 public class Bounds {
 
-    private final Location min, max;
+    private final Location min, max, center;
     
     private final int xBlockMin, xBlockMax, yBlockMin, yBlockMax, zBlockMin, zBlockMax; 
 
@@ -55,6 +55,12 @@ public class Bounds {
         
         this.zMin = Math.min(min.getZ(), max.getZ());
         this.zMax = Math.max(min.getZ(), max.getZ());
+        
+        double centerX = (xBlockMin + xBlockMax) / 2.0d;
+        double centerY = (yBlockMin + yBlockMax) / 2.0d;
+        double centerZ = (zBlockMin + zBlockMax) / 2.0d;
+        
+        this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
 
         this.totalBlockCount = 
         			(getyBlockMax() - getyBlockMin() + 1) *
@@ -146,7 +152,12 @@ public class Bounds {
         return max;
     }
 
-    @Override public String toString() {
+    public Location getCenter()
+	{
+		return center;
+	}
+
+	@Override public String toString() {
         return "Bounds{" + "min=" + min.toCoordinates() + ", max=" + max.toCoordinates() + '}';
     }
 
