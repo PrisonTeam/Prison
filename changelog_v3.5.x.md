@@ -14,7 +14,7 @@ and address some of the outstanding bugs.  If I can leave this in a slightly
 better state from what I found it, then I will consider this a success.
 
 
-## tag v3.5.2-beta.1 - Next tag will be beta!!
+## tag v3.5.2-beta.1 - 2019-11-27
 
 We are done with alpha tagging!  Time to focus on getting this released!
 
