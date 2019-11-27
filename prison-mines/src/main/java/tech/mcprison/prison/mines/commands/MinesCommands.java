@@ -588,6 +588,30 @@ public class MinesCommands {
         pMines.getMineManager().clearCache();
     }
 
+    
+
+    @Command(identifier = "mines tp", permissions = "mines.tp", description = "TP to the mine.")
+    public void mineTp(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String name) {
+    	
+    	if (!performCheckMineExists(sender, name)) {
+    		return;
+    	}
+
+    	setLastMineReferenced(name);
+
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	Mine m = pMines.getMineManager().getMine(name).get();
+    	
+    	if ( sender instanceof Player ) {
+    		m.teleportPlayerOut( (Player) sender );
+    	} else {
+    		sender.sendMessage(
+    	            "&3Telport failed. Are you sure you're a Player?");
+    	}
+    }
+
+    
     @Command(identifier = "mines wand", permissions = "mines.wand", description = "Receive a wand to select a mine area.")
     public void wandCommand(Player sender) {
         Prison.get().getSelectionManager().bestowSelectionTool(sender);

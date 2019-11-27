@@ -65,6 +65,9 @@ permissions:
   mines.reset:
     description: Access to the /mines reset command.
 
+  mines.tp:
+    description: Access to the /mines tp command.
+
   mines.admin:
     description: Contains all the commands for managing mines.
     default: op
@@ -77,6 +80,7 @@ permissions:
       mines.wand: true
       mines.list: true
       mines.reset: true
+      nubes.tp: true
 
   # ==================
   # Ranks permissions

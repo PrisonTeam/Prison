@@ -174,7 +174,7 @@ public class Mine {
                     for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
                     	Location targetBlock = new Location(world, x, y, z);
                     	
-                        if (!isFillMode || isFillMode && world.getBlockAt(targetBlock).isEmpty()) {
+                        if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
                         	targetBlock.getBlockAt().setType(blockTypes.get(i++));
                         } 
                     }
@@ -213,8 +213,8 @@ public class Mine {
      * 
      * <p>Using only players within the existing world of the current mine, each
      * player is checked to see if they are within the mine, and if they are they
-     * are teleported either to the mine's spawn location, or straight up from their
-     * current location to the top of the mine (assumes air space will exist there).</p>
+     * are teleported either to the mine's spawn location, or straight up from the
+     * center of the mine, to the top of the mine (assumes air space will exist there).</p>
      * 
      * <p>This function eliminates possible bug of players being teleported from other
      * worlds, and also eliminates the possibility that the destination could
@@ -230,19 +230,59 @@ public class Mine {
             if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
             		getBounds().within(player.getLocation())) {
             	
-            	Location destination = null;
-            	if (this.hasSpawn && getWorld().isPresent()) {
-            		destination = this.spawn;
-            	} else {
-            		destination = player.getLocation();
-            		destination.setY( targetY + 1 );
-            	}
-            			
-            	player.teleport( destination );
-                PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-                		.withReplacements(this.name).sendTo(player);
+            	teleportPlayerOut(player);
+            	
+//            	Location destination = null;
+//            	if (this.hasSpawn && getWorld().isPresent()) {
+//            		destination = this.spawn;
+//            	} else {
+//            		destination = player.getLocation();
+//            		destination.setY( targetY + 1 );
+//            	}
+//            			
+//            	player.teleport( destination );
+//                PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+//                		.withReplacements(this.name).sendTo(player);
             }
         }
+    }
+    
+    /**
+     * <p>This function will teleport the player out of a given mine, or to the given
+     * mine. It will not confirm if the player is within the mine before trying to 
+     * teleport.
+     * </p>
+     * 
+     * <p>This function will teleport the player to the defined spawn location, or it
+     * will teleport the player to the center of the mine, but on top of the
+     * mine's surface.</p>
+     * 
+     * <p>If the player target location has an empty block under its feet, it will 
+     * then spawn in a single glass block so the player will not take fall damage.
+     * If that block is within the mine, it will be reset at a later time when the
+     * mine resets and resets that block.  If it is part of spawn for the mine, then
+     * the glass block will become part of the landscape.
+     * <p>
+     * 
+     * @param player
+     */
+    public void teleportPlayerOut(Player player) {
+    	
+    	Location altTp = new Location( getBounds().getCenter() );
+    	altTp.setY( getBounds().getyBlockMax() + 1 );
+    	Location target = isHasSpawn() ? getSpawn() : altTp;
+    	
+    	// Player needs to stand on something.  If block below feet is air, change it to a 
+    	// glass block:
+    	Location targetGround = new Location( target );
+    	targetGround.setY( target.getBlockY() - 1 );
+    	if ( targetGround.getBlockAt().isEmpty() ) {
+    		targetGround.getBlockAt().setType( BlockType.GLASS );
+    	}
+    	
+    	player.teleport( target );
+    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+    			.withReplacements(this.name).sendTo(player);
     }
     
     /**
