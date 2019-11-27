@@ -27,6 +27,7 @@ repositories {
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
     maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
+    maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     jcenter()
 }
 
@@ -43,6 +44,7 @@ dependencies {
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
+    compileOnly 'me.clip:placeholderapi:2.9.1'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 
