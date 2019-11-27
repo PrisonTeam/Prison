@@ -44,6 +44,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Dylan M. Perks
@@ -51,8 +52,12 @@ import tech.mcprison.prison.util.MaterialType;
 public class MinesCommands {
 	
 	private Long confirmTimestamp;
+	
+	private String lastMineReferenced;
+	private Long lastMineReferencedTimestamp;
 
     private boolean performCheckMineExists(CommandSender sender, String name) {
+    	name = Text.stripColor( name );
         if (!PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_does_not_exist")
                 .sendTo(sender);
@@ -87,6 +92,8 @@ public class MinesCommands {
             return;
         }
 
+        setLastMineReferenced(name);
+        
         Mine mine = new Mine().setBounds(selection.asBounds()).setName(name);
         pMines.getMineManager().add(mine);
         pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
@@ -117,6 +124,8 @@ public class MinesCommands {
             return;
         }
 
+        setLastMineReferenced(name);
+        
         Mine mine = pMines.getMineManager().getMine(name).get();
         mine.setSpawn(((Player) sender).getLocation());
         pMines.getMineManager().saveMine(mine);
@@ -136,6 +145,8 @@ public class MinesCommands {
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
+        
+        setLastMineReferenced(mine);
         
         Mine m = pMines.getMineManager().getMine(mine).get();
 
@@ -175,16 +186,22 @@ public class MinesCommands {
         pMines.getMineManager().clearCache();
     }
 
-    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, description = "Changes the percentage of a block in a mine.")
+    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, 
+    					description = "Changes the percentage of a block in a mine.")
     public void setBlockCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
-        @Arg(name = "block", description = "The block's name or ID.") String block,
-        @Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
-            double chance) {
+    			@Arg(name = "mineName", description = "The name of the mine to edit.") 
+    					String mine,
+    			@Arg(name = "block", description = "The block's name or ID.") 
+    					String block,
+    			@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.") 
+    					double chance) {
+    	
         if (!performCheckMineExists(sender, mine)) {
             return;
         }
 
+        setLastMineReferenced(mine);
+        
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMineManager().getMine(mine).get();
 
@@ -195,9 +212,11 @@ public class MinesCommands {
             return;
         }
 
+        // Change behavior: If trying to change a block that is not in the mine, then instead add it:
         if (!m.isInMine(blockType)) {
-        	pMines.getMinesMessages().getLocalizable("block_not_removed")
-                .sendTo(sender);
+        	addBlockCommand( sender, mine, block, chance );
+//        	pMines.getMinesMessages().getLocalizable("block_not_removed")
+//                .sendTo(sender);
             return;
         }
 
@@ -247,8 +266,9 @@ public class MinesCommands {
             return;
         }
 
+        setLastMineReferenced(mine);
+        
         PrisonMines pMines = PrisonMines.getInstance();
-
         Mine m = pMines.getMineManager().getMine(mine).get();
         
         BlockType blockType = BlockType.getBlock(block);
@@ -338,7 +358,7 @@ public class MinesCommands {
                     new FancyMessage(
                     		String.format("&7%s %s  (%s)", 
                     				Integer.toString(i), block.name(), block.getId().replace("minecraft:", "")))
-                    .suggest("/mines block add <mine> " + block.name() + " %")
+                    .suggest("/mines block add " + getLastMineReferenced() + " " + block.name() + " %")
                         .tooltip("&7Click to add block to a mine.");
                 builder.add(msg);
         }
@@ -377,6 +397,8 @@ public class MinesCommands {
         if (!performCheckMineExists(sender, name)) {
             return;
         }
+        
+        setLastMineReferenced(name);
         
         // They have 1 minute to confirm.
         boolean confirmed = false;
@@ -426,6 +448,8 @@ public class MinesCommands {
             return;
         }
 
+        setLastMineReferenced(name);
+        
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMineManager().getMine(name).get();
 
@@ -494,6 +518,8 @@ public class MinesCommands {
             return;
         }
 
+        setLastMineReferenced(name);
+        
         PrisonMines pMines = PrisonMines.getInstance();
         try {
         	pMines.getMineManager().getMine(name).get().reset();
@@ -551,6 +577,8 @@ public class MinesCommands {
 
         // TODO check to see if they are the same boundaries, if not, don't change...
         
+        setLastMineReferenced(name);
+        
         Mine m = pMines.getMineManager().getMine(name).get();
         m.setBounds(selection.asBounds());
         pMines.getMineManager().saveMine( m );
@@ -574,6 +602,38 @@ public class MinesCommands {
 	public void setConfirmTimestamp( Long confirmTimestamp )
 	{
 		this.confirmTimestamp = confirmTimestamp;
+	}
+
+	/**
+	 * <p>This function will return the last mine reference to be used to fill in the
+	 * <code>&lt;mine&gt;</code> reference within these commands.  After 30 minutes of 
+	 * the last reference, this value will be reset to null and this function will then
+	 * return the default mine place holder of <code>&lt;mine&gt;</code>.
+	 * </p>
+	 * 
+	 * @return last mine referenced, or <code>&lt;mine&gt;</code>
+	 */
+	public String getLastMineReferenced()
+	{
+		if ( System.currentTimeMillis() - getLastMineReferencedTimestamp() > (30 * 60 * 1000))
+		{
+			setLastMineReferenced( null );
+		}
+		return "&e" + (lastMineReferenced == null ? "<mine>" : lastMineReferenced) + "&r";
+	}
+	public void setLastMineReferenced( String lastMineReferenced )
+	{
+		lastMineReferenced( System.currentTimeMillis() );
+		this.lastMineReferenced = lastMineReferenced;
+	}
+
+	public Long getLastMineReferencedTimestamp()
+	{
+		return lastMineReferencedTimestamp;
+	}
+	public void lastMineReferenced( Long lastMineReferencedTimestamp )
+	{
+		this.lastMineReferencedTimestamp = lastMineReferencedTimestamp;
 	}
 
 }
