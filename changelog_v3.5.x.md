@@ -18,6 +18,78 @@ better state from what I found it, then I will consider this a success.
 
 We are done with alpha tagging!  Time to focus on getting this released!
 
+* **New Feature: Add a text component to RowComponent**
+Expanded the ability of RowComponent to accept argumented text now.
+
+
+* **New Feature: Add volume to the mines info**
+Provide a little more information for mines with the mine's volume.
+
+
+* **Bug fix: Mine blocks updating wrong values and problems deleting blocks**
+Fixed a few bugs with adding, setting, and deleting by the wrong value.  By default 
+it was trying to delete by id, but multiple blocks have the same id, so it was 
+corrupting the block lists for a mine.
+Got it where it would use the block name instead of block id.  This eliminated problems.
+
+
+* **New Feature: Identify all BlockTypes that are blocks as blocks**
+Trying to define each BlockType as a BLOCK or not.  This will be used to filter 
+the results on /mines block search to ensure only blocks that are placeable can be 
+set in the mines. Tried to programatically identify what a block is within all 
+supported minecraft versions, but it did not work due to conflicts with the
+blocks names within Materials and within the Prison plugin's BlockType enum.
+
+Just went ahead and manually marked each one.  There may be a few that do not
+make sense or are incorrect, but can update later when found. Created a new enum
+by the name of MaterialType that is used to mark the BlockTypes as 
+BLOCKs.  Can also use that enum to label the other items with something more
+meaningful such as ITEMs, or even ARMOR or WEAPON. Can have a great deal of 
+flexibility moving forward with that.
+
+
+* **New Feature: Block search new only includes blocks that are actually placable in the mines**
+Hooked up the BlockType.getMaterialType() == MaterialType.BLOCK to the block search and the block add.
+
+
+* **New Feature: Added confirm on Mine Delete**
+Added a new feature to provide a confirmation when deleting a mine.  The user can 
+click on the notification message to have the command reentered for them, then they
+only need to change **cancel** to **confirm**.  
+This will help prevent accidental deletion of mines.  Yes mines can be manually 
+undeleted, but this can prevent possible errors.
+
+
+* **New Feature: Using /mines set block will add new blocks**
+If you click on a block from under /mines list and you change the mine's name on that
+/mines block set command, it will be treated like an add instead of an error.
+
+
+* **New Feature: Added a center Location to Bounds**
+Added a center location for Bounds which will be used for a few things for mines.
+Currently it was added as a fall back location for if a spawn point does not exist for teleporting in to a mine.
+But it will also be used to identify all players within a given radius from that location to selectively target broadcast messages pertaining to that mine.
+
+
+* **New Feature: Clone existing locations**
+Makes it easier to create clones of locations.
+
+
+* **New Feature: Track last Mine name used and substitute it for the generic place holder**
+Track what the last value for mine was, and put it on a timer.  If it was last referenced within 30 minutes, then use that reference by default in the block search function.
+In the future, when auto suggest is enabled, this value will also be used for the targeted mine names instead of just a generic <mine> place holder.
+
+
+* **New Feature: TP to each mine**
+Added a new feature so an admin could TP directly to each mine.  If the mine's spawn location is not set, then it will tp them to the center of the mine, but on top of the surface.
+Also, if there is an air block at the player's feet, it will auto spawn in a glass block so they would not take fall damage if there is a significant void below them.
+
+
+* **Enhanced /mines list now includes more details**
+Enhanced the /mines list to show more details about the mines, plus provide a clickable way to TP to each mine.
+
+
+
 
 ## tag v3.5.2-alpha.6 - 2019-11-24
 
