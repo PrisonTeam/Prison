@@ -50,7 +50,7 @@ import java.util.Optional;
  */
 public class Prison implements PluginEntity {
 
-	public static final int SPIGOTMC_ORG_PROJECT_ID = 72740;
+	public static final int SPIGOTMC_ORG_PROJECT_ID = 1223; //72740;
 	
     // Singleton
 
