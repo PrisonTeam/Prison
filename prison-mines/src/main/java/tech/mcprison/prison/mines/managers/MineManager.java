@@ -196,9 +196,13 @@ public class MineManager {
         }
     }
 
-    public boolean removeMine(Mine mine){
-        mines.remove(mine);
-        return coll.delete( mine.getName() );
+    public boolean removeMine(Mine mine) {
+    	boolean success = false;
+    	if ( mine != null ) {
+    		mines.remove(mine);
+    		success = coll.delete( mine.getName() );
+    	}
+	    return success;
     }
 
     public static MineManager fromDb() {

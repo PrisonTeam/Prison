@@ -49,6 +49,8 @@ import tech.mcprison.prison.util.MaterialType;
  * @author Dylan M. Perks
  */
 public class MinesCommands {
+	
+	private Long confirmTimestamp;
 
     private boolean performCheckMineExists(CommandSender sender, String name) {
         if (!PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
@@ -370,14 +372,54 @@ public class MinesCommands {
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
     public void deleteCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to delete.") String name) {
+        @Arg(name = "mineName", description = "The name of the mine to delete.") String name,
+    	@Arg(name = "confirm", def = "cancel", description = "Confirm that the mine should be deleted") String confirm) {
         if (!performCheckMineExists(sender, name)) {
             return;
         }
-        PrisonMines pMines = PrisonMines.getInstance();
-        pMines.getMineManager()
-            .removeMine(pMines.getMineManager().getMine(name).get());
-        pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
+        
+// NOT SURE if this will work... this class must persist between commands.  If not it will always fail.    
+        
+        // They have 1 minute to confirm.
+        boolean confirmed = false;
+        long now = System.currentTimeMillis();
+        if ( getConfirmTimestamp() != null && ((now - getConfirmTimestamp()) < 1000 * 60 ) && 
+        		confirm != null && "confirm".equalsIgnoreCase( confirm ))  {
+        	confirmed = true;
+        	setConfirmTimestamp( null );
+        } else {
+        	
+        	// remove confirms since they were either not set recently or was not actually confirmed:
+        	confirm = null;
+        	setConfirmTimestamp( now );
+        }
+
+        if ( confirmed ) {
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	pMines.getMineManager()
+        	.removeMine(pMines.getMineManager().getMine(name).get());
+        	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
+        } else {
+        	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + name);
+        	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
+        	builder.add( new FancyMessage(
+                    "&3Confirm the deletion of this mine" )
+                    .suggest("/mines delete " + name + " &ecancel"));
+
+        	builder.add( new FancyMessage(
+        			"&3Click &eHERE&3 to display the command" )
+        			.suggest("/mines delete " + name + " &ecancel"));
+        	
+        	builder.add( new FancyMessage(
+        			"&3Then change &ecancel&3 to &econfirm&3." )
+        			.suggest("/mines delete " + name + " &ecancel"));
+        	
+        	builder.add( new FancyMessage("You have 1 minute to respond."));
+        	
+            chatDisplay.addComponent(builder.build());
+            chatDisplay.send(sender);
+        }
+        
     }
 
     @Command(identifier = "mines info", permissions = "mines.info", onlyPlayers = false, description = "Lists information about a mine.")
@@ -422,8 +464,7 @@ public class MinesCommands {
     }
 
     private BulletedListComponent getBlocksList(Mine m) {
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+        BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
@@ -528,5 +569,14 @@ public class MinesCommands {
         sender.sendMessage(
             "&3Here you go! &7Left click to select the first corner, and right click to select the other.");
     }
+
+	public Long getConfirmTimestamp()
+	{
+		return confirmTimestamp;
+	}
+	public void setConfirmTimestamp( Long confirmTimestamp )
+	{
+		this.confirmTimestamp = confirmTimestamp;
+	}
 
 }
