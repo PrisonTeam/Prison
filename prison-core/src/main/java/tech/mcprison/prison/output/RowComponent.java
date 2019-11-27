@@ -26,6 +26,10 @@ public class RowComponent
 		addFancy( fm );
 	}
 	
+	public FancyMessage getFancy() {
+		return fancy;
+	}
+	
 	@Override
 	public String text()
 	{

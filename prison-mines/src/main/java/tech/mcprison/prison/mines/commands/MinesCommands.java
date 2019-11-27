@@ -542,10 +542,29 @@ public class MinesCommands {
 
         PrisonMines pMines = PrisonMines.getInstance();
         for (Mine m : pMines.getMines()) {
-            FancyMessage msg =
-                new FancyMessage("&7" + m.getName()).command("/mines info " + m.getName())
-                    .tooltip("&7Click to view info.");
-            builder.add(msg);
+        	
+        	 RowComponent row = new RowComponent();
+        	 
+        	 row.addTextComponent( m.getWorldName() + " - " );
+
+        	 row.addFancy( 
+        			 new FancyMessage("&7" + m.getName()).command("/mines info " + m.getName())
+        			 		.tooltip("&7Click to view info."));
+
+        	 row.addTextComponent( "&r - " );
+        	 
+        	 row.addFancy( 
+        			 new FancyMessage("&eTP  ").command("/mines tp " + m.getName())
+        			 .tooltip("&7Click to TP to the mine"));
+        	 
+        	 row.addTextComponent( "&r - " );
+
+        	 row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+                     Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
+
+        	 row.addTextComponent( "&r - " + m.getBounds().getTotalBlockCount() + " volume" );
+        	
+             builder.add(row.getFancy());
         }
         display.addComponent(builder.build());
         display.send(sender);
