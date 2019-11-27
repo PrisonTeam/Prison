@@ -378,8 +378,6 @@ public class MinesCommands {
             return;
         }
         
-// NOT SURE if this will work... this class must persist between commands.  If not it will always fail.    
-        
         // They have 1 minute to confirm.
         boolean confirmed = false;
         long now = System.currentTimeMillis();
@@ -396,8 +394,7 @@ public class MinesCommands {
 
         if ( confirmed ) {
         	PrisonMines pMines = PrisonMines.getInstance();
-        	pMines.getMineManager()
-        	.removeMine(pMines.getMineManager().getMine(name).get());
+        	pMines.getMineManager().removeMine(pMines.getMineManager().getMine(name).get());
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         } else {
         	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + name);
