@@ -554,7 +554,7 @@ public class MinesCommands {
         	 row.addTextComponent( "&r - " );
         	 
         	 row.addFancy( 
-        			 new FancyMessage("&eTP  ").command("/mines tp " + m.getName())
+        			 new FancyMessage("&eTP").command("/mines tp " + m.getName())
         			 .tooltip("&7Click to TP to the mine"));
         	 
         	 row.addTextComponent( "&r - " );

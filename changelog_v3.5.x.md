@@ -89,6 +89,10 @@ Also, if there is an air block at the player's feet, it will auto spawn in a gla
 Enhanced the /mines list to show more details about the mines, plus provide a clickable way to TP to each mine.
 
 
+**Build artifacts:**  
+  Be aware that this build artifact is not production grade and still needs more testing.
+  * **prison_v3.5.2-beta.1.jar**    
+
 
 
 ## tag v3.5.2-alpha.6 - 2019-11-24
