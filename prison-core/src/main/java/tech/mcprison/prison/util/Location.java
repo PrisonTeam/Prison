@@ -51,6 +51,15 @@ public class Location {
         this.yaw = 0.0f;
     }
 
+    public Location(Location clone) {
+    	this.world = clone.getWorld();
+    	this.x = clone.getX();
+    	this.y = clone.getY();
+    	this.z = clone.getZ();
+    	this.pitch = clone.getPitch();
+    	this.yaw = clone.getYaw();
+    }
+    
     public Location() {
     }
 
