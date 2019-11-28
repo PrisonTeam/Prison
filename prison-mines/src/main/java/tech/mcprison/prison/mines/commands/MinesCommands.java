@@ -423,15 +423,15 @@ public class MinesCommands {
         	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
         	builder.add( new FancyMessage(
                     "&3Confirm the deletion of this mine" )
-                    .suggest("/mines delete " + name + " &ecancel"));
+                    .suggest("/mines delete " + name + " cancel"));
 
         	builder.add( new FancyMessage(
         			"&3Click &eHERE&3 to display the command" )
-        			.suggest("/mines delete " + name + " &ecancel"));
+        			.suggest("/mines delete " + name + " cancel"));
         	
         	builder.add( new FancyMessage(
         			"&3Then change &ecancel&3 to &econfirm&3." )
-        			.suggest("/mines delete " + name + " &ecancel"));
+        			.suggest("/mines delete " + name + " cancel"));
         	
         	builder.add( new FancyMessage("You have 1 minute to respond."));
         	
@@ -662,7 +662,7 @@ public class MinesCommands {
 		{
 			setLastMineReferenced( null );
 		}
-		return "&e" + (lastMineReferenced == null ? "<mine>" : lastMineReferenced) + "&r";
+		return (lastMineReferenced == null ? "<mine>" : lastMineReferenced);
 	}
 	public void setLastMineReferenced( String lastMineReferenced )
 	{
