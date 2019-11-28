@@ -37,6 +37,7 @@ dependencies {
     compile project(':prison-ranks')
     compile 'org.bstats:bstats-bukkit:1.5'
     compile 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
+    compile 'me.clip:placeholderapi:2.9.1'
 
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
@@ -44,7 +45,6 @@ dependencies {
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
-    compileOnly 'me.clip:placeholderapi:2.9.1'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 
@@ -63,6 +63,7 @@ shadowJar {
     dependencies {
         include(dependency('com.google.code.gson:gson:2.8.6'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
+        include(dependency('me.clip:placeholderapi:2.9.1'))
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(project(':prison-core'))
         include(project(':prison-mines'))
