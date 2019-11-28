@@ -562,7 +562,7 @@ public class MinesCommands {
         	 row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
                      Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
 
-        	 row.addTextComponent( "&r - " + m.getBounds().getTotalBlockCount() + " volume" );
+        	 row.addTextComponent( "&r - &3Volume: &7%d &3blocks", m.getBounds().getTotalBlockCount() );
         	
              builder.add(row.getFancy());
         }
