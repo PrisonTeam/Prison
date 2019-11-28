@@ -56,7 +56,7 @@ subprojects {
 
     archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
-    version = '3.5.2-beta.1'
+    version = '3.2.0-beta.2'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -64,6 +64,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "http://maven.sk89q.com/repo/" }
+        maven { url "https://mvnrepository.com/artifact/org.apache.commons/commons-lang3" }
     }
 
     configurations {
@@ -71,7 +72,7 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.apache.commons:commons-lang3:3.4'
+        compile 'org.apache.commons:commons-lang3:3.9'
         compile 'com.google.guava:guava:19.0'
         compile 'com.google.code.gson:gson:2.8.6'
         testCompile 'junit:junit:4.12'
