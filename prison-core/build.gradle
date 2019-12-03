@@ -27,6 +27,7 @@ processResources {
 
 shadowJar {
     dependencies {
+        include(dependency('org.apache.commons:commons-lang3:3.9'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
     }
     classifier 'API'

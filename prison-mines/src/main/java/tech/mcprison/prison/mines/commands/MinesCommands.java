@@ -393,7 +393,7 @@ public class MinesCommands {
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
     public void deleteCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to delete.") String name,
-    	@Arg(name = "confirm", def = "cancel", description = "Confirm that the mine should be deleted") String confirm) {
+    	@Arg(name = "confirm", def = "", description = "Confirm that the mine should be deleted") String confirm) {
         if (!performCheckMineExists(sender, name)) {
             return;
         }
@@ -401,43 +401,51 @@ public class MinesCommands {
         setLastMineReferenced(name);
         
         // They have 1 minute to confirm.
-        boolean confirmed = false;
         long now = System.currentTimeMillis();
         if ( getConfirmTimestamp() != null && ((now - getConfirmTimestamp()) < 1000 * 60 ) && 
         		confirm != null && "confirm".equalsIgnoreCase( confirm ))  {
-        	confirmed = true;
         	setConfirmTimestamp( null );
-        } else {
         	
-        	// remove confirms since they were either not set recently or was not actually confirmed:
-        	confirm = null;
-        	setConfirmTimestamp( now );
-        }
-
-        if ( confirmed ) {
         	PrisonMines pMines = PrisonMines.getInstance();
         	pMines.getMineManager().removeMine(pMines.getMineManager().getMine(name).get());
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
-        } else {
+        	
+        } else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
+        	setConfirmTimestamp( now );
+
         	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + name);
         	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
         	builder.add( new FancyMessage(
                     "&3Confirm the deletion of this mine" )
-                    .suggest("/mines delete " + name + " &ecancel"));
+                    .suggest("/mines delete " + name + " cancel"));
 
         	builder.add( new FancyMessage(
         			"&3Click &eHERE&3 to display the command" )
-        			.suggest("/mines delete " + name + " &ecancel"));
+        			.suggest("/mines delete " + name + " cancel"));
         	
         	builder.add( new FancyMessage(
         			"&3Then change &ecancel&3 to &econfirm&3." )
-        			.suggest("/mines delete " + name + " &ecancel"));
+        			.suggest("/mines delete " + name + " cancel"));
         	
         	builder.add( new FancyMessage("You have 1 minute to respond."));
         	
             chatDisplay.addComponent(builder.build());
             chatDisplay.send(sender);
-        }
+            
+        } else if (confirm != null && "cancel".equalsIgnoreCase( confirm )) {
+        	setConfirmTimestamp( null );
+        	
+        	ChatDisplay display = new ChatDisplay("&cDelete " + name);
+            display.text("&8Delete canceled.");
+
+            display.send( sender );
+            
+        } else {
+	    	ChatDisplay display = new ChatDisplay("&cDelete " + name);
+	    	display.text("&8Delete confirmation failed. Try again.");
+	    	
+	    	display.send( sender );
+	    }
         
     }
 
@@ -562,7 +570,7 @@ public class MinesCommands {
         	 row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
                      Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
 
-        	 row.addTextComponent( "&r - " + m.getBounds().getTotalBlockCount() + " volume" );
+        	 row.addTextComponent( "&r - &3Volume: &7%d &3blocks", m.getBounds().getTotalBlockCount() );
         	
              builder.add(row.getFancy());
         }
@@ -662,7 +670,7 @@ public class MinesCommands {
 		{
 			setLastMineReferenced( null );
 		}
-		return "&e" + (lastMineReferenced == null ? "<mine>" : lastMineReferenced) + "&r";
+		return (lastMineReferenced == null ? "<mine>" : lastMineReferenced);
 	}
 	public void setLastMineReferenced( String lastMineReferenced )
 	{
