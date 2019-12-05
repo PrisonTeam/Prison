@@ -47,9 +47,8 @@ public class MinesConversionAgent implements ConversionAgent {
             if (jsonFiles != null) {
                 for (String jsonFile : jsonFiles) {
                     File jsonFileObj = new File(minesFolder, jsonFile);
-                    JsonParser parser = new JsonParser();
                     String json = new String(Files.readAllBytes(jsonFileObj.toPath()));
-                    JsonObject obj = (JsonObject) parser.parse(json);
+                    JsonObject obj = (JsonObject) JsonParser.parseString(json);
 
                     String name = obj.getAsJsonPrimitive("name").getAsString();
                     String world = obj.getAsJsonPrimitive("world").getAsString();
