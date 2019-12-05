@@ -38,7 +38,8 @@ public class SpongePrison {
 
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
 
-    @Inject private Metrics metrics;
+    @SuppressWarnings( "unused" )
+	@Inject private Metrics metrics;
 
     @Listener public void onServerStart(GameStartedServerEvent e) {
         if (!configDir.toFile().exists()) {

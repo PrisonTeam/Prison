@@ -49,11 +49,13 @@ public class SpigotUtil {
    * BlockType and Material
    */
 
-    public static BlockType materialToBlockType(Material material) {
+    @SuppressWarnings( "deprecation" )
+	public static BlockType materialToBlockType(Material material) {
         return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
     }
 
-    public static MaterialData blockTypeToMaterial(BlockType type) {
+    @SuppressWarnings( "deprecation" )
+	public static MaterialData blockTypeToMaterial(BlockType type) {
         Material material = Material.getMaterial(type.getLegacyId());
         return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
     }

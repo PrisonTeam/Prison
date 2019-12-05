@@ -39,12 +39,14 @@ public class SpongeUtil {
     /**
      * Message may include &-prefixed color codes.
      */
-    public static org.spongepowered.api.text.Text prisonTextToSponge(String message) {
+    @SuppressWarnings( "deprecation" )
+	public static org.spongepowered.api.text.Text prisonTextToSponge(String message) {
         return TextSerializers.LEGACY_FORMATTING_CODE
             .deserialize(Text.translateAmpColorCodes(message));
     }
 
-    public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
+    @SuppressWarnings( "deprecation" )
+	public static String spongeTextToPrison(org.spongepowered.api.text.Text message) {
         return TextSerializers.LEGACY_FORMATTING_CODE.serialize(message);
     }
 

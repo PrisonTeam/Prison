@@ -20,8 +20,8 @@ package tech.mcprison.prison.spigot.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.Text;
 
 /**
