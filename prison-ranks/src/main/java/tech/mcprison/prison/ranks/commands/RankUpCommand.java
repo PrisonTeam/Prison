@@ -17,33 +17,16 @@
 
 package tech.mcprison.prison.ranks.commands;
 
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.chat.FancyMessage;
+import java.util.Optional;
+
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.Wildcard;
-import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.Integration;
-import tech.mcprison.prison.integration.IntegrationType;
-import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.output.BulletedListComponent;
-import tech.mcprison.prison.output.ChatDisplay;
-import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.util.Text;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The commands for this module.

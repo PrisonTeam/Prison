@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimerTask;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
@@ -32,9 +33,9 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -74,17 +75,37 @@ public class MineManager {
     }
 
     /**
-     * Adds a {@link Mine} to this {@link MineManager} instance
+     * Adds a {@link Mine} to this {@link MineManager} instance.
+     * 
+     * Also saves the mine to the file system.
      *
-     * @param c the mine instance
+     * @param mine the mine instance
      * @return if the add was successful
      */
-    public boolean add(Mine c) {
-        if (mines.contains(c)) {
-            return false;
-        } else {
-            return mines.add(c);
+    public boolean add(Mine mine) {
+    	return add(mine, true);
+    }
+    
+    /**
+     * Adds a {@link Mine} to this {@link MineManager} instance.
+     * 
+     * Also saves the mine to the file system.
+     *
+     * @param mine the mine instance
+     * @param save - bypass the option to save. Useful for when initially loading the mines since
+     *               no data has changed.
+     * @return if the add was successful
+     */
+    public boolean add(Mine mine, boolean save) {
+    	boolean results = false;
+        if (!mines.contains(mine)){
+        	if ( save ) {
+        		saveMine( mine );
+        	}
+        	
+            results = mines.add(mine);
         }
+        return results;
     }
 
     private void selectiveSend(Player x, Localizable localizable) {
@@ -175,24 +196,24 @@ public class MineManager {
         }
     }
 
-    public boolean removeMine(Mine mine){
-        return mines.remove(mine);
+    public boolean removeMine(Mine mine) {
+    	boolean success = false;
+    	if ( mine != null ) {
+    		mines.remove(mine);
+    		success = coll.delete( mine.getName() );
+    	}
+	    return success;
     }
 
     public static MineManager fromDb() {
-        Optional<tech.mcprison.prison.store.Collection> collOptional =
-            PrisonMines.getInstance().getDb().getCollection("mines");
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+        Optional<Collection> collOptional = pMines.getDb().getCollection("mines");
 
         if (!collOptional.isPresent()) {
-            PrisonMines.getInstance().getDb().createCollection("mines");
-            collOptional = PrisonMines.getInstance().getDb().getCollection("mines");
-
-            if (!collOptional.isPresent()) {
-                Output.get().logError("Could not create 'mines' collection.");
-                PrisonMines.getInstance().getStatus()
-                    .toFailed("Could not create mines collection in storage.");
-                return null;
-            }
+        	Output.get().logError("Could not create 'mines' collection.");
+        	pMines.getStatus().toFailed("Could not create mines collection in storage.");
+        	return null;
         }
 
         return new MineManager(collOptional.get());
@@ -204,7 +225,7 @@ public class MineManager {
         for (Document document : mineDocuments) {
             try {
                 Mine m = new Mine(document);
-                add(m);
+                add(m, false);
                 if (PrisonMines.getInstance().getConfig().asyncReset) {
                     generateBlockList(m);
                 }
@@ -216,11 +237,11 @@ public class MineManager {
     }
 
     /**
-     * Saves all the mines in this list. This should only be used for the instance created by {@link
+     * Saves the specified mine. This should only be used for the instance created by {@link
      * PrisonMines}
      */
     public void saveMine(Mine mine) {
-        coll.insert(mine.getName(), mine.toDocument());
+        coll.save(mine.toDocument());
     }
 
     public void saveMines(){
@@ -230,42 +251,31 @@ public class MineManager {
     }
 
     /**
-     * Generates blocks for the specified mine and caches the result
+     * Generates blocks for the specified mine and caches the result.
+     * 
+     * The random chance is now calculated upon a double instead of integer.
      *
-     * @param m the mine to randomize
+     * @param mine the mine to randomize
      */
-    public void generateBlockList(Mine m) {
+    public void generateBlockList(Mine mine) {
         Random random = new Random();
         ArrayList<BlockType> blocks = new ArrayList<>();
 
-        Location min = m.getBounds().getMin();
-        Location max = m.getBounds().getMax();
-
-        int maxX = Math.max(min.getBlockX(), max.getBlockX());
-        int minX = Math.min(min.getBlockX(), max.getBlockX());
-        int maxY = Math.max(min.getBlockY(), max.getBlockY());
-        int minY = Math.min(min.getBlockY(), max.getBlockY());
-        int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
-        int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
-        double target = ((maxY + 1) - minY) * ((maxX + 1) - minX) * ((maxZ + 1) - minZ);
-
-        for (int i = 0; i < target; i++) {
-            int chance = random.nextInt(101);
-            boolean set = false;
-            for (Block block : m.getBlocks()) {
-                if (chance <= block.chance) {
-                    blocks.add(block.type);
-                    set = true;
+        for (int i = 0; i < mine.getBounds().getTotalBlockCount(); i++) {
+        	double chance = random.nextDouble() * 100.0d;
+            
+            BlockType value = BlockType.AIR;
+            for (Block block : mine.getBlocks()) {
+                if (chance <= block.getChance()) {
+                    value = block.getType();
                     break;
                 } else {
-                    chance -= block.chance;
+                    chance -= block.getChance();
                 }
             }
-            if (!set) {
-                blocks.add(BlockType.AIR);
-            }
+            blocks.add(value);
         }
-        randomizedBlocks.put(m.getName(), blocks);
+        randomizedBlocks.put(mine.getName(), blocks);
     }
 
     /**

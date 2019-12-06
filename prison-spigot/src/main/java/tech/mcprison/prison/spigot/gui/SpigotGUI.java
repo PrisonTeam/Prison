@@ -66,7 +66,8 @@ public class SpigotGUI implements GUI {
         return this;
     }
 
-    private ItemStack buttonToItemStack(Button button) {
+    @SuppressWarnings( "deprecation" )
+	private ItemStack buttonToItemStack(Button button) {
         ItemStack stack =
             new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
         ItemMeta meta = stack.getItemMeta();

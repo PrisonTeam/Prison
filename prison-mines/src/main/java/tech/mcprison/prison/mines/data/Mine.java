@@ -23,12 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.events.MineResetEvent;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
@@ -40,19 +42,14 @@ import tech.mcprison.prison.util.Location;
  */
 public class Mine {
 
-    /*
-     * Fields & Constants
-     */
+	private Bounds bounds;
 
-    private Location min, max, spawn;
+	private Location spawn;
     private String worldName, name;
     private boolean hasSpawn = false;
 
     private List<Block> blocks;
 
-    /*
-     * Constructors
-     */
 
     /**
      * Creates a new, empty mine instance
@@ -61,6 +58,16 @@ public class Mine {
         blocks = new ArrayList<>();
     }
 
+    private Location getLocation(Document doc, World world, String x, String y, String z) {
+    	return new Location(world, (double) doc.get(x), (double) doc.get(y), (double) doc.get(z));
+    }
+    
+    private Location getLocation(Document doc, World world, String x, String y, String z, String pitch, String yaw) {
+    	Location loc = getLocation(doc, world, x, y, z);
+    	loc.setPitch( ((Double) doc.get(pitch)).floatValue() );
+    	loc.setYaw( ((Double) doc.get(yaw)).floatValue() );
+    	return loc;
+    }
     /**
      * Loads a mine from a document.
      *
@@ -68,55 +75,50 @@ public class Mine {
      * @throws MineException If the mine couldn't be loaded from the document.
      */
     public Mine(Document document) throws MineException {
-        Optional<World> worldOptional =
-            Prison.get().getPlatform().getWorld((String) document.get("world"));
+    	
+        Optional<World> worldOptional = Prison.get().getPlatform().getWorld((String) document.get("world"));
         if (!worldOptional.isPresent()) {
             throw new MineException("world doesn't exist");
         }
+        World world = worldOptional.get();
 
-        min = new Location(worldOptional.get(), (double) document.get("minX"),
-            (double) document.get("minY"), (double) document.get("minZ"));
-        max = new Location(worldOptional.get(), (double) document.get("maxX"),
-            (double) document.get("maxY"), (double) document.get("maxZ"));
-
-        hasSpawn = (boolean) document.get("hasSpawn");
-        if (hasSpawn) {
-            spawn = new Location(worldOptional.get(), (double) document.get("spawnX"),
-                (double) document.get("spawnY"), (double) document.get("spawnZ"),
-                ((Double) document.get("spawnPitch")).floatValue(),
-                ((Double) document.get("spawnYaw")).floatValue());
+        setBounds( new Bounds( 
+        			getLocation(document, world, "minX", "minY", "minZ"),
+        			getLocation(document, world, "maxX", "maxY", "maxZ")));
+        
+        setHasSpawn((boolean) document.get("hasSpawn"));
+        if (isHasSpawn()) {
+        	setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
         }
 
-        worldName = worldOptional.get().getName();
-        name = (String) document.get("name");
+        setWorldName(world.getName());
+        setName((String) document.get("name"));
 
-        blocks = new ArrayList<>();
-        List<String> docBlocks = (List<String>) document.get("blocks");
+        this.blocks = new ArrayList<>();
+        
+        @SuppressWarnings( "unchecked" )
+		List<String> docBlocks = (List<String>) document.get("blocks");
         for (String docBlock : docBlocks) {
             String[] split = docBlock.split("-");
             String id = split[0];
             double chance = Double.parseDouble(split[1]);
 
-            Block block = new Block();
-            block.create(BlockType.getBlock(id), chance);
+            Block block = new Block(BlockType.getBlock(id), chance);
             blocks.add(block);
         }
     }
 
-    /*
-     * Methods
-     */
-
+    
     public Document toDocument() {
         Document ret = new Document();
         ret.put("world", worldName);
         ret.put("name", name);
-        ret.put("minX", min.getX());
-        ret.put("minY", min.getY());
-        ret.put("minZ", min.getZ());
-        ret.put("maxX", max.getX());
-        ret.put("maxY", max.getY());
-        ret.put("maxZ", max.getZ());
+        ret.put("minX", getBounds().getMin().getX());
+        ret.put("minY", getBounds().getMin().getY());
+        ret.put("minZ", getBounds().getMin().getZ());
+        ret.put("maxX", getBounds().getMax().getX());
+        ret.put("maxY", getBounds().getMax().getY());
+        ret.put("maxZ", getBounds().getMax().getZ());
         ret.put("hasSpawn", hasSpawn);
 
         if (hasSpawn) {
@@ -129,23 +131,18 @@ public class Mine {
 
         List<String> blockStrings = new ArrayList<>();
         for (Block block : blocks) {
-            blockStrings.add(block.type.getId() + "-" + block.chance);
+            blockStrings.add(block.getType().getId() + "-" + block.getChance());
         }
         ret.put("blocks", blockStrings);
 
         return ret;
     }
 
-    public void teleport(Player... players) {
-        for (Player p : players) {
-            p.teleport(getSpawn().orElse(
-                null)); // Should probably fail with an exception, but an NPE is as good as any..
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-                .withReplacements(name)
-                .sendTo(p);
-        }
-    }
-
+    /**
+     * NOTE: Have no idea WHY this always returns a value of true; why not void then?
+     * 
+     * @return
+     */
     public boolean reset() {
         // The all-important event
         MineResetEvent event = new MineResetEvent(this);
@@ -155,8 +152,6 @@ public class Mine {
         }
 
         try {
-            int i = 0;
-
             Optional<World> worldOptional = getWorld();
             if (!worldOptional.isPresent()) {
                 Output.get().logError("Could not reset mine " + name
@@ -165,38 +160,45 @@ public class Mine {
             }
             World world = worldOptional.get();
 
-            List<BlockType> blockTypes = PrisonMines.getInstance().getMineManager()
-                .getRandomizedBlocks().get(name);
-            if (blockTypes == null){
-                PrisonMines.getInstance().getMineManager().generateBlockList(this);
-                blockTypes = PrisonMines.getInstance().getMineManager()
-                    .getRandomizedBlocks().get(name);
-            }
-            int maxX = Math.max(min.getBlockX(), max.getBlockX());
-            int minX = Math.min(min.getBlockX(), max.getBlockX());
-            int maxY = Math.max(min.getBlockY(), max.getBlockY());
-            int minY = Math.min(min.getBlockY(), max.getBlockY());
-            int maxZ = Math.max(min.getBlockZ(), max.getBlockZ());
-            int minZ = Math.min(min.getBlockZ(), max.getBlockZ());
+            MineManager manager = PrisonMines.getInstance().getMineManager();
+            // Generate new set of randomized blocks each time:
+            manager.generateBlockList(this);
+            List<BlockType> blockTypes = manager.getRandomizedBlocks().get(name);
 
-            teleportOutPlayers(maxY);
+            teleportAllPlayersOut( world, getBounds().getyBlockMax() );
 
-            for (int y = minY; y <= maxY; y++) {
-                for (int x = minX; x <= maxX; x++) {
-                    for (int z = minZ; z <= maxZ; z++) {
-                        if (PrisonMines.getInstance().getConfig().fillMode && !world
-                            .getBlockAt(new Location(world, x, y, z)).isEmpty()) {
-                            continue; // Skip this block because it is not air
-                        }
-
-                        new Location(world, x, y, z).getBlockAt().setType(blockTypes.get(i));
-                        i++;
+            int i = 0;
+            boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+            for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
+                for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
+                    for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+                    	Location targetBlock = new Location(world, x, y, z);
+                    	
+                        if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
+                        	targetBlock.getBlockAt().setType(blockTypes.get(i++));
+                        } 
                     }
                 }
             }
-            if (PrisonMines.getInstance().getConfig().asyncReset) {
-                asyncGen();
-            }
+            
+            // NOTE: This is not making sense, since block list was generated about 20 lines ago?
+            // Why generate blocks after resetting the mine, of which they will NOT be used since the 
+            // list will be generated above when the mines reset again?  This could be adding to 
+            // lag and sluggishness on mine reset events, which could cause players to fall back in to
+            // the mine and suffocate?
+            // I'm about to remove this code, but I'm thinking it is left over from a refactoring 
+            // and was not removed?  Comment out for now.
+//            if (PrisonMines.getInstance().getConfig().asyncReset) {
+//                asyncGen();
+//            }
+
+            // free up memory:
+            manager.clearCache();
+            
+            // If a player falls back in to the mine before it is fully done being reset, 
+            // such as could happen if there is lag or a lot going on within the server, 
+            // this will TP anyone out who would otherwise suffocate.  I hope! lol
+            teleportAllPlayersOut( world, getBounds().getyBlockMax() );
 
             return true;
         } catch (Exception e) {
@@ -205,45 +207,112 @@ public class Mine {
         }
     }
 
-    private void teleportOutPlayers(int maxY) {
-        for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-            if (getBounds().within(player.getLocation())) {
-                if (hasSpawn) {
-                    teleport(player);
-                } else {
-                    Location l = player.getLocation();
-                    player.teleport(
-                        new Location(l.getWorld(), l.getX(), maxY + 3, l.getZ(), l.getPitch(),
-                            l.getYaw()));
-                }
+    /**
+     * <p>This function teleports players out of existing mines if they are within 
+     * their boundaries within the world where the Mine exists.</p>
+     * 
+     * <p>Using only players within the existing world of the current mine, each
+     * player is checked to see if they are within the mine, and if they are they
+     * are teleported either to the mine's spawn location, or straight up from the
+     * center of the mine, to the top of the mine (assumes air space will exist there).</p>
+     * 
+     * <p>This function eliminates possible bug of players being teleported from other
+     * worlds, and also eliminates the possibility that the destination could
+     * ever be null.</p>
+     * 
+     * @param world - world 
+     * @param targetY
+     */
+    private void teleportAllPlayersOut(World world, int targetY) {
+    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    							Prison.get().getPlatform().getOnlinePlayers());
+    	for (Player player : players) {
+            if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
+            		getBounds().within(player.getLocation())) {
+            	
+            	teleportPlayerOut(player);
+            	
+//            	Location destination = null;
+//            	if (this.hasSpawn && getWorld().isPresent()) {
+//            		destination = this.spawn;
+//            	} else {
+//            		destination = player.getLocation();
+//            		destination.setY( targetY + 1 );
+//            	}
+//            			
+//            	player.teleport( destination );
+//                PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+//                		.withReplacements(this.name).sendTo(player);
             }
         }
     }
-
-    private void asyncGen() {
-        try {
-            Prison.get().getPlatform().getScheduler()
-                .runTaskLaterAsync(
-                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
-        } catch (Exception e) {
-            Output.get().logWarn("Couldn't generate blocks for mine " + name
-                + " asynchronously. The blocks will be generated synchronously later.", e);
-        }
-    }
-
-    /*
-     * Getters & Setters
-     */
-
+    
     /**
-     * Checks for a spawn for this mine.
-     *
-     * @return true if a spawn is present, false otherwise
-     * @see Mine#hasSpawn()
+     * <p>This function will teleport the player out of a given mine, or to the given
+     * mine. It will not confirm if the player is within the mine before trying to 
+     * teleport.
+     * </p>
+     * 
+     * <p>This function will teleport the player to the defined spawn location, or it
+     * will teleport the player to the center of the mine, but on top of the
+     * mine's surface.</p>
+     * 
+     * <p>If the player target location has an empty block under its feet, it will 
+     * then spawn in a single glass block so the player will not take fall damage.
+     * If that block is within the mine, it will be reset at a later time when the
+     * mine resets and resets that block.  If it is part of spawn for the mine, then
+     * the glass block will become part of the landscape.
+     * <p>
+     * 
+     * @param player
      */
-    public boolean hasSpawn() {
-        return hasSpawn;
+    public void teleportPlayerOut(Player player) {
+    	
+    	Location altTp = new Location( getBounds().getCenter() );
+    	altTp.setY( getBounds().getyBlockMax() + 1 );
+    	Location target = isHasSpawn() ? getSpawn() : altTp;
+    	
+    	// Player needs to stand on something.  If block below feet is air, change it to a 
+    	// glass block:
+    	Location targetGround = new Location( target );
+    	targetGround.setY( target.getBlockY() - 1 );
+    	if ( targetGround.getBlockAt().isEmpty() ) {
+    		targetGround.getBlockAt().setType( BlockType.GLASS );
+    	}
+    	
+    	player.teleport( target );
+    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+    			.withReplacements(this.name).sendTo(player);
     }
+    
+    /**
+     * <p>This is a temporary fix until the Bounds.within() checks for the
+     * same world.  For now, it is assumed that Bounds.min and Bounds.max are 
+     * the same world, but that may not always be the case.</p>
+     * 
+     * @param w1 First world to compare to
+     * @param w2 Second world to compare to
+     * @return true if they are the same world
+     */
+    private boolean isSameWorld(World w1, World w2) {
+    	// TODO Need to fix Bounds.within() to test for same worlds:
+    	return w1 == null && w2 == null ||
+    			w1 != null && w2 != null &&
+    			w1.getName().equalsIgnoreCase(w2.getName());
+    }
+    
+
+//    private void asyncGen() {
+//        try {
+//            Prison.get().getPlatform().getScheduler()
+//                .runTaskLaterAsync(
+//                    () -> PrisonMines.getInstance().getMineManager().generateBlockList(this), 0L);
+//        } catch (Exception e) {
+//            Output.get().logWarn("Couldn't generate blocks for mine " + name
+//                + " asynchronously. The blocks will be generated synchronously later.", e);
+//        }
+//    }
+
 
     /**
      * Gets the spawn for this mine
@@ -251,12 +320,8 @@ public class Mine {
      * @return the location of the spawn. {@link Optional#empty()} if no spawn is present OR the
      * world can't be found
      */
-    public Optional<Location> getSpawn() {
-        if (!hasSpawn) {
-            return Optional.empty();
-        } else {
-            return getWorld().isPresent() ? Optional.ofNullable(spawn) : Optional.empty();
-        }
+    public Location getSpawn() {
+    	return spawn;
     }
 
     /**
@@ -266,7 +331,7 @@ public class Mine {
      * @return this instance for chaining
      */
     public Mine setSpawn(Location location) {
-        hasSpawn = true;
+    	hasSpawn = (location != null);
         spawn = location;
         return this;
     }
@@ -299,7 +364,7 @@ public class Mine {
     }
 
     public Bounds getBounds() {
-        return new Bounds(min, max);
+        return bounds;
     }
 
     /**
@@ -309,9 +374,8 @@ public class Mine {
      * @return this instance for chaining
      */
     public Mine setBounds(Bounds bounds) {
-        min = bounds.getMin();
-        max = bounds.getMax();
-        worldName = bounds.getMin().getWorld().getName();
+    	this.bounds = bounds;
+        this.worldName = bounds.getMin().getWorld().getName();
         return this;
     }
 
@@ -329,7 +393,7 @@ public class Mine {
     public Mine setBlocks(HashMap<BlockType, Integer> blockMap) {
         blocks = new ArrayList<>();
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new Block().create(entry.getKey(), entry.getValue()));
+            blocks.add(new Block(entry.getKey(), entry.getValue()));
         }
         return this;
     }
@@ -339,8 +403,8 @@ public class Mine {
     }
 
     public boolean isInMine(BlockType blockType) {
-        for (Block block : blocks) {
-            if (blockType == block.type) {
+        for (Block block : getBlocks()) {
+            if (blockType == block.getType()) {
                 return true;
             }
         }
@@ -360,5 +424,25 @@ public class Mine {
     public int hashCode() {
         return name.hashCode();
     }
+
+
+
+	public String getWorldName()
+	{
+		return worldName;
+	}
+	public void setWorldName( String worldName )
+	{
+		this.worldName = worldName;
+	}
+
+	public boolean isHasSpawn()
+	{
+		return hasSpawn;
+	}
+	public void setHasSpawn( boolean hasSpawn )
+	{
+		this.hasSpawn = hasSpawn;
+	}
 
 }

@@ -45,7 +45,6 @@ import java.util.*;
  */
 public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart> {
 
-    private static JsonParser _stringParser = new JsonParser();
     private List<MessagePart> messageParts;
     private String jsonString;
     private boolean dirty;
@@ -74,7 +73,21 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         jsonString = null;
         dirty = false;
     }
+    
+    public FancyMessage(final List<FancyMessage> msgs) {
+    	messageParts = new ArrayList<>();
+    	for(FancyMessage msg : msgs) {
+    		messageParts.addAll(msg.messageParts);
+    	}
+    	jsonString = null;
+    	dirty = false;
+    }
 
+    public void addFancy(FancyMessage fancyMessage) {
+    	messageParts.addAll( fancyMessage.messageParts );
+    	dirty = true;
+    }
+    
     /**
      * Creates a JSON message without text.
      */
@@ -106,7 +119,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
      * @return A {@code FancyMessage} representing the parameterized JSON message.
      */
     public static FancyMessage deserialize(String json) {
-        JsonObject serialized = _stringParser.parse(json).getAsJsonObject();
+        JsonObject serialized = JsonParser.parseString(json).getAsJsonObject();
         JsonArray extra = serialized.getAsJsonArray("extra"); // Get the extra component
         FancyMessage returnVal = new FancyMessage();
         returnVal.messageParts.clear();

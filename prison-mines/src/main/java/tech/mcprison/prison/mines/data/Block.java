@@ -28,18 +28,35 @@ public class Block {
     /**
      * The {@link BlockType} represented by this {@link Block}
      */
-    public BlockType type = BlockType.AIR;
+    private BlockType type; // = BlockType.AIR;
     /**
      * The chance of this block appearing in it's associated mine
      */
-    public double chance = 100;
+    private double chance; // = 100.0d;
 
     /**
      * Assigns the type and chance
      */
-    public Block create(BlockType block, double chance) {
-        type = block;
+    public Block(BlockType block, double chance) {
+        this.type = block;
         this.chance = chance;
-        return this;
     }
+
+	public BlockType getType()
+	{
+		return type;
+	}
+	public void setType( BlockType type )
+	{
+		this.type = type;
+	}
+
+	public double getChance()
+	{
+		return chance;
+	}
+	public void setChance( double chance )
+	{
+		this.chance = chance;
+	}
 }

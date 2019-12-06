@@ -18,34 +18,34 @@ public interface Database {
      * @param name The name of the collection.
      * @return An optional containing the collection if it could be found, or an empty optional if it doesn't exist.
      */
-    Optional<Collection> getCollection(String name);
+    public Optional<Collection> getCollection(String name);
 
     /**
      * Create a new collection. If a collection with the provided name already exists, this method will do nothing.
      *
      * @param name The name of the collection.
      */
-    void createCollection(String name);
+    public boolean createCollection(String name);
 
     /**
      * Deletes a collection. If a collection with the provided name does not exist, this method will do nothing.
      *
      * @param name The name of the collection.
      */
-    void deleteCollection(String name);
+    public boolean deleteCollection(String name);
 
     /**
      * @return Returns a list of all the collections in this database.
      */
-    List<Collection> getCollections();
+    public List<Collection> getCollections();
 
     /**
      * @return Returns the name of this database.
      */
-    String getName();
+    public String getName();
 
     /**
      * Dispose of the cached data in this database. This does not remove any files.
      */
-    void dispose();
+    public void dispose();
 }

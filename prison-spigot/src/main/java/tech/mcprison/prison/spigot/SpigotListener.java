@@ -22,10 +22,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
@@ -72,7 +78,8 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
-    @EventHandler public void onBlockPlace(BlockPlaceEvent e) {
+    @SuppressWarnings( "deprecation" )
+	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
@@ -83,7 +90,8 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onBlockBreak(BlockBreakEvent e) {
+    @SuppressWarnings( "deprecation" )
+	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(

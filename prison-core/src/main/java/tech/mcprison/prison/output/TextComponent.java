@@ -19,7 +19,6 @@
 package tech.mcprison.prison.output;
 
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.util.Text;
 
 /**
  * A component for boring plain old text.

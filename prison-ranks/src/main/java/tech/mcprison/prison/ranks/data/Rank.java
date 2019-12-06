@@ -55,7 +55,8 @@ public class Rank {
     public Rank() {
     }
 
-    public Rank(Document document) {
+    @SuppressWarnings( "unchecked" )
+	public Rank(Document document) {
         this.id = RankUtil.doubleToInt(document.get("id"));
         this.name = (String) document.get("name");
         this.tag = (String) document.get("tag");
@@ -72,6 +73,12 @@ public class Rank {
         ret.put("commands", this.rankUpCommands);
         return ret;
     }
+    
+    
+    public String filename() {
+    	return "rank_" + id;
+    }
+    
 
     /*
      * equals() and hashCode()

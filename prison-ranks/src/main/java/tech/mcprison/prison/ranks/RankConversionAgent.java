@@ -39,7 +39,7 @@ public class RankConversionAgent implements ConversionAgent {
                     File rankFile = new File(ranksFolder, rankJson);
                     String json = new String(Files.readAllBytes(rankFile.toPath()));
 
-                    JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+                    JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
                     String name = obj.getAsJsonPrimitive("name").getAsString();
                     double price = obj.getAsJsonPrimitive("price").getAsDouble();
                     String prefix = obj.getAsJsonPrimitive("prefix").getAsString();

@@ -27,8 +27,8 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
-        include(dependency('com.google.code.gson:gson:2.7'))
+        include(dependency('org.apache.commons:commons-lang3:3.9'))
+        include(dependency('com.google.code.gson:gson:2.8.6'))
     }
     classifier 'API'
     version = null

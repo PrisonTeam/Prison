@@ -9,39 +9,42 @@ public class PowertoolCommands {
 
     @Command(identifier = "autosmelt", description = "Enables/disables the autosmelt tool.", permissions = "mines.autosmelt")
     public void autosmeltCommand(CommandSender sender) {
-        if (!PrisonMines.getInstance().getPlayerManager().hasAutosmelt((Player) sender)) {
-            PrisonMines.getInstance().getPlayerManager().setAutosmelt((Player) sender, true);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autosmelt_enabled")
+    	PrisonMines pMines = PrisonMines.getInstance();
+        if (!pMines.getPlayerManager().hasAutosmelt((Player) sender)) {
+        	pMines.getPlayerManager().setAutosmelt((Player) sender, true);
+        	pMines.getMinesMessages().getLocalizable("autosmelt_enabled")
                 .sendTo(sender);
         } else {
-            PrisonMines.getInstance().getPlayerManager().setAutosmelt((Player) sender, false);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autosmelt_disabled")
+            pMines.getPlayerManager().setAutosmelt((Player) sender, false);
+            pMines.getMinesMessages().getLocalizable("autosmelt_disabled")
                 .sendTo(sender);
         }
     }
 
     @Command(identifier = "autoblock", description = "Enables/disables the autoblock tool.", permissions = "mines.autoblock")
     public void autoblockCommand(CommandSender sender) {
-        if (!PrisonMines.getInstance().getPlayerManager().hasAutoblock((Player) sender)) {
-            PrisonMines.getInstance().getPlayerManager().setAutoblock((Player) sender, true);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autoblock_enabled")
+    	PrisonMines pMines = PrisonMines.getInstance();
+        if (!pMines.getPlayerManager().hasAutoblock((Player) sender)) {
+            pMines.getPlayerManager().setAutoblock((Player) sender, true);
+            pMines.getMinesMessages().getLocalizable("autoblock_enabled")
                 .sendTo(sender);
         } else {
-            PrisonMines.getInstance().getPlayerManager().setAutoblock((Player) sender, false);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autoblock_disabled")
+            pMines.getPlayerManager().setAutoblock((Player) sender, false);
+            pMines.getMinesMessages().getLocalizable("autoblock_disabled")
                 .sendTo(sender);
         }
     }
 
     @Command(identifier = "autopickup", description = "Enables/disables the autopickup tool.", permissions = "mines.autopickup")
     public void autopickupCommand(CommandSender sender) {
-        if (!PrisonMines.getInstance().getPlayerManager().hasAutopickup((Player) sender)) {
-            PrisonMines.getInstance().getPlayerManager().setAutopickup((Player) sender, true);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autopickup_enabled")
+    	PrisonMines pMines = PrisonMines.getInstance();
+        if (!pMines.getPlayerManager().hasAutopickup((Player) sender)) {
+            pMines.getPlayerManager().setAutopickup((Player) sender, true);
+            pMines.getMinesMessages().getLocalizable("autopickup_enabled")
                 .sendTo(sender);
         } else {
-            PrisonMines.getInstance().getPlayerManager().setAutopickup((Player) sender, false);
-            PrisonMines.getInstance().getMinesMessages().getLocalizable("autopickup_disabled")
+            pMines.getPlayerManager().setAutopickup((Player) sender, false);
+            pMines.getMinesMessages().getLocalizable("autopickup_disabled")
                 .sendTo(sender);
         }
     }

@@ -53,7 +53,8 @@ public class SpigotBlock implements Block {
         return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
-    @Override public void setType(BlockType type) {
+    @SuppressWarnings( "deprecation" )
+	@Override public void setType(BlockType type) {
         MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
         bBlock.setType(materialData.getItemType());
         bBlock.setData(materialData.getData());

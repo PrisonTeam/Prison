@@ -32,7 +32,8 @@ public class Spigot18 implements Compatibility {
         return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
     }
 
-    @Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {
+    @SuppressWarnings( "deprecation" )
+	@Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {
         return e.getPlayer().getItemInHand();
     }
 

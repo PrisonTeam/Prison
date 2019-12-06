@@ -167,12 +167,18 @@ public class PrisonRanks extends Module {
      * Getters & Setters
      */
 
-    @Override public void disable() {
-        try {
-            rankManager.saveRanks();
-        } catch (IOException e) {
-            Output.get().logError("A ranks file failed to save.", e);
-        }
+    /**
+     * <p>Do not save ranks upon server shutdown or plugin disable events.  The 
+     * ranks should be saved every time there is a modification to them.
+     * </p>
+     */
+    @Override 
+    public void disable() {
+//        try {
+//            rankManager.saveRanks();
+//        } catch (IOException e) {
+//            Output.get().logError("A ranks file failed to save.", e);
+//        }
     }
 
     public RankManager getRankManager() {

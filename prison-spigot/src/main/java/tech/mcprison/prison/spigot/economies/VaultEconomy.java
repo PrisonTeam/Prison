@@ -39,7 +39,8 @@ public class VaultEconomy implements EconomyIntegration {
         }
     }
 
-    @Override public double getBalance(Player player) {
+    @SuppressWarnings( "deprecation" )
+	@Override public double getBalance(Player player) {
         if (economy == null) {
             return 0;
         }

@@ -1,10 +1,9 @@
 package tech.mcprison.prison.mines.managers;
 
-import com.google.common.eventbus.Subscribe;
 import java.util.HashMap;
 import java.util.UUID;
+
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 
 public class PlayerManager {
 

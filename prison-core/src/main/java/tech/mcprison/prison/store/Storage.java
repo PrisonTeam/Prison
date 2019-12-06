@@ -15,7 +15,7 @@ public interface Storage {
      * @return true if the storage backend is up and running, and false if something went wrong. If this
      * is false, it is probably not safe to attempt to read/write data.
      */
-    boolean isConnected();
+    public boolean isConnected();
 
     /**
      * Attempts to retrieve a database from the storage system.
@@ -23,27 +23,29 @@ public interface Storage {
      * @param name The name of the database to retrieve.
      * @return An optional containing the database if it was found, or an empty optional if it doesn't exist.
      */
-    Optional<Database> getDatabase(String name);
+    public Optional<Database> getDatabase(String name);
 
     /**
      * Create a new database. If a database exists by the provided name,
      * this method will do nothing.
      *
      * @param name The name of the new database.
+     * @return If create was successful
      */
-    void createDatabase(String name);
+    public boolean createDatabase(String name);
 
     /**
-     * Deletes a database. If no database exists by the provided nmae,
+     * Deletes a database. If no database exists by the provided name,
      * this method will do nothing.
      *
      * @param name The name of the database to delete.
+     * @return If the delete was successful
      */
-    void deleteDatabase(String name);
+    public boolean deleteDatabase(String name);
 
     /**
      * @return A list of all databases in the storage system.
      */
-    List<Database> getDatabases();
+    public List<Database> getDatabases();
 
 }

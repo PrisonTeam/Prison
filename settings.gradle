@@ -21,6 +21,5 @@ include 'prison-core'
 include 'prison-spigot'
 include 'prison-sponge'
 include 'prison-mines'
-include 'prison-mines-legacy'
 include 'prison-ranks'
 

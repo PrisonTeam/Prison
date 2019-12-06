@@ -18,6 +18,13 @@
 
 package tech.mcprison.prison.spigot;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -26,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.alerts.Alerts;
@@ -44,13 +52,7 @@ import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
+import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -68,7 +70,7 @@ public class SpigotPrison extends JavaPlugin {
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+//    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onLoad() {
         // The meta file is used to see if the folder needs converting.
@@ -90,6 +92,7 @@ public class SpigotPrison extends JavaPlugin {
                         "Could not create .meta file, this will cause problems with the converter!");
             }
         }
+        
     }
 
     @Override
@@ -142,12 +145,13 @@ public class SpigotPrison extends JavaPlugin {
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
     }
 
-    private void initUpdater() {
+	private void initUpdater() {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
 
-        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+        SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
+//        SpigetUpdate updater = new SpigetUpdate(this, 1223);
         updater.setVersionComparator(VersionComparator.EQUAL);
 
         updater.checkForUpdate(new UpdateCallback() {
@@ -155,7 +159,7 @@ public class SpigotPrison extends JavaPlugin {
             public void updateAvailable(String newVersion, String downloadUrl,
                                         boolean hasDirectDownload) {
                 Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lBukkit&r&7 or &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+                        "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
                         newVersion);
             }
 
@@ -212,6 +216,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initIntegrations() {
+
         registerIntegration("Essentials", EssentialsEconomy.class);
         registerIntegration("SaneEconomy", SaneEconomy.class);
         registerIntegration("Vault", VaultEconomy.class);
@@ -220,6 +225,8 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration("Vault", VaultPermissions.class);
 
         registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+
+        registerIntegration("PlaceholderAPI", PlaceHolderAPIIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {

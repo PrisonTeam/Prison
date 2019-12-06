@@ -70,6 +70,10 @@ public class ButtonComponent extends DisplayComponent {
     public void send(CommandSender sender) {
         button.send(sender);
     }
+    
+    public FancyMessage getFancyMessage() {
+    	return button;
+    }
 
     /**
      * Denotes the style of the button.

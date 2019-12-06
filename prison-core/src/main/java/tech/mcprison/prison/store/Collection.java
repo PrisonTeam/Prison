@@ -15,7 +15,12 @@ public interface Collection {
     /**
      * @return The name of this collection
      */
-    String getName();
+    public String getName();
+
+    /**
+     * @return Returns a list of all documents in this collection.
+     */
+    public List<Document> getAll();
 
     /**
      * Attempts to retrieve a document from the collection.
@@ -23,39 +28,13 @@ public interface Collection {
      * @param key The name of the document to retrieve.
      * @return An optional containing the document if it was found, or an empty optional if it does not exist.
      */
-    Optional<Document> get(String key);
+    public Optional<Document> get(String key);
 
-    /**
-     * Inserts a new document into the collection.
-     *
-     * @param key      The name of the document to insert.
-     * @param document The document to insert.
-     */
-    void insert(String key, Document document);
-
-    /**
-     * Remove a document from the collection.
-     *
-     * @param key The name of the document to remove.
-     */
-    void remove(String key);
-
-    /**
-     * Filters through each document in the collection and attempts to find a match based on whatever is stored
-     * in the passed in document.
-     *
-     * @param document A document containing everything the filter matches should contain.
-     * @return A list of matching documents. May be empty, but will never be null.
-     */
-    List<Document> filter(Document document);
-
-    /**
-     * @return Returns a list of all documents in this collection.
-     */
-    List<Document> getAll();
-
-    /**
-     * Disposes of all cached data in this collection. Note that this does not remove any files.
-     */
-    void dispose();
+    
+    public void save(Document document);
+    public void save(String filename, Document document);
+    
+    
+    public boolean delete(String name);
+    
 }

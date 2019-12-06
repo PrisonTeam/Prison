@@ -32,6 +32,7 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor 'org.spongepowered:spongeapi:6.0.0'
     compile project(':prison-core')
     compileOnly 'org.spongepowered:spongeapi:6.0.0'
 }

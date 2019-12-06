@@ -54,6 +54,31 @@ public class SpigotInventory implements Inventory {
                 return new SpigotBrewer((BrewerInventory) wrapper);
             case CHEST:
                 return new SpigotInventory(wrapper);
+                
+			case CRAFTING:
+				break;
+			case CREATIVE:
+				break;
+			case DISPENSER:
+				break;
+			case DROPPER:
+				break;
+			case ENCHANTING:
+				break;
+			case ENDER_CHEST:
+				break;
+			case FURNACE:
+				break;
+			case HOPPER:
+				break;
+			case PLAYER:
+				break;
+			case VILLAGER:
+				break;
+			case WORKBENCH:
+				break;
+			default:
+				break;
         }
         return null;
     }

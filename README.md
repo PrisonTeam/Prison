@@ -7,7 +7,7 @@
 
 1. [What is Prison?](#what-is-prison)
 2. [Why should I use Prison?](#why-should-i-use-prison)
-3. [What's the status on Prison v3.0?](#whats-the-status-on-prison-v30)
+3. [Get Prison](#get-prison)
 
 ## What is Prison?
 
@@ -28,8 +28,10 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 * **Prison is always expanding.** We are always looking for ways to expand Prison with features that make your server run more smoothly. Additionally, we are always looking for contributions from the community, be it code contributions, feature requests, bug reports, translations, or documentation.
 
 ## Get Prison
+
 | Stable | Experimental (Nightly) |
 | ------ | ---------------------- |
 | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 
 
+ 
