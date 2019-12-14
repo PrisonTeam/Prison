@@ -19,9 +19,7 @@
 package tech.mcprison.prison.mines;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
@@ -52,7 +50,7 @@ public class PrisonMines extends Module {
 
     private static PrisonMines i = null;
     private MinesConfig config;
-    private List<String> worlds;
+//    private List<String> worlds;
     private LocaleManager localeManager;
     private Database db;
     private ErrorManager errorManager;
@@ -80,7 +78,7 @@ public class PrisonMines extends Module {
         initConfig();
         localeManager = new LocaleManager(this, "lang/mines");
 
-        initWorlds();
+//        initWorlds();
         initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
@@ -147,18 +145,18 @@ public class PrisonMines extends Module {
 //        }
     }
 
-    private void initWorlds() {
-        ListIterator<String> iterator = config.worlds.listIterator();
-        worlds = new ArrayList<>();
-        while (iterator.hasNext()) {
-            worlds.add(iterator.next().toLowerCase());
-        }
-    }
+//    private void initWorlds() {
+//        ListIterator<String> iterator = config.worlds.listIterator();
+//        worlds = new ArrayList<>();
+//        while (iterator.hasNext()) {
+//            worlds.add(iterator.next().toLowerCase());
+//        }
+//    }
 
     private void initMines() {
         mines = MineManager.fromDb();
         player = new PlayerManager();
-        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
+//        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
     }
 
     public JsonFileIO getJsonFileIO()
@@ -197,9 +195,9 @@ public class PrisonMines extends Module {
         return localeManager;
     }
 
-    public List<String> getWorlds() {
-        return worlds;
-    }
+//    public List<String> getWorlds() {
+//        return worlds;
+//    }
 
     public PlayerManager getPlayerManager() {
         return player;
