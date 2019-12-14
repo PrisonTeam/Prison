@@ -143,7 +143,43 @@ public class Bounds {
 
         return results;
     }
+    
+    /**
+     * <p>This function will determine if the given location is within a radius of the Bounds' 
+     * center. This will return a true or false value.
+     * </p>
+     * 
+     * <p>To keep the calculations simple, if the worlds are the same, then it will create a new
+     * Bounds object and then utilize the computed values for width and length by feeding it in 
+     * to a Pythagorean theorem to compute the hypotenuse (distance) between these two points.
+     * There maybe other unused values calculated, but going for the simplicity of reusing existing code.
+     * </p>
+     * 
+     * @param location
+     * @param radius
+     * @return
+     */
+    public boolean within(Location location, long radius) {
+    	boolean results = false;
+    	
+    	if ( getCenter().getWorld().getName().equalsIgnoreCase( location.getWorld().getName() ) ) {
+    		
+    		// Ignore y since this is radius from the center axis of the mine:
+    		Bounds distBounds = new Bounds( getCenter(), location );
+    		double distance = distBounds.getDistance();
+    		
+    		results = Math.round( distance ) <= radius;
+    	}
+    	
+    	return results;
+    }
 
+    public double getDistance() {
+    	double distance = Math.sqrt( (getMin().getBlockX() * getMax().getBlockX()) + 
+				(getMin().getBlockZ() * getMax().getBlockZ()) );
+    	return distance;
+    }
+    
     public Location getMin() {
         return min;
     }
