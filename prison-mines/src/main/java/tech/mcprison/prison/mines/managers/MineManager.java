@@ -37,22 +37,18 @@ import tech.mcprison.prison.store.Document;
 public class MineManager {
 
     // Base list
-    List<Mine> mines;
+    private List<Mine> mines;
 
-    tech.mcprison.prison.store.Collection coll;
+    private Collection coll;
 
-    // Declarations
-//    HashMap<String, List<BlockType>> randomizedBlocks;
-//    int resetCount = 0;
+    private boolean mineStats = false;
 
     /**
      * Initializes a new instance of {@link MineManager}
      */
     public MineManager(tech.mcprison.prison.store.Collection collection) {
         mines = new ArrayList<>();
-//        randomizedBlocks = new HashMap<>();
         coll = collection;
-//        mines = new ArrayList<>();
 
         loadMines();
 
@@ -66,8 +62,6 @@ public class MineManager {
 			offset += 5;
 		}
         Output.get().logInfo("Mines are all queued to run auto resets.");
-        
-//        resetCount = PrisonMines.getInstance().getConfig().resetTime;
     }
 
     public void loadMine(String mineFile) throws IOException, MineException {
@@ -112,88 +106,6 @@ public class MineManager {
         return results;
     }
 
-//    private void selectiveSend(Player x, Localizable localizable) {
-//        if (PrisonMines.getInstance().getWorlds()
-//            .contains(x.getLocation().getWorld().getName().toLowerCase())) {
-//            localizable.sendTo(x);
-//        }
-//    }
-
-//    /**
-//     * Gets the {@link TimerTask} for the reset timer of this {@link MineManager}
-//     */
-//    public TimerTask getTimerTask() {
-//        return new TimerTask() {
-//            @Override
-//            public void run() {
-//                // Perform initial checks
-//                if (PrisonMines.getInstance().getConfig().resetTime == 0) {
-//                    return;
-//                }
-//                if (mines.size() == 0) {
-//                    return;
-//                }
-//
-//                // It's time to reset
-//                if (resetCount == 0) {
-//                    resetMines();
-//                } else {
-//                    broadcastResetWarnings();
-//                }
-//
-//                if (resetCount > 0) {
-//                    resetCount--;
-//                }
-//            }
-//        };
-//    }
-
-//    private void resetMines() {
-//        mines.forEach(Mine::reset);
-//
-//        // messages are broadcast to user within the mine reset code since it now targets players who
-//        // are within a distance of a certain radius from the center of the mine.  The following is now
-//        // obsolete:
-//        
-////        if (PrisonMines.getInstance().getConfig().resetMessages) {
-////            // Send it to everyone if it's not multi-world
-////            if (!PrisonMines.getInstance().getConfig().multiworld) {
-////                Prison.get().getPlatform().getOnlinePlayers().forEach(
-////                    x -> PrisonMines.getInstance().getMinesMessages()
-////                        .getLocalizable("reset_message")
-////                        .sendTo(x));
-////            } else { // Or those affected if it's multi-world
-////                Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
-////                    PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_message")));
-////            }
-////        }
-//
-//        // And reset the count
-//        resetCount = PrisonMines.getInstance().getConfig().resetTime;
-//    }
-
-//    private void broadcastResetWarnings() {
-//        if (!PrisonMines.getInstance().getConfig().resetMessages) {
-//            return;
-//        }
-//
-//        for (int i : PrisonMines.getInstance().getConfig().resetWarningTimes) {
-//            if (resetCount == i) {
-//                if (!PrisonMines.getInstance().getConfig().multiworld) {
-//
-//                    Prison.get().getPlatform().getOnlinePlayers().forEach(
-//                        x -> PrisonMines.getInstance().getMinesMessages()
-//                            .getLocalizable("reset_warning")
-//                            .withReplacements(Text.getTimeUntilString(resetCount * 1000))
-//                            .sendTo(x));
-//                } else {
-//                    Prison.get().getPlatform().getOnlinePlayers().forEach(x -> selectiveSend(x,
-//                        PrisonMines.getInstance().getMinesMessages().getLocalizable("reset_warning")
-//                            .withReplacements(Text.getTimeUntilString(resetCount * 1000))));
-//                }
-//            }
-//        }
-//    }
 
     public boolean removeMine(String id){
         if (getMine(id).isPresent()) {
@@ -234,9 +146,6 @@ public class MineManager {
             try {
                 Mine m = new Mine(document);
                 add(m, false);
-//                if (PrisonMines.getInstance().getConfig().asyncReset) {
-//                    generateBlockList(m);
-//                }
             } catch (Exception e) {
                 Output.get()
                     .logError("&cFailed to load mine " + document.getOrDefault("name", "null"), e);
@@ -258,42 +167,6 @@ public class MineManager {
         }
     }
 
-//    /**
-//     * Generates blocks for the specified mine and caches the result.
-//     * 
-//     * The random chance is now calculated upon a double instead of integer.
-//     *
-//     * @param mine the mine to randomize
-//     */
-//    public void generateBlockList(Mine mine) {
-//        Random random = new Random();
-//        ArrayList<BlockType> blocks = new ArrayList<>();
-//
-//        for (int i = 0; i < mine.getBounds().getTotalBlockCount(); i++) {
-//        	double chance = random.nextDouble() * 100.0d;
-//            
-//            BlockType value = BlockType.AIR;
-//            for (Block block : mine.getBlocks()) {
-//                if (chance <= block.getChance()) {
-//                    value = block.getType();
-//                    break;
-//                } else {
-//                    chance -= block.getChance();
-//                }
-//            }
-//            blocks.add(value);
-//        }
-//        randomizedBlocks.put(mine.getName(), blocks);
-//    }
-
-//    /**
-//     * Gets the randomized blocks cache
-//     *
-//     * @return a hashmap with all the randomized blocks
-//     */
-//    public HashMap<String, List<BlockType>> getRandomizedBlocks() {
-//        return randomizedBlocks;
-//    }
 
     /**
      * Returns the mine with the specified name.
@@ -306,15 +179,17 @@ public class MineManager {
         return mines.stream().filter(mine -> mine.getName().equals(name)).findFirst();
     }
 
-//    /**
-//     * Clears all of the cached randomized blocks
-//     */
-//    public void clearCache() {
-//        randomizedBlocks.clear();
-//    }
-
     public List<Mine> getMines() {
         return mines;
     }
+
+	public boolean isMineStats()
+	{
+		return mineStats;
+	}
+	public void setMineStats( boolean mineStats )
+	{
+		this.mineStats = mineStats;
+	}
 
 }

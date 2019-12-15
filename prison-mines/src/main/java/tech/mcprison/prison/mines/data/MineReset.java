@@ -120,9 +120,13 @@ public abstract class MineReset
         long stop = System.currentTimeMillis();
         setStatsResetTimeMS( stop - start );
         
-        // TODO Tie to debug mode?
-        Output.get().logInfo("&cMine reset: " + getName() + "  Blocks: " + getBounds().getTotalBlockCount() + 
-        				statsMessage() );
+        // Tie to the command stats mode so it logs it if stats are enabled:
+        if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	Output.get().logInfo("&cMine reset: &7" + getName() + 
+        			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+        			statsMessage() );
+        }
     }
 
     

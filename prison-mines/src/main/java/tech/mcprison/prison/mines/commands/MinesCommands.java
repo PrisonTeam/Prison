@@ -37,6 +37,7 @@ import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ButtonComponent;
 import tech.mcprison.prison.output.ButtonComponent.Style;
@@ -58,8 +59,6 @@ public class MinesCommands {
 	
 	private String lastMineReferenced;
 	private Long lastMineReferencedTimestamp;
-	
-	private boolean mineStats = false;
 	
 
     private boolean performCheckMineExists(CommandSender sender, String name) {
@@ -465,7 +464,8 @@ public class MinesCommands {
         setLastMineReferenced(name);
         
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(name).get();
+    	MineManager mMan = pMines.getMineManager();
+        Mine m = mMan.getMine(name).get();
 
         ChatDisplay chatDisplay = new ChatDisplay(m.getName());
 
@@ -491,7 +491,7 @@ public class MinesCommands {
         chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
 
         
-        if ( isMineStats() ) {
+        if ( mMan.isMineStats() ) {
         	RowComponent rowStats = new RowComponent();
         	rowStats.addTextComponent( "  -- &7 Stats :: " );
         	rowStats.addTextComponent( m.statsMessage() );
@@ -564,6 +564,7 @@ public class MinesCommands {
             new BulletedListComponent.BulletedListBuilder();
 
         PrisonMines pMines = PrisonMines.getInstance();
+    	MineManager mMan = pMines.getMineManager();
         for (Mine m : pMines.getMines()) {
         	
         	 RowComponent row = new RowComponent();
@@ -589,7 +590,7 @@ public class MinesCommands {
         	
              builder.add(row.getFancy());
              
-             if ( isMineStats() ) {
+             if ( mMan.isMineStats() ) {
             	 RowComponent rowStats = new RowComponent();
             	 
             	 rowStats.addTextComponent( "  -- &7 Stats :: " );
@@ -668,10 +669,13 @@ public class MinesCommands {
     @Command(identifier = "mines stats", permissions = "mines.stats", description = "Toggle stats on all mines.")
     public void mineStats(CommandSender sender) {
     	
-    	// toggle the stats:
-    	setMineStats( !isMineStats() );
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	MineManager mMan = pMines.getMineManager();
     	
-    	if ( isMineStats() ) {
+    	// toggle the stats:
+    	mMan.setMineStats( !mMan.isMineStats() );
+    	
+    	if ( mMan.isMineStats() ) {
     		sender.sendMessage(
     				"&3Mine Stats are now enabled. Use &7/mines list&3 to view stats on last mine reset. ");
     	} else {
@@ -775,15 +779,6 @@ public class MinesCommands {
 	public void lastMineReferenced( Long lastMineReferencedTimestamp )
 	{
 		this.lastMineReferencedTimestamp = lastMineReferencedTimestamp;
-	}
-
-	public boolean isMineStats()
-	{
-		return mineStats;
-	}
-	public void setMineStats( boolean mineStats )
-	{
-		this.mineStats = mineStats;
 	}
 
 	
