@@ -1,7 +1,6 @@
 package tech.mcprison.prison.integration;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.platform.Platform;
 
 /**
  * An {@link Integration} for a permissions plugin.
