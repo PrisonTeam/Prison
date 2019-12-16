@@ -20,7 +20,7 @@ import tech.mcprison.prison.util.Text;
 public abstract class MineReset
 	extends MineData
 {
-	public static final long MINE_RESET_BROADCAST_RADIUS_BLOCKS = 250;
+	public static final long MINE_RESET_BROADCAST_RADIUS_BLOCKS = 150;
 	
 	private List<BlockType> randomizedBlocks;
 	
@@ -178,8 +178,7 @@ public abstract class MineReset
     	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     							Prison.get().getPlatform().getOnlinePlayers());
     	for (Player player : players) {
-            if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
-            		getBounds().within(player.getLocation())) {
+            if ( getBounds().within(player.getLocation()) ) {
             	
             	teleportPlayerOut(player);
             }
@@ -225,21 +224,21 @@ public abstract class MineReset
     			.withReplacements(this.getName()).sendTo(player);
     }
     
-    /**
-     * <p>This is a temporary fix until the Bounds.within() checks for the
-     * same world.  For now, it is assumed that Bounds.min and Bounds.max are 
-     * the same world, but that may not always be the case.</p>
-     * 
-     * @param w1 First world to compare to
-     * @param w2 Second world to compare to
-     * @return true if they are the same world
-     */
-    private boolean isSameWorld(World w1, World w2) {
-    	// TODO Need to fix Bounds.within() to test for same worlds:
-    	return w1 == null && w2 == null ||
-    			w1 != null && w2 != null &&
-    			w1.getName().equalsIgnoreCase(w2.getName());
-    }
+//    /**
+//     * <p>This is a temporary fix until the Bounds.within() checks for the
+//     * same world.  For now, it is assumed that Bounds.min and Bounds.max are 
+//     * the same world, but that may not always be the case.</p>
+//     * 
+//     * @param w1 First world to compare to
+//     * @param w2 Second world to compare to
+//     * @return true if they are the same world
+//     */
+//    private boolean isSameWorld(World w1, World w2) {
+//    	// TODO Need to fix Bounds.within() to test for same worlds:
+//    	return w1 == null && w2 == null ||
+//    			w1 != null && w2 != null &&
+//    			w1.getName().equalsIgnoreCase(w2.getName());
+//    }
 
     /**
      * Generates blocks for the specified mine and caches the result.
@@ -291,8 +290,7 @@ public abstract class MineReset
     	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     							Prison.get().getPlatform().getOnlinePlayers());
     	for (Player player : players) {
-            if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
-            		getBounds().within(player.getLocation(), radius)) {
+            if ( getBounds().within(player.getLocation(), radius)) {
             	
             	// TODO this message needs to have a placeholder for the mine's name:
 //            	PrisonMines.getInstance().getMinesMessages()
@@ -313,8 +311,7 @@ public abstract class MineReset
     	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     							Prison.get().getPlatform().getOnlinePlayers());
     	for (Player player : players) {
-            if ( isSameWorld(world, getBounds().getMin().getWorld()) && 
-            		getBounds().within(player.getLocation(), radius)) {
+            if ( getBounds().within(player.getLocation(), radius)) {
             	
             	// TODO this message needs to have a placeholder for the mine's name:
 //            	PrisonMines.getInstance().getMinesMessages()

@@ -123,14 +123,7 @@ public class Bounds {
     public boolean within(Location location) {
     	boolean results = false;
     	
-    	// TODO fix Bounds.within() get working with junit tests (currently it won't run) until then cannot test changes:
-    	// If the worlds don't match, then don't waste time calculating if the passed 
-    	// location is within the Bounds. Some unit tests pass in nulls.
-//    	if ( min.getWorld() == null && max.getWorld() == null && location.getWorld() == null ||
-//    		 min.getWorld() != null && max.getWorld() != null && location.getWorld() != null &&
-//    		 min.getWorld().getName().equalsIgnoreCase( max.getWorld().getName()) &&
-//    		 min.getWorld().getName().equalsIgnoreCase( location.getWorld().getName() )) {
-    		
+    	if ( withinSameWorld( location )) {
 
     		double ourX = Math.floor(location.getX());
     		double ourY = Math.floor(location.getY());
@@ -139,10 +132,15 @@ public class Bounds {
     		results = ourX >= getxMin() && ourX <= getxMax() // Within X
     				&& ourY >= (getyMin() - 1) && ourY <= getyMax() // Within Y
     				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
-//    	}
+    	}
 
         return results;
     }
+    
+    public boolean withinSameWorld(Location location) {
+    	return getCenter().getWorld().getName().equalsIgnoreCase( 
+    			location.getWorld().getName() );
+    	}	
     
     /**
      * <p>This function will determine if the given location is within a radius of the Bounds' 
@@ -162,22 +160,39 @@ public class Bounds {
     public boolean within(Location location, long radius) {
     	boolean results = false;
     	
-    	if ( getCenter().getWorld().getName().equalsIgnoreCase( location.getWorld().getName() ) ) {
+    	if ( withinSameWorld( location ) ) {
     		
     		// Ignore y since this is radius from the center axis of the mine:
-    		Bounds distBounds = new Bounds( getCenter(), location );
-    		double distance = distBounds.getDistance();
+    		double distance = getDistance(location);
     		
-    		results = Math.round( distance ) <= radius;
+    		results = distance <= radius;
     	}
     	
     	return results;
     }
 
+    /**
+     * <p>Ignore Y since this is the radius from the center axis of the mine.
+     * </p>
+     * @return
+     */
     public double getDistance() {
-    	double distance = Math.sqrt( (getMin().getBlockX() * getMax().getBlockX()) + 
-				(getMin().getBlockZ() * getMax().getBlockZ()) );
-    	return distance;
+    	double deltaX = getMin().getX() - getMax().getX();
+    	double deltaZ = getMin().getZ() - getMax().getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+    	return Math.round( distance );
+    }
+  
+    public double getDistance(Location location) {
+    	double deltaX = getCenter().getX() - location.getX();
+    	double deltaZ = getCenter().getZ() - location.getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+		return Math.round( distance );
+    }    	
+
+    public String getDimensions() {
+    	return "&7" + Math.round(getWidth()) + "&8x&7" +
+                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
     }
     
     public Location getMin() {

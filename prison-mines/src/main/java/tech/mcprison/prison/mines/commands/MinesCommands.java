@@ -71,7 +71,8 @@ public class MinesCommands {
         return true;
     }
 
-    @Command(identifier = "mines create", description = "Creates a new mine.", permissions = "mines.create")
+    @Command(identifier = "mines create", description = "Creates a new mine.", 
+    		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the new mine.") String name) {
 
@@ -104,7 +105,8 @@ public class MinesCommands {
         pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
     }
 
-    @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", permissions = "mines.set")
+    @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", 
+    		onlyPlayers = false, permissions = "mines.set")
     public void spawnpointCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String name) {
 
@@ -467,6 +469,8 @@ public class MinesCommands {
     	MineManager mMan = pMines.getMineManager();
         Mine m = mMan.getMine(name).get();
 
+        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        
         ChatDisplay chatDisplay = new ChatDisplay(m.getName());
 
         String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
@@ -476,6 +480,10 @@ public class MinesCommands {
         String maxCoords = m.getBounds().getMax().toBlockCoordinates();
         chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
 
+        chatDisplay.text("&3Center: &7%s", m.getBounds().getCenter().toBlockCoordinates());
+        if ( mMan.isMineStats() ) {
+        }
+
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
 
@@ -483,14 +491,14 @@ public class MinesCommands {
         row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
                 Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
         
-        row.addTextComponent( "    &3Volume: &7%d &3Blocks", Math.round(m.getBounds().getTotalBlockCount()) );
+        row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
+        						dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
         chatDisplay.addComponent( row );
         
         
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
 
-        
         if ( mMan.isMineStats() ) {
         	RowComponent rowStats = new RowComponent();
         	rowStats.addTextComponent( "  -- &7 Stats :: " );
@@ -562,6 +570,10 @@ public class MinesCommands {
         display.text("&8Click a mine's name to see more information.");
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
+        
+    	Player player = getPlayer( sender );
+    	
+        DecimalFormat dFmt = new DecimalFormat("#,##0");
 
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
@@ -569,7 +581,7 @@ public class MinesCommands {
         	
         	 RowComponent row = new RowComponent();
         	 
-        	 row.addTextComponent( m.getWorldName() + " - " );
+        	 row.addTextComponent( m.getWorldName() + " " );
 
         	 row.addFancy( 
         			 new FancyMessage("&7" + m.getName()).command("/mines info " + m.getName())
@@ -583,11 +595,24 @@ public class MinesCommands {
         	 
         	 row.addTextComponent( "&r - " );
 
-        	 row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-                     Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
-
-        	 row.addTextComponent( "&r - &3Volume: &7%d &3blocks", m.getBounds().getTotalBlockCount() );
+        	 row.addFancy( 
+        			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
+        	 
+        	 row.addTextComponent( "&r - ");
         	
+        	 row.addFancy( 
+        			 new FancyMessage("&7" + dFmt.format(m.getBounds().getTotalBlockCount())).
+        			 	tooltip( "Volume in Blocks" ) );
+        	 
+        	 if ( player != null && m.getBounds().withinSameWorld( player.getLocation() ) ) {
+        		 
+        		 row.addTextComponent( "&r - &7Distance: ");
+        		 row.addFancy( 
+        				 new FancyMessage( "&7" + dFmt.format(m.getBounds().getDistance(player.getLocation()))).
+        				 	tooltip("Distance to the Mine") );
+        		 
+        	 }
+        	 
              builder.add(row.getFancy());
              
              if ( mMan.isMineStats() ) {
@@ -686,18 +711,27 @@ public class MinesCommands {
     
     
     @Command(identifier = "mines whereami", permissions = "mines.whereami", 
-    				description = "Identifies what mines you are in, or are the closest to.")
-    public void mineWhereAmI(Player sender) {
+    				description = "Identifies what mines you are in, or are the closest to." )
+    public void mineWhereAmI(CommandSender sender) {
     	
+    	Player player = getPlayer( sender );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+    	
+    	player.sendMessage( "&3Your coordinates are: &7" + player.getLocation().toBlockCoordinates() );
+
     	PrisonMines pMines = PrisonMines.getInstance();
 
     	List<Mine> inMine = new ArrayList<>();
     	TreeMap<Integer, Mine> nearMine = new TreeMap<>();
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
-    		if ( mine.getBounds().within( sender.getLocation() ) ) {
+    		if ( mine.getBounds().within( player.getLocation() ) ) {
     			inMine.add( mine );
-    		} if ( mine.getBounds().within( sender.getLocation(), Mine.MINE_RESET_BROADCAST_RADIUS_BLOCKS) ) {
-    			Double distance = new Bounds( mine.getBounds().getCenter(), sender.getLocation()).getDistance();
+    		} if ( mine.getBounds().within( player.getLocation(), Mine.MINE_RESET_BROADCAST_RADIUS_BLOCKS) ) {
+    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}
     	}
@@ -715,7 +749,7 @@ public class MinesCommands {
     		for ( Integer dist : distances ) {
 				Mine m = nearMine.get( dist );
 				sender.sendMessage( "&3You are &7" + dist + " &7blocks away from the center of mine &3" + m.getName() );
-				if ( ++cnt >= 3 ) {
+				if ( ++cnt >= 5 ) {
 					break;
 				}
 			}
@@ -727,6 +761,22 @@ public class MinesCommands {
     	}
 
     }
+
+	private Player getPlayer( CommandSender sender )
+	{
+		String playerName = sender.getName();
+    	Player player = null;
+    	
+    	List<Player> players = Prison.get().getPlatform().getOnlinePlayers();
+    	for ( Player p : players )
+		{
+			if ( p.getName().equalsIgnoreCase( playerName )) {
+				player = p;
+				break;
+			}
+		}
+		return player;
+	}
     
     
 
