@@ -20,11 +20,10 @@ import java.util.Date
 
 apply plugin: 'java'
 
-def version = '3.2.1-alpha.1'
 println """
 ================================================================
 You are building the Prison plugin 
-  Version:    ${version} 
+  Version:    ${project.version} 
   Build time: ${getCurrentTimestamp()}
 
 Output files will be in [subproject]/build/libs.
@@ -55,7 +54,6 @@ subprojects {
 
     archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
-    version = '${version}'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
