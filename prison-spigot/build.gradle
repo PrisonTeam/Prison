@@ -44,6 +44,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly 'me.lucko.luckperms:luckperms-api:4.0'
+    compileOnly 'net.luckperms:api:5.0'
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }

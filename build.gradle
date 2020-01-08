@@ -26,8 +26,8 @@ You are building the Prison plugin
   Version:    ${project.version} 
   Build time: ${getCurrentTimestamp()}
 
-Output files will be in [subproject]/build/libs.
-The runnable JAR is usually named Prison[ModuleName].jar.
+Output files are located in [subproject]/build/libs.
+The runnable JAR is usually named prison.jar.
 Example: The spigot build artifact is prison-spigot/build/libs/prison.jar
 ================================================================
 """
