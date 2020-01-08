@@ -29,10 +29,13 @@ import tech.mcprison.prison.internal.Player;
  */
 public class EssentialsEconomy implements EconomyIntegration {
 
-    private EssEconomyWrapper wrapper = null;
+    public static final String PROVIDER_NAME = "Essentials";
+    public static final String PROVIDER_DISPLAY_NAME = "EssentialsX";
+    
+	private EssEconomyWrapper wrapper = null;
 
     public EssentialsEconomy() {
-        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+        if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
             wrapper = new EssEconomyWrapper();
         }
     }
@@ -58,7 +61,7 @@ public class EssentialsEconomy implements EconomyIntegration {
     }
 
     @Override public String getProviderName() {
-        return "Essentials";
+        return PROVIDER_DISPLAY_NAME;
     }
 
     @Override public boolean hasIntegrated() {

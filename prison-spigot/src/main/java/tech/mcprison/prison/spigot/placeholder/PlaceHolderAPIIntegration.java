@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 public class PlaceHolderAPIIntegration extends PlaceholderExpansion implements PlaceholderIntegration {
 
+	public static final String PROVIDER_NAME = "PlaceHolderAPI";
 	private boolean pluginInstalled;
 
 	public PlaceHolderAPIIntegration() {
@@ -31,7 +32,7 @@ public class PlaceHolderAPIIntegration extends PlaceholderExpansion implements P
 
 	@Override
 	public String getProviderName() {
-		return "PlaceHolderAPI";
+		return PROVIDER_NAME;
 	}
 
 	@Override

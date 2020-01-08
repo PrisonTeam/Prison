@@ -50,6 +50,7 @@ import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
+import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
@@ -217,16 +218,18 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initIntegrations() {
 
-        registerIntegration("Essentials", EssentialsEconomy.class);
-        registerIntegration("SaneEconomy", SaneEconomy.class);
+    	// where possible, only define provider name once:
+        registerIntegration( EssentialsEconomy.PROVIDER_DISPLAY_NAME, EssentialsEconomy.class);
+        registerIntegration( SaneEconomy.PROVIDER_NAME, SaneEconomy.class);
         registerIntegration("Vault", VaultEconomy.class);
 
-        registerIntegration("LuckPerms", LuckPermissions.class);
+        registerIntegration( LuckPerms5.PROVIDER_NAME, LuckPerms5.class);
+        registerIntegration( LuckPermissions.PROVIDER_NAME, LuckPermissions.class);
         registerIntegration("Vault", VaultPermissions.class);
 
-        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
+        registerIntegration( MVdWPlaceholderIntegration.PROVIDER_NAME, MVdWPlaceholderIntegration.class);
 
-        registerIntegration("PlaceholderAPI", PlaceHolderAPIIntegration.class);
+        registerIntegration( PlaceHolderAPIIntegration.PROVIDER_NAME, PlaceHolderAPIIntegration.class);
     }
 
     private void registerIntegration(String pluginName, Class<? extends Integration> integration) {

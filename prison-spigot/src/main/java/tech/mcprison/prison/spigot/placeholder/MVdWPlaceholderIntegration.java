@@ -10,21 +10,24 @@ import java.util.function.Function;
 
 public class MVdWPlaceholderIntegration implements PlaceholderIntegration {
 
-    private boolean pluginInstalled;
+    public static final String PROVIDER_NAME = "MVdWPlaceholderAPI";
+	private boolean pluginInstalled;
 
     public MVdWPlaceholderIntegration() {
-        pluginInstalled = Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI");
+        pluginInstalled = Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME);
     }
 
     @Override
     public void registerPlaceholder(String placeholder, Function<Player, String> action) {
-        if (!hasIntegrated()) return;
-        PlaceholderAPI.registerPlaceholder(Bukkit.getPluginManager().getPlugin("Prison"), placeholder, e -> action.apply(new SpigotPlayer(e.getPlayer())));
+        if (hasIntegrated()) {
+        	PlaceholderAPI.registerPlaceholder(Bukkit.getPluginManager().getPlugin("Prison"), placeholder, 
+        			e -> action.apply(new SpigotPlayer(e.getPlayer())));
+        }
     }
 
     @Override
     public String getProviderName() {
-        return "MVdWPlaceholderAPI";
+        return PROVIDER_NAME;
     }
 
     @Override

@@ -11,16 +11,19 @@ import tech.mcprison.prison.internal.Player;
  */
 public class SaneEconomy implements EconomyIntegration {
 
-    private EconomyManager economyManager;
+    public static final String PROVIDER_NAME = "SaneEconomy";
+	private EconomyManager economyManager;
 
     public SaneEconomy() {
-        org.appledash.saneeconomy.SaneEconomy saneEconomy = (org.appledash.saneeconomy.SaneEconomy) Bukkit
-            .getServer().getPluginManager().getPlugin("SaneEconomy");
-        if(saneEconomy == null) {
-            return;
-        }
-
-        economyManager = saneEconomy.getEconomyManager();
+    	if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
+    		org.appledash.saneeconomy.SaneEconomy saneEconomy = 
+    				(org.appledash.saneeconomy.SaneEconomy) 
+    					Bukkit.getServer().getPluginManager().getPlugin(PROVIDER_NAME);
+    		
+    		if(saneEconomy != null) {
+    			this.economyManager = saneEconomy.getEconomyManager();
+    		}
+    	}
     }
 
     @Override public double getBalance(Player player) {
@@ -48,7 +51,7 @@ public class SaneEconomy implements EconomyIntegration {
     }
 
     @Override public String getProviderName() {
-        return "SaneEconomy";
+        return PROVIDER_NAME;
     }
 
     @Override public boolean hasIntegrated() {
