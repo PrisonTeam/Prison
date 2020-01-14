@@ -90,10 +90,11 @@ public class Mine
 		List<String> docBlocks = (List<String>) document.get("blocks");
         for (String docBlock : docBlocks) {
             String[] split = docBlock.split("-");
-            String id = split[0];
+            String blockTypeName = split[0];
             double chance = Double.parseDouble(split[1]);
 
-            Block block = new Block(BlockType.getBlock(id), chance);
+            // Use the BlockType.name() load the block type:
+            Block block = new Block(BlockType.getBlock(blockTypeName), chance);
             getBlocks().add(block);
         }
     }
@@ -123,7 +124,9 @@ public class Mine
 
         List<String> blockStrings = new ArrayList<>();
         for (Block block : getBlocks()) {
-            blockStrings.add(block.getType().getId() + "-" + block.getChance());
+        	// Use the BlockType.name() to save the block type to the file:
+            blockStrings.add(block.getType().name() + "-" + block.getChance());
+//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
         }
         ret.put("blocks", blockStrings);
 
