@@ -44,7 +44,7 @@ public class SelectionTest {
     @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Before public void setUp() throws Exception {
-        Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), false));
+        Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), false), "1.12.X-test.1");
     }
 
     @Test public void testSelection() throws Exception {

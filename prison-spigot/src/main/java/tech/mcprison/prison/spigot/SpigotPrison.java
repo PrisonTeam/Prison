@@ -108,7 +108,7 @@ public class SpigotPrison extends JavaPlugin {
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
-        Prison.get().init(new SpigotPlatform(this));
+        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         new SpigotListener(this).init();
         initIntegrations();
