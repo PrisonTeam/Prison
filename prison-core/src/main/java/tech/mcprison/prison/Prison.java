@@ -130,6 +130,13 @@ public class Prison implements PluginEntity {
 
         if (getPlatform().shouldShowAlerts())
             scheduleAlertNagger();
+        
+        
+        // Disabled for now. The integrations cannot properly support this yet.
+//        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
+//        for ( String intgration : integrations ) {
+//        	Output.get().logInfo( intgration );
+//		}
 
         
         return true;

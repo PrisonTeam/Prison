@@ -29,18 +29,24 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
  */
 public class VaultPermissions implements PermissionIntegration {
 
+	public static final String KEY_NAME = "Vault";
     private net.milkbowl.vault.permission.Permission permissions = null;
 
     public VaultPermissions() {
-        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permissions = permissionProvider.getProvider();
-        }
+    	super();
     }
+	
+	@Override
+	public void integrate() {
+		RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
+				Bukkit.getServer().getServicesManager()
+				.getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if (permissionProvider != null) {
+			permissions = permissionProvider.getProvider();
+		}
+	}
 
-    @Override public void addPermission(Player holder, String permission) {
+	@Override public void addPermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerAdd(player.getWrapper(), permission);
     }
@@ -51,9 +57,14 @@ public class VaultPermissions implements PermissionIntegration {
     }
 
     @Override public String getProviderName() {
-        return permissions.getName() + " (Vault)";
+        return (permissions == null ? "Vault permissons" : permissions.getName()) + " (Vault)";
     }
-
+    
+    @Override
+    public String getKeyName() {
+    	return KEY_NAME;
+    }
+    
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }

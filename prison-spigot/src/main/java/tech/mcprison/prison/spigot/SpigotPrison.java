@@ -219,29 +219,36 @@ public class SpigotPrison extends JavaPlugin {
     private void initIntegrations() {
 
     	// where possible, only define provider name once:
-        registerIntegration( EssentialsEconomy.PROVIDER_DISPLAY_NAME, EssentialsEconomy.class);
-        registerIntegration( SaneEconomy.PROVIDER_NAME, SaneEconomy.class);
-        registerIntegration("Vault", VaultEconomy.class);
+        registerIntegration(new EssentialsEconomy());
+        registerIntegration(new SaneEconomy());
+        registerIntegration(new VaultEconomy());
 
-        registerIntegration( LuckPerms5.PROVIDER_NAME, LuckPerms5.class);
-        registerIntegration( LuckPermissions.PROVIDER_NAME, LuckPermissions.class);
-        registerIntegration("Vault", VaultPermissions.class);
+        registerIntegration(new LuckPerms5());
+        registerIntegration(new LuckPermissions());
+        registerIntegration(new VaultPermissions());
 
-        registerIntegration( MVdWPlaceholderIntegration.PROVIDER_NAME, MVdWPlaceholderIntegration.class);
-
-        registerIntegration( PlaceHolderAPIIntegration.PROVIDER_NAME, PlaceHolderAPIIntegration.class);
+        registerIntegration(new MVdWPlaceholderIntegration());
+        registerIntegration(new PlaceHolderAPIIntegration());
     }
-
-    private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
-        if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-            try {
-                PrisonAPI.getIntegrationManager().register(integration.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                getLogger()
-                        .log(Level.WARNING, "Could not initialize integration " + integration.getName(),
-                                e);
-            }
+    
+    private void registerIntegration(Integration integration) {
+		
+    	if (Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName())) {
+    		getLogger().log(Level.INFO, "SpigotPrison.registerIntegration: Plugin is registered: " + 
+    				integration.getProviderName());
+    		try {
+    			integration.integrate();
+    		} catch (Exception e) {
+    			getLogger().log(Level.WARNING, 
+    					String.format( 	"Could not initialize integration %s %s: %s", 
+    						integration.getType().name(), integration.getKeyName(), 
+    						integration.getProviderName()), e);
+    		}
+        } else {
+        	getLogger().log(Level.INFO, "SpigotPrison.registerIntegration: Plugin not registered: " + 
+        				integration.getProviderName());
         }
+    	PrisonAPI.getIntegrationManager().register(integration);
     }
 
     private void initModules() {

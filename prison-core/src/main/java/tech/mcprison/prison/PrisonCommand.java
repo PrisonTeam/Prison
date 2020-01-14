@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison;
 
+import java.util.List;
+
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.integration.IntegrationType;
@@ -42,10 +44,13 @@ public class PrisonCommand {
     public void versionCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison version");
         display
-            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+            .text("&7Prison Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
                 Prison.API_LEVEL);
 
-        display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.text("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.text("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
+
+        display.text("");
         display.text("&7Integrations:");
 
         String permissions =
@@ -62,6 +67,12 @@ public class PrisonCommand {
             "&cNone";
 
         display.text(Text.tab("&7Economy: " + economy));
+        
+        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
+        for ( String intgration : integrations )
+		{
+			display.text( intgration );
+		}
 
         display.send(sender);
     }

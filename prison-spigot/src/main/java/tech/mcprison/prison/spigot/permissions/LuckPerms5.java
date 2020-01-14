@@ -1,96 +1,83 @@
 package tech.mcprison.prison.spigot.permissions;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.DataMutateResult;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
+import net.luckperms.api.LuckPerms;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 
+/**
+ * <p>This provides support for the integration of LuckPerms v5.x.
+ * </p>
+ * 
+ * <p>Additional information can be found on the following topics:
+ * </p>
+ * <ul>
+ *   <li>LuckPerms PlaceHolders - 
+ *   	- Note if using MVdWPlaceholderAPI - 
+ *   	- https://github.com/lucko/LuckPerms/wiki/Placeholders</li>
+ * </ul>
+ *
+ */
 public class LuckPerms5
 	implements PermissionIntegration {
 
 	public static final String PROVIDER_NAME = "LuckPermsV5";
-	private LuckPerms api = null;
+	private LuckPerms5Wrapper permsWrapper;
 	
 	public LuckPerms5() {
-		RegisteredServiceProvider<LuckPerms> provider = 
-					Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-		if (provider != null) {
-		    this.api = provider.getProvider();
-		    
+		super();
+	}
+	
+	@Override
+	public void integrate() {
+		try {
+			
+			//net.luckperms.api.LuckPerms;
+			
+			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			if (provider != null) {
+				this.permsWrapper = new LuckPerms5Wrapper(provider);
+			    
+			}
+		}
+		catch ( Exception e ) {
+			e.printStackTrace();
 		}
 	}
 	
 	@Override
 	public void addPermission( Player holder, String permission )
 	{
-		 editPermission(holder.getUUID(), permission, true);
+		 if ( permsWrapper != null ) {
+			 permsWrapper.addPermission( holder, permission );
+		 }
 	}
 	
 
 	@Override
 	public void removePermission( Player holder, String permission )
 	{
-		 editPermission(holder.getUUID(), permission, false);
+		if ( permsWrapper != null ) {
+			permsWrapper.removePermission( holder, permission );
+		}
 	}
-
-    private void editPermission(UUID uuid, String permission, boolean add) {
-    	if ( api != null ) {
-    		// get the user
-    		User user = LuckPerms.getApi().getUser(uuid);
-    		if (user == null) {
-    			return; // user not loaded
-    		}
-    		
-    		// build the permission node
-    		Node node = LuckPerms.getApi().getNodeFactory().newBuilder(permission).build();
-    		
-    		// set the permission
-    		DataMutateResult result;
-    		if(add) {
-    			result = user.setPermission(node);
-    		} else {
-    			result = user.unsetPermission(node);
-    		}
-    		
-    		// wasn't successful.
-    		// they most likely already have (or didn't have if add = false) the permission
-    		if (result != DataMutateResult.SUCCESS) {
-    			return;
-    		}
-    		
-    		
-    		// now, before we return, we need to have the user to storage.
-    		// this method will save the user, then run the callback once complete.
-    		LuckPerms.getApi().getStorage().saveUser(user)
-    		.thenAcceptAsync(wasSuccessful -> {
-    			if (!wasSuccessful) {
-    				return;
-    			}
-    			
-    			// refresh the user's permissions, so the change is "live"
-    			user.refreshCachedData();
-    			
-    		}, LuckPerms.getApi().getStorage().getAsyncExecutor());
-    	}
-    }
-
 	
 	@Override
 	public String getProviderName()
 	{
 		return PROVIDER_NAME;
 	}
-	
+    
+    @Override
+    public String getKeyName() {
+    	return PROVIDER_NAME;
+    }
+    
 	@Override
 	public boolean hasIntegrated()
 	{
-		return api != null;
+		return (permsWrapper != null);
 	}
 }

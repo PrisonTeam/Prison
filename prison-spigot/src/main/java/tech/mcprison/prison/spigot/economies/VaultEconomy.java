@@ -18,8 +18,6 @@
 
 package tech.mcprison.prison.spigot.economies;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 
@@ -28,57 +26,61 @@ import tech.mcprison.prison.internal.Player;
  */
 public class VaultEconomy implements EconomyIntegration {
 
-    private net.milkbowl.vault.economy.Economy economy = null;
+	public static final String KEY_NAME = "Vault";
+    private VaultEconomyWrapper econWrapper;
 
     public VaultEconomy() {
-        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+    	super();
     }
 
-    @SuppressWarnings( "deprecation" )
+	@Override
+	public void integrate() {
+		this.econWrapper = new VaultEconomyWrapper();
+	}
+    
 	@Override public double getBalance(Player player) {
-        if (economy == null) {
-            return 0;
+        if (econWrapper != null) {
+        	return econWrapper.getBalance( player );
+        } else {
+        	return 0;
         }
-        return economy.getBalance(player.getName());
     }
 
     @Override public void setBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
+        if (econWrapper != null) {
+        	econWrapper.setBalance( player, amount );
         }
-        economy.bankWithdraw(player.getName(), getBalance(player));
-        economy.bankDeposit(player.getName(), amount);
     }
 
-    @Override public void addBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
+    @Override 
+    public void addBalance(Player player, double amount) {
+        if (econWrapper != null) {
+        	econWrapper.addBalance( player, amount );
         }
-        economy.bankDeposit(player.getName(), amount);
     }
 
-    @Override public void removeBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
+    @Override
+    public void removeBalance(Player player, double amount) {
+        if (econWrapper != null) {
+        	econWrapper.removeBalance( player, amount );
         }
-        economy.bankWithdraw(player.getName(), amount);
     }
 
     @Override public boolean canAfford(Player player, double amount) {
-        return economy != null && economy.bankHas(player.getName(), amount).transactionSuccess();
+        return econWrapper != null && econWrapper.canAfford( player, amount );
     }
 
     @Override public String getProviderName() {
-        return economy.getName();
+        return (econWrapper == null ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
     }
-
+    
+    @Override
+    public String getKeyName() {
+    	return KEY_NAME;
+    }
+    
     @Override public boolean hasIntegrated() {
-        return economy != null;
+        return econWrapper != null;
     }
 
 }

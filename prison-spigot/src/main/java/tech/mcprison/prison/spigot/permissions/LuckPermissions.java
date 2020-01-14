@@ -1,11 +1,9 @@
 package tech.mcprison.prison.spigot.permissions;
 
-import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
 import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.DataMutateResult;
-import me.lucko.luckperms.api.LuckPermsApi;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 
@@ -31,81 +29,58 @@ import tech.mcprison.prison.internal.Player;
  * 
  * @author Faizaan A. Datoo
  */
-public class LuckPermissions implements PermissionIntegration {
+public class LuckPermissions 
+	implements PermissionIntegration {
 
     public static final String PROVIDER_NAME = "LuckPerms";
-	private LuckPermsApi api;
+    private LuckPermissionsWrapper permsWrapper;
+//	private LuckPermsApi api;
 
     public LuckPermissions() {
-    	try
-		{
-			api = LuckPerms.getApi();
-		}
-		catch (  NoClassDefFoundError | IllegalStateException  e )
-		{
-			// If a NoClassDefFoundError happens, then that basically means the LuckPerms
-			// plugin has not been loaded.
-			
-			// Ignore for now... maybe log the exception if in debug mode?
-		}
+    	super();
     }
+	
+	@Override
+	public void integrate() {
+		try {
+			RegisteredServiceProvider<LuckPerms> provider = 
+					Bukkit.getServicesManager().getRegistration(me.lucko.luckperms.LuckPerms.class);
+			if (provider != null) {
+				permsWrapper = new LuckPermissionsWrapper();
+			}
+		}
+		catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
 
     @Override
     public void addPermission(Player holder, String permission) {
-        editPermission(holder.getUUID(), permission, true);
+    	if ( permsWrapper != null ) {
+    		permsWrapper.addPermission( holder, permission );
+    	}
     }
 
     @Override
     public void removePermission(Player holder, String permission) {
-        editPermission(holder.getUUID(), permission, false);
-    }
-
-    private void editPermission(UUID uuid, String permission, boolean add) {
-        // get the user
-        User user = api.getUser(uuid);
-        if (user == null) {
-            return; // user not loaded
-        }
-
-        // build the permission node
-        Node node = api.getNodeFactory().newBuilder(permission).build();
-
-        // set the permission
-        DataMutateResult result;
-        if(add) {
-            result = user.setPermission(node);
-        } else {
-            result = user.unsetPermission(node);
-        }
-
-        // wasn't successful.
-        // they most likely already have (or didn't have if add = false) the permission
-        if (result != DataMutateResult.SUCCESS) {
-            return;
-        }
-
-        // now, before we return, we need to have the user to storage.
-        // this method will save the user, then run the callback once complete.
-        api.getStorage().saveUser(user)
-            .thenAcceptAsync(wasSuccessful -> {
-                if (!wasSuccessful) {
-                    return;
-                }
-
-                // refresh the user's permissions, so the change is "live"
-                user.refreshCachedData();
-
-            }, api.getStorage().getAsyncExecutor());
+    	if ( permsWrapper != null ) {
+    		permsWrapper.removePermission( holder, permission );
+    	}
     }
 
     @Override
     public String getProviderName() {
         return PROVIDER_NAME;
     }
-
+    
+    @Override
+    public String getKeyName() {
+    	return PROVIDER_NAME;
+    }
+    
     @Override
     public boolean hasIntegrated() {
-        return api != null;
+        return (permsWrapper != null);
     }
 
 }

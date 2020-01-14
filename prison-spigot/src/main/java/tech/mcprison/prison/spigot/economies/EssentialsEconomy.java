@@ -35,10 +35,15 @@ public class EssentialsEconomy implements EconomyIntegration {
 	private EssEconomyWrapper wrapper = null;
 
     public EssentialsEconomy() {
-        if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
-            wrapper = new EssEconomyWrapper();
-        }
+    	super();
     }
+	
+	@Override
+	public void integrate() {
+		if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
+			wrapper = new EssEconomyWrapper();
+		}
+	}
 
     @Override public double getBalance(Player player) {
         return wrapper.getBalance(player);
@@ -63,7 +68,12 @@ public class EssentialsEconomy implements EconomyIntegration {
     @Override public String getProviderName() {
         return PROVIDER_DISPLAY_NAME;
     }
-
+    
+    @Override
+    public String getKeyName() {
+    	return PROVIDER_NAME;
+    }
+    
     @Override public boolean hasIntegrated() {
         return wrapper != null;
     }
