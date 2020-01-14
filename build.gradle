@@ -21,7 +21,7 @@ import java.util.Date
 apply plugin: 'java'
 
 println """
-================================================================
+==========================================================================
 You are building the Prison plugin 
   Version:    ${project.version} 
   Build time: ${getCurrentTimestamp()}
@@ -29,7 +29,7 @@ You are building the Prison plugin
 Output files are located in [subproject]/build/libs.
 The runnable JAR is usually named prison.jar.
 Example: The spigot build artifact is prison-spigot/build/libs/prison.jar
-================================================================
+==========================================================================
 """
 
 buildscript {
@@ -37,10 +37,11 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 
 }
@@ -69,9 +70,9 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.apache.commons:commons-lang3:3.9'
-        compile 'com.google.guava:guava:19.0'
-        compile 'com.google.code.gson:gson:2.8.6'
+        implementation 'org.apache.commons:commons-lang3:3.9'
+        implementation 'com.google.guava:guava:19.0'
+        implementation 'com.google.code.gson:gson:2.8.6'
         testCompile 'junit:junit:4.12'
     }
 

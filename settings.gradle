@@ -17,10 +17,6 @@
  */
 
 
-/* The follow tests the Gradle v5.x behavior to ensure the build will work correctly
- * under Gradle v5.x. */
-enableFeaturePreview('STABLE_PUBLISHING')
-
 rootProject.name = 'prison'
 include 'prison-core'
 include 'prison-spigot'
