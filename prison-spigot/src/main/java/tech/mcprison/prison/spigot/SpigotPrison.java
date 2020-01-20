@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Optional;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -104,7 +104,6 @@ public class SpigotPrison extends JavaPlugin {
         initDataDir();
         initCommandMap();
         initCompatibility();
-        initMetrics();
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
@@ -113,6 +112,8 @@ public class SpigotPrison extends JavaPlugin {
         new SpigotListener(this).init();
         initIntegrations();
         initModules();
+
+        initMetrics();
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
@@ -144,6 +145,11 @@ public class SpigotPrison extends JavaPlugin {
         // Report the API level
         metrics.addCustomChart(
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+        
+        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+        int mineCount = !prisonMinesOpt.isPresent() ? 0 : ((PrisonMines) prisonMinesOpt.get()).getMineManager().getMines().size();
+        metrics.addCustomChart(
+        		new Metrics.SimplePie("prison_mines", () -> "Prison Mine Count " + mineCount));
     }
 
 	private void initUpdater() {

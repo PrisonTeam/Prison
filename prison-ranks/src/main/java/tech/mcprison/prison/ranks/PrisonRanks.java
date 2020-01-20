@@ -42,7 +42,7 @@ import java.util.Optional;
  * @author Faizaan A. Datoo
  */
 public class PrisonRanks extends Module {
-
+	public static final String MODULE_NAME = "Ranks";
     /*
      * Fields & Constants
      */
@@ -59,7 +59,7 @@ public class PrisonRanks extends Module {
      */
 
     public PrisonRanks(String version) {
-        super("Ranks", version, 3);
+        super(MODULE_NAME, version, 3);
     }
 
     /*

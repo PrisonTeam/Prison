@@ -43,7 +43,7 @@ import tech.mcprison.prison.store.Database;
  * @author The MC-Prison Team
  */
 public class PrisonMines extends Module {
-
+	public static final String MODULE_NAME = "Mines";
     /*
      * Fields & Constants
      */
@@ -61,7 +61,7 @@ public class PrisonMines extends Module {
     private PlayerManager player;
 
     public PrisonMines(String version) {
-        super("Mines", version, 3);
+        super(MODULE_NAME, version, 3);
     }
 
     public static PrisonMines getInstance() {
