@@ -5,47 +5,61 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.integration.PlaceholderIntegration;
+import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 
 public class PlaceHolderAPIIntegration 
+	extends PlaceholderIntegration {
 	
-	implements PlaceholderIntegration {
-	
-	public static final String PROVIDER_NAME = "PlaceHolderAPI";
 	private PlaceHolderAPIIntegrationWrapper placeHolderWrapper;
-//	private boolean pluginInstalled;
 
 	public PlaceHolderAPIIntegration() {
-		super();
+		super( "PlaceholderAPI", "PlaceholderAPI" );
 	}
 	
 	@Override
 	public void integrate() {
-		if ( Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME) ) {
-			this.placeHolderWrapper = new PlaceHolderAPIIntegrationWrapper();
+		if ( isRegistered()) {
+			try {
+				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName()) ) {
+					this.placeHolderWrapper = new PlaceHolderAPIIntegrationWrapper();
+					this.placeHolderWrapper.register();
+				}
+			}
+			catch ( NoClassDefFoundError | IllegalStateException e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
+	/**
+	 * <p>For PlaceHolderAPI this function is not needed since it is registered when
+	 * integrate() is called since it is a simple integration.
+	 * </p>
+	 */
 	@Override
 	public void registerPlaceholder(String placeholder, Function<Player, String> action) {
-		if ( placeHolderWrapper != null ) {
-			placeHolderWrapper.registerPlaceholder( placeholder, action );
-		}
+//		if ( placeHolderWrapper != null ) {
+//			placeHolderWrapper.registerPlaceholder( placeholder, action );
+//		}
 	}
-
-	@Override
-	public String getProviderName() {
-		return PROVIDER_NAME;
-	}
-    
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
     
 	@Override
 	public boolean hasIntegrated() {
 		return (placeHolderWrapper != null);
 	}
+	
+	@Override
+    public String getAlternativeInformation() {
+    	return "&7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable();
+    }
 
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/placeholderapi.6245/";
+	}
 }

@@ -218,36 +218,23 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initIntegrations() {
 
-    	// where possible, only define provider name once:
+    	registerIntegration(new VaultEconomy());
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
-        registerIntegration(new VaultEconomy());
 
+        registerIntegration(new VaultPermissions());
         registerIntegration(new LuckPerms5());
         registerIntegration(new LuckPermissions());
-        registerIntegration(new VaultPermissions());
 
         registerIntegration(new MVdWPlaceholderIntegration());
         registerIntegration(new PlaceHolderAPIIntegration());
     }
     
     private void registerIntegration(Integration integration) {
+    	integration.setRegistered( Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()) );
+
+    	integration.integrate();
 		
-    	if (Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName())) {
-    		getLogger().log(Level.INFO, "SpigotPrison.registerIntegration: Plugin is registered: " + 
-    				integration.getProviderName());
-    		try {
-    			integration.integrate();
-    		} catch (Exception e) {
-    			getLogger().log(Level.WARNING, 
-    					String.format( 	"Could not initialize integration %s %s: %s", 
-    						integration.getType().name(), integration.getKeyName(), 
-    						integration.getProviderName()), e);
-    		}
-        } else {
-        	getLogger().log(Level.INFO, "SpigotPrison.registerIntegration: Plugin not registered: " + 
-        				integration.getProviderName());
-        }
     	PrisonAPI.getIntegrationManager().register(integration);
     }
 

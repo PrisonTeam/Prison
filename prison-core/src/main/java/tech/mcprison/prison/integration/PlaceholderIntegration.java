@@ -1,19 +1,20 @@
 package tech.mcprison.prison.integration;
 
-import tech.mcprison.prison.internal.Player;
-
 import java.util.function.Function;
+
+import tech.mcprison.prison.internal.Player;
 
 /**
  * An integration into a placeholder plugin.
  */
-public interface PlaceholderIntegration extends Integration {
+public abstract class PlaceholderIntegration 
+	extends Integration {
 
-    void registerPlaceholder(String placeholder, Function<Player, String> action);
-
-    @Override
-    default IntegrationType getType() {
-        return IntegrationType.PLACEHOLDER;
-    }
+	public PlaceholderIntegration( String keyName, String providerName ) {
+		super( keyName, providerName, IntegrationType.PLACEHOLDER );
+		
+	}
+	
+	public abstract void registerPlaceholder(String placeholder, Function<Player, String> action);
 
 }

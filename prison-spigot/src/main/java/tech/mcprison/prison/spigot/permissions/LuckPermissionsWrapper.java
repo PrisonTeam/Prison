@@ -2,8 +2,6 @@ package tech.mcprison.prison.spigot.permissions;
 
 import java.util.UUID;
 
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.DataMutateResult;
 import me.lucko.luckperms.api.LuckPermsApi;

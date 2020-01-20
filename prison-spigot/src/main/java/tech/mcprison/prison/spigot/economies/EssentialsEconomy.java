@@ -18,7 +18,10 @@
 
 package tech.mcprison.prison.spigot.economies;
 
-import org.bukkit.Bukkit;
+import java.math.MathContext;
+
+import com.earth2me.essentials.api.Economy;
+
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 
@@ -27,55 +30,68 @@ import tech.mcprison.prison.internal.Player;
  *
  * @author Faizaan A. Datoo
  */
-public class EssentialsEconomy implements EconomyIntegration {
+public class EssentialsEconomy 
+	extends EconomyIntegration {
 
-    public static final String PROVIDER_NAME = "Essentials";
-    public static final String PROVIDER_DISPLAY_NAME = "EssentialsX";
-    
 	private EssEconomyWrapper wrapper = null;
 
     public EssentialsEconomy() {
-    	super();
+    	super( "EssentialsX", "Essentials" );
+    	
     }
 	
 	@Override
 	public void integrate() {
-		if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
-			wrapper = new EssEconomyWrapper();
+		if ( isRegistered() // && classLoaded 
+				) {
+			try
+			{
+				@SuppressWarnings( "unused" )
+				MathContext mathCtx = Economy.MATH_CONTEXT;
+
+				wrapper = new EssEconomyWrapper();
+			}
+			catch ( java.lang.NoClassDefFoundError | Exception e )
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
-    @Override public double getBalance(Player player) {
+    @Override 
+    public double getBalance(Player player) {
         return wrapper.getBalance(player);
     }
 
-    @Override public void setBalance(Player player, double amount) {
+    @Override 
+    public void setBalance(Player player, double amount) {
         wrapper.setBalance(player, amount);
     }
 
-    @Override public void addBalance(Player player, double amount) {
+    @Override 
+    public void addBalance(Player player, double amount) {
         setBalance(player, getBalance(player) + amount);
     }
 
-    @Override public void removeBalance(Player player, double amount) {
+    @Override 
+    public void removeBalance(Player player, double amount) {
         setBalance(player, getBalance(player) - amount);
     }
 
-    @Override public boolean canAfford(Player player, double amount) {
+    @Override 
+    public boolean canAfford(Player player, double amount) {
         return getBalance(player) >= amount;
     }
-
-    @Override public String getProviderName() {
-        return PROVIDER_DISPLAY_NAME;
-    }
     
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
-    
-    @Override public boolean hasIntegrated() {
+    @Override 
+    public boolean hasIntegrated() {
         return wrapper != null;
     }
+
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/essentialsx.9089/";
+	}
 
 }

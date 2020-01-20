@@ -24,21 +24,30 @@ import tech.mcprison.prison.internal.Player;
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultEconomy implements EconomyIntegration {
+public class VaultEconomy 
+	extends EconomyIntegration {
 
-	public static final String KEY_NAME = "Vault";
     private VaultEconomyWrapper econWrapper;
 
     public VaultEconomy() {
-    	super();
+    	super( "VaultEcon", "Vault" );
     }
 
 	@Override
 	public void integrate() {
-		this.econWrapper = new VaultEconomyWrapper();
+		
+		if ( isRegistered()) {
+			try {
+				this.econWrapper = new VaultEconomyWrapper();
+			}
+			catch ( java.lang.NoClassDefFoundError | Exception e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+		}
 	}
     
-	@Override public double getBalance(Player player) {
+	@Override 
+	public double getBalance(Player player) {
         if (econWrapper != null) {
         	return econWrapper.getBalance( player );
         } else {
@@ -46,7 +55,8 @@ public class VaultEconomy implements EconomyIntegration {
         }
     }
 
-    @Override public void setBalance(Player player, double amount) {
+    @Override 
+    public void setBalance(Player player, double amount) {
         if (econWrapper != null) {
         	econWrapper.setBalance( player, amount );
         }
@@ -66,21 +76,25 @@ public class VaultEconomy implements EconomyIntegration {
         }
     }
 
-    @Override public boolean canAfford(Player player, double amount) {
+    @Override 
+    public boolean canAfford(Player player, double amount) {
         return econWrapper != null && econWrapper.canAfford( player, amount );
-    }
-
-    @Override public String getProviderName() {
-        return (econWrapper == null ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
     }
     
     @Override
-    public String getKeyName() {
-    	return KEY_NAME;
+    public String getDisplayName()
+    {
+    	return (econWrapper == null ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
     }
     
-    @Override public boolean hasIntegrated() {
+    @Override 
+    public boolean hasIntegrated() {
         return econWrapper != null;
     }
 
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/vault.34315/";
+	}
 }

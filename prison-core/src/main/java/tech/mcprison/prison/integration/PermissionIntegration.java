@@ -8,15 +8,21 @@ import tech.mcprison.prison.internal.Player;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface PermissionIntegration extends Integration {
+public abstract class PermissionIntegration 
+	extends Integration {
 
+	public PermissionIntegration( String keyName, String providerName ) {
+		super( keyName, providerName, IntegrationType.PERMISSION );
+		
+	}
+	
     /**
      * Adds a permission to this player.
      *
      * @param holder     The player that will receive this permission.
      * @param permission The permission to add.
      */
-    void addPermission(Player holder, String permission);
+	public abstract void addPermission(Player holder, String permission);
 
     /**
      * Removes a permission from this player.
@@ -24,10 +30,6 @@ public interface PermissionIntegration extends Integration {
      * @param holder     The player that will have this permission revoked.
      * @param permission The permission to remove.
      */
-    void removePermission(Player holder, String permission);
-
-    @Override default IntegrationType getType() {
-        return IntegrationType.PERMISSION;
-    }
+	public abstract void removePermission(Player holder, String permission);
 
 }

@@ -1,9 +1,7 @@
 package tech.mcprison.prison.spigot.permissions;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.LuckPermsApi;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 
@@ -30,27 +28,30 @@ import tech.mcprison.prison.internal.Player;
  * @author Faizaan A. Datoo
  */
 public class LuckPermissions 
-	implements PermissionIntegration {
+	extends PermissionIntegration {
 
-    public static final String PROVIDER_NAME = "LuckPerms";
     private LuckPermissionsWrapper permsWrapper;
-//	private LuckPermsApi api;
 
     public LuckPermissions() {
-    	super();
+    	super( "LuckPerms-Legacy", "LuckPerms" );
     }
 	
 	@Override
 	public void integrate() {
-		try {
-			RegisteredServiceProvider<LuckPerms> provider = 
-					Bukkit.getServicesManager().getRegistration(me.lucko.luckperms.LuckPerms.class);
-			if (provider != null) {
-				permsWrapper = new LuckPermissionsWrapper();
+		if ( isRegistered()) {
+			try {
+				LuckPermsApi lp = LuckPerms.getApi();
+				
+				if (lp != null) {
+					permsWrapper = new LuckPermissionsWrapper();
+				}
 			}
-		}
-		catch ( Exception e ) {
-			e.printStackTrace();
+			catch ( NoClassDefFoundError | IllegalStateException e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -67,20 +68,16 @@ public class LuckPermissions
     		permsWrapper.removePermission( holder, permission );
     	}
     }
-
-    @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
     
     @Override
     public boolean hasIntegrated() {
         return (permsWrapper != null);
     }
 
+
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/luckperms-an-advanced-permissions-plugin.28140/history";
+	}
 }

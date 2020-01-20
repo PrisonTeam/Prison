@@ -1,26 +1,24 @@
 package tech.mcprison.prison.spigot.economies;
 
-import org.bukkit.Bukkit;
-
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class SaneEconomy implements EconomyIntegration {
+public class SaneEconomy 
+	extends EconomyIntegration {
 
-    public static final String PROVIDER_NAME = "SaneEconomy";
     private SaneEconomyWrapper econWrapper;
 
     public SaneEconomy() {
-    	super();
+    	super( "SaneEconomy", "SaneEconomy" );
     }
 	
 	@Override
 	public void integrate() {
-		if (Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME)) {
-			this.econWrapper = new SaneEconomyWrapper(PROVIDER_NAME);
+		if (isRegistered()) {
+			this.econWrapper = new SaneEconomyWrapper(getProviderName());
 		}
 	}
 	
@@ -48,20 +46,15 @@ public class SaneEconomy implements EconomyIntegration {
     public boolean canAfford(Player player, double amount) {
         return getBalance(player) >= amount;
     }
-
-    @Override 
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
     
     @Override 
     public boolean hasIntegrated() {
         return false;
     }
 
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/saneeconomy-simple-but-featureful-economy.26223/";
+	}
 }

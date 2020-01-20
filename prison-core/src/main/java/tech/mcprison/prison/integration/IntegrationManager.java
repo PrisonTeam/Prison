@@ -22,6 +22,93 @@ public class IntegrationManager {
         this.integrations = new HashMap<>();
     }
 
+    public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
+    
+    /**
+     * <p>The given place holders should have both the prison prefix and without,
+     * with the without having the suppress value set.  The suppressable items 
+     * will not always be displayed since it would be implied that the prefix
+     * would have been provided.
+     * </p>
+     *
+     */
+	public enum PrisonPlaceHolders {
+		prison_rank,
+		prison_rankup_cost,
+		prison_rankup_rank,
+		
+		// Suppressable:
+		rank(true),
+		rankup_cost(true),
+		rankup_rank(true)
+		;
+		
+		private final boolean supress;
+		private PrisonPlaceHolders() {
+			this.supress = false;
+		}
+		private PrisonPlaceHolders(boolean supress) {
+			this.supress = supress;
+		}
+		
+		public boolean isSuppressed()
+		{
+			return supress;
+		}
+		
+		public static PrisonPlaceHolders fromString( String placeHolder ) {
+			PrisonPlaceHolders result = prison_rank;
+			
+			if ( placeHolder != null && placeHolder.trim().length() > 0 ) {
+				placeHolder = placeHolder.trim();
+				
+				for ( PrisonPlaceHolders ph : values() ) {
+					if ( ph.name().equalsIgnoreCase( placeHolder ) ) {
+						result = ph;
+						break;
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		public String getChatText() {
+			return "&a" + name() + (isSuppressed() ? "&4*&a ": " ");
+		}
+		
+		public static String getAllChatTexts() {
+			return getAllChatTexts(false);
+		}
+		
+		public static String getAllChatTextsOmitSuppressable() {
+			return getAllChatTexts(true);
+		}
+		
+		private static String getAllChatTexts( boolean omitSuppressable) {
+			StringBuilder sb = new StringBuilder();
+			boolean hasDeprecated = false;
+			
+			for ( PrisonPlaceHolders ph : values() )
+			{
+				if ( !omitSuppressable || omitSuppressable && !ph.isSuppressed() ) {
+					if ( !hasDeprecated && ph.isSuppressed() ) {
+						hasDeprecated = true;
+					}
+					
+					sb.append( ph.getChatText() );
+				}
+			}
+			
+			if ( hasDeprecated ) {
+				sb.append( " &2(&4*&2=&4suppressed&2)" );
+			}
+			
+			return sb.toString();
+		}
+		
+	}
+	
     /**
      * Returns a list of all of the {@link Integration}s that are registered under a certain {@link IntegrationType}, if any.
      * This includes integrations that have not successfully integrated.
@@ -96,8 +183,16 @@ public class IntegrationManager {
 			} else {
 				for ( Integration plugin : plugins )
 				{
-					results.add( String.format( "    &a%s &7<%s&7>", plugin.getProviderName(),
+					results.add( String.format( "    &a%s &7<%s&7>", plugin.getDisplayName(),
 							( plugin.hasIntegrated() ? "&aActive" : "&cInactive")) );
+					String altInfo = plugin.getAlternativeInformation();
+					if ( altInfo != null ) {
+						results.add( "        " + altInfo );
+					}
+					String pluginUrl = plugin.getPluginSourceURL();
+					if ( pluginUrl != null ) {
+						results.add( "          &7" + pluginUrl );
+					}
 				}
 			}
 		}

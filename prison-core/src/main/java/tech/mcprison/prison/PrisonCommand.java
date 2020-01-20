@@ -22,6 +22,7 @@ import java.util.List;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
@@ -53,20 +54,21 @@ public class PrisonCommand {
         display.text("");
         display.text("&7Integrations:");
 
+        IntegrationManager im = Prison.get().getIntegrationManager();
         String permissions =
-            Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
-                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
-                    .get().getProviderName() :
-                "&cNone";
+        		(im.hasForType(IntegrationType.PERMISSION) ?
+                "&a" + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+                "&cNone");
 
         display.text(Text.tab("&7Permissions: " + permissions));
 
-        String economy = Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY) ?
-            "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
-                .getProviderName() :
-            "&cNone";
+        String economy =
+        		(im.hasForType(IntegrationType.ECONOMY) ?
+                "&a" + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+                "&cNone");
 
         display.text(Text.tab("&7Economy: " + economy));
+        
         
         List<String> integrations = Prison.get().getIntegrationManager().toStrings();
         for ( String intgration : integrations )

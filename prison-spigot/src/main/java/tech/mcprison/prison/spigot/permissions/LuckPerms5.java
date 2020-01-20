@@ -21,29 +21,29 @@ import tech.mcprison.prison.internal.Player;
  *
  */
 public class LuckPerms5
-	implements PermissionIntegration {
+	extends PermissionIntegration {
 
-	public static final String PROVIDER_NAME = "LuckPermsV5";
 	private LuckPerms5Wrapper permsWrapper;
 	
 	public LuckPerms5() {
-		super();
+		super( "LuckPermsV5", "LuckPerms" );
 	}
 	
 	@Override
 	public void integrate() {
-		try {
-			
-			//net.luckperms.api.LuckPerms;
-			
-			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-			if (provider != null) {
-				this.permsWrapper = new LuckPerms5Wrapper(provider);
-			    
+		if ( isRegistered()) {
+			try {
+				RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+				if (provider != null) {
+					this.permsWrapper = new LuckPerms5Wrapper(provider);
+				}
 			}
-		}
-		catch ( Exception e ) {
-			e.printStackTrace();
+			catch ( java.lang.NoClassDefFoundError | IllegalStateException e ) {
+				// ignore since this just means v4.x or lower is being used and not v5
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -63,21 +63,17 @@ public class LuckPerms5
 			permsWrapper.removePermission( holder, permission );
 		}
 	}
-	
-	@Override
-	public String getProviderName()
-	{
-		return PROVIDER_NAME;
-	}
-    
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
     
 	@Override
 	public boolean hasIntegrated()
 	{
 		return (permsWrapper != null);
 	}
+
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://luckperms.net/";
+	}
+		
 }

@@ -5,36 +5,49 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.integration.PlaceholderIntegration;
+import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 
 /**
- * LuckPerms v5 documentation notes on MVdWPlaceholderAPI:
+ * <p>This hooks up the registration when the Prison plugin starts to run.
+ * The MVdWPlaceholderIntegrationWrapper sets up the registrations. It should
+ * be noted that the registrations used to occur within the ChatHandler, but
+ * that did not make sense since these should be self-contained with the 
+ * registration process if these plugins are active.
+ * </p>
+ * 
+ * <p>LuckPerms v5 documentation notes on MVdWPlaceholderAPI:
  * 
  * To use the LuckPerms placeholders in plugins which support Maximvdw's MVdWPlaceholderAPI, 
  * you need to install the LuckPerms placeholder hook plugin.
  * https://github.com/lucko/LuckPerms/wiki/Placeholders
- * 
- * So this means that if this plugin is "loaded" and so is LuckPerms, then
- * we need to confirm that user also installed the required jar file on their 
- * server.  We can do that by checking to see if the class files exist in the 
- * classpath?  if they don't, then we should provide a warning message
- * so the the admin will better understand why its failing.
+ * </p>
  *
  */
 public class MVdWPlaceholderIntegration 
-	implements PlaceholderIntegration {
+	extends PlaceholderIntegration {
 
-    public static final String PROVIDER_NAME = "MVdWPlaceholderAPI";
     private MVdWPlaceholderIntegrationWrapper placeholderWrapper;
 	
     public MVdWPlaceholderIntegration() {
-    	super();
+    	super( "MVdWPlaceholderAPI", "MVdWPlaceholderAPI" );
     }
 	
 	@Override
 	public void integrate() {
-		if ( Bukkit.getPluginManager().isPluginEnabled(PROVIDER_NAME))
-		placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(PROVIDER_NAME);
+		if ( isRegistered()) {
+			try {
+				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName())) {
+					placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(getProviderName());
+				}
+			}
+			catch ( NoClassDefFoundError | IllegalStateException e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
     @Override
@@ -43,20 +56,21 @@ public class MVdWPlaceholderIntegration
         	placeholderWrapper.registerPlaceholder( placeholder, action );
         }
     }
-
-    @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
-    
-    @Override
-    public String getKeyName() {
-    	return PROVIDER_NAME;
-    }
-    
+	
     @Override
     public boolean hasIntegrated() {
         return (placeholderWrapper != null);
     }
+    
+    @Override
+    public String getAlternativeInformation() {
+    	return "&7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable();
+    }
 
+	@Override
+	public String getPluginSourceURL()
+	{
+		return "https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/";
+	}
+    
 }
