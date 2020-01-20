@@ -1,9 +1,11 @@
 package tech.mcprison.prison.ranks.commands;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -12,6 +14,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
 
 import java.io.IOException;
@@ -288,4 +291,48 @@ public class RanksCommands {
         }
 
     }
+    
+    @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
+    public void rankPlayer(CommandSender sender,
+    			@Arg(name = "player", def = "", description = "Player name") String playerName){
+    	
+    	Player player = getPlayer( sender, playerName );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+
+    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID());
+		
+		if ( oPlayer.isPresent() ) {
+			RankPlayer rankPlayer = oPlayer.get();
+			
+			String message = String.format("%s: Current Rank: %. Next rank: %s cost %s", 
+					player.getDisplayName(), pm.getPlayerNames( rankPlayer ),
+					pm.getPlayerNextName( rankPlayer ), pm.getPlayerNextCost( rankPlayer ));
+			sender.sendMessage( message );
+		} else {
+			sender.sendMessage( "&3No ranks found for " + player.getDisplayName() );
+		}
+    }
+    
+    
+	private Player getPlayer( CommandSender sender, String playerName )
+	{
+		playerName = playerName != null ? playerName : sender.getName();
+    	Player player = null;
+    	
+    	List<Player> players = Prison.get().getPlatform().getOnlinePlayers();
+    	for ( Player p : players )
+		{
+			if ( p.getName().equalsIgnoreCase( playerName )) {
+				player = p;
+				break;
+			}
+		}
+		return player;
+	}
+    
 }
