@@ -242,11 +242,9 @@ public class PlayerManager {
 		if ( oPlayer.isPresent() ) {
 			RankPlayer rankPlayer = oPlayer.get();
 			
-			switch ( placeHolder )
-			{
+			switch ( placeHolder ) {
 				case prison_rank:
 				case rank:
-				case PRISON_RANK:
 					results = getPlayerNames( rankPlayer );
 					break;
 
@@ -263,7 +261,6 @@ public class PlayerManager {
 				default:
 					break;
 			}
-			
 		}
 		
 		return results;
