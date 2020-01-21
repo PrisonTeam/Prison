@@ -93,8 +93,7 @@ public class VaultEconomy
     }
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/vault.34315/";
 	}
 }

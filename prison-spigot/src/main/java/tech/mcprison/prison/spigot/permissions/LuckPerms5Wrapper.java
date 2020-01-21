@@ -16,7 +16,9 @@ import net.luckperms.api.node.types.PermissionNode;
 import tech.mcprison.prison.internal.Player;
 
 /**
- * <p>This wrapper provides support for LuckPerms v5.x.
+ * <p>This wrapper provides support for LuckPerms v5.x.  Both v5.x and legacy 
+ * use the same provider name, so additional checking must be performed to see
+ * which is actually registered.
  * </p> 
  *
  */
@@ -31,13 +33,11 @@ public class LuckPerms5Wrapper
 		api = provider.getProvider();
 	}
 	
-	public void addPermission( Player holder, String permission )
-	{
+	public void addPermission( Player holder, String permission ) {
 		 editPermission(holder.getUUID(), permission, true);
 	}
 	
-	public void removePermission( Player holder, String permission )
-	{
+	public void removePermission( Player holder, String permission ) {
 		 editPermission(holder.getUUID(), permission, false);
 	}
 
@@ -75,8 +75,7 @@ public class LuckPerms5Wrapper
 
     }
 
-    private void changePermission( User user, String permission, boolean add )
-    {
+    private void changePermission( User user, String permission, boolean add ) {
     	boolean dirty = false;
     	
     	// build a permission node now so we don't have to pass around

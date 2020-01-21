@@ -14,14 +14,13 @@ public class LuckPermissionsWrapper
 	private LuckPermsApi api;
 	
 	public LuckPermissionsWrapper() {
-		try
-		{
+		try {
 			api = LuckPerms.getApi();
 		}
-		catch (  NoClassDefFoundError | IllegalStateException  e )
-		{
+		catch (  NoClassDefFoundError | IllegalStateException  e ) {
 			// If a NoClassDefFoundError happens, then that basically means the LuckPerms
-			// plugin has not been loaded.
+			// plugin has not been loaded.  Basically since this is the legacy support, 
+			// the v5 may be the one that was registered with the server api.
 			
 			// Ignore for now... maybe log the exception if in debug mode?
 		}

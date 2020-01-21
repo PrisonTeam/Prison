@@ -1,14 +1,9 @@
 package tech.mcprison.prison.ranks;
 
-import java.util.Optional;
-
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
-import tech.mcprison.prison.integration.IntegrationType;
-import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
@@ -27,8 +22,7 @@ public class ChatHandler {
     public ChatHandler() {
         Prison.get().getEventBus().register(this);
         
-        // NOTE: place holder registration has been relocated to the PlaceholderIntegration modules:
-        
+        // This is pushed back in to the place holder integrations:
 //        Optional<Integration> placeholderIntegration = Prison.get().getIntegrationManager().getForType(IntegrationType.PLACEHOLDER);
 //        if (placeholderIntegration.isPresent()) {
 //            PlaceholderIntegration integration = ((PlaceholderIntegration) placeholderIntegration.get());
@@ -39,10 +33,10 @@ public class ChatHandler {
 //            		integration.registerPlaceholder(placeHolder.name(),
 //            				player -> Text.translateAmpColorCodes(
 //            						pm.getTranslatePlayerPlaceHolder( player.getUUID(), placeHolder.name() )
-//            						));
+//            				));
 //            	}
 //			}
-//            
+            
 ////            integration.registerPlaceholder("PRISON_RANK",
 ////                    player -> Text.translateAmpColorCodes(getPrefix(player.getUUID())));
 //        }

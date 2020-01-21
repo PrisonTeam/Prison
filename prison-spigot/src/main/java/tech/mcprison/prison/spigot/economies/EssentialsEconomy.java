@@ -40,12 +40,28 @@ public class EssentialsEconomy
     	
     }
 	
+    /**
+     * <p>This is tied to the plugin name Essentials, which is broadly covering many
+     * possible behaviors, but we are interested in if Essentials Economy is being
+     * used.  The easiest way to ensure it is active, is to try to access the 
+     * Economy singleton, if it throws a NoClassDefFoundError then it has not 
+     * been loaded.
+     * </p>
+     * 
+     * <p>Had inconsistent luck with using a classloader to check to see if the
+     * Economy class has been loaded, since there could be many different instances
+     * of class loaders, and you have to use the right now.  The default that was
+     * being tried was the System class loader, which was not successful at all.
+     * To pick and chose one would be a crap-shot at best (gambling), so the 
+     * safest way is to just try and use it. Plain and simple, without extra overhead
+     * of hunting down the correct classloader.
+     * </p>
+     */
 	@Override
 	public void integrate() {
 		if ( isRegistered() // && classLoaded 
 				) {
-			try
-			{
+			try {
 				@SuppressWarnings( "unused" )
 				MathContext mathCtx = Economy.MATH_CONTEXT;
 
@@ -89,8 +105,7 @@ public class EssentialsEconomy
     }
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/essentialsx.9089/";
 	}
 

@@ -58,8 +58,7 @@ public class PlaceHolderAPIIntegration
     }
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/placeholderapi.6245/";
 	}
 }

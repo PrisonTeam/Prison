@@ -4,9 +4,13 @@ import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 
-import tech.mcprison.prison.integration.PlaceholderIntegration;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>This hooks up the registration when the Prison plugin starts to run.
@@ -39,6 +43,8 @@ public class MVdWPlaceholderIntegration
 			try {
 				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName())) {
 					placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(getProviderName());
+					
+					PrisonAPI.getIntegrationManager().addDeferredInitialization( this );
 				}
 			}
 			catch ( NoClassDefFoundError | IllegalStateException e ) {
@@ -50,7 +56,23 @@ public class MVdWPlaceholderIntegration
 		}
 	}
 	
+	
+	
     @Override
+	public void deferredInitialization()
+	{
+    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    	for ( PrisonPlaceHolders placeHolder : PrisonPlaceHolders.values() ) {
+    		if ( !placeHolder.isSuppressed() ) {
+    			registerPlaceholder(placeHolder.name(),
+    					player -> Text.translateAmpColorCodes(
+    							pm.getTranslatePlayerPlaceHolder( player.getUUID(), placeHolder.name() )
+    							));
+    		}
+    	}
+	}
+
+	@Override
     public void registerPlaceholder(String placeholder, Function<Player, String> action) {
         if (placeholderWrapper != null) {
         	placeholderWrapper.registerPlaceholder( placeholder, action );
@@ -68,8 +90,7 @@ public class MVdWPlaceholderIntegration
     }
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/";
 	}
     

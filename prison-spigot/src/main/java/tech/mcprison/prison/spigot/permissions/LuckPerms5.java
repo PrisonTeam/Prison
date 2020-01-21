@@ -48,8 +48,7 @@ public class LuckPerms5
 	}
 	
 	@Override
-	public void addPermission( Player holder, String permission )
-	{
+	public void addPermission( Player holder, String permission ) {
 		 if ( permsWrapper != null ) {
 			 permsWrapper.addPermission( holder, permission );
 		 }
@@ -57,23 +56,20 @@ public class LuckPerms5
 	
 
 	@Override
-	public void removePermission( Player holder, String permission )
-	{
+	public void removePermission( Player holder, String permission ) {
 		if ( permsWrapper != null ) {
 			permsWrapper.removePermission( holder, permission );
 		}
 	}
     
 	@Override
-	public boolean hasIntegrated()
-	{
+	public boolean hasIntegrated() {
 		return (permsWrapper != null);
 	}
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://luckperms.net/";
 	}
-		
+
 }

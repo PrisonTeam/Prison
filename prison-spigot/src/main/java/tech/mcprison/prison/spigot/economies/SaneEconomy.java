@@ -53,8 +53,7 @@ public class SaneEconomy
     }
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/saneeconomy-simple-but-featureful-economy.26223/";
 	}
 }

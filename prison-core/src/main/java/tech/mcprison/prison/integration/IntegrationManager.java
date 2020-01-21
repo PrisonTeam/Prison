@@ -17,9 +17,12 @@ import java.util.Optional;
 public class IntegrationManager {
 
     private Map<IntegrationType, List<Integration>> integrations;
+    
+    private List<Integration> deferredIntegrations;
 
     public IntegrationManager() {
         this.integrations = new HashMap<>();
+        this.deferredIntegrations = new ArrayList<>();
     }
 
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
@@ -199,5 +202,19 @@ public class IntegrationManager {
     	
     	return results;
     }
+
+	public List<Integration> getDeferredIntegrations()
+	{
+		return deferredIntegrations;
+	}
+	public void setDeferredIntegrations( List<Integration> deferredIntegrations )
+	{
+		this.deferredIntegrations = deferredIntegrations;
+	}
+
+	public void addDeferredInitialization( Integration defferedIntegration )
+	{
+		getDeferredIntegrations().add( defferedIntegration );
+	}
 
 }

@@ -9,7 +9,7 @@ import tech.mcprison.prison.internal.Player;
  * @since API 1.0
  */
 public abstract class EconomyIntegration 
-	extends Integration {
+	extends IntegrationCore {
 
 	public EconomyIntegration( String keyName, String providerName ) {
 		super( keyName, providerName, IntegrationType.ECONOMY );

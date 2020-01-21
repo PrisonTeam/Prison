@@ -110,9 +110,12 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         new SpigotListener(this).init();
+        
         initIntegrations();
         initModules();
 
+        applyDeferredIntegrationInitializations();
+        
         initMetrics();
 
         if (doAlertAboutConvert) {
@@ -262,6 +265,12 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
+    private void applyDeferredIntegrationInitializations() {
+    	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
+    		deferredIntegration.deferredInitialization();
+    	}
+    }
+    
     private File getBundledFile(String name) {
         getDataFolder().mkdirs();
         File file = new File(getDataFolder(), name);

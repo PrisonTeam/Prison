@@ -8,7 +8,7 @@ import tech.mcprison.prison.internal.Player;
  * An integration into a placeholder plugin.
  */
 public abstract class PlaceholderIntegration 
-	extends Integration {
+	extends IntegrationCore {
 
 	public PlaceholderIntegration( String keyName, String providerName ) {
 		super( keyName, providerName, IntegrationType.PLACEHOLDER );

@@ -68,8 +68,7 @@ public class VaultPermissions
     }
 
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
     	return (permissions == null ? "Vault permissons" : permissions.getName()) + " (Vault)";
     }
     

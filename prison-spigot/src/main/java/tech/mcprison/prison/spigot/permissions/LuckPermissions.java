@@ -76,8 +76,7 @@ public class LuckPermissions
 
 
 	@Override
-	public String getPluginSourceURL()
-	{
+	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/luckperms-an-advanced-permissions-plugin.28140/history";
 	}
 }
