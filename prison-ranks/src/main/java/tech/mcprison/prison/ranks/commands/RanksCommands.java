@@ -150,7 +150,7 @@ public class RanksCommands {
         List<RankLadder.PositionRank> ranks = ladder.get().ranks;
 
         ChatDisplay display = new ChatDisplay("Ranks in " + ladderName);
-        display.text("&8Click on a rank's name to view more info.");
+        display.text("&7Click on a rank's name to view more info.");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -162,7 +162,7 @@ public class RanksCommands {
             Rank rank = rankOptional.get();
 
             String text =
-                String.format("&3%s&r &8- &7%s", rank.tag, Text.numberToDollars(rank.cost));
+                String.format("&3%s &9[&3%s&9] &7- &7%s", rank.name, rank.tag, Text.numberToDollars(rank.cost));
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
@@ -299,7 +299,7 @@ public class RanksCommands {
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
     		return;
     	}
 
@@ -309,12 +309,12 @@ public class RanksCommands {
 		if ( oPlayer.isPresent() ) {
 			RankPlayer rankPlayer = oPlayer.get();
 			
-			String message = String.format("%s: Current Rank: %. Next rank: %s cost %s", 
+			String message = String.format("&c%s&7:  Current Rank: &b%s&7  Next rank: &b%s&7 &c$&b%s", 
 					player.getDisplayName(), pm.getPlayerNames( rankPlayer ),
 					pm.getPlayerNextName( rankPlayer ), pm.getPlayerNextCost( rankPlayer ));
 			sender.sendMessage( message );
 		} else {
-			sender.sendMessage( "&3No ranks found for " + player.getDisplayName() );
+			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
     
