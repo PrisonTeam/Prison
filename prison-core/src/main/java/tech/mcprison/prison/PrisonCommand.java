@@ -43,6 +43,13 @@ public class PrisonCommand {
 
     @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
+    	ChatDisplay display = displayVersion();
+    	
+        display.send(sender);
+    }
+    
+    public ChatDisplay displayVersion() {
+    	
         ChatDisplay display = new ChatDisplay("/prison version");
         display
             .text("&7Prison Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
@@ -76,7 +83,7 @@ public class PrisonCommand {
 			display.text( intgration );
 		}
 
-        display.send(sender);
+        return display;
     }
 
     @Command(identifier = "prison modules", description = "Lists the modules that hook into Prison to give it functionality.", onlyPlayers = false, permissions = "prison.modules")
