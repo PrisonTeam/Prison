@@ -7,7 +7,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.1 - 2020-01-20
+## tag v3.2.1-alpha.2 - 2020-01-20
+
+* **Added new bStats parameter - Mines, ranks, and ladder counts**
+Added a new custom parameter to bStats to record the number of mines, ranks, and 
+ladders that has defined at startup. 
+
+* **Added /ranks player command**
+New command /ranks player show what rank a player currently has. The player must
+be online.
 
 * **Change How Integrations Work**
 All directly accessed integrations are now logged and recorded so their status can be
@@ -21,8 +29,9 @@ now also includes the primary URL where they can find more information on the pl
 and where to download them from.  Also provides some additional information, such as
 available place holders that can be used.
 
-* **Add Minecraft Version**
-Added minecraft version so it can be displayed in /prison version and also be used
+* **Added Minecraft Version**
+Added minecraft version to be stored within the plugin so it can be displayed 
+in /prison version and also be used
 in the future with selecting block types that are appropriate for the server version
 that is being ran.
 
@@ -51,20 +60,21 @@ then make needed adjustments before moving onward.
 
 
 * **Minor clean up to Gradle scripts**
-The "compile" directive is actually very old and was deprecated back around version v2.x I 
-think?  So the replacements for that is "implementation" or "api" instead.  The use of 
-api does not make sense since its use is to tag when internal functions are exposed to the
-outside world as if it will be used as an externally facing API.  That really does not
-fit our use case, but what api also does is to force compiling all source that is associated
-with something marked as api, including everyone's children.  So performance will suffer due
-to that usage, since it shuts down incremental building of resources.
+The "compile" directive is actually very old and was deprecated back around version 
+v2.x. The replacements for that is "implementation" or "api" instead.  The use of 
+api does not make sense since its use is to tag when internal functions are exposed 
+to the outside world as if it will be used as an externally facing API.  That 
+really does not fit our use case, but what api also does is to force compiling all 
+source that is associated with something marked as api, including everyone's children.  So performance will suffer due to that usage, since it shuts down incremental 
+building of resources.
 
 I also found that use of compileOnly may not be used correctly, but at this point
 I'm just leaving this as a mention and then revisit in the future if time
 permits, or issues appear to be related.  Its a very old addition that provided
-gradle with "some" maven like behaviors.  It was only intended to be strictly used for compile
-time dependencies, such as for annotations that are only needed for compile-time checks, of which
-the plugins and resources we have marked as compileOnly do not fit that use case.
+gradle with "some" maven like behaviors.  It was only intended to be strictly used 
+for compile time dependencies, such as for annotations that are only needed for 
+compile-time checks, of which the plugins and resources we have marked as 
+compileOnly do not fit that use case. 
 [discuss.gradle.org: compileOnly](https://discuss.gradle.org/t/is-it-recommended-to-use-compileonly-over-implementation-if-another-module-use-implementation-already/26699/2)
 
 
