@@ -318,21 +318,33 @@ public class RanksCommands {
 		}
     }
     
-    
+    /**
+     * <p>Gets a player by name.  If the player is not online, then try to get them from 
+     * the offline player list. If not one is found, then return a null.
+     * </p>
+     * 
+     * @param sender
+     * @param playerName is optional, if not supplied, then sender will be used
+     * @return Player if found, or null.
+     */
 	private Player getPlayer( CommandSender sender, String playerName )
 	{
-		playerName = playerName != null ? playerName : sender.getName();
-    	Player player = null;
-    	
-    	List<Player> players = Prison.get().getPlatform().getOnlinePlayers();
-    	for ( Player p : players )
-		{
-			if ( p.getName().equalsIgnoreCase( playerName )) {
-				player = p;
-				break;
+		Player result = null;
+		
+		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
+		
+		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
+		
+		if ( playerName != null ) {
+			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+//			if ( !opt.isPresent() ) {
+//				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+//			}
+			if ( opt.isPresent() ) {
+				result = opt.get();
 			}
 		}
-		return player;
+		return result;
 	}
     
 }

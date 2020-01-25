@@ -63,6 +63,12 @@ public interface Platform {
      */
     List<Player> getOnlinePlayers();
 
+// NOTE: Disabling for now.  There is an internal failure within the Prison code base when trying 
+//       to use this, so will revisit in the future.
+//    public Optional<Player> getOfflinePlayer(String name);
+//    
+//    public Optional<Player> getOfflinePlayer(UUID uuid);
+    
     /**
      * Returns the plugin's version.
      */
