@@ -33,7 +33,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
-import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -58,6 +57,7 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -181,10 +181,15 @@ public class SpigotPrison extends JavaPlugin {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
+        
+//        String currentVersion = getDescription().getVersion();
 
         SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
 //        SpigetUpdate updater = new SpigetUpdate(this, 1223);
-        updater.setVersionComparator(VersionComparator.EQUAL);
+        
+        BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
+        updater.setVersionComparator( aRealSemVerComparator );
+//        updater.setVersionComparator(VersionComparator.EQUAL);
 
         updater.checkForUpdate(new UpdateCallback() {
             @Override
