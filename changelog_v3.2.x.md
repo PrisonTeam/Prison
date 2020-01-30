@@ -7,6 +7,125 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
+## tag v3.2.1-alpha.2 - 2020-01-20
+
+* **Added new bStats parameter - Mines, ranks, and ladder counts**
+Added a new custom parameter to bStats to record the number of mines, ranks, and 
+ladders that has defined at startup. 
+
+* **Added /ranks player command**
+New command /ranks player show what rank a player currently has. The player must
+be online.
+
+* **Change How Integrations Work**
+All directly accessed integrations are now logged and recorded so their status can be
+included with the /prison version command.  Integrations that are indirectly used, 
+such as through other plugins like Vault, are never listed directly unless Vault 
+references them.  
+
+I went though the placeholder integrations and fixed their APIs to use the newer
+set of place holders. Fixed some bugs and expanded features.  The list of integrations
+now also includes the primary URL where they can find more information on the plugins,
+and where to download them from.  Also provides some additional information, such as
+available place holders that can be used.
+
+* **Added Minecraft Version**
+Added minecraft version to be stored within the plugin so it can be displayed 
+in /prison version and also be used
+in the future with selecting block types that are appropriate for the server version
+that is being ran.
+
+* **Bug fix: Block types not saving correctly if depending upon magic values**
+Found an issue where loading blocks were by the BlockType name, but saving was by the 
+minecraft id, which does not always match.  As a result, there was the chance a block
+type would be lost, or it would revert back to the generic such as Birch Block 
+reverting back to Oak Block.
+
+* **Need to update gradle - Was at v4.10.3 - Upgraded to v5.6.4**
+Currently this project is using Gradle v4.10.3 and it needs to be updated to v5.6.4 or 
+even v6.0.1 which is the current latest release. It was decided to only take the project
+to v5.6.4 for now, and wait for the next release on v6.x, which may gain more stability?
+But to do that it must be incrementally updated to each minor version and you cannot just 
+jump ahead or there will be failures.  At each step you need to evaluate your build scripts and
+then make needed adjustments before moving onward.
+
+  * **Versions Upgraded To:**: **v5.0**, **v5.1.1**, **v5.2.1**, v5.3.1, v5.4.1, v5.5.1, **v5.6.4**, 
+  * **Versions to be Upgraded To**: v6.0, v6.0.1  
+  * <code>gradlew wrapper --gradle-version 5.0</code> :: Sets the new wrapper version  
+  * <code>gradlew --version</code> :: Will actually install the new version  
+  * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+  * Update to v5.0 was successful. Had to remove <code>enableFeaturePreview('STABLE_PUBLISHING')</code>
+   since it has been deprecated. It does nothing in v5.x, but will be removed in v6.0.
+  * Update to v5.1.1, v5.2.1, v5.3.1, v5.4.1, v5.5.1, v5.6.4 was successful.
+
+
+* **Minor clean up to Gradle scripts**
+The "compile" directive is actually very old and was deprecated back around version 
+v2.x. The replacements for that is "implementation" or "api" instead.  The use of 
+api does not make sense since its use is to tag when internal functions are exposed 
+to the outside world as if it will be used as an externally facing API.  That 
+really does not fit our use case, but what api also does is to force compiling all 
+source that is associated with something marked as api, including everyone's children.  So performance will suffer due to that usage, since it shuts down incremental 
+building of resources.
+
+I also found that use of compileOnly may not be used correctly, but at this point
+I'm just leaving this as a mention and then revisit in the future if time
+permits, or issues appear to be related.  Its a very old addition that provided
+gradle with "some" maven like behaviors.  It was only intended to be strictly used 
+for compile time dependencies, such as for annotations that are only needed for 
+compile-time checks, of which the plugins and resources we have marked as 
+compileOnly do not fit that use case. 
+[discuss.gradle.org: compileOnly](https://discuss.gradle.org/t/is-it-recommended-to-use-compileonly-over-implementation-if-another-module-use-implementation-already/26699/2)
+
+
+* **Redesigned mine block generation works - Async and paged enabled**
+Redesigned how prison blocks are generated to improve performance and to allow the
+asynch generation of blocks, but more importantly, allows for paging of actual 
+block updates. The paging is a major feature change that will allow for minimal 
+impact on server lag, even with stupid-large mines.  The idea is to chop up the
+large number of blocks that need to be regenerated in to smaller chunks that can
+be performed within one or two ticks, then defer the other updates to the future.
+Thus freeing up the main bukkit/spigot execution thread to allow other tasks
+to run to help prevent the server from lagging.
+
+* **Support for LuckPerms v5.0.x**
+In addition to supporting older versions of LuckPerms, Prison now is able to 
+integrate LuckPerms v5.0.x or LuckPerms v.4.x or earlier.  Take your pick. 
+
+* **Minor changes to reduce the number of compiler warnings**
+Minor changes, but better code overall.
+
+
+* **Improved mine regeneration performance by 33.3%**
+Figured out how to improve performance on mine regeneration by roughly about 33.3% overall. This
+could help drastically improve performance and reduce lag since block updates must run 
+synchronously to prevent server corruption (limitation is due to the bukkit and spigot api).  
+
+* **Mine stats and whereami**
+Added a new command, **/mines stats**, to toggle the stats on the mine resets.  Viewable with **/mines list** and **/mines info**. Stats are now within the MineManager so it can be accessed from within
+the individual mines. 
+Added a new command, **/mines whereami**, to tell you what mine you are in, or up to three mines you are nearest to and the distance from their centers.
+
+
+* **Major restructuring of how Mines work - Self-managing their own workflow**
+They now are able to self-manage their own workflow for sending out notifications and for resetting automatically.
+Mines is now layered, where each layer (abstract class of its ancestors) contributes a type of behavior and business logic that allows Mines to be more autonomous.
+As a result, PrisonMines and MineManager are greatly simplified since they have less to manage.
+Because Mines are now self-managing their own workflow, and they have taken on a more expanded role, some of the mine configurations are obsolete and removed.
+Mines only notify players that are within a limited range of their center; they no longer blindly broadcast to all players within a given world or the whole server.
+Mines extend from MineScheduler, which extend from MineReset, which extend from MineData. Each layer focuses on it's own business rules and reduces the clutter in the others, which results in tighter
+code and less moving parts and less possible errors and bugs.
+
+
+* **Concept of distance added to Bound objects**
+Added the concept of distance between two Bound objects so as to support new
+functionalities between mines and players.
+
+
+* **Gradle now ready to upgrade to v5**
+Resolved the last few issues that would have caused issues when upgrading to gradle 
+v5. Explored how gradle can use java fragments and variables.
+
 
 ## tag v3.2.0 - 2019-12-03
 
@@ -63,7 +182,7 @@ Test server versions used in testing:
     * **Minecraft 1.11** 
     * **Minecraft 1.12.2** 
     * **Minecraft 1.13.2** 
-    * **Minecraft 1.14.2** 
+    * **Minecraft 1.14.4** 
 
 
 * **Major refactoring of the prison-mines package**

@@ -44,11 +44,11 @@ public class BoundsTest {
     }
 
     @Test public void within() throws Exception {
-//    	TestWorld world1 = new TestWorld("test1");
+    	TestWorld world1 = new TestWorld("test1");
 //    	TestWorld world2 = new TestWorld("test2");
-    	Location loc1 = new Location(null, 0.0, 4.0, 0.0);
-    	Location loc2 = new Location(null, 10.0, 10.0, 10.0);
-    	Location loc3 = new Location(null, 5.0, 5.0, 5.0);
+    	Location loc1 = new Location(world1, 0.0, 4.0, 0.0);
+    	Location loc2 = new Location(world1, 10.0, 10.0, 10.0);
+    	Location loc3 = new Location(world1, 5.0, 5.0, 5.0);
     	
         Bounds bounds = new Bounds(loc1, loc2);
         Location toCheck = loc3;

@@ -17,6 +17,9 @@
 
 package tech.mcprison.prison.ranks;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -35,14 +38,11 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Database;
 
-import java.io.IOException;
-import java.util.Optional;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class PrisonRanks extends Module {
-
+	public static final String MODULE_NAME = "Ranks";
     /*
      * Fields & Constants
      */
@@ -59,7 +59,7 @@ public class PrisonRanks extends Module {
      */
 
     public PrisonRanks(String version) {
-        super("Ranks", version, 3);
+        super(MODULE_NAME, version, 3);
     }
 
     /*
@@ -129,6 +129,11 @@ public class PrisonRanks extends Module {
         new ChatHandler();
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
+
+        Output.get().logInfo("Loaded " + getRankCount() + " ranks.");
+        Output.get().logInfo("Loaded " + getladderCount() + " ladders.");
+        Output.get().logInfo("Loaded " + getPlayersCount() + " players.");
+        
     }
 
     private Collection initCollection(String collName) {
@@ -201,4 +206,20 @@ public class PrisonRanks extends Module {
         return database;
     }
 
+    public int getRankCount() {
+    	int rankCount = getRankManager().getRanks() == null ? 0 : getRankManager().getRanks().size();
+    	return rankCount;
+    }
+    
+    public int getladderCount() {
+    	int ladderCount = getLadderManager().getLadders() == null ? 0 : 
+    		getLadderManager().getLadders().size();
+    	return ladderCount;
+    }
+    
+    public int getPlayersCount() {
+    	int playersCount = getPlayerManager().getPlayers() == null ? 0 : 
+    		getPlayerManager().getPlayers().size();
+    	return playersCount;
+    }
 }

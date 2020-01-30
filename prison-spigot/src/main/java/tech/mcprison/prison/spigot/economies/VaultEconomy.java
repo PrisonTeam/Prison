@@ -18,67 +18,82 @@
 
 package tech.mcprison.prison.spigot.economies;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultEconomy implements EconomyIntegration {
+public class VaultEconomy 
+	extends EconomyIntegration {
 
-    private net.milkbowl.vault.economy.Economy economy = null;
+    private VaultEconomyWrapper econWrapper;
 
     public VaultEconomy() {
-        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
+    	super( "VaultEcon", "Vault" );
+    }
+
+	@Override
+	public void integrate() {
+		
+		if ( isRegistered()) {
+			try {
+				this.econWrapper = new VaultEconomyWrapper();
+			}
+			catch ( java.lang.NoClassDefFoundError | Exception e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+		}
+	}
+    
+	@Override 
+	public double getBalance(Player player) {
+        if (econWrapper != null) {
+        	return econWrapper.getBalance( player );
+        } else {
+        	return 0;
         }
     }
 
-    @SuppressWarnings( "deprecation" )
-	@Override public double getBalance(Player player) {
-        if (economy == null) {
-            return 0;
+    @Override 
+    public void setBalance(Player player, double amount) {
+        if (econWrapper != null) {
+        	econWrapper.setBalance( player, amount );
         }
-        return economy.getBalance(player.getName());
     }
 
-    @Override public void setBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
+    @Override 
+    public void addBalance(Player player, double amount) {
+        if (econWrapper != null) {
+        	econWrapper.addBalance( player, amount );
         }
-        economy.bankWithdraw(player.getName(), getBalance(player));
-        economy.bankDeposit(player.getName(), amount);
     }
 
-    @Override public void addBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
+    @Override
+    public void removeBalance(Player player, double amount) {
+        if (econWrapper != null) {
+        	econWrapper.removeBalance( player, amount );
         }
-        economy.bankDeposit(player.getName(), amount);
     }
 
-    @Override public void removeBalance(Player player, double amount) {
-        if (economy == null) {
-            return;
-        }
-        economy.bankWithdraw(player.getName(), amount);
+    @Override 
+    public boolean canAfford(Player player, double amount) {
+        return econWrapper != null && econWrapper.canAfford( player, amount );
+    }
+    
+    @Override
+    public String getDisplayName()
+    {
+    	return (econWrapper == null ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
+    }
+    
+    @Override 
+    public boolean hasIntegrated() {
+        return econWrapper != null;
     }
 
-    @Override public boolean canAfford(Player player, double amount) {
-        return economy != null && economy.bankHas(player.getName(), amount).transactionSuccess();
-    }
-
-    @Override public String getProviderName() {
-        return economy.getName();
-    }
-
-    @Override public boolean hasIntegrated() {
-        return economy != null;
-    }
-
+	@Override
+	public String getPluginSourceURL() {
+		return "https://www.spigotmc.org/resources/vault.34315/";
+	}
 }

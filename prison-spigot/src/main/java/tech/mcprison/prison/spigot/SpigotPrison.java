@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -32,14 +33,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
-import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -50,9 +53,11 @@ import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
+import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -103,20 +108,29 @@ public class SpigotPrison extends JavaPlugin {
         initDataDir();
         initCommandMap();
         initCompatibility();
-        initMetrics();
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
-        Prison.get().init(new SpigotPlatform(this));
+        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         new SpigotListener(this).init();
+        
         initIntegrations();
         initModules();
+
+        applyDeferredIntegrationInitializations();
+        
+        initMetrics();
 
         if (doAlertAboutConvert) {
             Alerts.getInstance().sendAlert(
                     "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
         }
+        
+        // Finally print the version after loading the prison plugin:
+        PrisonCommand cmdVersion = new PrisonCommand();
+        ChatDisplay cdVersion = cmdVersion.displayVersion();
+        cdVersion.toLog( LogLevel.INFO );
     }
 
     @Override
@@ -143,16 +157,39 @@ public class SpigotPrison extends JavaPlugin {
         // Report the API level
         metrics.addCustomChart(
                 new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+        
+        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+        Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        int mineCount = !prisonMinesOpt.isPresent() ? 0 : ((PrisonMines) prisonMinesOpt.get()).getMineManager().getMines().size();
+        int rankCount = !prisonRanksOpt.isPresent() ? 0 : ((PrisonRanks) prisonRanksOpt.get()).getRankCount();
+        int ladderCount = !prisonRanksOpt.isPresent() ? 0 : ((PrisonRanks) prisonRanksOpt.get()).getladderCount();
+        
+        metrics.addCustomChart(new Metrics.MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> call() throws Exception {
+                Map<String, Integer> valueMap = new HashMap<>();
+                valueMap.put("mines", mineCount);
+                valueMap.put("ranks", rankCount);
+                valueMap.put("ladders", ladderCount);
+                return valueMap;
+            }
+        }));
     }
 
 	private void initUpdater() {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
+        
+//        String currentVersion = getDescription().getVersion();
 
         SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
 //        SpigetUpdate updater = new SpigetUpdate(this, 1223);
-        updater.setVersionComparator(VersionComparator.EQUAL);
+        
+        BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
+        updater.setVersionComparator( aRealSemVerComparator );
+//        updater.setVersionComparator(VersionComparator.EQUAL);
 
         updater.checkForUpdate(new UpdateCallback() {
             @Override
@@ -217,28 +254,24 @@ public class SpigotPrison extends JavaPlugin {
 
     private void initIntegrations() {
 
-        registerIntegration("Essentials", EssentialsEconomy.class);
-        registerIntegration("SaneEconomy", SaneEconomy.class);
-        registerIntegration("Vault", VaultEconomy.class);
+    	registerIntegration(new VaultEconomy());
+        registerIntegration(new EssentialsEconomy());
+        registerIntegration(new SaneEconomy());
 
-        registerIntegration("LuckPerms", LuckPermissions.class);
-        registerIntegration("Vault", VaultPermissions.class);
+        registerIntegration(new VaultPermissions());
+        registerIntegration(new LuckPerms5());
+        registerIntegration(new LuckPermissions());
 
-        registerIntegration("MVdWPlaceholderAPI", MVdWPlaceholderIntegration.class);
-
-        registerIntegration("PlaceholderAPI", PlaceHolderAPIIntegration.class);
+        registerIntegration(new MVdWPlaceholderIntegration());
+        registerIntegration(new PlaceHolderAPIIntegration());
     }
+    
+    private void registerIntegration(Integration integration) {
+    	integration.setRegistered( Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()) );
 
-    private void registerIntegration(String pluginName, Class<? extends Integration> integration) {
-        if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-            try {
-                PrisonAPI.getIntegrationManager().register(integration.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                getLogger()
-                        .log(Level.WARNING, "Could not initialize integration " + integration.getName(),
-                                e);
-            }
-        }
+    	integration.integrate();
+		
+    	PrisonAPI.getIntegrationManager().register(integration);
     }
 
     private void initModules() {
@@ -259,6 +292,12 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
+    private void applyDeferredIntegrationInitializations() {
+    	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
+    		deferredIntegration.deferredInitialization();
+    	}
+    }
+    
     private File getBundledFile(String name) {
         getDataFolder().mkdirs();
         File file = new File(getDataFolder(), name);

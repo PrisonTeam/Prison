@@ -18,8 +18,11 @@
 
 package tech.mcprison.prison;
 
+import java.util.List;
+
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
@@ -40,30 +43,47 @@ public class PrisonCommand {
 
     @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
+    	ChatDisplay display = displayVersion();
+    	
+        display.send(sender);
+    }
+    
+    public ChatDisplay displayVersion() {
+    	
         ChatDisplay display = new ChatDisplay("/prison version");
         display
-            .text("&7Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
+            .text("&7Prison Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
                 Prison.API_LEVEL);
 
-        display.text("&7Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.text("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.text("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
+
+        display.text("");
         display.text("&7Integrations:");
 
+        IntegrationManager im = Prison.get().getIntegrationManager();
         String permissions =
-            Prison.get().getIntegrationManager().hasForType(IntegrationType.PERMISSION) ?
-                "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.PERMISSION)
-                    .get().getProviderName() :
-                "&cNone";
+        		(im.hasForType(IntegrationType.PERMISSION) ?
+                "&a" + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+                "&cNone");
 
         display.text(Text.tab("&7Permissions: " + permissions));
 
-        String economy = Prison.get().getIntegrationManager().hasForType(IntegrationType.ECONOMY) ?
-            "&a" + Prison.get().getIntegrationManager().getForType(IntegrationType.ECONOMY).get()
-                .getProviderName() :
-            "&cNone";
+        String economy =
+        		(im.hasForType(IntegrationType.ECONOMY) ?
+                "&a" + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+                "&cNone");
 
         display.text(Text.tab("&7Economy: " + economy));
+        
+        
+        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
+        for ( String intgration : integrations )
+		{
+			display.text( intgration );
+		}
 
-        display.send(sender);
+        return display;
     }
 
     @Command(identifier = "prison modules", description = "Lists the modules that hook into Prison to give it functionality.", onlyPlayers = false, permissions = "prison.modules")

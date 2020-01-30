@@ -25,8 +25,9 @@ package tech.mcprison.prison.internal.platform;
  * @since API 1.0
  */
 public class IncapableException extends RuntimeException {
-
-    private Capability capability;
+	private static final long serialVersionUID = 1L;
+	
+	private Capability capability;
 
     public IncapableException(Capability capability) {
         this.capability = capability;

@@ -29,23 +29,23 @@ import tech.mcprison.prison.file.FileIOData;
  */
 public class MinesConfig implements FileIOData {
 
-    /**
-     * True if randomized blocks for mines should be cached for faster resets. False otherwise
-     */
-    public boolean asyncReset = true;
+//    /**
+//     * True if randomized blocks for mines should be cached for faster resets. False otherwise
+//     */
+//    public boolean asyncReset = true;
 
     /**
      * True if reset warnings an reset broadcasts should be enabled. False otherwise
      */
     public boolean resetMessages = true;
 
-    /**
-     * True if broadcasts should only be enabled in the worlds specified in the <i>worlds</i> list.
-     * False otherwise.
-     *
-     * @see MinesConfig#worlds
-     */
-    public boolean multiworld = false;
+//    /**
+//     * True if broadcasts should only be enabled in the worlds specified in the <i>worlds</i> list.
+//     * False otherwise.
+//     *
+//     * @see MinesConfig#worlds
+//     */
+//    public boolean multiworld = false;
 
     /**
      * True if only blocks that are air should be replaced. False otherwise
@@ -57,13 +57,13 @@ public class MinesConfig implements FileIOData {
      */
     public int resetTime = 600;
 
-    /**
-     * The worlds that reset messages should be broadcasted to. Ignored if multiworld is disabled.
-     *
-     * @see MinesConfig#multiworld
-     */
-    public ArrayList<String> worlds =
-        new ArrayList<>(Arrays.<String>asList(new String[]{"plots", "mines"}));
+//    /**
+//     * The worlds that reset messages should be broadcasted to. Ignored if multiworld is disabled.
+//     *
+//     * @see MinesConfig#multiworld
+//     */
+//    public ArrayList<String> worlds =
+//        new ArrayList<>(Arrays.<String>asList(new String[]{"plots", "mines"}));
 
     /**
      * The time between mine reset warnings. Ignored if resetMessages is disabled.

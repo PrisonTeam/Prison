@@ -53,11 +53,17 @@ public class SpigotBlock implements Block {
         return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
+    /**
+     * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
+     * by about 1/3.  Really do not need to apply physics in the mines especially if no air blocks and nothing
+     * that could fall (sand) or flow is placed.
+     * </p>
+     */
     @SuppressWarnings( "deprecation" )
 	@Override public void setType(BlockType type) {
         MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-        bBlock.setType(materialData.getItemType());
-        bBlock.setData(materialData.getData());
+        bBlock.setType(materialData.getItemType(), false);
+        bBlock.setData(materialData.getData(), false);
     }
 
     @Override public BlockState getState() {

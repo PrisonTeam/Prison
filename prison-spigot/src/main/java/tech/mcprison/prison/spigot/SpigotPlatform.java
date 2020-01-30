@@ -144,6 +144,30 @@ class SpigotPlatform implements Platform {
             .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
     }
 
+//    @Override
+//    public Optional<Player> getOfflinePlayer(String name) {
+//    	return getOfflinePlayer(name, null);
+//    }
+//    
+//    @Override
+//    public Optional<Player> getOfflinePlayer(UUID uuid) {
+//    	return getOfflinePlayer(null, uuid);
+//    }
+//    private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
+//    	SpigotPlayer player = null;
+//    	List<OfflinePlayer> olPlayers = Arrays.asList( Bukkit.getOfflinePlayers() );
+//    	for ( OfflinePlayer offlinePlayer : olPlayers )
+//		{
+//    		if ( name != null && offlinePlayer.getName().equals(name) ||
+//					  uuid != null && offlinePlayer.getUniqueId().equals(uuid) ) {
+//    			player = new SpigotPlayer(offlinePlayer.getPlayer());
+//    			players.add(player);
+//                break;
+//    		}
+//		}
+//    	return Optional.ofNullable( player );
+//    }
+    
     @Override public String getPluginVersion() {
         return plugin.getDescription().getVersion();
     }

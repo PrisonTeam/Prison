@@ -20,6 +20,7 @@ package tech.mcprison.prison.spigot.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -27,20 +28,36 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 /**
  * @author Faizaan A. Datoo
  */
-public class VaultPermissions implements PermissionIntegration {
+public class VaultPermissions 
+	extends PermissionIntegration {
 
     private net.milkbowl.vault.permission.Permission permissions = null;
 
     public VaultPermissions() {
-        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
-            Bukkit.getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permissions = permissionProvider.getProvider();
-        }
+    	super( "Vault", "Vault" );
     }
+	
+	@Override
+	public void integrate() {
+		if ( isRegistered()) {
+			try {
+				RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider =
+						Bukkit.getServer().getServicesManager()
+						.getRegistration(net.milkbowl.vault.permission.Permission.class);
+				if (permissionProvider != null) {
+					permissions = permissionProvider.getProvider();
+				}
+			}
+			catch ( NoClassDefFoundError | IllegalStateException e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-    @Override public void addPermission(Player holder, String permission) {
+	@Override public void addPermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerAdd(player.getWrapper(), permission);
     }
@@ -50,10 +67,11 @@ public class VaultPermissions implements PermissionIntegration {
         this.permissions.playerRemove(player.getWrapper(), permission);
     }
 
-    @Override public String getProviderName() {
-        return permissions.getName() + " (Vault)";
+    @Override
+    public String getDisplayName() {
+    	return (permissions == null ? "Vault permissons" : permissions.getName()) + " (Vault)";
     }
-
+    
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }

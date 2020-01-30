@@ -63,7 +63,19 @@ public class TestPlatform implements Platform {
         return new ArrayList<>();
     }
 
-    @Override public String getPluginVersion() {
+//    @Override
+//	public Optional<Player> getOfflinePlayer( String name )
+//	{
+//		return null;
+//	}
+//
+//	@Override
+//	public Optional<Player> getOfflinePlayer( UUID uuid )
+//	{
+//		return null;
+//	}
+
+	@Override public String getPluginVersion() {
         return "Tests";
     }
 

@@ -18,7 +18,11 @@
 
 package tech.mcprison.prison;
 
+import java.io.File;
+import java.util.Optional;
+
 import com.google.common.eventbus.EventBus;
+
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.Error;
@@ -37,9 +41,6 @@ import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
-import java.io.File;
-import java.util.Optional;
-
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
  * {@link Prison#get()} method, however in order to use the core libraries, you must call
@@ -56,6 +57,8 @@ public class Prison implements PluginEntity {
 
     public static final int API_LEVEL = 3;
     private static Prison instance = null;
+    
+    private String minecraftVersion;
 
     // Fields
     private Platform platform;
@@ -92,50 +95,68 @@ public class Prison implements PluginEntity {
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public boolean init(Platform platform) {
+    public boolean init(Platform platform, String minecraftVersion) {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
+        this.minecraftVersion = minecraftVersion;
+        
         sendBanner();
-        Output.get().logInfo("Enable start...");
+        Output.get().logInfo("Enabling and starting...");
 
         // Initialize various parts of the API. The magic happens here :)
         if (!initDataFolder()) {
+        	Output.get().logInfo("&cFailure: &eInitializing the Prison Data Folders!" );
+        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
             return false;
         }
         initManagers();
         if (!initMetaDatabase()) {
+        	Output.get().logInfo("&cFailure: &eInitializing the Prison Database!" );
+        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
             return false;
         }
         Alerts.getInstance(); // init alerts
 
         this.commandHandler.registerCommands(new PrisonCommand());
 
+        long stopTime = System.currentTimeMillis();
+        
         Output.get()
                 .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                        (System.currentTimeMillis() - startTime));
+                        (stopTime - startTime));
 
         registerInbuiltTroubleshooters();
 
         if (getPlatform().shouldShowAlerts())
             scheduleAlertNagger();
+        
+        
+        // Disabled for now. The integrations cannot properly support this yet.
+//        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
+//        for ( String intgration : integrations ) {
+//        	Output.get().logInfo( intgration );
+//		}
 
+        
         return true;
     }
 
     // Initialization steps
 
     private void sendBanner() {
-        PrisonAPI.log("");
-        PrisonAPI.log("&6 _____      _                 ");
-        PrisonAPI.log("&6|  __ \\    (_)                ");
-        PrisonAPI.log("&6| |__) | __ _ ___  ___  _ __  ");
-        PrisonAPI.log("&6|  ___/ '__| / __|/ _ \\| '_ \\");
-        PrisonAPI.log("&6| |   | |  | \\__ \\ (_) | | | |");
-        PrisonAPI.log("&6|_|   |_|  |_|___/\\___/|_| |_|");
-        PrisonAPI.log("");
-        PrisonAPI.log("Loading version %s on platform %s...", PrisonAPI.getPluginVersion(),
-                platform.getClass().getSimpleName());
+    	Output.get().logInfo("");
+    	Output.get().logInfo("&6 _____      _                 ");
+    	Output.get().logInfo("&6|  __ \\    (_)                ");
+    	Output.get().logInfo("&6| |__) | __ _ ___  ___  _ __  ");
+    	Output.get().logInfo("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+    	Output.get().logInfo("&6| |   | |  | \\__ \\ (_) | | | |");
+    	Output.get().logInfo("&6|_|   |_|  |_|___/\\___/|_| |_|");
+    	Output.get().logInfo("");
+    	Output.get().logInfo("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
+    	Output.get().logInfo("&7Running on platform: &3%s", platform.getClass().getSimpleName());
+    	Output.get().logInfo("&7Minecraft version: &3%s", getMinecraftVersion());
+    	Output.get().logInfo("");
     }
 
     private boolean initDataFolder() {
@@ -206,7 +227,12 @@ public class Prison implements PluginEntity {
 
     // Getters
 
-    @Override
+    public String getMinecraftVersion()
+	{
+		return minecraftVersion;
+	}
+
+	@Override
     public String getName() {
         return "PrisonCore";
     }

@@ -17,17 +17,26 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.google.common.eventbus.Subscribe;
+
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Manages all the players in the records.
@@ -156,6 +165,105 @@ public class PlayerManager {
                     		event.getPlayer().getName() + "  target filename: " + newPlayer.filename(), e);
             }
         }
+    }
+
+    
+
+    public String getPlayerNames( RankPlayer rankPlayer ) {
+		String prefix = null;
+
+		if ( !rankPlayer.getRanks().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+				if ( sb.length() > 0 ) {
+					sb.append(", ");
+				}
+				sb.append(entry.getValue().name);
+			}
+			prefix = sb.toString();
+
+		}
+
+		return prefix == null || prefix.length() == 0 ? "" : prefix;
+    }
+    
+    public String getPlayerNextCost( RankPlayer rankPlayer ) {
+		String prefix = null;
+
+		if ( !rankPlayer.getRanks().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+				RankLadder key = entry.getKey();
+				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+					if ( sb.length() > 0 ) {
+						sb.append(", ");
+					}
+					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().cost);
+				}
+			}
+			prefix = sb.toString();
+
+		}
+
+		return prefix == null || prefix.length() == 0 ? "" : prefix;
+    }
+    
+    public String getPlayerNextName( RankPlayer rankPlayer ) {
+    	String prefix = null;
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		StringBuilder sb = new StringBuilder();
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				if ( sb.length() > 0 ) {
+    					sb.append(", ");
+    				}
+    				sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().name);
+    			}
+    		}
+    		prefix = sb.toString();
+    		
+    	}
+    	
+    	return prefix == null || prefix.length() == 0 ? "" : prefix;
+    }
+    
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
+    	PrisonPlaceHolders placeHolder = PrisonPlaceHolders.fromString( identifier );
+    	return getTranslatePlayerPlaceHolder( playerUuid, placeHolder );
+    }
+    
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, PrisonPlaceHolders placeHolder ) {
+		String results = null;
+
+		Optional<RankPlayer> oPlayer = getPlayer(playerUuid);
+		
+		if ( oPlayer.isPresent() ) {
+			RankPlayer rankPlayer = oPlayer.get();
+			
+			switch ( placeHolder ) {
+				case prison_rank:
+				case rank:
+					results = getPlayerNames( rankPlayer );
+					break;
+
+				case prison_rankup_cost:
+				case rankup_cost:
+					results = getPlayerNextCost( rankPlayer );
+					break;
+					
+				case prison_rankup_rank:
+				case rankup_rank:
+					results = getPlayerNextName( rankPlayer );
+					break;
+					
+				default:
+					break;
+			}
+		}
+		
+		return results;
     }
 
 }

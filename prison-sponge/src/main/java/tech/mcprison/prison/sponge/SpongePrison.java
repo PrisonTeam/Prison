@@ -20,6 +20,7 @@ package tech.mcprison.prison.sponge;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -45,7 +46,7 @@ public class SpongePrison {
         if (!configDir.toFile().exists()) {
             configDir.toFile().mkdirs();
         }
-        Prison.get().init(new SpongePlatform(this));
+        Prison.get().init(new SpongePlatform(this), Sponge.getPlatform().getMinecraftVersion().getName());
     }
 
     public Logger getLogger() {

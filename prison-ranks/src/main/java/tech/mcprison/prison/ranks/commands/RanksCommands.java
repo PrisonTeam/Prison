@@ -1,9 +1,11 @@
 package tech.mcprison.prison.ranks.commands;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -12,6 +14,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
 
 import java.io.IOException;
@@ -147,7 +150,7 @@ public class RanksCommands {
         List<RankLadder.PositionRank> ranks = ladder.get().ranks;
 
         ChatDisplay display = new ChatDisplay("Ranks in " + ladderName);
-        display.text("&8Click on a rank's name to view more info.");
+        display.text("&7Click on a rank's name to view more info.");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -159,7 +162,7 @@ public class RanksCommands {
             Rank rank = rankOptional.get();
 
             String text =
-                String.format("&3%s&r &8- &7%s", rank.tag, Text.numberToDollars(rank.cost));
+                String.format("&3%s &9[&3%s&9] &7- &7%s", rank.name, rank.tag, Text.numberToDollars(rank.cost));
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
@@ -288,4 +291,60 @@ public class RanksCommands {
         }
 
     }
+    
+    @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
+    public void rankPlayer(CommandSender sender,
+    			@Arg(name = "player", def = "", description = "Player name") String playerName){
+    	
+    	Player player = getPlayer( sender, playerName );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		return;
+    	}
+
+    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID());
+		
+		if ( oPlayer.isPresent() ) {
+			RankPlayer rankPlayer = oPlayer.get();
+			
+			String message = String.format("&c%s&7:  Current Rank: &b%s&7  Next rank: &b%s&7 &c$&b%s", 
+					player.getDisplayName(), pm.getPlayerNames( rankPlayer ),
+					pm.getPlayerNextName( rankPlayer ), pm.getPlayerNextCost( rankPlayer ));
+			sender.sendMessage( message );
+		} else {
+			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
+		}
+    }
+    
+    /**
+     * <p>Gets a player by name.  If the player is not online, then try to get them from 
+     * the offline player list. If not one is found, then return a null.
+     * </p>
+     * 
+     * @param sender
+     * @param playerName is optional, if not supplied, then sender will be used
+     * @return Player if found, or null.
+     */
+	private Player getPlayer( CommandSender sender, String playerName )
+	{
+		Player result = null;
+		
+		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
+		
+		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
+		
+		if ( playerName != null ) {
+			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+//			if ( !opt.isPresent() ) {
+//				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+//			}
+			if ( opt.isPresent() ) {
+				result = opt.get();
+			}
+		}
+		return result;
+	}
+    
 }
