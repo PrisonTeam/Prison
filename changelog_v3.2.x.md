@@ -7,15 +7,74 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.2 - 2020-01-20
+## tag v3.2.1-alpha.2 - 2020-02-04
+
+* **Information: Setting the correct currency for Prison**
+The current prison plugin is using java internals to set the currency symbol.
+As such, currencies within prison may show the wrong currency symbol.
+
+For example, in RankUpCommand it is using this reference:
+	RankUtil.doubleToDollarString(result.rank.cost));
+which is using this:
+    public static String doubleToDollarString(double val) {
+        return NumberFormat.getCurrencyInstance().format(val);
+    }
+If the currency that is shown is not what is configured on the server, 
+then you currently MUST change the java startup variables to set it
+the language and location that you are needing to use.  Otherwise
+it will be pulling from the file system, which may not match your
+in game settings.
+
+	-Duser.language=en -Duser.country=US -Duser.variant=US
+In context the server startup may now look like this:
+	java -Xms2g -Xmx8g -Duser.language=en -Duser.country=US -Duser.variant=US -jar spigot-1.13.2.jar
+
+In the future, may need to switch this over to use either a language config in 
+a config file somewhere, or use what is defined, or set, within the 
+currency plugin, such as vault, or EssentialsX.
+
+
+* **Bug Fix ?? : Cannot manually edit rank and ladder files.**
+(to be addressed)
+Manually editing the rank and ladder files, and maybe even the player
+files, does not work, even when the server is shut down and restarted.
+
+
+* **Bug Fix: Players on server prior to setting up prison have no ranks**
+(to be addressed)
+When prison is setup initially, if a player is already on the server, they
+will not be assigned a player rank. This causes failures when the player
+tries to use the /rankup command in that it reports "Error ! You don't have enough
+money to rank up! Then next rank costs <amount>!" This happens when the rank 
+costs zero.
+
+* **Improve the reporting at startup and also for /prison version**
+Added more details to provide the user with more information about
+the prison environment and also the integrations.  It's a work in 
+progress and some of the current formats will be changing and will be
+refactored to be more useful and easier to read.
+
+* **Bug fix in third party tool: Rewrite of the SpiGet version reporting tool**
+Bug fix. Third party tool.  Spiget "claims" it deals with semVers when
+that is nothing even close to being true.  I wrote a proper version
+parser to use for Prison so semVer actually works correctly which will
+hopefully eliminate some situations where it fails.  
+I may fork the spiget project in the near future and share this
+code with that project so others can benefit from proper semVer 
+handling, which may address some of their open issues too.
 
 * **Added new bStats parameter - Mines, ranks, and ladder counts**
 Added a new custom parameter to bStats to record the number of mines, ranks, and 
-ladders that has defined at startup. 
+ladders that has defined at startup. So this data may now be added as custom
+charts, but may not be able to ever see it online since I do not own the 
+bstats online account to configure it correctly on that end.  But at least the
+data will be there if it's even enabled.
 
 * **Added /ranks player command**
 New command /ranks player show what rank a player currently has. The player must
-be online.
+be online. Future could add support for offline players, but quick attempt to 
+hook that results in some internal failures within the Prison plugin so deferring
+on that feature.
 
 * **Change How Integrations Work**
 All directly accessed integrations are now logged and recorded so their status can be

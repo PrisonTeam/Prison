@@ -18,6 +18,7 @@
 package tech.mcprison.prison.ranks.managers;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,83 +137,100 @@ public class PlayerManager {
         return players;
     }
 
+    /** 
+     * <p>Get the player, if they don't exist, add them.
+     * </p>
+     * 
+     * @param uid
+     * @return
+     */
     public Optional<RankPlayer> getPlayer(UUID uid) {
-        return players.stream().filter(player -> player.uid.equals(uid)).findFirst();
+    	Optional<RankPlayer> results = players.stream().filter(player -> player.uid.equals(uid)).findFirst();
+    	
+    	if ( !results.isPresent() ) {
+    		results = Optional.ofNullable( addPlayer(uid, null) );
+    	}
+    	
+    	return results;
     }
+    
+    
+    private RankPlayer addPlayer( UUID uid, String playerName ) {
+    	// We need to create a new player data file.
+        RankPlayer newPlayer = new RankPlayer();
+        newPlayer.uid = uid;
+        newPlayer.ranks = new HashMap<>();
+        newPlayer.prestige = new HashMap<>();
 
+        players.add(newPlayer);
+
+        try {
+            savePlayer(newPlayer);
+
+            Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+        } 
+        catch (IOException e) {
+            Output.get().logError(
+                "Failed to create new player data file for player " + 
+                		(playerName == null ? "<NoNameAvailable>" : playerName) + 
+                		"  target filename: " + newPlayer.filename(), e);
+        }
+        
+        return newPlayer;
+    }
+    
     /*
      * Listeners
      */
 
     @Subscribe public void onPlayerJoin(PlayerJoinEvent event) {
         if (!getPlayer(event.getPlayer().getUUID()).isPresent()) {
-            // We need to create a new player data file.
-            RankPlayer newPlayer = new RankPlayer();
-            newPlayer.uid = event.getPlayer().getUUID();
-            newPlayer.ranks = new HashMap<>();
-            newPlayer.prestige = new HashMap<>();
-
-            players.add(newPlayer);
-
-            try {
-                savePlayer(newPlayer);
-
-                Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
-            } 
-            catch (IOException e) {
-                Output.get().logError(
-                    "Failed to create new player data file for player " + 
-                    		event.getPlayer().getName() + "  target filename: " + newPlayer.filename(), e);
-            }
+        	addPlayer( event.getPlayer().getUUID(), event.getPlayer().getName() );
         }
     }
 
     
 
-    public String getPlayerNames( RankPlayer rankPlayer ) {
-		String prefix = null;
+    public String getPlayerRankName( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
 
 		if ( !rankPlayer.getRanks().isEmpty()) {
-			StringBuilder sb = new StringBuilder();
 			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
 				if ( sb.length() > 0 ) {
 					sb.append(", ");
 				}
 				sb.append(entry.getValue().name);
 			}
-			prefix = sb.toString();
-
 		}
 
-		return prefix == null || prefix.length() == 0 ? "" : prefix;
+		return sb.toString();
     }
     
-    public String getPlayerNextCost( RankPlayer rankPlayer ) {
-		String prefix = null;
+    public String getPlayerNextRankCost( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
 
 		if ( !rankPlayer.getRanks().isEmpty()) {
-			StringBuilder sb = new StringBuilder();
+			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
 				RankLadder key = entry.getKey();
 				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
 					if ( sb.length() > 0 ) {
 						sb.append(", ");
 					}
-					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().cost);
+					
+					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
+					sb.append( dFmt.format( cost ));
 				}
 			}
-			prefix = sb.toString();
-
 		}
 
-		return prefix == null || prefix.length() == 0 ? "" : prefix;
+		return sb.toString();
     }
     
-    public String getPlayerNextName( RankPlayer rankPlayer ) {
-    	String prefix = null;
+    public String getPlayerNextRankName( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		StringBuilder sb = new StringBuilder();
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
@@ -222,11 +240,9 @@ public class PlayerManager {
     				sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().name);
     			}
     		}
-    		prefix = sb.toString();
-    		
     	}
     	
-    	return prefix == null || prefix.length() == 0 ? "" : prefix;
+    	return sb.toString();
     }
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
@@ -245,17 +261,17 @@ public class PlayerManager {
 			switch ( placeHolder ) {
 				case prison_rank:
 				case rank:
-					results = getPlayerNames( rankPlayer );
+					results = getPlayerRankName( rankPlayer );
 					break;
 
 				case prison_rankup_cost:
 				case rankup_cost:
-					results = getPlayerNextCost( rankPlayer );
+					results = getPlayerNextRankCost( rankPlayer );
 					break;
 					
 				case prison_rankup_rank:
 				case rankup_rank:
-					results = getPlayerNextName( rankPlayer );
+					results = getPlayerNextRankName( rankPlayer );
 					break;
 					
 				default:

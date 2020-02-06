@@ -162,7 +162,8 @@ public class RanksCommands {
             Rank rank = rankOptional.get();
 
             String text =
-                String.format("&3%s &9[&3%s&9] &7- &7%s", rank.name, rank.tag, Text.numberToDollars(rank.cost));
+                String.format("&3%s &9[&3%s&9] &7- &7%s &7- Commands: &3%d", 
+                			rank.name, rank.tag, Text.numberToDollars(rank.cost), rank.rankUpCommands.size());
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
@@ -309,9 +310,18 @@ public class RanksCommands {
 		if ( oPlayer.isPresent() ) {
 			RankPlayer rankPlayer = oPlayer.get();
 			
-			String message = String.format("&c%s&7:  Current Rank: &b%s&7  Next rank: &b%s&7 &c$&b%s", 
-					player.getDisplayName(), pm.getPlayerNames( rankPlayer ),
-					pm.getPlayerNextName( rankPlayer ), pm.getPlayerNextCost( rankPlayer ));
+			String nextRank = pm.getPlayerNextRankName( rankPlayer );
+			String nextRankCost = pm.getPlayerNextRankCost( rankPlayer );
+			
+			String message = String.format("&c%s&7:  Current Rank: &b%s&7", 
+					player.getDisplayName(), pm.getPlayerRankName( rankPlayer ));
+			
+			if ( nextRank.trim().length() == 0 ) {
+				message += "  You are already at the highest rank!";
+			} else {
+				message += String.format("  Next rank: &b%s&7 &c$&b%s", nextRank, nextRankCost );
+			}
+			
 			sender.sendMessage( message );
 		} else {
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
