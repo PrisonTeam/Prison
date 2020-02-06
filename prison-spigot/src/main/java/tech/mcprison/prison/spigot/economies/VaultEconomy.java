@@ -48,7 +48,7 @@ public class VaultEconomy
     
 	@Override 
 	public double getBalance(Player player) {
-        if (econWrapper != null) {
+        if (hasIntegrated()) {
         	return econWrapper.getBalance( player );
         } else {
         	return 0;
@@ -57,39 +57,44 @@ public class VaultEconomy
 
     @Override 
     public void setBalance(Player player, double amount) {
-        if (econWrapper != null) {
+        if (hasIntegrated()) {
         	econWrapper.setBalance( player, amount );
         }
     }
 
     @Override 
     public void addBalance(Player player, double amount) {
-        if (econWrapper != null) {
+        if (hasIntegrated()) {
         	econWrapper.addBalance( player, amount );
         }
     }
 
     @Override
     public void removeBalance(Player player, double amount) {
-        if (econWrapper != null) {
+        if (hasIntegrated()) {
         	econWrapper.removeBalance( player, amount );
         }
     }
 
     @Override 
     public boolean canAfford(Player player, double amount) {
-        return econWrapper != null && econWrapper.canAfford( player, amount );
+        return hasIntegrated() && getBalance(player) >= amount;
     }
     
     @Override
     public String getDisplayName()
     {
-    	return (econWrapper == null ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
+    	return ( !hasIntegrated() ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
     }
     
+    /**
+     * <p>Its important to not only ensure that the wrapper exists, but the contained 
+     * economy object is actually enabled too.
+     * </p>
+     */
     @Override 
     public boolean hasIntegrated() {
-        return econWrapper != null;
+        return econWrapper != null && econWrapper.isEnabled();
     }
 
 	@Override

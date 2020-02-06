@@ -22,8 +22,11 @@ import java.math.MathContext;
 
 import com.earth2me.essentials.api.Economy;
 
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 
 /**
  * Integrates with Essentials Economy.
@@ -34,6 +37,7 @@ public class EssentialsEconomy
 	extends EconomyIntegration {
 
 	private EssEconomyWrapper wrapper = null;
+	private boolean availableAsAnAlternative = false;
 
     public EssentialsEconomy() {
     	super( "EssentialsX", "Essentials" );
@@ -62,10 +66,19 @@ public class EssentialsEconomy
 		if ( isRegistered() // && classLoaded 
 				) {
 			try {
+				
+				// if an econ is already registered, then don't register this one:
+				boolean econAlreadySet = PrisonAPI.getIntegrationManager().getForType( IntegrationType.ECONOMY ).isPresent();
+					
 				@SuppressWarnings( "unused" )
 				MathContext mathCtx = Economy.MATH_CONTEXT;
-
-				wrapper = new EssEconomyWrapper();
+					
+				if ( !econAlreadySet ) {
+					this.wrapper = new EssEconomyWrapper();
+				} else {
+					Output.get().logInfo( "EssentialsEconomy is not directly enabled - Available as backup. " );
+					this.availableAsAnAlternative = true;
+				}
 			}
 			catch ( java.lang.NoClassDefFoundError | Exception e )
 			{
@@ -104,6 +117,13 @@ public class EssentialsEconomy
         return wrapper != null;
     }
 
+    @Override
+    public String getDisplayName()
+    {
+    	return super.getDisplayName() + 
+    			( availableAsAnAlternative ? " (disabled)" : "");
+    }
+    
 	@Override
 	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/essentialsx.9089/";

@@ -1,7 +1,10 @@
 package tech.mcprison.prison.spigot.economies;
 
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 
 /**
  * @author Faizaan A. Datoo
@@ -10,7 +13,8 @@ public class SaneEconomy
 	extends EconomyIntegration {
 
     private SaneEconomyWrapper econWrapper;
-
+    private boolean availableAsAnAlternative = false;
+    
     public SaneEconomy() {
     	super( "SaneEconomy", "SaneEconomy" );
     }
@@ -18,7 +22,17 @@ public class SaneEconomy
 	@Override
 	public void integrate() {
 		if (isRegistered()) {
-			this.econWrapper = new SaneEconomyWrapper(getProviderName());
+			
+			// if an econ is already registered, then don't register this one:
+			boolean econAlreadySet = PrisonAPI.getIntegrationManager().getForType( IntegrationType.ECONOMY ).isPresent();
+				
+			if ( !econAlreadySet ) {
+				this.econWrapper = new SaneEconomyWrapper(getProviderName());
+			} else {
+				Output.get().logInfo( "SaneEconomy is not directly enabled - Available as backup. " );
+				this.availableAsAnAlternative = true;
+			}
+
 		}
 	}
 	
@@ -52,6 +66,13 @@ public class SaneEconomy
         return false;
     }
 
+    @Override
+    public String getDisplayName()
+    {
+    	return super.getDisplayName() + 
+    			( availableAsAnAlternative ? " (disabled)" : "");
+    }
+    
 	@Override
 	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/saneeconomy-simple-but-featureful-economy.26223/";
