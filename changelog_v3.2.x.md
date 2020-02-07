@@ -7,38 +7,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.2 - 2020-02-04
-
-* **Information: Setting the correct currency for Prison**
-The current prison plugin is using java internals to set the currency symbol.
-As such, currencies within prison may show the wrong currency symbol.
-
-For example, in RankUpCommand it is using this reference:
-	RankUtil.doubleToDollarString(result.rank.cost));
-which is using this:
-    public static String doubleToDollarString(double val) {
-        return NumberFormat.getCurrencyInstance().format(val);
-    }
-If the currency that is shown is not what is configured on the server, 
-then you currently MUST change the java startup variables to set it
-the language and location that you are needing to use.  Otherwise
-it will be pulling from the file system, which may not match your
-in game settings.
-
-	-Duser.language=en -Duser.country=US -Duser.variant=US
-In context the server startup may now look like this:
-	java -Xms2g -Xmx8g -Duser.language=en -Duser.country=US -Duser.variant=US -jar spigot-1.13.2.jar
-
-In the future, may need to switch this over to use either a language config in 
-a config file somewhere, or use what is defined, or set, within the 
-currency plugin, such as vault, or EssentialsX.
-
+## tag v3.2.1-alpha.3 - 2020-02-06
 
 * **Bug Fix ?? : Cannot manually edit rank and ladder files.**
 (to be addressed)
 Manually editing the rank and ladder files, and maybe even the player
 files, does not work, even when the server is shut down and restarted.
-
 
 * **Bug Fix: Players on server prior to setting up prison have no ranks**
 (to be addressed)
@@ -46,7 +20,14 @@ When prison is setup initially, if a player is already on the server, they
 will not be assigned a player rank. This causes failures when the player
 tries to use the /rankup command in that it reports "Error ! You don't have enough
 money to rank up! Then next rank costs <amount>!" This happens when the rank 
-costs zero.
+costs zero. 
+
+* **Bug Fix: Found issue with the Vault Integration for Economy**
+The vault economy integration was wrong. It was mixing use of player-centric and 
+bank-centric processing. As such balances may not have been working consistently,
+and many of the vault's supported economys probably were failing to work at all.
+This fix allows it work correctly and will eliminate possible failures and
+intermittent issues.t
 
 * **Improve the reporting at startup and also for /prison version**
 Added more details to provide the user with more information about
