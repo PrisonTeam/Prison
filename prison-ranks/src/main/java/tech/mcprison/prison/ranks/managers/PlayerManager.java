@@ -206,6 +206,21 @@ public class PlayerManager {
 		return sb.toString();
     }
     
+    public String getPlayerRankTag( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			if ( sb.length() > 0 ) {
+    				sb.append(", ");
+    			}
+    			sb.append(entry.getValue().tag);
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getPlayerNextRankCost( RankPlayer rankPlayer ) {
     	StringBuilder sb = new StringBuilder();
 
@@ -264,6 +279,11 @@ public class PlayerManager {
 					results = getPlayerRankName( rankPlayer );
 					break;
 
+				case prison_rank_tag:
+				case rank_tag:
+					results = getPlayerRankTag( rankPlayer );
+					break;
+					
 				case prison_rankup_cost:
 				case rankup_cost:
 					results = getPlayerNextRankCost( rankPlayer );

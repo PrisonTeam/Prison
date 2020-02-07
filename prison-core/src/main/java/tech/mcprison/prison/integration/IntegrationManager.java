@@ -37,11 +37,13 @@ public class IntegrationManager {
      */
 	public enum PrisonPlaceHolders {
 		prison_rank,
+		prison_rank_tag,
 		prison_rankup_cost,
 		prison_rankup_rank,
 		
 		// Suppressable:
 		rank(true),
+		rank_tag(true),
 		rankup_cost(true),
 		rankup_rank(true)
 		;
