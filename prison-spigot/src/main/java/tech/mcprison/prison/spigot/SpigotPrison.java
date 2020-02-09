@@ -74,6 +74,10 @@ public class SpigotPrison extends JavaPlugin {
 
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
+    
+//  ###Tab-Complete###
+//  private TreeSet<String> registeredCommands = new TreeSet<>();
+       
 
 //    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -119,6 +123,8 @@ public class SpigotPrison extends JavaPlugin {
         initModules();
 
         applyDeferredIntegrationInitializations();
+        
+        extractCommandsForAutoComplete();
         
         initMetrics();
 
@@ -314,5 +320,70 @@ public class SpigotPrison extends JavaPlugin {
     File getDataDirectory() {
         return dataDirectory;
     }
+    
 
+    /**
+     * <p>This function will register any missing "command" and will
+     * set the usable onTabComplete to the one within this class, 
+     * that follows this function.  
+     * </p>
+     * 
+     */
+    private void extractCommandsForAutoComplete() {
+/*
+ * ###Tab-Complete### (search for other occurrences of this tag)
+ * 
+ * The following works up to a certain point, but is disabled until 
+ * a full solution can be implemented.
+ * 
+		List<String> commandKeys = Prison.get().getCommandHandler().getRootCommandKeys();
+    	
+    	registeredCommands.clear();
+    	registeredCommands.addAll( commandKeys );
+    	
+    	// commands are already broken down to elements with roots: Keep the following
+    	// just in case we need to expand with other uses:
+    	for ( String cmdKey : commandKeys ) {
+    		
+    		Output.get().logInfo( "SpigotPrison.extractCommandsForAutoComplete: Command: %s", cmdKey );
+    		
+    		Optional<tech.mcprison.prison.commands.PluginCommand> registeredCommand = Prison.get().getPlatform().getCommand(cmdKey);
+    		if ( !registeredCommand.isPresent() ) {
+    			tech.mcprison.prison.commands.PluginCommand  rootPcommand = new tech.mcprison.prison.commands.PluginCommand(cmdKey, "--", "/" + cmdKey);
+    			Prison.get().getPlatform().registerCommand(rootPcommand);
+    		}
+    		
+    		PluginCommand pCommand = this.getCommand(cmdKey);
+    		if ( pCommand != null ) {
+    			pCommand.setTabCompleter(this);
+    		} else {
+    			Output.get().logInfo( "SpigotPrison.extractCommandsForAutoComplete: " +
+				"## Error not found ## Command: %s ", cmdKey );
+    		}
+		}
+ */
+    	
+	}
+/*
+ * ###Tab-Complete###
+ * 
+ * This function is disabled until tab complete can be fully implemented.
+ * 
+ * @see org.bukkit.plugin.java.JavaPlugin#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+ *
+ *  // Not being used...
+	@Override
+	public List<String> onTabComplete( CommandSender sender, Command command, String alias, String[] args )
+	{
+		List<String> results = new ArrayList<>();
+		Output.get().logInfo( "SpigotPrison.onTabComplete: Command: %s :: %s", command.getLabel(), command.getName() );
+
+		// Map<String, Map<String, Object>> cmds = getDescription().getCommands();
+		
+//		registeredCommands
+		
+		return results;
+	}
+ */
+    
 }

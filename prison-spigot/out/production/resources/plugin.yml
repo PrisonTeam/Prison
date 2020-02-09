@@ -5,6 +5,103 @@ description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://mc-prison.tech
 softdepend: [Essentials, Vault, LuckPerms]
 
+commands:
+  # ===========
+  # Commands from module: prison-mines MinesCommands:
+  # ===========
+  mines:
+    description: Root mines command.
+    
+  mines create:
+    description: Creates a new mine.
+    usage: |
+      /<command> <minename>
+      /<command> A -- Creates a mine named 'A'
+        
+  mines set spawn:
+    description: Set the mine's spawn to where you're standing and looking.
+    usage: |
+      /<command> <minename> -- Sets the mine's spawn to where you're standing and looking.
+      /<command> A -- Sets mine 'A's spawn location to where your standing and looking.
+        
+  mines block add:
+    description: Adds a block to a mine.
+    usage: |
+      /<command> <minename> <block> <chance> -- Adds a block to a mine.
+      /<command> A GOLD_ORE 14.13 -- Adds a GOLD_ORE block to mine 'A' with a 14.13% chance of occurrance.
+        
+  mines block set:
+    description: Changes the percentage of a block in a mine.
+    usage: |
+      /<command> <minename> <block> <chance> -- Changes the percentage of a block in a mine.
+      /<command> A GOLD_ORE 21.83 -- Changes the GOLD_ORE block occurrance rate to 21.83% for mine 'A'
+        
+  mines block remove:
+    description: Deletes a block from a mine.
+    usage: |
+      /<command> <minename> <block> -- Deletes a block from a mine
+      /<command> A GOLD_ORE -- Deletes GOLD_ORE from mine 'A's list of blocks.
+        
+  mines block search:
+    description: Searches for a block to add to a mine.
+    usage: |
+      /<command> <search> <page> -- Searches for a block based upon the search term and displays the given page number.
+      /<command> cobble 2 -- Shows page two of the cobble results.
+  
+  mines delete:
+    description: Deletes a mine.
+    usage: |
+      /<command> <minename> <confirm> -- Deletes a specified mine. Have to enter command twice with confirmation the second time.
+      /<command> A -- Request to delete mine 'A' -- Step 1
+      /<command> A confirm -- confirmation to delete mine 'A'. The mine will be soft deleted. Can recover by renaming save file on server harddrive.
+      /<command> A cancel -- Cancels a mine delete. Same as not submitting a confirmation.
+      
+  mines info:
+    description: Lists information about a mine.
+    usage: |
+      /<command> <minename> -- Lists information about a mine.
+      /<command> A - Lists information about mine 'A'
+      
+  mines reset:
+    description: Resets a mine.
+    usage: |
+      /<command> <minename> -- Resets a mine.
+      /<command> A - Resets mine A. This also resets the count down timer for the next reset.
+      
+  mines list:
+    description: Lists all mines.
+    usage: |
+      /<command> -- Lists all mines.
+      
+  mines set area:
+    description: Sets the area of a mine to the current selection.
+    usage: |
+      /<command> <minename> -- Sets the area of the given mine to the current selected area.
+      /<command> A - Sets the area of mine A to the given current selected area.
+      
+  mines tp:
+    description: Allows an admin to TP to a mine.
+    usage: |
+      /<command> <minename> -- TP to the mine's spawn point, or to the top-center of the mine.
+      /<command> A -- TP to mine 'A's spawn point.
+      
+  mines stats:
+    description: Toggles stat details on all mines.
+    usage: |
+      /<command> -- Toggles stat detail on all mines.  Once enabled, after a mine resets, it will display stats for the reset under /mines list and /mines info.
+  
+  mines whereami:
+    description: Identifies what mines you are in, or are the closest to.
+    usage: |
+      /<command> -- Identifies what mines you are in, or the closest mines from where you are standing.
+  
+  mines wand:
+    description: Receive a wand to select a mine area.
+    usage: |
+      /<command> -- Receive a wand to select a mine area.
+      
+      
+  
 permissions:
 
   # ==================

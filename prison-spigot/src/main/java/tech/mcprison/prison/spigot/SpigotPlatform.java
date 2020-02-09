@@ -194,6 +194,30 @@ class SpigotPlatform implements Platform {
                                 .onCommand(new SpigotCommandSender(sender), command, commandLabel,
                                     args);
                         }
+/*
+ * ###Tab-Complete###
+ * 
+ * Disabled for now until a full solution can be implemented for tab complete.
+ * 
+	//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
+	//                  		command.getLabel(), command.getUsage() );
+						@Override
+						public List<String> tabComplete( CommandSender sender, String[] args )
+						{
+					    	Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 1" );
+							// TODO Auto-generated method stub
+							return super.tabComplete( sender, args );
+						}
+
+						@Override
+						public List<String> tabComplete( CommandSender sender, String alias, String[] args )
+								throws IllegalArgumentException
+						{
+							Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 2" );
+							// TODO Auto-generated method stub
+							return super.tabComplete( sender, alias, args );
+						}
+ */
 
                     });
             commands.add(command);

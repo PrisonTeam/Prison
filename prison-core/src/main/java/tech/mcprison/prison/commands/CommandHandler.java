@@ -264,4 +264,30 @@ public class CommandHandler {
 
         return true;
     }
+
+/*
+ * ###Tab-Complete###
+ * 
+ * Disabled for now until a full solution can be implemented for tab complete.
+ * 
+    public List<String> getRootCommandKeys() {
+    	List<String> results = new ArrayList<>();
+    	
+    	Set<PluginCommand> keys = rootCommands.keySet();
+    	for ( PluginCommand pluginCommand : keys ) {
+    		// These are the core command sets:
+			results.add( pluginCommand.getLabel() );
+			
+			// Then expand them to all the sub commands that are assoicated with the cores:
+			RootCommand cmd = rootCommands.get( pluginCommand );
+			List<RegisteredCommand> regCmds = cmd.getSuffixes();
+			for ( RegisteredCommand regCmd : regCmds ) {
+				results.add( pluginCommand.getLabel() + " " + regCmd.getLabel() );
+			}
+			
+		}
+    	
+    	return results;
+    }
+ */
 }
