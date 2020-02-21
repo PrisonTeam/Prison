@@ -41,9 +41,30 @@ public abstract class MineScheduler
 		resetJobStack();
 	}
 
+
+	public enum JobType {
+		SYNC,
+		ASYNC
+		;
+	}
+	
 	public enum MineJobAction {
-		MESSAGE,
-		RESET;
+		MESSAGE_GATHER( JobType.ASYNC ),
+		MESSAGE( JobType.SYNC ),
+		
+		RESET_BUILD_BLOCKS_ASYNC( JobType.ASYNC ),
+		RESET_ASYNC( JobType.SYNC ),
+		RESET( JobType.SYNC );
+		
+		private final JobType jobType;
+		private MineJobAction(JobType jobType) {
+			this.jobType = jobType;
+		}
+
+		public JobType getJobType()
+		{
+			return jobType;
+		}
 	}
 	
 	/**
@@ -102,6 +123,9 @@ public abstract class MineScheduler
 		}
 
 	}
+	
+
+
 	
 	private List<MineJob> initializeJobWorkflow()
 	{
@@ -176,13 +200,45 @@ public abstract class MineScheduler
 	@Override
 	public void run()
 	{
-		if ( getCurrentJob().getAction() == MineJobAction.RESET ) {
-			reset();
-		} else {
-			// Send reset message:
-			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
+		switch ( getCurrentJob().getAction() )
+		{
+			case MESSAGE_GATHER:
+				// Not yet implemented: let MESSAGE process this request:
+			
+			case MESSAGE:
+				// Send reset message:
+				broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), 
+										MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+
+				break;
+				
+			case RESET_BUILD_BLOCKS_ASYNC:
+				generateBlockListAsync();
+
+				break;
+
+			case RESET_ASYNC:
+				// Not yet implemented:
+				
+				break;
+				
+			case RESET:
+				// synchronous reset.  Will be phased out in the future?
+				resetSynchonously();
+				
+				break;
+				
+			default:
+				break;
 		}
 		
+//		if ( getCurrentJob().getAction() == MineJobAction.RESET ) {
+//			resetSynchonously();
+//		} else {
+//			// Send reset message:
+//			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
+//		}
+//		
 		submitNextAction();
 	}
 

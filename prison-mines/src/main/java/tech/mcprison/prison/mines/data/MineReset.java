@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
@@ -20,12 +21,59 @@ import tech.mcprison.prison.util.Text;
 public abstract class MineReset
 	extends MineData
 {
-	public static final long MINE_RESET_BROADCAST_RADIUS_BLOCKS = 150;
+	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
 	
+	/**
+	 * <p>Minecraft ticks have 20 per seconds, which is 50 MS per tick. 
+	 * The value for MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS is intended
+	 * to be used as a threshold to determine when to stop placing blocks
+	 * and resubmit in the sync job queue to allow other processes to run.
+	 * </p>
+	 * 
+	 * <p>This value, in milliseconds, is not hard-and-fast guaranteed to be 
+	 * caught exactly at that time. It is instead used to check to see if
+	 * the current process has exceeded this value, which may be many times
+	 * greater than this value.
+	 * </p>
+	 * 
+	 * <p>This value is subject to refinement and tuning to ensure better and
+	 * more accurate responses.
+	 * </p>
+	 */
+	public static final long MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS = 100;
+	
+	/**
+	 * <p>When placing blocks, this is the block count that is used to check for
+	 * the elapsed time.
+	 * </p>
+	 * 
+	 * <p>It does not matter if some of those blocks were placed in a prior 
+	 * page, for it is the elapsed time that is important.  It's also important
+	 * that there are not too many checks since it will just contribute to lag.
+	 * The value needs to be moderately large.
+	 * </p>
+	 * 
+	 * <p>This value is subject to refinement and tuning to ensure better and
+	 * more accurate responses.
+	 * </p>
+	 */
+	public static final long MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT = 500;
+	
+	@Deprecated
 	private List<BlockType> randomizedBlocks;
 	
 	// to replace randomizedBlocks....
-	//private List<MineTargetBlock> MineTargetBlocks;
+	private List<MineTargetBlock> mineTargetBlocks;
+	private TreeMap<MineTargetBlockKey, MineTargetBlock> mineTargetBlocksMap;
+	
+	private int resetPage = 0;
+	private int resetPosition = 0;
+	
+	private int airCountOriginal = 0;
+	private int airCount = 0;
+	
+//	private boolean[] mineAirBlocksOriginal;
+//	private boolean[] mineAirBlocksCurrent;
 
 	private long statsResetTimeMS = 0;
 	private long statsBlockGenTimeMS = 0;
@@ -40,7 +88,8 @@ public abstract class MineReset
 		
 		this.randomizedBlocks = new ArrayList<>();
 		
-		//this.MineTargetBlocks = new ArrayList<>();
+		this.mineTargetBlocks = new ArrayList<>();
+		this.mineTargetBlocksMap = new TreeMap<>();
 	}
 	
     
@@ -48,14 +97,14 @@ public abstract class MineReset
      * <p>Optimized the mine reset to focus on itself.  Also set the Y plane to refresh at the top and work its
      * way down.  That way if the play is teleported to the top, it will appear like the whole mine has reset
      * instantly and they will not see the delay from the bottom of the mine working up to the top.  This will
-     * also reduce the likelihood of the player falling back in to the mine if there is not spawn set.
+     * also reduce the likelihood of the player falling back in to the mine if there is no spawn set.
      * </p>
      * 
      * <p>The ONLY code that could be asynchronous ran is the random generation of the blocks.  The other  
      * lines of code is using bukkit and/or spigot api calls which MUST be ran synchronously.
      * </p>
      */
-    protected void reset() {
+    protected void resetSynchonously() {
 
     	long start = System.currentTimeMillis();
     	long time2 = 0L;
@@ -78,7 +127,7 @@ public abstract class MineReset
         		generateBlockList();
         		
         		setStatsTeleport1TimeMS(
-        				teleportAllPlayersOut( world, getBounds().getyBlockMax() ) );
+        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
         		time2 = System.currentTimeMillis();
         		
@@ -104,13 +153,13 @@ public abstract class MineReset
         		// such as could happen if there is lag or a lot going on within the server, 
         		// this will TP anyone out who would otherwise suffocate.  I hope! lol
         		setStatsTeleport2TimeMS(
-        				teleportAllPlayersOut( world, getBounds().getyBlockMax() ) );
+        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
         		// free up memory:
         		getRandomizedBlocks().clear();
         		
         		// Broadcast message to all players within a certain radius of this mine:
-        		broadcastResetMessageToAllPlayersWithRadius(world, MINE_RESET_BROADCAST_RADIUS_BLOCKS );
+        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
         		
         	} catch (Exception e) {
         		Output.get().logError("&cFailed to reset mine " + getName(), e);
@@ -155,6 +204,20 @@ public abstract class MineReset
     	return sb.toString();
     }
 
+    private void resetStats() {
+    	setResetPage( 0 ); 
+    	setResetPosition( 0 );
+    	
+    	setAirCountOriginal( 9 );;
+    	setAirCount( 0 );;
+
+    	setStatsResetTimeMS( 0 );
+    	setStatsBlockGenTimeMS( 0 );
+    	setStatsBlockUpdateTimeMS( 0 );
+    	setStatsTeleport1TimeMS( 0 );
+    	setStatsTeleport2TimeMS( 0 );
+    	setStatsMessageBroadcastTimeMS( 0 );
+    }
 	
     /**
      * <p>This function teleports players out of existing mines if they are within 
@@ -172,8 +235,10 @@ public abstract class MineReset
      * @param world - world 
      * @param targetY
      */
-    private long teleportAllPlayersOut(World world, int targetY) {
+    private long teleportAllPlayersOut(int targetY) {
     	long start = System.currentTimeMillis();
+    	
+    	World world = getBounds().getCenter().getWorld();
 
     	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     							Prison.get().getPlatform().getOnlinePlayers());
@@ -241,6 +306,262 @@ public abstract class MineReset
 //    }
 
     /**
+     * <p>This generation of a new block list for the mines is designed to run asynchronously. 
+     * It not only generates what each block should be, it also records what the block location 
+     * is.  This allows actual block updates to be performed linearly using the mineTargetBlock
+     * List, or to randomly access each block using the mineTargetBlockMap; two keys in to the 
+     * same collection of target blocks.
+     * </p>
+     * 
+     * <p>The major use of the mineTargetBlock List is to allow paging of the updates: where a mine
+     * can be updated in smaller segments.  The actual update must be ran synchronously and in small
+     * segments.  
+     * </p>
+     * 
+     * <p>Set the Y plane to refresh at the top and work its way down.  That way if the play is 
+     * teleported to the top, it will appear like the whole mine has reset instantly and they will 
+     * not see the delay from the bottom of the mine working up to the top.  This will also reduce
+     * the likelihood of the player falling back in to the mine if there is no spawn set.
+     * </p>
+     * 
+     */
+    protected void generateBlockListAsync() {
+    	
+		long start = System.currentTimeMillis();
+		
+		// Reset stats:
+		resetStats();
+		
+		Random random = new Random();
+		
+		// Clear the mineTargetBlocks list:
+		getMineTargetBlocks().clear();
+		
+//		// Reset the mineAirBlocks to all false values:
+//		boolean[] mAirBlocks = new boolean[ getBounds().getTotalBlockCount() ];
+//		// Arrays.fill(  mAirBlocks, false ); // redundant but prevents nulls if were Boolean
+//		setMineAirBlocksOriginal( mAirBlocks );
+		
+		int airCount = 0;
+		
+		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
+			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
+				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+					
+					BlockType blockType = randomlySelectBlock( random );
+					
+					MineTargetBlock mtb = new MineTargetBlock( blockType, x, y, z);
+					
+					getMineTargetBlocks().add( mtb );
+					getMineTargetBlocksMap().put( mtb.getBlockKey(), mtb );
+					
+					if ( blockType == BlockType.AIR ) {
+//						mAirBlocks[i++] = true;
+						airCount++;
+					}
+				}
+			}
+		}
+		
+		setAirCountOriginal( airCount );
+		setAirCount( airCount );
+		
+		setResetPosition( 0 );
+		
+		long stop = System.currentTimeMillis();
+		setStatsBlockGenTimeMS( stop - start );
+		
+    }
+    
+    /**
+     * <p>Yeah I know, it has async in the name of the function, but it still can only
+     * be ran synchronously.  The async part implies this is the reset "part" for the
+     * async workflow.
+     * </p>
+     * 
+     * <p>Before this part is ran, the resetSynchonously() function must be ran
+     * to regenerate the new block list.
+     * </p>
+     *  
+     */
+    protected void resetAsynchonously() {
+    	boolean canceled = false;
+    	
+    	if ( getResetPage() == 0 ) {
+    		canceled = resetAsynchonouslyInitiate();
+    	}
+    	
+    	if ( !canceled ) {
+    		resetAsynchonouslyUpdate();
+    		
+    		if ( getResetPosition() == getMineTargetBlocks().size() ) {
+    			// Done resetting the mine... wrap up:
+    			
+           		
+        		// If a player falls back in to the mine before it is fully done being reset, 
+        		// such as could happen if there is lag or a lot going on within the server, 
+        		// this will TP anyone out who would otherwise suffocate.  I hope! lol
+        		setStatsTeleport2TimeMS(
+        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+        		
+
+        		
+        		// Broadcast message to all players within a certain radius of this mine:
+        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+
+                
+                // Tie to the command stats mode so it logs it if stats are enabled:
+                if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+                	DecimalFormat dFmt = new DecimalFormat("#,##0");
+                	Output.get().logInfo("&cMine reset: &7" + getName() + 
+                			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+                			statsMessage() );
+                }
+    		} else {
+    			//TODO resubmit... 
+    			
+    			
+    		}
+    	}
+    	
+    	// NOTE: blocks already generated in generateBlockListAsync():
+    	
+//    	long start = System.currentTimeMillis();
+//    	
+//        // The all-important event
+//        MineResetEvent event = new MineResetEvent(this);
+//        Prison.get().getEventBus().post(event);
+//        if (!event.isCanceled()) {
+//        	
+//        	try {
+//        		Optional<World> worldOptional = getWorld();
+//        		if (!worldOptional.isPresent()) {
+//        			Output.get().logError("Could not reset mine " + getName() +
+//        						" because the world it was created in does not exist.");
+//        			return;
+//        		}
+//        		//World world = worldOptional.get();
+//        		
+//        		setStatsTeleport1TimeMS(
+//        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+//        		
+//        		
+//        		resetAsynchonouslyUpdate();
+//        		
+//        		
+//        		// If a player falls back in to the mine before it is fully done being reset, 
+//        		// such as could happen if there is lag or a lot going on within the server, 
+//        		// this will TP anyone out who would otherwise suffocate.  I hope! lol
+//        		setStatsTeleport2TimeMS(
+//        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+//        		
+//
+//        		
+//        		// Broadcast message to all players within a certain radius of this mine:
+//        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET_BROADCAST_RADIUS_BLOCKS );
+//        		
+//        	} catch (Exception e) {
+//        		Output.get().logError("&cFailed to reset mine " + getName(), e);
+//        	}
+//        }
+//        
+//        long stop = System.currentTimeMillis();
+//        setStatsResetTimeMS( stop - start );
+        
+//        // Tie to the command stats mode so it logs it if stats are enabled:
+//        if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+//        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//        	Output.get().logInfo("&cMine reset: &7" + getName() + 
+//        			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+//        			statsMessage() );
+//        }
+    }
+
+    private boolean resetAsynchonouslyInitiate() {
+    	boolean canceled = false;
+    	
+    	long start = System.currentTimeMillis();
+    	
+        // The all-important event
+        MineResetEvent event = new MineResetEvent(this);
+        Prison.get().getEventBus().post(event);
+        
+        canceled = event.isCanceled();
+        if (!canceled) {
+        	
+        	try {
+        		Optional<World> worldOptional = getWorld();
+        		if (!worldOptional.isPresent()) {
+        			Output.get().logError("Could not reset mine " + getName() +
+        						" because the world it was created in does not exist.");
+        			canceled = true;
+        		} else {
+        			
+        			setStatsTeleport1TimeMS(
+        					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+        		}
+        		
+        	} catch (Exception e) {
+        		Output.get().logError("&cFailed to reset mine " + getName(), e);
+        		canceled = true;
+        	}
+        }
+        
+        long stop = System.currentTimeMillis();
+        setStatsResetTimeMS( stop - start );
+        
+    	return canceled;
+    }
+    
+
+    private void resetAsynchonouslyUpdate() {
+		World world = getBounds().getCenter().getWorld();
+		
+//		setStatsTeleport1TimeMS(
+//				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+		
+		long start = System.currentTimeMillis();
+		
+		boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+		
+		int i = getResetPosition();
+		for ( ; i < getMineTargetBlocks().size(); i++ )
+		{
+			MineTargetBlock target = getMineTargetBlocks().get(i);
+			
+			Location targetBlock = new Location(world, 
+					target.getBlockKey().getX(), target.getBlockKey().getY(), 
+					target.getBlockKey().getZ());
+			
+			if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
+				targetBlock.getBlockAt().setType(target.getBlockType());
+			} 
+			
+			/**
+			 * About every 500 blocks, check to see if the current wall time spent is greater than
+			 * the threshold.  If it is greater, then end the update and let it resubmit.  
+			 * It does not matter how many blocks were actually updated during this "page", 
+			 * but it is more important the actual elapsed time.  This is to allow other
+			 * processes to get processing time and to eliminate possible lagging.
+			 */
+			if ( i % MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT == 0 ) {
+				long elapsed = start = System.currentTimeMillis();
+				if ( elapsed > MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS ) {
+					break;
+				}
+			}
+		}
+		setResetPosition( i );
+		
+		setResetPage( getResetPage() + 1 ); 
+		
+		long time = System.currentTimeMillis() - start;
+		setStatsBlockUpdateTimeMS( time + getStatsBlockUpdateTimeMS() );
+		setStatsResetTimeMS( time + getStatsResetTimeMS() );
+
+    }
+    
+    /**
      * Generates blocks for the specified mine and caches the result.
      * 
      * The random chance is now calculated upon a double instead of integer.
@@ -284,8 +605,10 @@ public abstract class MineReset
 	}
     
     
-    private void broadcastResetMessageToAllPlayersWithRadius(World world, long radius) {
+    private void broadcastResetMessageToAllPlayersWithRadius(long radius) {
     	long start = System.currentTimeMillis();
+    	
+    	World world = getBounds().getCenter().getWorld();
     	
     	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     							Prison.get().getPlatform().getOnlinePlayers());
@@ -325,23 +648,95 @@ public abstract class MineReset
     	}
     }
 
+    @Deprecated
 	public List<BlockType> getRandomizedBlocks()
 	{
 		return randomizedBlocks;
 	}
+    @Deprecated
 	public void setRandomizedBlocks( List<BlockType> randomizedBlocks )
 	{
 		this.randomizedBlocks = randomizedBlocks;
 	}
 
-//	public List<MineTargetBlock> getMineTargetBlocks()
+	public List<MineTargetBlock> getMineTargetBlocks()
+	{
+		return mineTargetBlocks;
+	}
+	public void setMineTargetBlocks( List<MineTargetBlock> mineTargetBlocks )
+	{
+		this.mineTargetBlocks = mineTargetBlocks;
+	}
+
+	public TreeMap<MineTargetBlockKey, MineTargetBlock> getMineTargetBlocksMap()
+	{
+		return mineTargetBlocksMap;
+	}
+	public void setMineTargetBlocksMap( TreeMap<MineTargetBlockKey, MineTargetBlock> mineTargetBlocksMap )
+	{
+		this.mineTargetBlocksMap = mineTargetBlocksMap;
+	}
+	
+
+//	public boolean[] getMineAirBlocksOriginal()
 //	{
-//		return MineTargetBlocks;
+//		return mineAirBlocksOriginal;
 //	}
-//	public void setMineTargetBlocks( List<MineTargetBlock> mineTargetBlocks )
+//	public void setMineAirBlocksOriginal( boolean[] mineAirBlocksOriginal )
 //	{
-//		MineTargetBlocks = mineTargetBlocks;
+//		this.mineAirBlocksOriginal = mineAirBlocksOriginal;
 //	}
+//
+//	public boolean[] getMineAirBlocksCurrent()
+//	{
+//		return mineAirBlocksCurrent;
+//	}
+//	public void setMineAirBlocksCurrent( boolean[] mineAirBlocksCurrent )
+//	{
+//		this.mineAirBlocksCurrent = mineAirBlocksCurrent;
+//	}
+
+	public int getResetPage()
+	{
+		return resetPage;
+	}
+	public void setResetPage( int resetPage )
+	{
+		this.resetPage = resetPage;
+	}
+	
+	public int getResetPosition()
+	{
+		return resetPosition;
+	}
+	public void setResetPosition( int resetPosition )
+	{
+		this.resetPosition = resetPosition;
+	}
+
+	public int getAirCountOriginal()
+	{
+		return airCountOriginal;
+	}
+
+
+	public void setAirCountOriginal( int airCountOriginal )
+	{
+		this.airCountOriginal = airCountOriginal;
+	}
+
+
+	public int getAirCount()
+	{
+		return airCount;
+	}
+
+
+	public void setAirCount( int airCount )
+	{
+		this.airCount = airCount;
+	}
+
 
 	public long getStatsResetTimeMS()
 	{

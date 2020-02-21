@@ -763,7 +763,7 @@ public enum BlockType {
                 Short.parseShort(id.split(":")[1]));
         }
         Prison prison = Prison.get();
-        if ( prison != null && prison.getIntegrationManager() != null ) {
+        if ( prison != null && prison.getItemManager() != null ) {
         	Set<Entry<BlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
         	for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
         		if (entry.getValue().contains(id.toLowerCase())) {

@@ -730,7 +730,7 @@ public class MinesCommands {
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
     		if ( mine.getBounds().within( player.getLocation() ) ) {
     			inMine.add( mine );
-    		} if ( mine.getBounds().within( player.getLocation(), Mine.MINE_RESET_BROADCAST_RADIUS_BLOCKS) ) {
+    		} if ( mine.getBounds().within( player.getLocation(), Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
     			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}
