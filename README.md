@@ -1,6 +1,3 @@
-[![Documentation](https://static.ultz.co.uk/PrisonMoveDoc.png)](https://confluence.onultz.com/display/PRIS)
-![Prison Banner](https://faizaand.github.io/prison/img/prison-banner.png)
-
 [![License](https://img.shields.io/badge/license-GPL%20License%20v3-blue.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.org/MC-Prison/Prison.svg?branch=master)](https://travis-ci.org/MC-Prison/Prison)
 [![Discord](https://discordapp.com/api/guilds/332602419483770890/widget.png)](https://discord.gg/396ed5F)
@@ -11,7 +8,7 @@
 
 ## What is Prison?
 
-Prison is a Minecraft plugin that adds all the features necessary for [prison servers](https://woodycraft.net/threads/what-is-a-prison-server-a-general-explanation.21161/). It runs on multiple platforms, including the popular [Spigot](http://spigotmc.org) and the rapidly growing [Sponge](http://spongepowered.org). Plugins for prison servers exist already, but many of them are poorly maintained, and the solid ones are paid resources. Prison eliminates the paywall and the updating hassle, and puts a one-stop solution in their place.
+Prison is a Minecraft plugin that adds all the features necessary for prison servers. It runs on multiple platforms, including the popular [Spigot](http://spigotmc.org) and the rapidly growing [Sponge](http://spongepowered.org). Plugins for prison servers exist already, but many of them are poorly maintained, and the solid ones are paid resources. Prison eliminates the paywall and the updating hassle, and puts a one-stop solution in their place.
 
 ### History of Prison
 
@@ -23,7 +20,7 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 * **Prison is modular.** If you don't want to use a certain feature on your server, you can disable it in just a few keystrokes.
 * **Prison is completely, 100% open source.** This means that your developers can make changes to the plugin to customize your server's experience, if you so desire.
-* **Prison is and always will be free.** While we do ask for donations, all of our code, resources, and binaries are provided free of charge to the Minecraft community.
+* **Prison is and always will be free.** All of our code, resources, and binaries are provided free of charge to the Minecraft community. We do not accept donations.
 * **New releases are heavily bug-tested.** We test every single aspect of every new release of Prison before releasing it to the community. If a release doesn't pass our rigorous update checklist, it is iterated upon until it does. What does this mean for you? Solid updates with minimal bugs for your server.
 * **Prison is always expanding.** We are always looking for ways to expand Prison with features that make your server run more smoothly. Additionally, we are always looking for contributions from the community, be it code contributions, feature requests, bug reports, translations, or documentation.
 
@@ -33,5 +30,3 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 | ------ | ---------------------- |
 | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 
-
- 
