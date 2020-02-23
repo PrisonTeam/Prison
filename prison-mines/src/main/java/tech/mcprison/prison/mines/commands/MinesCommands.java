@@ -37,6 +37,7 @@ import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ButtonComponent;
@@ -484,16 +485,26 @@ public class MinesCommands {
         if ( mMan.isMineStats() ) {
         }
 
+        {
+        	RowComponent row = new RowComponent();
+        	double rtMinutes = m.getResetTime() / 60.0D;
+        	row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
+        			Integer.toString(m.getResetTime()), rtMinutes );
+        	chatDisplay.addComponent( row );
+        }
+
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
 
-        RowComponent row = new RowComponent();
-        row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-                Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
-        
-        row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
-        						dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
-        chatDisplay.addComponent( row );
+        {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+        			Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
+        	
+        	row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
+        			dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
+        	chatDisplay.addComponent( row );
+        }
         
         
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
@@ -596,6 +607,11 @@ public class MinesCommands {
         	 row.addTextComponent( "&r - " );
 
         	 row.addFancy( 
+        			 new FancyMessage(Integer.toString(m.getResetTime())).tooltip( "Reset time in seconds" ) );
+
+        	 row.addTextComponent( "&r - " );
+
+        	 row.addFancy( 
         			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
         	 
         	 row.addTextComponent( "&r - ");
@@ -630,6 +646,57 @@ public class MinesCommands {
     }
 
 
+    /**
+     * <p>The following command will change the mine's time between resets. But it will
+     * not be applied until after the next reset.
+     * </p>
+     * 
+     * @param sender
+     * @param mine
+     * @param time
+     */
+    @Command(identifier = "mines resettime", permissions = "mines.resettime", 
+    		description = "Set a mine's time  to reset.")
+    public void resetTimeCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
+        @Arg(name = "time", description = "Time in seconds for the mine to auto reset." ) String time
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mine)) {
+        	setLastMineReferenced(mine);
+
+        	try {
+        		int resetTime = MinesConfig.MINES_CONFIG_DEFAULT_RESET_TIME;
+
+        		if ( time != null && time.trim().length() > 0 ) {
+        			resetTime = Integer.parseInt( time );
+        		}
+
+				if ( resetTime < MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME ) {
+					Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%d]",
+							mine, MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME, resetTime );
+				} else {
+					PrisonMines pMines = PrisonMines.getInstance();
+					Mine m = pMines.getMineManager().getMine(mine).get();
+					
+					m.setResetTime( resetTime );
+					
+					// User's message:
+					Output.get().sendInfo( sender, "mines set resettime: %s resetTime set to %d", m.getName(), resetTime );
+					
+					// Server Log message:
+					Player player = getPlayer( sender );
+					Output.get().logInfo( "mines set resettime: %s set %s resetTime to %d", 
+							(player == null ? "console?" : player.getDisplayName()), m.getName(), resetTime  );
+				}
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%s]",
+						mine, MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME, time );
+			}
+        } 
+    }
     @Command(identifier = "mines set area", permissions = "mines.set", description = "Set the area of a mine to your current selection.")
     public void redefineCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String name) {

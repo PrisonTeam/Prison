@@ -64,6 +64,9 @@ permissions:
 
   mines.reset:
     description: Access to the /mines reset command.
+    
+  mines.resettime:
+    description: Access to the /mines resettime command.
 
   mines.tp:
     description: Access to the /mines tp command.
@@ -80,6 +83,7 @@ permissions:
       mines.wand: true
       mines.list: true
       mines.reset: true
+      mines.resettime: true
       nubes.tp: true
 
   # ==================
