@@ -14,19 +14,49 @@ import tech.mcprison.prison.util.Location;
 
 public abstract class MineData
 {
-	public static final int DEFAULT_MINE_RESET_TIME_SEC = 15 * 60; // 15 minutes
+	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
+	public static final int MINE_RESET__TIME_SEC__MINIMUM = 5 * 60; // 5 minutes
+	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
+		
 	private Bounds bounds;
 
 	private Location spawn;
     private String worldName, name;
     private boolean hasSpawn = false;
 
-    private int resetTime = DEFAULT_MINE_RESET_TIME_SEC;
+    private int resetTime;
+    private MineNotificationMode notificationMode;
+	private long notificationRadius;
     
     private List<Block> blocks;
 
+    public enum MineNotificationMode {
+    	disabled,
+    	within,
+    	radius;
+    	
+    	public static MineNotificationMode fromString(String mode) {
+    		MineNotificationMode results = radius;
+    		
+    		if ( mode != null && mode.trim().length() > 0 ) {
+    			for ( MineNotificationMode mnm : values() )
+				{
+					if ( mnm.name().equalsIgnoreCase( mode )) {
+						results = mnm;
+					}
+				}
+    		}
+    		
+    		return results;
+    	}
+    }
+    
     public MineData() {
     	this.blocks = new ArrayList<>();
+    	
+    	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
+    	this.notificationMode = MineNotificationMode.radius;
+    	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     }
     
     /**
@@ -150,4 +180,23 @@ public abstract class MineData
 	{
 		this.resetTime = resetTime;
 	}
+
+	public MineNotificationMode getNotificationMode()
+	{
+		return notificationMode;
+	}
+	public void setNotificationMode( MineNotificationMode notificationMode )
+	{
+		this.notificationMode = notificationMode;
+	}
+
+	public long getNotificationRadius()
+	{
+		return notificationRadius;
+	}
+	public void setNotificationRadius( long notificationRadius )
+	{
+		this.notificationRadius = notificationRadius;
+	}
+
 }

@@ -37,7 +37,7 @@ import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.data.MinesConfig;
+import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ButtonComponent;
@@ -667,15 +667,15 @@ public class MinesCommands {
         	setLastMineReferenced(mine);
 
         	try {
-        		int resetTime = MinesConfig.MINES_CONFIG_DEFAULT_RESET_TIME;
+        		int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
 
         		if ( time != null && time.trim().length() > 0 ) {
         			resetTime = Integer.parseInt( time );
         		}
 
-				if ( resetTime < MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME ) {
+				if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
 					Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%d]",
-							mine, MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME, resetTime );
+							mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
 				} else {
 					PrisonMines pMines = PrisonMines.getInstance();
 					Mine m = pMines.getMineManager().getMine(mine).get();
@@ -693,7 +693,7 @@ public class MinesCommands {
 			}
 			catch ( NumberFormatException e ) {
 				Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%s]",
-						mine, MinesConfig.MINES_CONFIG_MINIMUM_RESET_TIME, time );
+						mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
 			}
         } 
     }
@@ -797,7 +797,12 @@ public class MinesCommands {
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
     		if ( mine.getBounds().within( player.getLocation() ) ) {
     			inMine.add( mine );
-    		} if ( mine.getBounds().within( player.getLocation(), Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
+    		}
+    		
+    		// This is checking for within a certain distance from any mine, so we just need to use
+    		// some arbitrary distance as a max radius.  We do not want to use the individual values
+    		// that have been set for each mine.
+    		if ( mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
     			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}

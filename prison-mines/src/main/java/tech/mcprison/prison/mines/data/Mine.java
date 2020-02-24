@@ -84,7 +84,9 @@ public class Mine
         Double resetTimeDouble = (Double) document.get("resetTime");
         setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
         
-        //this.blocks = new ArrayList<>();
+        setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
+        Long notificationRadius = (Long) document.get("notificationRadius");
+        setNotificationRadius( notificationRadius == null ? 0 : notificationRadius.longValue() );
         
         @SuppressWarnings( "unchecked" )
 		List<String> docBlocks = (List<String>) document.get("blocks");
@@ -98,7 +100,7 @@ public class Mine
             getBlocks().add(block);
         }
     }
-
+    
     
     public Document toDocument() {
         Document ret = new Document();
@@ -113,6 +115,8 @@ public class Mine
         ret.put("hasSpawn", isHasSpawn());
         
         ret.put("resetTime", getResetTime() );
+        ret.put("notificationMode", getNotificationMode().name() );
+        ret.put("notificationRadius", Long.valueOf( getNotificationRadius() ));
 
         if (isHasSpawn()) {
             ret.put("spawnX", getSpawn().getX());

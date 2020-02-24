@@ -28,8 +28,6 @@ import tech.mcprison.prison.file.FileIOData;
  * Represents the Mines configuration file.
  */
 public class MinesConfig implements FileIOData {
-	public static final int MINES_CONFIG_DEFAULT_RESET_TIME = 900; // 15 mins
-	public static final int MINES_CONFIG_MINIMUM_RESET_TIME = 300; // 5 mins
 
 //    /**
 //     * True if randomized blocks for mines should be cached for faster resets. False otherwise
@@ -57,7 +55,7 @@ public class MinesConfig implements FileIOData {
     /**
      * The duration between mine resets in seconds.
      */
-    public int resetTime = MINES_CONFIG_DEFAULT_RESET_TIME;
+    public int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
 
 //    /**
 //     * The worlds that reset messages should be broadcasted to. Ignored if multiworld is disabled.

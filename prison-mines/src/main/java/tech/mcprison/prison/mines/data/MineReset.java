@@ -21,8 +21,6 @@ import tech.mcprison.prison.util.Text;
 public abstract class MineReset
 	extends MineData
 {
-	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
-	
 	/**
 	 * <p>Minecraft ticks have 20 per seconds, which is 50 MS per tick. 
 	 * The value for MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS is intended
@@ -608,20 +606,27 @@ public abstract class MineReset
     private void broadcastResetMessageToAllPlayersWithRadius(long radius) {
     	long start = System.currentTimeMillis();
     	
-    	World world = getBounds().getCenter().getWorld();
-    	
-    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    							Prison.get().getPlatform().getOnlinePlayers());
-    	for (Player player : players) {
-            if ( getBounds().within(player.getLocation(), radius)) {
-            	
-            	// TODO this message needs to have a placeholder for the mine's name:
-//            	PrisonMines.getInstance().getMinesMessages()
+    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
+    		World world = getBounds().getCenter().getWorld();
+    		
+    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    			Prison.get().getPlatform().getOnlinePlayers());
+    		for (Player player : players) {
+    			
+    			// Check for either mode: Within the mine, or by radius from mines center:
+    			if ( getNotificationMode() == MineNotificationMode.within && 
+						getBounds().within(player.getLocation() ) ||
+					getNotificationMode() == MineNotificationMode.radius && 
+    					getBounds().within(player.getLocation(), radius) ) {
+    				
+    				// TODO this message needs to have a placeholder for the mine's name:
+//            		PrisonMines.getInstance().getMinesMessages()
 //		                .getLocalizable("reset_message_mine").withReplacements( getName() )
 //		                .sendTo(player);
-            	
-            	player.sendMessage( "The mine " + getName() + " has just reset." );
-            }
+    				
+    				player.sendMessage( "The mine " + getName() + " has just reset." );
+    			}
+    		}
     	}
     	
         long stop = System.currentTimeMillis();
@@ -630,25 +635,32 @@ public abstract class MineReset
     }
     
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob, long radius) {
-    	World world = getBounds().getCenter().getWorld();
-    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    							Prison.get().getPlatform().getOnlinePlayers());
-    	for (Player player : players) {
-            if ( getBounds().within(player.getLocation(), radius)) {
-            	
-            	// TODO this message needs to have a placeholder for the mine's name:
-//            	PrisonMines.getInstance().getMinesMessages()
+    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
+    		World world = getBounds().getCenter().getWorld();
+    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    			Prison.get().getPlatform().getOnlinePlayers());
+    		for (Player player : players) {
+    			// Check for either mode: Within the mine, or by radius from mines center:
+    			if ( getNotificationMode() == MineNotificationMode.within && 
+						getBounds().within(player.getLocation() ) ||
+					getNotificationMode() == MineNotificationMode.radius && 
+    					getBounds().within(player.getLocation(), radius) ) {
+    				
+    				// TODO this message needs to have a placeholder for the mine's name:
+//            		PrisonMines.getInstance().getMinesMessages()
 //		                .getLocalizable("reset_warning")
 //		                .withReplacements( Text.getTimeUntilString(mineJob.getResetInSec() * 1000) )
 //		                .sendTo(player);
 //            	
-            	player.sendMessage( "The mine " + getName() + " will reset in " + 
-            				Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
-            }
+    				player.sendMessage( "The mine " + getName() + " will reset in " + 
+    						Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
+    				
+    			}
+    		}
     	}
     }
 
-    @Deprecated
+	@Deprecated
 	public List<BlockType> getRandomizedBlocks()
 	{
 		return randomizedBlocks;
@@ -718,25 +730,19 @@ public abstract class MineReset
 	{
 		return airCountOriginal;
 	}
-
-
 	public void setAirCountOriginal( int airCountOriginal )
 	{
 		this.airCountOriginal = airCountOriginal;
 	}
 
-
 	public int getAirCount()
 	{
 		return airCount;
 	}
-
-
 	public void setAirCount( int airCount )
 	{
 		this.airCount = airCount;
 	}
-
 
 	public long getStatsResetTimeMS()
 	{
