@@ -85,8 +85,8 @@ public class Mine
         setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
         
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
-        Long notificationRadius = (Long) document.get("notificationRadius");
-        setNotificationRadius( notificationRadius == null ? 0 : notificationRadius.longValue() );
+        Double noteRadius = (Double) document.get("notificationRadius");
+        setNotificationRadius( noteRadius == null ? MINE_RESET__BROADCAST_RADIUS_BLOCKS : noteRadius.longValue() );
         
         @SuppressWarnings( "unchecked" )
 		List<String> docBlocks = (List<String>) document.get("blocks");

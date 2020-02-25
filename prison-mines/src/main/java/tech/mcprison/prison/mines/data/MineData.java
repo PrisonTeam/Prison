@@ -33,18 +33,24 @@ public abstract class MineData
     public enum MineNotificationMode {
     	disabled,
     	within,
-    	radius;
+    	radius,
+    	
+    	displayOptions
+    	;
     	
     	public static MineNotificationMode fromString(String mode) {
-    		MineNotificationMode results = radius;
+    		return fromString(mode, radius);
+    	}
+    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
+    		MineNotificationMode results = defaultValue;
     		
     		if ( mode != null && mode.trim().length() > 0 ) {
     			for ( MineNotificationMode mnm : values() )
-				{
-					if ( mnm.name().equalsIgnoreCase( mode )) {
-						results = mnm;
-					}
-				}
+    			{
+    				if ( mnm.name().equalsIgnoreCase( mode )) {
+    					results = mnm;
+    				}
+    			}
     		}
     		
     		return results;

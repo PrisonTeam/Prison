@@ -68,6 +68,9 @@ permissions:
   mines.resettime:
     description: Access to the /mines resettime command.
 
+  mines.notification:
+    description: Access to the /mines notification command.
+    
   mines.tp:
     description: Access to the /mines tp command.
 
@@ -84,7 +87,8 @@ permissions:
       mines.list: true
       mines.reset: true
       mines.resettime: true
-      nubes.tp: true
+      mines.notification: true
+      mines.tp: true
 
   # ==================
   # Ranks permissions

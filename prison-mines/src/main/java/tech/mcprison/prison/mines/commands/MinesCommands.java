@@ -38,6 +38,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
+import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ButtonComponent;
@@ -492,6 +493,16 @@ public class MinesCommands {
         	chatDisplay.addComponent( row );
         }
 
+        {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
+        			m.getNotificationMode().name(), 
+        			( m.getNotificationMode() == MineNotificationMode.radius ? 
+        					dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
+        	chatDisplay.addComponent( row );
+        }
+
+        
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
 
@@ -609,6 +620,14 @@ public class MinesCommands {
         			 new FancyMessage(Integer.toString(m.getResetTime())).tooltip( "Reset time in seconds" ) );
 
         	 row.addTextComponent( "&r - " );
+        	 
+        	 String noteMode = m.getNotificationMode().name() + 
+        			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
+        					 " " + dFmt.format( m.getNotificationRadius() ) : "" );
+        	 row.addFancy( 
+        			 new FancyMessage(noteMode).tooltip( "Notification Mode" ) );
+        	 
+        	 row.addTextComponent( "&r - " );
 
         	 row.addFancy( 
         			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
@@ -673,7 +692,8 @@ public class MinesCommands {
         		}
 
 				if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
-					Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%d]",
+					Output.get().sendWarn( sender, 
+							"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
 							mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
 				} else {
 					PrisonMines pMines = PrisonMines.getInstance();
@@ -681,21 +701,92 @@ public class MinesCommands {
 					
 					m.setResetTime( resetTime );
 					
+        			pMines.getMineManager().saveMine( m );
+        								
 					// User's message:
-					Output.get().sendInfo( sender, "mines set resettime: %s resetTime set to %d", m.getName(), resetTime );
+					Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getName(), resetTime );
 					
 					// Server Log message:
 					Player player = getPlayer( sender );
-					Output.get().logInfo( "mines set resettime: %s set %s resetTime to %d", 
+					Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
 							(player == null ? "console?" : player.getDisplayName()), m.getName(), resetTime  );
 				}
 			}
 			catch ( NumberFormatException e ) {
-				Output.get().sendWarn( sender, "Invalid resetTime value for %s. Must be an integer value of %d or greater. [%s]",
+				Output.get().sendWarn( sender, 
+						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
 						mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
 			}
         } 
     }
+
+
+    @Command(identifier = "mines notification", permissions = "mines.notification", 
+    		description = "Set a mine's notification mode.")
+    public void setNotificationCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
+        @Arg(name = "mode", def="displayOptions", description = "The notification mode to use: disabled, within, radius") String mode,
+        @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) String radius
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mine)) {
+        	setLastMineReferenced(mine);
+
+        	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
+        	
+        	if ( noteMode == MineNotificationMode.displayOptions ) {
+        		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
+        				"&7from center of mine." );
+        	} else {
+        		long noteRadius = 0L;
+        		if ( noteMode == MineNotificationMode.radius ) {
+        			if ( radius == null || radius.trim().length() == 0 ) {
+        				noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+        			} else {
+        				try {
+        					noteRadius = Long.parseLong( radius );
+        					
+        					if ( noteRadius < 1 ) {
+        						noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+        						DecimalFormat dFmt = new DecimalFormat("#,##0");
+        						Output.get().sendWarn( sender, "&7Invalid radius value for &b%s&7. " +
+            							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
+            							mine, dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
+        					}
+        				}
+        				catch ( NumberFormatException e ) {
+        					e.printStackTrace();
+        					Output.get().sendWarn( sender, "&7Invalid notification radius for &b%s&7. " +
+        							"Must be an positive non-zero integer. [&b%s&7]",
+        							mine, radius );
+        				}
+        			}
+        		}
+        		
+        		PrisonMines pMines = PrisonMines.getInstance();
+        		Mine m = pMines.getMineManager().getMine(mine).get();
+        		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
+        			m.setNotificationMode( noteMode );
+        			m.setNotificationRadius( noteRadius );
+        			
+        			pMines.getMineManager().saveMine( m );
+        			
+        			DecimalFormat dFmt = new DecimalFormat("#,##0");
+        			// message: notification mode changed
+        			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
+        					mine, m.getNotificationMode().name(), 
+        					(m.getNotificationMode() == MineNotificationMode.radius ? dFmt.format( m.getNotificationRadius() ) : "" ));
+        			
+        		} else {
+        			// message: notification mode did not change
+        			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mine );
+        		}
+        	}
+        } 
+    }
+
+
     @Command(identifier = "mines set area", permissions = "mines.set", description = "Set the area of a mine to your current selection.")
     public void redefineCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String name) {
