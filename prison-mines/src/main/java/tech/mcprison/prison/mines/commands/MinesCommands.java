@@ -47,7 +47,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.MaterialType;
 import tech.mcprison.prison.util.Text;
 
@@ -802,8 +801,9 @@ public class MinesCommands {
     		// This is checking for within a certain distance from any mine, so we just need to use
     		// some arbitrary distance as a max radius.  We do not want to use the individual values
     		// that have been set for each mine.
-    		if ( mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
-    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
+    		else if ( mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
+    			Double distance = mine.getBounds().getDistance( player.getLocation() );
+//    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}
     	}
@@ -813,8 +813,8 @@ public class MinesCommands {
     		for ( Mine m : inMine ) {
     			sender.sendMessage( "&3You are in mine &7" + m.getName() );
     		}
-    		
-    	} else if ( nearMine.size() > 0 ) {
+    	}
+    	if ( nearMine.size() > 0 ) {
     		// You are near the mines:
     		int cnt = 0;
     		Set<Integer> distances = nearMine.keySet();
@@ -828,7 +828,7 @@ public class MinesCommands {
     		
     	} else {
     		// you are not near any mines:
-    		sender.sendMessage( "&3Sorry, you are not within " + Mine.DEFAULT_MINE_RESET_TIME_SEC + 
+    		sender.sendMessage( "&3Sorry, you are not within " + MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS + 
     				" blocks from any mine." );
     	}
 
