@@ -21,8 +21,6 @@ types too.  Basically have a minecraft version selector that can
 tailor the list of available block types that can be used, based upon the
 minecraft version that is running.
 
-* **New Feature: Allow reset durations for each mine instead of just globally**
-
 * **New Feature: Upon block break events, log block changes**
 This will allow dynamic live tracking of mine stats, such as how many blocks
 remain and relating percentages.  The new async processing will enable this
@@ -44,7 +42,7 @@ bonuses and rewards and incentives.
 * **New Feature: List all registered plugins**
 To better support server owners when they have issues with Prison, it would 
 be very helpful if /prison version would list all registered plugins in
-a concise listing. This could simplify 
+a concise listing. In progress.  Included now in bleeding.
 
 * **Redesign the save files to eliminate the magic numbers**
 Most of the save files within prison, for players, ranks, and ladders, are
@@ -60,15 +58,43 @@ It's not being used, so eliminate it and allow prison to possibly eliminate the
 extra layers of indirection it currently has to improve performance and to 
 possibly reduce the possibilities for errors. 
 
+* **Improve the prestige laddering system**
+A plugin named EZprestige has been attempted to be used with prison. Not sure if successful?
 
-## tag v3.2.1-alpha.3 - 2020-02-06
+
+* **Notification that inventory is full**
+
+* **Built in selling system**
+
+* **Custom Mine reset messsages per mine**
+
+* **New Feature: Admin reset of Player Ranks**
+Bypass the costs for the players.  
+
+
+
+
+## tag v3.2.1-alpha.3 - 2020-02-18
 
 * **Some block types may not work for 1.15.x**
 Since prison is not currently using the correct block names for 1.15.x, some
 block types may not work. Prison is still using magic numbers for the 
 block types and those no longer work for 1.15.x.  Symptom would be that
 you set a block type such as birch block, but with the loss of the magic 
-number, it will revert back to just an oak block.
+number, it will revert back to just an oak block.  ETA may be with
+release v3.2.2?
+
+* **Unable to change language on all Aspects of Prison**
+Currently the number of phrases that can be changed to support other
+languages is very limiting and requires a decent amount of manipulation
+of extracting files from the Prison Jar. Future releases will allow just
+about all uses of English to be replaced by external language files.
+This will include error messages for players and mods (console errors), 
+command descriptions, and even replacement of the English commands as 
+aliases.  The implementation of this will help ensure "errors" are caught
+at compile time, and not runtime to help improve stability of the game.
+Also the way the language files are structured at runtime will make it 
+easier to edit them.
 
 * **Information: Setting the correct currency for Prison**
 The current prison plugin is using java internals to set the currency symbol.
@@ -95,16 +121,49 @@ a config file somewhere, or use what is defined, or set, within the
 currency plugin, such as vault, or EssentialsX.
 
 
-* **No support for sponge - never had it**
-There is a sponge module, but there is so little code that is hooked up, 
-there is no way it could ever work as it is right now.  It would be a really
-major effort to hook up the missing parts. Don't even think anyone is trying
-to run it under sponge.  Maybe best in the long run to eliminate the 
-sponge module and just focus on making prison better overall.
+* **Known issue with LuckPerms v5.0.x Causing Prison Load Failures**
+This is a known problem with pre v3.2.1 releases of Prison.  Basically the 
+fault was with LuckPerms in using the same registered plugin name with the 
+Spigot Pugin Manager and the same class name, but an altogether different 
+package name.  This would have caused any plugin to generate a Class Not Founnd 
+exception.  They should not have used the same old signatures for v5.0.x and 
+there would have been no issues.
+Anyway, special handling has been added to prison to work around their
+new version, so the solution is to upgrade Prison to v3.2.1 or newer.  Or 
+down grade LuckPerms to v4.4.1 until the server admin's are able to upgrade
+Prison.
+
+
+* **No support for sponge - appears like it never had it**
+There is a sponge module, but there is so little code that has been written,
+that it does not appear to be hooked up.  There is no way it could have ever worked
+correctly since so many core components needed for the functionality of prison 
+are dependent upon Spigot internals, of which those same function calls under 
+Sponge's API are just empty or returning null values.
+
+For example, getScheduler() and dispatchCommand() both are empty, but they 
+are currently heavily used in both the mine reset process and also for
+ranking up. 
+
+It would be a really major effort to hook up the missing parts. I don't even 
+think anyone is trying to run it under sponge.  Maybe best in the long run to 
+eliminate the sponge module and just focus on making prison better overall.
+I think if I do get around to disabling it, it will just be commented out of the
+gradle build such that the source will still be there, but it will be excluded
+from the build.  Otherwise as new features are added, and existing ones under go
+major changes, then the Sponge components will have to be revisited and would be 
+wasting resources (and time) for no reasonable purpose.
+
 
 * **Reports that other plugins may cause issues with Prison**
 It's been mentioned that a plugin or two, named something like 
 "nohunger or nofalldmg", may have been causing issues with Prison.  
 Not sure if its the loading or running, but it behaved as if the
 mines and ranks module was not loaded since those commands were not
-functional.  Only /prison was working.
+functional.  Only /prison was working.  This appears as the same general
+effect of LuckPerms v5.x failures, where they caused a failure that
+prevented prison from performing a normal load.  
+I have not looked in to these plugins, but I would suggest that 
+WorldGuard should be used instead of these plugins to eliminate possible
+conflicts.
+

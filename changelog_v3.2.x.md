@@ -7,12 +7,57 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.3 - 2020-02-06
+## tag v3.2.1-alpha.4 - 2020-02-25
+
+* **New Feature: Mine Reset Notification Control** On a per mine
+basis, notifications can now be turned off, set to a radius area from
+the center of the mine, to player who are properly within the mine.
+Added a command to support this new behavior:  **/mines notifications**.
+Each mine is independent, and there will be no global values.  
+As new mines are created/added they will be set to the default
+radius distance which is currently 150 blocks from the center of 
+each mine. 
+
+* **Bug Fix: Added PlaceholderAPI to the softdepends** Paper server 
+environment identified that it was missing.  So I added it. Not sure
+if that could have been cause issues with Multiverse loading issues? 
+Doubtful, but this is the first "thing" that has been found related 
+to hard depends or softdepends.  
+
+* **New Feature: Command /mines resetTime** Added the command to allow
+users to change the reset time for each mine.  The global reset time is
+only applied to new mines that are added.  The new times apply once the
+mines reset at the next mine reset. 
+
+* **Work in progress: Mine resets** Committed the WIP just to get 
+it in git. Currently the code works, for that of which is being used.
+The more complex compoennts dealing with async and paging is not yet
+enabled so will have no impact yet. Also needed to commit so I can 
+add new features that overlap with this work (notifications). 
+
+* **Removed dead links in README.md** A user made a reference to a few
+dead links so I removed the ones that I could find. Also removed the
+request for donations since that's currently a moot point.
+
+* **Took a quick look at tab completing" but ran in to issues with how
+prison uses multi-word commands The space appears to force everything that
+follows to be treated as an attribute/parameter to the root command.
+Special handling of these conditions will need to be addressed later.
+Tabled this attempt with hopes to return to it soon.
+
+* **Added new placeholder tag: prison_rank_tag**  The existing placeholder
+**prison_rank** returns the name of the current rank for the player. 
+The new placeholder  **prison_rank_tag** returns that rank's tag value, 
+which could include formatting characters and would be suitable for
+text chat prefixes. 
 
 * **Bug Fix ?? : Cannot manually edit rank and ladder files.**
 (to be addressed)
 Manually editing the rank and ladder files, and maybe even the player
 files, does not work, even when the server is shut down and restarted.
+Could not reproduce, but a couple of users reported this as an issue and 
+I think I saw it once before too.  Not really sure the cause but did not
+see anything obvious in the code either.
 
 * **Bug Fix: Players on server prior to setting up prison have no ranks**
 (to be addressed)
