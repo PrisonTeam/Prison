@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.output.DisplayComponent;
+import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.TextComponent;
+
 /**
  * The IntegrationManager stores instances of each {@link Integration} and allows
  * them to be registered and retrieved.
@@ -174,29 +179,37 @@ public class IntegrationManager {
      * 
      * @return
      */
-    public List<String> toStrings() {
-    	List<String> results = new ArrayList<>();
+    public List<DisplayComponent> getIntegrationComponents() {
+    	List<DisplayComponent> results = new ArrayList<>();
     	
         for ( IntegrationType integType : IntegrationType.values() )
 		{
-			results.add( String.format( "&7Integration Type: &3%s", integType.name() ) );
+        	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integType.name() ) ));
+			
+			if ( integType ==  IntegrationType.PLACEHOLDER ) {
+				results.add( new TextComponent( "  &7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable() ));
+			}
 			
 			List<Integration> plugins = getAllForType( integType );
 			
 			if ( plugins == null || plugins.size() == 0 ) {
-				results.add( "    &e&onone" );
+				results.add( new TextComponent( "    &e&onone" ));
 			} else {
 				for ( Integration plugin : plugins )
 				{
-					results.add( String.format( "    &a%s &7<%s&7>", plugin.getDisplayName(),
-							( plugin.hasIntegrated() ? "&aActive" : "&cInactive")) );
+					String pluginUrl = plugin.getPluginSourceURL();
+					String msg = String.format( "    &a%s &7<%s&7> %s", plugin.getDisplayName(),
+							( plugin.hasIntegrated() ? "&aActive" : "&cInactive"),
+							( pluginUrl == null ? "" : "&7[&eURL&7]"));
+					FancyMessage fancy = new FancyMessage( msg );
+			 		if ( pluginUrl != null ) {
+			 			fancy.command( pluginUrl ).tooltip( "Click to open URL for this plugin.", pluginUrl );
+			 		}
+					results.add( new FancyMessageComponent(fancy) );
+			 		
 					String altInfo = plugin.getAlternativeInformation();
 					if ( altInfo != null ) {
-						results.add( "        " + altInfo );
-					}
-					String pluginUrl = plugin.getPluginSourceURL();
-					if ( pluginUrl != null ) {
-						results.add( "          &7" + pluginUrl );
+						results.add( new TextComponent( "        " + altInfo ));
 					}
 				}
 			}

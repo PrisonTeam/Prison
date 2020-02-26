@@ -5,7 +5,6 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.integration.PlaceholderIntegration;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 
 public class PlaceHolderAPIIntegration 
@@ -54,7 +53,7 @@ public class PlaceHolderAPIIntegration
 	
 	@Override
     public String getAlternativeInformation() {
-    	return "&7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable();
+    	return null;
     }
 
 	@Override

@@ -86,8 +86,9 @@ public class MVdWPlaceholderIntegration
     
     @Override
     public String getAlternativeInformation() {
-    	return "&7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable();
+    	return null;
     }
+    
 
 	@Override
 	public String getPluginSourceURL() {

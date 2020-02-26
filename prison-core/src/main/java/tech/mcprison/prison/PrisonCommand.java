@@ -28,6 +28,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
@@ -77,10 +78,10 @@ public class PrisonCommand {
         display.text(Text.tab("&7Economy: " + economy));
         
         
-        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
-        for ( String intgration : integrations )
+        List<DisplayComponent> integrationRows = Prison.get().getIntegrationManager().getIntegrationComponents();
+        for ( DisplayComponent component : integrationRows )
 		{
-			display.text( intgration );
+        	display.addComponent( component );
 		}
 
         return display;
