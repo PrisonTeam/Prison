@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -45,6 +46,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
@@ -117,6 +119,7 @@ public class SpigotPrison extends JavaPlugin {
         GUIListener.get().init(this);
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+        getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         new SpigotListener(this).init();
         
         initIntegrations();
