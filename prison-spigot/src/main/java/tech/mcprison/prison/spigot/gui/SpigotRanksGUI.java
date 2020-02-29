@@ -6,22 +6,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SpigotRanksGUI {
 
     private int dimension = 27;
     private Player p;
+    private Optional<RankLadder> ladder;
 
-    public SpigotRanksGUI(Player p){
+    public SpigotRanksGUI(Player p, Optional<RankLadder> ladder) {
         this.p = p;
+        this.ladder = ladder;
     }
 
     private ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
-        ItemStack item = new ItemStack(id, amount);
+        org.bukkit.inventory.ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(display);
         meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
@@ -33,55 +38,43 @@ public class SpigotRanksGUI {
 
     public void open() {
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3PrisonManager");
+        // Init the ItemStack
+        ItemStack itemrank;
 
-
-
-        // The Ranks button
-        // Lore of the button
+        // Init the lore array with default values for ladders
         List<String> rankslore = new ArrayList<>();
-        rankslore.add("§3Ranks GUI manager");
-        rankslore.add("§8Click to open");
 
-        // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§7" + "Ranks");
+        // Get the ranks
+        List<RankLadder.PositionRank> ranks = ladder.get().ranks;
 
-        //Position of the button
-        inv.setItem(dimension - 17, ranks);
+        // Get the dimensions and if needed increases them
+        while (dimension <= ranks.toArray().length + 8){
+            dimension = dimension + 9;
+        }
 
+        // Create the inventory and set up the owner, dimensions or number of slots, and title
+        Inventory inv = Bukkit.createInventory(null, dimension, "§3Ladders -> Ranks");
 
+        // For every rank make a button
+        for (RankLadder.PositionRank pos : ranks) {
+            Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
 
-        // The Prison Tasks button
-        // Lore of the button
-        List<String> prisontaskslore = new ArrayList<>();
-        prisontaskslore.add("§3Prison Tasks GUI manager");
-        prisontaskslore.add("§8Click to open");
+            // Well... check if the rank is null probably
+            if (!rankOptional.isPresent()) {
+                continue; // Skip it
+            }
 
-        // Create the button, set up the material, amount, lore and name
-        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§b" + "Prison Tasks");
+            // Get the specific rank
+            Rank rank = rankOptional.get();
 
-        //Position of the button
-        inv.setItem(dimension - 14, prisontasks);
+            // Make the button with materials, amount, lore and name
+            itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§6" + rank.name);
 
-
-
-        // The mines button
-        // Lore of the button
-        List<String> mineslore = new ArrayList<>();
-        mineslore.add("§3Mines GUI manager");
-        mineslore.add("§8Click to open");
-
-        // Create the button, set up the material, amount, lore and name
-        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§1" + "Mines");
-
-        //Position of the button
-        inv.setItem(dimension - 11, mines);
-
-
+            // Add the button to the inventory
+            inv.addItem(itemrank);
+        }
 
         // Open the inventory
         this.p.openInventory(inv);
     }
-
 }
