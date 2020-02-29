@@ -56,26 +56,6 @@ public class GUIListener implements Listener {
         inventories.add(inv);
     }
 
-    @EventHandler public void reactToClick(InventoryClickEvent e) {
-        final GUI[] gui = new GUI[1];
-        final Button[] b =
-            new Button[1]; // Workaround to Java lambda's stupid final rule, elements within final arrays are re-assignable >:)
-        inventories.stream().filter(inv -> inv.getTitle().equals(e.getInventory().getTitle()))
-            .forEach(inv -> {
-                gui[0] = inv;
-                b[0] = inv.getButtons().get(e.getSlot());
-            });
-        if (b[0] == null) {
-            return;
-        }
-        e.setCancelled(true);
-        if (b[0].isCloseOnClick()) {
-            e.getWhoClicked().closeInventory();
-        }
-        b[0].getAction()
-            .run(new ClickedButton(b[0], gui[0], new SpigotPlayer((Player) e.getWhoClicked())));
-    }
-
     @EventHandler public void closeInventory(InventoryCloseEvent e) {
         // Remove it if found
         inventories.removeIf(gui -> gui.getTitle().equals(e.getInventory().getTitle()));

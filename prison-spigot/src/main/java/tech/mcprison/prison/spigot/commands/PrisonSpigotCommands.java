@@ -1,11 +1,10 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.gui.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 
 public class PrisonSpigotCommands implements CommandExecutor {
 
@@ -25,7 +24,7 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 return true;
             }
             Player p = (Player) sender;
-            SpigotRanksGUI gui = new SpigotRanksGUI(p);
+            SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
             gui.open();
 
         return true;
