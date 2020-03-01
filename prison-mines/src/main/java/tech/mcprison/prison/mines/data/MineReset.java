@@ -129,15 +129,22 @@ public abstract class MineReset
         		
         		time2 = System.currentTimeMillis();
         		
-        		int i = 0;
         		boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+
+        		Location altTp = alternativeTpLocation();
+        		altTp.setY( altTp.getBlockY() - 1 ); // Set Y one lower to 
+            	//boolean replaceGlassBlock = ( isFillMode && altTp.getBlockAt().getType() == BlockType.GLASS );
+            		
+        		int i = 0;
         		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
 //    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
         			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
         				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
         					Location targetBlock = new Location(world, x, y, z);
         					
-        					if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
+        					if (!isFillMode || 
+        							isFillMode && targetBlock.getBlockAt().isEmpty() ||
+        							isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
         						targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
         					} 
         				}
@@ -270,8 +277,7 @@ public abstract class MineReset
      * @param player
      */
     public void teleportPlayerOut(Player player) {
-    	Location altTp = new Location( getBounds().getCenter() );
-    	altTp.setY( getBounds().getyBlockMax() + 1 );
+    	Location altTp = alternativeTpLocation();
     	Location target = isHasSpawn() ? getSpawn() : altTp;
     	
     	// Player needs to stand on something.  If block below feet is air, change it to a 
@@ -286,6 +292,14 @@ public abstract class MineReset
     	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
     			.withReplacements(this.getName()).sendTo(player);
     }
+
+
+	private Location alternativeTpLocation()
+	{
+		Location altTp = new Location( getBounds().getCenter() );
+    	altTp.setY( getBounds().getyBlockMax() + 1 );
+		return altTp;
+	}
     
 //    /**
 //     * <p>This is a temporary fix until the Bounds.within() checks for the
