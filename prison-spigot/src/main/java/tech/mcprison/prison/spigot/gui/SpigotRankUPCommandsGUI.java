@@ -1,17 +1,18 @@
 package tech.mcprison.prison.spigot.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
 import tech.mcprison.prison.ranks.data.Rank;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SpigotRankUPCommandsGUI {
+public class SpigotRankUPCommandsGUI
+	extends SpigotGUIComponents {
 
     private int dimension = 27;
     private Player p;
@@ -20,18 +21,6 @@ public class SpigotRankUPCommandsGUI {
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
         this.rank = rank;
-    }
-
-    private ItemStack createButton(Material id, int amount, List<String> lore, String display) {
-
-        ItemStack item = new ItemStack(id, amount);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(display);
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        return item;
     }
 
     public void open() {
