@@ -19,16 +19,11 @@
 package tech.mcprison.prison.spigot.gui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import tech.mcprison.prison.gui.Button;
-import tech.mcprison.prison.gui.ClickedButton;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
