@@ -40,7 +40,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // For every command make a button
         for (String command : rank.rankUpCommands) {
             // Make the button with materials, amount, lore and name
-            itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, "§6" + command);
+            itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, "§6" + rank.name + " " + command);
 
             // Add the button to the inventory
             inv.addItem(itemcommand);

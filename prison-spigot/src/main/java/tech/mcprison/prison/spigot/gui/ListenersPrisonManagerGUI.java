@@ -1,21 +1,18 @@
 package tech.mcprison.prison.spigot.gui;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class ListenersPrisonManagerGUI implements Listener {
@@ -78,28 +75,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             // to be sure's a right click
             if(e.isShiftClick() && e.isRightClick()){
 
-                // Try to remove the ladder and check if has got removed with success or not
-                if (PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get())) {
+                Bukkit.dispatchCommand(p, "ranks ladder delete" + ladderName);
 
-                    // Send the message that the ladder got removed with success
-                    p.sendMessage("§aThe ladder §8[§3"+ ladderName + "§8]§a has been deleted.");
-
-                    // Close the inventory
-                    p.closeInventory();
-
-                    // Open a new updated inventory
-                    SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
-                    gui.open();
-                    return;
-                } else {
-
-                    // Shouldn't happen, but could anyway, error ladder not removed
-                    p.sendMessage("§cAn error occurred while removing your ladder. §8Check the console for details.");
-
-                    // Close the inventory
-                    p.closeInventory();
-                    return;
-                }
             }
 
             // Open the GUI of ranks
@@ -125,26 +102,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             if(e.isShiftClick() && e.isRightClick()) {
 
-                // Check if there's only 1 rank in the ladder default if this is the ladder default
-                if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.id)
-                        && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
-                    p.sendMessage("§cYou can't remove this rank because it's the only rank in the default ladder.");
-                    p.closeInventory();
-                    return;
-                }
+                Bukkit.dispatchCommand(p, "ranks delete" + rankName);
+                e.setCancelled(true);
 
-                // Try to remove the rank
-                if (PrisonRanks.getInstance().getRankManager().removeRank(rank)) {
-                    p.sendMessage("§aThe rank " + rankName + "  has been removed successfully.");
-
-                    // Close the GUI
-                    p.closeInventory();
-                } else {
-                    p.sendMessage("§cThe rank " + rankName + " could not be deleted due to an error.");
-
-                    // Close the GUI
-                    p.closeInventory();
-                }
             }
 
             if (rank.rankUpCommands == null) {
@@ -164,55 +124,8 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             if (e.isShiftClick() && e.isRightClick()){
 
-                if (command.startsWith("/")) {
-                    command = command.replaceFirst("/", "");
-                }
+                Bukkit.dispatchCommand(p, "ranks command remove" + command);
 
-            // Check every ladder to find the command
-            for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-
-                // Check every rank
-                for (RankLadder.PositionRank pos : PrisonRanks.getInstance().getLadderManager().getLadder(ladder.name).get().ranks) {
-                    Optional<Rank> rankOptional = PrisonRanks.getInstance().getLadderManager().getLadder(ladder.name).get().getByPosition(pos.getPosition());
-
-                    // Check everything and try to find the right path, rank, ladder where's the command... idk any
-                    // Other way with the variable i have
-                    for (String command1 : rankOptional.get().rankUpCommands) {
-                        if (command1.equals(command)) {
-                            Rank rank = rankOptional.get();
-
-                            if (rank.rankUpCommands == null) {
-                                rank.rankUpCommands = new ArrayList<>();
-                            }
-
-                            if (rank.rankUpCommands.remove(command)) {
-
-                                try {
-                                    PrisonRanks.getInstance().getRankManager().saveRank(rank);
-
-                                    p.sendMessage("§aRemoved command " + command + " from the rank " + rank.name);
-                                    p.closeInventory();
-
-                                    if (rank.rankUpCommands == null) {
-                                        p.sendMessage("§cThere aren't commands for this rank anymore");
-                                        e.setCancelled(true);
-                                        return;
-                                    }
-
-                                    // Open the GUI of commands
-                                    SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
-                                    gui.open();
-                                } catch (IOException ex) {
-                                    p.sendMessage("§cThe updated rank could not be saved to disk. Check the console for details.");
-                                    p.sendMessage("§cRank could not be written to disk.");
-                                }
-                            } else {
-                                p.sendMessage("§cThe rank doesn't contain that command. Nothing was changed.");
-                            }
-                        }
-                    }
-                }
-            }
         }
 
             e.setCancelled(true);
@@ -264,15 +177,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Check the name of the button and do the actions
             if (buttonname.equals("Reset_Mine:")){
 
-                PrisonMines pMines = PrisonMines.getInstance();
-                try {
-                    pMines.getMineManager().getMine(mineName).get().manualReset();
-                } catch (Exception ex) {
-                    p.sendMessage("§cThe mine didn't reset, something went wrong, please check the console or logs!");
-                    Output.get().logError("Couldn't reset mine " + mineName, ex);
-                    p.closeInventory();
-                    return;
-                }
+                Bukkit.dispatchCommand(p, "mines reset" + mineName);
 
                 e.setCancelled(true);
                 return;
