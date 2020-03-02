@@ -32,11 +32,11 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
         ItemStack itemines;
 
         // Init the lore array with default values for ladders
-        List<String> mineslore = new ArrayList<>();
-        mineslore.add("§8Left Click to open");
-        mineslore.add("§cPress Shift + Right click to delete");
-        mineslore.add("");
-        mineslore.add("§8§l|§3Info§8|");
+        List<String> mineslore = createLore(
+        "§8Left Click to open",
+        "§cPress Shift + Right click to delete",
+        "",
+        "§8§l|§3Info§8|");
 
         // Get the mines
         PrisonMines pMines = PrisonMines.getInstance();

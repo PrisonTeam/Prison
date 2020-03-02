@@ -28,8 +28,8 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         ItemStack itemcommand;
 
         // Init the lore array with default values for ladders
-        List<String> commandslore = new ArrayList<>();
-        commandslore.add("§cPress Shift + Right click to delete");
+        List<String> commandslore = createLore(
+        "§cPress Shift + Right click to delete");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D)*9;

@@ -30,9 +30,9 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         Inventory inv = Bukkit.createInventory(null, dimension, "§3Mines -> MineInfo");
 
         // Blocks of the mine
-        List<String> blocksoftheminelore = new ArrayList<>();
-        blocksoftheminelore.add("§8Click to open");
-        blocksoftheminelore.add("§d§6Coming Soon");
+        List<String> blocksoftheminelore = createLore(
+        "§8Click to open",
+        "§d§6Coming Soon");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack blocksofthemine = createButton(Material.COMPASS, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
@@ -43,9 +43,9 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
 
         // The Reset Mine button and lore
-        List<String> resetminelore = new ArrayList<>();
-                resetminelore.add("§8Click to use");
-                resetminelore.add("§8Resets the mine");
+        List<String> resetminelore = createLore(
+                "§8Click to use",
+                "§8Resets the mine");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, "§a" + "Reset_Mine: " + minename);

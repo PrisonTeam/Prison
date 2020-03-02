@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,8 +21,14 @@ public abstract class SpigotGUIComponents {
 
         return item;
     }
-    
+
     protected List<String> createLore( String... lores ) {
-        return Arrays.asList(lores);
+        List<String> results = new ArrayList<>();
+        for ( String lore : lores ) {
+            results.add( lore );
+        }
+        return results;
+//        return Arrays.asList( lores );
     }
+
 }
