@@ -43,7 +43,8 @@ public class SpigotPrisonGUI
         // Lore of the button
         List<String> prisontaskslore = createLore(
         		"§3Prison Tasks GUI manager",
-        		"§8Click to open");
+        		"§8Click to open",
+                "§d§lComing Soon");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§b" + "Prison Tasks");
@@ -57,7 +58,8 @@ public class SpigotPrisonGUI
         // Lore of the button
         List<String> mineslore = createLore(
         		"§3Mines GUI manager",
-        		"§8Click to open");
+        		"§8Click to open",
+                "§d§lWork in progress");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§1" + "Mines");
