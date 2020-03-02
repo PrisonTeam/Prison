@@ -76,6 +76,10 @@ public class ListenersPrisonManagerGUI implements Listener {
             if(e.isShiftClick() && e.isRightClick()){
 
                 Bukkit.dispatchCommand(p, "ranks ladder delete" + ladderName);
+                p.closeInventory();
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
+                gui.open();
+                e.setCancelled(true);
 
             }
 
@@ -103,6 +107,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             if(e.isShiftClick() && e.isRightClick()) {
 
                 Bukkit.dispatchCommand(p, "ranks delete" + rankName);
+                p.closeInventory();
+
                 e.setCancelled(true);
 
             }
@@ -125,6 +131,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             if (e.isShiftClick() && e.isRightClick()){
 
                 Bukkit.dispatchCommand(p, "ranks command remove" + command);
+                p.closeInventory();
+                e.setCancelled(true);
 
         }
 
