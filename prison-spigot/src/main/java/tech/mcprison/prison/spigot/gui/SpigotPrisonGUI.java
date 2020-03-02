@@ -8,8 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class SpigotPrisonGUI
-	extends SpigotGUIComponents {
+public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private int dimension = 27;
     private Player p;
@@ -62,12 +61,10 @@ public class SpigotPrisonGUI
                 "§d§lWork in progress");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§1" + "Mines");
+        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§8" + "Mines");
 
         //Position of the button
         inv.setItem(dimension - 11, mines);
-
-
 
         // Open the inventory
         this.p.openInventory(inv);

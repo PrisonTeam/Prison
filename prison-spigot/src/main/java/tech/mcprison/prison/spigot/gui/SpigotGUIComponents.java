@@ -22,6 +22,6 @@ public abstract class SpigotGUIComponents {
     }
     
     protected List<String> createLore( String... lores ) {
-    	return Arrays.asList( lores );
+        return Arrays.asList(lores);
     }
 }

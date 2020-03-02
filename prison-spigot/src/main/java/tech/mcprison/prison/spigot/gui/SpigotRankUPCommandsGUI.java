@@ -11,8 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.ranks.data.Rank;
 
-public class SpigotRankUPCommandsGUI
-	extends SpigotGUIComponents {
+public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private int dimension = 27;
     private Player p;
