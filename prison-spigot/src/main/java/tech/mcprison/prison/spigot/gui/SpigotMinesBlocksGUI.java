@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.gui;
 
-import jdk.internal.util.xml.impl.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
