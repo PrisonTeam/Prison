@@ -152,8 +152,12 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Check the clicks
             if (e.isShiftClick() && e.isRightClick()) {
 
-                pMines.getMineManager().removeMine(pMines.getMineManager().getMine(minename).get());
-                p.sendMessage("§aMine deleted with success: §3" + minename);
+                Bukkit.dispatchCommand(p, "mines delete " + minename);
+                p.closeInventory();
+                SpigotMinesConfirmGUI gui = new SpigotMinesConfirmGUI(p, minename);
+                gui.open();
+                return;
+
             }
 
             // Open the GUI of mines info
@@ -185,7 +189,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Check the name of the button and do the actions
             if (buttonname.equals("Reset_Mine:")){
 
-                Bukkit.dispatchCommand(p, "mines reset" + mineName);
+                Bukkit.dispatchCommand(p, "mines reset " + mineName);
 
                 e.setCancelled(true);
                 return;
@@ -193,12 +197,41 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             e.setCancelled(true);
 
+        // Check the title of the inventory and do the actions
+        } else if (e.getView().getTitle().equals("§3" + "Mines -> Delete")) {
+
+            // Get the button name without colors but with the minename too
+            String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+            // Split the button at the space between the buttonname and the minename
+            String[] parts = buttonnamemain.split(" ");
+
+            // Output finally the buttonname and the minename explicit out of the array
+            String buttonname = parts[0];
+            String mineName = parts[1];
+
+            if (buttonname.equals("Confirm:")){
+
+                // Confirm
+                Bukkit.dispatchCommand(p, "mines delete " + mineName + " " + "confirm");
+
+                // Close the Inventory
+                p.closeInventory();
+
+            } else if (buttonname.equals("Cancel:")){
+
+                // Cancel
+                Bukkit.dispatchCommand(p, "mines delete " + mineName + " " + "cancel");
+
+                // Close the inventory
+                p.closeInventory();
+
+            }
+
             // If none of them is true, then cancel the event
-        } else {
-
-            // Cancel the event
-            e.setCancelled(true);
-
         }
+
+        // Deleted the e.setCancelled(true) because'd make every chest impossible to use, sorry.
+
     }
 }

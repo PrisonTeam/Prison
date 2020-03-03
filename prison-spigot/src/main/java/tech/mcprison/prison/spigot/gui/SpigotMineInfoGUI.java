@@ -5,12 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
@@ -54,7 +51,6 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         inv.setItem(dimension - 16, resetmine);
 
         this.p.openInventory(inv);
-
 
     }
 
