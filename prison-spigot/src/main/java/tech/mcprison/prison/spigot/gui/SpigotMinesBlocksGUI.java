@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 
@@ -43,15 +44,15 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         Inventory inv = Bukkit.createInventory(null, dimension, "§3MineInfo -> Blocks");
 
         // For every block makes a button
-        for (int i = 0 ; m.getBlocks().size() >= i ; i++){
+        for (Block block : m.getBlocks()) {
 
-            blockslore.add("§3Chance: " + m.getBlocks().get(i).getChance());
+            blockslore.add("§3Chance: " + block.getChance() + "%");
 
-            String blockmaterial = m.getBlocks().get(i).getType().toString();
+            String blockmaterial = block.getType().name();
 
             blockslore.add("§3BlockType: " + blockmaterial);
 
-            if (Material.valueOf(blockmaterial) == Material.AIR){
+            if (blockmaterial.equalsIgnoreCase("air")){
                 blockmaterial = "BARRIER";
             }
 
@@ -61,9 +62,9 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
                 blockmaterialdisplay = "AIR";
             }
 
-            ItemStack block = createButton(Material.valueOf(blockmaterial), 1, blockslore, "§3" + blockmaterialdisplay + ": " + minename);
+            ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, "§3" + blockmaterialdisplay + ": " + minename);
 
-            inv.addItem(block);
+            inv.addItem(block1);
 
         }
 
