@@ -21,7 +21,8 @@ import java.util.Optional;
  */
 public class CommandCommands {
 
-    @Command(identifier = "ranks command add", description = "Adds a command to a rank.", onlyPlayers = false, permissions = "ranks.command")
+    @Command(identifier = "ranks command add", description = "Adds a command to a rank using {player} and {player_uid} as placeholders.", 
+    		onlyPlayers = false, permissions = "ranks.command")
     public void commandAdd(CommandSender sender, @Arg(name = "rank") String rankName,
         @Arg(name = "command") @Wildcard String command) {
         if (command.startsWith("/")) {
