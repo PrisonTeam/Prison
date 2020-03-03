@@ -75,6 +75,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             // to be sure's a right click
             if(e.isShiftClick() && e.isRightClick()){
 
+                // Execute the command
                 Bukkit.dispatchCommand(p, "ranks ladder delete " + ladderName);
                 p.closeInventory();
                 SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
