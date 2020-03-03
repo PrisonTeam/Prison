@@ -46,24 +46,27 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         // For every block makes a button
         for (Block block : m.getBlocks()) {
 
+            // Add a lore
             blockslore.add("§3Chance: " + block.getChance() + "%");
 
+            // Get the block material as a string
             String blockmaterial = block.getType().name();
 
+            // Add a lore
             blockslore.add("§3BlockType: " + blockmaterial);
 
+            // Display title of the item
+            String blockmaterialdisplay = blockmaterial;
+
+            // Check if a block's air and changed the item of it to BARRIER
             if (blockmaterial.equalsIgnoreCase("air")){
                 blockmaterial = "BARRIER";
             }
 
-            String blockmaterialdisplay = blockmaterial;
-
-            if (blockmaterialdisplay.equals("BARRIER")){
-                blockmaterialdisplay = "AIR";
-            }
-
+            // Make the item
             ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, "§3" + blockmaterialdisplay + ": " + minename);
 
+            // Add the item to the inventory
             inv.addItem(block1);
 
         }

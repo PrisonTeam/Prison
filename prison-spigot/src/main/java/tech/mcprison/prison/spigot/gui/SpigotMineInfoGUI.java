@@ -79,6 +79,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         // Position of the button
         inv.setItem(dimension - 11, blocksofthemine);
 
+        // Opens the inventory
         this.p.openInventory(inv);
 
     }
