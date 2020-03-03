@@ -75,7 +75,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             // to be sure's a right click
             if(e.isShiftClick() && e.isRightClick()){
 
-                Bukkit.dispatchCommand(p, "ranks ladder delete" + ladderName);
+                Bukkit.dispatchCommand(p, "ranks ladder delete " + ladderName);
                 p.closeInventory();
                 SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
                 gui.open();
@@ -106,22 +106,24 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             if(e.isShiftClick() && e.isRightClick()) {
 
-                Bukkit.dispatchCommand(p, "ranks delete" + rankName);
+                Bukkit.dispatchCommand(p, "ranks delete " + rankName);
                 p.closeInventory();
 
                 e.setCancelled(true);
 
             }
 
-            if (rank.rankUpCommands == null) {
+            else if (rank.rankUpCommands == null) {
                 p.sendMessage("§cThere aren't commands for this rank anymore");
                 e.setCancelled(true);
-                return;
             }
 
             // Open the GUI of commands
-            SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
-            gui.open();
+            else {
+
+            	SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
+            	gui.open();
+            }
 
             // Check the title of the inventory and do things
         } else if (e.getView().getTitle().equals("§3" + "Ranks -> RankUPCommands")) {
@@ -145,7 +147,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             String minename = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
             // Variables
-            Optional<Mine> Mine = PrisonMines.getInstance().getMineManager().getMine(minename);
+            @SuppressWarnings( "unused" )
+			Optional<Mine> mine = PrisonMines.getInstance().getMineManager().getMine(minename);
             PrisonMines pMines = PrisonMines.getInstance();
             Mine m = pMines.getMineManager().getMine(minename).get();
 
@@ -182,20 +185,21 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Cancel the event
                 e.setCancelled(true);
-
-                return;
             }
 
             // Check the name of the button and do the actions
-            if (buttonname.equals("Reset_Mine:")){
+            else if (buttonname.equals("Reset_Mine:")){
 
                 Bukkit.dispatchCommand(p, "mines reset " + mineName);
 
                 e.setCancelled(true);
-                return;
             }
 
-            e.setCancelled(true);
+            else {
+
+            	e.setCancelled(true);
+
+            }
 
         // Check the title of the inventory and do the actions
         } else if (e.getView().getTitle().equals("§3" + "Mines -> Delete")) {

@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -29,7 +28,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // Init the lore array with default values for ladders
         List<String> commandslore = createLore(
-        "§cPress Shift + Right click to delete");
+        		"§cPress Shift + Right click to delete");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D)*9;
