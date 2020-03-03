@@ -133,7 +133,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             if (e.isShiftClick() && e.isRightClick()){
 
-                Bukkit.dispatchCommand(p, "ranks command remove" + command);
+                Bukkit.dispatchCommand(p, "ranks command remove " + command);
                 p.closeInventory();
                 e.setCancelled(true);
 
