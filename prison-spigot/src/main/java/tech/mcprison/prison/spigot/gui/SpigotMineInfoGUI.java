@@ -54,6 +54,20 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         inv.setItem(dimension - 15, MineSpawn);
 
 
+
+        // Lore and button
+        List<String> MinesTpLore = createLore(
+                "§8Click to tp",
+                "§8Tp to the mine"
+        );
+
+        // Create the button
+        ItemStack MinesTP = createButton(Material.BED, 1, MinesTpLore, "§4" + "TP_to_the_Mine: " + minename);
+
+        inv.setItem(dimension - 13, MinesTP);
+
+
+
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
                 "§8Click to open",
