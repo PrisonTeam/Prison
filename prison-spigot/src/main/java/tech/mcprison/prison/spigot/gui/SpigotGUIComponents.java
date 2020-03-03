@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -28,7 +27,6 @@ public abstract class SpigotGUIComponents {
             results.add( lore );
         }
         return results;
-//        return Arrays.asList( lores );
     }
 
 }

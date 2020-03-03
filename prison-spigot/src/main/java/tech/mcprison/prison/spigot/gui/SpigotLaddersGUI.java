@@ -1,8 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,7 +9,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 
@@ -33,8 +30,8 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Init the lore array with default values for ladders
         List<String> ladderslore = createLore(
-        "§8Click to open",
-        "§cPress Shift + Right click to delete");
+        		"§8Click to open",
+        		"§cPress Shift + Right click to delete");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( lm.getLadders().size() / 9D)*9;
