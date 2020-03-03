@@ -71,7 +71,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
                 "§8Click to open",
-                "§d§6Coming Soon");
+                "§8Manage the blocks of the Mine");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack blocksofthemine = createButton(Material.COMPASS, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);

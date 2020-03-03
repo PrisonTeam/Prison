@@ -187,8 +187,10 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Check the name of the button and do the actions
             if (buttonname.equals("Blocks_of_the_Mine:")){
 
-                // Cancel the event
-                e.setCancelled(true);
+                // Open the GUI
+                SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
+                gui.open();
+
             }
 
             // Check the name of the button and do the actions
@@ -197,12 +199,14 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Execute the command
                 Bukkit.dispatchCommand(p, "mines reset " + mineName);
 
+                // Cancel the event
                 e.setCancelled(true);
             } else if (buttonname.equals("MineSpawn:")){
 
                 // Execute the command
                 Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
 
+                e.setCancelled(true);
             // Check the name of the button and do the actions
             } else if (buttonname.equals("TP_to_the_Mine:")){
 
@@ -252,6 +256,32 @@ public class ListenersPrisonManagerGUI implements Listener {
             }
 
             // If none of them is true, then cancel the event
+        } else if (e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")){
+
+            // Get the button name without colors but with the minename too
+            String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+            // Split the button at the space between the buttonname and the minename
+            String[] parts = buttonnamemain.split(" ");
+
+            // Output finally the buttonname and the minename explicit out of the array
+            String buttonname = parts[0];
+            String mineName = parts[1];
+
+            // Check the click Type and do the actions
+            if (e.isShiftClick() && e.isRightClick()){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname);
+
+                // Close the GUI so it can be updated
+                p.closeInventory();
+
+                // Open the GUI
+                SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
+                gui.open();
+            }
+
         }
 
         // Deleted the e.setCancelled(true) because'd make every chest impossible to use, sorry.
