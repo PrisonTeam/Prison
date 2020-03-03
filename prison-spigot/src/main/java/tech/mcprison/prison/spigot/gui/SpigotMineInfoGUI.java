@@ -28,19 +28,6 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         Inventory inv = Bukkit.createInventory(null, dimension, "§3Mines -> MineInfo");
 
-        // Blocks of the mine
-        List<String> blocksoftheminelore = createLore(
-        		"§8Click to open",
-        		"§d§6Coming Soon");
-
-        // Create the button, set up the material, amount, lore and name
-        ItemStack blocksofthemine = createButton(Material.COMPASS, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
-
-        // Position of the button
-        inv.setItem(dimension - 12, blocksofthemine);
-
-
-
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(
                 "§8Click to use",
@@ -50,7 +37,33 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, "§a" + "Reset_Mine: " + minename);
 
         // Position of the button
-        inv.setItem(dimension - 16, resetmine);
+        inv.setItem(dimension - 17, resetmine);
+
+
+
+        // Set the Mine spawn at your location
+        List<String> MineSpawnlore = createLore(
+                "§8Click to use",
+                "§8Set the mine spawn point at your location"
+        );
+
+        // Create the button
+        ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnlore, "§7" + "MineSpawn: " + minename);
+
+        // Position of the button
+        inv.setItem(dimension - 15, MineSpawn);
+
+
+        // Blocks of the mine button and lore
+        List<String> blocksoftheminelore = createLore(
+                "§8Click to open",
+                "§d§6Coming Soon");
+
+        // Create the button, set up the material, amount, lore and name
+        ItemStack blocksofthemine = createButton(Material.COMPASS, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
+
+        // Position of the button
+        inv.setItem(dimension - 11, blocksofthemine);
 
         this.p.openInventory(inv);
 

@@ -191,9 +191,15 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Check the name of the button and do the actions
             else if (buttonname.equals("Reset_Mine:")){
 
+                // Execute the command
                 Bukkit.dispatchCommand(p, "mines reset " + mineName);
 
                 e.setCancelled(true);
+            } else if (buttonname.equals("MineSpawn:")){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
+
             }
 
             else {
@@ -218,7 +224,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             if (buttonname.equals("Confirm:")){
 
                 // Confirm
-                Bukkit.dispatchCommand(p, "mines delete " + mineName + " " + "confirm");
+                Bukkit.dispatchCommand(p, "mines delete " + mineName + " confirm");
 
                 // Close the Inventory
                 p.closeInventory();
@@ -226,7 +232,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             } else if (buttonname.equals("Cancel:")){
 
                 // Cancel
-                Bukkit.dispatchCommand(p, "mines delete " + mineName + " " + "cancel");
+                Bukkit.dispatchCommand(p, "mines delete " + mineName + " cancel");
 
                 // Close the inventory
                 p.closeInventory();
