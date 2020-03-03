@@ -115,8 +115,10 @@ public class ListenersPrisonManagerGUI implements Listener {
             }
 
             else if (rank.rankUpCommands == null) {
+
                 p.sendMessage("§cThere aren't commands for this rank anymore");
                 e.setCancelled(true);
+
             }
 
             // Open the GUI of commands
@@ -124,6 +126,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             	SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
             	gui.open();
+
             }
 
             // Check the title of the inventory and do things
@@ -199,6 +202,15 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Execute the command
                 Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
+
+            // Check the name of the button and do the actions
+            } else if (buttonname.equals("TP_to_the_Mine:")){
+
+                // Close the inventory
+                p.closeInventory();
+
+                // Execute the Command
+                Bukkit.dispatchCommand(p, "mines tp " + mineName);
 
             }
 
