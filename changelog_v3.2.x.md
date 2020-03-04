@@ -1,3 +1,4 @@
+[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ## Prison Build Logs for v3.2.x
 
@@ -7,7 +8,26 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.4 - 2020-02-25
+## tag v3.2.1-alpha.5 - 2020-03-04
+
+* **Tag with v3.2.1-alpha.5 and add Core Documents shells** Started to 
+put together the document structures within the project.  NO content yet,
+but trying to hook everything up to the table of contents.  More to follow!
+
+* **Removed Feature: Disabled the Sponge build**.  The sponge project
+was getting to the point that all the key functions that prison needs, has
+no code and were returning nulls.  Did not test the latest sponge build, 
+but there is no way some vital aspects would work, such as mine resets. 
+So commented the sponge references from gradle config files so it can be
+easily reenabled if anyone wants to try to hook it back up in the future.
+
+* **Added command placeholders to display**. When the user is entering the
+command **/ranks command add** it will now display the command placeholders
+as {player} and {player_uid} so the admins/owners won't have to keep 
+asking what they are.  They actually need to be displayed elsewhere too: TBD. 
+
+* **Bug Fix: Glass block was not being removed** when fill mode was 
+enabled. Glass block will now be replaced as expected.
 
 * **New Feature: Mine Reset Notification Control** On a per mine
 basis, notifications can now be turned off, set to a radius area from

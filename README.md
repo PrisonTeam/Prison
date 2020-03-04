@@ -6,13 +6,23 @@
 2. [Why should I use Prison?](#why-should-i-use-prison)
 3. [Get Prison](#get-prison)
 
+## Prison Documentation
+
+[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+
+The Prison documentation covers the important details on how to setup a usable Prison server.
+These documents are in a state of development, so more will be added.
+
 ## What is Prison?
 
-Prison is a Minecraft plugin that adds all the features necessary for prison servers. It runs on multiple platforms, including the popular [Spigot](http://spigotmc.org) and the rapidly growing [Sponge](http://spongepowered.org). Plugins for prison servers exist already, but many of them are poorly maintained, and the solid ones are paid resources. Prison eliminates the paywall and the updating hassle, and puts a one-stop solution in their place.
+Prison is a Minecraft plugin that adds all the features necessary for prison servers. It runs on the popular [Spigot](http://spigotmc.org). Plugins for prison servers exist already, but many of them are poorly maintained, and the solid ones are paid resources. Prison eliminates the paywall and the updating hassle, and puts a one-stop solution in their place.
 
 ### History of Prison
 
 Prison began as a plugin with the goal of combining two main prison server features: resetting mines and purchasable ranks. In June 2014, Prison v2.0 was released with the goal of providing a single solution for prison servers. Prison v2.0 has had numerous problems and is not the solution that we had envisioned for an all-in-one package to be. The solution is the current version - Prison v3.0.
+
+Starting with prison v3.2.0 new development efforts were began with a focus on adding new features
+and improving the performance and stability.
 
 ## Why should I use Prison?
 
