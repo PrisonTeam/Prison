@@ -199,7 +199,7 @@ public class RankLadder {
                 ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
 
         int newIndex = positions.indexOf(before) - 1;
-        if (newIndex >= positions.size()) {
+        if (newIndex < 0) {
             return Optional.empty();
         }
 
