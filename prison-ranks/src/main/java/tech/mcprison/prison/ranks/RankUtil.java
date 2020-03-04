@@ -43,8 +43,17 @@ public class RankUtil {
      * Fields & Constants
      */
 
-    public static final int RANKUP_SUCCESS = 0, RANKUP_FAILURE = 1, RANKUP_HIGHEST = 2,
-        RANKUP_CANT_AFFORD = 3, RANKUP_NO_RANKS = 4;
+	public enum RankupStatus {
+		RANKUP_SUCCESS,
+		RANKUP_FAILURE,
+		RANKUP_LOWEST,
+		RANKUP_HIGHEST,
+		RANKUP_CANT_AFFORD,
+		RANKUP_NO_RANKS
+		;
+	}
+//    public static final int RANKUP_SUCCESS = 0, RANKUP_FAILURE = 1, RANKUP_HIGHEST = 2,
+//        RANKUP_CANT_AFFORD = 3, RANKUP_NO_RANKS = 4;
 
     /*
      * Constructor
@@ -56,21 +65,36 @@ public class RankUtil {
     /*
      * Method
      */
-
+    
+    
+    public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
+    	return rankUpPlayer(player, ladderName, false, true);
+    }
+    
+    public static RankUpResult promotePlayer(RankPlayer player, String ladderName) {
+    	return rankUpPlayer(player, ladderName, true, true);
+    }
+    
+    public static RankUpResult demotePlayer(RankPlayer player, String ladderName) {
+    	return rankUpPlayer(player, ladderName, true, false);
+    }
+    
+    
     /**
      * Sends the player to the next rank.
      *
      * @param player     The {@link RankPlayer} to rank up.
      * @param ladderName The name of the ladder to rank up this player on.
      */
-    public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
+    private static RankUpResult rankUpPlayer(RankPlayer player, String ladderName, 
+    		boolean bypassCost, boolean promote) {
 
         Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
         RankLadder ladder =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
 
         if(prisonPlayer == null || ladder == null) {
-            return new RankUpResult(RANKUP_FAILURE, null);
+            return new RankUpResult(RankupStatus.RANKUP_FAILURE);
         }
 
         Optional<Rank> currentRankOptional = player.getRank(ladder);
@@ -79,17 +103,26 @@ public class RankUtil {
         if (!currentRankOptional.isPresent()) {
             Optional<Rank> lowestRank = ladder.getByPosition(0);
             if (!lowestRank.isPresent()) {
-                return new RankUpResult(RANKUP_NO_RANKS, null);
+                return new RankUpResult(RankupStatus.RANKUP_NO_RANKS);
             }
             nextRank = lowestRank.get();
         } else {
-            Optional<Rank> nextRankOptional =
-                ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
-
-            if (!nextRankOptional.isPresent()) {
-                return new RankUpResult(RANKUP_HIGHEST,
-                    currentRankOptional.get()); // We're already at the highest rank.
-            }
+        	Optional<Rank> nextRankOptional = null;
+        	if ( promote ) {
+        		nextRankOptional = ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
+        		
+        		if (!nextRankOptional.isPresent()) {
+        			return new RankUpResult(RankupStatus.RANKUP_HIGHEST,
+        					currentRankOptional.get()); // We're already at the highest rank.
+        		}
+        	} else {
+        		nextRankOptional = ladder.getPrevious(ladder.getPositionOfRank(currentRankOptional.get()));
+        		
+        		if (!nextRankOptional.isPresent()) {
+        			return new RankUpResult(RankupStatus.RANKUP_LOWEST,
+        					currentRankOptional.get()); // We're already at the lowest rank.
+        		}
+        	}
 
             nextRank = nextRankOptional.get();
         }
@@ -97,13 +130,16 @@ public class RankUtil {
         // We're going to be making a transaction here
         // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
 
-        EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
-            .getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-        if (!economy.canAfford(prisonPlayer, nextRank.cost)) {
-            return new RankUpResult(RANKUP_CANT_AFFORD, nextRank);
+        double nextRankCost = nextRank.cost;
+        if (!bypassCost) {
+        	EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
+        			.getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+        	if (!economy.canAfford(prisonPlayer, nextRankCost)) {
+        		return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+        	}
+        	
+        	economy.removeBalance(prisonPlayer, nextRankCost);
         }
-
-        economy.removeBalance(prisonPlayer, nextRank.cost);
 
         player.addRank(ladder, nextRank);
 
@@ -111,7 +147,7 @@ public class RankUtil {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
         } catch (IOException e) {
             Output.get().logError("An error occurred while saving player files.", e);
-            return new RankUpResult(RANKUP_FAILURE, null);
+            return new RankUpResult(RankupStatus.RANKUP_FAILURE);
         }
 
         // Now, we'll run the rank up commands.
@@ -123,8 +159,9 @@ public class RankUtil {
         }
 
         Prison.get().getEventBus().post(
-            new RankUpEvent(player, currentRankOptional.orElse(null), nextRank, nextRank.cost));
-        return new RankUpResult(RANKUP_SUCCESS, nextRank);
+            new RankUpEvent(player, currentRankOptional.orElse(null), nextRank, nextRankCost));
+        return new RankUpResult(RankupStatus.RANKUP_SUCCESS, nextRank, 
+        		(bypassCost ? "Bypass cost: " + nextRankCost : null));
     }
 
     public static String doubleToDollarString(double val) {
@@ -142,13 +179,45 @@ public class RankUtil {
 
     public static class RankUpResult {
 
-        public int status;
-        public Rank rank;
+        private RankupStatus status;
+        private Rank rank;
+        private String message;
 
-        public RankUpResult(int status, Rank rank) {
+        public RankUpResult(RankupStatus status, Rank rank, String message) {
             this.status = status;
             this.rank = rank;
+            this.message = message;
         }
+        
+        public RankUpResult(RankupStatus status, Rank rank) {
+        	this(status, rank, null);
+        }
+        
+        public RankUpResult(RankupStatus status) {
+        	this(status, null, null);
+        }
+        
+
+		public RankupStatus getStatus() {
+			return status;
+		}
+		public void setStatus( RankupStatus status ) {
+			this.status = status;
+		}
+
+		public Rank getRank() {
+			return rank;
+		}
+		public void setRank( Rank rank ) {
+			this.rank = rank;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+		public void setMessage( String message ) {
+			this.message = message;
+		}
     }
 
 

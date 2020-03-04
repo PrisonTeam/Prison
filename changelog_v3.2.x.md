@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.1-alpha.5 - 2020-03-04
 
+* **New Features:  /ranks promote and /ranks demote.**  This is a way for an 
+admin/owner to demote or promote players directly, without incurring a cost to 
+the player.
+This is good for testing purposes.  But has a major concern.  When setting up 
+the rank commands, the commands to remove elevated permissions must also be 
+included.  Otherwise if a player is demoted, their perms will not be removed.
+
 * **Tag with v3.2.1-alpha.5 and add Core Documents shells** Started to 
 put together the document structures within the project.  NO content yet,
 but trying to hook everything up to the table of contents.  More to follow!
