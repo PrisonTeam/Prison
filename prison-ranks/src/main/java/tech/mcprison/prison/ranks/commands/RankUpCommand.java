@@ -42,44 +42,41 @@ public class RankUpCommand {
      * /rankup command
      */
 
-    @Command(identifier = "rankup", description = "Ranks up to the next rank.", permissions = {
-        "ranks.user"}) 
+    @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
+    			permissions = "ranks.user", onlyPlayers = true) 
     public void rankUp(Player sender,
-        @Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")
-            String ladderName) {
+        @Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder) {
 
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
-        if (!ladderName.equalsIgnoreCase("default") && !sender
-            .hasPermission("ranks.rankup." + ladderName.toLowerCase())) {
+        if (!ladder.equalsIgnoreCase("default") && !sender
+            .hasPermission("ranks.rankup." + ladder.toLowerCase())) {
             Output.get()
                 .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
-                    "ranks.rankup." + ladderName.toLowerCase());
+                    "ranks.rankup." + ladder.toLowerCase());
             return;
         }
 
         UUID playerUuid = sender.getUUID();
         
-		ladderName = confirmLadder( sender, ladderName );
+		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
 
-        if ( ladderName != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladderName);
+        if ( ladder != null && rankPlayer != null ) {
+        	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result );
+        	processResults( sender, result, true );
         }
-
     }
 
 
     @Command(identifier = "ranks promote", description = "Promotes a player to the next rank.", 
-    		permissions = {"ranks.promote"}) 
-    public void promotePlayer(Player sender,
-    	@Arg(name = "player", def = "", description = "Player name") String playerName,
-        @Arg(name = "ladder", description = "The ladder to promote on.", def = "default")
-            String ladderName) {
+    			permissions = "ranks.promote", onlyPlayers = true) 
+    public void promotePlayer(CommandSender sender,
+    	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
+        @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder) {
 
     	Player player = getPlayer( sender, playerName );
     	
@@ -90,24 +87,23 @@ public class RankUpCommand {
 
         UUID playerUuid = player.getUUID();
         
-		ladderName = confirmLadder( sender, ladderName );
+		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
 
-        if ( ladderName != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladderName);
+        if ( ladder != null && rankPlayer != null ) {
+        	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result );
+        	processResults( sender, result, true );
         }
     }
 
 
     @Command(identifier = "ranks demote", description = "Demotes a player to the next lower rank.", 
-    		permissions = {"ranks.demote"}) 
-    public void demotePlayer(Player sender,
-    	@Arg(name = "player", def = "", description = "Player name") String playerName,
-        @Arg(name = "ladder", description = "The ladder to demote on.", def = "default")
-            String ladderName) {
+    			permissions = "ranks.demote", onlyPlayers = true) 
+    public void demotePlayer(CommandSender sender,
+    	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
+        @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
 
     	Player player = getPlayer( sender, playerName );
     	
@@ -118,19 +114,18 @@ public class RankUpCommand {
 
         UUID playerUuid = player.getUUID();
         
-		ladderName = confirmLadder( sender, ladderName );
+		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
 
-        if ( ladderName != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladderName);
+        if ( ladder != null && rankPlayer != null ) {
+        	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result );
+        	processResults( sender, result, false );
         }
     }
 
-	private String confirmLadder( Player sender, String ladderName )
-	{
+	public String confirmLadder( CommandSender sender, String ladderName ) {
 		Optional<RankLadder> ladderOptional =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
@@ -143,8 +138,7 @@ public class RankUpCommand {
 	}
 
 
-	private RankPlayer getPlayer( Player sender, UUID playerUuid )
-	{
+	public RankPlayer getPlayer( CommandSender sender, UUID playerUuid ) {
 		Optional<RankPlayer> playerOptional =
             PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid);
 
@@ -158,13 +152,17 @@ public class RankUpCommand {
 	}
 
 
-
-	private void processResults( Player sender, RankUtil.RankUpResult result )
-	{
+	public void processResults( CommandSender sender, RankUtil.RankUpResult result, boolean rankup ) {
+	
 		switch (result.getStatus()) {
             case RANKUP_SUCCESS:
-                Output.get().sendInfo(sender, "Congratulations! You have ranked up to rank '%s'. %s",
-                    result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+            	if ( rankup ) {
+            		Output.get().sendInfo(sender, "Congratulations! You have ranked up to rank '%s'. %s",
+            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+            	} else {
+            		Output.get().sendInfo(sender, "Unfortunately, You have been demoted to rank '%s'. %s",
+            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+				}
                 break;
             case RANKUP_CANT_AFFORD:
                 Output.get().sendError(sender,

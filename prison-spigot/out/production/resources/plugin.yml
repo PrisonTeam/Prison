@@ -213,6 +213,13 @@ permissions:
   ranks.delete:
     description: Access to the /ranks delete command.
 
+  ranks.promote:
+    description: Access to the /ranks promote command.
+
+  ranks.demote:
+    description: Access to the /ranks demote command.
+
+  
   ranks.admin:
     description: Contains all the commands reserved for admins.
     default: op
@@ -224,3 +231,5 @@ permissions:
       ranks.list: true
       ranks.create: true
       ranks.delete: true
+      ranks.promote: true
+      ranks.demote: true
