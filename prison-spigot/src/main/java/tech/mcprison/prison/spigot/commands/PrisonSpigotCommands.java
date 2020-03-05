@@ -23,9 +23,12 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 sender.sendMessage("§cYou must be a player to use this command... Hi console!");
                 return true;
             }
-            Player p = (Player) sender;
-            SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
-            gui.open();
+
+            if (args[0].equalsIgnoreCase("gui")) {
+                Player p = (Player) sender;
+                SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
+                gui.open();
+            }
 
         return true;
     }

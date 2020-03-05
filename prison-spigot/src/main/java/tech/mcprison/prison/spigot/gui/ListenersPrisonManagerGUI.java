@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
+import jdk.javadoc.internal.tool.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,15 +8,88 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ListenersPrisonManagerGUI implements Listener {
+
+    SpigotPrison plugin;
+    public List <String> activeGui = new ArrayList<String>();
+
+
+    /* CONSTRUCTORS */
+    public ListenersPrisonManagerGUI(){}
+    public ListenersPrisonManagerGUI(SpigotPrison instance){
+        plugin = instance;
+    }
+    /* END CONSTRUCTORS */
+
+
+    /* EVENTS HANDLERS */
+    @EventHandler
+    public void onGuiActivation(InventoryClickEvent e){
+
+        Player p = (Player) e.getWhoClicked();
+
+        if(activeGui.contains(p.getName()))
+            e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onGuiClosing(InventoryCloseEvent e){
+
+        Player p = (Player) e.getPlayer();
+
+        if(activeGui.contains(p.getName()))
+            activeGui.remove(p.getName());
+    }
+    /* END EVENTS HANDLERS */
+
+
+    /* MUTATORS */
+    public void addToGUIBlocker(Player p){
+        if(!activeGui.contains(p.getName()))
+            activeGui.add(p.getName());
+    }
+
+    public void removeFromGUIBlocker(Player p){
+        if(activeGui.contains(p.getName()))
+            activeGui.remove(p.getName());
+    }
+    /* END MUTATORS */
+
+
+    /* ERROR-PROOF CHECK */
+    public boolean invalidClick(Player player, InventoryClickEvent event){
+        if(activeGui.contains(player.getName()))
+            if(event.getSlot() == -999 // Checks if player clicks outside the inventory
+                    || event.getCurrentItem() == null // Checks for invalid item
+                    || event.getCurrentItem().getType() == Material.AIR) // Checks for clicking empty slot
+                return true;
+        return false;
+    }
+
+    @EventHandler
+    public void onOpenInventory(InventoryOpenEvent e){
+        Player p = (Player) e.getPlayer();
+
+        if (e.getView().getTitle().equals("§3" + "PrisonManager") || e.getView().getTitle().equals("§3" + "RanksManager -> Ladders") || e.getView().getTitle().equals("§3" + "Ladders -> Ranks") || e.getView().getTitle().equals("§3" + "Ranks -> RankUPCommands") || e.getView().getTitle().equals("§3" + "MinesManager -> Mines") || e.getView().getTitle().equals("§3" + "Mines -> MineInfo") || e.getView().getTitle().equals("§3" + "Mines -> Delete") || e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")){
+
+            // Add the player to the list of those who can't move items in the inventory
+            addToGUIBlocker(p);
+
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
@@ -39,22 +113,20 @@ public class ListenersPrisonManagerGUI implements Listener {
             if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Ranks")) {
                 SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
                 gui.open();
-                return;
-            }
-
-            // Check the Item display name and do open the right GUI
-            if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Prison Tasks")) {
                 e.setCancelled(true);
-                return;
             }
 
             // Check the Item display name and do open the right GUI
-            if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Mines")) {
+            else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Prison Tasks")) {
+                e.setCancelled(true);
+            }
+
+            // Check the Item display name and do open the right GUI
+            else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Mines")) {
                 SpigotMinesGUI gui = new SpigotMinesGUI(p);
                 gui.open();
+                e.setCancelled(true);
             }
-
-            e.setCancelled(true);
 
             // Check if the GUI have the right title and do the actions
         } else if (e.getView().getTitle().equals("§3" + "RanksManager -> Ladders")) {
@@ -81,12 +153,15 @@ public class ListenersPrisonManagerGUI implements Listener {
                 SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
                 gui.open();
                 e.setCancelled(true);
+                return;
 
             }
 
             // Open the GUI of ranks
             SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
             gui.open();
+
+            e.setCancelled(true);
 
             // Check the title of the inventory and do the actions
         } else if (e.getView().getTitle().equals("§3" + "Ladders -> Ranks")){
@@ -126,8 +201,11 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             	SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
             	gui.open();
+            	e.setCancelled(true);
 
             }
+
+            e.setCancelled(true);
 
             // Check the title of the inventory and do things
         } else if (e.getView().getTitle().equals("§3" + "Ranks -> RankUPCommands")) {
@@ -163,6 +241,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 p.closeInventory();
                 SpigotMinesConfirmGUI gui = new SpigotMinesConfirmGUI(p, minename);
                 gui.open();
+                e.setCancelled(true);
                 return;
 
             }
@@ -170,6 +249,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             // Open the GUI of mines info
             SpigotMineInfoGUI gui = new SpigotMineInfoGUI(p, m, minename);
             gui.open();
+
+            e.setCancelled(true);
 
         // Check the title of the inventory and do the actions
         } else if (e.getView().getTitle().equals("§3" + "Mines -> MineInfo")){
@@ -190,6 +271,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Open the GUI
                 SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
                 gui.open();
+
+                e.setCancelled(true);
 
             }
 
@@ -216,6 +299,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Execute the Command
                 Bukkit.dispatchCommand(p, "mines tp " + mineName);
 
+                e.setCancelled(true);
+
             }
 
             else {
@@ -223,6 +308,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             	e.setCancelled(true);
 
             }
+
+            e.setCancelled(true);
 
         // Check the title of the inventory and do the actions
         } else if (e.getView().getTitle().equals("§3" + "Mines -> Delete")) {
@@ -255,6 +342,8 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             }
 
+            e.setCancelled(true);
+
             // If none of them is true, then cancel the event
         } else if (e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")){
 
@@ -272,7 +361,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             if (e.isShiftClick() && e.isRightClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname);
+                Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname.substring(0, buttonname.length()-1));
 
                 // Close the GUI so it can be updated
                 p.closeInventory();
@@ -281,6 +370,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
                 gui.open();
             }
+
+            e.setCancelled(true);
 
         }
 

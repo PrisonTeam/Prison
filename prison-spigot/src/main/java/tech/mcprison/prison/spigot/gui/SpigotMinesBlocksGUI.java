@@ -10,6 +10,7 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
@@ -34,8 +35,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         List<String> blockslore = createLore(
                 "§cPress Shift + Right click to remove",
                 "",
-                "§8§l|§3Info§8|"
-        );
+                "§8§l|§3Info§8|");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;
