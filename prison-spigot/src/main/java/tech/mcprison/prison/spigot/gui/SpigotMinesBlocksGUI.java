@@ -10,7 +10,6 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
