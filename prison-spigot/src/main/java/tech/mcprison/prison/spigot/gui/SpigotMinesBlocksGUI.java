@@ -31,11 +31,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         MineManager mMan = pMines.getMineManager();
         Mine m = mMan.getMine(minename).get();
 
-        List<String> blockslore = createLore(
-                "§cPress Shift + Right click to remove",
-                "",
-                "§8§l|§3Info§8|");
-
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;
 
@@ -44,6 +39,11 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
 
         // For every block makes a button
         for (Block block : m.getBlocks()) {
+
+            List<String> blockslore = createLore(
+                    "§cPress Shift + Right click to remove",
+                    "",
+                    "§8§l|§3Info§8|");
 
             // Add a lore
             blockslore.add("§3Chance: " + block.getChance() + "%");
