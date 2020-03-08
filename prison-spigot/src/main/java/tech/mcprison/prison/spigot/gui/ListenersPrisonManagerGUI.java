@@ -322,7 +322,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         e.setCancelled(true);
 
                         break;
-                    case "MineSpawn:":
+                    case "Mine_Spawn:":
 
                         // Execute the command
                         Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
@@ -330,6 +330,11 @@ public class ListenersPrisonManagerGUI implements Listener {
                         e.setCancelled(true);
                         // Check the name of the button and do the actions
                         break;
+                    case "Mine_notification_options:":
+
+                        e.setCancelled(true);
+                        return;
+
                     case "TP_to_the_Mine:":
 
                         // Close the inventory

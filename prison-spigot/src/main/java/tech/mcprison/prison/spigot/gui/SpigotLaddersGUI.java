@@ -43,7 +43,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         for (RankLadder ladder : lm.getLadders()){
 
             // Create the button
-            itemladder = createButton(Material.LADDER, 1, ladderslore, "§6" + ladder.name);
+            itemladder = createButton(Material.LADDER, 1, ladderslore, "§3" + ladder.name);
 
             // Add the button to the inventory
             inv.addItem(itemladder);

@@ -31,13 +31,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
         // Init the ItemStack
         ItemStack itemines;
 
-        // Init the lore array with default values for ladders
-        List<String> mineslore = createLore(
-        "§8Left Click to open",
-        "§cPress Shift + Right click to delete",
-        "",
-        "§8§l|§3Info§8|");
-
         // Get the mines
         PrisonMines pMines = PrisonMines.getInstance();
 
@@ -50,16 +43,23 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
         // Make the buttons for every Mine with info
         for (Mine m : pMines.getMines()) {
 
-            mineslore.add("§6World: §7" +  m.getWorldName());
+            // Init the lore array with default values for ladders
+            List<String> mineslore = createLore(
+                    "§8Left Click to open",
+                    "§cPress Shift + Right click to delete",
+                    "",
+                    "§8§l|§3Info§8|");
+
+            mineslore.add("§3World: §7" +  m.getWorldName());
 
             String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "§cnot set";
-            mineslore.add("§6Spawnpoint: §7" + spawnPoint);
+            mineslore.add("§3Spawnpoint: §7" + spawnPoint);
 
-            mineslore.add("§6Reset time in seconds: §7" + m.getResetTime());
+            mineslore.add("§3Reset time in seconds: §7" + m.getResetTime());
 
-            mineslore.add("§6Size of Mine: §7" + ChatColor.translateAlternateColorCodes('&' , m.getBounds().getDimensions()));
+            mineslore.add("§3Size of Mine: §7" + ChatColor.translateAlternateColorCodes('&' , m.getBounds().getDimensions()));
 
-            mineslore.add("§6Volume in Blocks: §7" + m.getBounds().getTotalBlockCount());
+            mineslore.add("§3Volume in Blocks: §7" + m.getBounds().getTotalBlockCount());
 
             mineslore.add("§3Blocks:");
 
@@ -79,7 +79,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
             }
 
             // Create the button
-            itemines = createButton(Material.COAL_ORE, 1, mineslore, "§6" + m.getName());
+            itemines = createButton(Material.COAL_ORE, 1, mineslore, "§3" + m.getName());
 
             // Add the button to the inventory
             inv.addItem(itemines);

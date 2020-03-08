@@ -32,17 +32,11 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         // Init the ItemStack
         ItemStack itemrank;
 
-        // Init the lore array with default values for ladders
-        List<String> rankslore = createLore(
-        		"§cPress Shift + Right click to delete",
-        		"",
-        		"§8§l|§3Info§8|");
-
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D)*9;
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3Ladders -> Ranks");
+        Inventory inv = Bukkit.createInventory(null, dimension, "§3" + "Ladders -> Ranks");
 
         // For every rank make a button
         for (RankLadder.PositionRank pos : ladder.get().ranks) {
@@ -53,20 +47,26 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                 continue; // Skip it
             }
 
+            // Init the lore array with default values for ladders
+            List<String> rankslore = createLore(
+                    "§cPress Shift + Right click to delete",
+                    "",
+                    "§8§l|§3Info§8|");
+
             // Get the specific rank
             Rank rank = rankOptional.get();
 
             // Add the RankID Lore
-            rankslore.add("§6Rank id: §7" + rank.id);
+            rankslore.add("§3Rank id: §7" + rank.id);
 
             // Add the RankName lore
-            rankslore.add("§6Rank Name: §7" + rank.name);
+            rankslore.add("§3Rank Name: §7" + rank.name);
 
             // Add the Rank Tag lore
-            rankslore.add("§6Rank Tag: §7" + ChatColor.translateAlternateColorCodes('&', rank.tag));
+            rankslore.add("§3Rank Tag: §7" + ChatColor.translateAlternateColorCodes('&', rank.tag));
 
             // Add the Price lore
-            rankslore.add("§6Rank Price: §a" + rank.cost);
+            rankslore.add("§3Rank Price: §a" + rank.cost);
 
             List<RankPlayer> players =
                     PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
@@ -74,12 +74,12 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                             .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            rankslore.add("§6Players with this rank: §7" + players.size());
+            rankslore.add("§3Players with this rank: §7" + players.size());
 
             // RankUpCommands info lore
             rankslore.add("");
             if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0){
-                rankslore.add("§8The Rank " + rank.name + " contains no commands.");
+                rankslore.add("§3The Rank " + rank.name + " contains no commands.");
             } else {
                 rankslore.add("§8There're §3" + rank.rankUpCommands.size() + " §3Commands §8in this ladder:");
                 for (String command : rank.rankUpCommands) {
@@ -89,7 +89,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             }
 
             // Make the button with materials, amount, lore and name
-            itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§6" + rank.name);
+            itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§3" + rank.name);
 
             // Add the button to the inventory
             inv.addItem(itemrank);

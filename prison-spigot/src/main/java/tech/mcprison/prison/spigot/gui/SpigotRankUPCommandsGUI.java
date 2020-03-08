@@ -26,10 +26,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // Init the ItemStack
         ItemStack itemcommand;
 
-        // Init the lore array with default values for ladders
-        List<String> commandslore = createLore(
-        		"§cPress Shift + Right click to delete");
-
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D)*9;
 
@@ -38,8 +34,18 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // For every command make a button
         for (String command : rank.rankUpCommands) {
+
+            // Init the lore array with default values for ladders
+            List<String> commandslore = createLore(
+                    "§cPress Shift + Right click to delete",
+                    "",
+                    "§8§l|§3Info§8|");
+
+            // Adding a lore
+            commandslore.add("§3Command: §7" + command);
+
             // Make the button with materials, amount, lore and name
-            itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, "§6" + rank.name + " " + command);
+            itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, "§3" + rank.name + " " + command);
 
             // Add the button to the inventory
             inv.addItem(itemcommand);

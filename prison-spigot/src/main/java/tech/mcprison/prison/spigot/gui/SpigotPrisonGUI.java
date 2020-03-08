@@ -27,11 +27,11 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The Ranks button
         // Lore of the button
         List<String> rankslore = createLore(
-        		"§3Ranks GUI manager",
+        		"§8Ranks GUI manager",
         		"§8Click to open");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§7" + "Ranks");
+        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§3" + "Ranks");
 
         //Position of the button
         inv.setItem(dimension - 17, ranks);
@@ -41,12 +41,12 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The Prison Tasks button
         // Lore of the button
         List<String> prisontaskslore = createLore(
-        		"§3Prison Tasks GUI manager",
+        		"§8Prison Tasks GUI manager",
         		"§8Click to open",
                 "§d§lComing Soon");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§b" + "Prison Tasks");
+        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§3" + "Prison Tasks");
 
         //Position of the button
         inv.setItem(dimension - 14, prisontasks);
@@ -56,12 +56,11 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The mines button
         // Lore of the button
         List<String> mineslore = createLore(
-        		"§3Mines GUI manager",
-        		"§8Click to open",
-                "§d§lWork in progress");
+        		"§8Mines GUI manager",
+        		"§8Click to open");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§8" + "Mines");
+        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§3" + "Mines");
 
         //Position of the button
         inv.setItem(dimension - 11, mines);
