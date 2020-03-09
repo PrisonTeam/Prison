@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -57,6 +58,7 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
+import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
@@ -144,20 +146,30 @@ class SpigotPlatform implements Platform {
             .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
     }
 
-//    @Override
-//    public Optional<Player> getOfflinePlayer(String name) {
-//    	return getOfflinePlayer(name, null);
-//    }
-//    
-//    @Override
-//    public Optional<Player> getOfflinePlayer(UUID uuid) {
-//    	return getOfflinePlayer(null, uuid);
-//    }
-//    private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
-//    	SpigotPlayer player = null;
+    @Override
+    public Optional<Player> getOfflinePlayer(String name) {
+    	return getOfflinePlayer(name, null);
+    }
+    
+    @Override
+    public Optional<Player> getOfflinePlayer(UUID uuid) {
+    	return getOfflinePlayer(null, uuid);
+    }
+    private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
+    	SpigotOfflinePlayer player = null;
+    	
+    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
+    		if ( name != null && offP.getName().equals(name) ||
+					  uuid != null && offP.getUniqueId().equals(uuid) ) {
+    			player = new SpigotOfflinePlayer( offP );
+    			
+	  			players.add(player);
+	              break;
+	  		}
+		}
+    	
 //    	List<OfflinePlayer> olPlayers = Arrays.asList( Bukkit.getOfflinePlayers() );
-//    	for ( OfflinePlayer offlinePlayer : olPlayers )
-//		{
+//    	for ( OfflinePlayer offlinePlayer : olPlayers ) {
 //    		if ( name != null && offlinePlayer.getName().equals(name) ||
 //					  uuid != null && offlinePlayer.getUniqueId().equals(uuid) ) {
 //    			player = new SpigotPlayer(offlinePlayer.getPlayer());
@@ -165,8 +177,8 @@ class SpigotPlatform implements Platform {
 //                break;
 //    		}
 //		}
-//    	return Optional.ofNullable( player );
-//    }
+    	return Optional.ofNullable( player );
+    }
     
     @Override public String getPluginVersion() {
         return plugin.getDescription().getVersion();

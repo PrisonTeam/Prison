@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -873,7 +874,7 @@ public class MinesCommands {
     	
     	Player player = getPlayer( sender );
     	
-    	if (player == null) {
+    	if (player == null || !player.isOnline()) {
     		sender.sendMessage( "&3You must be a player in the game to run this command." );
     		return;
     	}
@@ -925,22 +926,10 @@ public class MinesCommands {
 
     }
 
-	private Player getPlayer( CommandSender sender )
-	{
-		String playerName = sender.getName();
-    	Player player = null;
-    	
-    	List<Player> players = Prison.get().getPlatform().getOnlinePlayers();
-    	for ( Player p : players )
-		{
-			if ( p.getName().equalsIgnoreCase( playerName )) {
-				player = p;
-				break;
-			}
-		}
-		return player;
+	private Player getPlayer( CommandSender sender ) {
+		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
+		return player.isPresent() ? player.get() : null;
 	}
-    
     
 
     

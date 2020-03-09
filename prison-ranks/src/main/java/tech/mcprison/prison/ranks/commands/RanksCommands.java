@@ -337,8 +337,7 @@ public class RanksCommands {
      * @param playerName is optional, if not supplied, then sender will be used
      * @return Player if found, or null.
      */
-	private Player getPlayer( CommandSender sender, String playerName )
-	{
+	private Player getPlayer( CommandSender sender, String playerName ) {
 		Player result = null;
 		
 		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
@@ -347,9 +346,9 @@ public class RanksCommands {
 		
 		if ( playerName != null ) {
 			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
-//			if ( !opt.isPresent() ) {
-//				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
-//			}
+			if ( !opt.isPresent() ) {
+				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+			}
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}

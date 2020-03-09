@@ -67,7 +67,7 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result, true );
+        	processResults( sender, null, result, true );
         }
     }
 
@@ -94,7 +94,7 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result, true );
+        	processResults( sender, player, result, true );
         }
     }
 
@@ -121,7 +121,7 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, result, false );
+        	processResults( sender, player, result, false );
         }
     }
 
@@ -152,15 +152,17 @@ public class RankUpCommand {
 	}
 
 
-	public void processResults( CommandSender sender, RankUtil.RankUpResult result, boolean rankup ) {
+	public void processResults( CommandSender sender, Player player, RankUtil.RankUpResult result, boolean rankup ) {
 	
 		switch (result.getStatus()) {
             case RANKUP_SUCCESS:
             	if ( rankup ) {
-            		Output.get().sendInfo(sender, "Congratulations! You have ranked up to rank '%s'. %s",
+            		Output.get().sendInfo(sender, "Congratulations! %s ranked up to rank '%s'. %s",
+            				(player == null ? "You have" : player.getName()),
             				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
             	} else {
-            		Output.get().sendInfo(sender, "Unfortunately, You have been demoted to rank '%s'. %s",
+            		Output.get().sendInfo(sender, "Unfortunately, %s been demoted to rank '%s'. %s",
+            				(player == null ? "You have" : player.getName()),
             				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
 				}
                 break;
@@ -170,10 +172,12 @@ public class RankUpCommand {
                     RankUtil.doubleToDollarString(result.getRank().cost));
                 break;
             case RANKUP_LOWEST:
-            	Output.get().sendInfo(sender, "You are already at the lowest rank!");
+            	Output.get().sendInfo(sender, "%s already at the lowest rank!",
+            				(player == null ? "You are" : player.getName()));
             	break;
             case RANKUP_HIGHEST:
-                Output.get().sendInfo(sender, "You are already at the highest rank!");
+                Output.get().sendInfo(sender, "%s already at the highest rank!",
+            				(player == null ? "You are" : player.getName()));
                 break;
             case RANKUP_FAILURE:
                 Output.get().sendError(sender,
@@ -204,9 +208,9 @@ public class RankUpCommand {
 		
 		if ( playerName != null ) {
 			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
-//			if ( !opt.isPresent() ) {
-//				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
-//			}
+			if ( !opt.isPresent() ) {
+				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+			}
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}
