@@ -8,7 +8,20 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.5 - 2020-03-04
+## tag v3.2.1-alpha.5 - 2020-03-10
+
+* **New feature: /ranks set rank <player> <rank> <ladder>**.
+You can now just set a rank on a given ladder, and not have to worry about multiple 
+promotes or demotes.
+**Caution:** Use carefully, each rank that is configured must be independent of all the other 
+ranks. In other words, a given rank cannot expect the lower ranks to have set some 
+specific permission, but each rank's commands must ensure it works correctly without 
+hitting all the lower ranks.  Same goes for when this command is used for demotions 
+and skipping many ranks in the process.
+
+* **New Features: Offline player support.** Added off line player support on some of the
+commands. This now allows working with the players even if they are offline, which was not
+possible before.
 
 * **New Features:  /ranks promote and /ranks demote.**  This is a way for an 
 admin/owner to demote or promote players directly, without incurring a cost to 

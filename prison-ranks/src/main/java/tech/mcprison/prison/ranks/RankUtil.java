@@ -46,6 +46,9 @@ public class RankUtil {
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
 		RANKUP_FAILURE,
+		RANKUP_FAILURE_RANK_DOES_NOT_EXIST,
+		RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER,
+		
 		RANKUP_LOWEST,
 		RANKUP_HIGHEST,
 		RANKUP_CANT_AFFORD,
@@ -68,17 +71,22 @@ public class RankUtil {
     
     
     public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, false, true);
+    	return rankUpPlayer(player, ladderName, false, true, null);
     }
     
     public static RankUpResult promotePlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, true, true);
+    	return rankUpPlayer(player, ladderName, true, true, null);
     }
     
     public static RankUpResult demotePlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, true, false);
+    	return rankUpPlayer(player, ladderName, true, false, null);
     }
     
+    public static RankUpResult setRank(RankPlayer player, String ladderName, String rank) {
+    	return rankUpPlayer(player, ladderName, true, true, rank);
+    }
+    
+
     
     /**
      * Sends the player to the next rank.
@@ -87,7 +95,7 @@ public class RankUtil {
      * @param ladderName The name of the ladder to rank up this player on.
      */
     private static RankUpResult rankUpPlayer(RankPlayer player, String ladderName, 
-    		boolean bypassCost, boolean promote) {
+    		boolean bypassCost, boolean promote, String rank) {
 
         Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
         RankLadder ladder =
@@ -96,11 +104,31 @@ public class RankUtil {
         if(prisonPlayer == null || ladder == null) {
             return new RankUpResult(RankupStatus.RANKUP_FAILURE);
         }
+        
+        Rank targetRank = null;
+        if ( rank != null ) {
+        	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank( rank );
+        	
+        	if ( rankOptional.isPresent() ) {
+        		targetRank = rankOptional.get();
+        		
+        		if ( !ladder.containsRank( targetRank.id )) {
+        			return new RankUpResult(RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER);
+        			
+        		}
+        	} else {
+        		return new RankUpResult(RankupStatus.RANKUP_FAILURE_RANK_DOES_NOT_EXIST);
+        	}
+        }
+        
 
         Optional<Rank> currentRankOptional = player.getRank(ladder);
         Rank nextRank;
 
-        if (!currentRankOptional.isPresent()) {
+        if ( targetRank != null ) {
+        	nextRank = targetRank;
+        }
+        else if (!currentRankOptional.isPresent()) {
             Optional<Rank> lowestRank = ladder.getByPosition(0);
             if (!lowestRank.isPresent()) {
                 return new RankUpResult(RankupStatus.RANKUP_NO_RANKS);

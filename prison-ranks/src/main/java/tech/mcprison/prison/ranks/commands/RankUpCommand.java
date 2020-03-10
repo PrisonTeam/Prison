@@ -67,7 +67,7 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladder);
         	
-        	processResults( sender, null, result, true );
+        	processResults( sender, null, result, true, null, ladder );
         }
     }
 
@@ -94,7 +94,7 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, player, result, true );
+        	processResults( sender, player, result, true, null, ladder );
         }
     }
 
@@ -121,9 +121,39 @@ public class RankUpCommand {
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, player, result, false );
+        	processResults( sender, player, result, false, null, ladder );
         }
     }
+
+
+    @Command(identifier = "ranks set rank", description = "Demotes a player to the next lower rank.", 
+    			permissions = "ranks.demote", onlyPlayers = true) 
+    public void setRank(CommandSender sender,
+    	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
+    	@Arg(name = "rank", description = "The rank to assign to the player") String rank,
+        @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
+
+    	Player player = getPlayer( sender, playerName );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		return;
+    	}
+
+        UUID playerUuid = player.getUUID();
+        
+		ladder = confirmLadder( sender, ladder );
+
+        RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+
+        if ( ladder != null && rankPlayer != null ) {
+        	RankUtil.RankUpResult result = RankUtil.setRank(rankPlayer, ladder, rank);
+        	
+        	processResults( sender, player, result, true, rank, ladder );
+        }
+    }
+
+
 
 	public String confirmLadder( CommandSender sender, String ladderName ) {
 		Optional<RankLadder> ladderOptional =
@@ -152,18 +182,23 @@ public class RankUpCommand {
 	}
 
 
-	public void processResults( CommandSender sender, Player player, RankUtil.RankUpResult result, boolean rankup ) {
+	public void processResults( CommandSender sender, Player player, RankUtil.RankUpResult result, 
+	boolean rankup, String rank, String ladder ) {
 	
 		switch (result.getStatus()) {
             case RANKUP_SUCCESS:
             	if ( rankup ) {
-            		Output.get().sendInfo(sender, "Congratulations! %s ranked up to rank '%s'. %s",
+            		String message = String.format( "Congratulations! %s ranked up to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
-            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : "") );
+            		Output.get().sendInfo(sender, message);
+            		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             	} else {
-            		Output.get().sendInfo(sender, "Unfortunately, %s been demoted to rank '%s'. %s",
+	            	String message = String.format( "Unfortunately, %s been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
             				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+            		Output.get().sendInfo(sender, message);
+            		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
 				}
                 break;
             case RANKUP_CANT_AFFORD:
@@ -186,6 +221,13 @@ public class RankUpCommand {
             case RANKUP_NO_RANKS:
                 Output.get().sendError(sender, "There are no ranks in this ladder.");
                 break;
+            case RANKUP_FAILURE_RANK_DOES_NOT_EXIST:
+            	Output.get().sendError(sender, "The rank %s does not exist on this server.", rank);
+            	break;
+			case RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER:            
+				Output.get().sendError(sender, "The rank %s does not exist in the ladder %s.", rank, ladder);
+				break;
+            
         }
 	}
 

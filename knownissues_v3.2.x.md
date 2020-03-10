@@ -1,20 +1,62 @@
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-## Prison Known Issues and To Do's for v3.2.x
+# Prison Known Issues and To Do's for v3.2.x
 
 This document is intended to keep track of known issues and also provide for
 a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-## To Do Items
+# To Do Items
+
+Work to be considered.
+
+
+<h2> Higher Priority TO DO Items </h2>
+
+* **Complete the new Mines Reset Paging**
+  Holding up next release.
+
+* **Integrate GUI in to bleeding**
+  Holding up next release.
+
+* **Setup GUI to use /prison gui**
+
+* **Mine Placeholders**
+
+* **Get started on new Multi-Language Support**
+
+
+
+<h2>To consider - Lower priority</h2>
+
+
+
+* **Add to the Command annotations an option of *async* to run that command asynchronously**
+
+* **Add prison Placeholders to papi's website for downloads**
+Should try using papi too to make sure the integration works with it 
+as expected?
+
+DeadlyKill: This what he needs ita
+Papi
+Hook Plugin
+They have those expansions which hook other plug-ins
+
+https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
+
+
+
+* **Improve some of the display pages for ranks and ladders**
+Can add more information to the listings so they have more value.
 
 * **Tab Completion**
 Hook up tab completion on the prison commands.
 
 * **Better logging of major events**
 Need to log major events such as rankups, both to the server log, and also
-to the community.
+to the community.  Server logs for these events, especially when money is
+involved, is important.
 
 * **Block Types for Specific Versions of Minecraft**
 Add in support for the loss of magic values, and also provide for newer block
@@ -54,11 +96,6 @@ the complexities within the actual prison code, which in turn will help
 eliminate possible bugs too and give tighter code.
 
 
-* **Eliminate support for Sponge**
-It's not being used, so eliminate it and allow prison to possibly eliminate the
-extra layers of indirection it currently has to improve performance and to 
-possibly reduce the possibilities for errors. 
-
 * **Improve the prestige laddering system**
 A plugin named EZprestige has been attempted to be used with prison. Not sure if successful?
 
@@ -69,9 +106,20 @@ A plugin named EZprestige has been attempted to be used with prison. Not sure if
 
 * **Custom Mine reset messsages per mine**
 
-* **New Feature: Admin reset of Player Ranks**
-Bypass the costs for the players.  
 
+# Features recently added:
+
+* **DONE: Offline player support**
+Was not possible to get offline users through the prison API. 
+
+* **DONE: New Feature: Admin reset of Player Ranks**
+Bypass the costs for the players. The admins can now use
+/ranks promote, /ranks demote, and /ranks set rank.
+
+* **DONE: Eliminate support for Sponge**
+It's not being used, so eliminate it and allow prison to possibly eliminate the
+extra layers of indirection it currently has to improve performance and to 
+possibly reduce the possibilities for errors. 
 
 
 
@@ -135,7 +183,24 @@ down grade LuckPerms to v4.4.1 until the server admin's are able to upgrade
 Prison.
 
 
-* **No support for sponge - appears like it never had it**
+* [ ] **Reports that other plugins may cause issues with Prison**
+It's been mentioned that a plugin or two, named something like 
+"nohunger or nofalldmg", may have been causing issues with Prison.  
+Not sure if its the loading or running, but it behaved as if the
+mines and ranks module was not loaded since those commands were not
+functional.  Only /prison was working.  This appears as the same general
+effect of LuckPerms v5.x failures, where they caused a failure that
+prevented prison from performing a normal load.  
+I have not looked in to these plugins, but I would suggest that 
+WorldGuard should be used instead of these plugins to eliminate possible
+conflicts.
+
+
+
+* [x] **REMOVED: No support for sponge - appears like it never had it**
+Note: Support for sponge was commented out in two gradle files. The source code
+remains, but it will not impact the builds anymore.
+
 There is a sponge module, but there is so little code that has been written,
 that it does not appear to be hooked up.  There is no way it could have ever worked
 correctly since so many core components needed for the functionality of prison 
@@ -155,16 +220,4 @@ from the build.  Otherwise as new features are added, and existing ones under go
 major changes, then the Sponge components will have to be revisited and would be 
 wasting resources (and time) for no reasonable purpose.
 
-
-* **Reports that other plugins may cause issues with Prison**
-It's been mentioned that a plugin or two, named something like 
-"nohunger or nofalldmg", may have been causing issues with Prison.  
-Not sure if its the loading or running, but it behaved as if the
-mines and ranks module was not loaded since those commands were not
-functional.  Only /prison was working.  This appears as the same general
-effect of LuckPerms v5.x failures, where they caused a failure that
-prevented prison from performing a normal load.  
-I have not looked in to these plugins, but I would suggest that 
-WorldGuard should be used instead of these plugins to eliminate possible
-conflicts.
 
