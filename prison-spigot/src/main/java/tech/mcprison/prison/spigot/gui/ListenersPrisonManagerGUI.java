@@ -69,7 +69,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().equals("§3" + "MinesManager -> Mines") ||
                 e.getView().getTitle().equals("§3" + "Mines -> MineInfo") ||
                 e.getView().getTitle().equals("§3" + "Mines -> Delete") ||
-                e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")){
+                e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")||
+                e.getView().getTitle().equals("§3" + "MineInfo -> ResetTime")){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -344,6 +345,17 @@ public class ListenersPrisonManagerGUI implements Listener {
                         Bukkit.dispatchCommand(p, "mines tp " + mineName);
 
                         break;
+
+                    case "Reset_Time:":
+
+                        PrisonMines pMines = PrisonMines.getInstance();
+                        Mine m = pMines.getMineManager().getMine(mineName).get();
+                        int val = m.getResetTime();
+
+                        SpigotMineResetTimeGUI gui2 = new SpigotMineResetTimeGUI(p, val, mineName);
+                        gui2.open();
+
+                        break;
                 }
 
                 // Check the title of the inventory and do the actions
@@ -411,6 +423,73 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.setCancelled(true);
 
                 break;
+            }
+
+            case "§3" + "MineInfo -> ResetTime": {
+
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                String[] parts = buttonnamemain.split(" ");
+
+                String part1 = parts[0];
+                String part2 = parts[1];
+                String part3 = parts[2];
+
+                int decreaseOrIncreaseValue = 0;
+
+                if (parts.length == 4){
+                    decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
+                }
+
+                if (part1.equalsIgnoreCase("Confirm:")) {
+                    if (e.isLeftClick()){
+
+                        Bukkit.dispatchCommand(p,"mines resettime " + part2 + " " + part3);
+                        p.closeInventory();
+
+                        return;
+                    } else if (e.isRightClick()){
+
+                        p.sendMessage("§cEvent cancelled.");
+                        p.closeInventory();
+
+                        return;
+                    } else {
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
+                int val = Integer.parseInt(part2);
+
+                if (part3.equals("-")){
+
+                    if (!((val -  decreaseOrIncreaseValue) < 0)) {
+                        val = val - decreaseOrIncreaseValue;
+                    } else {
+                        p.sendMessage("§cToo low value");
+                        p.closeInventory();
+                        return;
+                    }
+
+                    SpigotMineResetTimeGUI gui = new SpigotMineResetTimeGUI(p, val, part1);
+                    gui.open();
+
+                } else if (part3.equals("+")){
+
+                    if (!((val + decreaseOrIncreaseValue) > 999999)) {
+                        val = val + decreaseOrIncreaseValue;
+                    } else {
+                        p.sendMessage("§cToo high value");
+                        p.closeInventory();
+                        return;
+                    }
+
+                    SpigotMineResetTimeGUI gui = new SpigotMineResetTimeGUI(p, val, part1);
+                    gui.open();
+
+                }
+
             }
         }
 

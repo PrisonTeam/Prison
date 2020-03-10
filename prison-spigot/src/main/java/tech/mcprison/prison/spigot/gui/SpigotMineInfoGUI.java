@@ -88,13 +88,31 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
                 "§8Manage the blocks of the Mine");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack blocksofthemine = createButton(Material.COMPASS, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
+        ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
 
         // Position of the button
         inv.setItem(dimension - 10, blocksofthemine);
 
         // Opens the inventory
         this.p.openInventory(inv);
+
+
+
+        // Blocks of the mine button and lore
+        List<String> mineResetTimeLore = createLore(
+                "§8Click to manage",
+                "§8Manage the reset time of the Mine",
+                 "§3Reset time: §7" + m.getResetTime());
+
+        // Create the button, set up the material, amount, lore and name
+        ItemStack mineResetTime = createButton(Material.WATCH, 1, mineResetTimeLore, "§3" + "Reset_Time: " + minename);
+
+        // Position of the button
+        inv.setItem(dimension - 1, mineResetTime);
+
+        // Opens the inventory
+        this.p.openInventory(inv);
+
 
     }
 
