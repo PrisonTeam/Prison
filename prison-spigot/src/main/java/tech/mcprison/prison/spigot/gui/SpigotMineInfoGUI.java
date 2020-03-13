@@ -63,7 +63,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         );
 
         // Create the button
-        ItemStack MinesNotifications = createButton(Material.WALL_SIGN, 1, MinesNotificationsLore, "§3" + "Mine_notification_options: " + minename);
+        ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, "§3" + "Mine_notifications: " + minename);
 
         // Position of the button
         inv.setItem(dimension - 14, MinesNotifications);

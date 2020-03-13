@@ -331,7 +331,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         e.setCancelled(true);
                         // Check the name of the button and do the actions
                         break;
-                    case "Mine_notification_options:":
+                    case "Mine_notifications:":
 
                         e.setCancelled(true);
                         return;
@@ -425,7 +425,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
-            case "§3" + "MineInfo -> ResetTime": {
+            case "§3" + "MinesInfo -> ResetTime": {
 
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 

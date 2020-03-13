@@ -47,7 +47,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
 
 
         List<String> confirmButtonLore = createLore(
-                "§8Left-Click to confirm",
+                "§aLeft-Click to confirm",
                 "§8Time: " + val,
                 "§cRight-Click to cancel"
         );
