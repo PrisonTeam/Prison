@@ -70,7 +70,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().equals("§3" + "Mines -> MineInfo") ||
                 e.getView().getTitle().equals("§3" + "Mines -> Delete") ||
                 e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")||
-                e.getView().getTitle().equals("§3" + "MineInfo -> ResetTime")){
+                e.getView().getTitle().equals("§3" + "MinesInfo -> ResetTime")){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -425,7 +425,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
-            case "§3" + "MinesInfo -> ResetTime": {
+            case "§3" + "MineInfo -> ResetTime": {
 
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
