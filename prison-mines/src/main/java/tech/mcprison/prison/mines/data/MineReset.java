@@ -633,12 +633,11 @@ public abstract class MineReset
 					getNotificationMode() == MineNotificationMode.radius && 
     					getBounds().within(player.getLocation(), radius) ) {
     				
-    				// TODO this message needs to have a placeholder for the mine's name:
-//            		PrisonMines.getInstance().getMinesMessages()
-//		                .getLocalizable("reset_message_mine").withReplacements( getName() )
-//		                .sendTo(player);
+            		PrisonMines.getInstance().getMinesMessages()
+		                .getLocalizable("reset_message").withReplacements( getName() )
+		                .sendTo(player);
     				
-    				player.sendMessage( "The mine " + getName() + " has just reset." );
+//    				player.sendMessage( "The mine " + getName() + " has just reset." );
     			}
     		}
     	}
@@ -660,14 +659,13 @@ public abstract class MineReset
 					getNotificationMode() == MineNotificationMode.radius && 
     					getBounds().within(player.getLocation(), radius) ) {
     				
-    				// TODO this message needs to have a placeholder for the mine's name:
-//            		PrisonMines.getInstance().getMinesMessages()
-//		                .getLocalizable("reset_warning")
-//		                .withReplacements( Text.getTimeUntilString(mineJob.getResetInSec() * 1000) )
-//		                .sendTo(player);
-//            	
-    				player.sendMessage( "The mine " + getName() + " will reset in " + 
-    						Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
+            		PrisonMines.getInstance().getMinesMessages()
+		                .getLocalizable("reset_warning")
+		                .withReplacements( getName(), Text.getTimeUntilString(mineJob.getResetInSec() * 1000) )
+		                .sendTo(player);
+            	
+//    				player.sendMessage( "The mine " + getName() + " will reset in " + 
+//    						Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
     				
     			}
     		}
