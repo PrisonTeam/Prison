@@ -491,6 +491,122 @@ public class ListenersPrisonManagerGUI implements Listener {
                 }
 
             }
+
+            case "§3" + "MineInfo -> MineNotifications": {
+
+                // Get the button name without colors but with the minename too
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button at the space between the buttonname and the minename
+                String[] parts = buttonnamemain.split(" ");
+
+                // Output finally the buttonname and the minename explicit out of the array
+                String buttonname = parts[0];
+                String mineName = parts[1];
+                String typeNotification;
+                long val;
+                PrisonMines pMines = PrisonMines.getInstance();
+                Mine m = pMines.getMineManager().getMine(mineName).get();
+
+                if (buttonname.equalsIgnoreCase("Within_Mode:")){
+
+                    typeNotification = "within";
+
+                    val = m.getNotificationRadius();
+
+                    SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val, typeNotification, mineName);
+                    gui.open();
+
+                } else if (buttonname.equalsIgnoreCase("Radius_Mode")){
+
+                    typeNotification = "radius";
+
+                    val = m.getNotificationRadius();
+
+                    SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, mineName);
+                    gui.open();
+
+                } else if (buttonname.equalsIgnoreCase("Disabled_Mode")){
+
+                    typeNotification = "disabled";
+
+                    Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
+
+                }
+
+            }
+
+            case "§3" + "MineNotifications -> Radius": {
+
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                String[] parts = buttonnamemain.split(" ");
+
+                String part1 = parts[0];
+                String part2 = parts[1];
+                String part3 = parts[2];
+                String typeNotification;
+
+                int decreaseOrIncreaseValue = 0;
+
+                if (!(part1.equalsIgnoreCase("Confirm"))){
+                    decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
+                    typeNotification = parts[4];
+                } else {
+                    typeNotification = parts[3];
+                }
+
+                if (part1.equalsIgnoreCase("Confirm:")) {
+                    if (e.isLeftClick()){
+
+                        Bukkit.dispatchCommand(p,"mines notification " + part2 + " " + typeNotification + " " + part3);
+                        p.closeInventory();
+
+                        return;
+                    } else if (e.isRightClick()){
+
+                        p.sendMessage("§cEvent cancelled.");
+                        p.closeInventory();
+
+                        return;
+                    } else {
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
+                long val = Integer.parseInt(part2);
+
+                if (part3.equals("-")){
+
+                    if (!((val -  decreaseOrIncreaseValue) < 0)) {
+                        val = val - decreaseOrIncreaseValue;
+                    } else {
+                        p.sendMessage("§cToo low value");
+                        p.closeInventory();
+                        return;
+                    }
+
+                    SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, part1);
+                    gui.open();
+
+                } else if (part3.equals("+")){
+
+                    if (!((val + decreaseOrIncreaseValue) > 9999999)) {
+                        val = val + decreaseOrIncreaseValue;
+                    } else {
+                        p.sendMessage("§cToo high value");
+                        p.closeInventory();
+                        return;
+                    }
+
+                    SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, part1);
+                    gui.open();
+
+                }
+
+            }
+
         }
 
         // Deleted the e.setCancelled(true) because'd make every chest impossible to use, sorry.
