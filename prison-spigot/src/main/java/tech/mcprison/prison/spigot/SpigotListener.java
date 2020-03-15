@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -148,7 +149,8 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onPlayerChat(AsyncPlayerChatEvent e) {
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event =
             new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
         Prison.get().getEventBus().post(event);

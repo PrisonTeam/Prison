@@ -10,6 +10,15 @@ that you need.
 
 ## tag v3.2.1-alpha.5 - 2020-03-10
 
+* **Compatibility Fix: Conflict with another chat plugin**
+There was an onPlayerChat with the AsyncPlayerChatEvent issue  
+with the plugin InteractiveChat that was resulting in intermittent issues where
+placeholders and on hover events were not always firing or working correctly.
+Issues were resolved when the prison plugin was removed from the server that was
+having this problem.
+Reviewed the prison code and everything looked good, but what got things to work
+correctly was setting the Spigot onPlayerChat event priority to EventPriority.LOW.
+
 * **New feature: /ranks set rank <player> <rank> <ladder>**.
 You can now just set a rank on a given ladder, and not have to worry about multiple 
 promotes or demotes.
