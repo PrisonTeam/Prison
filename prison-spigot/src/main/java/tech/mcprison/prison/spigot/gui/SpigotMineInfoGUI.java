@@ -58,8 +58,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
         // Lore and button
         List<String> MinesNotificationsLore = createLore(
                 "§8Click to open",
-                "§8Change Mines notifications",
-                "§d§lComing Soon..."
+                "§8Change Mines notifications"
         );
 
         // Create the button

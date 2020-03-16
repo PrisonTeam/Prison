@@ -62,15 +62,15 @@ public class ListenersPrisonManagerGUI implements Listener {
     public void onOpenInventory(InventoryOpenEvent e){
         Player p = (Player) e.getPlayer();
 
-        if (e.getView().getTitle().equals("§3" + "PrisonManager") ||
-                e.getView().getTitle().equals("§3" + "RanksManager -> Ladders") ||
-                e.getView().getTitle().equals("§3" + "Ladders -> Ranks") ||
-                e.getView().getTitle().equals("§3" + "Ranks -> RankUPCommands") ||
-                e.getView().getTitle().equals("§3" + "MinesManager -> Mines") ||
-                e.getView().getTitle().equals("§3" + "Mines -> MineInfo") ||
-                e.getView().getTitle().equals("§3" + "Mines -> Delete") ||
-                e.getView().getTitle().equals("§3" + "MineInfo -> Blocks")||
-                e.getView().getTitle().equals("§3" + "MinesInfo -> ResetTime")){
+        if (e.getView().getTitle().equalsIgnoreCase("§3" + "PrisonManager") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "RanksManager -> Ladders") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "Ladders -> Ranks") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "Ranks -> RankUPCommands") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "MinesManager -> Mines") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "Mines -> MineInfo") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "Mines -> Delete") ||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "MineInfo -> Blocks")||
+                e.getView().getTitle().equalsIgnoreCase("§3" + "MineInfo -> MineNotifications")){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -333,8 +333,10 @@ public class ListenersPrisonManagerGUI implements Listener {
                         break;
                     case "Mine_notifications:":
 
-                        e.setCancelled(true);
-                        return;
+                        SpigotMineNotificationsGUI gui1 = new SpigotMineNotificationsGUI(p, mineName);
+                        gui1.open();
+
+                        break;
 
                     case "TP_to_the_Mine:":
 
@@ -425,7 +427,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
-            case "§3" + "MineInfo -> ResetTime": {
+            case "§3" + "MinesInfo -> ResetTime": {
 
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
@@ -490,6 +492,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 }
 
+                break;
             }
 
             case "§3" + "MineInfo -> MineNotifications": {
@@ -517,7 +520,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val, typeNotification, mineName);
                     gui.open();
 
-                } else if (buttonname.equalsIgnoreCase("Radius_Mode")){
+                } else if (buttonname.equalsIgnoreCase("Radius_Mode:")){
 
                     typeNotification = "radius";
 
@@ -526,14 +529,17 @@ public class ListenersPrisonManagerGUI implements Listener {
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, mineName);
                     gui.open();
 
-                } else if (buttonname.equalsIgnoreCase("Disabled_Mode")){
+                } else if (buttonname.equalsIgnoreCase("Disabled_Mode:")){
 
                     typeNotification = "disabled";
 
                     Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
 
+                    p.closeInventory();
+
                 }
 
+                break;
             }
 
             case "§3" + "MineNotifications -> Radius": {
@@ -549,7 +555,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 int decreaseOrIncreaseValue = 0;
 
-                if (!(part1.equalsIgnoreCase("Confirm"))){
+                if (!(part1.equalsIgnoreCase("Confirm:"))){
                     decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
                     typeNotification = parts[4];
                 } else {
@@ -605,6 +611,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 }
 
+                break;
             }
 
         }
