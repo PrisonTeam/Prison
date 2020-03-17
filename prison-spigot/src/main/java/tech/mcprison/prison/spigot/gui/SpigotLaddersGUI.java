@@ -30,8 +30,8 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Init the lore array with default values for ladders
         List<String> ladderslore = createLore(
-        		"§8Click to open",
-        		"§cPress Shift + Right click to delete");
+        		"§8Click to open.",
+        		"§cPress Shift + Right click to delete.");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( lm.getLadders().size() / 9D)*9;

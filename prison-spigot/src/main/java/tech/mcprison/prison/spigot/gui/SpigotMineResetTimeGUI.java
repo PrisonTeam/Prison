@@ -26,7 +26,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
         Inventory inv = Bukkit.createInventory(null, dimension, "§3MinesInfo -> ResetTime");
 
         List<String> changeDecreaseValueLore = createLore(
-                "§8Click to decrease"
+                "§8Click to decrease."
         );
 
         ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, "§3" + minename + " " + val + " - 1" );
@@ -47,9 +47,9 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
 
 
         List<String> confirmButtonLore = createLore(
-                "§aLeft-Click to confirm",
+                "§aLeft-Click to confirm.",
                 "§8Time: " + val,
-                "§cRight-Click to cancel"
+                "§cRight-Click to cancel."
         );
 
         ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, "§3" + "Confirm: " + minename + " " + val);
@@ -58,7 +58,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
 
 
         List<String> changeIncreaseValueLore = createLore(
-                "§8Click to increase"
+                "§8Click to increase."
         );
 
         ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, "§3" + minename + " " + val + " + 1" );

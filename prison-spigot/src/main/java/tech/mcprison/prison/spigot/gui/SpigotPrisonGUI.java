@@ -27,8 +27,8 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The Ranks button
         // Lore of the button
         List<String> rankslore = createLore(
-        		"§8Ranks GUI manager",
-        		"§8Click to open");
+        		"§8Ranks GUI manager.",
+        		"§8Click to open.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§3" + "Ranks");
@@ -41,9 +41,9 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The Prison Tasks button
         // Lore of the button
         List<String> prisontaskslore = createLore(
-        		"§8Prison Tasks GUI manager",
-        		"§8Click to open",
-                "§d§lComing Soon");
+        		"§8Prison Tasks GUI manager.",
+        		"§8Click to open.",
+                "§d§lComing Soon.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§3" + "Prison Tasks");
@@ -56,8 +56,8 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The mines button
         // Lore of the button
         List<String> mineslore = createLore(
-        		"§8Mines GUI manager",
-        		"§8Click to open");
+        		"§8Mines GUI manager.",
+        		"§8Click to open.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§3" + "Mines");

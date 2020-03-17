@@ -25,7 +25,7 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents{
 
         // Blocks of the mine
         List<String> confirmlore = createLore(
-                "§8Click to §aconfirm");
+                "§8Click to §aconfirm.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, "§3" + "Confirm: " + minename);
@@ -35,7 +35,7 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents{
 
         // Blocks of the mine
         List<String> cancelore = createLore(
-                "§8Click to §ccancel");
+                "§8Click to §ccancel.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelore, "§3" + "Cancel: " + minename);

@@ -30,8 +30,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(
-                "§8Click to use",
-                "§8Resets the mine");
+                "§8Click to use.",
+                "§8Resets the mine.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, "§3" + "Reset_Mine: " + minename);
@@ -43,8 +43,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // Set the Mine spawn at your location
         List<String> MineSpawnlore = createLore(
-                "§8Click to use",
-                "§8Set the mine spawn point at your location"
+                "§8Click to use.",
+                "§8Set the mine spawn point at your location."
         );
 
         // Create the button
@@ -57,8 +57,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // Lore and button
         List<String> MinesNotificationsLore = createLore(
-                "§8Click to open",
-                "§8Change Mines notifications"
+                "§8Click to open.",
+                "§8Change Mines notifications."
         );
 
         // Create the button
@@ -70,8 +70,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // Lore and button
         List<String> MinesTpLore = createLore(
-                "§8Click to teleport",
-                "§8Tp to the mine"
+                "§8Click to teleport.",
+                "§8Tp to the mine."
         );
 
         // Create the button
@@ -83,8 +83,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
-                "§8Click to open",
-                "§8Manage the blocks of the Mine");
+                "§8Click to open.",
+                "§8Manage the blocks of the Mine.");
 
         // Create the button, set up the material, amount, lore and name
         ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, "§3" + "Blocks_of_the_Mine: " + minename);
@@ -99,8 +99,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
         // Blocks of the mine button and lore
         List<String> mineResetTimeLore = createLore(
-                "§8Click to manage",
-                "§8Manage the reset time of the Mine",
+                "§8Click to manage.",
+                "§8Manage the reset time of the Mine.",
                  "§3Reset time: §7" + m.getResetTime());
 
         // Create the button, set up the material, amount, lore and name

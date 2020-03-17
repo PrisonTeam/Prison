@@ -41,7 +41,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         for (Block block : m.getBlocks()) {
 
             List<String> blockslore = createLore(
-                    "§cPress Shift + Right click to remove",
+                    "§cPress Shift + Right click to remove.",
                     "",
                     "§8§l|§3Info§8|");
 

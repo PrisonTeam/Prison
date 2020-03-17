@@ -232,7 +232,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 } else if (rank.rankUpCommands == null) {
 
-                    p.sendMessage("§cThere aren't commands for this rank anymore");
+                    p.sendMessage("§cThere aren't commands for this rank anymore.");
 
                 }
 
@@ -469,7 +469,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (!((val -  decreaseOrIncreaseValue) < 0)) {
                         val = val - decreaseOrIncreaseValue;
                     } else {
-                        p.sendMessage("§cToo low value");
+                        p.sendMessage("§cToo low value.");
                         p.closeInventory();
                         return;
                     }
@@ -482,7 +482,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (!((val + decreaseOrIncreaseValue) > 999999)) {
                         val = val + decreaseOrIncreaseValue;
                     } else {
-                        p.sendMessage("§cToo high value");
+                        p.sendMessage("§cToo high value.");
                         p.closeInventory();
                         return;
                     }
@@ -589,7 +589,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (!((val -  decreaseOrIncreaseValue) < 0)) {
                         val = val - decreaseOrIncreaseValue;
                     } else {
-                        p.sendMessage("§cToo low value");
+                        p.sendMessage("§cToo low value.");
                         p.closeInventory();
                         return;
                     }
@@ -602,7 +602,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (!((val + decreaseOrIncreaseValue) > 9999999)) {
                         val = val + decreaseOrIncreaseValue;
                     } else {
-                        p.sendMessage("§cToo high value");
+                        p.sendMessage("§cToo high value.");
                         p.closeInventory();
                         return;
                     }

@@ -37,7 +37,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> commandslore = createLore(
-                    "§cPress Shift + Right click to delete",
+                    "§cPress Shift + Right click to delete.",
                     "",
                     "§8§l|§3Info§8|");
 

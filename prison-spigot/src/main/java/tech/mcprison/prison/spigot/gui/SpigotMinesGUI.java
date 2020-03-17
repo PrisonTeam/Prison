@@ -45,8 +45,8 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
 
             // Init the lore array with default values for ladders
             List<String> mineslore = createLore(
-                    "§8Left Click to open",
-                    "§cPress Shift + Right click to delete",
+                    "§8Left Click to open.",
+                    "§cPress Shift + Right click to delete.",
                     "",
                     "§8§l|§3Info§8|");
 

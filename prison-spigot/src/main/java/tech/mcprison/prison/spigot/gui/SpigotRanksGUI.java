@@ -49,7 +49,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> rankslore = createLore(
-                    "§cPress Shift + Right click to delete",
+                    "§cPress Shift + Right click to delete.",
+                    "§8Click to change RankupCommands.",
                     "",
                     "§8§l|§3Info§8|");
 
@@ -85,7 +86,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                 for (String command : rank.rankUpCommands) {
                     rankslore.add("§8§l|§3RankUPCommands§8| §8§l- §3" + command);
                 }
-                rankslore.add("§8Click to manage RankUPCommands");
+                rankslore.add("§8Click to manage RankUPCommands.");
             }
 
             // Make the button with materials, amount, lore and name
