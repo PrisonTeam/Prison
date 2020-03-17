@@ -535,6 +535,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                     Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
 
+                    e.setCancelled(true);
                     p.closeInventory();
 
                 }
