@@ -8,7 +8,7 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.5 - 2020-03-10
+## tag v3.2.1-alpha.6 - 2020-03-18
 
 * **Compatibility Fix: Conflict with another chat plugin**
 There was an onPlayerChat with the AsyncPlayerChatEvent issue  

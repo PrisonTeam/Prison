@@ -69,7 +69,7 @@ This will allow dynamic live tracking of mine stats, such as how many blocks
 remain and relating percentages.  The new async processing will enable this
 to actually track individual blocks.
 
-* **New Feature: Add Place Holders for Mine related items**
+* **New Feature: Add Placeholders for Mine related items**
 Examples would be place holders for all mines, and their stats such as
 size, dimensions, percent remaining, reset duration, time left until reset,
 players currently within the mine, ect...
