@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 
 public class PrisonSpigotCommands implements CommandExecutor {
@@ -12,24 +13,24 @@ public class PrisonSpigotCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))) {
-            sender.sendMessage("§cSorry, but you don't have the permission §1[§c-Prison.admin §1or §c-Prison.prisonmanagergui");
+            sender.sendMessage(SpigotPrison.format("&cSorry, but you don't have the permission &1[&c-Prison.admin &1or &c-Prison.prisonmanagergui"));
             return true;
         }
-            if (args.length == 0) {
-                sender.sendMessage("§cIncorrect usage, the command should be /prisonmanager gui");
-                return true;
-            }
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("§cYou must be a player to use this command... Hi console!");
-                return true;
-            }
+        if (args.length == 0) {
+            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager gui"));
+            return true;
+        }
+        if (!(sender instanceof Player)) {
+            return true;
+        }
 
-            if (args[0].equalsIgnoreCase("gui")) {
-                Player p = (Player) sender;
-                SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
-                gui.open();
-            }
+        if (args[0].equalsIgnoreCase("gui")) {
+            Player p = (Player) sender;
+            SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
+            gui.open();
+        }
 
         return true;
+
     }
 }

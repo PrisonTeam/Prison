@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
@@ -25,59 +26,75 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents{
 
     public void open() {
 
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3MineNotifications -> Radius");
+        // Create a new inventory
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineNotifications -> Radius"));
 
+        // Create new lore
         List<String> changeDecreaseValueLore = createLore(
-                "§8Click to decrease."
+                "&8Click to decrease."
         );
 
-        ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, "§3" + minename + " " + val + " - 1 " + typeNotification );
+        // Decrease buttons
+        ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 1 " + typeNotification ));
         inv.setItem(1, decreaseOf1);
 
-        ItemStack decreaseOf5 = createButton(Material.REDSTONE_BLOCK, 5, changeDecreaseValueLore, "§3" + minename + " " + val + " - 5 " + typeNotification);
+        // Decrease buttons
+        ItemStack decreaseOf5 = createButton(Material.REDSTONE_BLOCK, 5, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 5 " + typeNotification));
         inv.setItem(10, decreaseOf5);
 
-        ItemStack decreaseOf10 = createButton(Material.REDSTONE_BLOCK, 10, changeDecreaseValueLore, "§3" + minename + " " + val + " - 10 " + typeNotification);
+        // Decrease buttons
+        ItemStack decreaseOf10 = createButton(Material.REDSTONE_BLOCK, 10, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 10 " + typeNotification));
         inv.setItem(19, decreaseOf10);
 
-        ItemStack decreaseOf50 = createButton(Material.REDSTONE_BLOCK, 50, changeDecreaseValueLore, "§3" + minename + " " + val + " - 50 " + typeNotification);
+        // Decrease buttons
+        ItemStack decreaseOf50 = createButton(Material.REDSTONE_BLOCK, 50, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 50 " + typeNotification));
         inv.setItem(28, decreaseOf50);
 
-        ItemStack decreaseOf100 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, "§3" + minename + " " + val + " - 100 " + typeNotification);
+        // Decrease buttons
+        ItemStack decreaseOf100 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 100 " + typeNotification));
         inv.setItem(37, decreaseOf100);
 
 
 
+        // Create a new lore
         List<String> confirmButtonLore = createLore(
-                "§aLeft-Click to confirm.",
-                "§8Radius: " + val,
-                "§cRight-Click to cancel."
+                "&aLeft-Click to confirm.",
+                "&8Radius: " + val,
+                "&cRight-Click to cancel."
         );
 
-        ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, "§3" + "Confirm: " + minename + " " + val + " " + typeNotification);
+        // Create a button and set the position of it
+        ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val + " " + typeNotification));
         inv.setItem(22, confirmButton);
 
 
-
+        // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
-                "§8Click to increase."
+                "&8Click to increase."
         );
 
-        ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, "§3" + minename + " " + val + " + 1 " + typeNotification);
+
+        // Increase buttons
+        ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 1 " + typeNotification));
         inv.setItem(7, increseOf1);
 
-        ItemStack increaseOf5 = createButton(Material.EMERALD_BLOCK, 5, changeIncreaseValueLore, "§3" + minename + " " + val + " + 5 " + typeNotification);
+        // Increase buttons
+        ItemStack increaseOf5 = createButton(Material.EMERALD_BLOCK, 5, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 5 " + typeNotification));
         inv.setItem(16, increaseOf5);
 
-        ItemStack increaseOf10 = createButton(Material.EMERALD_BLOCK, 10, changeIncreaseValueLore, "§3" + minename + " " + val + " + 10 " + typeNotification);
+        // Increase buttons
+        ItemStack increaseOf10 = createButton(Material.EMERALD_BLOCK, 10, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 10 " + typeNotification));
         inv.setItem(25, increaseOf10);
 
-        ItemStack increaseOf50 = createButton(Material.EMERALD_BLOCK, 50, changeIncreaseValueLore, "§3" + minename + " " + val + " + 50 " + typeNotification);
+        // Increase buttons
+        ItemStack increaseOf50 = createButton(Material.EMERALD_BLOCK, 50, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 50 " + typeNotification));
         inv.setItem(34, increaseOf50);
 
-        ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, "§3" + minename + " " + val + " + 100 " + typeNotification);
+        // Increase buttons
+        ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 100 " + typeNotification));
         inv.setItem(43, increaseOf100);
 
+        // Open the inventory
         this.p.openInventory(inv);
     }
 

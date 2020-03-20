@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
@@ -20,18 +21,18 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3PrisonManager");
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager"));
 
 
 
         // The Ranks button
         // Lore of the button
         List<String> rankslore = createLore(
-        		"§8Ranks GUI manager.",
-        		"§8Click to open.");
+        		"&8Ranks GUI manager.",
+        		"&8Click to open.");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§3" + "Ranks");
+        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + "Ranks"));
 
         //Position of the button
         inv.setItem(dimension - 17, ranks);
@@ -41,12 +42,12 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The Prison Tasks button
         // Lore of the button
         List<String> prisontaskslore = createLore(
-        		"§8Prison Tasks GUI manager.",
-        		"§8Click to open.",
-                "§d§lComing Soon.");
+        		"&8Prison Tasks GUI manager.",
+        		"&8Click to open.",
+                "&d&lComing Soon.");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, "§3" + "Prison Tasks");
+        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisontaskslore, SpigotPrison.format("&3" + "Prison Tasks"));
 
         //Position of the button
         inv.setItem(dimension - 14, prisontasks);
@@ -56,11 +57,11 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // The mines button
         // Lore of the button
         List<String> mineslore = createLore(
-        		"§8Mines GUI manager.",
-        		"§8Click to open.");
+        		"&8Mines GUI manager.",
+        		"&8Click to open.");
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, "§3" + "Mines");
+        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, mineslore, SpigotPrison.format("&3" + "Mines"));
 
         //Position of the button
         inv.setItem(dimension - 11, mines);

@@ -9,6 +9,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
@@ -35,24 +36,24 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;
 
         // Create the inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3MineInfo -> Blocks");
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
         // For every block makes a button
         for (Block block : m.getBlocks()) {
 
             List<String> blockslore = createLore(
-                    "§cPress Shift + Right click to remove.",
+                    "&cPress Shift + Right click to remove.",
                     "",
-                    "§8§l|§3Info§8|");
+                    "&8&l|&3Info&8|");
 
             // Add a lore
-            blockslore.add("§3Chance: " + block.getChance() + "%");
+            blockslore.add(SpigotPrison.format("&3Chance: " + block.getChance() + "%"));
 
             // Get the block material as a string
             String blockmaterial = block.getType().name();
 
             // Add a lore
-            blockslore.add("§3BlockType: " + blockmaterial);
+            blockslore.add(SpigotPrison.format("&3BlockType: " + blockmaterial));
 
             // Display title of the item
             String blockmaterialdisplay = blockmaterial;
@@ -63,7 +64,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
             }
 
             // Make the item
-            ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, "§3" + blockmaterialdisplay + ": " + minename);
+            ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + ": " + minename));
 
             // Add the item to the inventory
             inv.addItem(block1);

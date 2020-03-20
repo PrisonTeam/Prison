@@ -15,6 +15,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class SpigotRanksGUI extends SpigotGUIComponents {
 
@@ -36,7 +37,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D)*9;
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3" + "Ladders -> Ranks");
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
         // For every rank make a button
         for (RankLadder.PositionRank pos : ladder.get().ranks) {
@@ -49,48 +50,49 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> rankslore = createLore(
-                    "§cPress Shift + Right click to delete.",
-                    "§8Click to change RankupCommands.",
+                    "&cPress Shift + Right click to delete.",
+                    "&8Click to change RankupCommands.",
                     "",
-                    "§8§l|§3Info§8|");
+                    "&8&l|&3Info&8|");
 
             // Get the specific rank
             Rank rank = rankOptional.get();
 
             // Add the RankID Lore
-            rankslore.add("§3Rank id: §7" + rank.id);
+            rankslore.add(SpigotPrison.format("&3Rank id: &7" + rank.id));
 
             // Add the RankName lore
-            rankslore.add("§3Rank Name: §7" + rank.name);
+            rankslore.add(SpigotPrison.format("&3Rank Name: &7" + rank.name));
 
             // Add the Rank Tag lore
-            rankslore.add("§3Rank Tag: §7" + ChatColor.translateAlternateColorCodes('&', rank.tag));
+            rankslore.add(SpigotPrison.format("&3Rank Tag: &7" + ChatColor.translateAlternateColorCodes('&', rank.tag)));
 
             // Add the Price lore
-            rankslore.add("§3Rank Price: §a" + rank.cost);
+            rankslore.add(SpigotPrison.format("&3Rank Price: &a" + rank.cost));
 
+            // Init a variable
             List<RankPlayer> players =
                     PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
                             .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rankOptional.get()))
                             .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            rankslore.add("§3Players with this rank: §7" + players.size());
+            rankslore.add(SpigotPrison.format("&3Players with this rank: &7" + players.size()));
 
             // RankUpCommands info lore
             rankslore.add("");
             if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0){
-                rankslore.add("§3The Rank " + rank.name + " contains no commands.");
+                rankslore.add(SpigotPrison.format("&3The Rank " + rank.name + " contains no commands."));
             } else {
-                rankslore.add("§8There're §3" + rank.rankUpCommands.size() + " §3Commands §8in this ladder:");
+                rankslore.add(SpigotPrison.format("&8There're &3" + rank.rankUpCommands.size() + " &3Commands &8in this ladder:"));
                 for (String command : rank.rankUpCommands) {
-                    rankslore.add("§8§l|§3RankUPCommands§8| §8§l- §3" + command);
+                    rankslore.add(SpigotPrison.format("&8&l|&3RankUPCommands&8| &8&l- &3" + command));
                 }
-                rankslore.add("§8Click to manage RankUPCommands.");
+                rankslore.add(SpigotPrison.format("&8Click to manage RankUPCommands."));
             }
 
             // Make the button with materials, amount, lore and name
-            itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, "§3" + rank.name);
+            itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + rank.name));
 
             // Add the button to the inventory
             inv.addItem(itemrank);

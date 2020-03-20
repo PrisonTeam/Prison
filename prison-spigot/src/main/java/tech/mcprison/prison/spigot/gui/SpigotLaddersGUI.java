@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
@@ -30,20 +31,20 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Init the lore array with default values for ladders
         List<String> ladderslore = createLore(
-        		"§8Click to open.",
-        		"§cPress Shift + Right click to delete.");
+        		"&8Click to open.",
+        		"&cPress Shift + Right click to delete.");
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( lm.getLadders().size() / 9D)*9;
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3RanksManager -> Ladders");
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RanksManager -> Ladders"));
 
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
 
             // Create the button
-            itemladder = createButton(Material.LADDER, 1, ladderslore, "§3" + ladder.name);
+            itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));
 
             // Add the button to the inventory
             inv.addItem(itemladder);

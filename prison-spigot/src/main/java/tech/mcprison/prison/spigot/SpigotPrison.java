@@ -28,6 +28,7 @@ import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -150,6 +151,10 @@ public class SpigotPrison extends JavaPlugin {
     public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
+    }
+
+    public static String format(String format){
+        return ChatColor.translateAlternateColorCodes('&', format);
     }
 
     private void initMetrics() {

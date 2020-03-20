@@ -62,15 +62,15 @@ public class ListenersPrisonManagerGUI implements Listener {
     public void onOpenInventory(InventoryOpenEvent e){
         Player p = (Player) e.getPlayer();
 
-        if (e.getView().getTitle().equalsIgnoreCase("§3" + "PrisonManager") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "RanksManager -> Ladders") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "Ladders -> Ranks") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "Ranks -> RankUPCommands") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "MinesManager -> Mines") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "Mines -> MineInfo") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "Mines -> Delete") ||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "MineInfo -> Blocks")||
-                e.getView().getTitle().equalsIgnoreCase("§3" + "MineInfo -> MineNotifications")){
+        if (e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("RanksManager -> Ladders") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ladders -> Ranks") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankUPCommands") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("MinesManager -> Mines") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> MineInfo") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> Delete") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> Blocks")||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications")){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -150,8 +150,8 @@ public class ListenersPrisonManagerGUI implements Listener {
         }
 
         // Check if the GUI have the right title and do the actions
-        switch (e.getView().getTitle()) {
-            case "§3" + "PrisonManager":
+        switch (e.getView().getTitle().substring(2)) {
+            case "PrisonManager":
 
                 // Check the Item display name and do open the right GUI
                 if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Ranks")) {
@@ -175,7 +175,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check if the GUI have the right title and do the actions
                 break;
-            case "§3" + "RanksManager -> Ladders": {
+            case "RanksManager -> Ladders": {
 
                 // Get the ladder name or the button name
                 String ladderName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -209,7 +209,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Check the title of the inventory and do the actions
                 break;
             }
-            case "§3" + "Ladders -> Ranks":
+            case "Ladders -> Ranks":
 
                 // Get the rank name or the button name
                 String rankName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -219,7 +219,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check if the rank exist
                 if (!rankOptional.isPresent()) {
-                    p.sendMessage("§cThe rank " + rankName + " does not exist.");
+                    p.sendMessage(SpigotPrison.format("&cThe rank " + rankName + " does not exist."));
                     return;
                 }
 
@@ -232,7 +232,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 } else if (rank.rankUpCommands == null) {
 
-                    p.sendMessage("§cThere aren't commands for this rank anymore.");
+                    p.sendMessage(SpigotPrison.format("&cThere aren't commands for this rank anymore."));
 
                 }
 
@@ -246,7 +246,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check the title of the inventory and do things
                 break;
-            case "§3" + "Ranks -> RankUPCommands":
+            case "Ranks -> RankUPCommands":
 
                 String command = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
@@ -261,7 +261,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check the title of the inventory and do the actions
                 break;
-            case "§3" + "MinesManager -> Mines": {
+            case "MinesManager -> Mines": {
 
                 // Mine name or title of the item
                 String minename = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -292,7 +292,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Check the title of the inventory and do the actions
                 break;
             }
-            case "§3" + "Mines -> MineInfo": {
+            case "Mines -> MineInfo": {
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -323,21 +323,26 @@ public class ListenersPrisonManagerGUI implements Listener {
                         e.setCancelled(true);
 
                         break;
+
+                    // Check the name of the button and do the actions
                     case "Mine_Spawn:":
 
                         // Execute the command
                         Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
 
                         e.setCancelled(true);
-                        // Check the name of the button and do the actions
                         break;
+
+                    // Check the name of the button and do the actions
                     case "Mine_notifications:":
 
+                        // Open the GUI
                         SpigotMineNotificationsGUI gui1 = new SpigotMineNotificationsGUI(p, mineName);
                         gui1.open();
 
                         break;
 
+                    // Check the name of the button and do the actions
                     case "TP_to_the_Mine:":
 
                         // Close the inventory
@@ -348,22 +353,26 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         break;
 
+                    // Check the name of the button and do the actions
                     case "Reset_Time:":
 
+                        // Initialize the variables
                         PrisonMines pMines = PrisonMines.getInstance();
                         Mine m = pMines.getMineManager().getMine(mineName).get();
                         int val = m.getResetTime();
 
+                        // Open the GUI
                         SpigotMineResetTimeGUI gui2 = new SpigotMineResetTimeGUI(p, val, mineName);
                         gui2.open();
 
                         break;
                 }
 
-                // Check the title of the inventory and do the actions
                 break;
             }
-            case "§3" + "Mines -> Delete": {
+
+            // Check the title of the inventory and do the actions
+            case "Mines -> Delete": {
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -375,6 +384,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 String buttonname = parts[0];
                 String mineName = parts[1];
 
+                // Check the name of the button and do the actions
                 if (buttonname.equals("Confirm:")) {
 
                     // Confirm
@@ -383,6 +393,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     // Close the Inventory
                     p.closeInventory();
 
+                // Check the name of the button and do the actions
                 } else if (buttonname.equals("Cancel:")) {
 
                     // Cancel
@@ -393,10 +404,11 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 }
 
-                // If none of them is true, then cancel the event
                 break;
             }
-            case "§3" + "MineInfo -> Blocks": {
+
+            // Check the title of the inventory and do the actions
+            case "MineInfo -> Blocks": {
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -422,71 +434,112 @@ public class ListenersPrisonManagerGUI implements Listener {
                     gui.open();
                 }
 
+                // Cancel the event
                 e.setCancelled(true);
 
                 break;
             }
 
-            case "§3" + "MinesInfo -> ResetTime": {
+            // Check the inventory name and do the actions
+            case "MinesInfo -> ResetTime": {
 
+                // Get the button name
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
+                // Split the button name in parts
                 String[] parts = buttonnamemain.split(" ");
 
+                // Rename the parts
                 String part1 = parts[0];
                 String part2 = parts[1];
                 String part3 = parts[2];
 
+                // Initialize the variable
                 int decreaseOrIncreaseValue = 0;
 
+                // If there're enough parts init another variable
                 if (parts.length == 4){
                     decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
                 }
 
+                // Check the button name and do the actions
                 if (part1.equalsIgnoreCase("Confirm:")) {
+
+                    // Check the click type and do the actions
                     if (e.isLeftClick()){
 
+                        // Execute the command
                         Bukkit.dispatchCommand(p,"mines resettime " + part2 + " " + part3);
+
+                        // Close the inventory
                         p.closeInventory();
 
                         return;
+
+                    // Check the click type and do the actions
                     } else if (e.isRightClick()){
 
-                        p.sendMessage("§cEvent cancelled.");
+                        // Send a message to the player
+                        p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                        // Close the inventory
                         p.closeInventory();
 
                         return;
                     } else {
+
+                        // Cancel the event
                         e.setCancelled(true);
                         return;
                     }
                 }
 
+                // Give to val a value
                 int val = Integer.parseInt(part2);
 
+                // Check the calculator symbol
                 if (part3.equals("-")){
 
+                    // Check if the value's already too low
                     if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                        // If it isn't too low then decrease it
                         val = val - decreaseOrIncreaseValue;
+
+                    // If it is too low
                     } else {
-                        p.sendMessage("§cToo low value.");
+
+                        // Tell to the player that the value's too low
+                        p.sendMessage(SpigotPrison.format("&cToo low value."));
+
+                        // Close the inventory
                         p.closeInventory();
                         return;
                     }
 
+                    // Open an updated GUI after the value changed
                     SpigotMineResetTimeGUI gui = new SpigotMineResetTimeGUI(p, val, part1);
                     gui.open();
 
+                // Check the calculator symbol
                 } else if (part3.equals("+")){
 
+                    // Check if the value isn't too high
                     if (!((val + decreaseOrIncreaseValue) > 999999)) {
+
+                        // Increase the value
                         val = val + decreaseOrIncreaseValue;
+
+                    // If the value's too high then do the action
                     } else {
-                        p.sendMessage("§cToo high value.");
+
+                        // Close the GUI and tell it to the player
+                        p.sendMessage(SpigotPrison.format("&cToo high value."));
                         p.closeInventory();
                         return;
                     }
 
+                    // Open a new updated GUI with new values
                     SpigotMineResetTimeGUI gui = new SpigotMineResetTimeGUI(p, val, part1);
                     gui.open();
 
@@ -495,7 +548,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
-            case "§3" + "MineInfo -> MineNotifications": {
+            // Check the inventory title and do the actions
+            case "MineInfo -> MineNotifications": {
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -508,33 +562,47 @@ public class ListenersPrisonManagerGUI implements Listener {
                 String mineName = parts[1];
                 String typeNotification;
                 long val;
+
+                // Init variables
                 PrisonMines pMines = PrisonMines.getInstance();
                 Mine m = pMines.getMineManager().getMine(mineName).get();
 
+                // Check the button name and do the actions
                 if (buttonname.equalsIgnoreCase("Within_Mode:")){
 
+                    // Change the value of the variable
                     typeNotification = "within";
 
+                    // Get the variable value
                     val = m.getNotificationRadius();
 
+                    // Open the GUI
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val, typeNotification, mineName);
                     gui.open();
 
+                // Check the button name and do the actions
                 } else if (buttonname.equalsIgnoreCase("Radius_Mode:")){
 
+                    // Change the value of the variable
                     typeNotification = "radius";
 
+                    // Get the variable value
                     val = m.getNotificationRadius();
 
+                    // Open the GUI
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, mineName);
                     gui.open();
 
+                // Check the button name and do the actions
                 } else if (buttonname.equalsIgnoreCase("Disabled_Mode:")){
 
+                    // Change the value of the variable
                     typeNotification = "disabled";
 
+                    // Execute the command
                     Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
 
+                    // Cancel the event and close the inventory
                     e.setCancelled(true);
                     p.closeInventory();
 
@@ -543,70 +611,110 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
-            case "§3" + "MineNotifications -> Radius": {
+            // Check the inventory title and do the actions
+            case "MineNotifications -> Radius": {
 
+                // Get the button name
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
+                // Split the button name to parts
                 String[] parts = buttonnamemain.split(" ");
 
+                // Rename the variables
                 String part1 = parts[0];
                 String part2 = parts[1];
                 String part3 = parts[2];
                 String typeNotification;
 
+                // Init the variable
                 int decreaseOrIncreaseValue = 0;
 
+                // Check the button name and do the actions
                 if (!(part1.equalsIgnoreCase("Confirm:"))){
+
+                    // Give them a value
                     decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
                     typeNotification = parts[4];
+
+                // Do others actions
                 } else {
+
+                    // Give it a value
                     typeNotification = parts[3];
                 }
 
+                // Check the button name and do the actions
                 if (part1.equalsIgnoreCase("Confirm:")) {
+
+                    // Check the click type
                     if (e.isLeftClick()){
 
+                        // Execute the command
                         Bukkit.dispatchCommand(p,"mines notification " + part2 + " " + typeNotification + " " + part3);
+
+                        // Close the inventory
                         p.closeInventory();
 
                         return;
                     } else if (e.isRightClick()){
 
-                        p.sendMessage("§cEvent cancelled.");
+                        // Close the inventory
+                        p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
                         p.closeInventory();
 
                         return;
                     } else {
+
+                        // Cancel the event
                         e.setCancelled(true);
                         return;
                     }
                 }
 
+                // Init a new value
                 long val = Integer.parseInt(part2);
 
+                // Check the calculator symbol
                 if (part3.equals("-")){
 
+                    // Check if the value's too low
                     if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                        // Decrease the value
                         val = val - decreaseOrIncreaseValue;
+
+                    // If the value's too low
                     } else {
-                        p.sendMessage("§cToo low value.");
+
+                        // Close the inventory and tell it the player
+                        p.sendMessage(SpigotPrison.format("&cToo low value."));
                         p.closeInventory();
                         return;
                     }
 
+                    // Open a new updated GUI with new values
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, part1);
                     gui.open();
 
+                // Check the calculator symbol
                 } else if (part3.equals("+")){
 
+                    // Check if the value's too high
                     if (!((val + decreaseOrIncreaseValue) > 9999999)) {
+
+                        // Increase the value
                         val = val + decreaseOrIncreaseValue;
+
+                    // If the value's too high
                     } else {
-                        p.sendMessage("§cToo high value.");
+
+                        // Close the inventory and tell it to the player
+                        p.sendMessage(SpigotPrison.format("&cToo high value."));
                         p.closeInventory();
                         return;
                     }
 
+                    // Open a new updated GUI with new values
                     SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val,  typeNotification, part1);
                     gui.open();
 

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public abstract class SpigotGUIComponents {
 
@@ -25,7 +26,7 @@ public abstract class SpigotGUIComponents {
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
         for ( String lore : lores ) {
-            results.add( lore );
+            results.add( SpigotPrison.format(lore) );
         }
         return results;
     }

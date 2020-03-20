@@ -12,6 +12,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.BulletedListComponent;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -38,31 +39,38 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
         dimension = (int) Math.ceil( pMines.getMines().size() / 9D)*9;
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, "§3MinesManager -> Mines");
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesManager -> Mines"));
 
         // Make the buttons for every Mine with info
         for (Mine m : pMines.getMines()) {
 
             // Init the lore array with default values for ladders
             List<String> mineslore = createLore(
-                    "§8Left Click to open.",
-                    "§cPress Shift + Right click to delete.",
+                    "&8Left Click to open.",
+                    "&cPress Shift + Right click to delete.",
                     "",
-                    "§8§l|§3Info§8|");
+                    "&8&l|&3Info&8|");
 
-            mineslore.add("§3World: §7" +  m.getWorldName());
+            // Add a lore
+            mineslore.add(SpigotPrison.format("&3World: &7" +  m.getWorldName()));
 
-            String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "§cnot set";
-            mineslore.add("§3Spawnpoint: §7" + spawnPoint);
+            // Init a variable and add it to the lore
+            String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
+            mineslore.add(SpigotPrison.format("&3Spawnpoint: &7" + spawnPoint));
 
-            mineslore.add("§3Reset time in seconds: §7" + m.getResetTime());
+            // Add a lore
+            mineslore.add(SpigotPrison.format("&3Reset time in seconds: &7" + m.getResetTime()));
 
-            mineslore.add("§3Size of Mine: §7" + ChatColor.translateAlternateColorCodes('&' , m.getBounds().getDimensions()));
+            // Add a lore
+            mineslore.add(SpigotPrison.format("&3Size of Mine: &7" + m.getBounds().getDimensions()));
 
-            mineslore.add("§3Volume in Blocks: §7" + m.getBounds().getTotalBlockCount());
+            // Add a lore
+            mineslore.add(SpigotPrison.format("&3Volume in Blocks: &7" + m.getBounds().getTotalBlockCount()));
 
-            mineslore.add("§3Blocks:");
+            // Add a lore
+            mineslore.add(SpigotPrison.format("&3Blocks:"));
 
+            // Init some variables and do the actions
             DecimalFormat dFmt = new DecimalFormat("##0.00");
             double totalChance = 0.0d;
             for (Block block : m.getBlocks()) {
@@ -71,15 +79,15 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
 
                 String blockName =
                         StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-                mineslore.add("§7% - " + block.getType().name() + "   (" + blockName + ")");
+                mineslore.add(SpigotPrison.format("&7% - " + block.getType().name() + "   (" + blockName + ")"));
             }
 
             if (totalChance < 100.0d) {
-                mineslore.add("§e " + dFmt.format(100.0d - totalChance) + "%  - Air");
+                mineslore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
             }
 
             // Create the button
-            itemines = createButton(Material.COAL_ORE, 1, mineslore, "§3" + m.getName());
+            itemines = createButton(Material.COAL_ORE, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
 
             // Add the button to the inventory
             inv.addItem(itemines);
