@@ -86,6 +86,11 @@ public abstract class MineScheduler
 	 * many seconds in to the future will be the reset.
 	 * </p>
 	 *
+	 * <p>Please note that the value of resetInSec is the time from when the job starts to run
+	 * until the mine should reset.  To find out when the mine should reset when submitting
+	 * this job, add both resetInSec and delayActionSec to get the estimate reset time.
+	 * </p>
+	 * 
 	 */
 	public class MineJob 
 	{
@@ -102,9 +107,16 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 		}
 		
+		public int getJobSubmitResetInSec() {
+			return getResetInSec() + getDelayActionSec();
+		}
+		
 		@Override
 		public String toString() {
-			return "Action: " + getAction().name() + " Delay: " + getDelayActionSec() + " Reset: " + getResetInSec();
+			return "Action: " + getAction().name() + 
+					"  Reset at submit: " + getJobSubmitResetInSec() +
+					"  Delay before running: " + getDelayActionSec() + 
+					"  Reset at run: " + getResetInSec();
 		}
 
 		public MineJobAction getAction()
@@ -202,9 +214,23 @@ public abstract class MineScheduler
 		return workflow;
 	}
 	
-	
+
+	/**
+	 * <p>Reset the job stack, and if the reset time has changed, then rebuild the
+	 * whole workflow to account for the new reset time.
+	 * </p>
+	 */
 	private void resetJobStack() {
 		getJobStack().clear();
+		
+		int oldResetTime = getJobWorkflow() == null || getJobWorkflow().size() == 0 ? 0 :
+								getJobWorkflow().get( 0 ).getJobSubmitResetInSec();
+		
+		if ( oldResetTime == 0 || oldResetTime != getResetTime() ) {
+			// need to rebuild JobWorkflow if reset time ever changes:
+			setJobWorkflow( initializeJobWorkflow() );
+		}
+		
 		getJobStack().addAll( getJobWorkflow() );
 	}
 	
@@ -255,9 +281,22 @@ public abstract class MineScheduler
 	}
 
 	
-	
+	/**
+	 * <p>This task performs the job submission.  If the currentJob is null, then it will generate an 
+	 * exception in the console. Manually resetting the mine will resubmit the workflow. 
+	 * </p>
+	 * 
+	 * <p>At the beginning of every submission, it will update the targetResetTime associated with
+	 * this mine.  This is important since heavy work loads could result in delays that will 
+	 * push the actual reset back.  This is a way to update the estimated target time.
+	 * </p>
+	 */
 	private void submitTask() {
 		if ( getCurrentJob() != null ) {
+			// Need to set the targetRestTime when the job is first submitted since that is the ideal time:
+			long targetRestTime = System.currentTimeMillis() + (getCurrentJob().getJobSubmitResetInSec() * 1000);
+			setTargetRestTime( targetRestTime );
+			
 			long ticksToWait = getCurrentJob().getDelayActionSec() * 20;
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
 			int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(this, ticksToWait);
@@ -310,7 +349,7 @@ public abstract class MineScheduler
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
 		setCurrentJob( new MineJob( MineJobAction.RESET, 0, 0) );
-		
+    	
 		// Submit to run:
 		submitTask();
 	}

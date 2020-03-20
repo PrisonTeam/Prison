@@ -10,6 +10,15 @@ that you need.
 
 ## tag v3.2.1-alpha.6 - 2020-03-20
 
+* **New feature: Add in the target reset time for the mines**
+This correctly sets the future targetResetTime when the next workflow job is submitted. This auto-adjusts the target time to compensate for delays in the system.
+It also detects if there was a change in the reset time for the mine, and if so, then it will regenerate the jobWorkFlow to reflect those changes.
+
+* **New Features: future targetResetTime, player counts within a mine, and count air blocks**
+Start to hook up some mine related features such as future targetResetTime (the project time in the future when the mine will reset).  This allows the creation of a count down timer until the reset happens.
+Add a function to count the number of players within a mine.
+Added a set of function to count the number of air blocks in a mine asynchronously. Set it up as a submittable task.  The airblock count buffers and will run only every 30 seconds at most. If its a large mine, then it will delay slightly longer before refreshes to conserve computational resources.
+
 * **Bug fix: Mine data was not fully loading prior to submitting workflow**
 Found a timing issue where the mine's workflows were being submitted before all of
 the mine related data was loaded from the file system.  Over all it did not cause
