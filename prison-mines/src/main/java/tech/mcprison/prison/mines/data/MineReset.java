@@ -57,6 +57,9 @@ public abstract class MineReset
 	 */
 	public static final long MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT = 500;
 	
+	
+	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY = 30000L; // 30 seconds
+	
 	@Deprecated
 	private List<BlockType> randomizedBlocks;
 	
@@ -69,6 +72,8 @@ public abstract class MineReset
 	
 	private int airCountOriginal = 0;
 	private int airCount = 0;
+	private long airCountTimestamp = 0L;
+	private long airCountElapsedTimeMs = 0L;
 	
 //	private boolean[] mineAirBlocksOriginal;
 //	private boolean[] mineAirBlocksCurrent;
@@ -310,6 +315,22 @@ public abstract class MineReset
 		Location altTp = new Location( getBounds().getCenter() );
     	altTp.setY( getBounds().getyBlockMax() + 1 );
 		return altTp;
+	}
+	
+	public int getPlayerCount() {
+		int count = 0;
+		
+    	World world = getBounds().getCenter().getWorld();
+
+    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    							Prison.get().getPlatform().getOnlinePlayers());
+    	for (Player player : players) {
+            if ( getBounds().within(player.getLocation()) ) {
+            	count++;
+            }
+        }
+		
+		return count;
 	}
     
 //    /**
@@ -585,6 +606,67 @@ public abstract class MineReset
     }
     
     /**
+     * <p>This function will identify how many air blocks are within a mine.
+     * </p>
+     */
+    public void refreshAirCount() {
+    	
+    	long elapsedTarget = getAirCountTimestamp() + MINE_RESET__AIR_COUNT_BASE_DELAY + 
+    			(getAirCountElapsedTimeMs() * MINE_RESET__AIR_COUNT_BASE_DELAY / 100);
+    	
+    	if ( getAirCountTimestamp() == 0L ||
+    			(elapsedTarget <= System.currentTimeMillis() )) {
+    		
+    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this);
+    		
+    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
+    		
+    		// Do not run this here, it must be ran as an async task... 
+//    		refreshAirCountAsyncTask();
+    	}
+    }
+
+    /**
+     * <p>This function performs the air count and should be ran as an async task.
+     * </p>
+     */
+	protected void refreshAirCountAsyncTask()
+	{
+		long start = System.currentTimeMillis();
+		Optional<World> worldOptional = getWorld();
+		if (!worldOptional.isPresent()) {
+			Output.get().logError("Could not count mine " + getName() +
+					" air blocks because the world it was created in does not exist.");
+		} else {
+			
+			World world = worldOptional.get();
+			
+			
+			int airCount = 0;
+			
+			for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
+				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
+					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+						
+						Location targetBlock = new Location(world, x, y, z);
+						if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+							airCount++;
+						}
+					}
+				}
+			}
+			
+			setAirCount( airCount );
+			
+			long stop = System.currentTimeMillis();
+			long elapsed = stop - start;
+			setAirCountElapsedTimeMs( elapsed );
+			setAirCountTimestamp( stop );
+		}
+	}
+    
+    
+    /**
      * Generates blocks for the specified mine and caches the result.
      * 
      * The random chance is now calculated upon a double instead of integer.
@@ -765,6 +847,24 @@ public abstract class MineReset
 	public void setAirCount( int airCount )
 	{
 		this.airCount = airCount;
+	}
+
+	public long getAirCountTimestamp()
+	{
+		return airCountTimestamp;
+	}
+	public void setAirCountTimestamp( long airCountTimestamp )
+	{
+		this.airCountTimestamp = airCountTimestamp;
+	}
+
+	public long getAirCountElapsedTimeMs()
+	{
+		return airCountElapsedTimeMs;
+	}
+	public void setAirCountElapsedTimeMs( long airCountElapsedTimeMs )
+	{
+		this.airCountElapsedTimeMs = airCountElapsedTimeMs;
 	}
 
 	public long getStatsResetTimeMS()
