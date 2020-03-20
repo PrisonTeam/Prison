@@ -10,6 +10,12 @@ that you need.
 
 ## tag v3.2.1-alpha.6 - 2020-03-20
 
+* **Pulled in the Prison GUI menus**
+Pulled the prison gui branch in to the bleeding branch.
+Added the mapping of /prison gui to redirect to /prisonmanager gui so it's integrated
+with the standard prison commands.
+Added the new permissions to the plugin.yml file.
+
 * **New Feature: Mine Placeholders**
 A lot of code was rewritten to support the mine related placeholders. Player placeholders
 are simple since there are just a few placeholder keys. Mines are far more complex since

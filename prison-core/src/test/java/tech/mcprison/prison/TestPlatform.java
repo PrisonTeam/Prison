@@ -21,6 +21,7 @@ package tech.mcprison.prison;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -101,7 +102,11 @@ public class TestPlatform implements Platform {
     @Override public void dispatchCommand(String cmd) {
     }
 
-    @Override public Scheduler getScheduler() {
+    @Override
+	public void dispatchCommand( CommandSender sender, String cmd ) {
+	}
+
+	@Override public Scheduler getScheduler() {
         return new TestScheduler();
     }
 

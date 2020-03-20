@@ -18,20 +18,21 @@
 
 package tech.mcprison.prison.internal.platform;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Represents an internal platform that Prison has been implemented for.
@@ -107,6 +108,14 @@ public interface Platform {
      */
     void dispatchCommand(String cmd);
 
+    /**
+     * Runs a command as the sender and with only the sender's privileges.
+     * 
+     * @param sender
+     * @param cmd
+     */
+    public void dispatchCommand(CommandSender sender, String cmd);
+    
     /**
      * Returns the {@link Scheduler}, which can be used to schedule tasks.
      */
@@ -209,4 +218,6 @@ public interface Platform {
      * This is a configuration option.kkjksdf;erljnkx.jcsmka.f.fdlwe;s.x. frrer5
      */
     boolean shouldShowAlerts();
+
+
 }

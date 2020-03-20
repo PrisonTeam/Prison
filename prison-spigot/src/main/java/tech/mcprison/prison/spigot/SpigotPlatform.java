@@ -255,6 +255,10 @@ class SpigotPlatform implements Platform {
     @Override public void dispatchCommand(String cmd) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
+    
+    @Override public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
+    	Bukkit.getServer().dispatchCommand( ((SpigotCommandSender) sender).getWrapper(), cmd);
+    }
 
     @Override public Scheduler getScheduler() {
         return plugin.scheduler;

@@ -32,6 +32,12 @@ permissions:
 
   prison.alerts.clear.all:
     description: Clear the alerts for the entire server.
+    
+  prison.gui:
+    description: Opens the Prison's GUI menu.
+
+  prison.prisonmanagergui:
+    description: Opens the Prison's GUI menu.
 
   # Permission Kits
   prison.admin:
@@ -43,6 +49,8 @@ permissions:
       prison.alerts: true
       prison.alerts.clear: true
       prison.alerts.clear.all: true
+      prison.gui: true
+      prison.prisonmanagergui: true
 
   # ==================
   # Mines permissions

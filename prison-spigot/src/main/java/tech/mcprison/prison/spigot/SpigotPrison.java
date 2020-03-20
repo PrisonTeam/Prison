@@ -45,6 +45,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -122,6 +123,8 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         new SpigotListener(this).init();
+        
+        Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
         
         initIntegrations();
         initModules();

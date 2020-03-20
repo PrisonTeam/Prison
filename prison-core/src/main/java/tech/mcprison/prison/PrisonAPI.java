@@ -1,6 +1,14 @@
 package tech.mcprison.prison;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.google.common.eventbus.EventBus;
+
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.gui.GUI;
@@ -16,9 +24,6 @@ import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.ItemManager;
 import tech.mcprison.prison.util.Location;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * A static way to access {@link Platform} and {@link Prison} methods.
@@ -82,6 +87,10 @@ public class PrisonAPI {
 
     public static void dispatchCommand(String cmd) {
         Prison.get().getPlatform().dispatchCommand(cmd);
+    }
+    
+    public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
+    	Prison.get().getPlatform().dispatchCommand( sender, cmd);
     }
 
     public static Scheduler getScheduler() {
