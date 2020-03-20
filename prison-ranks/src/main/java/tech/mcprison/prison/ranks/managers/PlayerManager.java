@@ -29,7 +29,10 @@ import java.util.UUID;
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.ManagerPlaceholders;
+import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -44,7 +47,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class PlayerManager {
+public class PlayerManager
+	implements ManagerPlaceholders {
 
     /*
      * Fields & Constants
@@ -262,7 +266,8 @@ public class PlayerManager {
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
     	PrisonPlaceHolders placeHolder = PrisonPlaceHolders.fromString( identifier );
-    	return getTranslatePlayerPlaceHolder( playerUuid, placeHolder );
+    	return placeHolder == PrisonPlaceHolders.no_match__ ? null :
+    		getTranslatePlayerPlaceHolder( playerUuid, placeHolder );
     }
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, PrisonPlaceHolders placeHolder ) {
@@ -302,4 +307,16 @@ public class PlayerManager {
 		return results;
     }
 
+    @Override
+    public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
+    	List<PlaceHolderKey> results = new ArrayList<>();
+    	
+    	List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYER );
+    	for ( PrisonPlaceHolders ph : placeHolders ) {
+			PlaceHolderKey placeholder = new PlaceHolderKey(ph.name(), ph );
+			results.add( placeholder );
+		}
+    	
+    	return results;
+    }
 }

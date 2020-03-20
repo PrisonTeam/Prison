@@ -18,10 +18,16 @@
 package tech.mcprison.prison.mines.managers;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.ManagerPlaceholders;
+import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -34,13 +40,16 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Dylan M. Perks
  */
-public class MineManager {
+public class MineManager 
+	implements ManagerPlaceholders {
 
     // Base list
     private List<Mine> mines;
 
     private Collection coll;
 
+    private List<PlaceHolderKey> translatedPlaceHolderKeys;
+    
     private boolean mineStats = false;
 
     /**
@@ -191,5 +200,124 @@ public class MineManager {
 	{
 		this.mineStats = mineStats;
 	}
+
+	
+    public String getTranslateMinesPlaceHolder( String identifier ) {
+    	String results = null;
+    	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    	
+    	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
+				results = getTranslateMinesPlaceHolder( placeHolderKey );
+				break;
+			}
+		}
+    	
+    	return results;
+    }
+    
+    public String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey ) {
+		String results = null;
+
+		if ( placeHolderKey != null && placeHolderKey.getData() != null ) {
+			Optional<Mine> mineOptional = getMine( placeHolderKey.getData() );
+			Mine mine = mineOptional.isPresent() ? mineOptional.get() : null;
+
+			if ( mine != null ) {
+				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+				DecimalFormat iFmt = new DecimalFormat("#,##0");
+				
+				switch ( placeHolderKey.getPlaceholder() ) {
+					case prison_mines_interval_minename:
+					case mines_interval_minename:
+						results = iFmt.format( mine.getResetTime() );
+						break;
+						
+					case prison_mines_timeleft_minename:
+					case mines_timeleft_minename:
+						// NOTE: timeleft can vary based upon server loads:
+						long targetResetTime = mine.getTargetRestTime();
+						double remaining = ( targetResetTime <= 0 ? 0d : 
+							(targetResetTime - System.currentTimeMillis()) / 1000d);
+						results = dFmt.format( remaining );
+						break;
+						
+					case prison_mines_size_minename:
+					case mines_size_minename:
+						results = iFmt.format( mine.getBounds().getTotalBlockCount() );
+						break;
+						
+					case prison_mines_remaining_minename:
+					case mines_remaining_minename:
+						mine.refreshAirCount(); // async & delayed : Very high cost
+						int remainingBlocks = mine.getBounds().getTotalBlockCount() - mine.getAirCount();
+						results = iFmt.format( remainingBlocks );
+						break;
+						
+					case prison_mines_percent_minename:
+					case mines_percent_minename:
+						mine.refreshAirCount(); // async & delayed : Very high cost
+						int totalCount = mine.getBounds().getTotalBlockCount();
+						double remainingBlocksP = (totalCount - mine.getAirCount()) * 100d;
+						double originalCount = totalCount - mine.getAirCountOriginal();
+						double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
+						results = dFmt.format( percentRemaining );
+						break;
+						
+					case prison_mines_player_count_minename:
+					case mines_player_count_minename:
+						results = iFmt.format( mine.getPlayerCount() );
+						break;
+						
+						
+						
+					default:
+						break;
+				}
+			}
+			
+		}
+		
+		return results;
+    }
+    
+
+    /**
+     * <p>Generates a list of all of the placeholder keys, which includes the
+     * mine name, the placeholder enumeration, and then the actual translated
+     * placeholder with the mine's name. This is generated only once, but if new
+     * mines are added or mines removed, then just set the class variable to
+     * null to auto regenerate with the new values. 
+     * </p>
+     */
+    @Override
+    public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
+    	if ( translatedPlaceHolderKeys == null ) {
+    		translatedPlaceHolderKeys = new ArrayList<>();
+    		
+    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES );
+    		
+    		for ( Mine mine : getMines() ) {
+    			for ( PrisonPlaceHolders ph : placeHolders ) {
+    				String key = ph.name().replace( 
+    						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() );
+    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
+    				translatedPlaceHolderKeys.add( placeholder );
+    			}
+    		}
+    		
+    	}
+    	return translatedPlaceHolderKeys;
+    }
+
+    /**
+     * <p>If new
+     * mines are added or mines removed, then just set the class variable to
+     * null to auto regenerate with the new values. 
+     * </p>
+     */
+    public void resetTranslatedPlaceHolderKeys() {
+    	translatedPlaceHolderKeys = null;
+    }
 
 }

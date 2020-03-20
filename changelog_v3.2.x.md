@@ -10,7 +10,20 @@ that you need.
 
 ## tag v3.2.1-alpha.6 - 2020-03-20
 
-* **New feature: Add in the target reset time for the mines**
+* **New Feature: Mine Placeholders**
+A lot of code was rewritten to support the mine related placeholders. Player placeholders
+are simple since there are just a few placeholder keys. Mines are far more complex since
+you have the "basic" internal placeholder keys (names), but when exposed outside of 
+prison, the mine names must be super imposed on each one. So if 6 mine placeholders
+exist, and the server has 40 mines, then it would have to generate 240 placeholders. 
+Then it has to map all of those placeholders back to the internal placeholder key, so 
+it can identify which action to take.
+Hooked the six new mine placeholders to their proper functions.
+Created a mines chat handler.
+Updated the player chat handler to use the new formats. Also updated MVdWPlaceholderAPI
+and PlaceholderAPI to handle the new mines placeholders.
+
+* **New Feature: Add in the target reset time for the mines**
 This correctly sets the future targetResetTime when the next workflow job is submitted. This auto-adjusts the target time to compensate for delays in the system.
 It also detects if there was a change in the reset time for the mine, and if so, then it will regenerate the jobWorkFlow to reflect those changes.
 

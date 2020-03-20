@@ -7,6 +7,8 @@ import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 
@@ -58,6 +60,9 @@ public class PlaceHolderAPIIntegrationWrapper
 		return PrisonAPI.getPluginVersion();
 	}
 
+	/**
+	 * Return a null if no hits.
+	 */
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
 		String results = null;
@@ -67,13 +72,11 @@ public class PlaceHolderAPIIntegrationWrapper
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
 		
-//		if (identifier.equalsIgnoreCase("rank")) {
-//		results = pm.getPlayerNames( rankPlayer );
-//	} else if (identifier.equalsIgnoreCase("rankup_cost")) {
-//		results = pm.getPlayerNextCost( rankPlayer );
-//	} else if (identifier.equalsIgnoreCase("rankup_rank")) {
-//		results = pm.getPlayerNextName( rankPlayer );
-//	}
+		// If it did not match on a player placeholder, then try mines:
+		if ( results == null ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			results = mm.getTranslateMinesPlaceHolder( identifier );
+		}
 		
 		return results;
 	}

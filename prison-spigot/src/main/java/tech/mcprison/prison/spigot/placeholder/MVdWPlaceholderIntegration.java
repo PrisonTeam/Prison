@@ -1,13 +1,17 @@
 package tech.mcprison.prison.spigot.placeholder;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
@@ -57,19 +61,39 @@ public class MVdWPlaceholderIntegration
 	}
 	
 	
-	
+	/**
+	 * <p>Register both the player and mines placeholders with the MVdW plugin.
+	 * </p>
+	 */
     @Override
 	public void deferredInitialization()
 	{
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    	for ( PrisonPlaceHolders placeHolder : PrisonPlaceHolders.values() ) {
-    		if ( !placeHolder.isSuppressed() ) {
-    			registerPlaceholder(placeHolder.name(),
+    	List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    	
+    	for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    		if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    			registerPlaceholder(placeHolderKey.getKey(),
     					player -> Text.translateAmpColorCodes(
-    							pm.getTranslatePlayerPlaceHolder( player.getUUID(), placeHolder.name() )
+    							pm.getTranslatePlayerPlaceHolder( 
+    									player.getUUID(), placeHolderKey.getPlaceholder() )
     							));
     		}
     	}
+    	
+    	
+    	MineManager mm = PrisonMines.getInstance().getMineManager();
+    	List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    	
+    	for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
+    		if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    			registerPlaceholder(placeHolderKey.getKey(),
+    					player -> Text.translateAmpColorCodes(
+    							mm.getTranslateMinesPlaceHolder( placeHolderKey )
+    							));
+    		}
+    	}
+
 	}
 
 	@Override

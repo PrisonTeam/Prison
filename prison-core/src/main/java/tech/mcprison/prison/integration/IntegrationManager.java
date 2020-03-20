@@ -31,6 +31,16 @@ public class IntegrationManager {
     }
 
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
+    public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
+    
+    public enum PlaceHolderFlags {
+    	
+    	PLAYER,
+    	MINES,
+    	
+    	SUPRESS
+    	;
+    }
     
     /**
      * <p>The given place holders should have both the prison prefix and without,
@@ -39,35 +49,89 @@ public class IntegrationManager {
      * would have been provided.
      * </p>
      *
+     * <p>Note: In order to use these placeholders with something like holographic display
+     * you need to also include the placeholderAPI,
+     *  plugin holographic extension and protocolib.
+     * </p>
+     * 
+     * <p>In order to get the holographics extension to work it is critical you read 
+     * their spigot page since you have to specify a refresh speed.
+     * </p>
+     * <code>
+     *   /hd addline temp2 Mine Size: {slowest}{prison_mines_blocks_size_temp2}
+     *   or
+     *   /hd addline temp2 Mine Size: {slowest}{prison_mines_blocks_size_temp2}
+     *   /hd addline temp2 Mine Size: {slowest}%prison_mines_blocks_size_temp2%
+     * </code>
+     * 
+     * https://dev.bukkit.org/projects/holographic-displays
+     * https://www.spigotmc.org/resources/placeholderapi.6245/
+     * https://www.spigotmc.org/resources/protocollib.1997/
+     * https://www.spigotmc.org/resources/holographicextension.18461/
      */
 	public enum PrisonPlaceHolders {
-		prison_rank,
-		prison_rank_tag,
-		prison_rankup_cost,
-		prison_rankup_rank,
+		
+		no_match__(PlaceHolderFlags.SUPRESS),
+		
+		prison_rank(PlaceHolderFlags.PLAYER),
+		prison_rank_tag(PlaceHolderFlags.PLAYER),
+		prison_rankup_cost(PlaceHolderFlags.PLAYER),
+		prison_rankup_rank(PlaceHolderFlags.PLAYER),
+		
+		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
+		// player_count
+		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
+		prison_mines_interval_minename(PlaceHolderFlags.MINES),
+		prison_mines_timeleft_minename(PlaceHolderFlags.MINES),
+		prison_mines_size_minename(PlaceHolderFlags.MINES),
+		prison_mines_remaining_minename(PlaceHolderFlags.MINES),
+		prison_mines_percent_minename(PlaceHolderFlags.MINES),
+		prison_mines_player_count_minename(PlaceHolderFlags.MINES),
 		
 		// Suppressable:
-		rank(true),
-		rank_tag(true),
-		rankup_cost(true),
-		rankup_rank(true)
+		rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+
+		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		mines_size_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		mines_remaining_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		mines_percent_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		mines_player_count_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+		
 		;
 		
-		private final boolean supress;
+		
+		private final List<PlaceHolderFlags> flags;
 		private PrisonPlaceHolders() {
-			this.supress = false;
+			this.flags = new ArrayList<>();
 		}
-		private PrisonPlaceHolders(boolean supress) {
-			this.supress = supress;
-		}
-		
-		public boolean isSuppressed()
-		{
-			return supress;
+		private PrisonPlaceHolders(PlaceHolderFlags... flags) {
+			
+			this.flags = getFlags(flags);
 		}
 		
+		private List<PlaceHolderFlags> getFlags( PlaceHolderFlags[] flags ) {
+			List<PlaceHolderFlags> flagz = new ArrayList<>();
+			if ( flags != null ) {
+				for ( PlaceHolderFlags flag : flags ) {
+					flagz.add( flag );
+				}
+			}
+			return flagz;
+		}
+		
+		public boolean isSuppressed() {
+			return flags.contains( PlaceHolderFlags.SUPRESS );
+		}
+		public List<PlaceHolderFlags> getFlags() {
+			return flags;
+		}
+
 		public static PrisonPlaceHolders fromString( String placeHolder ) {
-			PrisonPlaceHolders result = prison_rank;
+			PrisonPlaceHolders result = no_match__;
 			
 			if ( placeHolder != null && placeHolder.trim().length() > 0 ) {
 				placeHolder = placeHolder.trim();
@@ -81,6 +145,20 @@ public class IntegrationManager {
 			}
 			
 			return result;
+		}
+		
+		public static List<PrisonPlaceHolders> getTypes(PlaceHolderFlags flag ) {
+			List<PrisonPlaceHolders> results = new ArrayList<>();
+			
+			if ( flag != null ) {
+				for ( PrisonPlaceHolders ph : values() ) {
+					if ( ph.getFlags().contains( flag )) {
+						results.add( ph );
+					}
+				}
+			}
+			
+			return results;
 		}
 		
 		public String getChatText() {

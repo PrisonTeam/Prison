@@ -1,9 +1,11 @@
 package tech.mcprison.prison.ranks;
 
+import java.util.List;
+
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
@@ -51,11 +53,13 @@ public class ChatHandler {
     	String newFormat = e.getFormat();
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     	
-    	for ( PrisonPlaceHolders placeHolder : PrisonPlaceHolders.values() ) {
-    		String key = "{" + placeHolder.name() + "}";
+    	List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
+    	
+    	for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+    		String key = "{" + placeHolderKey.getKey() + "}";
     		if ( newFormat.contains( key )) {
     			newFormat = newFormat.replace(key, Text.translateAmpColorCodes(
-    					pm.getTranslatePlayerPlaceHolder( e.getPlayer().getUUID(), placeHolder.name() ) ));
+    					pm.getTranslatePlayerPlaceHolder( e.getPlayer().getUUID(), placeHolderKey.getPlaceholder() ) ));
     		}
     	}
         
