@@ -45,6 +45,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
@@ -52,6 +53,7 @@ import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManagerGUI;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -115,8 +117,10 @@ public class SpigotPrison extends JavaPlugin {
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
+        Bukkit.getPluginManager().registerEvents(new ListenersPrisonManagerGUI(),this);
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+        getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         new SpigotListener(this).init();
         
         initIntegrations();

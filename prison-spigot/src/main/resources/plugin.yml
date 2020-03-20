@@ -4,6 +4,13 @@ version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://mc-prison.tech
 softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI]
+commands:
+  prisonmanager:
+    description: Call a fancy GUI where manage the ranks and mines
+    usage: /<command> gui
+  # ======================================================
+  # New commands compatible only with spigot
+  # ======================================================
 
 permissions:
 
