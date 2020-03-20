@@ -44,14 +44,20 @@ public class Mine
      */
     public Mine() {
         super();
+        
+        // Kick off the initialize:
+        initialize();
     }
 
     
     public Mine(String name, Selection selection) {
-    	this();
+    	super();
     	
     	setName(name);
     	setBounds(selection.asBounds());
+        
+        // Kick off the initialize:
+        initialize();
     }
     
     /**
@@ -61,13 +67,41 @@ public class Mine
      * @throws MineException If the mine couldn't be loaded from the document.
      */
     public Mine(Document document) throws MineException {
-    	this();
+    	super();
     	
-        Optional<World> worldOptional = Prison.get().getPlatform().getWorld((String) document.get("world"));
+        loadFromDocument( document );
+        
+        // Kick off the initialize:
+        // This is critically vital to ensure the workflow is generated with the contents
+        // from the document and not the defaults as set by the super().
+        initialize();
+    }
+
+    
+    /**
+     * <p>This initialize function gets called after the classes are
+     * instantiated, and is initiated from Mine class and propagates
+     * to the MineData class.  Good for kicking off the scheduler.
+     * </p>
+     */
+	@Override
+	protected void initialize() {
+    	super.initialize();
+    	
+    }
+
+	private void loadFromDocument( Document document )
+			throws MineException {
+		Optional<World> worldOptional = Prison.get().getPlatform().getWorld((String) document.get("world"));
         if (!worldOptional.isPresent()) {
             throw new MineException("world doesn't exist");
         }
         World world = worldOptional.get();
+
+        setName((String) document.get("name"));
+        
+        Double resetTimeDouble = (Double) document.get("resetTime");
+        setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
 
         setBounds( new Bounds( 
         			getLocation(document, world, "minX", "minY", "minZ"),
@@ -79,10 +113,6 @@ public class Mine
         }
 
         setWorldName(world.getName());
-        setName((String) document.get("name"));
-
-        Double resetTimeDouble = (Double) document.get("resetTime");
-        setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
         
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
         Double noteRadius = (Double) document.get("notificationRadius");
@@ -99,8 +129,8 @@ public class Mine
             Block block = new Block(BlockType.getBlock(blockTypeName), chance);
             getBlocks().add(block);
         }
-    }
-    
+	}
+
     
     public Document toDocument() {
         Document ret = new Document();

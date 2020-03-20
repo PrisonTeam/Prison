@@ -64,6 +64,17 @@ public abstract class MineData
     	this.notificationMode = MineNotificationMode.radius;
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     }
+
+    /**
+     * <p>This initialize function gets called after the classes are
+     * instantiated, and is initiated from Mine class and propagates
+     * to the MineData class.  Good for kicking off the scheduler.
+     * </p>
+     */
+	protected void initialize() {
+    	
+    }
+    
     
     /**
      * Gets the world

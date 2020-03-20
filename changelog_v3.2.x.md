@@ -8,7 +8,20 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.6 - 2020-03-18
+## tag v3.2.1-alpha.6 - 2020-03-20
+
+* **Bug fix: Mine data was not fully loading prior to submitting workflow**
+Found a timing issue where the mine's workflows were being submitted before all of
+the mine related data was loaded from the file system.  Over all it did not cause
+too many issues, but it was defaulting back on the default values for mine resets
+and was ignoring what was set for that mine.  I implemented an inititialization 
+"channel" in the mine stacks... basically all layers of the mine's hierarchy will
+kick off their constructors from the bottom (MineData) to the top (Mine).  Once all
+the layers are instantiated, then it kicks off executing all of the initialization
+functions from the bottom (MineData) all the way back up to the top (Mine) again. 
+This allows the full loading of the saved mine data at the top layer, Mine, and then 
+allows a lower layer to utilize that loaded data, such as submitting the workflow.
+This simplifies a lot of complexities pertaining to chicken-or-the-egg timings.
 
 * **Compatibility Fix: Conflict with another chat plugin**
 There was an onPlayerChat with the AsyncPlayerChatEvent issue  

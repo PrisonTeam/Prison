@@ -1,6 +1,7 @@
 package tech.mcprison.prison.mines.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MineSchedulerTest
 		
 		List<MineJob> jWorkflow = initializeJobWorkflow( resetTime, includeMessages, rwTimes );
 		
+		assertNotNull( jWorkflow );
 		assertEquals( 3, jWorkflow.size() );
 		
 		Stack<MineJob> jobStack = new Stack<>();

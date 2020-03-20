@@ -34,14 +34,26 @@ public abstract class MineScheduler
 	public MineScheduler() {
 		super();
 		
-		this.jobWorkflow = initializeJobWorkflow();
+		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
 		this.currentJob = null;
-				
-		resetJobStack();
 	}
 
-
+    /**
+     * <p>This initialize function gets called after the classes are
+     * instantiated, and is initiated from Mine class and propagates
+     * to the MineData class.  Good for kicking off the scheduler.
+     * </p>
+     */
+	@Override
+	protected void initialize() {
+    	super.initialize();
+    	
+    	// need to rebuild JobWorkflow if reset time ever changes:
+    	setJobWorkflow( initializeJobWorkflow() );
+    	resetJobStack();
+    }
+	
 	public enum JobType {
 		SYNC,
 		ASYNC

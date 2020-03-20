@@ -89,7 +89,18 @@ public abstract class MineReset
 		this.mineTargetBlocks = new ArrayList<>();
 		this.mineTargetBlocksMap = new TreeMap<>();
 	}
-	
+
+    /**
+     * <p>This initialize function gets called after the classes are
+     * instantiated, and is initiated from Mine class and propagates
+     * to the MineData class.  Good for kicking off the scheduler.
+     * </p>
+     */
+	@Override
+	protected void initialize() {
+    	super.initialize();
+    	
+    }
     
     /**
      * <p>Optimized the mine reset to focus on itself.  Also set the Y plane to refresh at the top and work its
@@ -213,8 +224,8 @@ public abstract class MineReset
     	setResetPage( 0 ); 
     	setResetPosition( 0 );
     	
-    	setAirCountOriginal( 9 );;
-    	setAirCount( 0 );;
+    	setAirCountOriginal( 9 );
+    	setAirCount( 0 );
 
     	setStatsResetTimeMS( 0 );
     	setStatsBlockGenTimeMS( 0 );
