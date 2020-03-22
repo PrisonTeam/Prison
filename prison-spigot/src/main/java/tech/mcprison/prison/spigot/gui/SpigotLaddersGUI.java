@@ -36,6 +36,13 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( lm.getLadders().size() / 9D)*9;
 
+        // If the dimension's too big, don't open the GUI
+        if (dimension > 54){
+            p.sendMessage(SpigotPrison.format("&cSorry, but there're too many ladders and the max's 54 for the GUI"));
+            p.closeInventory();
+            return;
+        }
+
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RanksManager -> Ladders"));
 

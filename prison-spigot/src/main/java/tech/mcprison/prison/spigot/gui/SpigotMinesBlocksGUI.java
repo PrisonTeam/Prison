@@ -38,6 +38,13 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;
 
+        // If the dimension's too big, don't open the GUI
+        if (dimension > 54){
+            p.sendMessage(SpigotPrison.format("&cSorry, but there're too many Blocks and the max's 54 for the GUI"));
+            p.closeInventory();
+            return;
+        }
+
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
