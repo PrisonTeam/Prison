@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 
+/**
+ * @author GABRYCA
+ */
 public class PrisonSpigotCommands implements CommandExecutor {
 
     @Override

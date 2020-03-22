@@ -11,9 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotMineInfoGUI extends SpigotGUIComponents{
 
-    private int dimension = 27;
+    private int dimension = 45;
     private Player p;
     @SuppressWarnings( "unused" )
 	private Mine m;
@@ -34,27 +37,11 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
                 "&8Click to use.",
                 "&8Resets the mine.");
 
-        // Create the button, set up the material, amount, lore and name
-        ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + minename));
-
-        // Position of the button
-        inv.setItem(dimension - 18, resetmine);
-
-
-
         // Set the Mine spawn at your location
         List<String> MineSpawnlore = createLore(
                 "&8Click to use.",
                 "&8Set the mine spawn point at your location."
         );
-
-        // Create the button
-        ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnlore, SpigotPrison.format("&3" + "Mine_Spawn: " + minename));
-
-        // Position of the button
-        inv.setItem(dimension - 16, MineSpawn);
-
-
 
         // Lore and button
         List<String> MinesNotificationsLore = createLore(
@@ -62,41 +49,16 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
                 "&8Change Mines notifications."
         );
 
-        // Create the button
-        ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, SpigotPrison.format("&3" + "Mine_notifications: " + minename));
-
-        // Position of the button
-        inv.setItem(dimension - 14, MinesNotifications);
-
-
         // Lore and button
         List<String> MinesTpLore = createLore(
                 "&8Click to teleport.",
                 "&8Tp to the mine."
         );
 
-        // Create the button
-        ItemStack MinesTP = createButton(Material.BED, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + minename));
-
-        inv.setItem(dimension - 12, MinesTP);
-
-
-
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
                 "&8Click to open.",
                 "&8Manage the blocks of the Mine.");
-
-        // Create the button, set up the material, amount, lore and name
-        ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + minename));
-
-        // Position of the button
-        inv.setItem(dimension - 10, blocksofthemine);
-
-        // Opens the inventory
-        this.p.openInventory(inv);
-
-
 
         // Blocks of the mine button and lore
         List<String> mineResetTimeLore = createLore(
@@ -105,14 +67,43 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents{
                 "&3Reset time: &7" + m.getResetTime());
 
         // Create the button, set up the material, amount, lore and name
+        ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + minename));
+
+        // Create the button
+        ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnlore, SpigotPrison.format("&3" + "Mine_Spawn: " + minename));
+
+        // Create the button
+        ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, SpigotPrison.format("&3" + "Mine_notifications: " + minename));
+
+        // Create the button
+        ItemStack MinesTP = createButton(Material.BED, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + minename));
+
+        // Create the button, set up the material, amount, lore and name
+        ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + minename));
+
+        // Create the button, set up the material, amount, lore and name
         ItemStack mineResetTime = createButton(Material.WATCH, 1, mineResetTimeLore, SpigotPrison.format("&3" + "Reset_Time: " + minename));
 
         // Position of the button
-        inv.setItem(dimension - 1, mineResetTime);
+        inv.setItem(10, resetmine);
+
+        // Position of the button
+        inv.setItem(13, MineSpawn);
+
+        // Position of the button
+        inv.setItem(16, MinesNotifications);
+
+        // Position of the button
+        inv.setItem(28, MinesTP);
+
+        // Position of the button
+        inv.setItem(31, blocksofthemine);
+
+        // Position of the button
+        inv.setItem(34, mineResetTime);
 
         // Opens the inventory
         this.p.openInventory(inv);
-
 
     }
 

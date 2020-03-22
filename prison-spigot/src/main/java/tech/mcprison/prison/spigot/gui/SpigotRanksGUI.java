@@ -17,6 +17,9 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private int dimension = 27;

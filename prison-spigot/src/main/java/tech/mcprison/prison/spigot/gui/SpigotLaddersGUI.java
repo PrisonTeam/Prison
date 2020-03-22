@@ -13,6 +13,9 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private int dimension = 27;
@@ -26,13 +29,9 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Init the ItemStack
         ItemStack itemladder;
-        
-        LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
-        // Init the lore array with default values for ladders
-        List<String> ladderslore = createLore(
-        		"&8Click to open.",
-        		"&cPress Shift + Right click to delete.");
+        // Init variable
+        LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( lm.getLadders().size() / 9D)*9;
@@ -42,6 +41,11 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
+
+            // Init the lore array with default values for ladders
+            List<String> ladderslore = createLore(
+                    "&8Click to open.",
+                    "&cPress Shift + Right click to delete.");
 
             // Create the button
             itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));

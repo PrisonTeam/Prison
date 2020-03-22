@@ -18,6 +18,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotMinesGUI extends SpigotGUIComponents{
 
     private int dimension = 27;
@@ -79,7 +82,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents{
 
                 String blockName =
                         StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-                mineslore.add(SpigotPrison.format("&7% - " + block.getType().name() + "   (" + blockName + ")"));
+                mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
             }
 
             if (totalChance < 100.0d) {

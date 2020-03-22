@@ -9,6 +9,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
 
     private int dimension = 45;
@@ -30,6 +33,18 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(
                 "&8Click to decrease."
+        );
+
+        // Create a new lore
+        List<String> confirmButtonLore = createLore(
+                "&aLeft-Click to confirm.",
+                "&8Time: " + val,
+                "&cRight-Click to cancel."
+        );
+
+        // Create a new lore
+        List<String> changeIncreaseValueLore = createLore(
+                "&8Click to increase."
         );
 
 
@@ -55,23 +70,10 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents{
 
 
 
-        // Create a new lore
-        List<String> confirmButtonLore = createLore(
-                "&aLeft-Click to confirm.",
-                "&8Time: " + val,
-                "&cRight-Click to cancel."
-        );
-
         // Create a button and set the position
         ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val));
         inv.setItem(22, confirmButton);
 
-
-
-        // Create a new lore
-        List<String> changeIncreaseValueLore = createLore(
-                "&8Click to increase."
-        );
 
 
         // Increase button

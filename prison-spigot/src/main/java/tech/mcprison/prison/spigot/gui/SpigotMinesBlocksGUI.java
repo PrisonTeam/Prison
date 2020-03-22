@@ -13,6 +13,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
 
     private int dimension = 27;
@@ -41,19 +44,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
         // For every block makes a button
         for (Block block : m.getBlocks()) {
 
-            List<String> blockslore = createLore(
-                    "&cPress Shift + Right click to remove.",
-                    "",
-                    "&8&l|&3Info&8|");
-
-            // Add a lore
-            blockslore.add(SpigotPrison.format("&3Chance: " + block.getChance() + "%"));
-
             // Get the block material as a string
             String blockmaterial = block.getType().name();
-
-            // Add a lore
-            blockslore.add(SpigotPrison.format("&3BlockType: " + blockmaterial));
 
             // Display title of the item
             String blockmaterialdisplay = blockmaterial;
@@ -62,6 +54,18 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents{
             if (blockmaterial.equalsIgnoreCase("air")){
                 blockmaterial = "BARRIER";
             }
+
+            // Create the lore
+            List<String> blockslore = createLore(
+                    "&cPress Shift + Right click to remove.",
+                    "",
+                    "&8&l|&3Info&8|");
+
+            // Add a lore
+            blockslore.add(SpigotPrison.format("&3Chance: " + block.getChance() + "%"));
+
+            // Add a lore
+            blockslore.add(SpigotPrison.format("&3BlockType: " + blockmaterial));
 
             // Make the item
             ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + ": " + minename));

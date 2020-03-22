@@ -9,6 +9,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
+/**
+ * @author rbluer RoyalBlueRanger
+ * @author GABRYCA
+ */
 public abstract class SpigotGUIComponents {
 
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {

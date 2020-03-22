@@ -9,6 +9,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents{
 
     private int dimension = 45;
@@ -34,6 +37,18 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents{
                 "&8Click to decrease."
         );
 
+        // Create a new lore
+        List<String> confirmButtonLore = createLore(
+                "&aLeft-Click to confirm.",
+                "&8Radius: " + val,
+                "&cRight-Click to cancel."
+        );
+
+        // Create a new lore
+        List<String> changeIncreaseValueLore = createLore(
+                "&8Click to increase."
+        );
+
         // Decrease buttons
         ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " - 1 " + typeNotification ));
         inv.setItem(1, decreaseOf1);
@@ -56,22 +71,10 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents{
 
 
 
-        // Create a new lore
-        List<String> confirmButtonLore = createLore(
-                "&aLeft-Click to confirm.",
-                "&8Radius: " + val,
-                "&cRight-Click to cancel."
-        );
-
         // Create a button and set the position of it
         ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val + " " + typeNotification));
         inv.setItem(22, confirmButton);
 
-
-        // Create a new lore
-        List<String> changeIncreaseValueLore = createLore(
-                "&8Click to increase."
-        );
 
 
         // Increase buttons

@@ -11,7 +11,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.util.List;
 
-
+/**
+ * @author GABRYCA
+ */
 public class SpigotMineNotificationsGUI extends SpigotGUIComponents{
 
     private int dimension = 27;
@@ -38,21 +40,21 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents{
                 "&8Click to choose.",
                 "&3Activate Within mode.");
 
-        // Create a button
-        ItemStack modeWithin = createButton(Material.CHEST, 1, modeWithinLore, SpigotPrison.format("&3Within_Mode: " + minename));
-
         // Create a new lore
         List<String> modeRadiusLore = createLore(
                 "&8Click to choose.",
                 "&3Activate Radius mode.");
 
-        // Create a button
-        ItemStack radiusMode = createButton(Material.FENCE, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + minename));
-
         // Create a new lore
         List<String> disabledModeLore = createLore(
                 "&8Click to choose.",
                 "&3Disable notifications.");
+
+        // Create a button
+        ItemStack modeWithin = createButton(Material.CHEST, 1, modeWithinLore, SpigotPrison.format("&3Within_Mode: " + minename));
+
+        // Create a button
+        ItemStack radiusMode = createButton(Material.FENCE, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + minename));
 
         // Create a button
         ItemStack disabledMode = createButton(Material.REDSTONE_BLOCK, 1, disabledModeLore, SpigotPrison.format("&3Disabled_Mode: " + minename));
