@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.Rank;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
  * @author GABRYCA

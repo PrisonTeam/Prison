@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.Mine;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -13,6 +13,7 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * @author GABRYCA
  */
-public class SpigotMinesGUI extends SpigotGUIComponents{
+public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private int dimension = 27;
     private Player p;

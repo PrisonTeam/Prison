@@ -13,6 +13,10 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.Mine.*;
+import tech.mcprison.prison.spigot.gui.Rank.SpigotLaddersGUI;
+import tech.mcprison.prison.spigot.gui.Rank.SpigotRankUPCommandsGUI;
+import tech.mcprison.prison.spigot.gui.Rank.SpigotRanksGUI;
 
 import java.util.ArrayList;
 import java.util.List;

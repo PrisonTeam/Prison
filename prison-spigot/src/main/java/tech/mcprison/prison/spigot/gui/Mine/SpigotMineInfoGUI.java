@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.Mine;
 
 import java.util.List;
 
@@ -10,11 +10,12 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
  */
-public class SpigotMineInfoGUI extends SpigotGUIComponents{
+public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
     private int dimension = 45;
     private Player p;

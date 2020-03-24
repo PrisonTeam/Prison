@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.Rank;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
