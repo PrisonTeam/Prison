@@ -584,11 +584,14 @@ public class ListenersPrisonManagerGUI implements Listener {
                     // Get the variable value
                     val = m.getNotificationRadius();
 
-                    // Open the GUI
-                    SpigotMineNotificationRadiusGUI gui = new SpigotMineNotificationRadiusGUI(p, val, typeNotification, mineName);
-                    gui.open();
+                    // Execute command
+                    Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
 
-                // Check the button name and do the actions
+                    // Cancel the event and close the inventory
+                    e.setCancelled(true);
+                    p.closeInventory();
+
+                    // Check the button name and do the actions
                 } else if (buttonname.equalsIgnoreCase("Radius_Mode:")){
 
                     // Change the value of the variable
