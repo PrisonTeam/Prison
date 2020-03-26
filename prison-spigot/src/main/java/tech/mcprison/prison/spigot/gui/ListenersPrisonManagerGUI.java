@@ -214,10 +214,10 @@ public class ListenersPrisonManagerGUI implements Listener {
                 SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
                 gui.open();
 
-                // Check the title of the inventory and do the actions
                 break;
             }
-            case "Ladders -> Ranks":
+            // Check the title of the inventory and do the actions
+            case "Ladders -> Ranks": {
 
                 // Get the rank name or the button name
                 String rankName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -252,9 +252,13 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 }
 
+                e.setCancelled(true);
+                p.closeInventory();
                 // Check the title of the inventory and do things
                 break;
-            case "Ranks -> RankUPCommands":
+            }
+            case "Ranks -> RankUPCommands": {
+
 
                 String command = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
@@ -269,6 +273,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check the title of the inventory and do the actions
                 break;
+            }
             case "MinesManager -> Mines": {
 
                 // Mine name or title of the item
@@ -580,9 +585,6 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                     // Change the value of the variable
                     typeNotification = "within";
-
-                    // Get the variable value
-                    val = m.getNotificationRadius();
 
                     // Execute command
                     Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");

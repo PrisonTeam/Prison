@@ -24,6 +24,7 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
         if (!(sender instanceof Player)) {
+            sender.sendMessage(SpigotPrison.format("&cFor some reasons, it looks like you aren't a player"));
             return true;
         }
 
