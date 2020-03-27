@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui.Mine;
+package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 

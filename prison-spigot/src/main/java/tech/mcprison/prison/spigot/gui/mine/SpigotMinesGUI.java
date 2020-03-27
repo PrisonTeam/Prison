@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui.Mine;
+package tech.mcprison.prison.spigot.gui.mine;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;

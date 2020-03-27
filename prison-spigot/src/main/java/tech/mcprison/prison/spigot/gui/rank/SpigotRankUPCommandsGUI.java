@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui.Rank;
+package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
 
