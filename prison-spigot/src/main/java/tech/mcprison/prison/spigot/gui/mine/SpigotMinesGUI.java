@@ -38,6 +38,16 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil( pMines.getMines().size() / 9D)*9;
 
+        // If the inventory is empty
+        if (dimension == 0){
+            p.sendMessage(SpigotPrison.format("&cSorry, but the GUI's &c&lempty&c and have no reason to exist or open"));
+            if (p.getOpenInventory() != null){
+                p.closeInventory();
+                return;
+            }
+            return;
+        }
+
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
             p.sendMessage(SpigotPrison.format("&cSorry, but there're too many mines and the max's 54 for the GUI"));
