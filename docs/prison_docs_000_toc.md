@@ -13,3 +13,7 @@
 # Guides
 
 
+* [Setting up a Spigot Server](prison_docs_010_setting_up_a_spigot_server.md)
+	Setting up Java. Setting up and running BuildTool. Creating a runnable Spigot Server.
+
+
