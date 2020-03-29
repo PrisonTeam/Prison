@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -34,5 +33,4 @@ public abstract class SpigotGUIComponents {
         }
         return results;
     }
-
 }
