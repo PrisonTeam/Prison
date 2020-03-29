@@ -6,6 +6,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 
 public class PrisonGuiCommands {
 	
@@ -27,11 +28,12 @@ public class PrisonGuiCommands {
 			permissions = "prison.gui", onlyPlayers = true) 
 	public void prisonGui(CommandSender sender) {
 
-    	// Get the version
-    	String versionBukkit = Bukkit.getVersion();
-    	// Don't open with these versions
-		if (versionBukkit.contains("1.8.1") || versionBukkit.contains("1.8.2") || versionBukkit.contains("1.8.3") || versionBukkit.contains("1.8.4") || versionBukkit.contains("1.8.5") || versionBukkit.contains("1.8.6") || versionBukkit.contains("1.8.7") || versionBukkit.contains("1.8.8") || versionBukkit.contains("1.8.9") || versionBukkit.contains("1.8") || versionBukkit.contains("1.8.0")) {
-			sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't works with 1.8.9 or older version due to issues"));
+		String ver = Bukkit.getVersion().trim();
+		ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
+		BluesSemanticVersionData semVerMin = new BluesSemanticVersionData("1.9.0");
+		BluesSemanticVersionData semVerTest = new BluesSemanticVersionData(ver);
+		if ( semVerTest.compareTo(semVerMin ) < 0 ) {
+			sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
 			return;
 		}
     	String formatted = "prisonmanager gui";
