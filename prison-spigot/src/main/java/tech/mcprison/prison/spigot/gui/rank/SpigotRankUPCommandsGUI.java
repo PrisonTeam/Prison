@@ -52,7 +52,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Ranks -> RankUPCommands"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RankManager -> RankUPCommands"));
 
         // For every command make a button
         for (String command : rank.rankUpCommands) {

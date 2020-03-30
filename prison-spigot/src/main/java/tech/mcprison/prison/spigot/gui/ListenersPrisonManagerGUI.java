@@ -7,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitScheduler;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -14,13 +16,12 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.mine.*;
-import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.rank.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -30,7 +31,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
     SpigotPrison plugin;
     public List <String> activeGui = new ArrayList<String>();
-
+    public boolean isChatEventActive = false;
+    public int id;
+    public String rankNameOfChat;
 
     public ListenersPrisonManagerGUI(){}
     public ListenersPrisonManagerGUI(SpigotPrison instance){
@@ -78,7 +81,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> MineInfo") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> Delete") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> Blocks")||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications")){
+                e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankManager")){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -134,6 +138,25 @@ public class ListenersPrisonManagerGUI implements Listener {
         if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) {
             if(activeGui.contains(p.getName())) {
                 e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onChat(AsyncPlayerChatEvent e)
+    {
+        if (isChatEventActive){
+            Player p = e.getPlayer();
+            String message = e.getMessage();
+            Bukkit.getScheduler().cancelTask(id);
+            if (message.equalsIgnoreCase("close")){
+                isChatEventActive = false;
+                p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
+            } else {
+                Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> {
+                    Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message);
+                });
+                isChatEventActive = false;
             }
         }
     }
@@ -214,12 +237,12 @@ public class ListenersPrisonManagerGUI implements Listener {
                 SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
                 gui.open();
 
+                e.setCancelled(true);
                 break;
             }
             // Check the title of the inventory and do the actions
             case "Ladders -> Ranks": {
 
-                // Get the rank name or the button name
                 String rankName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
                 // Get the rank
@@ -238,27 +261,77 @@ public class ListenersPrisonManagerGUI implements Listener {
                     Bukkit.dispatchCommand(p, "ranks delete " + rankName);
                     p.closeInventory();
 
-                } else if (rank.rankUpCommands == null) {
+                } else {
 
-                    p.sendMessage(SpigotPrison.format("&cThere aren't commands for this rank anymore."));
-
-                }
-
-                // Open the GUI of commands
-                else {
-
-                    SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
+                    SpigotRankManagerGUI gui = new SpigotRankManagerGUI(p, rank);
                     gui.open();
 
                 }
 
                 e.setCancelled(true);
-                p.closeInventory();
-                // Check the title of the inventory and do things
                 break;
             }
-            case "Ranks -> RankUPCommands": {
+            // Check the title of the inventory and do things
+            case "Ranks -> RankManager": {
 
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button at the space between the buttonname and the rankname
+                String[] parts = buttonnamemain.split(" ");
+
+                // Output finally the buttonname and the minename explicit out of the array
+                String buttonname = parts[0];
+                String rankName = parts[1];
+
+                // Get the rank
+                Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+
+                if (buttonname.equalsIgnoreCase("RankupCommands")){
+
+                    // Check if the rank exist
+                    if (!rankOptional.isPresent()) {
+                        p.sendMessage(SpigotPrison.format("&cThe rank " + rankName + " does not exist."));
+                        return;
+                    }
+
+                    Rank rank = rankOptional.get();
+
+                    if (rank.rankUpCommands == null) {
+
+                        p.sendMessage(SpigotPrison.format("&cThere aren't commands for this rank anymore."));
+
+                    }
+
+                    // Open the GUI of commands
+                    else {
+
+                        SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
+                        gui.open();
+
+                    }
+
+                } else if (buttonname.equalsIgnoreCase("RankPrice")){
+
+                    SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rankOptional.get().cost, rankOptional.get().name);
+                    gui.open();
+
+                } else if (buttonname.equalsIgnoreCase("RankTag")){
+
+                    p.sendMessage(SpigotPrison.format("&3Please write the &6tag &3you'd like to use and &6submit&3."));
+                    p.sendMessage(SpigotPrison.format("&3Input &cclose &3to cancel or wait &c30 seconds&3."));
+                    isChatEventActive = true;
+                    rankNameOfChat = rankName;
+                    id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+                        isChatEventActive = false;
+                        p.sendMessage(SpigotPrison.format("&cYou run out of time, tag not changed."));
+                    }, 20L * 30);
+                    p.closeInventory();
+                }
+
+                e.setCancelled(true);
+                break;
+            }
+            case "RankManager -> RankUPCommands": {
 
                 String command = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
@@ -272,6 +345,113 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.setCancelled(true);
 
                 // Check the title of the inventory and do the actions
+                break;
+            }
+            // Check the inventory name and do the actions
+            case "RankManager -> RankPrice": {
+
+                // Get the button name
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button name in parts
+                String[] parts = buttonnamemain.split(" ");
+
+                // Rename the parts
+                String part1 = parts[0];
+                String part2 = parts[1];
+                String part3 = parts[2];
+
+                // Initialize the variable
+                int decreaseOrIncreaseValue = 0;
+
+                // If there're enough parts init another variable
+                if (parts.length == 4){
+                    decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
+                }
+
+                // Check the button name and do the actions
+                if (part1.equalsIgnoreCase("Confirm:")) {
+
+                    // Check the click type and do the actions
+                    if (e.isLeftClick()){
+
+                        // Execute the command
+                        Bukkit.dispatchCommand(p,"ranks set cost " + part2 + " " + part3);
+
+                        // Close the inventory
+                        p.closeInventory();
+
+                        return;
+
+                        // Check the click type and do the actions
+                    } else if (e.isRightClick()){
+
+                        // Send a message to the player
+                        p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                        // Close the inventory
+                        p.closeInventory();
+
+                        return;
+                    } else {
+
+                        // Cancel the event
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
+                // Give to val a value
+                int val = Integer.parseInt(part2);
+
+                // Check the calculator symbol
+                if (part3.equals("-")){
+
+                    // Check if the value's already too low
+                    if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                        // If it isn't too low then decrease it
+                        val = val - decreaseOrIncreaseValue;
+
+                        // If it is too low
+                    } else {
+
+                        // Tell to the player that the value's too low
+                        p.sendMessage(SpigotPrison.format("&cToo low value."));
+
+                        // Close the inventory
+                        p.closeInventory();
+                        return;
+                    }
+
+                    // Open an updated GUI after the value changed
+                    SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, val, part1);
+                    gui.open();
+
+                    // Check the calculator symbol
+                } else if (part3.equals("+")){
+
+                    // Check if the value isn't too high
+                    if (!((val + decreaseOrIncreaseValue) > 999999)) {
+
+                        // Increase the value
+                        val = val + decreaseOrIncreaseValue;
+
+                        // If the value's too high then do the action
+                    } else {
+
+                        // Close the GUI and tell it to the player
+                        p.sendMessage(SpigotPrison.format("&cToo high value."));
+                        p.closeInventory();
+                        return;
+                    }
+
+                    // Open a new updated GUI with new values
+                    SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, val, part1);
+                    gui.open();
+
+                }
+
                 break;
             }
             case "MinesManager -> Mines": {
