@@ -70,6 +70,10 @@ there are many good resources out there.
 *  **Updating the built servers:** Every once in a while, when you are starting a server, there may be a notification that the server software needs to be update.  Just rerun the BuildTools for the same version within the original build directory.  The build tools will update all of the changed resources and then generate the new server jars that you copy to the actual server (see the next step).  
 
 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Creating a Runnable Spigot Server
 
 *  Create a runnable server directory by creating a new directory outside of the build directory. Then copy the newly generated jar file, such as spigot-1.14.4.jar, to the new server run time directory. 
@@ -103,9 +107,18 @@ there are many good resources out there.
 
 This should give you a functional server for which to run the Prison plugin.  
 
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Customizing your Server
 
 You can now customize the server, such as by adding plugins, etc...
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Other Server Platforms
