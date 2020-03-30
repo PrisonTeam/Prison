@@ -45,6 +45,41 @@ They have those expansions which hook other plug-ins
 
 https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
 
+* **Add support for player use of /mines tp**
+Could be done through other perms and then checking to see if they have access to
+that mine.  Perm:  prison.playertp and prison.playertp.a
+
+* **Document how to use essentials warps for each mine**
+
+In the plugins/Essentials/config.yml is this:
+
+// Set this true to enable permission per warp.
+per-warp-permission: false
+
+Set that to true.
+ 	
+essentials.warp 	Allow access to the /warp command.
+essentials.warp.list 	Specifies whether you can view warp list with /warp.
+essentials.warps.[warpname] 	If you have per-warp-permission set to true in the config.yml then you can limit what warps players can use. This also controls what players would see with /warp.
+
+set:
+per-warp-permission: true
+
+essentials.warp
+essentials.warp.list
+essentials.warps.a
+essentials.warps.b
+essentials.warps.c
+
+Then add them to the rank commmands using pex:
+
+/ranks command add a pex user {player} add essentials.warps.a
+/ranks command add b pex user {player} add essentials.warps.b
+/ranks command add c pex user {player} add essentials.warps.c
+
+
+http://ess.khhq.net/wiki/Command_Reference
+http://wiki.mc-ess.net/doc/
 
 
 * **Improve some of the display pages for ranks and ladders**
@@ -105,6 +140,14 @@ A plugin named EZprestige has been attempted to be used with prison. Not sure if
 * **Built in selling system**
 
 * **Custom Mine reset messsages per mine**
+
+
+* **Enhancement: Multi-Language Support**
+
+Offers for translation:
+  Italian : GabryCA
+  Greek : NerdTastic
+  
 
 
 # Features recently added:
