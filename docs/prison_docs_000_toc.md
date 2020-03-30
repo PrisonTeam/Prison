@@ -26,6 +26,8 @@
     Setting up PermissionsEX. Warning about being obsolete.
 
 
+* [Setting up WorldGuard & WorldEdit](prison_docs_026_setting_up_worldguard_worldedit.md)
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
