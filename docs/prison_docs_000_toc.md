@@ -63,7 +63,28 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 * **Work In Progress**
 
+
+* Prison Command Overview: /prison /mines /ranks /rankup
+
+* Setting up Mines
+
+
+* Changing Mine Settings
+
+
+* Setting up Ranks
+
+* Changing Rank Settings
+
+
+* Working with Ladders
+
+
+* Working with Rank Commands
+
+
 * Working with Placeholders
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -73,7 +94,6 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 * **Work In Progress**
 
-* Setting up and using Holographic Displays & Holographic Extensions
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -84,6 +104,9 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 * [Configuring and Using WorldGuard to Protect Mines](prison_docs_626_configuring_worldguard_regions.md)
+
+
+* Place Holders: Setting up and using Holographic Displays & Holographic Extensions
 
 
 * **Setting up EssentialsX Warps for Players** - Coming soon

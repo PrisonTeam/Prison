@@ -255,6 +255,17 @@ So to recap, for every rank, ideally you should add the new perms for that rank,
 
 
 
+# Alternatives
+
+There are many ways to accomplish the same goals and that's what makes Minecraft so versatile and interesting to play.  The Prison Plugin does not want to impose a specific way to do most things, since it may not be the ideal way for your sever.
+
+One of the primary focuses for this document has been protecting the area around your mine to prevent players who should not access the mine, from enter that region.  One alternative to needing to protect a mine, would be to limit the access to the mine so it does not have to be protected.  One simple way of accomplishing that, is to have the mines in a void world, and then each mine would be a separate island.  Then all that would need to be protected, or controlled, would be the warping to that location.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Other Commands That May Be Important:
 
     /region redefine mine_<mine-name>
