@@ -81,7 +81,7 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 # Guides [6xx] - Configuring Other Plugins for Prison
 
 
-* [Configuring and Using WorldGuard to Protect Mines](prison_docs_625_configuring_worldguard_regions.md)
+* [Configuring and Using WorldGuard to Protect Mines](prison_docs_626_configuring_worldguard_regions.md)
 
 
 * **Setting up EssentialsX Warps for Players** - Coming soon
