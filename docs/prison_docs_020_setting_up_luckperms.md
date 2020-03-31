@@ -1,6 +1,6 @@
 
 ### Prison Documentation 
-## Setting up a LuckPerms
+## Setting up LuckPerms
 
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
