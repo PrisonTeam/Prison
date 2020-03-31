@@ -1,8 +1,8 @@
 
 ### Prison Documentation 
-## Configuring and Using WorldGuard to Protect Mines
-
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Configuring and Using WorldGuard with LuckPerms to Protect Mines
 
 This document explains how to setup WorldGuard to protect your mines and how to prevent players from accessing it when they don't have the correct permissions.  It also explains how to setup the permissions in the Prison's **/ranks command add <rankName** so they are ran automatically during a **/rankup** and **/ranks promote** event. This document also covers what needs to be configured to ensure that the rank commands will work properly with **/ranks demote**.
 
@@ -13,9 +13,9 @@ This document explains how to setup WorldGuard to protect your mines and how to 
 # Dependencies 
 
 * Vault - Interfaces with the Permission Plugins
-* EssentialsX
 * [Install WorldGuard and WorldEdit](prison_docs_026_setting_up_worldguard_worldedit.md)
-* Install a Permissions Plugin that is compatible with Vault
+* Install a Permissions Plugin that is compatible with Vault 
+    * This guide uses LuckPerms.  See [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md) for more information.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 

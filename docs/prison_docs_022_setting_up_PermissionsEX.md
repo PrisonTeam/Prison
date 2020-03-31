@@ -1,12 +1,21 @@
 
 ### Prison Documentation 
-## Setting up PermissionsEX
-
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Setting up PermissionsEX
 
 This document provides a quick overview on how to install PermissionsEX.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Dependencies 
+
+* **Vault** - **Required** - Provides the permission integration with Prison
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Setting up PermissionsEX

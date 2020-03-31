@@ -1,12 +1,21 @@
 
 ### Prison Documentation 
-## Setting up LuckPerms
-
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Setting up LuckPerms
 
 This document provides a quick overview on how to install LuckPerms.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Dependencies 
+
+* **Vault** - **Required** - Provides the permission integration with Prison
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Setting up LuckPerms
@@ -38,7 +47,7 @@ Due to how LuckPerms registers with the Spigot Plugin Manager, it will cause plu
 **Prison plugin v3.2.0** *only* works with LuckPerms v4.4.1 and older. Luckperms v4.4.1 is the suggested version and can be downloaded here:
 [LuckPerms v4.4.1](https://www.spigotmc.org/resources/luckperms-an-advanced-permissions-plugin.28140/history "LuckPerms v4.4.1 can be found under the Version History tab")
 
-**Prison plugin v3.2.1** and newer works with *any* version of LuckPerms. It is suggested to use LuckPerms v5.0.x or v4.4.1.
+**Prison plugin v3.2.1** and newer works with *any* version of LuckPerms. It is suggested that LuckPerms v5.0.x is used, but you may also use LuckPerms v4.4.1.
 
 
 

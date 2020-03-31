@@ -1,8 +1,8 @@
 
 ### Prison Documentation 
-## Setting up a Spigot Server
-
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Setting up a Spigot Server
 
 The Prison documentation covers how to setup a Spigot server for use as either
 a test environment, a production server.  These instructions covers how to

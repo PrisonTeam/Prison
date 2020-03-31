@@ -1,8 +1,8 @@
 
 ### Prison Documentation 
-## Setting up WorldGuard and WorldEdit
-
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Setting up WorldGuard and WorldEdit
 
 Although Prison does not directly utilize WorldGuard or WorldEdit, both of these plugins can be critical in setting up a functional Prison server.
 
