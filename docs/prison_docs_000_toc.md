@@ -31,6 +31,8 @@
 * [Setting up PermissionsEX](prison_docs_020_setting_up_PermissionsEX.md)
     Setting up PermissionsEX. Warning about being obsolete.
 
+* [Setting up Ultra Permissions](prison_docs_024_setting_up_Ultra_Permissions.md)
+    Setting up Ultra Permissions. Compatible with Prison 3.2+
 
 * [Setting up WorldGuard & WorldEdit](prison_docs_026_setting_up_worldguard_worldedit.md)
 
