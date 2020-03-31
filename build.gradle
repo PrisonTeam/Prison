@@ -20,6 +20,15 @@ import java.util.Date
 
 apply plugin: 'java'
 
+/* Two different ways to enable utf-8 encoding within gradle, but not sure its
+ * even needed at this time.  Keeping for a few builds to make sure all is ok.
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+   options.encoding = 'UTF-8'
+}
+*/
+
+ 
 println """
 ==========================================================================
 You are building the Prison plugin 

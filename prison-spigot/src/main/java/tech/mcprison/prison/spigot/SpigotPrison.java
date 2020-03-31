@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
@@ -46,6 +47,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.autoFeatures.AutoManager;
 import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -78,7 +80,13 @@ public class SpigotPrison extends JavaPlugin {
 
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
-    
+
+    private static SpigotPrison config;
+
+    public static SpigotPrison getInstance(){
+        return config;
+    }
+
 //  ###Tab-Complete###
 //  private TreeSet<String> registeredCommands = new TreeSet<>();
        
@@ -120,11 +128,13 @@ public class SpigotPrison extends JavaPlugin {
         this.scheduler = new SpigotScheduler(this);
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManagerGUI(),this);
+        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         new SpigotListener(this).init();
-        
+        config = this;
+
         Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
         
         initIntegrations();
