@@ -1,6 +1,6 @@
 
 ### Prison Documentation 
-## Setting up a PermissionsEX
+## Setting up PermissionsEX
 
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
