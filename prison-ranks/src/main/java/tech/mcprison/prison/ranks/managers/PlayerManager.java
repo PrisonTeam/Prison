@@ -264,6 +264,24 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    public String getPlayerNextRankTag( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				if ( sb.length() > 0 ) {
+    					sb.append(", ");
+    				}
+    				sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().tag);
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
     	PrisonPlaceHolders placeHolder = PrisonPlaceHolders.fromString( identifier );
     	return placeHolder == PrisonPlaceHolders.no_match__ ? null :
@@ -297,6 +315,11 @@ public class PlayerManager
 				case prison_rankup_rank:
 				case rankup_rank:
 					results = getPlayerNextRankName( rankPlayer );
+					break;
+					
+				case prison_rankup_rank_tag:
+				case rankup_rank_tag:
+					results = getPlayerNextRankTag( rankPlayer );
 					break;
 					
 				default:

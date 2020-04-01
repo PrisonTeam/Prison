@@ -77,6 +77,7 @@ public class IntegrationManager {
 		prison_rank_tag(PlaceHolderFlags.PLAYER),
 		prison_rankup_cost(PlaceHolderFlags.PLAYER),
 		prison_rankup_rank(PlaceHolderFlags.PLAYER),
+		prison_rankup_rank_tag(PlaceHolderFlags.PLAYER),
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
@@ -93,6 +94,7 @@ public class IntegrationManager {
 		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rankup_rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 
 		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
 		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),

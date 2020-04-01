@@ -8,11 +8,19 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.6 - 2020-03-20
+## tag v3.2.1-alpha.7 - 2020-04-01
+
+* **New Feature: prison_rankup_rank_tag added**
+This provides the tag of the next available rank.
+
+
+* **Started to Add Documentation**
+To help ensure all users have access to Prison's documentation, and to be able to version all documentation, I've decided to go with github markdown documents.  This will allow the documents to live within the project and they will be accessible online through github.  Simple markdown hyperlinks will tie them together so the user can browse them by just clicking links to navigate.  Markdown is very limited in what can be done with it, but accessibility and versioning is more important than bells and whistles.  
 
 * **Pulled in the Prison GUI menus**
-Pulled the prison gui branch in to the bleeding branch.
-Added the mapping of /prison gui to redirect to /prisonmanager gui so it's integrated
+Pulled the prison gui branch in to the bleeding branch. This was the result of the awesome work by
+Gabryca.
+I added the mapping of /prison gui to redirect to /prisonmanager gui so it's integrated
 with the standard prison commands.
 Added the new permissions to the plugin.yml file.
 

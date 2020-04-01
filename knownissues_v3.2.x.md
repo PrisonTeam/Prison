@@ -15,17 +15,22 @@ Work to be considered.
 <h2> Higher Priority TO DO Items </h2>
 
 * **Complete the new Mines Reset Paging**
-  Holding up next release.
+  Holding up release v3.2.1.
 
 * **Integrate GUI in to bleeding**
-  Holding up next release.
+Done.  More GUI featuers will be added in the next release.
 
 * **Setup GUI to use /prison gui**
+Done.
 
 * **Mine Placeholders**
+Done.
+
+* **Player Placeholder - prison_rankup_rank_tag**
+Done.
 
 * **Get started on new Multi-Language Support**
-
+This is put on hold for the v3.2.2 release.
 
 
 <h2>To consider - Lower priority</h2>
@@ -33,10 +38,13 @@ Work to be considered.
 
 
 * **Add to the Command annotations an option of *async* to run that command asynchronously**
+Check to see if the commands are being ran sync or async.  Add a parameter support so 
+commands that can be ran async.
 
 * **Add prison Placeholders to papi's website for downloads**
-Should try using papi too to make sure the integration works with it 
-as expected?
+Prison is already using papi (PlaceholderAPI).  But see if we can add prison to the supported
+plugis for papi's cloud.  Should time this with the v3.2.1 release so there are more 
+placeholder to use.
 
 DeadlyKill: This what he needs ita
 Papi
@@ -104,15 +112,6 @@ This will allow dynamic live tracking of mine stats, such as how many blocks
 remain and relating percentages.  The new async processing will enable this
 to actually track individual blocks.
 
-* **New Feature: Add Placeholders for Mine related items**
-Examples would be place holders for all mines, and their stats such as
-size, dimensions, percent remaining, reset duration, time left until reset,
-players currently within the mine, ect...
-
-* **Possible new feature: Track how many blocks are mined from the mines**
-Stats on how many blocks are mined from each mine. May be bad to track,
-but could open the door to interesting stats.
-
 * **Possible new feature: Track how many blocks a player mines, including types**
 Stats could be interesting over time, and could also be used for in game
 bonuses and rewards and incentives.
@@ -145,12 +144,26 @@ A plugin named EZprestige has been attempted to be used with prison. Not sure if
 * **Enhancement: Multi-Language Support**
 
 Offers for translation:
-  Italian : GabryCA
+  Italian : Gabryca
   Greek : NerdTastic
+  German: DeadlyKill ?? Did not ask, but a possibility?
   
 
 
 # Features recently added:
+
+
+* **DONE: New feature: Track how many blocks are mined from the mines**
+Stats on how many blocks are mined from each mine. May be bad to track,
+but could open the door to interesting stats.
+**DONE:** this is a whole mine sweep to count air blocks and is being performed
+for the benefit of placeholders.  This could be improved with block break
+event tracking.
+
+* **DONE: New Feature: Add Placeholders for Mine related items**
+Examples would be place holders for all mines, and their stats such as
+size, dimensions, percent remaining, reset duration, time left until reset,
+players currently within the mine, ect...
 
 * **DONE: Offline player support**
 Was not possible to get offline users through the prison API. 
