@@ -8,7 +8,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -21,7 +20,6 @@ import tech.mcprison.prison.spigot.gui.rank.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -152,10 +150,10 @@ public class ListenersPrisonManagerGUI implements Listener {
             if (message.equalsIgnoreCase("close")){
                 isChatEventActive = false;
                 p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
+                e.setCancelled(true);
             } else {
-                Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> {
-                    Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message);
-                });
+                Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
+                e.setCancelled(true);
                 isChatEventActive = false;
             }
         }
@@ -192,8 +190,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check the Item display name and do open the right GUI
                 else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Prison Tasks")) {
-                    e.setCancelled(true);
-                    return;
+
                 }
 
                 // Check the Item display name and do open the right GUI
@@ -226,6 +223,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                     // Execute the command
                     Bukkit.dispatchCommand(p, "ranks ladder delete " + ladderName);
+                    e.setCancelled(true);
                     p.closeInventory();
                     SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
                     gui.open();
@@ -259,7 +257,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                 if (e.isShiftClick() && e.isRightClick()) {
 
                     Bukkit.dispatchCommand(p, "ranks delete " + rankName);
+                    e.setCancelled(true);
                     p.closeInventory();
+                    return;
 
                 } else {
 
@@ -338,7 +338,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                 if (e.isShiftClick() && e.isRightClick()) {
 
                     Bukkit.dispatchCommand(p, "ranks command remove " + command);
+                    e.setCancelled(true);
                     p.closeInventory();
+                    return;
 
                 }
 
@@ -389,6 +391,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                         // Send a message to the player
                         p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
 
+                        e.setCancelled(true);
+
                         // Close the inventory
                         p.closeInventory();
 
@@ -419,6 +423,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                         // Tell to the player that the value's too low
                         p.sendMessage(SpigotPrison.format("&cToo low value."));
 
+                        e.setCancelled(true);
+
                         // Close the inventory
                         p.closeInventory();
                         return;
@@ -442,6 +448,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Close the GUI and tell it to the player
                         p.sendMessage(SpigotPrison.format("&cToo high value."));
+                        e.setCancelled(true);
                         p.closeInventory();
                         return;
                     }
@@ -469,6 +476,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 if (e.isShiftClick() && e.isRightClick()) {
 
                     Bukkit.dispatchCommand(p, "mines delete " + minename);
+                    e.setCancelled(true);
                     p.closeInventory();
                     SpigotMinesConfirmGUI gui = new SpigotMinesConfirmGUI(p, minename);
                     gui.open();
@@ -619,12 +627,15 @@ public class ListenersPrisonManagerGUI implements Listener {
                     // Execute the command
                     Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname.substring(0, buttonname.length() - 1));
 
+                    e.setCancelled(true);
+
                     // Close the GUI so it can be updated
                     p.closeInventory();
 
                     // Open the GUI
                     SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
                     gui.open();
+                    return;
                 }
 
                 // Cancel the event
@@ -664,6 +675,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                         // Execute the command
                         Bukkit.dispatchCommand(p,"mines resettime " + part2 + " " + part3);
 
+                        e.setCancelled(true);
+
                         // Close the inventory
                         p.closeInventory();
 
@@ -674,6 +687,8 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Send a message to the player
                         p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                        e.setCancelled(true);
 
                         // Close the inventory
                         p.closeInventory();
@@ -705,8 +720,11 @@ public class ListenersPrisonManagerGUI implements Listener {
                         // Tell to the player that the value's too low
                         p.sendMessage(SpigotPrison.format("&cToo low value."));
 
+                        e.setCancelled(true);
+
                         // Close the inventory
                         p.closeInventory();
+
                         return;
                     }
 
@@ -728,13 +746,18 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Close the GUI and tell it to the player
                         p.sendMessage(SpigotPrison.format("&cToo high value."));
+
+                        e.setCancelled(true);
+
                         p.closeInventory();
+
                         return;
                     }
 
                     // Open a new updated GUI with new values
                     SpigotMineResetTimeGUI gui = new SpigotMineResetTimeGUI(p, val, part1);
                     gui.open();
+                    e.setCancelled(true);
 
                 }
 
@@ -845,6 +868,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                         // Execute the command
                         Bukkit.dispatchCommand(p,"mines notification " + part2 + " " + typeNotification + " " + part3);
 
+                        e.setCancelled(true);
+
                         // Close the inventory
                         p.closeInventory();
 
@@ -853,6 +878,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Close the inventory
                         p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                        e.setCancelled(true);
+
                         p.closeInventory();
 
                         return;
@@ -881,6 +909,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Close the inventory and tell it the player
                         p.sendMessage(SpigotPrison.format("&cToo low value."));
+
+                        e.setCancelled(true);
+
                         p.closeInventory();
                         return;
                     }
@@ -903,6 +934,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Close the inventory and tell it to the player
                         p.sendMessage(SpigotPrison.format("&cToo high value."));
+
+                        e.setCancelled(true);
+
                         p.closeInventory();
                         return;
                     }
