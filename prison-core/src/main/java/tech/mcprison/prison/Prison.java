@@ -64,6 +64,7 @@ public class Prison implements PluginEntity {
     private Platform platform;
     private File dataFolder;
     private ModuleManager moduleManager;
+    private PrisonCommand prisonCommands;
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
     private EventBus eventBus;
@@ -118,7 +119,8 @@ public class Prison implements PluginEntity {
         }
         Alerts.getInstance(); // init alerts
 
-        this.commandHandler.registerCommands(new PrisonCommand());
+        this.prisonCommands = new PrisonCommand();
+        this.commandHandler.registerCommands(prisonCommands);
 
         long stopTime = System.currentTimeMillis();
         
@@ -295,8 +297,13 @@ public class Prison implements PluginEntity {
     public ModuleManager getModuleManager() {
         return moduleManager;
     }
+    
 
-    /**
+    public PrisonCommand getPrisonCommands() {
+		return prisonCommands;
+	}
+
+	/**
      * Returns the command handler, where command methods can be registered using the {@link
      * CommandHandler#registerCommands(Object)} method.
      *

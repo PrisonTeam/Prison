@@ -116,11 +116,6 @@ to actually track individual blocks.
 Stats could be interesting over time, and could also be used for in game
 bonuses and rewards and incentives.
 
-* **New Feature: List all registered plugins**
-To better support server owners when they have issues with Prison, it would 
-be very helpful if /prison version would list all registered plugins in
-a concise listing. In progress.  Included now in bleeding.
-
 * **Redesign the save files to eliminate the magic numbers**
 Most of the save files within prison, for players, ranks, and ladders, are
 using magic numbers which is highly prone to errors and is considered 
@@ -152,6 +147,12 @@ Offers for translation:
 
 # Features recently added:
 
+* **DONE: New Feature: List all registered plugins**
+To better support server owners when they have issues with Prison, it would 
+be very helpful if **/prison version** would list all registered plugins in
+a concise listing. In progress.  Included now in bleeding.
+All integrations are now listed with their version.
+The spigot command **/pl** (plugin list) shows all active plugins.
 
 * **DONE: New feature: Track how many blocks are mined from the mines**
 Stats on how many blocks are mined from each mine. May be bad to track,

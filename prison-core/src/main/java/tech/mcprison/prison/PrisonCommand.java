@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.commands.Arg;
@@ -42,6 +43,8 @@ import tech.mcprison.prison.util.Text;
  */
 public class PrisonCommand {
 
+	private List<String> registeredPlugins = new ArrayList<>();
+	
     @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
     	ChatDisplay display = displayVersion();
@@ -83,7 +86,29 @@ public class PrisonCommand {
 		{
         	display.addComponent( component );
 		}
-
+        
+        
+        // Display all loaded plugins:
+        if ( getRegisteredPlugins().size() > 0 ) {
+        	display.text( "&7Registered Plugins: " );
+        	StringBuilder sb = new StringBuilder();
+        	for ( String plugin : getRegisteredPlugins() ) {
+        		if ( sb.length() == 0) {
+        			sb.append( "  " );
+        			sb.append( plugin );
+        		} else {
+        			sb.append( ",  " );
+        			sb.append( plugin );
+        			display.text( sb.toString() );
+        			sb.setLength( 0 );
+        		}
+        	}
+        	if ( sb.length() > 0 ) {
+        		display.text( sb.toString());
+        	}
+        }
+        
+        
         return display;
     }
 
@@ -148,5 +173,9 @@ public class PrisonCommand {
     public void convertCommand(CommandSender sender) {
         sender.sendMessage(Prison.get().getPlatform().runConverter());
     }
+
+	public List<String> getRegisteredPlugins() {
+		return registeredPlugins;
+	}
 
 }

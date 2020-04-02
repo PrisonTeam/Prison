@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.1-alpha.7 - 2020-04-01
 
+* **New Feature: List all registered plugins**
+To better support server owners when they have issues with Prison, the command 
+**/prison version** now lists all registered plugins along with their versions.
+With this feature, to provide the information we need to help trouble shoot, 
+they only need to copy and paste to provide all the information we need.
+"Please copy and paste the full **/prison version** command listing."
+
 * **New Feature: prison_rankup_rank_tag added**
 This provides the tag of the next available rank.
 

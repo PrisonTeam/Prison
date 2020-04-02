@@ -175,8 +175,9 @@ public class IntegrationManager {
 			return getAllChatTexts(true);
 		}
 		
-		private static String getAllChatTexts( boolean omitSuppressable) {
-			StringBuilder sb = new StringBuilder();
+		private static List<String> getAllChatList( boolean omitSuppressable) {
+			List<String> results = new ArrayList<>();
+			
 			boolean hasDeprecated = false;
 			
 			for ( PrisonPlaceHolders ph : values() )
@@ -186,12 +187,24 @@ public class IntegrationManager {
 						hasDeprecated = true;
 					}
 					
-					sb.append( ph.getChatText() );
+					results.add( ph.getChatText() );
 				}
 			}
 			
 			if ( hasDeprecated ) {
-				sb.append( " &2(&4*&2=&4suppressed&2)" );
+				results.add( " &2(&4*&2=&4suppressed&2)" );
+			}
+			
+			return results;
+		}
+
+		private static String getAllChatTexts( boolean omitSuppressable) {
+			StringBuilder sb = new StringBuilder();
+			
+			List<String> placeholders = getAllChatList(omitSuppressable);
+			
+			for ( String placeholder : placeholders ) {
+				sb.append( placeholder );
 			}
 			
 			return sb.toString();
@@ -265,9 +278,27 @@ public class IntegrationManager {
         for ( IntegrationType integType : IntegrationType.values() )
 		{
         	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integType.name() ) ));
-			
+
+        	// Generates the placeholder list for the /prison version command, printing
+        	// two placeholders per line.
 			if ( integType ==  IntegrationType.PLACEHOLDER ) {
-				results.add( new TextComponent( "  &7Available PlaceHolders: " + PrisonPlaceHolders.getAllChatTextsOmitSuppressable() ));
+				results.add( new TextComponent( "  &7Available PlaceHolders: " ));
+			
+				List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
+				StringBuilder sb = new StringBuilder();
+				for ( String placeholder : placeholders ) {
+					if ( sb.length() == 0) {
+						sb.append( "      " );
+						sb.append( placeholder );
+					} else {
+						sb.append( placeholder );
+						results.add( new TextComponent( sb.toString() ));
+						sb.setLength( 0 );
+					}
+				}
+				if ( sb.length() > 0 ) {
+					results.add( new TextComponent( sb.toString() ));
+				}
 			}
 			
 			List<Integration> plugins = getAllForType( integType );
@@ -298,17 +329,14 @@ public class IntegrationManager {
     	return results;
     }
 
-	public List<Integration> getDeferredIntegrations()
-	{
+	public List<Integration> getDeferredIntegrations() {
 		return deferredIntegrations;
 	}
-	public void setDeferredIntegrations( List<Integration> deferredIntegrations )
-	{
+	public void setDeferredIntegrations( List<Integration> deferredIntegrations ) {
 		this.deferredIntegrations = deferredIntegrations;
 	}
 
-	public void addDeferredInitialization( Integration defferedIntegration )
-	{
+	public void addDeferredInitialization( Integration defferedIntegration ) {
 		getDeferredIntegrations().add( defferedIntegration );
 	}
 
