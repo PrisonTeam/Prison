@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;

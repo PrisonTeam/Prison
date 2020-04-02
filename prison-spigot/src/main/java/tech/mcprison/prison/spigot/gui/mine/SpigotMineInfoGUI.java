@@ -19,13 +19,12 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
     private int dimension = 45;
     private Player p;
-    @SuppressWarnings( "unused" )
-	private Mine m;
+	private Mine mine;
     private String minename;
 
-    public SpigotMineInfoGUI(Player p, Mine m, String minename){
+    public SpigotMineInfoGUI(Player p, Mine mine, String minename){
         this.p = p;
-        this.m = m;
+        this.mine = mine;
         this.minename = minename;
     }
 
@@ -65,7 +64,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         List<String> mineResetTimeLore = createLore(
                 "&8Click to manage.",
                 "&8Manage the reset time of the Mine.",
-                "&3Reset time: &7" + m.getResetTime());
+                "&3Reset time: &7" + mine.getResetTime());
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + minename));

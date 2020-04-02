@@ -21,7 +21,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private int dimension = 27;
     private Player p;
-    @SuppressWarnings( "unused" )
     private String minename;
 
     public SpigotMinesBlocksGUI(Player p, String minename){
