@@ -140,7 +140,7 @@ public class ListenersPrisonManagerGUI implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e)
     {
         if (isChatEventActive){
@@ -160,7 +160,7 @@ public class ListenersPrisonManagerGUI implements Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
 
         Player p = (Player) e.getWhoClicked();
