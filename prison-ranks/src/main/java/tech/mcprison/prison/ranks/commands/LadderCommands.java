@@ -94,19 +94,28 @@ public class LadderCommands {
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
+        
+        boolean first = true;
         for (RankLadder.PositionRank rank : ladder.get().ranks) {
             Optional<Rank> rankOptional =
                 PrisonRanks.getInstance().getRankManager().getRank(rank.getRankId());
             if(!rankOptional.isPresent()) {
                 continue; // Skip it
             }
+            
+            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
 
-            builder.add("&3#%d &8- &3%s", rank.getPosition(),
-                rankOptional.get().name);
+            builder.add("&3#%d &8- &3%s %s", rank.getPosition(),
+                rankOptional.get().name, 
+                (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
+            	);
+            first = false;
         }
 
+        builder.add( "&3See &f/ranks list &b[ladderName] &3for more details on ranks." );
+        
         display.addComponent(builder.build());
-
+        
         display.send(sender);
     }
 
