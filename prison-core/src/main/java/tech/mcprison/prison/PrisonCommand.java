@@ -27,6 +27,7 @@ import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
@@ -55,13 +56,24 @@ public class PrisonCommand {
     public ChatDisplay displayVersion() {
     	
         ChatDisplay display = new ChatDisplay("/prison version");
-        display
-            .text("&7Prison Version: &3%s &8(API level %d)", Prison.get().getPlatform().getPluginVersion(),
-                Prison.API_LEVEL);
+        display.text("&7Prison Version: &3%s", Prison.get().getPlatform().getPluginVersion());
 
         display.text("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
         display.text("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
 
+        display.text("");
+        for ( Module module : Prison.get().getModuleManager().getModules() ) {
+        	
+        	display.text( "&7Module: &3%s&3 : %s  %s", module.getName(), 
+        			(module.getStatus().getStatus() == ModuleStatus.Status.ENABLED ? "&2Enabled" : 
+        				(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? "&cFailed" :
+        						"&9&m-Disabled-" )),
+        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
+        						"&d[" + module.getStatus().getMessage() + "&d]" : "")
+        			);
+        }
+         
+        
         display.text("");
         display.text("&7Integrations:");
 

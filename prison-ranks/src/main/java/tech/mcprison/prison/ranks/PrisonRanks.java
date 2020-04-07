@@ -75,7 +75,7 @@ public class PrisonRanks extends Module {
 
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
-            getStatus().setMessage("no economy plugin");
+            getStatus().setMessage("&cNo economy plugin");
             return;
         }
 
@@ -92,6 +92,8 @@ public class PrisonRanks extends Module {
         try {
             rankManager.loadRanks();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+            getStatus().addMessage("&cFailed Loading Ranks: " + e.getMessage());
             Output.get().logError("A rank file failed to load.", e);
         }
 
@@ -102,6 +104,8 @@ public class PrisonRanks extends Module {
         try {
             ladderManager.loadLadders();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        	getStatus().addMessage("&cFailed Loading Loadders: " + e.getMessage());
             Output.get().logError("A ladder file failed to load.", e);
         }
         createDefaultLadder();
@@ -113,6 +117,8 @@ public class PrisonRanks extends Module {
         try {
             playerManager.loadPlayers();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        	getStatus().addMessage("&cFailed Loading Players: " + e.getMessage());
             Output.get().logError("A player file failed to load.", e);
         }
 
@@ -154,16 +160,18 @@ public class PrisonRanks extends Module {
             Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("default");
 
             if (!rankLadderOptional.isPresent()) {
-                Output.get().logError("Could not create the default ladder.");
-                super.getStatus().toFailed("&cNo default ladder found.");
+            	String message = "Failed to create a new default ladder, preexisting one not be found.";
+            	Output.get().logError(message);
+                super.getStatus().toFailed("&c" + message);
                 return;
             }
 
             try {
                 ladderManager.saveLadder(rankLadderOptional.get());
             } catch (IOException e) {
-                Output.get().logError("Could not save the default ladder.", e);
-                super.getStatus().toFailed("&cNo default ladder found.");
+            	String message = "Failed to save a new default ladder, preexisting one not be found.";
+            	Output.get().logError(message, e);
+                super.getStatus().toFailed("&c" + message);
             }
         }
     }
@@ -207,18 +215,19 @@ public class PrisonRanks extends Module {
     }
 
     public int getRankCount() {
-    	int rankCount = getRankManager().getRanks() == null ? 0 : getRankManager().getRanks().size();
+    	int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
+    			getRankManager().getRanks().size();
     	return rankCount;
     }
     
     public int getladderCount() {
-    	int ladderCount = getLadderManager().getLadders() == null ? 0 : 
+    	int ladderCount = getLadderManager() == null || getLadderManager().getLadders() == null ? 0 : 
     		getLadderManager().getLadders().size();
     	return ladderCount;
     }
     
     public int getPlayersCount() {
-    	int playersCount = getPlayerManager().getPlayers() == null ? 0 : 
+    	int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
     		getPlayerManager().getPlayers().size();
     	return playersCount;
     }
