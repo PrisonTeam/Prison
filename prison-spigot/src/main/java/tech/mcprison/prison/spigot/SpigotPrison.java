@@ -30,6 +30,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,6 +48,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.autoFeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.spigot.autoFeatures.AutoManager;
 import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
@@ -134,6 +136,7 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         new SpigotListener(this).init();
         config = this;
+        new AutoFeaturesFileConfig();
 
         Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
         
@@ -171,6 +174,11 @@ public class SpigotPrison extends JavaPlugin {
     public void onDisable() {
         this.scheduler.cancelAll();
         Prison.get().deinit();
+    }
+
+    public static FileConfiguration getAutoFeaturesConfig(){
+        AutoFeaturesFileConfig messages = new AutoFeaturesFileConfig();
+        return messages.getFile();
     }
 
     public static String format(String format){
