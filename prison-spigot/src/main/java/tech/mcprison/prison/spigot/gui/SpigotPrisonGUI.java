@@ -34,8 +34,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // Lore of the button
         List<String> prisontaskslore = createLore(
                 "&8Prison Tasks GUI manager.",
-                "&8Click to open.",
-                "&d&lComing Soon.");
+                "&8Click to open.");
 
         // Lore of the button
         List<String> mineslore = createLore(

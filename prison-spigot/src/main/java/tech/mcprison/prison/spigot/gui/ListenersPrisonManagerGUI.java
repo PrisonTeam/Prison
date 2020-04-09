@@ -2,6 +2,8 @@ package tech.mcprison.prison.spigot.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,9 +16,12 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +85,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> Delete") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> Blocks")||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications") ||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankManager")){
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankManager") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager -> AutoFeatures")
+        ){
 
             // Add the player to the list of those who can't move items in the inventory
             addToGUIBlocker(p);
@@ -190,7 +197,8 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Check the Item display name and do open the right GUI
                 else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Prison Tasks")) {
-
+                    SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                    gui.open();
                 }
 
                 // Check the Item display name and do open the right GUI
@@ -947,6 +955,140 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 }
 
+                break;
+            }
+            // Check the inventory title and do the actions
+            case "PrisonManager -> AutoFeatures":
+                {
+
+
+                    FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                    File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+
+                    // Get the button name without colors but with the minename too
+                    String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                    // Split the button at the space between the buttonname and the minename
+                    String[] parts = buttonnamemain.split(" ");
+
+                    // Output finally the buttonname and the minename explicit out of the array
+                    String buttonname = parts[0];
+                    String mode = parts[1];
+
+                    if (buttonname.equalsIgnoreCase("All")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.General.AreEnabledFeatures", false);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isLeftClick()){
+                                configThings.set("Options.General.AreEnabledFeatures", true);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    } else if (buttonname.equalsIgnoreCase("AutoPickup")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.AutoPickup.AutoPickupEnabled", false);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isLeftClick()){
+                                configThings.set("Options.AutoPickup.AutoPickupEnabled", true);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    } else if (buttonname.equalsIgnoreCase("AutoSmelt")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.AutoSmelt.AutoSmeltEnabled", false);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isLeftClick()){
+                                configThings.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    } else if (buttonname.equalsIgnoreCase("AutoBlock")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.AutoBlock.AutoBlockEnabled", false);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isLeftClick()){
+                                configThings.set("Options.AutoBlock.AutoBlockEnabled", true);
+                                try {
+                                    configThings.save(file);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    }
+                    e.setCancelled(true);
                 break;
             }
 
