@@ -154,6 +154,8 @@ public class RanksCommands {
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
+        
+        boolean first = true;
         for (RankLadder.PositionRank pos : ranks) {
             Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
             if (!rankOptional.isPresent()) {
@@ -161,12 +163,18 @@ public class RanksCommands {
             }
             Rank rank = rankOptional.get();
 
+            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
+            
             String text =
-                String.format("&3%s &9[&3%s&9] &7- &7%s &7- Commands: &3%d", 
-                			rank.name, rank.tag, Text.numberToDollars(rank.cost), rank.rankUpCommands.size());
+                String.format("&3%s &9[&3%s&9] &7- %s&7%s &7- Commands: &3%d", 
+                			rank.name, rank.tag, 
+                			(defaultRank ? "&b(&9Default&b) &7-" : ""),
+                			Text.numberToDollars(rank.cost),
+                			rank.rankUpCommands.size());
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
+            first = false;
         }
 
         display.addComponent(builder.build());

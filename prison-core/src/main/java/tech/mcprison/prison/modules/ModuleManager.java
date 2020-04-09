@@ -85,8 +85,9 @@ public class ModuleManager {
 
         if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
             // Anything else and we assume that the enable failed.
-            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
-                (System.currentTimeMillis() - startTime));
+        	
+            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds. &d[%s&d]", module.getName(),
+                (System.currentTimeMillis() - startTime), module.getStatus().getMessage() );
             return false;
         }
 

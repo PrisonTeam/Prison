@@ -38,5 +38,5 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 | Stable | Experimental (Nightly) |
 | ------ | ---------------------- |
-| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://github.com/MC-Prison/Prison/releases/latest) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
+| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://www.spigotmc.org/resources/prison.1223/) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 

@@ -79,7 +79,7 @@ essentials.warps.a
 essentials.warps.b
 essentials.warps.c
 
-Then add them to the rank commmands using pex:
+Then add them to the rank commands using pex:
 
 /ranks command add a pex user {player} add essentials.warps.a
 /ranks command add b pex user {player} add essentials.warps.b

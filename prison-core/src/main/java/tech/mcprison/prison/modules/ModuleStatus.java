@@ -89,6 +89,14 @@ public class ModuleStatus {
     public void setMessage(String message) {
         this.message = message;
     }
+    
+    public void addMessage(String message) {
+    	if ( this.message == null ) {
+    		setMessage(message);
+    	} else {
+    		setMessage( getMessage() + ". " + message);
+    	}
+    }
 
     public enum Status {
         ENABLED, DISABLED, FAILED
