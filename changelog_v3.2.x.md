@@ -10,6 +10,25 @@ that you need.
 
 ## tag v3.2.1-alpha.7 - 2020-04-01
 
+
+* **New Feature: GemsEconomy Direct integration**
+Starting to hook up GemsEconomy.  It's not ready and it may take a while to
+put everything in place. The major thing that GemsEconomy provides is support
+for non-standard currencies.
+
+* **New Feature: AutoManager**
+Gabryca is adding this new feature to the spigot interface.
+
+
+* **Upgraded API: EssentialsX v2.1.7.1.0**
+Update to the most recent version of EssentialsX v2.1.7.1.0 was v2.0.1-b354.
+This is an internal library used only for compile purposes.
+
+* **Upgraded API: SaneEconomy v0.15.0**
+Update to a more recent version of SaneEconomy v0.15.0 was v0.13.1.
+Note this is the last version where the signature of getBalance and setBalance is using doubles. Newer versions use BigDecimal so I've put try catches around them to capture potential errors so it can be reported.  Did not upgrade to anything newer since the backend storage has changed which may be a major change for some servers.
+This is an internal library used only for compile purposes.
+
 * **New Feature: List all registered plugins**
 To better support server owners when they have issues with Prison, the command 
 **/prison version** now lists all registered plugins along with their versions.
@@ -25,8 +44,7 @@ This provides the tag of the next available rank.
 To help ensure all users have access to Prison's documentation, and to be able to version all documentation, I've decided to go with github markdown documents.  This will allow the documents to live within the project and they will be accessible online through github.  Simple markdown hyperlinks will tie them together so the user can browse them by just clicking links to navigate.  Markdown is very limited in what can be done with it, but accessibility and versioning is more important than bells and whistles.  
 
 * **Pulled in the Prison GUI menus**
-Pulled the prison gui branch in to the bleeding branch. This was the result of the awesome work by
-Gabryca.
+Pulled the prison gui branch in to the bleeding branch. This was the result of the awesome work by Gabryca.
 I added the mapping of /prison gui to redirect to /prisonmanager gui so it's integrated
 with the standard prison commands.
 Added the new permissions to the plugin.yml file.
