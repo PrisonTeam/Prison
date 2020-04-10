@@ -45,7 +45,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
             List<String> EnabledOrDisabledLore = createLore(
                     "&cAll features disabled",
-                    "&aLeft click to enable");
+                    "&aRight click to enable");
             enabledOrDisabled = createButton(Material.REDSTONE_BLOCK, 1, EnabledOrDisabledLore, SpigotPrison.format("&c" + "All Disabled"));
 
         }
@@ -55,14 +55,14 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             List<String> autoPickupLore = createLore(
                     "&8AutoPickup GUI manager.",
                     "&cPress Shift + Right click to disable.",
-                    "&8Click to open.");
+                    "&8Left Click to open.");
             autoPickup = createButton(Material.EMERALD_BLOCK, 1, autoPickupLore, SpigotPrison.format("&3" + "AutoPickup Enabled"));
         } else {
             // Lore of the button
             List<String> autoPickupLore = createLore(
                     "&8AutoPickup GUI manager.",
-                    "&aLeft Click to enable.",
-                    "&8Click to open.");
+                    "&aRight Click to enable.",
+                    "&8Left Click to open.");
             autoPickup = createButton(Material.REDSTONE_BLOCK, 1, autoPickupLore, SpigotPrison.format("&3" + "AutoPickup Disabled"));
         }
 
@@ -73,14 +73,14 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             List<String> autoSmeltLore = createLore(
                     "&8AutoSmelt GUI manager.",
                     "&cPress Shift + Right click to disable.",
-                    "&8Click to open.");
+                    "&8Left Click to open.");
             autoSmelt = createButton(Material.EMERALD_BLOCK, 1, autoSmeltLore, SpigotPrison.format("&3" + "AutoSmelt Enabled"));
         } else {
             // Lore of the button
             List<String> autoSmeltLore = createLore(
                     "&8AutoSmelt GUI manager.",
-                    "&aLeft Click to enable.",
-                    "&8Click to open.");
+                    "&aRight Click to enable.",
+                    "&8Left Click to open.");
             autoSmelt = createButton(Material.REDSTONE_BLOCK, 1, autoSmeltLore, SpigotPrison.format("&3" + "AutoSmelt Disabled"));
         }
 
@@ -91,15 +91,15 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             List<String> autoBlockLore = createLore(
                     "&8AutoBlock GUI manager.",
                     "&cPress Shift + Right click to disable.",
-                    "&8Click to open.");
+                    "&8Left Click to open.");
             autoBlock = createButton(Material.EMERALD_BLOCK, 1, autoBlockLore, SpigotPrison.format("&3" + "AutoBlock Enabled"));
 
         } else {
             // Lore of the button
             List<String> autoBlockLore = createLore(
                     "&8AutoBlock GUI manager.",
-                    "&aLeft Click to enable.",
-                    "&8Click to open.");
+                    "&aRight Click to enable.",
+                    "&8Left Click to open.");
             autoBlock = createButton(Material.REDSTONE_BLOCK, 1, autoBlockLore, SpigotPrison.format("&3" + "AutoBlock Disabled"));
         }
 

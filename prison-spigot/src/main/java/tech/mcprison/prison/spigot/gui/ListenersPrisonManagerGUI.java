@@ -17,6 +17,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoFeaturesGUI;
+import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 
@@ -86,7 +87,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> Blocks")||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankManager") ||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager -> AutoFeatures")
+                e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager -> AutoFeatures") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoPickup")
         ){
 
             // Add the player to the list of those who can't move items in the inventory
@@ -196,7 +198,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 }
 
                 // Check the Item display name and do open the right GUI
-                else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("Prison Tasks")) {
+                else if (e.getCurrentItem().getItemMeta().getDisplayName().substring(2).equals("AutoManager")) {
                     SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                     gui.open();
                 }
@@ -990,7 +992,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
-                            if (e.isLeftClick()){
+                            if (e.isRightClick()){
                                 configThings.set("Options.General.AreEnabledFeatures", true);
                                 try {
                                     configThings.save(file);
@@ -1016,9 +1018,12 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                                 gui.open();
+                            } else if (e.isLeftClick()){
+                                SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                                gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
-                            if (e.isLeftClick()){
+                            if (e.isRightClick()){
                                 configThings.set("Options.AutoPickup.AutoPickupEnabled", true);
                                 try {
                                     configThings.save(file);
@@ -1029,6 +1034,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                                 gui.open();
+                            } else if (e.isLeftClick()){
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
                             }
                         }
                     } else if (buttonname.equalsIgnoreCase("AutoSmelt")){
@@ -1046,7 +1054,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
-                            if (e.isLeftClick()){
+                            if (e.isRightClick()){
                                 configThings.set("Options.AutoSmelt.AutoSmeltEnabled", true);
                                 try {
                                     configThings.save(file);
@@ -1074,7 +1082,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
-                            if (e.isLeftClick()){
+                            if (e.isRightClick()){
                                 configThings.set("Options.AutoBlock.AutoBlockEnabled", true);
                                 try {
                                     configThings.save(file);
@@ -1089,6 +1097,250 @@ public class ListenersPrisonManagerGUI implements Listener {
                         }
                     }
                     e.setCancelled(true);
+                break;
+            }
+
+            case "AutoFeatures -> AutoPickup":{
+
+                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+
+                // Get the button name without colors but with the minename too
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button at the space between the buttonname and the minename
+                String[] parts = buttonnamemain.split(" ");
+
+                // Output finally the buttonname and the minename explicit out of the array
+                String buttonname = parts[0];
+                String mode = parts[1];
+
+                if (mode.equalsIgnoreCase("Enabled")){
+
+                    if (e.isRightClick() && e.isShiftClick()){
+
+                        if (buttonname.equalsIgnoreCase("All_Blocks")){
+                            configThings.set("Options.AutoPickup.AutoPickupAllBlocks", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Gold_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupGoldOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupIronOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Coal_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupCoalOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Diamond_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupDiamondOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Redstone_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Emerald_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Quartz_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupQuartzOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                } else if (mode.equalsIgnoreCase("Disabled")){
+
+                    if (e.isRightClick()){
+
+                        if (buttonname.equalsIgnoreCase("All_Blocks")){
+                            configThings.set("Options.AutoPickup.AutoPickupAllBlocks", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Gold_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupGoldOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupIronOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Coal_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupCoalOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Diamond_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupDiamondOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Redstone_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Emerald_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Quartz_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupQuartzOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                }
+
                 break;
             }
 
