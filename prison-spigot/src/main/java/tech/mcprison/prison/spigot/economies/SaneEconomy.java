@@ -69,7 +69,7 @@ public class SaneEconomy
     @Override
     public String getDisplayName()
     {
-    	return super.getDisplayName() + 
+    	return super.getDisplayName() + " (API v0.15.0)"+
     			( availableAsAnAlternative ? " (disabled)" : "");
     }
     

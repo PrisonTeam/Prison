@@ -5,6 +5,7 @@ import org.appledash.saneeconomy.economy.economable.EconomablePlayer;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 
 public class SaneEconomyWrapper
 {
@@ -23,11 +24,27 @@ public class SaneEconomyWrapper
 	}
 	
     public double getBalance(Player player) {
-        return economyManager.getBalance(toEconomablePlayer(player));
+    	double result = 0;
+        
+    	try {
+    		result = economyManager.getBalance(toEconomablePlayer(player));
+    	}
+	    catch ( Exception e ) {
+	    	Output.get().logError( "Failed to get SaneEconomy balance. " +
+	    			"Using API v0.15.0. You may need to downgrade. ", e );
+	    }
+
+        return result;
     }
 
     public void setBalance(Player player, double amount) {
-        economyManager.setBalance(toEconomablePlayer(player), amount);
+    	try {
+    		economyManager.setBalance(toEconomablePlayer(player), amount);
+    	}
+	    catch ( Exception e ) {
+	    	Output.get().logError( "Failed to set SaneEconomy balance. " +
+	    			"Using API v0.15.0. You may need to downgrade. ", e );
+	    }
     }
 
     private EconomablePlayer toEconomablePlayer(Player player) {
