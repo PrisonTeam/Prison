@@ -62,6 +62,12 @@ public class PrisonRanks extends Module {
         super(MODULE_NAME, version, 3);
     }
 
+
+    @Override
+    public String getBaseCommands() {
+    	return "&2/ranks &2/rankup";
+    }
+    
     /*
      * Methods
      */

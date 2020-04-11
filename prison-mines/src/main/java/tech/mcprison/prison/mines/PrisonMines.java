@@ -68,6 +68,11 @@ public class PrisonMines extends Module {
         return i;
     }
 
+    @Override
+    public String getBaseCommands() {
+    	return "&2/mines";
+    }
+    
     public void enable() {
         i = this;
 

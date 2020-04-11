@@ -62,10 +62,14 @@ public class PrisonCommand {
         display.text("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
 
         display.text("");
+        
+        display.text("&7Commands: &2/prison");
+        
         for ( Module module : Prison.get().getModuleManager().getModules() ) {
         	
         	display.text( "&7Module: &3%s&3 : %s  %s", module.getName(), 
-        			(module.getStatus().getStatus() == ModuleStatus.Status.ENABLED ? "&2Enabled" : 
+        			(module.getStatus().getStatus() == ModuleStatus.Status.ENABLED ? 
+        					String.format( "&2Enabled  &7Commands: &2%s", module.getBaseCommands()) : 
         				(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? "&cFailed" :
         						"&9&m-Disabled-" )),
         			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 

@@ -67,6 +67,24 @@ public abstract class Module implements PluginEntity {
         this.errorManager = new ErrorManager(this);
     }
 
+    /**
+     * <p>The getBaseCommands() should return all of the base commands that
+     * would apply to the module.  It should include the / as in /mines or
+     * the /ranks command.  It should be viewed as being ran from in game
+     * to be consistent. 
+     * </p>
+     * 
+     * <p>An example of what this would return would be:
+     * </p>
+     * 
+     * <ul>
+     *   <li>Mines plugin: "&2/mines"</li>
+     *   <li>Ranks plugin: "&2/ranks &2/rankup"</li>
+     * </ul>
+     * 
+     * @return
+     */
+    abstract public String getBaseCommands();
     /*
      * Methods, to be overridden
      */
