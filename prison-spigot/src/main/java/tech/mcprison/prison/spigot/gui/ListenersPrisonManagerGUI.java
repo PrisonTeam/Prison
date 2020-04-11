@@ -16,8 +16,10 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoPickupGUI;
+import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 
@@ -88,7 +90,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("MineInfo -> MineNotifications") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> RankManager") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager -> AutoFeatures") ||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoPickup")
+                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoPickup") ||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoSmelt")||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoBlock")
         ){
 
             // Add the player to the list of those who can't move items in the inventory
@@ -1052,6 +1056,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                                 gui.open();
+                            } else if (e.isLeftClick()){
+                                SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                                gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
@@ -1064,6 +1071,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            } else if (e.isLeftClick()){
+                                SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
                                 gui.open();
                             }
                         }
@@ -1080,6 +1090,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                                 gui.open();
+                            } else if (e.isLeftClick()){
+                                SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                                gui.open();
                             }
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
@@ -1092,6 +1105,9 @@ public class ListenersPrisonManagerGUI implements Listener {
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            } else if (e.isLeftClick()){
+                                SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
                                 gui.open();
                             }
                         }
@@ -1344,6 +1360,311 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
 
+            case "AutoFeatures -> AutoSmelt":{
+
+                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+
+                // Get the button name without colors but with the minename too
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button at the space between the buttonname and the minename
+                String[] parts = buttonnamemain.split(" ");
+
+                // Output finally the buttonname and the minename explicit out of the array
+                String buttonname = parts[0];
+                String mode = parts[1];
+
+                if (mode.equalsIgnoreCase("Enabled")){
+
+                    if (e.isRightClick() && e.isShiftClick()){
+
+                        if (buttonname.equalsIgnoreCase("Gold_Ore")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Ore")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltIronOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                } else if (mode.equalsIgnoreCase("Disabled")){
+
+                    if (e.isRightClick()){
+
+                        if (buttonname.equalsIgnoreCase("Gold_Ore")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Ore")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                }
+
+                break;
+            }
+
+            case "AutoFeatures -> AutoBlock":{
+
+                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+
+                // Get the button name without colors but with the minename too
+                String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Split the button at the space between the buttonname and the minename
+                String[] parts = buttonnamemain.split(" ");
+
+                // Output finally the buttonname and the minename explicit out of the array
+                String buttonname = parts[0];
+                String mode = parts[1];
+
+                if (mode.equalsIgnoreCase("Enabled")){
+
+                    if (e.isRightClick() && e.isShiftClick()){
+
+                        if (buttonname.equalsIgnoreCase("Gold_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockGoldBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockIronBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Coal_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockCoalBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Diamond_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Redstone_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Emerald_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Quartz_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                } else if (mode.equalsIgnoreCase("Disabled")){
+
+                    if (e.isRightClick()){
+
+                        if (buttonname.equalsIgnoreCase("Gold_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockGoldBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Iron_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockIronBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Coal_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockCoalBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Diamond_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Redstone_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Emerald_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Quartz_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                    }
+
+                    e.setCancelled(true);
+
+                }
+
+                break;
+            }
         }
 
         // Deleted the e.setCancelled(true) because'd make every chest impossible to use, sorry.
