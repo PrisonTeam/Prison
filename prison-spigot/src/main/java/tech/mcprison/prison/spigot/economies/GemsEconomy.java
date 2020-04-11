@@ -1,10 +1,10 @@
 package tech.mcprison.prison.spigot.economies;
 
-import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.Player;
 
 public class GemsEconomy
-	extends EconomyIntegration
+	extends EconomyCurrencyIntegration
 {
 
 	private GemsEconomyWrapper wrapper = null;
@@ -33,34 +33,104 @@ public class GemsEconomy
 		}
 	}
 
+	
+	@Override
+	public boolean supportedCurrency( String currencyName ) {
+		boolean supported = false;
+		
+		if ( wrapper != null ) {
+			supported = wrapper.supportedCurrency( currencyName );
+		}
+		
+		return supported;
+	}
+	
     @Override 
     public double getBalance(Player player) {
-        return wrapper.getBalance(player);
+    	double amount = 0;
+    	if ( wrapper != null ) {
+    		amount = wrapper.getBalance(player);
+    	}
+    	return amount;
+    }
+    
+    @Override 
+    public double getBalance(Player player, String currencyName) {
+    	double amount = 0;
+    	if ( wrapper != null ) {
+    		amount = wrapper.getBalance(player, currencyName);
+    	}
+    	return amount;
     }
 
     @Override 
     public void setBalance(Player player, double amount) {
-    	double remainder = amount - getBalance(player);
-    	if ( remainder > 0 ) {
-    		wrapper.addBalance( player, amount );
-    	} if ( remainder < 0 ) {
-    		wrapper.withdraw( player, amount );
+    	if ( wrapper != null ) {
+    		double remainder = amount - getBalance(player);
+    		if ( remainder > 0 ) {
+    			wrapper.addBalance( player, amount );
+    		} if ( remainder < 0 ) {
+    			wrapper.withdraw( player, amount );
+    		}
+    	}
+    }
+    
+    @Override 
+    public void setBalance(Player player, double amount, String currencyName) {
+    	if ( wrapper != null ) {
+    		double remainder = amount - getBalance(player, currencyName);
+    		if ( remainder > 0 ) {
+    			wrapper.addBalance( player, amount, currencyName );
+    		} if ( remainder < 0 ) {
+    			wrapper.withdraw( player, amount, currencyName );
+    		}
     	}
     }
 
     @Override 
     public void addBalance(Player player, double amount) {
-        wrapper.addBalance(player, amount);
+    	if ( wrapper != null ) {
+    		wrapper.addBalance(player, amount);
+    	}
+    }
+    
+    @Override 
+    public void addBalance(Player player, double amount, String currencyName) {
+    	if ( wrapper != null ) {
+    		wrapper.addBalance(player, amount, currencyName);
+    	}
     }
 
     @Override 
     public void removeBalance(Player player, double amount) {
-        wrapper.withdraw(player, amount);
+    	if ( wrapper != null ) {
+    		wrapper.withdraw(player, amount);
+    	}
+    }
+    
+    @Override 
+    public void removeBalance(Player player, double amount, String currencyName) {
+    	if ( wrapper != null ) {
+    		wrapper.withdraw(player, amount, currencyName);
+    	}
     }
 
     @Override 
     public boolean canAfford(Player player, double amount) {
-        return getBalance(player) >= amount;
+    	boolean results = false;
+    	if ( wrapper != null ) {
+    		results = getBalance(player) >= amount;
+    	}
+    	return results;
+    }
+    
+    @Override 
+    public boolean canAfford(Player player, double amount, String currencyName) {
+    	boolean results = false;
+    	if ( wrapper != null ) {
+    		results = getBalance(player, currencyName) >= amount;
+    	}
+    	return results;
     }
     
     @Override 

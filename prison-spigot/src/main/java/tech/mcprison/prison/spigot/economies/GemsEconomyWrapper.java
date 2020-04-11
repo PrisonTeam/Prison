@@ -28,6 +28,14 @@ public class GemsEconomyWrapper
 		return economy != null;
 	}
 	
+	public boolean supportedCurrency( String currencyName ) {
+		Currency currency = getCurrency( currencyName );
+		
+		boolean supported = (currency != null);
+		
+		return supported;
+	}
+	
 	public Currency getCurrency( String currencyName ) {
 		Currency currency = null;
 		if (economy != null && 
