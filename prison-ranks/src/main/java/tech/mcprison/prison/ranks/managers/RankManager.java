@@ -17,18 +17,19 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Manages the creation, removal, and management of ranks.
@@ -136,6 +137,9 @@ public class RankManager {
 
         // ... add it to the list...
         loadedRanks.add(newRank);
+        
+        // Reset the rank relationships:
+        connectRanks();
 
         // ...and return it.
         return Optional.of(newRank);
@@ -227,6 +231,9 @@ public class RankManager {
 
         // Remove it from the list...
         loadedRanks.remove(rank);
+        
+        // Reset the rank relationships:
+        connectRanks();
 
         // ... and remove the rank's save files.
         collection.delete(rank.filename());
@@ -252,4 +259,31 @@ public class RankManager {
         return loadedRanks;
     }
 
+    /**
+     * <p>This should be ran after the RanksManager and LadderManger are loaded.  Or any
+     * time a rank is add, removed, or position changed within a ladder. 
+     * </p>
+     * 
+     * <p>This function will set the temporal rankPrior and rankNext value in 
+     * each rank based upon each ladder. This will greatly simplify walking the 
+     * ladder by using the linked ranks without having to perform any expensive
+     * calculations.
+     * </p> 
+     */
+    public void connectRanks() {
+    	LadderManager lman = PrisonRanks.getInstance().getLadderManager();
+    	
+    	for ( RankLadder rLadder : lman.getLadders() ) {
+			
+    		Rank rankLast = null;
+    		for ( PositionRank pRank : rLadder.ranks ) {
+				Rank rank = rLadder.getByPosition(pRank.getPosition()).get();
+				if ( rankLast != null ) {
+					rank.rankPrior = rankLast;
+					rankLast.rankNext = rank;
+				}
+				rankLast = rank;
+			}
+		}
+    }
 }

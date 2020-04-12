@@ -48,6 +48,10 @@ public class Rank {
     // The commands that are run when this rank is attained.
     public List<String> rankUpCommands;
 
+    
+    public transient Rank rankPrior;
+    public transient Rank rankNext;
+    
     /*
      * Document-related
      */

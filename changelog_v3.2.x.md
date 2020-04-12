@@ -8,8 +8,20 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.7 - 2020-04-01
+## tag v3.2.1-alpha.8 - 2020-04-11
 
+* **New Feature: Added temporal references to to the next lower and higher ranks**
+To provide a much more simplified way of getting the next higher and lower ranks 
+when you already have a rank, I added temporal references internally to the ranks.
+This means there is a zero cost associated when trying to get the next higher or lower
+rank and its as simple as just another field within ranks. 
+These references, because they are temporal, are realigned when the ranks and ladders
+are initially loaded, and whenever ladders change. 
+
+* **New Feature: Added base commands to /prison version listing**
+Added the base commands to the /prison version, which is tied to the modules. 
+If a module is successfully loaded, then it will show the base commands that 
+it supports.
 
 * **New Feature: GemsEconomy Direct integration**
 Starting to hook up GemsEconomy.  It's not ready and it may take a while to

@@ -17,14 +17,14 @@
 
 package tech.mcprison.prison.ranks.data;
 
-import com.google.gson.internal.LinkedTreeMap;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -97,6 +97,9 @@ public class RankLadder {
                 .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
         ranks.add(new PositionRank(position, rank.id));
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /**
@@ -107,6 +110,9 @@ public class RankLadder {
      */
     public void addRank(Rank rank) {
         ranks.add(new PositionRank(getNextAvailablePosition(), rank.id));
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /**
@@ -128,6 +134,9 @@ public class RankLadder {
                 break;
             }
         }
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /**
@@ -135,6 +144,9 @@ public class RankLadder {
      */
     public void orderRanksByPosition() {
         ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /*

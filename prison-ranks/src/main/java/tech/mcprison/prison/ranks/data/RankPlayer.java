@@ -163,6 +163,24 @@ public class RankPlayer {
         int id = ranks.get(ladder.name);
         return PrisonRanks.getInstance().getRankManager().getRank(id);
     }
+    
+    /**
+     * Retrieves the rank that this player has the specified ladder.
+     *
+     * @param ladder The ladder name to check.
+     * @return The {@link Rank} if found, otherwise null;
+     */
+    public Rank getRank(String ladder) {
+    	Rank results = null;
+    	if (ladder != null && ranks.containsKey(ladder)) {
+    		int id = ranks.get(ladder);
+    		Optional<Rank> ladderOpt = PrisonRanks.getInstance().getRankManager().getRank(id);
+    		if ( ladderOpt.isPresent() ) {
+    			results =  ladderOpt.get();
+    		}
+    	}
+    	return results;
+    }
 
     /**
      * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
