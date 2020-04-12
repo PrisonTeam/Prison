@@ -225,25 +225,55 @@ public class PlayerManager
     	return sb.toString();
     }
     
-    public String getPlayerNextRankCost( RankPlayer rankPlayer ) {
-    	StringBuilder sb = new StringBuilder();
+    public List<Rank> getPlayerRanks( RankPlayer rankPlayer ) {
+    	List<Rank> results = new ArrayList<>();
 
 		if ( !rankPlayer.getRanks().isEmpty()) {
-			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
-				RankLadder key = entry.getKey();
-				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
-					if ( sb.length() > 0 ) {
-						sb.append(", ");
-					}
-					
-					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
-					sb.append( dFmt.format( cost ));
-				}
+				results.add( entry.getValue() );
 			}
 		}
 
-		return sb.toString();
+		return results;
+    }
+    
+    public List<Rank> getPlayerNextRanks( RankPlayer rankPlayer ) {
+    	List<Rank> results = new ArrayList<>();
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			
+    			RankLadder key = entry.getKey();
+    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				
+    				Rank nextRank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    				results.add( nextRank );
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public String getPlayerNextRankCost( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				if ( sb.length() > 0 ) {
+    					sb.append(", ");
+    				}
+    				
+    				double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
+    				sb.append( dFmt.format( cost ));
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
     }
     
     public String getPlayerNextRankName( RankPlayer rankPlayer ) {

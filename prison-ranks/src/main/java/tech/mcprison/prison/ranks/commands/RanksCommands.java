@@ -1,9 +1,19 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -13,15 +23,10 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Faizaan A. Datoo
@@ -139,15 +144,24 @@ public class RanksCommands {
     public void listRanks(CommandSender sender,
         @Arg(name = "ladderName", def = "default") String ladderName) {
 
-        Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        Optional<RankLadder> ladderOpt =
+        			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if (!ladder.isPresent()) {
+        if (!ladderOpt.isPresent()) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
 
-        List<RankLadder.PositionRank> ranks = ladder.get().ranks;
+        RankLadder ladder = ladderOpt.get();
+        Rank rank = null;
+        for (PositionRank pRank : ladder.ranks) {
+            Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
+            if (rankOptional.isPresent()) {
+            	rank = rankOptional.get();
+            	break;
+            }
+        }
+        
 
         ChatDisplay display = new ChatDisplay("Ranks in " + ladderName);
         display.text("&7Click on a rank's name to view more info.");
@@ -156,26 +170,45 @@ public class RanksCommands {
             new BulletedListComponent.BulletedListBuilder();
         
         boolean first = true;
-        for (RankLadder.PositionRank pos : ranks) {
-            Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
-            if (!rankOptional.isPresent()) {
-                continue; // Skip it
-            }
-            Rank rank = rankOptional.get();
-
+        while ( rank != null ) {
+        	
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
             
             String text =
-                String.format("&3%s &9[&3%s&9] &7- %s&7%s &7- Commands: &3%d", 
+                String.format("&3%s &9[&3%s&9] &7- %s&7%s%s &7- Commands: &3%d", 
                 			rank.name, rank.tag, 
                 			(defaultRank ? "&b(&9Default&b) &7-" : ""),
                 			Text.numberToDollars(rank.cost),
+                			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
                 			rank.rankUpCommands.size());
             FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
-            first = false;
+        	
+        	rank = rank.rankNext;
+        	first = false;
         }
+        
+//        for (RankLadder.PositionRank pos : ranks) {
+//            Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
+//            if (!rankOptional.isPresent()) {
+//                continue; // Skip it
+//            }
+//            Rank rank = rankOptional.get();
+//
+//            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
+//            
+//            String text =
+//                String.format("&3%s &9[&3%s&9] &7- %s&7%s &7- Commands: &3%d", 
+//                			rank.name, rank.tag, 
+//                			(defaultRank ? "&b(&9Default&b) &7-" : ""),
+//                			Text.numberToDollars(rank.cost),
+//                			rank.rankUpCommands.size());
+//            FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
+//                .tooltip("&7Click to view info.");
+//            builder.add(msg);
+//            first = false;
+//        }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
@@ -214,38 +247,42 @@ public class RanksCommands {
 
     @Command(identifier = "ranks info", description = "Information about a rank.", onlyPlayers = false, permissions = "ranks.info")
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
-        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rank.isPresent()) {
+        Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if (!rankOpt.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
 
+        Rank rank = rankOpt.get(); 
+        
         List<RankLadder> ladders =
-            PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.get().id);
+            PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.id);
 
-        ChatDisplay display = new ChatDisplay("Rank " + rank.get().tag);
+        ChatDisplay display = new ChatDisplay("Rank " + rank.tag);
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
                 ladders.stream().map(rankLadder -> rankLadder.name).collect(Collectors.toList())));
 
-        display.text("&3Cost: &7%s", Text.numberToDollars(rank.get().cost));
+        display.text("&3Cost: &7%s", Text.numberToDollars(rank.cost));
+        
+        display.text("&3Currency: &7<&a%s&7>", (rank.currency == null ? "&cnone" : rank.currency) );
 
         if (sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
             display.text("&8[Admin Only]");
-            display.text("&6Rank ID: &7%s", rank.get().id);
-            display.text("&6Rank Name: &7%s", rank.get().name);
+            display.text("&6Rank ID: &7%s", rank.id);
+            display.text("&6Rank Name: &7%s", rank.name);
 
             List<RankPlayer> players =
                 PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                    .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank.get()))
+                    .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
                     .collect(Collectors.toList());
             display.text("&7There are &6%s &7with this rank.", players.size() + " players");
 
             FancyMessage del =
-                new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.get().name)
+                new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.name)
                     .tooltip("&7Click to delete this rank.\n&cYou may not reverse this action.");
             display.addComponent(new FancyMessageComponent(del));
         }
@@ -255,7 +292,9 @@ public class RanksCommands {
 
     // set commands
     @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", onlyPlayers = false, permissions = "ranks.set")
-    public void setCost(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "cost", description = "The cost of this rank.") double cost){
+    public void setCost(CommandSender sender, 
+    		@Arg(name = "name") String rankName, 
+    		@Arg(name = "cost", description = "The cost of this rank.") double cost){
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
@@ -273,8 +312,50 @@ public class RanksCommands {
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "The rank could not be saved to disk. The change in rank cost has not been saved. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk.", e);
+            Output.get().logError("Rank could not be written to disk (setCost).", e);
         }
+    }
+    
+    // set commands
+    @Command(identifier = "ranks set currency", description = "Modifies a ranks currency", onlyPlayers = false, permissions = "ranks.set")
+    public void setCurrency(CommandSender sender, 
+    		@Arg(name = "name") String rankName, 
+    		@Arg(name = "currency", description = "The currency to use with this rank.") String currency){
+    	
+    	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+    	if (!rankOptional.isPresent()) {
+    		Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+    		return;
+    	}
+    	
+    	
+    	if ( currency == null || currency.trim().length() == 0 ) {
+    		Output.get().sendError(sender, "A currency name must be specified. '%s' is invalid.", currency);
+    		return;
+    	}
+    	
+    	
+    	EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+				.getEconomyForCurrency( currency );
+    	if ( currencyEcon == null ) {
+    		Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
+    		return;
+    	}
+    	
+    	
+    	Rank rank = rankOptional.get();
+    	rank.currency = currency;
+    	
+    	// Save the rank
+    	try {
+    		PrisonRanks.getInstance().getRankManager().saveRank(rank);
+    		
+    		Output.get().sendInfo(sender,"Successfully set the currency for the rank '%s' to %s", rankName, currency);
+    	} catch (IOException e) {
+    		Output.get().sendError(sender,
+    				"The rank could not be saved to disk. The change in rank currency has not been saved. Check the console for details.");
+    		Output.get().logError("Rank could not be written to disk (setCurrency).", e);
+    	}
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
@@ -316,21 +397,51 @@ public class RanksCommands {
 		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID());
 		
 		if ( oPlayer.isPresent() ) {
+			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+			
 			RankPlayer rankPlayer = oPlayer.get();
+			Map<RankLadder, Rank> rankLadders = rankPlayer.getRanks();
 			
-			String nextRank = pm.getPlayerNextRankName( rankPlayer );
-			String nextRankCost = pm.getPlayerNextRankCost( rankPlayer );
-			
-			String message = String.format("&c%s&7:  Current Rank: &b%s&7", 
-					player.getDisplayName(), pm.getPlayerRankName( rankPlayer ));
-			
-			if ( nextRank.trim().length() == 0 ) {
-				message += "  You are already at the highest rank!";
-			} else {
-				message += String.format("  Next rank: &b%s&7 &c$&b%s", nextRank, nextRankCost );
+			for ( RankLadder rankLadder : rankLadders.keySet() )
+			{
+				Rank rank = rankLadders.get( rankLadder );
+				Rank nextRank = rank.rankNext;
+				
+				String messageRank = String.format("&c%s&7: Ladder: &b%s  &7Current Rank: &b%s", 
+						player.getDisplayName(), 
+						rankLadder.name,
+						rank.name );
+				
+				if ( nextRank == null ) {
+					messageRank += "  It's the highest rank!";
+				} else {
+					messageRank += String.format("  &7Next rank: &b%s&7 &c$&b%s", 
+							nextRank.name, 
+							dFmt.format( nextRank.cost ));
+
+					if ( nextRank.currency != null ) {
+						messageRank += String.format("  &7Currency: &b%s", 
+								nextRank.currency);
+					}
+				}
+				
+				sender.sendMessage( messageRank );
 			}
 			
-			sender.sendMessage( message );
+//			String nextRank = pm.getPlayerNextRankName( rankPlayer );
+//			String nextRankCost = pm.getPlayerNextRankCost( rankPlayer );
+//			
+//			String message = String.format("&c%s&7:  Current Rank: &b%s&7", 
+//					player.getDisplayName(), pm.getPlayerRankName( rankPlayer ));
+//			
+//			if ( nextRank.trim().length() == 0 ) {
+//				message += "  It's the highest rank!";
+//			} else {
+//				message += String.format("  Next rank: &b%s&7 &c$&b%s &7s%", 
+//						nextRank, nextRankCost, currency );
+//			}
+//			sender.sendMessage( message );
+			
 		} else {
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}

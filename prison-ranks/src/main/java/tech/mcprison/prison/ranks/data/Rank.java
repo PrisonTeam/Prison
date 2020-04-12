@@ -45,6 +45,15 @@ public class Rank {
     // The general cost of this rank, unit-independent. This value holds true for both XP and cost.
     public double cost;
 
+    /** 
+     * <p>Special currency to use. If null, then will use the standard currencies. 
+     * If currency is not null, then it must exist in a an economy that is
+     * supported in the EconomyCurrencyIntegration.
+     * </p>
+     * 
+     */
+    public String currency;
+    
     // The commands that are run when this rank is attained.
     public List<String> rankUpCommands;
 
@@ -65,6 +74,7 @@ public class Rank {
         this.name = (String) document.get("name");
         this.tag = (String) document.get("tag");
         this.cost = (double) document.get("cost");
+        this.currency = (String) document.get("currency");
         this.rankUpCommands = (List<String>) document.get("commands");
     }
 
@@ -74,6 +84,7 @@ public class Rank {
         ret.put("name", this.name);
         ret.put("tag", this.tag);
         ret.put("cost", this.cost);
+        ret.put("currency", this.currency);
         ret.put("commands", this.rankUpCommands);
         return ret;
     }
@@ -104,6 +115,13 @@ public class Rank {
         if (Double.compare(rank.cost, cost) != 0) {
             return false;
         }
+        
+        if ( currency != null && rank.currency == null || 
+        		currency != null && rank.currency != null && 
+        				!currency.equals( rank.currency ) ) {
+        	return false;
+        }
+        	
         if (!name.equals(rank.name)) {
             return false;
         }
@@ -118,6 +136,7 @@ public class Rank {
         result = 31 * result + (tag != null ? tag.hashCode() : 0);
         temp = Double.doubleToLongBits(cost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + currency.hashCode();
         return result;
     }
 

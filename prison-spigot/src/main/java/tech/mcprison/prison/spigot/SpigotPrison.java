@@ -56,6 +56,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
+import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
@@ -120,6 +121,7 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override
     public void onEnable() {
+    	config = this;
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
 
@@ -128,14 +130,16 @@ public class SpigotPrison extends JavaPlugin {
         initCompatibility();
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
+        
+        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
+        Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManagerGUI(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
-        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
-        Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
+        
         new SpigotListener(this).init();
-        config = this;
         new AutoFeaturesFileConfig();
 
         Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
@@ -303,6 +307,7 @@ public class SpigotPrison extends JavaPlugin {
     	registerIntegration(new VaultEconomy());
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
+        registerIntegration(new GemsEconomy());
 
         registerIntegration(new VaultPermissions());
         registerIntegration(new LuckPerms5());

@@ -116,6 +116,11 @@ public class PrisonRanks extends Module {
         }
         createDefaultLadder();
 
+        
+        // Set the rank relationships:
+        rankManager.connectRanks();
+        
+        
         // Load up the players
 
 

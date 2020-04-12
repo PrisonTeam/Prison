@@ -17,8 +17,13 @@
 
 package tech.mcprison.prison.ranks;
 
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.Player;
@@ -27,10 +32,6 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
-
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.Optional;
 
 /**
  * Utilities for changing the ranks of players.
@@ -48,6 +49,7 @@ public class RankUtil {
 		RANKUP_FAILURE,
 		RANKUP_FAILURE_RANK_DOES_NOT_EXIST,
 		RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER,
+		RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED,
 		
 		RANKUP_LOWEST,
 		RANKUP_HIGHEST,
@@ -160,13 +162,31 @@ public class RankUtil {
 
         double nextRankCost = nextRank.cost;
         if (!bypassCost) {
-        	EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
-        			.getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-        	if (!economy.canAfford(prisonPlayer, nextRankCost)) {
-        		return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+        	
+        	if ( nextRank.currency != null ) {
+        		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+        						.getEconomyForCurrency( nextRank.currency );
+        		if ( currencyEcon == null ) {
+        			return new RankUpResult(RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED);
+        		} else {
+            		if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, nextRank.currency)) {
+            			return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+            		}
+            		
+            		currencyEcon.removeBalance(prisonPlayer, nextRankCost, nextRank.currency );
+        		}
+        		
+        	} else {
+        		
+        		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
+        				.getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+        		if (!economy.canAfford(prisonPlayer, nextRankCost)) {
+        			return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+        		}
+        		
+        		economy.removeBalance(prisonPlayer, nextRankCost);
         	}
         	
-        	economy.removeBalance(prisonPlayer, nextRankCost);
         }
 
         player.addRank(ladder, nextRank);

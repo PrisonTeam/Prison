@@ -260,6 +260,29 @@ public class IntegrationManager {
     	integrations.get(iType).add(i);
     }
 
+    public EconomyCurrencyIntegration getEconomyForCurrency(String currency) {
+    	EconomyCurrencyIntegration results = null;
+    	
+        if(integrations.containsKey(IntegrationType.ECONOMY)) {
+        	
+        	List<Integration> econs = getAllForType(IntegrationType.ECONOMY);
+
+        	for ( Integration econ : econs )
+			{
+				if ( econ.hasIntegrated() && econ instanceof EconomyCurrencyIntegration ) {
+					
+					EconomyCurrencyIntegration currencyEcon = (EconomyCurrencyIntegration) econ;
+					
+					if ( currencyEcon.hasCurrency( currency )) {
+						results = currencyEcon;
+						break;
+					}
+				}
+			}
+        
+        }
+        return results;
+    }
     
     /**
      * <p>This function formats all the Integrations, both active and inactive, to be displayed

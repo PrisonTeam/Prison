@@ -28,6 +28,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 
@@ -63,11 +64,15 @@ public class RankUpCommand {
 		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        Rank pRank = rankPlayer.getRank( ladder );
+        
+        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladder);
         	
-        	processResults( sender, null, result, true, null, ladder );
+        	processResults( sender, null, result, true, null, ladder, currency );
         }
     }
 
@@ -90,11 +95,15 @@ public class RankUpCommand {
 		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        Rank pRank = rankPlayer.getRank( ladder );
+        
+        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, player, result, true, null, ladder );
+        	processResults( sender, player, result, true, null, ladder, currency );
         }
     }
 
@@ -117,11 +126,15 @@ public class RankUpCommand {
 		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        Rank pRank = rankPlayer.getRank( ladder );
+        
+        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladder);
         	
-        	processResults( sender, player, result, false, null, ladder );
+        	processResults( sender, player, result, false, null, ladder, currency );
         }
     }
 
@@ -145,11 +158,15 @@ public class RankUpCommand {
 		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        Rank pRank = rankPlayer.getRank( ladder );
+        
+        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
         	RankUtil.RankUpResult result = RankUtil.setRank(rankPlayer, ladder, rank);
         	
-        	processResults( sender, player, result, true, rank, ladder );
+        	processResults( sender, player, result, true, rank, ladder, currency );
         }
     }
 
@@ -183,7 +200,7 @@ public class RankUpCommand {
 
 
 	public void processResults( CommandSender sender, Player player, RankUtil.RankUpResult result, 
-	boolean rankup, String rank, String ladder ) {
+	boolean rankup, String rank, String ladder, String currency ) {
 	
 		switch (result.getStatus()) {
             case RANKUP_SUCCESS:
@@ -228,6 +245,9 @@ public class RankUpCommand {
 				Output.get().sendError(sender, "The rank %s does not exist in the ladder %s.", rank, ladder);
 				break;
             
+			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
+				Output.get().sendError(sender, "The currency, %s, is not supported by any loaded economies.", currency);
+				break;
         }
 	}
 
