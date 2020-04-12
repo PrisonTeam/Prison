@@ -67,29 +67,37 @@ public class MVdWPlaceholderIntegration
     @Override
 	public void deferredInitialization()
 	{
-    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    	List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
-    	
-    	for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
-    		if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    			registerPlaceholder(placeHolderKey.getKey(),
-    					player -> Text.translateAmpColorCodes(
-    							pm.getTranslatePlayerPlaceHolder( 
-    									player.getUUID(), placeHolderKey.getPlaceholder() )
-    							));
+    	if ( PrisonRanks.getInstance() != null ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					registerPlaceholder(placeHolderKey.getKey(),
+    							player -> Text.translateAmpColorCodes(
+    									pm.getTranslatePlayerPlaceHolder( 
+    											player.getUUID(), placeHolderKey.getPlaceholder() )
+    									));
+    				}
+    			}
     		}
     	}
     	
-    	
-    	MineManager mm = PrisonMines.getInstance().getMineManager();
-    	List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
-    	
-    	for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
-    		if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    			registerPlaceholder(placeHolderKey.getKey(),
-    					player -> Text.translateAmpColorCodes(
-    							mm.getTranslateMinesPlaceHolder( placeHolderKey )
-    							));
+
+    	if ( PrisonMines.getInstance() != null ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					registerPlaceholder(placeHolderKey.getKey(),
+    							player -> Text.translateAmpColorCodes(
+    									mm.getTranslateMinesPlaceHolder( placeHolderKey )
+    									));
+    				}
+    			}
     		}
     	}
 
