@@ -116,6 +116,9 @@ This section of guides will focus more on other plugins and how they can integra
 * [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md) 
     This guide uses LuckPerms in the examples, but any other permission plugin will work just as well.
 
+* [Setting up EssentialsX Warps for Players](prison_docs_630_configuring_warps.md)
+
+
 
 * **Work In Progress**
 
@@ -123,7 +126,6 @@ This section of guides will focus more on other plugins and how they can integra
 * Place Holders: Setting up and using Holographic Displays & Holographic Extensions
 
 
-* **Setting up EssentialsX Warps for Players** - Coming soon
 
 
 
