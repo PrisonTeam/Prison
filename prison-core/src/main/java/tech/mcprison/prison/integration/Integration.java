@@ -119,4 +119,9 @@ public interface Integration {
      * @return null means nothing is available so this value should be ignored
      */
     public String getPluginSourceURL();
+    
+    
+	public String getDebugInfo();
+	public void setDebugInfo( String debugInfo );
+	public void addDebugInfo( String debugInfo );
 }

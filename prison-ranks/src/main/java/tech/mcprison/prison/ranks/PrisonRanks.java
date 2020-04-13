@@ -82,6 +82,11 @@ public class PrisonRanks extends Module {
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
             getStatus().setMessage("&cNo economy plugin");
+            
+            String integrationDebug = PrisonAPI.getIntegrationManager()
+            			.getIntegrationDetails(IntegrationType.ECONOMY);
+            Output.get().logError( "PrisonRanks.enable() - Failed - No Economy Plugin Active - " + 
+            			integrationDebug );
             return;
         }
 

@@ -17,6 +17,8 @@ public class IntegrationCore
 	private final IntegrationType type;
 	private boolean registered = false;
 	
+	private String debugInfo;
+	
 	public IntegrationCore( String keyName, String providerName, IntegrationType type ) {
 		super();
 		
@@ -100,5 +102,20 @@ public class IntegrationCore
     public String getPluginSourceURL() {
     	return null;
     }
+
+    
+    @Override
+	public String getDebugInfo() {
+		return debugInfo;
+	}
+    @Override
+	public void setDebugInfo( String debugInfo ) {
+		this.debugInfo = debugInfo;
+	}
+    @Override
+	public void addDebugInfo( String debugInfo ) {
+		this.debugInfo = (this.debugInfo == null ? "" : this.debugInfo) +
+				"(" + debugInfo + ")";
+	}
 
 }

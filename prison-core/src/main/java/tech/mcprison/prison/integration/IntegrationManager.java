@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.output.DisplayComponent;
@@ -267,8 +268,7 @@ public class IntegrationManager {
         	
         	List<Integration> econs = getAllForType(IntegrationType.ECONOMY);
 
-        	for ( Integration econ : econs )
-			{
+        	for ( Integration econ : econs ) {
 				if ( econ.hasIntegrated() && econ instanceof EconomyCurrencyIntegration ) {
 					
 					EconomyCurrencyIntegration currencyEcon = (EconomyCurrencyIntegration) econ;
@@ -282,6 +282,41 @@ public class IntegrationManager {
         
         }
         return results;
+    }
+    
+    public String getIntegrationDetails( IntegrationType intType ) {
+    	StringBuilder sb = new StringBuilder();
+    	Set<IntegrationType> keys = integrations.keySet();
+    	
+    	for ( IntegrationType key : keys ) {
+    		if ( key == intType ) {
+    			sb.append( key.name() );
+    			sb.append( ": [" );
+    			
+    			StringBuilder sb2 = new StringBuilder();
+    			List<Integration> integrates = integrations.get( key );
+    			for ( Integration i : integrates ) {
+    				if ( sb2.length() > 0 ) {
+    					sb2.append( ", " );
+    				}
+    				sb2.append( i.getDisplayName() );
+    				sb2.append( " (registered=" );
+    				sb2.append( i.isRegistered() );
+    				sb2.append( ", integrated=" );
+    				sb2.append( i.hasIntegrated() );
+    				sb2.append( ")" );
+    				if ( i.getDebugInfo() != null && i.getDebugInfo().trim().length() > 0 ) {
+    					sb2.append( " Debug: {" );
+    					sb2.append( i.getDebugInfo() );
+    					sb2.append( "}" );
+    				}
+    			}
+    			
+    			sb.append( sb2 );
+    			sb.append( "] " );
+    		}
+		}
+    	return sb.toString();
     }
     
     /**
