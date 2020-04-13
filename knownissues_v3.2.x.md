@@ -203,41 +203,14 @@ Also the way the language files are structured at runtime will make it
 easier to edit them.
 
 * **Information: Setting the correct currency for Prison**
-The current prison plugin is using java internals to set the currency symbol.
-As such, currencies within prison may show the wrong currency symbol.
 
-For example, in RankUpCommand it is using this reference:
-	RankUtil.doubleToDollarString(result.rank.cost));
-which is using this:
-    public static String doubleToDollarString(double val) {
-        return NumberFormat.getCurrencyInstance().format(val);
-    }
-If the currency that is shown is not what is configured on the server, 
-then you currently MUST change the java startup variables to set it
-the language and location that you are needing to use.  Otherwise
-it will be pulling from the file system, which may not match your
-in game settings.
-
-	-Duser.language=en -Duser.country=US -Duser.variant=US
-In context the server startup may now look like this:
-	java -Xms2g -Xmx8g -Duser.language=en -Duser.country=US -Duser.variant=US -jar spigot-1.13.2.jar
-
-In the future, may need to switch this over to use either a language config in 
-a config file somewhere, or use what is defined, or set, within the 
-currency plugin, such as vault, or EssentialsX.
+Note: Moved to FAQ docs.
 
 
 * **Known issue with LuckPerms v5.0.x Causing Prison Load Failures**
-This is a known problem with pre v3.2.1 releases of Prison.  Basically the 
-fault was with LuckPerms in using the same registered plugin name with the 
-Spigot Pugin Manager and the same class name, but an altogether different 
-package name.  This would have caused any plugin to generate a Class Not Founnd 
-exception.  They should not have used the same old signatures for v5.0.x and 
-there would have been no issues.
-Anyway, special handling has been added to prison to work around their
-new version, so the solution is to upgrade Prison to v3.2.1 or newer.  Or 
-down grade LuckPerms to v4.4.1 until the server admin's are able to upgrade
-Prison.
+
+Note: Moved to FAQ docs.
+
 
 
 * [ ] **Reports that other plugins may cause issues with Prison**

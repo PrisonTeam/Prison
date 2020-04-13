@@ -131,5 +131,19 @@ This section of guides will focus more on other plugins and how they can integra
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-.
 
+
+
+# Guides [8xx] - FAQs
+
+This section of guides will focus on FAQs; short helps for common problems.  
+
+
+* [FAQ - Other Plugins](prison_docs_810_faq_other_plugins.md) 
+	CMI Plugin. Prison fails to load. No modules.
+
+
+* [FAQ - Miscellaneous Questions](prison_docs_880_faq_misc_01.md)
+	Is Paper Supported? Setting the Currency symbol.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
