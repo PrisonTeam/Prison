@@ -124,6 +124,10 @@ public class PrisonRanks extends Module {
         
         // Set the rank relationships:
         rankManager.connectRanks();
+
+        
+        // Verify that all ranks that use currencies have valid currencies:
+        rankManager.identifyAllRankCurrencies();
         
         
         // Load up the players

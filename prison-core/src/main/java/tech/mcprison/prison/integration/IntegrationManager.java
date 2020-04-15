@@ -364,8 +364,7 @@ public class IntegrationManager {
 			if ( plugins == null || plugins.size() == 0 ) {
 				results.add( new TextComponent( "    &e&onone" ));
 			} else {
-				for ( Integration plugin : plugins )
-				{
+				for ( Integration plugin : plugins ) {
 					String pluginUrl = plugin.getPluginSourceURL();
 					String msg = String.format( "    &a%s &7<%s&7> %s", plugin.getDisplayName(),
 							( plugin.hasIntegrated() ? "&aActive" : "&cInactive"),
@@ -379,6 +378,27 @@ public class IntegrationManager {
 					String altInfo = plugin.getAlternativeInformation();
 					if ( altInfo != null ) {
 						results.add( new TextComponent( "        " + altInfo ));
+					}
+					
+					if ( integType ==  IntegrationType.ECONOMY && 
+							plugin instanceof EconomyCurrencyIntegration ) {
+						EconomyCurrencyIntegration econ = (EconomyCurrencyIntegration) plugin;
+						
+						StringBuilder sb = new StringBuilder();
+						
+						for ( String currency : econ.getSupportedCurrencies().keySet() ) {
+							Boolean supported = econ.getSupportedCurrencies().get( currency );
+							if ( supported.booleanValue() ) {
+								if ( sb.length() > 0 ) {
+									sb.append( " " );
+								}
+								sb.append( currency );
+							}
+						}
+						
+						if ( sb.length() > 0 ) {
+							results.add( new TextComponent( "      &3Currencies: &7" + sb.toString() ));
+						}
 					}
 				}
 			}

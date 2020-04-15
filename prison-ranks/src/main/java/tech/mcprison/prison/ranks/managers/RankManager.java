@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -285,5 +286,39 @@ public class RankManager {
 				rankLast = rank;
 			}
 		}
+    }
+    
+    /*
+     * <p>This function will go through ranks and find ranks that have defined currencies.
+     * When a currency is assigned to a rank, it is verified to be valid.  So in theory
+     * all currencies "should" be valid.  But plugins and setting can change.  
+     * </p>
+     * 
+     * <p>By hitting all currencies up front when prison first loads, it "registers" 
+     * all currencies with all economies that support currencies.  This also allows
+     * error reporting to happen upon prison start up to report lost currencies.
+     * And it allows each economy plugin the chance to list all supported currencies.
+     * </p>   
+     * 
+     * <p>This almost has to be proactive when prison loads, since there is no way to
+     * poll the economy plugins to find out what currencies it supports.  At least its
+     * not a feature for GemsEconomy.
+     * </p>
+     * 
+     */
+    public void identifyAllRankCurrencies() {
+    	for ( Rank rank : loadedRanks ) {
+			if ( rank.currency != null ) {
+				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+						.getEconomyForCurrency( rank.currency );
+				if ( currencyEcon == null ) {
+					Output.get().logError( 
+						String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
+							"rank &a%s&7, but it isn't supported by any Economy integration.",
+							rank.currency, rank.name) );
+				}
+			}
+		}
+    	
     }
 }
