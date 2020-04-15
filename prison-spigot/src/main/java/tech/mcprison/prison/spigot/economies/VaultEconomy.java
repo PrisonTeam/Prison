@@ -35,15 +35,21 @@ public class VaultEconomy
 
 	@Override
 	public void integrate() {
+		addDebugInfo( "1" );
 		
 		if ( isRegistered()) {
+			addDebugInfo( "2" );
 			try {
+				addDebugInfo( "3" );
 				this.econWrapper = new VaultEconomyWrapper();
+				addDebugInfo( "4" );
 			}
 			catch ( java.lang.NoClassDefFoundError | Exception e ) {
+				addDebugInfo( "5:Exception:" + e.getMessage() );
 				// ignore this exception since it means the plugin was not loaded
 			}
 		}
+		addDebugInfo( "6" );
 	}
     
 	@Override 

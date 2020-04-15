@@ -63,28 +63,40 @@ public class EssentialsEconomy
      */
 	@Override
 	public void integrate() {
+		addDebugInfo( "1" );
 		if ( isRegistered() // && classLoaded 
 				) {
 			try {
+				addDebugInfo( "2" );
 				
 				// if an econ is already registered, then don't register this one:
 				boolean econAlreadySet = PrisonAPI.getIntegrationManager().getForType( IntegrationType.ECONOMY ).isPresent();
+				addDebugInfo( "3:econAlreadySet=" + econAlreadySet );
 					
+				// This is a trigger to cause the NoClassDefFoundError. This is to see if the
+				// the essentials economy plugin is active or not:
 				@SuppressWarnings( "unused" )
 				MathContext mathCtx = Economy.MATH_CONTEXT;
 					
 				if ( !econAlreadySet ) {
+					addDebugInfo( "4" );
 					this.wrapper = new EssEconomyWrapper();
+					addDebugInfo( "5" );
 				} else {
+					addDebugInfo( "6" );
 					Output.get().logInfo( "EssentialsEconomy is not directly enabled - Available as backup. " );
 					this.availableAsAnAlternative = true;
+					addDebugInfo( "7" );
 				}
 			}
 			catch ( java.lang.NoClassDefFoundError | Exception e )
 			{
-				e.printStackTrace();
+				addDebugInfo( "8:Exception:" + e.getMessage() );
+				// Do not print any errors since since all we need to know is EssentialsX Econ is not active
+				//e.printStackTrace();
 			}
 		}
+		addDebugInfo( "9" );
 	}
 
     @Override 

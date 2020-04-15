@@ -21,16 +21,20 @@ public class GemsEconomy
      */
 	@Override
 	public void integrate() {
-		if ( isRegistered() // && classLoaded 
-				) {
+		addDebugInfo( "1" );
+		if ( isRegistered()) {
+			addDebugInfo( "2" );
 			try {
+				addDebugInfo( "3" );
 				this.wrapper = new GemsEconomyWrapper();
+				addDebugInfo( "4" );
 			}
-			catch ( java.lang.NoClassDefFoundError | Exception e )
-			{
+			catch ( java.lang.NoClassDefFoundError | Exception e ) {
+				addDebugInfo( "5:Exception:" + e.getMessage() );
 				e.printStackTrace();
 			}
 		}
+		addDebugInfo( "6" );
 	}
 
 	
