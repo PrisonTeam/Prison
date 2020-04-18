@@ -18,6 +18,7 @@
 package tech.mcprison.prison.ranks;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Optional;
 
@@ -40,10 +41,15 @@ import tech.mcprison.prison.ranks.events.RankUpEvent;
  */
 public class RankUtil {
 
-    /*
-     * Fields & Constants
-     */
-
+	
+	public enum RankupCommands {
+		rankup,
+		promote,
+		demote,
+		setrank;
+	}
+	
+	
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
 		RANKUP_FAILURE,
@@ -54,60 +60,132 @@ public class RankUtil {
 		RANKUP_LOWEST,
 		RANKUP_HIGHEST,
 		RANKUP_CANT_AFFORD,
-		RANKUP_NO_RANKS
+		RANKUP_NO_RANKS,
+		
+		IN_PROGRESS
 		;
 	}
-//    public static final int RANKUP_SUCCESS = 0, RANKUP_FAILURE = 1, RANKUP_HIGHEST = 2,
-//        RANKUP_CANT_AFFORD = 3, RANKUP_NO_RANKS = 4;
+	
 
-    /*
-     * Constructor
-     */
+	public enum RankupTransactions {
+		
+		bypassing_cost_for_player,
+		
+		tring_to_promote,
+		trying_to_demote,
+		
+		failed_player,
+		failed_ladder,
+		failed_rank_not_found,
+		failed_rank_not_in_ladder,
+		
+		orginal_rank,
+		next_rank_set, 
+		set_to_default_rank,
+		set_to_next_higher_rank,
+		set_to_prior_lower_rank,
+		
+		no_ranks_found_on_ladder, 
+		no_higher_rank_found,
+		no_lower_rank_found, 
+		
+		custom_currency,
+		specified_currency_not_found, 
+		player_cannot_afford,
+		player_balance_initial,
+		player_balance_decreased,
+		player_balance_final,
+		zero_cost_to_player,
+		
+		failure_cannot_save_player_file,
+		
+		rankupCommandsStart,
+		rankupCommandsCompleted,
+		
+		fireRankupEvent,
+		
+		rankup_successful
+		
+	}
 
-    private RankUtil() {
+
+    public RankUtil() {
+    	super();
     }
 
-    /*
-     * Method
-     */
     
     
-    public static RankUpResult rankUpPlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, false, true, null);
+    public RankupResults rankupPlayer(RankPlayer player, String ladderName, String playerName) {
+    	return rankupPlayer(RankupCommands.rankup, player, ladderName, false, true, null, playerName, null);
     }
     
-    public static RankUpResult promotePlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, true, true, null);
+    public RankupResults promotePlayer(RankPlayer player, String ladderName, 
+    										String playerName, String executorName) {
+    	return rankupPlayer(RankupCommands.promote, player, ladderName, true, true, null, playerName, executorName);
     }
     
-    public static RankUpResult demotePlayer(RankPlayer player, String ladderName) {
-    	return rankUpPlayer(player, ladderName, true, false, null);
+    public RankupResults demotePlayer(RankPlayer player, String ladderName, 
+    										String playerName, String executorName) {
+    	return rankupPlayer(RankupCommands.demote, player, ladderName, true, false, null, playerName, executorName);
     }
     
-    public static RankUpResult setRank(RankPlayer player, String ladderName, String rank) {
-    	return rankUpPlayer(player, ladderName, true, true, rank);
+    public RankupResults setRank(RankPlayer player, String ladderName, String rank, 
+    										String playerName, String executorName) {
+    	return rankupPlayer(RankupCommands.setrank, player, ladderName, true, true, rank, playerName, executorName);
     }
     
+    private RankupResults rankupPlayer(RankupCommands command, RankPlayer player, String ladderName, 
+    		boolean bypassCost, boolean promote, String rank, 
+    		String playerName, String executorName) {
+    	
+    	RankupResults results = rankupPlayerInternal(command, player, ladderName, 
+        		bypassCost, promote, rank, playerName, executorName);
+    	
+    	// Log the results:
+    	logTransactionResults(results);
+    	
+    	return results;
+    }
 
-    
-    /**
+
+
+	/**
      * Sends the player to the next rank.
      *
      * @param player     The {@link RankPlayer} to rank up.
      * @param ladderName The name of the ladder to rank up this player on.
      */
-    private static RankUpResult rankUpPlayer(RankPlayer player, String ladderName, 
-    		boolean bypassCost, boolean promote, String rank) {
+    private RankupResults rankupPlayerInternal(RankupCommands command, RankPlayer player, String ladderName, 
+    		boolean bypassCost, boolean promote, String rank, 
+    		String playerName, String executorName) {
+    	
+    	RankupResults results = new RankupResults(command, playerName, executorName);
+
+    	// Log when cost for player is being bypassed:
+    	if ( bypassCost ) {
+    		results.addTransaction( RankupTransactions.bypassing_cost_for_player );
+    	}
+    	
+    	// Log either promotion or demotion:
+    	results.addTransaction( 
+    			promote ? 
+    					RankupTransactions.tring_to_promote : 
+    					RankupTransactions.trying_to_demote );
 
         Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
-        RankLadder ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
-
-        if(prisonPlayer == null || ladder == null) {
-            return new RankUpResult(RankupStatus.RANKUP_FAILURE);
+        if( prisonPlayer == null ) {
+        	return results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_player );
         }
         
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
+        if( ladder == null ) {
+        	return results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_ladder );
+        }
+        
+        
+        
         Rank targetRank = null;
+        
         if ( rank != null ) {
         	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank( rank );
         	
@@ -115,65 +193,90 @@ public class RankUtil {
         		targetRank = rankOptional.get();
         		
         		if ( !ladder.containsRank( targetRank.id )) {
-        			return new RankUpResult(RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER);
-        			
+        			return results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER, 
+        					RankupTransactions.failed_rank_not_in_ladder );
         		}
         	} else {
-        		return new RankUpResult(RankupStatus.RANKUP_FAILURE_RANK_DOES_NOT_EXIST);
+        		return results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_DOES_NOT_EXIST, 
+        				RankupTransactions.failed_rank_not_found );
         	}
         }
         
 
         Optional<Rank> currentRankOptional = player.getRank(ladder);
-        Rank nextRank;
-
+        results.addTransaction( RankupTransactions.orginal_rank );
+        results.setOriginalRank( currentRankOptional.orElse( null ) );
+        
+        
         if ( targetRank != null ) {
-        	nextRank = targetRank;
+        	results.addTransaction( RankupTransactions.next_rank_set );
         }
         else if (!currentRankOptional.isPresent()) {
             Optional<Rank> lowestRank = ladder.getByPosition(0);
             if (!lowestRank.isPresent()) {
-                return new RankUpResult(RankupStatus.RANKUP_NO_RANKS);
+            	return results.addTransaction( RankupStatus.RANKUP_NO_RANKS, 
+            					RankupTransactions.no_ranks_found_on_ladder );
             }
-            nextRank = lowestRank.get();
+            results.addTransaction( RankupTransactions.set_to_default_rank );
+            targetRank = lowestRank.get();
         } else {
         	Optional<Rank> nextRankOptional = null;
         	if ( promote ) {
+        		// Trying to promote: 
         		nextRankOptional = ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
         		
         		if (!nextRankOptional.isPresent()) {
-        			return new RankUpResult(RankupStatus.RANKUP_HIGHEST,
-        					currentRankOptional.get()); // We're already at the highest rank.
+        			// We're already at the highest rank.
+        			return results.addTransaction( RankupStatus.RANKUP_HIGHEST, 
+        								RankupTransactions.no_higher_rank_found );
         		}
+        		targetRank = nextRankOptional.get();
+        		results.addTransaction( RankupTransactions.set_to_next_higher_rank );
+
         	} else {
+        		// Trying to demote:
         		nextRankOptional = ladder.getPrevious(ladder.getPositionOfRank(currentRankOptional.get()));
         		
         		if (!nextRankOptional.isPresent()) {
-        			return new RankUpResult(RankupStatus.RANKUP_LOWEST,
-        					currentRankOptional.get()); // We're already at the lowest rank.
+        			// We're already at the lowest rank.
+        			return results.addTransaction( RankupStatus.RANKUP_LOWEST, 
+        								RankupTransactions.no_lower_rank_found );
         		}
+        		targetRank = nextRankOptional.get();
+        		results.addTransaction( RankupTransactions.set_to_prior_lower_rank );
         	}
-
-            nextRank = nextRankOptional.get();
         }
+        results.setTargetRank( targetRank );
+        
 
         // We're going to be making a transaction here
         // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
 
-        double nextRankCost = nextRank.cost;
+        double nextRankCost = targetRank.cost;
         if (!bypassCost) {
         	
-        	if ( nextRank.currency != null ) {
+        	
+        	if ( targetRank.currency != null ) {
+        		results.addTransaction( RankupTransactions.custom_currency );
+        		
         		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-        						.getEconomyForCurrency( nextRank.currency );
+        						.getEconomyForCurrency( targetRank.currency );
         		if ( currencyEcon == null ) {
-        			return new RankUpResult(RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED);
+        			return results.addTransaction( RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED, 
+        					RankupTransactions.specified_currency_not_found );
         		} else {
-            		if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, nextRank.currency)) {
-            			return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+            		if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, targetRank.currency)) {
+            			//results.setTargetRank( targetRank );
+            			return results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
+            					RankupTransactions.player_cannot_afford );
             		}
             		
-            		currencyEcon.removeBalance(prisonPlayer, nextRankCost, nextRank.currency );
+            		results.addTransaction( RankupTransactions.player_balance_initial );
+            		results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
+            		results.addTransaction( RankupTransactions.player_balance_decreased );
+            		currencyEcon.removeBalance(prisonPlayer, nextRankCost, targetRank.currency );
+            		results.addTransaction( RankupTransactions.player_balance_final );
+            		results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
         		}
         		
         	} else {
@@ -181,35 +284,58 @@ public class RankUtil {
         		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
         				.getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
         		if (!economy.canAfford(prisonPlayer, nextRankCost)) {
-        			return new RankUpResult(RankupStatus.RANKUP_CANT_AFFORD, nextRank);
+        			//results.setTargetRank( targetRank );
+        			return results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
+        					RankupTransactions.player_cannot_afford );
         		}
         		
+        		results.addTransaction( RankupTransactions.player_balance_initial );
+        		results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
+        		results.addTransaction( RankupTransactions.player_balance_decreased );
         		economy.removeBalance(prisonPlayer, nextRankCost);
+        		results.addTransaction( RankupTransactions.player_balance_final );
+        		results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
         	}
         	
+        } else {
+        	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
-        player.addRank(ladder, nextRank);
+        player.addRank(ladder, targetRank);
 
         try {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
         } catch (IOException e) {
             Output.get().logError("An error occurred while saving player files.", e);
-            return new RankUpResult(RankupStatus.RANKUP_FAILURE);
+            
+            return results.addTransaction( RankupStatus.RANKUP_FAILURE, 
+            			RankupTransactions.failure_cannot_save_player_file );
         }
 
         // Now, we'll run the rank up commands.
 
-        for (String cmd : nextRank.rankUpCommands) {
+        results.addTransaction( RankupTransactions.rankupCommandsStart );
+        results.setRankupCommandsAvailable( targetRank.rankUpCommands.size() );
+        
+        int count = 0;
+        for (String cmd : targetRank.rankUpCommands) {
             String formatted = cmd.replace("{player}", prisonPlayer.getName())
                 .replace("{player_uid}", player.uid.toString());
             PrisonAPI.dispatchCommand(formatted);
+            count++;
         }
+        results.setRankupCommandsExecuted( count );
+        results.addTransaction( RankupTransactions.rankupCommandsCompleted );
 
+        
+        results.addTransaction( RankupTransactions.fireRankupEvent );
         Prison.get().getEventBus().post(
-            new RankUpEvent(player, currentRankOptional.orElse(null), nextRank, nextRankCost));
-        return new RankUpResult(RankupStatus.RANKUP_SUCCESS, nextRank, 
-        		(bypassCost ? "Bypass cost: " + nextRankCost : null));
+            new RankUpEvent(player, currentRankOptional.orElse(null), targetRank, nextRankCost));
+        
+        
+        results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
+        
+        return results;
     }
 
     public static String doubleToDollarString(double val) {
@@ -220,53 +346,157 @@ public class RankUtil {
         return Math.toIntExact(Math.round((double) d));
     }
 
-    /*
-     * Member Classes
-     */
+    
+    
+    private void logTransactionResults( RankupResults results )
+	{
+    	StringBuilder sb = new StringBuilder();
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+
+    	Rank oRank = results.getOriginalRank();
+    	Rank tRank = results.getTargetRank();
+    	
+    	for ( RankupTransactions rt : RankupTransactions.values() ) {
+    		
+    		// Log the entry if it exists in the results:
+    		if ( results.getTransactions().contains( rt ) ) {
+    			if ( sb.length() > 0 ) {
+    				sb.append( " " );
+    			}
+    			
+    			// Log the transaction:
+    			sb.append( rt.name() );
+    			
+    			// If the transaction has supporting data, log it too:
+    			switch ( rt ) {
+    				case orginal_rank:
+    					sb.append( "=" );
+    					sb.append( oRank == null ? "" : oRank.name );
+    					
+    					break;
+    					
+    				case custom_currency:
+    					sb.append( "=" );
+    					sb.append( tRank == null || tRank.currency == null ? "" : tRank.currency );
+    					
+    					break;
+    					
+    				case specified_currency_not_found:
+    					sb.append( "=" );
+    					sb.append( tRank == null || tRank.currency == null ? "" : tRank.currency );
+    					
+    					break;
+    					
+    				case player_balance_initial:
+    					sb.append( "=" );
+    					sb.append( dFmt.format( results.getBalanceInitial() ) );
+    					
+    					break;
+    					
+    				case player_balance_decreased:
+    					sb.append( "=" );
+    					sb.append( tRank == null ? "" : dFmt.format( tRank.cost ) );
+    					
+    					break;
+    					
+    				case player_balance_final:
+    					sb.append( "=" );
+    					sb.append( dFmt.format( results.getBalanceInitial() ) );
+    					
+    					break;
+    					
+    				case rankupCommandsStart:
+    					sb.append( "=" );
+    					sb.append( iFmt.format( results.getRankupCommandsAvailable() ) );
+    					
+    					break;
+    					
+    				case rankupCommandsCompleted:
+    					sb.append( "=" );
+    					sb.append( iFmt.format( results.getRankupCommandsExecuted() ) );
+    					
+    					break;
+    					
+    				default:
+    					break;
+    			}
+    		}
+    	}
+    	
+    	
+    	// Add in the prefix for the log entry:
+    	String prefix = String.format( 
+    			"Rankup: command=%s player=%s executor=%s status=%s " +
+    			"originalRank=(%s%s%s) targetRank=(%s%s%s) " +
+    			"runtime=%s ms message=[%s] ", 
+    			
+    			results.getCommand().name(), results.getPlayer(), 
+    			results.getExecutor() == null ? "" : results.getExecutor(), 
+    			results.getStatus().name(),
+    			
+    			(oRank == null ? "none" : oRank.name), 
+    			(oRank == null ? "" : " " + dFmt.format( oRank.cost)), 
+    			(oRank == null || oRank.currency == null ? "" : " " + oRank.currency),
+    			
+    			(tRank == null ? "none" : tRank.name), 
+    			(tRank == null ? "" : " " + dFmt.format( tRank.cost)), 
+    			(tRank == null || tRank.currency == null ? "" : " " + tRank.currency),
+				
+				iFmt.format( results.getElapsedTime() ),
+    			(results.getMessage() == null ? "" : results.getMessage()) 
+    			);
+    	
+    	sb.insert( 0, prefix );
+    	
+		
+    	Output.get().logInfo( sb.toString() );
+	}
 
 
-    public static class RankUpResult {
-
-        private RankupStatus status;
-        private Rank rank;
-        private String message;
-
-        public RankUpResult(RankupStatus status, Rank rank, String message) {
-            this.status = status;
-            this.rank = rank;
-            this.message = message;
-        }
-        
-        public RankUpResult(RankupStatus status, Rank rank) {
-        	this(status, rank, null);
-        }
-        
-        public RankUpResult(RankupStatus status) {
-        	this(status, null, null);
-        }
-        
-
-		public RankupStatus getStatus() {
-			return status;
-		}
-		public void setStatus( RankupStatus status ) {
-			this.status = status;
-		}
-
-		public Rank getRank() {
-			return rank;
-		}
-		public void setRank( Rank rank ) {
-			this.rank = rank;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-		public void setMessage( String message ) {
-			this.message = message;
-		}
-    }
+//    @Deprecated
+//    public static class RankUpResult {
+//
+//        private RankupStatus status;
+//        private Rank rank;
+//        private String message;
+//
+//        public RankUpResult(RankupStatus status, Rank rank, String message) {
+//            this.status = status;
+//            this.rank = rank;
+//            this.message = message;
+//        }
+//        
+//        public RankUpResult(RankupStatus status, Rank rank) {
+//        	this(status, rank, null);
+//        }
+//        
+//        public RankUpResult(RankupStatus status) {
+//        	this(status, null, null);
+//        }
+//        
+//
+//		public RankupStatus getStatus() {
+//			return status;
+//		}
+//		public void setStatus( RankupStatus status ) {
+//			this.status = status;
+//		}
+//
+//		public Rank getRank() {
+//			return rank;
+//		}
+//		public void setRank( Rank rank ) {
+//			this.rank = rank;
+//		}
+//
+//		public String getMessage() {
+//			return message;
+//		}
+//		public void setMessage( String message ) {
+//			this.message = message;
+//		}
+//    }
 
 
 }

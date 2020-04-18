@@ -28,6 +28,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -70,9 +71,9 @@ public class RankUpCommand {
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.rankUpPlayer(rankPlayer, ladder);
+        	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
-        	processResults( sender, null, result, true, null, ladder, currency );
+        	processResults( sender, null, results, true, null, ladder, currency );
         }
     }
 
@@ -86,7 +87,8 @@ public class RankUpCommand {
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
+    															"and/or the player must be online." );
     		return;
     	}
 
@@ -101,9 +103,10 @@ public class RankUpCommand {
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.promotePlayer(rankPlayer, ladder);
+        	RankupResults results = new RankUtil().promotePlayer(rankPlayer, ladder, 
+        												player.getName(), sender.getName());
         	
-        	processResults( sender, player, result, true, null, ladder, currency );
+        	processResults( sender, player, results, true, null, ladder, currency );
         }
     }
 
@@ -117,7 +120,8 @@ public class RankUpCommand {
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
+    															"and/or the player must be online." );
     		return;
     	}
 
@@ -132,9 +136,10 @@ public class RankUpCommand {
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.demotePlayer(rankPlayer, ladder);
+        	RankupResults results = new RankUtil().demotePlayer(rankPlayer, ladder, 
+        												player.getName(), sender.getName());
         	
-        	processResults( sender, player, result, false, null, ladder, currency );
+        	processResults( sender, player, results, false, null, ladder, currency );
         }
     }
 
@@ -149,7 +154,8 @@ public class RankUpCommand {
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
+    										"and/or the player must be online." );
     		return;
     	}
 
@@ -164,9 +170,10 @@ public class RankUpCommand {
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankUtil.RankUpResult result = RankUtil.setRank(rankPlayer, ladder, rank);
+        	RankupResults results = new RankUtil().setRank(rankPlayer, ladder, rank, 
+        												player.getName(), sender.getName());
         	
-        	processResults( sender, player, result, true, rank, ladder, currency );
+        	processResults( sender, player, results, true, rank, ladder, currency );
         }
     }
 
@@ -192,28 +199,31 @@ public class RankUpCommand {
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {
             Output.get().sendError(sender,
-                "You don't exist! The server has no records of you. Try rejoining, or contact a server administrator for help.");
+                "You don't exist! The server has no records of you. Try rejoining, " +
+            									"or contact a server administrator for help.");
         }
 
         return playerOptional.isPresent() ? playerOptional.get() : null;
 	}
 
 
-	public void processResults( CommandSender sender, Player player, RankUtil.RankUpResult result, 
+	public void processResults( CommandSender sender, Player player, RankupResults results, 
 	boolean rankup, String rank, String ladder, String currency ) {
 	
-		switch (result.getStatus()) {
+		switch (results.getStatus()) {
             case RANKUP_SUCCESS:
             	if ( rankup ) {
             		String message = String.format( "Congratulations! %s ranked up to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
-            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : "") );
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().name), 
+            				(results.getMessage() != null ? results.getMessage() : "") );
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             	} else {
 	            	String message = String.format( "Unfortunately, %s been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
-            				result.getRank().name, (result.getMessage() != null ? result.getMessage() : ""));
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().name), 
+            				(results.getMessage() != null ? results.getMessage() : ""));
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
 				}
@@ -221,7 +231,8 @@ public class RankUpCommand {
             case RANKUP_CANT_AFFORD:
                 Output.get().sendError(sender,
                     "You don't have enough money to rank up! The next rank costs %s.",
-                    RankUtil.doubleToDollarString(result.getRank().cost));
+                    RankUtil.doubleToDollarString(
+                    				results.getTargetRank() == null ? 0 : results.getTargetRank().cost));
                 break;
             case RANKUP_LOWEST:
             	Output.get().sendInfo(sender, "%s already at the lowest rank!",
@@ -233,7 +244,8 @@ public class RankUpCommand {
                 break;
             case RANKUP_FAILURE:
                 Output.get().sendError(sender,
-                    "Failed to retrieve or write data. Your files may be corrupted. Alert a server administrator.");
+                    "Failed to retrieve or write data. Your files may be corrupted. " +
+                														"Alert a server administrator.");
                 break;
             case RANKUP_NO_RANKS:
                 Output.get().sendError(sender, "There are no ranks in this ladder.");
@@ -246,7 +258,14 @@ public class RankUpCommand {
 				break;
             
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
-				Output.get().sendError(sender, "The currency, %s, is not supported by any loaded economies.", currency);
+				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
+																			"loaded economies.", currency);
+				break;
+				
+			case IN_PROGRESS:
+				Output.get().sendError(sender, "Rankup failed to complete normally. No status was set.");
+				break;
+			default:
 				break;
         }
 	}

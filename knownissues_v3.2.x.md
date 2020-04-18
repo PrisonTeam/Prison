@@ -33,6 +33,12 @@ Done.
 This is put on hold for the v3.2.2 release.
 
 
+* **List currencies that are used in Ranks**
+
+On startup, gather all currencies that are defined within the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.
+
+
+
 <h2>To consider - Lower priority</h2>
 
 

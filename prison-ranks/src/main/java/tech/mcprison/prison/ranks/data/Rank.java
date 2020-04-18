@@ -74,7 +74,9 @@ public class Rank {
         this.name = (String) document.get("name");
         this.tag = (String) document.get("tag");
         this.cost = (double) document.get("cost");
-        this.currency = (String) document.get("currency");
+		String currency = (String) document.get("currency");
+		this.currency = (currency == null || 
+				"null".equalsIgnoreCase( currency ) ? null : currency);
         this.rankUpCommands = (List<String>) document.get("commands");
     }
 
