@@ -8,7 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.8 - 2020-04-11
+## tag v3.2.1-alpha.8 - 2020-04-18
+
+* **New Feature: Added detailed reporting on rankup, promote, demote, and set rank**
+Added detailed logging on rankups to track all details.  It may appear to be overly detailed, but if something goes wrong, it will allow tracking down exactly what may have went wrong.
+
+* **New Feature: List currencies that are used in Ranks**
+On startup, gather all currencies that are defined within all of the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.  If a currency is not found, then print an error message on the Prison start screen. The currencies will then be listed with each of the supporting economies when doing the /prison version command.
 
 * **New Feature: Added temporal references to to the next lower and higher ranks**
 To provide a much more simplified way of getting the next higher and lower ranks 

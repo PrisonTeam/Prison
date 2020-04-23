@@ -31,9 +31,22 @@ Install both WorldGuard and WorldEdit as required for your version of the server
 
 # In Game versus In Console
 
+**Important to understand:** When you add commands to the **/ranks command add** then they will be executed as if they were being entered through the console. Any references to players must be replaced with `{player}` or `{player_uid}`.
+
 Please note that for WorldEdit and WorldGuard there is a slightly different way of entering commands **in game** versus **in console**.  This is very important to understand, because most of the commands may be entered in game, but when you add some of these commands to the **/ranks command add** then they will be executed as if they were being entered through the console.
 
 When you are in game, the world you are in will be used as a default value in any command that requires a world parameter.  When you are entering commands from the console, you must specify the world parameter.  Failure to specify the world will prevent the command from running.  This will cause problems during the running of the **/rankup** commands.  
+
+The WorldGuard documentation says the following about the `-w` flag. 
+
+```
+-w <world> can be specified to run this command for a different world or from console
+```
+
+Please note **from console**.
+
+**Please Note about other Plugins:** Although this example is using WorldGuard from the console, which requires the use of the **-w** flag, other plugins may also require the use of special considerations when being ran from the console.  If the in-game command does not work, then review that plugin's documentation to see if there is any special requirements to run from console.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -104,6 +117,7 @@ The following region setting for access and deny may *appear* to be useful, but 
     ~~/region flag mine_template x allow~~
     ~~/region flag mine_template entry-deny-message You must rank-up to access this mine.~~
     
+**NOTE:** The use of `~~` above are invalid and are added since markdown documentation *usually* uses them as strike though, but that does not work with github markdown.  Nonetheless, i've kept them there just to add emphasis that it's wrong. 
 
 **NOTE:** 
 
