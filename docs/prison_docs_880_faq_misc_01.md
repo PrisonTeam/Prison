@@ -67,3 +67,42 @@ currency plugin, such as vault, or EssentialsX.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Information on Groupmanager and using it with Rank Commands
+
+
+**Information provided by ChrisGames**
+
+**groupmanager**
+
+So what i was trying to do was do this command:
+
+	manuaddp {player} essentials.warps.a
+
+manuaddp is for 1 specific player, then just the node for warping to a mine
+when you give a rank or a specific player a permission you need to do
+
+	/manselect [Worldname]
+	
+To get it to work with the prison ranks you need to have it do manselect (world) before it does the other command.
+
+if the manuaddp command is higher in the config than the manselect (world) it will not work.
+
+.
+
+
+The commands, as ran from the console, for a player named *TestPlayer* in the world named *PrisonWorld*:
+
+    manselect PrisonWorld
+    manuaddp TestPlayer essentials.warps.a
+    
+
+These are the same commands, but are in the format that is needed to be added to the Prison Rank commands for a rank named "a".  Please note that the order in which these commands are entered are the way they will be ran upon rankup.
+
+	ranks command add a manselect PrisonWorld
+	ranks command add a manuaddp {player} essentials.warps.a
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
