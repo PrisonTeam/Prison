@@ -35,7 +35,42 @@ This is put on hold for the v3.2.2 release.
 
 * **List currencies that are used in Ranks**
 
-On startup, gather all currencies that are defined within the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.
+Done. On startup, gather all currencies that are defined within the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.
+
+
+
+* **Skip Mine Resets - Based upon usage and percent remaining**
+* If a mine is not being used, this can greatly reduce the processing needs within the server. If there are about 30 mines, and no players are online for hours, then it can greatly reduce the server loads and reduce the number of chunk updates.
+* Placeholder added percent mined so data exists to use for this calculation.
+* At reset time, if enabled, check to see how many blocks were mined.
+* If more than threshold percentage, such as 10%, then reset the mine.
+* Even if one block is mined, and it is below the threshold, may want to reset the mine after X number of *skipped* resets. 
+* Do not count as skipped if zero blocks are mined.
+* All mines will reset after server reload, after the timer expires the first time, since in-mine block data and stats are not saved to the file system. 
+
+
+* Fields to add to the Mine data:
+    * skipReset - true = enabled, false = disabled
+    * skipResetPercent - double - threshold to reset based upon blocks mined. Does not include original air-blocks.
+    * skipResetBypassThreshold - int - number of *skips* before a forced reset.
+    * skipResetBypassCount - transitive - int - counts the number of times a reset is skipped. This is transitive and never saved.
+
+
+* **Support QuickSell project for use with Prison *Only* **
+
+*Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
+
+QuickSell has be abandoned, but could be very useful for prison to provide a simplified integration of features. 
+
+Quickly reviewed code and it looks fairly good and probably has very low maintenance. Base initial support could be updating dependencies within Maven. Goal to get QuickSell to work with all supported versions of Prison and all supported versions of spigot.
+
+Explicit support going forward would be directly related to Prison. If a support issue has to do with another 3rd party plugin, then support "could" be refused or unsupported 3rd party plugins could be removed. Primary focus would be for the support of Prison and to provide a QuickSell feature to users of the Prison plugin.
+
+https://www.spigotmc.org/resources/quicksell.6107/
+
+https://github.com/TheBusyBiscuit/QuickSell
+Currently 15 forks.  Activity unknown.
+
 
 
 
@@ -148,6 +183,7 @@ Offers for translation:
   Italian : Gabryca
   Greek : NerdTastic
   German: DeadlyKill ?? Did not ask, but a possibility?
+  French: LeBonnetRouge
   
 
 

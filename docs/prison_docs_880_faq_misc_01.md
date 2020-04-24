@@ -91,7 +91,6 @@ if the manuaddp command is higher in the config than the manselect (world) it wi
 
 .
 
-
 The commands, as ran from the console, for a player named *TestPlayer* in the world named *PrisonWorld*:
 
     manselect PrisonWorld
