@@ -416,7 +416,15 @@ public class MinesCommands {
         	setConfirmTimestamp( null );
         	
         	PrisonMines pMines = PrisonMines.getInstance();
-        	pMines.getMineManager().removeMine(pMines.getMineManager().getMine(name).get());
+        	
+        	Mine mine = pMines.getMineManager().getMine(name).get();
+        	
+        	// Remove from the manager:
+        	pMines.getMineManager().removeMine(mine);
+        	
+        	// Terminate the running task for mine resets. Will allow it to be garbage collected.
+        	mine.terminateJob();
+        	
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         	
         } else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {

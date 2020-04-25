@@ -308,6 +308,21 @@ public abstract class MineScheduler
 		}
 	}
 	
+
+	/**
+	 * <p>Terminate this job to remove it from running, which will also allow the mine to be 
+	 * garbage collected if removing the mine.
+	 * </p>
+	 * 
+	 */
+	public void terminateJob() {
+		getJobStack().clear();
+		
+		int taskId = getTaskId();
+		
+		Prison.get().getPlatform().getScheduler().cancelTask( taskId );
+	}
+	
 	public void submit( int offset ) {
 		submitNextAction(offset);
 	}
