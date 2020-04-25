@@ -33,10 +33,17 @@ Done.
 This is put on hold for the v3.2.2 release.
 
 
-* **List currencies that are used in Ranks**
+* **Exclude specific Prison commands**
 
-Done. On startup, gather all currencies that are defined within the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.
+Ability to exclude, or ignore, specific commands upon startup.  
 
+NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command.
+
+
+
+* **Upon startup validate all Blocks that are defined in the mines**
+
+Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
 
 * **Skip Mine Resets - Based upon usage and percent remaining**
@@ -186,6 +193,31 @@ Offers for translation:
   French: LeBonnetRouge
   
 
+* **Auto-Config of other Prison Releated Plugins**
+
+GABRYCA: [Idea]
+
+Not sure if it's possible, but an hook with worldguard on mine making, like a region where the mine region's made automatically with basic permissions'd be neat
+
+RoyalBlueRanger:
+
+Gabryca... yes. I think a "clean" integration in to WorldGuard regions and WorldEdit selection tools would be a great improvement.  I've been wanting to do this from day one actually.  But I'm not 100% sure how much "automation" can be done here.
+
+I guess if the first thing you do when you activate prison, is to "confirm" that you want prison that you want to "link" prison to WorldGuard and your Permission plugin (assuming supported ones exist), then auto generate all of the "step" that are outlined in the document that I create on github for WorldGuard.  That would really help everyone setup their basic servers.
+
+A lot of work there.... but it would be VERY beneficial for sure.  It could be the foundation of an automated setup where prison "proactively" works with other plugins to help build and configure the server.
+
+Areas of possibilities in "Auto-Configure Prison Environment":
+  * WorldGuard - Regions for mines 
+  * WorldEdit - Selection tools
+  * LuckPerms - Perms
+  * EssentialsX - Warps tied to mine warps
+  * QuickSell - Place a [Sell All} sign at the mine warp
+  * Citizens - NPC generated to replace the QuckSell Sign
+  * CitizensCMD - Links the Citizen NPC to the QuickSell "tiered" pricing (requires Citizens)
+
+I think those few integrations could really provide a huge bootstrap to getting the basics of a prison server up and running.
+
 
 # Features recently added:
 
@@ -219,6 +251,11 @@ Bypass the costs for the players. The admins can now use
 It's not being used, so eliminate it and allow prison to possibly eliminate the
 extra layers of indirection it currently has to improve performance and to 
 possibly reduce the possibilities for errors. 
+
+
+* **DONE: List currencies that are used in Ranks**
+
+On startup, gather all currencies that are defined within the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.
 
 
 
