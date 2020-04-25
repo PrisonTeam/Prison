@@ -250,17 +250,14 @@ public class MineManager
 					case prison_mines_remaining_minename:
 					case mines_remaining_minename:
 						mine.refreshAirCount(); // async & delayed : Very high cost
-						int remainingBlocks = mine.getBounds().getTotalBlockCount() - mine.getAirCount();
+						int remainingBlocks = mine.getRemainingBlockCount();
 						results = iFmt.format( remainingBlocks );
 						break;
 						
 					case prison_mines_percent_minename:
 					case mines_percent_minename:
 						mine.refreshAirCount(); // async & delayed : Very high cost
-						int totalCount = mine.getBounds().getTotalBlockCount();
-						double remainingBlocksP = (totalCount - mine.getAirCount()) * 100d;
-						double originalCount = totalCount - mine.getAirCountOriginal();
-						double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
+						double percentRemaining = mine.getPercentRemainingBlockCount();
 						results = dFmt.format( percentRemaining );
 						break;
 						

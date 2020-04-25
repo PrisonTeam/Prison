@@ -665,6 +665,19 @@ public abstract class MineReset
 		}
 	}
     
+	public int getRemainingBlockCount() {
+		int remainingBlocks = getBounds().getTotalBlockCount() - getAirCount();
+		return remainingBlocks;
+	}
+	
+	public double getPercentRemainingBlockCount() {
+		int totalCount = getBounds().getTotalBlockCount();
+		double remainingBlocksP = (totalCount - getAirCount()) * 100d;
+		double originalCount = totalCount - getAirCountOriginal();
+		double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
+		return percentRemaining;
+	}
+	
     
     /**
      * Generates blocks for the specified mine and caches the result.
