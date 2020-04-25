@@ -112,7 +112,7 @@ public class SpigotPrison extends JavaPlugin {
             try {
                 metaFile.createNewFile();
             } catch (IOException e) {
-                System.out.println(
+                Output.get().logError( 
                         "Could not create .meta file, this will cause problems with the converter!");
             }
         }
