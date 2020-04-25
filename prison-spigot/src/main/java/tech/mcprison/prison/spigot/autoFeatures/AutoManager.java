@@ -18,7 +18,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 
 /**
@@ -60,7 +60,7 @@ public class AutoManager implements Listener {
     		
     		// Get the player objects: Spigot and the Prison player:
     		Player p = e.getPlayer();
-    		SpigotPlayer player = new SpigotPlayer( p );
+    		// SpigotPlayer player = new SpigotPlayer( p );
     		
     		// Validate that the event is happening within a mine since the
     		// onBlockBreak events here are only valid within the mines:
@@ -69,7 +69,8 @@ public class AutoManager implements Listener {
     			PrisonMines mineManager = (PrisonMines) mmOptional.get();
     			
     			for ( Mine mine : mineManager.getMines() ) {
-    				if ( mine.isInMine( player.getLocation() ) ) {
+    				SpigotBlock block = new SpigotBlock(e.getBlock());
+    				if ( mine.isInMine( block.getLocation() ) ) {
     					applyAutoEvents( e, p );
     					break;
     				}

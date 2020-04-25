@@ -31,6 +31,8 @@ public class AutoFeaturesFileConfig {
 
                 conf.set("Options.AutoPickup.AutoPickupEnabled", true);
                 conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
+                conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
+                conf.set("Options.AutoPickup.AutoPickupStone",true);
                 conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
                 conf.set("Options.AutoPickup.AutoPickupIronOre", true);
                 conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
@@ -45,6 +47,7 @@ public class AutoFeaturesFileConfig {
                 conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
 
                 conf.set("Options.AutoBlock.AutoBlockEnabled", true);
+                conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
                 conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
                 conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
                 conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
