@@ -606,10 +606,23 @@ public abstract class MineReset
     }
     
     /**
+     * This should be used to submit async tasks.
+     * 
+     * @param callbackAsync
+     */
+    public void submitAsyncTask( PrisonRunnable callbackAsync ) {
+    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 0L );
+    }
+
+    /**
      * <p>This function will identify how many air blocks are within a mine.
      * </p>
      */
     public void refreshAirCount() {
+    	refreshAirCount(null);
+    }
+    
+    public void refreshAirCount(PrisonRunnable callback) {
     	
     	long elapsedTarget = getAirCountTimestamp() + MINE_RESET__AIR_COUNT_BASE_DELAY + 
     			(getAirCountElapsedTimeMs() * MINE_RESET__AIR_COUNT_BASE_DELAY / 100);
@@ -617,9 +630,11 @@ public abstract class MineReset
     	if ( getAirCountTimestamp() == 0L ||
     			(elapsedTarget <= System.currentTimeMillis() )) {
     		
-    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this);
+    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this, callback);
     		
-    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
+    		submitAsyncTask( cabAsyncTask );
+    		
+//    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
     		
     		// Do not run this here, it must be ran as an async task... 
 //    		refreshAirCountAsyncTask();
@@ -676,6 +691,40 @@ public abstract class MineReset
 		double originalCount = totalCount - getAirCountOriginal();
 		double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
 		return percentRemaining;
+	}
+	
+	/**
+	 * <p>This assumes the air block count was just updated.
+	 * </p>
+	 * 
+	 */
+	public void refreshMineAsyncTask() {
+		if ( isSkipResetEnabled() ) {
+			
+			if ( getAirCountOriginal() == getAirCount() ) {
+				// No blocks mined. Skip and do not increment bypass count since mine is pristine.
+				// Skip Reset!!
+				return;
+			}
+			else if ( getPercentRemainingBlockCount() > getSkipResetPercent() ) {
+				// Blocks have been mined, but not enough to reset the mine yet.
+				// Increment skip bypass count.
+				setSkipResetBypassCount( getSkipResetBypassCount() + 1 );
+				
+				if ( getSkipResetBypassCount() < getSkipResetBypassLimit() ) {
+					// Skip Reset!!
+					return;
+				}
+				
+				// Reached bypass limit. Must reset!
+				setSkipResetBypassCount( 0 );
+			}
+			
+			// Must reset. Not bypassing.
+		}
+		
+		// Mine reset here:
+		// Async if possible...
 	}
 	
     

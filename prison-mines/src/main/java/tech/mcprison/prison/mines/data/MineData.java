@@ -12,8 +12,8 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-public abstract class MineData
-{
+public abstract class MineData {
+	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
 	public static final int MINE_RESET__TIME_SEC__MINIMUM = 2 * 60; // 2 minutes
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
@@ -31,6 +31,13 @@ public abstract class MineData
 	private long targetRestTime;
 	
     private List<Block> blocks;
+    
+    
+    private boolean skipResetEnabled = false;
+    private double skipResetPercent;
+    private int skipResetBypassLimit;
+    private transient int skipResetBypassCount;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -47,8 +54,7 @@ public abstract class MineData
     		MineNotificationMode results = defaultValue;
     		
     		if ( mode != null && mode.trim().length() > 0 ) {
-    			for ( MineNotificationMode mnm : values() )
-    			{
+    			for ( MineNotificationMode mnm : values() ) {
     				if ( mnm.name().equalsIgnoreCase( mode )) {
     					results = mnm;
     				}
@@ -67,7 +73,11 @@ public abstract class MineData
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     	
     	this.targetRestTime = 0;
-    	
+    
+    	this.skipResetEnabled = false;
+        this.skipResetPercent = 80.0D;
+        this.skipResetBypassLimit = 10;
+        this.skipResetBypassCount = 0;
     }
 
     /**
@@ -176,48 +186,38 @@ public abstract class MineData
         this.name = name;
     }
     
-	public String getWorldName()
-	{
+	public String getWorldName() {
 		return worldName;
 	}
-	public void setWorldName( String worldName )
-	{
+	public void setWorldName( String worldName ) {
 		this.worldName = worldName;
 	}
 
-	public boolean isHasSpawn()
-	{
+	public boolean isHasSpawn() {
 		return hasSpawn;
 	}
-	public void setHasSpawn( boolean hasSpawn )
-	{
+	public void setHasSpawn( boolean hasSpawn ) {
 		this.hasSpawn = hasSpawn;
 	}
 
-	public int getResetTime()
-	{
+	public int getResetTime() {
 		return resetTime;
 	}
-	public void setResetTime( int resetTime )
-	{
+	public void setResetTime( int resetTime ) {
 		this.resetTime = resetTime;
 	}
 
-	public MineNotificationMode getNotificationMode()
-	{
+	public MineNotificationMode getNotificationMode() {
 		return notificationMode;
 	}
-	public void setNotificationMode( MineNotificationMode notificationMode )
-	{
+	public void setNotificationMode( MineNotificationMode notificationMode ) {
 		this.notificationMode = notificationMode;
 	}
 
-	public long getNotificationRadius()
-	{
+	public long getNotificationRadius() {
 		return notificationRadius;
 	}
-	public void setNotificationRadius( long notificationRadius )
-	{
+	public void setNotificationRadius( long notificationRadius ) {
 		this.notificationRadius = notificationRadius;
 	}
 
@@ -226,6 +226,34 @@ public abstract class MineData
 	}
 	public void setTargetRestTime( long targetRestTime ) {
 		this.targetRestTime = targetRestTime;
+	}
+
+	public boolean isSkipResetEnabled() {
+		return skipResetEnabled;
+	}
+	public void setSkipResetEnabled( boolean skipResetEnabled ) {
+		this.skipResetEnabled = skipResetEnabled;
+	}
+
+	public double getSkipResetPercent() {
+		return skipResetPercent;
+	}
+	public void setSkipResetPercent( double skipResetPercent ) {
+		this.skipResetPercent = skipResetPercent;
+	}
+
+	public int getSkipResetBypassLimit() {
+		return skipResetBypassLimit;
+	}
+	public void setSkipResetBypassLimit( int skipResetBypassLimit ) {
+		this.skipResetBypassLimit = skipResetBypassLimit;
+	}
+
+	public int getSkipResetBypassCount() {
+		return skipResetBypassCount;
+	}
+	public void setSkipResetBypassCount( int skipResetBypassCount ) {
+		this.skipResetBypassCount = skipResetBypassCount;
 	}
 
 }

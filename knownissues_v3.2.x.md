@@ -60,7 +60,7 @@ Upon loading prison, validate that all blocks that are defined within each mine 
     * skipReset - true = enabled, false = disabled
     * skipResetPercent - double - threshold to reset based upon blocks mined. Does not include original air-blocks.
     * skipResetBypassThreshold - int - number of *skips* before a forced reset.
-    * skipResetBypassCount - transitive - int - counts the number of times a reset is skipped. This is transitive and never saved.
+    * skipResetBypassCount - transient - int - counts the number of times a reset is skipped. This is transient value and is never saved.
 
 
 * **Support QuickSell project for use with Prison *Only* **

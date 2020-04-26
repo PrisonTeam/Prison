@@ -36,8 +36,7 @@ import tech.mcprison.prison.util.Location;
  * @author Dylan M. Perks
  */
 public class Mine 
-	extends MineScheduler 
-{
+	extends MineScheduler {
 
     /**
      * Creates a new, empty mine instance
@@ -117,6 +116,15 @@ public class Mine
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
         Double noteRadius = (Double) document.get("notificationRadius");
         setNotificationRadius( noteRadius == null ? MINE_RESET__BROADCAST_RADIUS_BLOCKS : noteRadius.longValue() );
+        
+        Boolean skipResetEnabled = (Boolean) document.get( "skipResetEnabled" );
+        setSkipResetEnabled( skipResetEnabled == null ? false : skipResetEnabled.booleanValue() );
+        Double skipResetPercent = (Double) document.get( "skipResetPercent" );
+        setSkipResetPercent( skipResetPercent == null ? 80.0D : skipResetPercent.doubleValue() );
+        Integer skipResetBypassLimit = (Integer) document.get( "skipResetBypassLimit" );
+        setSkipResetBypassLimit( skipResetBypassLimit == null ? 10 : skipResetBypassLimit.intValue() );
+        // When loading, skipResetBypassCount must be set to zero:
+        setSkipResetBypassCount( 0 );
         
         @SuppressWarnings( "unchecked" )
 		List<String> docBlocks = (List<String>) document.get("blocks");
