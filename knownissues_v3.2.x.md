@@ -17,16 +17,13 @@ Work to be considered.
 * **Complete the new Mines Reset Paging**
   Holding up release v3.2.1.
 
+* **Add /ranks remove currency [rankName] [currency]**
+Done. Currently no way to remove a currency from a Rank to return it to normal currency.
+
 * **Integrate GUI in to bleeding**
-Done.  More GUI featuers will be added in the next release.
+Done.  More GUI features will be added in the next release.
 
 * **Setup GUI to use /prison gui**
-Done.
-
-* **Mine Placeholders**
-Done.
-
-* **Player Placeholder - prison_rankup_rank_tag**
 Done.
 
 * **Get started on new Multi-Language Support**
@@ -221,6 +218,14 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 # Features recently added:
 
+* **DONE: Mine Placeholders**
+Added a number of placeholders for mines.
+
+* **DONE: Player Placeholder - prison_rankup_rank_tag**
+When adding the new placeholder code, the prison_rankup_rank was set to return the 
+rank name and not tag. So added a prison_rankup_rank_tag so there would be access
+to both to give the most flexibility.
+
 * **DONE: New Feature: List all registered plugins**
 To better support server owners when they have issues with Prison, it would 
 be very helpful if **/prison version** would list all registered plugins in
@@ -261,6 +266,31 @@ On startup, gather all currencies that are defined within the Ranks, confirm the
 
 ## tag v3.2.1-alpha.3 - 2020-02-18
 
+
+* **Prison v3.2.0 (and older) has limited Placeholder Support**
+
+Prison v3.2.0 only has one chat placeholder and it is {PRISON_RANK}, which must be in all uppercase.  
+
+The only Prison integrations supported with this version are PlaceholderAPI and MVdWPlaceholder.  
+
+The placeholders supported by PlaceholderAPI are prison_rank, prison_rankup_cost, and prison_rankup_rank.  Supported case is unknown, so use lowercase.
+
+The actual placeholders for MVdWPlaceholder is actually unknown, but may be the same as listed for PlaceholderAPI, but I cannot confirm it.
+
+
+* **Prison v3.2.1 Placeholder Support**
+
+The best way to find the available placeholders is to use the command **/prison version**.  Keep in mind that any placeholder that ends with **minename** will be expanded for each mine, substituting the mine name for the suffix **minename**.  For example, if there are 30 mines, then Prison will register 30 placeholders for each listed placeholder under **/prison version**.  
+
+The placeholders will be registered as shown, in lowercase.  They actually are case insensitive, but since they are registered in lowercase, the various placeholder APIs may only recognize lowercase entries.
+
+Prison's Ranks has a chat handler that now supports all placeholders.
+
+Support for PlaceholderAPI is through the prefix of "prison", of which it will route all placeholders with prefixes of "prison" through prison.  When PlaceholderAPI makes calls to Prison, it strips the prefix.  Therefore, Prison's placeholders will respond to the full placeholder, or the the placeholder minus the prefix.  The list of all existing placeholders within Prison are not pre-registered.
+
+The MVdWPlaceholder api requires all placeholders be registered.
+
+
 * **Some block types may not work for 1.15.x**
 Since prison is not currently using the correct block names for 1.15.x, some
 block types may not work. Prison is still using magic numbers for the 
@@ -268,6 +298,7 @@ block types and those no longer work for 1.15.x.  Symptom would be that
 you set a block type such as birch block, but with the loss of the magic 
 number, it will revert back to just an oak block.  ETA may be with
 release v3.2.2?
+
 
 * **Unable to change language on all Aspects of Prison**
 Currently the number of phrases that can be changed to support other
@@ -281,14 +312,17 @@ at compile time, and not runtime to help improve stability of the game.
 Also the way the language files are structured at runtime will make it 
 easier to edit them.
 
+
+
 * **Information: Setting the correct currency for Prison**
 
-Note: Moved to FAQ docs.
+	Note: Moved to FAQ docs.
+
 
 
 * **Known issue with LuckPerms v5.0.x Causing Prison Load Failures**
 
-Note: Moved to FAQ docs.
+	Note: Moved to FAQ docs.
 
 
 

@@ -8,13 +8,25 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.8 - 2020-04-18
+## tag v3.2.1-alpha.9 - 2020-04-26
+
+
+* **New Feature: Auto features added: Auto Pickup, Auto Smelt, and Auto Block!**
+Gabryca added auto features to Prison.  They include auto pickup, auto smelt, and auto block. 
+
 
 * **New Feature: Added detailed reporting on rankup, promote, demote, and set rank**
 Added detailed logging on rankups to track all details.  It may appear to be overly detailed, but if something goes wrong, it will allow tracking down exactly what may have went wrong.
 
+
+* **New Feature: Added support for GemsEconomy and Custom Currency**
+Added a direct integration for GemsEconomy so Prison can now use a custom currency with Rankups.  
+Added within prison the support for custom currencies.  There is a special mechanism in place for dealing with custom currencies, since it requires special interfaces to specify the currency.  Prison checks to make sure there is not only a registered economy that supports custom currencies, but it also checks to make sure the currency that is specified within the ranks is supported by an economy before allowing the player to add it.  It also checks to make sure all custom currencies have supported economies upon Prison startup and reports errors if they are not found.  When a player attempts a rankup, everything is once again checked to make sure the economies support the custom currency.  Prison provides for admins to bypass the use of defined custom currencies through **/ranks promote**, **/ranks demote**, and **/ranks set rank**.
+
+
 * **New Feature: List currencies that are used in Ranks**
 On startup, gather all currencies that are defined within all of the Ranks, confirm there is a economy that supports it, and then print the list with the ranks module.  If a currency is not found, then print an error message on the Prison start screen. The currencies will then be listed with each of the supporting economies when doing the /prison version command.
+
 
 * **New Feature: Added temporal references to to the next lower and higher ranks**
 To provide a much more simplified way of getting the next higher and lower ranks 
@@ -24,15 +36,18 @@ rank and its as simple as just another field within ranks.
 These references, because they are temporal, are realigned when the ranks and ladders
 are initially loaded, and whenever ladders change. 
 
+
 * **New Feature: Added base commands to /prison version listing**
 Added the base commands to the /prison version, which is tied to the modules. 
 If a module is successfully loaded, then it will show the base commands that 
 it supports.
 
+
 * **New Feature: GemsEconomy Direct integration**
 Starting to hook up GemsEconomy.  It's not ready and it may take a while to
 put everything in place. The major thing that GemsEconomy provides is support
 for non-standard currencies.
+
 
 * **New Feature: AutoManager**
 Gabryca is adding this new feature to the spigot interface.
@@ -42,10 +57,12 @@ Gabryca is adding this new feature to the spigot interface.
 Update to the most recent version of EssentialsX v2.1.7.1.0 was v2.0.1-b354.
 This is an internal library used only for compile purposes.
 
+
 * **Upgraded API: SaneEconomy v0.15.0**
 Update to a more recent version of SaneEconomy v0.15.0 was v0.13.1.
 Note this is the last version where the signature of getBalance and setBalance is using doubles. Newer versions use BigDecimal so I've put try catches around them to capture potential errors so it can be reported.  Did not upgrade to anything newer since the backend storage has changed which may be a major change for some servers.
 This is an internal library used only for compile purposes.
+
 
 * **New Feature: List all registered plugins**
 To better support server owners when they have issues with Prison, the command 
@@ -54,6 +71,7 @@ With this feature, to provide the information we need to help trouble shoot,
 they only need to copy and paste to provide all the information we need.
 "Please copy and paste the full **/prison version** command listing."
 
+
 * **New Feature: prison_rankup_rank_tag added**
 This provides the tag of the next available rank.
 
@@ -61,11 +79,13 @@ This provides the tag of the next available rank.
 * **Started to Add Documentation**
 To help ensure all users have access to Prison's documentation, and to be able to version all documentation, I've decided to go with github markdown documents.  This will allow the documents to live within the project and they will be accessible online through github.  Simple markdown hyperlinks will tie them together so the user can browse them by just clicking links to navigate.  Markdown is very limited in what can be done with it, but accessibility and versioning is more important than bells and whistles.  
 
+
 * **Pulled in the Prison GUI menus**
 Pulled the prison gui branch in to the bleeding branch. This was the result of the awesome work by Gabryca.
 I added the mapping of /prison gui to redirect to /prisonmanager gui so it's integrated
 with the standard prison commands.
 Added the new permissions to the plugin.yml file.
+
 
 * **New Feature: Mine Placeholders**
 A lot of code was rewritten to support the mine related placeholders. Player placeholders
@@ -80,14 +100,17 @@ Created a mines chat handler.
 Updated the player chat handler to use the new formats. Also updated MVdWPlaceholderAPI
 and PlaceholderAPI to handle the new mines placeholders.
 
+
 * **New Feature: Add in the target reset time for the mines**
 This correctly sets the future targetResetTime when the next workflow job is submitted. This auto-adjusts the target time to compensate for delays in the system.
 It also detects if there was a change in the reset time for the mine, and if so, then it will regenerate the jobWorkFlow to reflect those changes.
+
 
 * **New Features: future targetResetTime, player counts within a mine, and count air blocks**
 Start to hook up some mine related features such as future targetResetTime (the project time in the future when the mine will reset).  This allows the creation of a count down timer until the reset happens.
 Add a function to count the number of players within a mine.
 Added a set of function to count the number of air blocks in a mine asynchronously. Set it up as a submittable task.  The airblock count buffers and will run only every 30 seconds at most. If its a large mine, then it will delay slightly longer before refreshes to conserve computational resources.
+
 
 * **Bug fix: Mine data was not fully loading prior to submitting workflow**
 Found a timing issue where the mine's workflows were being submitted before all of
@@ -101,6 +124,7 @@ functions from the bottom (MineData) all the way back up to the top (Mine) again
 This allows the full loading of the saved mine data at the top layer, Mine, and then 
 allows a lower layer to utilize that loaded data, such as submitting the workflow.
 This simplifies a lot of complexities pertaining to chicken-or-the-egg timings.
+
 
 * **Compatibility Fix: Conflict with another chat plugin**
 There was an onPlayerChat with the AsyncPlayerChatEvent issue  

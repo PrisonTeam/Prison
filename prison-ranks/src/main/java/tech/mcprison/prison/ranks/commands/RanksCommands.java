@@ -44,9 +44,10 @@ public class RanksCommands {
         }
     }
 
-    @Command(identifier = "ranks create", description = "Creates a new rank", onlyPlayers = false, permissions = "ranks.create")
+    @Command(identifier = "ranks create", description = "Creates a new rank", 
+    											onlyPlayers = false, permissions = "ranks.create")
     public void createRank(CommandSender sender,
-        @Arg(name = "name", description = "The name of this rank.") String name,
+        @Arg(name = "rankName", description = "The name of this rank.") String name,
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
         @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
             String ladder,
@@ -113,8 +114,9 @@ public class RanksCommands {
 
     }
 
-    @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", onlyPlayers = false, permissions = "ranks.delete")
-    public void removeRank(CommandSender sender, @Arg(name = "name") String rankName) {
+    @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 
+    										onlyPlayers = false, permissions = "ranks.delete")
+    public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
         // Check to ensure the rank exists
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
@@ -140,7 +142,8 @@ public class RanksCommands {
         }
     }
 
-    @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", onlyPlayers = false, permissions = "ranks.list")
+    @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", 
+    												onlyPlayers = false, permissions = "ranks.list")
     public void listRanks(CommandSender sender,
         @Arg(name = "ladderName", def = "default") String ladderName) {
 
@@ -245,7 +248,8 @@ public class RanksCommands {
 
     }
 
-    @Command(identifier = "ranks info", description = "Information about a rank.", onlyPlayers = false, permissions = "ranks.info")
+    @Command(identifier = "ranks info", description = "Information about a rank.", 
+    													onlyPlayers = false, permissions = "ranks.info")
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
         Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOpt.isPresent()) {
@@ -291,9 +295,10 @@ public class RanksCommands {
     }
 
     // set commands
-    @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", onlyPlayers = false, permissions = "ranks.set")
+    @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", 
+    												onlyPlayers = false, permissions = "ranks.set")
     public void setCost(CommandSender sender, 
-    		@Arg(name = "name") String rankName, 
+    		@Arg(name = "rankName") String rankName, 
     		@Arg(name = "cost", description = "The cost of this rank.") double cost){
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
@@ -317,9 +322,10 @@ public class RanksCommands {
     }
     
     // set commands
-    @Command(identifier = "ranks set currency", description = "Modifies a ranks currency", onlyPlayers = false, permissions = "ranks.set")
+    @Command(identifier = "ranks set currency", description = "Modifies a ranks currency", 
+    													onlyPlayers = false, permissions = "ranks.set")
     public void setCurrency(CommandSender sender, 
-    		@Arg(name = "name") String rankName, 
+    		@Arg(name = "rankName") String rankName, 
     		@Arg(name = "currency", description = "The currency to use with this rank.") String currency){
     	
     	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
@@ -358,8 +364,11 @@ public class RanksCommands {
     	}
     }
 
-    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", onlyPlayers = false, permissions = "ranks.set")
-    public void setTag(CommandSender sender, @Arg(name = "name") String rankName, @Arg(name = "tag", description = "The desired tag.") String tag){
+    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
+    														onlyPlayers = false, permissions = "ranks.set")
+    public void setTag(CommandSender sender, 
+    				@Arg(name = "rankName") String rankName, 
+    				@Arg(name = "tag", description = "The desired tag.") String tag){
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);

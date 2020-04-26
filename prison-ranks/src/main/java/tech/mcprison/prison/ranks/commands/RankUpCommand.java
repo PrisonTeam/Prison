@@ -148,7 +148,7 @@ public class RankUpCommand {
     			permissions = "ranks.demote", onlyPlayers = true) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-    	@Arg(name = "rank", description = "The rank to assign to the player") String rank,
+    	@Arg(name = "rankName", description = "The rank to assign to the player") String rank,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
 
     	Player player = getPlayer( sender, playerName );
