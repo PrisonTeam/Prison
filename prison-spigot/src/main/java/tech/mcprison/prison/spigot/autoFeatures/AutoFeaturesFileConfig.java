@@ -12,7 +12,7 @@ public class AutoFeaturesFileConfig {
     private FileConfiguration conf;
 
     public AutoFeaturesFileConfig() {
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
         if(!file.exists()){
             try {
                 File dir = file.getParentFile();

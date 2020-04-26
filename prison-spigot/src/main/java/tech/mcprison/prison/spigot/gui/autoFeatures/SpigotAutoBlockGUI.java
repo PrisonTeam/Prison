@@ -92,6 +92,38 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
+        if (configThings.getBoolean("Options.AutoBlock.AutoBlockPrismarineBlock")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Prismarine_Block Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Prismarine_Block Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoBlock.AutoBlockLapisBlock")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Lapis_Block Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Lapis_Block Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoBlock.AutoBlockSnowBlock")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Block Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Block Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoBlock.AutoBlockGlowstone")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Glowstone_Block Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Glowstone_Block Disabled"));
+            inv.addItem(Disabled);
+        }
+
         this.p.openInventory(inv);
 
     }

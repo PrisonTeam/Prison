@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -967,9 +966,8 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "PrisonManager -> AutoFeatures":
                 {
 
-
                     FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
-                    File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+                    File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                     // Get the button name without colors but with the minename too
                     String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1119,7 +1117,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoPickup":{
 
                 FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1228,6 +1226,45 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupQuartzOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Lapis_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupLapisOre", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Snow_Ball")){
+                            configThings.set("Options.AutoPickup.AutoPickupSnowBall", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
+                            configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", false);
                             try {
                                 configThings.save(file);
                             } catch (IOException ioException) {
@@ -1351,6 +1388,45 @@ public class ListenersPrisonManagerGUI implements Listener {
                             gui.open();
                         }
 
+                        if (buttonname.equalsIgnoreCase("Lapis_Ore")){
+                            configThings.set("Options.AutoPickup.AutoPickupLapisOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Snow_Ball")){
+                            configThings.set("Options.AutoPickup.AutoPickupSnowBall", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
+                            configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+                            gui.open();
+                        }
+
                     }
 
                     e.setCancelled(true);
@@ -1363,7 +1439,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoSmelt":{
 
                 FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1451,7 +1527,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoBlock":{
 
                 FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/autoFeatures/autoFeaturesConfig.yml");
+                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1558,6 +1634,58 @@ public class ListenersPrisonManagerGUI implements Listener {
                             gui.open();
                         }
 
+                        if (buttonname.equalsIgnoreCase("Prismarine_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Lapis_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockLapisBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Snow_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockSnowBlock", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Glowstone_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockGlowstone", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
                     }
 
                     e.setCancelled(true);
@@ -1646,6 +1774,58 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Prismarine_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Lapis_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockLapisBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Snow_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockSnowBlock", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("Glowstone_Block")){
+                            configThings.set("Options.AutoBlock.AutoBlockGlowstone", true);
                             try {
                                 configThings.save(file);
                             } catch (IOException ioException) {

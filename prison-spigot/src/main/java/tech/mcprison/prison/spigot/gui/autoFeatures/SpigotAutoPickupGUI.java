@@ -10,7 +10,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
-import java.util.Set;
 
 public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
@@ -99,6 +98,30 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Enabled);
         } else {
             ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Quartz_Ore Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoPickup.AutoPickupLapisOre")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Lapis_Ore Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Lapis_Ore Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoPickup.AutoPickupSnowBall")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Ball Disabled"));
+            inv.addItem(Disabled);
+        }
+
+        if (configThings.getBoolean("Options.AutoPickup.AutoPickupGlowstoneDust")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Glowstone_Dust Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Glowstone_Dust Disabled"));
             inv.addItem(Disabled);
         }
 
