@@ -1481,6 +1481,19 @@ public class ListenersPrisonManagerGUI implements Listener {
                             gui.open();
                         }
 
+                        if (buttonname.equalsIgnoreCase("All_Ores")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
                     }
 
                     e.setCancelled(true);
@@ -1504,6 +1517,19 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Ore")){
                             configThings.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("All_Ores")){
+                            configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
                             try {
                                 configThings.save(file);
                             } catch (IOException ioException) {
@@ -1686,6 +1712,19 @@ public class ListenersPrisonManagerGUI implements Listener {
                             gui.open();
                         }
 
+                        if (buttonname.equalsIgnoreCase("All_Blocks")){
+                            configThings.set("Options.AutoBlock.AutoBlockAllBlocks", false);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
                     }
 
                     e.setCancelled(true);
@@ -1826,6 +1865,19 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Glowstone_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockGlowstone", true);
+                            try {
+                                configThings.save(file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                            e.setCancelled(true);
+                            p.closeInventory();
+                            SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+                            gui.open();
+                        }
+
+                        if (buttonname.equalsIgnoreCase("All_Blocks")){
+                            configThings.set("Options.AutoBlock.AutoBlockAllBlocks", true);
                             try {
                                 configThings.save(file);
                             } catch (IOException ioException) {

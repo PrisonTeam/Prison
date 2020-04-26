@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger
  */
 public class AutoManager implements Listener {
 

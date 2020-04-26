@@ -36,6 +36,14 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
                 "&8Right Click to enable"
         );
 
+        if (configThings.getBoolean("Options.AutoBlock.AutoBlockAllBlocks")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
+            inv.addItem(Disabled);
+        }
+
         if (configThings.getBoolean("Options.AutoBlock.AutoBlockGoldBlock")) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Block Enabled"));
             inv.addItem(Enabled);

@@ -37,6 +37,14 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
                 "&8Right Click to enable"
         );
 
+        if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltAllBlocks")) {
+            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
+            inv.addItem(Enabled);
+        } else {
+            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
+            inv.addItem(Disabled);
+        }
+
         if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltGoldOre")) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
             inv.addItem(Enabled);
