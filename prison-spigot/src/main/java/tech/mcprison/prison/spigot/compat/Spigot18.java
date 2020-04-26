@@ -20,6 +20,7 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,16 +29,25 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Spigot18 implements Compatibility {
 
-    @Override public EquipmentSlot getHand(PlayerInteractEvent e) {
+    @Override 
+    public EquipmentSlot getHand(PlayerInteractEvent e) {
         return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
     }
 
     @SuppressWarnings( "deprecation" )
-	@Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {
+	@Override 
+	public ItemStack getItemInMainHand(PlayerInteractEvent e) {
         return e.getPlayer().getItemInHand();
     }
 
-    @Override public void playIronDoorSound(Location loc) {
+    @SuppressWarnings( "deprecation" )
+    @Override 
+    public ItemStack getItemInMainHand(Player player ) {
+    	return player.getItemInHand();
+    }
+    
+    @Override 
+    public void playIronDoorSound(Location loc) {
         loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
     }
 

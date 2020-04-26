@@ -349,6 +349,10 @@ public class SpigotPrison extends JavaPlugin {
     	}
     }
     
+    public Compatibility getCompatibility() {
+    	return compatibility;
+    }
+    
     private File getBundledFile(String name) {
         getDataFolder().mkdirs();
         File file = new File(getDataFolder(), name);

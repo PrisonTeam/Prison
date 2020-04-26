@@ -26,7 +26,13 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
  */
 public class AutoManager implements Listener {
 
+	private SpigotPrison spigotPrison;
+	
 	private Random random = new Random();
+	
+    public AutoManager(SpigotPrison spigotPrison) {
+        this.spigotPrison = spigotPrison;
+    }
 	
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
@@ -125,7 +131,12 @@ public class AutoManager implements Listener {
 			// Init variables
 			Material brokenBlock = e.getBlock().getType();
 			String blockName = brokenBlock.toString().toLowerCase();
-			int fortuneLevel = p.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+			
+			ItemStack itemInHand = spigotPrison.getCompatibility().getItemInMainHand( p );
+			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+			
+//			int fortuneLevel = p.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+			
 			int dropNumber = getDropCount(fortuneLevel);
 			
 			// Check if the inventory's full

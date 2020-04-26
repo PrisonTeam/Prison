@@ -20,6 +20,7 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +31,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Spigot19 implements Compatibility {
 
-    @Override public EquipmentSlot getHand(PlayerInteractEvent e) {
+    @Override 
+    public EquipmentSlot getHand(PlayerInteractEvent e) {
         if (e.getHand() == null) {
             return null;
         } else {
@@ -38,11 +40,18 @@ public class Spigot19 implements Compatibility {
         }
     }
 
-    @Override public ItemStack getItemInMainHand(PlayerInteractEvent e) {
+    @Override 
+    public ItemStack getItemInMainHand(PlayerInteractEvent e) {
         return e.getPlayer().getInventory().getItemInMainHand();
     }
 
-    @Override public void playIronDoorSound(Location loc) {
+    @Override 
+    public ItemStack getItemInMainHand(Player player) {
+    	return player.getInventory().getItemInMainHand();
+    }
+    
+    @Override 
+    public void playIronDoorSound(Location loc) {
         loc.getWorld().playEffect(loc, Effect.IRON_DOOR_TOGGLE, null);
     }
 
