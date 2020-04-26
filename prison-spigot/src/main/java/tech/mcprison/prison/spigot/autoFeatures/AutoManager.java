@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autoFeatures;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 
@@ -12,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -19,6 +21,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 /**
@@ -26,12 +29,13 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
  */
 public class AutoManager implements Listener {
 
-	private SpigotPrison spigotPrison;
-	
 	private Random random = new Random();
 	
-    public AutoManager(SpigotPrison spigotPrison) {
-        this.spigotPrison = spigotPrison;
+	private Configuration autoConfigs;
+	
+    public AutoManager() {
+        super();
+        
     }
 	
 	/**
@@ -89,50 +93,56 @@ public class AutoManager implements Listener {
 		// Change this to true to enable these features
 		// For now they aren't tested and will be disabled by default
 		// Config
-		Configuration configThings = SpigotPrison.getAutoFeaturesConfig();
-		boolean areEnabledFeatures = configThings.getBoolean("Options.General.AreEnabledFeatures");
+		this.autoConfigs = SpigotPrison.getAutoFeaturesConfig();
+		boolean areEnabledFeatures = autoConfigs.getBoolean("Options.General.AreEnabledFeatures");
 		
 		if (areEnabledFeatures) {
 			
-			boolean dropItemsIfInventoryIsFull = configThings.getBoolean("Options.General.DropItemsIfInventoryIsFull");
+			boolean dropItemsIfInventoryIsFull = autoConfigs.getBoolean("Options.General.DropItemsIfInventoryIsFull");
 			
 			// AutoPickup booleans from configs
-			boolean autoPickupEnabled = configThings.getBoolean("Options.AutoPickup.AutoPickupEnabled");
-			boolean autoPickupAllBlocks = configThings.getBoolean("Options.AutoPickup.AutoPickupAllBlocks");
-			boolean autoPickupCobbleStone = configThings.getBoolean("Options.AutoPickup.AutoPickupCobbleStone");
-			boolean autoPickupStone = configThings.getBoolean("Options.AutoPickup.AutoPickupStone");
-			boolean autoPickupGoldOre = configThings.getBoolean("Options.AutoPickup.AutoPickupGoldOre");
-			boolean autoPickupIronOre = configThings.getBoolean("Options.AutoPickup.AutoPickupIronOre");
-			boolean autoPickupCoalOre = configThings.getBoolean("Options.AutoPickup.AutoPickupCoalOre");
-			boolean autoPickupDiamondOre = configThings.getBoolean("Options.AutoPickup.AutoPickupDiamondOre");
-			boolean autoPickupRedstoneOre = configThings.getBoolean("Options.AutoPickup.AutoPickupRedstoneOre");
-			boolean autoPickupEmeraldOre = configThings.getBoolean("Options.AutoPickup.AutoPickupEmeraldOre");
-			boolean autoPickupQuartzOre = configThings.getBoolean("Options.AutoPickup.AutoPickupQuartzOre");
-			boolean autoPickupLapisOre = configThings.getBoolean("Options.AutoPickup.AutoPickupLapisOre");
+			boolean autoPickupEnabled = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEnabled");
+			boolean autoPickupAllBlocks = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupAllBlocks");
+			boolean autoPickupCobbleStone = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupCobbleStone");
+			boolean autoPickupStone = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupStone");
+			boolean autoPickupGoldOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupGoldOre");
+			boolean autoPickupIronOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupIronOre");
+			boolean autoPickupCoalOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupCoalOre");
+			boolean autoPickupDiamondOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupDiamondOre");
+			boolean autoPickupRedstoneOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupRedstoneOre");
+			boolean autoPickupEmeraldOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEmeraldOre");
+			boolean autoPickupQuartzOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupQuartzOre");
+			boolean autoPickupLapisOre = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupLapisOre");
+			boolean autoPickupSnowBall = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupSnowBall");
+			boolean autoPickupGlowstoneDust = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupGlowstoneDust");
 			
 			// AutoSmelt booleans from configs
-			boolean autoSmeltEnabled = configThings.getBoolean("Options.AutoSmelt.AutoSmeltEnabled");
-			boolean autoSmeltGoldOre = configThings.getBoolean("Options.AutoSmelt.AutoSmeltGoldOre");
-			boolean autoSmeltIronOre = configThings.getBoolean("Options.AutoSmelt.AutoSmeltIronOre");
+			boolean autoSmeltEnabled = autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltEnabled");
+			boolean autoSmeltAllBlocks = autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltAllBlocks");
+			boolean autoSmeltGoldOre = autoSmeltAllBlocks || autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltGoldOre");
+			boolean autoSmeltIronOre = autoSmeltAllBlocks || autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltIronOre");
 			
 			// AutoBlock booleans from configs
-			boolean autoBlockEnabled = configThings.getBoolean("Options.AutoBlock.AutoBlockEnabled");
-			boolean autoBlockAllBlocks = configThings.getBoolean("Options.AutoBlock.AutoBlockAllBlocks");
-			boolean autoBlockGoldBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockGoldBlock");
-			boolean autoBlockIronBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockIronBlock");
-			boolean autoBlockCoalBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockCoalBlock");
-			boolean autoBlockDiamondBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockDiamondBlock");
-			boolean autoBlockRedstoneBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockRedstoneBlock");
-			boolean autoBlockEmeraldBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockEmeraldBlock");
-			boolean autoBlockQuartzBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockQuartzBlock");
-			boolean autoBlockLapisBlock = autoBlockAllBlocks || configThings.getBoolean("Options.AutoBlock.AutoBlockLapisBlock");
+			boolean autoBlockEnabled = autoConfigs.getBoolean("Options.AutoBlock.AutoBlockEnabled");
+			boolean autoBlockAllBlocks = autoConfigs.getBoolean("Options.AutoBlock.AutoBlockAllBlocks");
+			boolean autoBlockGoldBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockGoldBlock");
+			boolean autoBlockIronBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockIronBlock");
+			boolean autoBlockCoalBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockCoalBlock");
+			boolean autoBlockDiamondBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockDiamondBlock");
+			boolean autoBlockRedstoneBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockRedstoneBlock");
+			boolean autoBlockEmeraldBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockEmeraldBlock");
+			boolean autoBlockQuartzBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockQuartzBlock");
+			boolean autoBlockPrismarineBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockPrismarineBlock");
+			boolean autoBlockLapisBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockLapisBlock");
+			boolean autoBlockSnowBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockSnowBlock");
+			boolean autoBlockGlowstone = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockGlowstone");
 			
 
 			// Init variables
 			Material brokenBlock = e.getBlock().getType();
 			String blockName = brokenBlock.toString().toLowerCase();
 			
-			ItemStack itemInHand = spigotPrison.getCompatibility().getItemInMainHand( p );
+			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
 			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			
 //			int fortuneLevel = p.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
@@ -145,11 +155,11 @@ public class AutoManager implements Listener {
 				// Drop items when full
 				if (dropItemsIfInventoryIsFull) {
 					
-					p.sendMessage(SpigotPrison.format(configThings.getString("Messages.InventoryIsFullDroppingItems")));
+					p.sendMessage(SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems")));
 					
 				} else if (!(dropItemsIfInventoryIsFull)){ // Lose items when full
 					
-					p.sendMessage(SpigotPrison.format(configThings.getString("Messages.InventoryIsFullLosingItems")));
+					p.sendMessage(SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems")));
 					
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
@@ -203,6 +213,14 @@ public class AutoManager implements Listener {
 						autoPickup( autoPickupLapisOre, dropNumber, p, e );
 						break;
 						
+					case "snow_ball":
+						autoPickup( autoPickupSnowBall, dropNumber, p, e );
+						break;
+						
+					case "glowstone_dust":
+						autoPickup( autoPickupGlowstoneDust, dropNumber, p, e );
+						break;
+						
 					default:
 						autoPickup( autoPickupAllBlocks, dropNumber, p, e );
 						break;
@@ -215,7 +233,7 @@ public class AutoManager implements Listener {
 				
 				autoSmelt( autoSmeltGoldOre, Material.GOLD_ORE, Material.GOLD_INGOT, p );
 
-				autoSmelt( autoSmeltIronOre, Material.IRON_ORE, Material.IRON_ORE, p );
+				autoSmelt( autoSmeltIronOre, Material.IRON_ORE, Material.IRON_INGOT, p );
 			}
 			
 			// AutoBlock
@@ -235,7 +253,13 @@ public class AutoManager implements Listener {
 				
 				autoBlock( autoBlockEmeraldBlock, Material.EMERALD, Material.EMERALD_BLOCK, p );
 
-				autoBlock( autoBlockQuartzBlock, Material.QUARTZ, Material.QUARTZ_BLOCK, p );
+				autoBlock( autoBlockQuartzBlock, Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p );
+
+				autoBlock( autoBlockPrismarineBlock, Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p );
+
+				autoBlock( autoBlockSnowBlock, Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p );
+
+				autoBlock( autoBlockGlowstone, Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p );
 				
 				autoBlockLapis( autoBlockLapisBlock, p );
 					
@@ -249,7 +273,7 @@ public class AutoManager implements Listener {
 			
 			// Add the item to the inventory
 			for (int i = 0; i < dropNumber; i++) {
-				p.getInventory().addItem(e.getBlock().getDrops().toArray(new ItemStack[0]));
+				dropExtra( p.getInventory().addItem(e.getBlock().getDrops().toArray(new ItemStack[0])), p);
 			}
 			
 			// Set the broken block to AIR and cancel the event
@@ -260,18 +284,25 @@ public class AutoManager implements Listener {
 
 	private void autoSmelt( boolean autoSmelt, Material source, Material destination, Player p ) {
 		if (autoSmelt && p.getInventory().contains(source)) {
-			while (p.getInventory().contains(source)) {
-				p.getInventory().removeItem(new ItemStack(source, 1));
-				p.getInventory().addItem(new ItemStack(destination, 1));
+			int count = itemCount(source, p);
+			if ( count > 0 ) {
+				p.getInventory().removeItem(new ItemStack(source, count));
+				dropExtra( p.getInventory().addItem(new ItemStack(destination, count)), p);
 			}
 		}
 	}
-	
 	private void autoBlock( boolean autoBlock, Material source, Material destination, Player p ) {
+		autoBlock(autoBlock, source, destination, 9, p );
+	}
+	
+	private void autoBlock( boolean autoBlock, Material source, Material destination, int targetCount, Player p ) {
 		if ( autoBlock ) {
-			while (p.getInventory().contains(source, 9) ) {
-				p.getInventory().removeItem(new ItemStack(source, 9));
-				p.getInventory().addItem(new ItemStack(destination));
+			int count = itemCount(source, p);
+			if ( count >= targetCount ) {
+				int mult = count / targetCount;
+				
+				p.getInventory().removeItem(new ItemStack(source, mult * targetCount));
+				dropExtra( p.getInventory().addItem(new ItemStack(destination, mult)), p);
 			}
 		}
 	}
@@ -290,17 +321,54 @@ public class AutoManager implements Listener {
 	 */
 	private void autoBlockLapis( boolean autoBlock, Player player ) {
 		if ( autoBlock ) {
-			
 			// ink_sack = 351:4 
-			ItemStack lapisItemStack = new ItemStack(Material.INK_SACK, 9, (short) 4);
+			ItemStack lapisItemStack = new ItemStack(Material.INK_SACK, 1, (short) 4);
 			
-			while (player.getInventory().contains(lapisItemStack) ) {
-				player.getInventory().removeItem(lapisItemStack);
-				player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK));
+			int count = itemCount(lapisItemStack, player);
+			if ( count >= 9 ) {
+				int mult = count / 9;
+				
+				ItemStack removeLapisItemStack = new ItemStack(Material.INK_SACK,  mult * 9, (short) 4);
+				player.getInventory().removeItem(removeLapisItemStack);
+				dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player);
+				
 			}
 		}
 	}
 	
+	private int itemCount(Material source, Player player) {
+		int count = 0;
+		PlayerInventory inv = player.getInventory();
+		for (ItemStack is : inv.all(source).values()) {
+			if (is != null && is.getType() == source) {
+				count = count + is.getAmount();
+			}
+		}
+		return count;
+	}
+	private int itemCount(ItemStack source, Player player) {
+		int count = 0;
+		PlayerInventory inv = player.getInventory();
+		for (ItemStack is : inv.all(source).values()) {
+			if (is != null) {
+				count = count + is.getAmount();
+			}
+		}
+		return count;
+	}
+	
+	private void dropExtra( HashMap<Integer, ItemStack> extra, Player player ) {
+		if ( extra != null && extra.size() > 0 ) {
+			for ( ItemStack itemStack : extra.values() ) {
+				player.getWorld().dropItem( player.getLocation(), itemStack );
+				
+				SpigotPlayer prisonPlayer = new SpigotPlayer( player );
+				Prison.get().getPlatform().showActionBar( prisonPlayer, 
+						autoConfigs.getString( "Messages.InventoryIsFull" ), 6 );
+			}
+		}
+	}
+
 	public Random getRandom() {
 		return random;
 	}

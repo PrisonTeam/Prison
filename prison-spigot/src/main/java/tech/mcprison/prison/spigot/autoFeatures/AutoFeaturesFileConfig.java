@@ -25,6 +25,7 @@ public class AutoFeaturesFileConfig {
 
                 conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
                 conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
+                conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
 
                 conf.set("Options.General.AreEnabledFeatures", false);
                 conf.set("Options.General.DropItemsIfInventoryIsFull", true);
@@ -41,8 +42,11 @@ public class AutoFeaturesFileConfig {
                 conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
                 conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
                 conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
+                conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
+                conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
 
                 conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+                conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
                 conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
                 conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
 
@@ -55,7 +59,10 @@ public class AutoFeaturesFileConfig {
                 conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
                 conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
                 conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+                conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
                 conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
+                conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
+                conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
 
                 conf.save(file);
             } catch (IOException e) {
