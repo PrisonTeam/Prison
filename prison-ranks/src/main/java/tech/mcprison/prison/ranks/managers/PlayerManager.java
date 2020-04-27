@@ -29,10 +29,15 @@ import java.util.UUID;
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -289,6 +294,72 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    public String getPlayerNextRankCostPercent( RankPlayer rankPlayer ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+        Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
+        if( prisonPlayer == null ) {
+        	Output.get().logError( String.format( "getPlayerNextRankCostPercent: " +
+        			"Could not load player: %s", rankPlayer.uid) );
+        	return "0";
+        }
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00%");
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				if ( sb.length() > 0 ) {
+    					sb.append(", ");
+    				}
+    				
+    				Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    				double cost = rank.cost;
+    				double balance = getPlayerBalance(prisonPlayer,rank);
+    				
+    				double percent = (balance < 0 ? 0 : 
+    									(cost == 0.0d || balance > cost ? 100.0 : 
+    											balance / cost * 100.0 )
+    								 );
+    				sb.append( dFmt.format( percent ));
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    private double getPlayerBalance(Player player, Rank rank) {
+    	double playerBalance = 0;
+        	
+    	if ( rank.currency != null ) {
+    		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+    						.getEconomyForCurrency( rank.currency );
+    		if ( currencyEcon != null ) {
+        		playerBalance = currencyEcon.getBalance( player, rank.currency );
+    		} else {
+    			Output.get().logError( 
+    					String.format( "Failed to load Economy to get the balance for " +
+    							"player %s with a currency of %s.",
+    							player.getName(), rank.currency ));
+    		}
+    		
+    	} else {
+    		
+    		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
+    				.getForType(IntegrationType.ECONOMY).orElse(null);
+    		if ( economy != null ) {
+    			playerBalance = economy.getBalance( player );
+    		} else {
+    			Output.get().logError( 
+    					String.format( "Failed to load Economy to get the balance for player %s.",
+    							player.getName() ));
+    		}
+    	}
+
+    	return playerBalance;
+    }
+    
     public String getPlayerNextRankName( RankPlayer rankPlayer ) {
     	StringBuilder sb = new StringBuilder();
     	
@@ -353,6 +424,11 @@ public class PlayerManager
 				case prison_rankup_cost:
 				case rankup_cost:
 					results = getPlayerNextRankCost( rankPlayer );
+					break;
+					
+				case prison_rankup_cost_percent:
+				case rankup_cost_percent:
+					results = getPlayerNextRankCostPercent( rankPlayer );
 					break;
 					
 				case prison_rankup_rank:
