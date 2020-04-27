@@ -79,6 +79,9 @@ public class RankUtil {
 		failed_rank_not_found,
 		failed_rank_not_in_ladder,
 		
+		assigned_default_ladder, 
+		assigned_default_rank,
+
 		orginal_rank,
 		next_rank_set, 
 		set_to_default_rank,
@@ -104,7 +107,8 @@ public class RankUtil {
 		
 		fireRankupEvent,
 		
-		rankup_successful
+		rankup_successful, 
+		
 		
 	}
 
@@ -134,6 +138,21 @@ public class RankUtil {
     	return rankupPlayer(RankupCommands.setrank, player, ladderName, true, true, rank, playerName, executorName);
     }
     
+    /**
+     * <p>This intermediate function ensures the results are logged before allowing the
+     * results be return to the calling functions.
+     * </p>
+     * 
+     * @param command
+     * @param player
+     * @param ladderName The ladder to use. If null then uses the "default" ladder.
+     * @param bypassCost
+     * @param promote
+     * @param rank The rank to use. If null with the default ladder, it will use the default rank (the first one).
+     * @param playerName
+     * @param executorName
+     * @return
+     */
     private RankupResults rankupPlayer(RankupCommands command, RankPlayer player, String ladderName, 
     		boolean bypassCost, boolean promote, String rank, 
     		String playerName, String executorName) {
@@ -156,7 +175,7 @@ public class RankUtil {
      * @param ladderName The name of the ladder to rank up this player on.
      */
     private RankupResults rankupPlayerInternal(RankupCommands command, RankPlayer player, String ladderName, 
-    		boolean bypassCost, boolean promote, String rank, 
+    		boolean bypassCost, boolean promote, String rankName, 
     		String playerName, String executorName) {
     	
     	RankupResults results = new RankupResults(command, playerName, executorName);
@@ -177,17 +196,35 @@ public class RankUtil {
         	return results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_player );
         }
         
+        // If ladderName is null, then assign it the default ladder:
+        if ( ladderName == null ) {
+        	ladderName = "default";
+        	results.addTransaction(RankupTransactions.assigned_default_ladder);
+        }
+        
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
         if( ladder == null ) {
         	return results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_ladder );
         }
-        
-        
+
         
         Rank targetRank = null;
         
-        if ( rank != null ) {
-        	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank( rank );
+        // If default ladder and rank is null at this point, that means use the "default" rank:
+        if ( "default".equalsIgnoreCase( ladderName ) && rankName == null ) {
+        	Optional<Rank> lowestRank = ladder.getLowestRank();
+        	if ( lowestRank.isPresent() ) {
+        		targetRank = lowestRank.get();
+        		rankName = targetRank.name;
+
+        		results.addTransaction(RankupTransactions.assigned_default_rank);
+        	}
+        }
+        
+        
+        
+        if ( targetRank == null && rankName != null ) {
+        	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank( rankName );
         	
         	if ( rankOptional.isPresent() ) {
         		targetRank = rankOptional.get();

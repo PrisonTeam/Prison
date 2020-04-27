@@ -159,7 +159,13 @@ public class RankUpCommand {
     		return;
     	}
 
-        UUID playerUuid = player.getUUID();
+        setPlayerRank( player, rank, ladder, sender );
+    }
+
+
+	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender )
+	{
+		UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
 
@@ -175,7 +181,7 @@ public class RankUpCommand {
         	
         	processResults( sender, player, results, true, rank, ladder, currency );
         }
-    }
+	}
 
 
 
@@ -207,8 +213,9 @@ public class RankUpCommand {
 	}
 
 
-	public void processResults( CommandSender sender, Player player, RankupResults results, 
-	boolean rankup, String rank, String ladder, String currency ) {
+	public void processResults( CommandSender sender, Player player, 
+					RankupResults results, 
+					boolean rankup, String rank, String ladder, String currency ) {
 	
 		switch (results.getStatus()) {
             case RANKUP_SUCCESS:

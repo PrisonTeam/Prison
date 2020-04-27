@@ -35,6 +35,8 @@ import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -171,6 +173,17 @@ public class PlayerManager
         try {
             savePlayer(newPlayer);
 
+            // Assign the player to the default rank:
+            String ladder = null; // will set to the "default" ladder
+            String rank = null;   // will set to the "default" rank
+            
+            // Set the rank to the default ladder and the default rank.  The results are logged
+            // before the results are returned, so can ignore the results:
+            @SuppressWarnings( "unused" )
+            RankupResults results = new RankUtil().setRank(newPlayer, ladder, rank, 
+            							playerName, "FirstJoinEvent");
+            
+            
             Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
         } 
         catch (IOException e) {
