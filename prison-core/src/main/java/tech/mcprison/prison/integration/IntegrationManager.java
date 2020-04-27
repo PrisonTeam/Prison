@@ -39,7 +39,8 @@ public class IntegrationManager {
     	PLAYER,
     	MINES,
     	
-    	SUPRESS
+    	SUPRESS,
+    	ALIAS
     	;
     }
     
@@ -74,24 +75,49 @@ public class IntegrationManager {
 		
 		no_match__(PlaceHolderFlags.SUPRESS),
 		
-		prison_rank(PlaceHolderFlags.PLAYER),
-		prison_rank_tag(PlaceHolderFlags.PLAYER),
-		prison_rankup_cost(PlaceHolderFlags.PLAYER),
-		prison_rankup_rank(PlaceHolderFlags.PLAYER),
-		prison_rankup_rank_tag(PlaceHolderFlags.PLAYER),
+		// Rank aliases:
+		prison_r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+
+		
+		prison_rank(prison_r, PlaceHolderFlags.PLAYER),
+		prison_rank_tag(prison_rt, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost(prison_rc, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
+		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
+		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
+		
+		
+		// Mine aliases:
+		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
 		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
-		prison_mines_interval_minename(PlaceHolderFlags.MINES),
-		prison_mines_timeleft_minename(PlaceHolderFlags.MINES),
-		prison_mines_size_minename(PlaceHolderFlags.MINES),
-		prison_mines_remaining_minename(PlaceHolderFlags.MINES),
-		prison_mines_percent_minename(PlaceHolderFlags.MINES),
-		prison_mines_player_count_minename(PlaceHolderFlags.MINES),
+		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
+		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
+		prison_mines_size_minename(prison_ms_minename, PlaceHolderFlags.MINES),
+		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
+		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
+		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
 		
 		// Suppressable:
+		r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
@@ -99,6 +125,12 @@ public class IntegrationManager {
 		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 		rankup_rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 
+		mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+		mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+		ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+		mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+		mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+		mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
 		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
 		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
 		mines_size_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
@@ -109,12 +141,18 @@ public class IntegrationManager {
 		;
 		
 		
+		private final PrisonPlaceHolders alias;
 		private final List<PlaceHolderFlags> flags;
 		private PrisonPlaceHolders() {
 			this.flags = new ArrayList<>();
+			this.alias = null;
 		}
 		private PrisonPlaceHolders(PlaceHolderFlags... flags) {
-			
+			this.alias = null;
+			this.flags = getFlags(flags);
+		}
+		private PrisonPlaceHolders(PrisonPlaceHolders alias, PlaceHolderFlags... flags) {
+			this.alias = alias;
 			this.flags = getFlags(flags);
 		}
 		
@@ -128,6 +166,17 @@ public class IntegrationManager {
 			return flagz;
 		}
 		
+		public PrisonPlaceHolders getAlias()
+		{
+			return alias;
+		}
+		
+		public boolean hasAlias() {
+			return alias != null;
+		}
+		public boolean isAlias() {
+			return flags.contains( PlaceHolderFlags.ALIAS );
+		}
 		public boolean isSuppressed() {
 			return flags.contains( PlaceHolderFlags.SUPRESS );
 		}
@@ -167,7 +216,9 @@ public class IntegrationManager {
 		}
 		
 		public String getChatText() {
-			return "&a" + name() + (isSuppressed() ? "&4*&a ": " ");
+			return "&a" + name() + 
+					(hasAlias() ? "&7(&b" + getAlias().name() + "&7)" : "") +
+					(isSuppressed() ? "&4*&a ": " ");
 		}
 		
 		public static String getAllChatTexts() {
@@ -185,7 +236,7 @@ public class IntegrationManager {
 			
 			for ( PrisonPlaceHolders ph : values() )
 			{
-				if ( !omitSuppressable || omitSuppressable && !ph.isSuppressed() ) {
+				if ( !omitSuppressable || omitSuppressable && !ph.isSuppressed() && !ph.isAlias() ) {
 					if ( !hasDeprecated && ph.isSuppressed() ) {
 						hasDeprecated = true;
 					}

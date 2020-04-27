@@ -228,12 +228,16 @@ public class MineManager
 				DecimalFormat iFmt = new DecimalFormat("#,##0");
 				
 				switch ( placeHolderKey.getPlaceholder() ) {
+					case prison_mi_minename:
 					case prison_mines_interval_minename:
+					case mi_minename:
 					case mines_interval_minename:
 						results = iFmt.format( mine.getResetTime() );
 						break;
 						
+					case prison_mtl_minename:
 					case prison_mines_timeleft_minename:
+					case mtl_minename:
 					case mines_timeleft_minename:
 						// NOTE: timeleft can vary based upon server loads:
 						long targetResetTime = mine.getTargetRestTime();
@@ -242,26 +246,34 @@ public class MineManager
 						results = dFmt.format( remaining );
 						break;
 						
+					case prison_ms_minename:
 					case prison_mines_size_minename:
+					case ms_minename:
 					case mines_size_minename:
 						results = iFmt.format( mine.getBounds().getTotalBlockCount() );
 						break;
 						
+					case prison_mr_minename:
 					case prison_mines_remaining_minename:
+					case mr_minename:
 					case mines_remaining_minename:
 						mine.refreshAirCount(); // async & delayed : Very high cost
 						int remainingBlocks = mine.getRemainingBlockCount();
 						results = iFmt.format( remainingBlocks );
 						break;
 						
+					case prison_mp_minename:
 					case prison_mines_percent_minename:
+					case mp_minename:
 					case mines_percent_minename:
 						mine.refreshAirCount(); // async & delayed : Very high cost
 						double percentRemaining = mine.getPercentRemainingBlockCount();
 						results = dFmt.format( percentRemaining );
 						break;
 						
+					case prison_mpc_minename:
 					case prison_mines_player_count_minename:
+					case mpc_minename:
 					case mines_player_count_minename:
 						results = iFmt.format( mine.getPlayerCount() );
 						break;

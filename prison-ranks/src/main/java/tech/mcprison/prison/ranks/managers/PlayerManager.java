@@ -411,32 +411,44 @@ public class PlayerManager
 			RankPlayer rankPlayer = oPlayer.get();
 			
 			switch ( placeHolder ) {
+				case prison_r:
 				case prison_rank:
+				case r:
 				case rank:
 					results = getPlayerRankName( rankPlayer );
 					break;
 
+				case prison_rt:
 				case prison_rank_tag:
+				case rt:
 				case rank_tag:
 					results = getPlayerRankTag( rankPlayer );
 					break;
 					
+				case prison_rc:
 				case prison_rankup_cost:
+				case rc:
 				case rankup_cost:
 					results = getPlayerNextRankCost( rankPlayer );
 					break;
 					
+				case prison_rcp:
 				case prison_rankup_cost_percent:
+				case rcp:
 				case rankup_cost_percent:
 					results = getPlayerNextRankCostPercent( rankPlayer );
 					break;
 					
+				case prison_rr:
 				case prison_rankup_rank:
+				case rr:
 				case rankup_rank:
 					results = getPlayerNextRankName( rankPlayer );
 					break;
 					
+				case prison_rrt:
 				case prison_rankup_rank_tag:
+				case rrt:
 				case rankup_rank_tag:
 					results = getPlayerNextRankTag( rankPlayer );
 					break;
