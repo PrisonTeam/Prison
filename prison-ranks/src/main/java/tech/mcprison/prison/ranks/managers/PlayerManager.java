@@ -32,6 +32,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.IntegrationType;
@@ -413,43 +414,31 @@ public class PlayerManager
 			switch ( placeHolder ) {
 				case prison_r:
 				case prison_rank:
-				case r:
-				case rank:
 					results = getPlayerRankName( rankPlayer );
 					break;
 
 				case prison_rt:
 				case prison_rank_tag:
-				case rt:
-				case rank_tag:
 					results = getPlayerRankTag( rankPlayer );
 					break;
 					
 				case prison_rc:
 				case prison_rankup_cost:
-				case rc:
-				case rankup_cost:
 					results = getPlayerNextRankCost( rankPlayer );
 					break;
 					
 				case prison_rcp:
 				case prison_rankup_cost_percent:
-				case rcp:
-				case rankup_cost_percent:
 					results = getPlayerNextRankCostPercent( rankPlayer );
 					break;
 					
 				case prison_rr:
 				case prison_rankup_rank:
-				case rr:
-				case rankup_rank:
 					results = getPlayerNextRankName( rankPlayer );
 					break;
 					
 				case prison_rrt:
 				case prison_rankup_rank_tag:
-				case rrt:
-				case rankup_rank_tag:
 					results = getPlayerNextRankTag( rankPlayer );
 					break;
 					
@@ -469,6 +458,12 @@ public class PlayerManager
     	for ( PrisonPlaceHolders ph : placeHolders ) {
 			PlaceHolderKey placeholder = new PlaceHolderKey(ph.name(), ph );
 			results.add( placeholder );
+			
+			// Now generate a new key based upon the first key, but without the prison_ prefix:
+			String key2 = ph.name().replace( 
+					IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
+			PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph );
+			results.add( placeholder2 );
 		}
     	
     	return results;

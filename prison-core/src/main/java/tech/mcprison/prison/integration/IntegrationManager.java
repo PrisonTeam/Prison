@@ -50,6 +50,14 @@ public class IntegrationManager {
      * will not always be displayed since it would be implied that the prefix
      * would have been provided.
      * </p>
+     * 
+     * <p>Update: The placeholders without the prison prefix have been eliminated
+     * since the prefix is now prepended when it is missing prior to matching to a
+     * valid placeholder enum.  This cuts the number of generated placeholders in half. 
+     * This is significant since with the addition of the aliases there would be about 
+     * 744 placeholders generated if the prison had 30 mines setup!  Now a 30 mine prison
+     * would have about 372.
+     * </p>
      *
      * <p>Note: In order to use these placeholders with something like holographic display
      * you need to also include the placeholderAPI,
@@ -111,32 +119,32 @@ public class IntegrationManager {
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
 		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
 		
-		// Suppressable:
-		r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rankup_cost_percent(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-		rankup_rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+		// Suppressable internal placeholders: some placeholder apis strip off the prefix:
+//		r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rankup_cost_percent(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
+//		rankup_rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
 
-		mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		mines_size_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		mines_remaining_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		mines_percent_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		mines_player_count_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
+//		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mines_size_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mines_remaining_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mines_percent_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
+//		mines_player_count_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
 		
 		;
 		
@@ -189,6 +197,12 @@ public class IntegrationManager {
 			
 			if ( placeHolder != null && placeHolder.trim().length() > 0 ) {
 				placeHolder = placeHolder.trim();
+				
+				// This allows us to get rid of suppressed placeholders that were used for 
+				// internal matching when placeholder APIs strip off the prefix:
+				if ( !placeHolder.startsWith( PRISON_PLACEHOLDER_PREFIX ) ) {
+					placeHolder = PRISON_PLACEHOLDER_PREFIX + placeHolder;
+				}
 				
 				for ( PrisonPlaceHolders ph : values() ) {
 					if ( ph.name().equalsIgnoreCase( placeHolder ) ) {

@@ -11,6 +11,26 @@ that you need.
 ## tag v3.2.1-alpha.9 - 2020-04-26
 
 
+* **Enhancement: Placeholders optimized!**
+The placeholders without the prison prefix have been eliminated since the prefix is now prefixed when it is missing prior to matching to a valid placeholder enum, and when generating PlaceholderKeys.  This cuts the number of generated placeholders in half. This is significant since with the addition of the aliases there would be about 744 placeholders generated if the prison had 30 mines setup!  Now a 30 mine prison would have about 372.
+
+
+* **New Feature: Placeholder aliases!**
+Added shorter versions of all placeholder commands.  The aliases still must be prefixed with prison_ and if it's a mine related placeholder, then it must end with _minename.
+Aliases are also displayed on the /prison version page in parenthesis following it's original  placeholder name.
+
+
+* **New Feature: Added a new placeholder! prison_rankup_cost_percent**
+This indicates how close a player is to ranking up based upon their balance and expressed in percent closeness. 
+If their balance is zero or less, it will show zero percent.  If they have more than enough money then it will show 100%.
+
+
+* **New Feature: Added an auto rankup for all new players to the server!**
+Added a rankup to the default rank on the default ladder for when a new player joins the server.
+I REALLY thought this already existed!! oof!!
+Modifed the rankupPlayerInternal function to supply the default ladder and default rank if needed.  Also added more logging transactions to cover the new events. 
+
+
 * **Enhancement: AutoManager's BlockBreakEvent had to be set to a lower event priority**
 Had to set to a EventPriorty.LOW so other plugins can work with the blocks. The other plugins were EZBlock & SellAll. This function was canceling the event after it auto picked it up, so the other plugins were not registering the blocks as being broken.  The default EventPriority was originally set to NORMAL and that was not working with the other plugins.  So setting it to LOW allowed them to inspect the block that was being broke, and do what they had to do, before prison's AutoManager performed the auto pickup events with it.
 
