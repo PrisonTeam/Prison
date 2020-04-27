@@ -264,7 +264,7 @@ On startup, gather all currencies that are defined within the Ranks, confirm the
 
 
 
-## tag v3.2.1-alpha.3 - 2020-02-18
+## Known Issues - v3.2.1-alpha.9 - 2020-04-26
 
 
 * **Prison v3.2.0 (and older) has limited Placeholder Support**
@@ -282,7 +282,7 @@ The actual placeholders for MVdWPlaceholder is actually unknown, but may be the 
 
 The best way to find the available placeholders is to use the command **/prison version**.  Keep in mind that any placeholder that ends with **minename** will be expanded for each mine, substituting the mine name for the suffix **minename**.  For example, if there are 30 mines, then Prison will register 30 placeholders for each listed placeholder under **/prison version**.  
 
-The placeholders will be registered as shown, in lowercase.  They actually are case insensitive, but since they are registered in lowercase, the various placeholder APIs may only recognize lowercase entries.
+The placeholders will be registered as shown, in lowercase.  They actually are case insensitive, but since they are registered in lowercase, the various placeholder APIs may only recognize lowercase entries.  Also Prison's placeholders are registered without any brackets.  Most placeholder tools use {} and a few others use %%; refer to the placeholder's documentation on correct usage. 
 
 Prison's Ranks has a chat handler that now supports all placeholders.
 
