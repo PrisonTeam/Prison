@@ -64,7 +64,16 @@ public class AutoManager implements Listener {
         return j;
     }
 
-    @EventHandler(priority=EventPriority.NORMAL) 
+    /**
+     * <p>Had to set to a EventPriorty.LOW so other plugins can work with the blocks.
+     * The other plugins were EZBlock & SellAll. This function was canceling the
+     * event after it auto picked it up, so the other plugins were not registering
+     * the blocks as being broken.
+     * </p>
+     * 
+     * @param e
+     */
+    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
     	
     	if ( !e.isCancelled() && e.getBlock().getType() != null) {

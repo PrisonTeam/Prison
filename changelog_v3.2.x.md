@@ -11,6 +11,10 @@ that you need.
 ## tag v3.2.1-alpha.9 - 2020-04-26
 
 
+* **Enhancement: AutoManager's BlockBreakEvent had to be set to a lower event priority**
+Had to set to a EventPriorty.LOW so other plugins can work with the blocks. The other plugins were EZBlock & SellAll. This function was canceling the event after it auto picked it up, so the other plugins were not registering the blocks as being broken.  The default EventPriority was originally set to NORMAL and that was not working with the other plugins.  So setting it to LOW allowed them to inspect the block that was being broke, and do what they had to do, before prison's AutoManager performed the auto pickup events with it.
+
+
 * **New Feature: Auto features added: Auto Pickup, Auto Smelt, and Auto Block!**
 Gabryca added auto features to Prison.  They include auto pickup, auto smelt, and auto block. 
 
