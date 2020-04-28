@@ -28,6 +28,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
 import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -82,13 +83,24 @@ public class RankUpCommand {
     			permissions = "ranks.promote", onlyPlayers = true) 
     public void promotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-        @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder) {
+        @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder,
+        @Arg(name = "chargePlayers", description = "Force the player to pay for the rankup", 
+        					def = "no_charge") String chargePlayer
+    		) {
 
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
     		sender.sendMessage( "&3You must be a player in the game to run this command, " +
     															"and/or the player must be online." );
+    		return;
+    	}
+    	
+    	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( chargePlayer );
+    	if ( pForceCharge == null|| pForceCharge == PromoteForceCharge.refund_player ) {
+    		sender.sendMessage( 
+    				String.format( "&3Invalid value for chargePlayer. Valid values are: %s %s", 
+    						PromoteForceCharge.no_charge.name(), PromoteForceCharge.charge_player.name()) );
     		return;
     	}
 
@@ -101,10 +113,12 @@ public class RankUpCommand {
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
+        
+        
 
         if ( ladder != null && rankPlayer != null ) {
         	RankupResults results = new RankUtil().promotePlayer(rankPlayer, ladder, 
-        												player.getName(), sender.getName());
+        												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, true, null, ladder, currency );
         }
@@ -115,7 +129,10 @@ public class RankUpCommand {
     			permissions = "ranks.demote", onlyPlayers = true) 
     public void demotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-        @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
+        @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder,
+        @Arg(name = "chargePlayers", description = "Force the player to pay for the rankup", 
+        				def = "no_charge") String refundPlayer
+        ) {
 
     	Player player = getPlayer( sender, playerName );
     	
@@ -124,7 +141,15 @@ public class RankUpCommand {
     															"and/or the player must be online." );
     		return;
     	}
-
+    	
+    	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( refundPlayer );
+    	if ( pForceCharge == null || pForceCharge == PromoteForceCharge.charge_player ) {
+    		sender.sendMessage( 
+    				String.format( "&3Invalid value for refundPlayer. Valid values are: %s %s", 
+    						PromoteForceCharge.no_charge.name(), PromoteForceCharge.refund_player.name()) );
+    		return;
+    	}
+    	
         UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
@@ -137,7 +162,7 @@ public class RankUpCommand {
 
         if ( ladder != null && rankPlayer != null ) {
         	RankupResults results = new RankUtil().demotePlayer(rankPlayer, ladder, 
-        												player.getName(), sender.getName());
+        												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, false, null, ladder, currency );
         }
