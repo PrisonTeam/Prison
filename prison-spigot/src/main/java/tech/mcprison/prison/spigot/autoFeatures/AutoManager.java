@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autoFeatures;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
@@ -91,7 +92,8 @@ public class AutoManager implements Listener {
     			for ( Mine mine : mineManager.getMines() ) {
     				SpigotBlock block = new SpigotBlock(e.getBlock());
     				if ( mine.isInMine( block.getLocation() ) ) {
-    					applyAutoEvents( e, p );
+    					
+    					applyAutoEvents( e, mine, p );
     					break;
     				}
     			}
@@ -99,11 +101,10 @@ public class AutoManager implements Listener {
     	}
     }
 
-	private void applyAutoEvents( BlockBreakEvent e, Player p ) {
+	private void applyAutoEvents( BlockBreakEvent e, Mine mine, Player p ) {
 		// Change this to true to enable these features
-		// For now they aren't tested and will be disabled by default
-		// Config
-		this.autoConfigs = SpigotPrison.getAutoFeaturesConfig();
+
+		this.autoConfigs = SpigotPrison.getInstance().getAutoFeaturesConfig();
 		boolean areEnabledFeatures = autoConfigs.getBoolean("Options.General.AreEnabledFeatures");
 		
 		if (areEnabledFeatures) {
@@ -151,6 +152,10 @@ public class AutoManager implements Listener {
 			// Init variables
 			Material brokenBlock = e.getBlock().getType();
 			String blockName = brokenBlock.toString().toLowerCase();
+			
+			
+			// Minecraft's formular for fortune: Should implement it to be fair.
+			// https://minecraft.gamepedia.com/Fortune
 			
 			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
 			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
@@ -281,14 +286,18 @@ public class AutoManager implements Listener {
 	private void autoPickup( boolean autoPickup, int dropNumber, Player p, BlockBreakEvent e ) {
 		if (autoPickup && e.getBlock().getDrops() != null && e.getBlock().getDrops().size() > 0 ) {
 			
-			// Add the item to the inventory
-			for (int i = 0; i < dropNumber; i++) {
-				dropExtra( p.getInventory().addItem(e.getBlock().getDrops().toArray(new ItemStack[0])), p);
+			Collection<ItemStack> drops = e.getBlock().getDrops();
+			if ( drops != null && drops.size() > 0 ) {
+				
+				// Add the item to the inventory
+				for ( ItemStack itemStack : drops ) {
+					dropExtra( p.getInventory().addItem(itemStack), p);
+				}
+				
+				// Set the broken block to AIR and cancel the event
+				e.setCancelled(true);
+				e.getBlock().setType(Material.AIR);
 			}
-			
-			// Set the broken block to AIR and cancel the event
-			e.setCancelled(true);
-			e.getBlock().setType(Material.AIR);
 		}
 	}
 

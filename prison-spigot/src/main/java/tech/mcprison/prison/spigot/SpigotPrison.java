@@ -83,6 +83,8 @@ public class SpigotPrison extends JavaPlugin {
 
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
+    
+    private FileConfiguration autoFeaturesConfig = null;
 
     private static SpigotPrison config;
 
@@ -140,7 +142,7 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         
         new SpigotListener(this).init();
-        new AutoFeaturesFileConfig();
+        getAutoFeaturesConfig();
 
         Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
         
@@ -180,9 +182,20 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().deinit();
     }
 
-    public static FileConfiguration getAutoFeaturesConfig(){
-        AutoFeaturesFileConfig messages = new AutoFeaturesFileConfig();
-        return messages.getFile();
+    /**
+     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
+     * the file is loaded from the file system only one time and only when it is first
+     * used.  This ensures that if it is never used, it is never loaded in to memory.
+     * </p>
+     * 
+     * @return
+     */
+    public FileConfiguration getAutoFeaturesConfig() {
+    	if ( this.autoFeaturesConfig == null ) {
+    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
+    		this.autoFeaturesConfig = afc.getConf();
+    	}
+        return autoFeaturesConfig;
     }
 
     public static String format(String format){

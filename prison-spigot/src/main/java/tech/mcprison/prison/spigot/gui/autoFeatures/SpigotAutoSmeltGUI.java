@@ -26,7 +26,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
         // Config
-        Configuration configThings = SpigotPrison.getAutoFeaturesConfig();
+        Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
 
         List<String> enabledLore = createLore(

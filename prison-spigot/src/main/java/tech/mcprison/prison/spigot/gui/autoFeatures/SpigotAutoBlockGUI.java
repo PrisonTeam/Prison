@@ -26,7 +26,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
 
         // Config
-        Configuration configThings = SpigotPrison.getAutoFeaturesConfig();
+        Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
         List<String> enabledLore = createLore(
                 "&cPress Shift + Right click to disable."

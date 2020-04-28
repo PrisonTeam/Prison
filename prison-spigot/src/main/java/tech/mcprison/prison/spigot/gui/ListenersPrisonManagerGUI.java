@@ -966,7 +966,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "PrisonManager -> AutoFeatures":
                 {
 
-                    FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                    FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
                     File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                     // Get the button name without colors but with the minename too
@@ -1116,7 +1116,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoPickup":{
 
-                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
                 File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
@@ -1438,7 +1438,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoSmelt":{
 
-                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
                 File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
@@ -1552,7 +1552,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoBlock":{
 
-                FileConfiguration configThings = SpigotPrison.getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
                 File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too

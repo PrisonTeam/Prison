@@ -26,7 +26,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> AutoFeatures"));
 
         // Config
-        Configuration configThings = SpigotPrison.getAutoFeaturesConfig();
+        Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
         // Declare buttons
         ItemStack autoPickup;
