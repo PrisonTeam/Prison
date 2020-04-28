@@ -200,8 +200,8 @@ public class IntegrationManager {
 				
 				// This allows us to get rid of suppressed placeholders that were used for 
 				// internal matching when placeholder APIs strip off the prefix:
-				if ( !placeHolder.startsWith( PRISON_PLACEHOLDER_PREFIX ) ) {
-					placeHolder = PRISON_PLACEHOLDER_PREFIX + placeHolder;
+				if ( !placeHolder.toLowerCase().startsWith( PRISON_PLACEHOLDER_PREFIX ) ) {
+					placeHolder = PRISON_PLACEHOLDER_PREFIX + "_" + placeHolder;
 				}
 				
 				for ( PrisonPlaceHolders ph : values() ) {
