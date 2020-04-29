@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -158,11 +157,9 @@ public class AutoManager implements Listener {
 			// https://minecraft.gamepedia.com/Fortune
 			
 			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
-			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			
-//			int fortuneLevel = p.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
-			
-			int dropNumber = getDropCount(fortuneLevel);
+//			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+//			int dropNumber = getDropCount(fortuneLevel);
 			
 			// Check if the inventory's full
 			if (p.getInventory().firstEmpty() == -1){
@@ -187,60 +184,71 @@ public class AutoManager implements Listener {
 			// AutoPickup
 			if (autoPickupEnabled) {
 				
+				@SuppressWarnings( "unused" )
+				int count = 0;
+				
 				switch (blockName) {
 					case "cobblestone":
-						autoPickup( autoPickupCobbleStone, dropNumber, p, e );
+						count += autoPickup( autoPickupCobbleStone, p, itemInHand, e );
 						break;
 						
 					case "stone":
-						autoPickup( autoPickupStone, dropNumber, p, e );
+						count += autoPickup( autoPickupStone, p, itemInHand, e );
 						break;
 						
 					case "gold_ore":
-						autoPickup( autoPickupGoldOre, dropNumber, p, e );
+						count += autoPickup( autoPickupGoldOre, p, itemInHand, e );
 						break;
 						
 					case "iron_ore":
-						autoPickup( autoPickupIronOre, dropNumber, p, e );
+						count += autoPickup( autoPickupIronOre, p, itemInHand, e );
 						break;
 						
 					case "coal_ore":
-						autoPickup( autoPickupCoalOre, dropNumber, p, e );
+						count += autoPickup( autoPickupCoalOre, p, itemInHand, e );
 						break;
 						
 					case "diamond_ore":
-						autoPickup( autoPickupDiamondOre, dropNumber, p, e );
+						count += autoPickup( autoPickupDiamondOre, p, itemInHand, e );
 						break;
 						
 					case "redstone_ore":
-						autoPickup( autoPickupRedstoneOre, dropNumber, p, e );
+						count += autoPickup( autoPickupRedstoneOre, p, itemInHand, e );
 						break;
 						
 					case "emerald_ore":
-						autoPickup( autoPickupEmeraldOre, dropNumber, p, e );
+						count += autoPickup( autoPickupEmeraldOre, p, itemInHand, e );
 						break;
 						
 					case "quartz_ore":
-						autoPickup( autoPickupQuartzOre, dropNumber, p, e );
+						count += autoPickup( autoPickupQuartzOre, p, itemInHand, e );
 						break;
 						
 					case "lapis_ore":
-						autoPickup( autoPickupLapisOre, dropNumber, p, e );
+						count += autoPickup( autoPickupLapisOre, p, itemInHand, e );
 						break;
 						
 					case "snow_ball":
-						autoPickup( autoPickupSnowBall, dropNumber, p, e );
+						count += autoPickup( autoPickupSnowBall, p, itemInHand, e );
 						break;
 						
-					case "glowstone_dust":
-						autoPickup( autoPickupGlowstoneDust, dropNumber, p, e );
+					case "glowstone_dust": // works 1.15.2
+						count += autoPickup( autoPickupGlowstoneDust, p, itemInHand, e );
 						break;
 						
 					default:
-						autoPickup( autoPickupAllBlocks, dropNumber, p, e );
+						count += autoPickup( autoPickupAllBlocks, p, itemInHand, e );
 						break;
 							
 				}
+				
+//				Output.get().logInfo( "In mine: %s  blockName= [%s] %s  drops= %s  count= %s  dropNumber= %s ", 
+//						mine.getName(), blockName, Integer.toString( dropNumber ),
+//						(e.getBlock().getDrops(itemInHand) != null ? e.getBlock().getDrops(itemInHand).size() : "-=null=-"), 
+//						Integer.toString( count ), Integer.toString( dropNumber )
+//						);
+//				
+
 			}
 			
 			// AutoSmelt
@@ -283,22 +291,29 @@ public class AutoManager implements Listener {
 		}
 	}
 
-	private void autoPickup( boolean autoPickup, int dropNumber, Player p, BlockBreakEvent e ) {
-		if (autoPickup && e.getBlock().getDrops() != null && e.getBlock().getDrops().size() > 0 ) {
-			
-			Collection<ItemStack> drops = e.getBlock().getDrops();
-			if ( drops != null && drops.size() > 0 ) {
+	private int autoPickup( boolean autoPickup, Player p, ItemStack itemInHand, BlockBreakEvent e ) {
+		int count = 0;
+		if (autoPickup) {
+			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
+			if (drops != null && drops.size() > 0 ) {
 				
-				// Add the item to the inventory
-				for ( ItemStack itemStack : drops ) {
-					dropExtra( p.getInventory().addItem(itemStack), p);
+				if ( drops != null && drops.size() > 0 ) {
+					
+					// Add the item to the inventory
+					for ( ItemStack itemStack : drops ) {
+						count += itemStack.getAmount();
+						dropExtra( p.getInventory().addItem(itemStack), p);
+					}
+					
+					if ( count > 0 ) {
+						// Set the broken block to AIR and cancel the event
+						e.setCancelled(true);
+						e.getBlock().setType(Material.AIR);
+					}
 				}
-				
-				// Set the broken block to AIR and cancel the event
-				e.setCancelled(true);
-				e.getBlock().setType(Material.AIR);
 			}
 		}
+		return count;	
 	}
 
 	private void autoSmelt( boolean autoSmelt, Material source, Material destination, Player p ) {
