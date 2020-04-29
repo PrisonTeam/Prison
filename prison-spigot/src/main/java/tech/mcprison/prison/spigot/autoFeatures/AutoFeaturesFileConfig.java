@@ -6,12 +6,14 @@ import java.io.IOException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class AutoFeaturesFileConfig {
 
+	public static final String FILE_NAME__AUTO_FEATURES_CONFIG_YML = "/autoFeaturesConfig.yml";
 	private File configFile;
-    private FileConfiguration conf;
+    private FileConfiguration config;
 
     
     public enum AutoFeatures {
@@ -177,98 +179,151 @@ public class AutoFeaturesFileConfig {
     }
     
     public AutoFeaturesFileConfig() {
-        setConfigFile( new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml") );
         
         if(!getConfigFile().exists()){
             createConfigurationFile();
         }
 
         // Load the configuration file:
-        setConf( YamlConfiguration.loadConfiguration(getConfigFile()) );
+        setConfig( YamlConfiguration.loadConfiguration(getConfigFile()) );
     }
 
-	private void createConfigurationFile()
-	{
-		try {
-		    File dir = getConfigFile().getParentFile();
-		    dir.mkdirs();
-		    
-		    getConfigFile().createNewFile();
-		    FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
+	private void createConfigurationFile() {
+		
+		// Make sure file does not exist prior to trying to create it with the YAML tool since
+		// it is unknown who it will react...
+		if ( !getConfigFile().exists() ) {
+			File dir = getConfigFile().getParentFile();
 
-		    // Not yet enabled... this will fully replace the line items below:
-//		    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
-//				autoFeat.setFileConfig( conf );
-//			}
-		    
-		    
-		    conf.createSection("Messages");
-		    conf.createSection("Options");
-
-		    conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
-		    conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
-		    conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
-
-		    conf.set("Options.General.AreEnabledFeatures", false);
-		    conf.set("Options.General.DropItemsIfInventoryIsFull", true);
-
-		    conf.set("Options.AutoPickup.AutoPickupEnabled", true);
-		    conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
-		    conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
-		    conf.set("Options.AutoPickup.AutoPickupStone",true);
-		    conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupIronOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
-		    conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
-		    conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
-
-		    conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
-		    conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
-		    conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
-		    conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
-
-		    conf.set("Options.AutoBlock.AutoBlockEnabled", true);
-		    conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
-		    conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
-		    conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
-
-		    conf.save(getConfigFile());
-		} catch (IOException e) {
-		    e.printStackTrace();
+			if ( !dir.exists() ) {
+				dir.mkdirs();
+			}
+			
+			try {
+				getConfigFile().createNewFile();
+				
+				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
+				
+				// Not yet enabled... this will fully replace the line items below:
+//			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
+//					autoFeat.setFileConfig( conf );
+//				}
+				
+				
+				conf.createSection("Messages");
+				conf.createSection("Options");
+				
+				conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
+				conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
+				conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
+				
+				conf.set("Options.General.AreEnabledFeatures", false);
+				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
+				
+				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
+				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
+				conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
+				conf.set("Options.AutoPickup.AutoPickupStone",true);
+				conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
+				conf.set("Options.AutoPickup.AutoPickupIronOre", true);
+				conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
+				conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
+				conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
+				conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
+				conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
+				conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
+				conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
+				conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
+				
+				conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+				conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
+				conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
+				conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+				
+				conf.set("Options.AutoBlock.AutoBlockEnabled", true);
+				conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
+				conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
+				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
+				
+				conf.save(getConfigFile());
+			} catch (IOException e) {
+				
+				Output.get().logError( 
+						String.format( "Failure! Unable to initialize a new AutoFeatures config file. %s :: %s", 
+								getConfigFile().getName(), e.getMessage()), e );
+			}
+			
 		}
+		
 	}
 
-    @Deprecated
-    public FileConfiguration getFile(){
-        return conf;
-    }
+
+	/**
+	 * <p>This function attempts to save the AutoFeatures configurations to the
+	 * file system.  This function uses a temporary file to initially perform the save, 
+	 * then when it is successfully finished, it then deletes the original file, and 
+	 * renames the temp file to the correct file name.  This swapping of files 
+	 * will prevent the loss of configuration data if something should go wrong in the 
+	 * initial saving of the data since the original file will not be deleted first.
+	 * </p>
+	 * 
+	 * @param afConfig
+	 * @return
+	 */
+	public boolean saveConf( FileConfiguration afConfig )
+	{
+		boolean success = false;
+		
+		File cFile = getConfigFile();
+		String tempFileName = cFile.getName() + ".temp";
+		File tempFile = new File(cFile.getParentFile(), tempFileName);
+		
+		try {
+			// First save to the temp file. If it fails it will throw an exception and 
+			// will prevent the deletion of the existing file:
+			afConfig.save( tempFile );
+			
+			if ( cFile.exists() ) {
+				cFile.delete();
+			}
+
+			// The save cannot be considered successful until after the rename is complete.
+			success = tempFile.renameTo( cFile );
+		}
+		catch ( IOException e ) {
+			Output.get().logError( 
+					String.format( "Failure! Unable to save AutoFeatures config file. %s :: %s", 
+							cFile.getName(), e.getMessage()), e );
+		}
+		
+		return success;
+	}
 
 	public File getConfigFile() {
+		if ( this.configFile == null ) {
+			this.configFile = new File(
+					SpigotPrison.getInstance().getDataFolder() + FILE_NAME__AUTO_FEATURES_CONFIG_YML);
+		}
 		return configFile;
 	}
 	public void setConfigFile( File configFile ) {
 		this.configFile = configFile;
 	}
 
-	public FileConfiguration getConf() {
-		return conf;
+	public FileConfiguration getConfig() {
+		return config;
 	}
-	public void setConf( FileConfiguration conf ) {
-		this.conf = conf;
+	public void setConfig( FileConfiguration config ) {
+		this.config = config;
 	}
 
 }

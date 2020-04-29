@@ -1,5 +1,9 @@
 package tech.mcprison.prison.spigot.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -7,8 +11,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -19,14 +31,18 @@ import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.*;
-import tech.mcprison.prison.spigot.gui.rank.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 
 
 /**
@@ -967,7 +983,6 @@ public class ListenersPrisonManagerGUI implements Listener {
                 {
 
                     FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
-                    File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                     // Get the button name without colors but with the minename too
                     String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -983,11 +998,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         if (mode.equalsIgnoreCase("Enabled")){
                             if (e.isRightClick() && e.isShiftClick()){
                                 configThings.set("Options.General.AreEnabledFeatures", false);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -996,11 +1007,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
                                 configThings.set("Options.General.AreEnabledFeatures", true);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1011,11 +1018,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         if (mode.equalsIgnoreCase("Enabled")){
                             if (e.isRightClick() && e.isShiftClick()){
                                 configThings.set("Options.AutoPickup.AutoPickupEnabled", false);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1027,11 +1030,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
                                 configThings.set("Options.AutoPickup.AutoPickupEnabled", true);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1045,11 +1044,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         if (mode.equalsIgnoreCase("Enabled")){
                             if (e.isRightClick() && e.isShiftClick()){
                                 configThings.set("Options.AutoSmelt.AutoSmeltEnabled", false);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1061,11 +1056,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
                                 configThings.set("Options.AutoSmelt.AutoSmeltEnabled", true);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1079,11 +1070,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         if (mode.equalsIgnoreCase("Enabled")){
                             if (e.isRightClick() && e.isShiftClick()){
                                 configThings.set("Options.AutoBlock.AutoBlockEnabled", false);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1095,11 +1082,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         } else if (mode.equalsIgnoreCase("Disabled")){
                             if (e.isRightClick()){
                                 configThings.set("Options.AutoBlock.AutoBlockEnabled", true);
-                                try {
-                                    configThings.save(file);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
                                 e.setCancelled(true);
                                 p.closeInventory();
                                 SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
@@ -1117,7 +1100,6 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoPickup":{
 
                 FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1135,11 +1117,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Blocks")){
                             configThings.set("Options.AutoPickup.AutoPickupAllBlocks", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1148,11 +1126,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupGoldOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1161,11 +1135,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupIronOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1174,11 +1144,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Coal_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupCoalOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1187,11 +1153,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Diamond_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupDiamondOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1200,11 +1162,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Redstone_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1213,11 +1171,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Emerald_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1226,11 +1180,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupQuartzOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1239,11 +1189,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Lapis_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupLapisOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1252,11 +1198,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Snow_Ball")){
                             configThings.set("Options.AutoPickup.AutoPickupSnowBall", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1265,11 +1207,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
                             configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1286,11 +1224,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Blocks")){
                             configThings.set("Options.AutoPickup.AutoPickupAllBlocks", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1299,11 +1233,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupGoldOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1312,11 +1242,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupIronOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1325,11 +1251,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Coal_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupCoalOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1338,11 +1260,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Diamond_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupDiamondOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1351,11 +1269,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Redstone_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1364,11 +1278,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Emerald_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1377,11 +1287,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupQuartzOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1390,11 +1296,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Lapis_Ore")){
                             configThings.set("Options.AutoPickup.AutoPickupLapisOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1403,11 +1305,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Snow_Ball")){
                             configThings.set("Options.AutoPickup.AutoPickupSnowBall", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1416,11 +1314,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
                             configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1439,7 +1333,6 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoSmelt":{
 
                 FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1457,11 +1350,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Ore")){
                             configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1470,11 +1359,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Ore")){
                             configThings.set("Options.AutoSmelt.AutoSmeltIronOre", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1483,11 +1368,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Ores")){
                             configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1504,11 +1385,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Ore")){
                             configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1517,11 +1394,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Ore")){
                             configThings.set("Options.AutoSmelt.AutoSmeltIronOre", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1530,11 +1403,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Ores")){
                             configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1553,7 +1422,6 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "AutoFeatures -> AutoBlock":{
 
                 FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
-                File file = new File(SpigotPrison.getInstance().getDataFolder() + "/autoFeaturesConfig.yml");
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1571,11 +1439,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockGoldBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1584,11 +1448,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockIronBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1597,11 +1457,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Coal_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockCoalBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1610,11 +1466,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Diamond_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1623,11 +1475,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Redstone_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1636,11 +1484,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Emerald_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1649,11 +1493,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1662,11 +1502,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Prismarine_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1675,11 +1511,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Lapis_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockLapisBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1688,11 +1520,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Snow_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockSnowBlock", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1701,11 +1529,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Glowstone_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockGlowstone", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1714,11 +1538,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Blocks")){
                             configThings.set("Options.AutoBlock.AutoBlockAllBlocks", false);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1735,11 +1555,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Gold_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockGoldBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1748,11 +1564,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Iron_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockIronBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1761,11 +1573,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Coal_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockCoalBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1774,11 +1582,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Diamond_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1787,11 +1591,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Redstone_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1800,11 +1600,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Emerald_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1813,11 +1609,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Quartz_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1826,11 +1618,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Prismarine_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1839,11 +1627,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Lapis_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockLapisBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1852,11 +1636,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Snow_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockSnowBlock", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1865,11 +1645,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("Glowstone_Block")){
                             configThings.set("Options.AutoBlock.AutoBlockGlowstone", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1878,11 +1654,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         if (buttonname.equalsIgnoreCase("All_Blocks")){
                             configThings.set("Options.AutoBlock.AutoBlockAllBlocks", true);
-                            try {
-                                configThings.save(file);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
+                            SpigotPrison.getInstance().saveAutoFeaturesConfig();
                             e.setCancelled(true);
                             p.closeInventory();
                             SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);

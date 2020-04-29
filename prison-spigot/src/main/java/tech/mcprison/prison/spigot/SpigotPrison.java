@@ -193,10 +193,24 @@ public class SpigotPrison extends JavaPlugin {
     public FileConfiguration getAutoFeaturesConfig() {
     	if ( this.autoFeaturesConfig == null ) {
     		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-    		this.autoFeaturesConfig = afc.getConf();
+    		this.autoFeaturesConfig = afc.getConfig();
     	}
         return autoFeaturesConfig;
     }
+    
+    
+    public boolean saveAutoFeaturesConfig() {
+    	boolean success = false;
+    	FileConfiguration afConfig = getAutoFeaturesConfig();
+  
+    	if ( afConfig != null ) {
+    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
+    		success = afc.saveConf(afConfig);
+    	}
+    	return success;
+    }
+    
+    
 
     public static String format(String format){
         return ChatColor.translateAlternateColorCodes('&', format);
