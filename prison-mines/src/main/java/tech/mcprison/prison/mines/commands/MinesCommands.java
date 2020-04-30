@@ -63,9 +63,9 @@ public class MinesCommands {
 	private Long lastMineReferencedTimestamp;
 	
 
-    private boolean performCheckMineExists(CommandSender sender, String name) {
-    	name = Text.stripColor( name );
-        if (!PrisonMines.getInstance().getMineManager().getMine(name).isPresent()) {
+    private boolean performCheckMineExists(CommandSender sender, String mineName) {
+    	mineName = Text.stripColor( mineName );
+        if (!PrisonMines.getInstance().getMineManager().getMine(mineName).isPresent()) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_does_not_exist")
                 .sendTo(sender);
             return false;
@@ -76,7 +76,7 @@ public class MinesCommands {
     @Command(identifier = "mines create", description = "Creates a new mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the new mine.") String name) {
+        @Arg(name = "mineName", description = "The name of the new mine.") String mineName) {
 
     	PrisonMines pMines = PrisonMines.getInstance();
         Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
@@ -94,15 +94,15 @@ public class MinesCommands {
         }
 
         if (PrisonMines.getInstance().getMines().stream()
-            .anyMatch(mine -> mine.getName().equalsIgnoreCase(name))) {
+            .anyMatch(mine -> mine.getName().equalsIgnoreCase(mineName))) {
         	pMines.getMinesMessages().getLocalizable("mine_exists")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
         }
 
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
-        Mine mine = new Mine(name, selection);
+        Mine mine = new Mine(mineName, selection);
         pMines.getMineManager().add(mine);
         pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
         
@@ -114,14 +114,14 @@ public class MinesCommands {
     @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void spawnpointCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String name) {
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
 
-        if (!performCheckMineExists(sender, name)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
-        if (!PrisonMines.getInstance().getMineManager().getMine(name).get().getWorld()
+        if (!PrisonMines.getInstance().getMineManager().getMine(mineName).get().getWorld()
             .isPresent()) {
             pMines.getMinesMessages().getLocalizable("missing_world")
                 .sendTo(sender);
@@ -130,38 +130,39 @@ public class MinesCommands {
 
         if (!((Player) sender).getLocation().getWorld().getName()
             .equalsIgnoreCase(
-                pMines.getMineManager().getMine(name).get().getWorld().get()
+                pMines.getMineManager().getMine(mineName).get().getWorld().get()
                     .getName())) {
             pMines.getMinesMessages().getLocalizable("spawnpoint_same_world")
                 .sendTo(sender);
             return;
         }
 
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
-        Mine mine = pMines.getMineManager().getMine(name).get();
+        Mine mine = pMines.getMineManager().getMine(mineName).get();
         mine.setSpawn(((Player) sender).getLocation());
         pMines.getMineManager().saveMine(mine);
         pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
     }
 
-    @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, description = "Adds a block to a mine.")
+    @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, 
+    						description = "Adds a block to a mine.")
     public void addBlockCommand(CommandSender sender,
     			@Arg(name = "mineName", description = "The name of the mine to add the block to.")
-            			String mine, 
+            			String mineName, 
             	@Arg(name = "block", description = "The block's name or ID.") 
     					String block,
             	@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
     					double chance) {
-        if (!performCheckMineExists(sender, mine)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
         
-        setLastMineReferenced(mine);
+        setLastMineReferenced(mineName);
         
-        Mine m = pMines.getMineManager().getMine(mine).get();
+        Mine m = pMines.getMineManager().getMine(mineName).get();
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
@@ -193,7 +194,7 @@ public class MinesCommands {
         pMines.getMineManager().saveMine( m );
         
         pMines.getMinesMessages().getLocalizable("block_added")
-            .withReplacements(block, mine).sendTo(sender);
+            .withReplacements(block, mineName).sendTo(sender);
         getBlocksList(m).send(sender);
 
         //pMines.getMineManager().clearCache();
@@ -203,20 +204,20 @@ public class MinesCommands {
     					description = "Changes the percentage of a block in a mine.")
     public void setBlockCommand(CommandSender sender,
     			@Arg(name = "mineName", description = "The name of the mine to edit.") 
-    					String mine,
+    					String mineName,
     			@Arg(name = "block", description = "The block's name or ID.") 
     					String block,
     			@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.") 
     					double chance) {
     	
-        if (!performCheckMineExists(sender, mine)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
-        setLastMineReferenced(mine);
+        setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(mine).get();
+        Mine m = pMines.getMineManager().getMine(mineName).get();
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -227,7 +228,7 @@ public class MinesCommands {
 
         // Change behavior: If trying to change a block that is not in the mine, then instead add it:
         if (!m.isInMine(blockType)) {
-        	addBlockCommand( sender, mine, block, chance );
+        	addBlockCommand( sender, mineName, block, chance );
 //        	pMines.getMinesMessages().getLocalizable("block_not_removed")
 //                .sendTo(sender);
             return;
@@ -263,7 +264,7 @@ public class MinesCommands {
         pMines.getMineManager().saveMine( m );
         
         pMines.getMinesMessages().getLocalizable("block_set")
-            .withReplacements(block, mine).sendTo(sender);
+            .withReplacements(block, mineName).sendTo(sender);
         getBlocksList(m).send(sender);
 
         //pMines.getMineManager().clearCache();
@@ -272,17 +273,17 @@ public class MinesCommands {
 
     @Command(identifier = "mines block remove", permissions = "mines.block", onlyPlayers = false, description = "Deletes a block from a mine.")
     public void delBlockCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "block", def = "AIR", description = "The block's name or ID.") String block) {
 
-        if (!performCheckMineExists(sender, mine)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
-        setLastMineReferenced(mine);
+        setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(mine).get();
+        Mine m = pMines.getMineManager().getMine(mineName).get();
         
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -312,7 +313,8 @@ public class MinesCommands {
         //pMines.getMineManager().clearCache();
 	}
 
-    @Command(identifier = "mines block search", permissions = "mines.block", description = "Searches for a block to add to a mine.")
+    @Command(identifier = "mines block search", permissions = "mines.block", 
+    				description = "Searches for a block to add to a mine.")
     public void searchBlockCommand(CommandSender sender,
         @Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
         @Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
@@ -405,13 +407,13 @@ public class MinesCommands {
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
     public void deleteCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to delete.") String name,
+        @Arg(name = "mineName", description = "The name of the mine to delete.") String mineName,
     	@Arg(name = "confirm", def = "", description = "Confirm that the mine should be deleted") String confirm) {
-        if (!performCheckMineExists(sender, name)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
         
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
         // They have 1 minute to confirm.
         long now = System.currentTimeMillis();
@@ -421,7 +423,7 @@ public class MinesCommands {
         	
         	PrisonMines pMines = PrisonMines.getInstance();
         	
-        	Mine mine = pMines.getMineManager().getMine(name).get();
+        	Mine mine = pMines.getMineManager().getMine(mineName).get();
         	
         	// Remove from the manager:
         	pMines.getMineManager().removeMine(mine);
@@ -436,19 +438,23 @@ public class MinesCommands {
         } else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
         	setConfirmTimestamp( now );
 
-        	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + name);
+        	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + mineName);
         	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
         	builder.add( new FancyMessage(
                     "&3Confirm the deletion of this mine" )
-                    .suggest("/mines delete " + name + " cancel"));
+                    .suggest("/mines delete " + mineName + " cancel"));
 
         	builder.add( new FancyMessage(
         			"&3Click &eHERE&3 to display the command" )
-        			.suggest("/mines delete " + name + " cancel"));
+        			.suggest("/mines delete " + mineName + " cancel"));
+        	
+        	builder.add( new FancyMessage(
+        			"&3Enter: &7/mines delete" + mineName + " confirm" )
+        			.suggest("/mines delete " + mineName + " cancel"));
         	
         	builder.add( new FancyMessage(
         			"&3Then change &ecancel&3 to &econfirm&3." )
-        			.suggest("/mines delete " + name + " cancel"));
+        			.suggest("/mines delete " + mineName + " cancel"));
         	
         	builder.add( new FancyMessage("You have 1 minute to respond."));
         	
@@ -458,13 +464,13 @@ public class MinesCommands {
         } else if (confirm != null && "cancel".equalsIgnoreCase( confirm )) {
         	setConfirmTimestamp( null );
         	
-        	ChatDisplay display = new ChatDisplay("&cDelete " + name);
+        	ChatDisplay display = new ChatDisplay("&cDelete " + mineName);
             display.text("&8Delete canceled.");
 
             display.send( sender );
             
         } else {
-	    	ChatDisplay display = new ChatDisplay("&cDelete " + name);
+	    	ChatDisplay display = new ChatDisplay("&cDelete " + mineName);
 	    	display.text("&8Delete confirmation failed. Try again.");
 	    	
 	    	display.send( sender );
@@ -472,18 +478,19 @@ public class MinesCommands {
         
     }
 
-    @Command(identifier = "mines info", permissions = "mines.info", onlyPlayers = false, description = "Lists information about a mine.")
+    @Command(identifier = "mines info", permissions = "mines.info", onlyPlayers = false, 
+    				description = "Lists information about a mine.")
     public void infoCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to view.") String name) {
-        if (!performCheckMineExists(sender, name)) {
+        @Arg(name = "mineName", description = "The name of the mine to view.") String mineName) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
-        Mine m = mMan.getMine(name).get();
+        Mine m = mMan.getMine(mineName).get();
 
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         
@@ -579,21 +586,21 @@ public class MinesCommands {
 
     @Command(identifier = "mines reset", permissions = "mines.reset", description = "Resets a mine.")
     public void resetCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to reset.") String name) {
+        @Arg(name = "mineName", description = "The name of the mine to reset.") String mineName) {
 
-        if (!performCheckMineExists(sender, name)) {
+        if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
         try {
-        	pMines.getMineManager().getMine(name).get().manualReset();
+        	pMines.getMineManager().getMine(mineName).get().manualReset();
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
                 .sendTo(sender);
-            Output.get().logError("Couldn't reset mine " + name, e);
+            Output.get().logError("Couldn't reset mine " + mineName, e);
         }
 
         pMines.getMinesMessages().getLocalizable("mine_reset").sendTo(sender);
@@ -685,19 +692,19 @@ public class MinesCommands {
      * </p>
      * 
      * @param sender
-     * @param mine
+     * @param mineName
      * @param time
      */
     @Command(identifier = "mines resettime", permissions = "mines.resettime", 
     		description = "Set a mine's time  to reset.")
     public void resetTimeCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset." ) String time
         
     		) {
         
-        if (performCheckMineExists(sender, mine)) {
-        	setLastMineReferenced(mine);
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
 
         	try {
         		int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
@@ -709,10 +716,10 @@ public class MinesCommands {
 				if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
 					Output.get().sendWarn( sender, 
 							"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
-							mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+							mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
 				} else {
 					PrisonMines pMines = PrisonMines.getInstance();
-					Mine m = pMines.getMineManager().getMine(mine).get();
+					Mine m = pMines.getMineManager().getMine(mineName).get();
 					
 					m.setResetTime( resetTime );
 					
@@ -730,7 +737,7 @@ public class MinesCommands {
 			catch ( NumberFormatException e ) {
 				Output.get().sendWarn( sender, 
 						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
-						mine, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
+						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
 			}
         } 
     }
@@ -739,14 +746,16 @@ public class MinesCommands {
     @Command(identifier = "mines notification", permissions = "mines.notification", 
     		description = "Set a mine's notification mode.")
     public void setNotificationCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mine,
-        @Arg(name = "mode", def="displayOptions", description = "The notification mode to use: disabled, within, radius") String mode,
-        @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) String radius
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mode", def="displayOptions", description = "The notification mode to use: disabled, within, radius") 
+    					String mode,
+        @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) 
+    					String radius
         
     		) {
         
-        if (performCheckMineExists(sender, mine)) {
-        	setLastMineReferenced(mine);
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
 
         	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
         	
@@ -767,20 +776,20 @@ public class MinesCommands {
         						DecimalFormat dFmt = new DecimalFormat("#,##0");
         						Output.get().sendWarn( sender, "&7Invalid radius value for &b%s&7. " +
             							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
-            							mine, dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
+            							mineName, dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
         					}
         				}
         				catch ( NumberFormatException e ) {
         					e.printStackTrace();
         					Output.get().sendWarn( sender, "&7Invalid notification radius for &b%s&7. " +
         							"Must be an positive non-zero integer. [&b%s&7]",
-        							mine, radius );
+        							mineName, radius );
         				}
         			}
         		}
         		
         		PrisonMines pMines = PrisonMines.getInstance();
-        		Mine m = pMines.getMineManager().getMine(mine).get();
+        		Mine m = pMines.getMineManager().getMine(mineName).get();
         		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
         			m.setNotificationMode( noteMode );
         			m.setNotificationRadius( noteRadius );
@@ -790,23 +799,25 @@ public class MinesCommands {
         			DecimalFormat dFmt = new DecimalFormat("#,##0");
         			// message: notification mode changed
         			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
-        					mine, m.getNotificationMode().name(), 
-        					(m.getNotificationMode() == MineNotificationMode.radius ? dFmt.format( m.getNotificationRadius() ) : "" ));
+        					mineName, m.getNotificationMode().name(), 
+        					(m.getNotificationMode() == MineNotificationMode.radius ? 
+        							dFmt.format( m.getNotificationRadius() ) : "" ));
         			
         		} else {
         			// message: notification mode did not change
-        			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mine );
+        			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mineName );
         		}
         	}
         } 
     }
 
 
-    @Command(identifier = "mines set area", permissions = "mines.set", description = "Set the area of a mine to your current selection.")
+    @Command(identifier = "mines set area", permissions = "mines.set", 
+    				description = "Set the area of a mine to your current selection.")
     public void redefineCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String name) {
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
     	
-    	if (!performCheckMineExists(sender, name)) {
+    	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
 
@@ -827,9 +838,9 @@ public class MinesCommands {
 
         // TODO check to see if they are the same boundaries, if not, don't change...
         
-        setLastMineReferenced(name);
+        setLastMineReferenced(mineName);
         
-        Mine m = pMines.getMineManager().getMine(name).get();
+        Mine m = pMines.getMineManager().getMine(mineName).get();
         m.setBounds(selection.asBounds());
         pMines.getMineManager().saveMine( m );
         
@@ -845,16 +856,16 @@ public class MinesCommands {
 
     @Command(identifier = "mines tp", permissions = "mines.tp", description = "TP to the mine.")
     public void mineTp(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String name) {
+        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName) {
     	
-    	if (!performCheckMineExists(sender, name)) {
+    	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
 
-    	setLastMineReferenced(name);
+    	setLastMineReferenced(mineName);
 
     	PrisonMines pMines = PrisonMines.getInstance();
-    	Mine m = pMines.getMineManager().getMine(name).get();
+    	Mine m = pMines.getMineManager().getMine(mineName).get();
     	
     	if ( sender instanceof Player ) {
     		m.teleportPlayerOut( (Player) sender );
