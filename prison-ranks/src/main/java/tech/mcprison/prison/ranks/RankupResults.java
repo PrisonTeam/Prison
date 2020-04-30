@@ -16,6 +16,8 @@ public class RankupResults {
 	private String executor;
 	
     private RankupStatus status;
+    private String ladderName;
+	private String rankName;
     private Rank originalRank;
     private Rank targetRank;
     private String message;
@@ -31,14 +33,20 @@ public class RankupResults {
     private long timestampStart = 0;
     private long timestampStop = 0;
     
-    public RankupResults(RankupCommands command, String playerName, String executorName) {
+    public RankupResults(RankupCommands command, String playerName, String executorName,
+    		String ladderName, String rankName) {
         super();
+        
+        this.status = RankupStatus.IN_PROGRESS;
         
     	this.transactions = new ArrayList<>();
         
     	this.command = command;
         this.player = playerName;
         this.executor = executorName;
+        
+        this.ladderName = ladderName;
+        this.rankName = rankName;
         
         this.timestampStart = System.currentTimeMillis();
     }
@@ -83,6 +91,20 @@ public class RankupResults {
 	}
 	public void setExecutor( String executor ) {
 		this.executor = executor;
+	}
+
+	public String getLadderName() {
+		return ladderName;
+	}
+	public void setLadderName( String ladderName ) {
+		this.ladderName = ladderName;
+	}
+
+	public String getRankName() {
+		return rankName;
+	}
+	public void setRankName( String rankName ) {
+		this.rankName = rankName;
 	}
 
 	public RankupStatus getStatus() {

@@ -78,7 +78,7 @@ shadowJar {
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
 
     classifier ''
-    version = null
+    archiveVersion = ''
     
 //    minimize()
 }

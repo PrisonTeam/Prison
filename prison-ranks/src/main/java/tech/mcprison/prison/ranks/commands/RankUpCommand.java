@@ -252,7 +252,7 @@ public class RankUpCommand {
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             	} else {
-	            	String message = String.format( "Unfortunately, %s been demoted to rank '%s'. %s",
+	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
             				(results.getTargetRank() == null ? "" : results.getTargetRank().name), 
             				(results.getMessage() != null ? results.getMessage() : ""));
