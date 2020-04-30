@@ -415,6 +415,14 @@ public class IntegrationManager {
 					if ( sb.length() == 0) {
 						sb.append( "      " );
 						sb.append( placeholder );
+					} 
+					else if ( sb.length() + placeholder.length() > 80) {
+						// will be too long combined so write existing sb then start over:
+						results.add( new TextComponent( sb.toString() ));
+						sb.setLength( 0 );
+						
+						sb.append( "      " );
+						sb.append( placeholder );
 					} else {
 						sb.append( placeholder );
 						results.add( new TextComponent( sb.toString() ));

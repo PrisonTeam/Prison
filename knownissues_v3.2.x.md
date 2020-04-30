@@ -17,8 +17,31 @@ Work to be considered.
 * **Complete the new Mines Reset Paging**
   Holding up release v3.2.1.
 
+
+* **Delay Mine Resets based upon blocks remaining**
+  Holding up release v3.2.1.
+
+* **Add parameter to charge player for Promote command**
+
+
 * **Add /ranks remove currency [rankName] [currency]**
 Done. Currently no way to remove a currency from a Rank to return it to normal currency.
+
+
+* **Add onBlockBreak monitor to prison mines to count blocks mined**
+Set EventPriority to monitor. Don't change anything. Just confirm block was changed to air and increment the count.
+Do not have to precheck if the block was air before, since air cannot trigger a block break event.  Just confirm it is air when monitoring to ensure it was removed. If this works, then this would allow the elimination of the air counts.
+
+
+* **Add permissions to the AutoManger**
+Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
+ 
+
+* **Add placeholder aliases so they are not as long**
+Done.
+
+* **Eliminate the internal Placeholders**
+Done.  Performance improvement.
 
 * **Integrate GUI in to bleeding**
 Done.  More GUI features will be added in the next release.

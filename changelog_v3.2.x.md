@@ -8,7 +8,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.9 - 2020-04-26
+## tag v3.2.1-alpha.11 - 2020-04-29
+
+
+* **Async issue: Mine air counts**
+Async failure: Well, found out the hard way there is even less that can be done with async threads. Even just checking the air counts that does not update the world can cause problems and could throw an exception.
+The issue is that if a chunk has to be loaded and if there are any entities, then it will throw an exception and could possibly corrupt something.
+For now i'm catching the exception and logging it.  Will eliminate the async air counting in the next few days when I hook up live block counts of mined blocks.
+
+
+* **Enhancement: Better logging if major failure with rankup**
+Enhanced the logging on rankup to better deal with logging even when there is major internal failures.  Emphasis was to ensure transaction logging happens and is recorded no matter what.  Added more details and fixed a few that were not working correctly.
+Fixed a failure that was preventing rankup from happening. Had the wrong conditional testing that was preventing a rank from being assigned.
 
 
 * **Enhancement: Placeholders optimized!**
