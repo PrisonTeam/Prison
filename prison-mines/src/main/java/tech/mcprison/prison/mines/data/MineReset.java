@@ -658,18 +658,50 @@ public abstract class MineReset
 			
 			
 			int airCount = 0;
+			int errorCount = 0;
+			StringBuilder sb = new StringBuilder();
 			
 			for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
 				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
 					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
 						
-						Location targetBlock = new Location(world, x, y, z);
-						if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
-							airCount++;
+						try {
+							Location targetBlock = new Location(world, x, y, z);
+							if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+								airCount++;
+							}
+						}
+						catch ( Exception e ) {
+							// Updates to the "world" should never be ran async.  Upon review of the above 
+							// that gets the location and block, causes the chunk to load, if it is not loaded,
+							// and if there is an entity in that loaded chunk it will throw an exception:
+							//     java.lang.IllegalStateException: Asynchronous entity world add!
+							// If there are no entities, it will be fine, but they could cause issues with async 
+							// access of unloaded chunks.
+							String coords = String.format( "%d.%d.%d ", x, y, z );
+							if ( errorCount ++ == 0 ) {
+								String message = String.format( 
+										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
+										"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
+								Output.get().logWarn( message, e );
+							} 
+							else if ( errorCount <= 20 ) {
+								sb.append( coords );
+							}
 						}
 					}
 				}
 			}
+			
+			if ( errorCount > 0 ) {
+				String message = String.format( 
+						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
+								"errorCount=%d  blocks%s: %s", getName(), errorCount,
+								(errorCount > 20 ? "(first 20)" : "") +
+								sb.toString() );
+				Output.get().logWarn( message );
+			}
+			
 			
 			setAirCount( airCount );
 			
