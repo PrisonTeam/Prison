@@ -105,6 +105,10 @@ public class MinesCommands {
         Mine mine = new Mine(name, selection);
         pMines.getMineManager().add(mine);
         pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
+        
+        // Delete the selection:
+        Prison.get().getSelectionManager().clearSelection((Player) sender);
+
     }
 
     @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", 
@@ -424,6 +428,8 @@ public class MinesCommands {
         	
         	// Terminate the running task for mine resets. Will allow it to be garbage collected.
         	mine.terminateJob();
+        	
+        	setLastMineReferenced(null);
         	
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         	
@@ -829,6 +835,9 @@ public class MinesCommands {
         
         pMines.getMinesMessages().getLocalizable("mine_redefined")
             .sendTo(sender);
+        
+        // Delete the selection:
+        Prison.get().getSelectionManager().clearSelection((Player) sender);
         //pMines.getMineManager().clearCache();
     }
 

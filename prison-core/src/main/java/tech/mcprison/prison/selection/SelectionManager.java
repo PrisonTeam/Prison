@@ -56,7 +56,14 @@ public class SelectionManager {
         }
         return selectionMap.get(player.getName());
     }
+    
+    public void clearSelection(Player player) {
+    	if (!selectionMap.containsKey(player.getName())) {
+    		selectionMap.remove(player.getName());
+    	}
+    }
 
+    
     public void setSelection(Player player, Selection selection) {
         selectionMap.put(player.getName(), selection);
     }
