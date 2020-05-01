@@ -50,6 +50,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.autoFeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.spigot.autoFeatures.AutoManager;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -139,6 +140,9 @@ public class SpigotPrison extends JavaPlugin {
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManagerGUI(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
+        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
+        
+        
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         
         new SpigotListener(this).init();

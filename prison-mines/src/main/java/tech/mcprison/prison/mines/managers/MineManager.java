@@ -266,6 +266,13 @@ public class MineManager
 						results = iFmt.format( mine.getPlayerCount() );
 						break;
 						
+					// Temp to test the onBlockBreak event handling:
+					case prison_mrt_minename:
+					case prison_mines_remaining_temp_minename:
+						mine.refreshAirCount(); // async & delayed : Very high cost
+						int remainingBlocksTemp = mine.getBounds().getTotalBlockCount() - mine.getBlockBreakCount();
+						results = iFmt.format( remainingBlocksTemp );
+						break;
 						
 						
 					default:

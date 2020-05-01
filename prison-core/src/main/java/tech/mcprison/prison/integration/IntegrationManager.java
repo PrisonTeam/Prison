@@ -107,6 +107,8 @@ public class IntegrationManager {
 		prison_mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+
+		prison_mrt_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
@@ -118,6 +120,10 @@ public class IntegrationManager {
 		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
 		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
+
+		// Temp placeholder to test the onBlockBreak event counting:
+		prison_mines_remaining_temp_minename(prison_mrt_minename, PlaceHolderFlags.MINES),
+		
 		
 		// Suppressable internal placeholders: some placeholder apis strip off the prefix:
 //		r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
@@ -416,7 +422,7 @@ public class IntegrationManager {
 						sb.append( "      " );
 						sb.append( placeholder );
 					} 
-					else if ( sb.length() + placeholder.length() > 80) {
+					else if ( (sb.length() + placeholder.length()) > 90) {
 						// will be too long combined so write existing sb then start over:
 						results.add( new TextComponent( sb.toString() ));
 						sb.setLength( 0 );

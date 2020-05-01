@@ -75,6 +75,10 @@ public abstract class MineReset
 	private long airCountTimestamp = 0L;
 	private long airCountElapsedTimeMs = 0L;
 	
+	
+	private int blockBreakCount = 0;
+	
+	
 //	private boolean[] mineAirBlocksOriginal;
 //	private boolean[] mineAirBlocksCurrent;
 
@@ -100,11 +104,18 @@ public abstract class MineReset
      * instantiated, and is initiated from Mine class and propagates
      * to the MineData class.  Good for kicking off the scheduler.
      * </p>
+     * 
+     * <p>Once the mine has been loaded in to memory, the number of 
+     * air blocks must be counted to properly set the blockBreakCount.
+     * </p>
+     * 
      */
 	@Override
 	protected void initialize() {
     	super.initialize();
     	
+    	// Once the mine has been loaded, MUST get a count of all air blocks.
+    	refreshBlockBreakCountUponStartup();
     }
     
     /**
@@ -151,18 +162,24 @@ public abstract class MineReset
         		altTp.setY( altTp.getBlockY() - 1 ); // Set Y one lower to 
             	//boolean replaceGlassBlock = ( isFillMode && altTp.getBlockAt().getType() == BlockType.GLASS );
             		
+        		// Reset the block break count before resetting the blocks:
+        		setBlockBreakCount( 0 );
+        		
         		int i = 0;
         		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
 //    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
         			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
         				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
         					Location targetBlock = new Location(world, x, y, z);
-        					
         					if (!isFillMode || 
         							isFillMode && targetBlock.getBlockAt().isEmpty() ||
         							isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
         						targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
-        					} 
+        					}
+        					
+        					if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+        						addBlockBreakCount();
+        					}
         				}
         			}
         		}
@@ -227,7 +244,15 @@ public abstract class MineReset
 
     private void resetStats() {
     	setResetPage( 0 ); 
+    	
+		// The reset position is critical in ensuring that all blocks within the mine are reset 
+		// and that when a reset process pages (allows another process to run) then it will be
+		// used to pick up where it left off.
     	setResetPosition( 0 );
+    	
+    	
+    	// NOTE: DO NOT reset blockBreakCount here!  Players can break many blocks between
+    	//       here and when the mine actually starts to reset.
     	
     	setAirCountOriginal( 9 );
     	setAirCount( 0 );
@@ -410,6 +435,9 @@ public abstract class MineReset
 		setAirCountOriginal( airCount );
 		setAirCount( airCount );
 		
+		// The reset position is critical in ensuring that all blocks within the mine are reset 
+		// and that when a reset process pages (allows another process to run) then it will be
+		// used to pick up where it left off.
 		setResetPosition( 0 );
 		
 		long stop = System.currentTimeMillis();
@@ -436,6 +464,14 @@ public abstract class MineReset
     	}
     	
     	if ( !canceled ) {
+    		
+    		 if ( getResetPosition() == 0 ) {
+    			// Reset the block break count before resetting the blocks:
+    			// Set it to the original air count, if subtracted from total block count
+    			// in the mine, then the result will be blocks remaining.
+         		setBlockBreakCount( getAirCountOriginal() );
+    		 }
+    		
     		resetAsynchonouslyUpdate();
     		
     		if ( getResetPosition() == getMineTargetBlocks().size() ) {
@@ -613,6 +649,10 @@ public abstract class MineReset
     public void submitAsyncTask( PrisonRunnable callbackAsync ) {
     	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 0L );
     }
+    
+    public void submitSyncTask( PrisonRunnable callbackSync ) {
+    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 0L );
+    }
 
     /**
      * <p>This function will identify how many air blocks are within a mine.
@@ -632,7 +672,10 @@ public abstract class MineReset
     		
     		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this, callback);
     		
-    		submitAsyncTask( cabAsyncTask );
+    		submitSyncTask( cabAsyncTask );
+    		
+    		// Cannot run this async
+    		//submitAsyncTask( cabAsyncTask );
     		
 //    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
     		
@@ -642,8 +685,30 @@ public abstract class MineReset
     }
 
     /**
+     * This task should be ran upon loading of the mines upon server start.  
+     * This will calculate how many air blocks there are within the mine, which
+     * will be what the blockBreakCount should be set to initially. 
+     * 
+     * But as a warning, this may trigger stack traces if there are active
+     * entities in the unloaded chunks.  May have run this synchronously. :(
+     */
+    public void refreshBlockBreakCountUponStartup() {
+    	
+    	OnStartupRefreshBlockBreakCountAsyncTask cabAsyncTask = new OnStartupRefreshBlockBreakCountAsyncTask(this);
+    	
+    	// Must run synchronously!!
+    	submitSyncTask( cabAsyncTask );
+    	//submitAsyncTask( cabAsyncTask );
+    }
+    
+    /**
      * <p>This function performs the air count and should be ran as an async task.
      * </p>
+     * 
+     * <p>WARNING: This generates a ton of async failures upon startup or during other
+     * times.  This MUST be ran synchronously...
+     * </p>
+     * 
      */
 	protected void refreshAirCountAsyncTask()
 	{
@@ -683,7 +748,12 @@ public abstract class MineReset
 								String message = String.format( 
 										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
 										"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
-								Output.get().logWarn( message, e );
+								if ( e.getMessage().contains( "Asynchronous entity world add" )) {
+									Output.get().logWarn( message );
+								} else {
+									Output.get().logWarn( message, e );
+								}
+								
 							} 
 							else if ( errorCount <= 20 ) {
 								sb.append( coords );
@@ -695,9 +765,9 @@ public abstract class MineReset
 			
 			if ( errorCount > 0 ) {
 				String message = String.format( 
-						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
-								"errorCount=%d  blocks%s: %s", getName(), errorCount,
-								(errorCount > 20 ? "(first 20)" : "") +
+						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: Mine=%s: " +
+								"errorCount=%d  blocks%s : %s", getName(), errorCount,
+								(errorCount > 20 ? "(first 20)" : ""),
 								sb.toString() );
 				Output.get().logWarn( message );
 			}
@@ -959,6 +1029,16 @@ public abstract class MineReset
 	public void setAirCountElapsedTimeMs( long airCountElapsedTimeMs )
 	{
 		this.airCountElapsedTimeMs = airCountElapsedTimeMs;
+	}
+
+	public int addBlockBreakCount() {
+		return ++blockBreakCount;
+	}
+	public int getBlockBreakCount() {
+		return blockBreakCount;
+	}
+	public void setBlockBreakCount( int blockBreakCount ) {
+		this.blockBreakCount = blockBreakCount;
 	}
 
 	public long getStatsResetTimeMS()
