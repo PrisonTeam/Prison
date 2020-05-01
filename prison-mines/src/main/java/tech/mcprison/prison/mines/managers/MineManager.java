@@ -17,18 +17,17 @@
 
 package tech.mcprison.prison.mines.managers;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
-import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
@@ -45,6 +44,7 @@ public class MineManager
 
     // Base list
     private List<Mine> mines;
+    private TreeMap<String, Mine> minesByName;
 
     private Collection coll;
 
@@ -56,27 +56,33 @@ public class MineManager
      * Initializes a new instance of {@link MineManager}
      */
     public MineManager(tech.mcprison.prison.store.Collection collection) {
-        mines = new ArrayList<>();
-        coll = collection;
-
-        loadMines();
-
-        Output.get().logInfo("Loaded " + mines.size() + " mines and starting to submit to run: ");
+        this.mines = new ArrayList<>();
+        this.minesByName = new TreeMap<>();
         
-        // Submit all the loaded mines to run:
-        int offset = 0;
-        for ( Mine mine : mines )
-		{
-			mine.submit(offset);
-			offset += 5;
-		}
-        Output.get().logInfo("Mines are all queued to run auto resets.");
+        this.coll = collection;
+
+        int offsetTiming = 5;
+        loadMines(offsetTiming);
+
+        Output.get().logInfo( String.format("Loaded %d mines and submitted with a %d " +
+        		"second offset timing for auto resets.", 
+        			getMines().size(), offsetTiming));
+        
+//        // Submit all the loaded mines to run:
+//        int offset = 0;
+//        for ( Mine mine : mines )
+//		{
+//			mine.submit(offset);
+//			offset += 5;
+//		}
+//        Output.get().logInfo("Mines are all queued to run auto resets.");
     }
 
-    public void loadMine(String mineFile) throws IOException, MineException {
-        Document document = coll.get(mineFile).orElseThrow(IOException::new);
-        mines.add(new Mine(document));
-    }
+//    public void loadMine(String mineFile) throws IOException, MineException {
+//        Document document = coll.get(mineFile).orElseThrow(IOException::new);
+//        Mine m = new Mine(document);
+//        add(m, false, 0);
+//    }
 
     /**
      * Adds a {@link Mine} to this {@link MineManager} instance.
@@ -87,7 +93,7 @@ public class MineManager
      * @return if the add was successful
      */
     public boolean add(Mine mine) {
-    	return add(mine, true);
+    	return add(mine, true, 0);
     }
     
     /**
@@ -100,36 +106,41 @@ public class MineManager
      *               no data has changed.
      * @return if the add was successful
      */
-    public boolean add(Mine mine, boolean save) {
+    private boolean add(Mine mine, boolean save, int offsetTiming ) {
     	boolean results = false;
-        if (!mines.contains(mine)){
+        if (!getMines().contains(mine)){
         	if ( save ) {
         		saveMine( mine );
         	}
         	
-            results = mines.add(mine);
+            results = getMines().add(mine);
+            getMinesByName().put( mine.getName().toLowerCase(), mine );
             
             // Start its scheduling:
-            mine.submit(0);
+            mine.submit(offsetTiming);
         }
         return results;
     }
 
 
-    public boolean removeMine(String id){
-        if (getMine(id).isPresent()) {
-            return removeMine(getMine(id).get());
-        }
-        else{
-            return false;
-        }
+    public boolean removeMine(String mineName){
+    	boolean results = false;
+    	if ( mineName != null ) {
+    		Mine mine = getMinesByName().get( mineName.toLowerCase() );
+    		if ( mine != null ) {
+    			results = removeMine(mine);
+    		}
+    	}
+    	
+    	return results;
     }
 
     public boolean removeMine(Mine mine) {
     	boolean success = false;
     	if ( mine != null ) {
-    		mines.remove(mine);
-    		success = coll.delete( mine.getName() );
+    		coll.delete( mine.getName() );
+    		getMinesByName().remove(mine.getName());
+    		success = getMines().remove(mine);
     	}
 	    return success;
     }
@@ -148,13 +159,16 @@ public class MineManager
         return new MineManager(collOptional.get());
     }
 
-    private void loadMines() {
+    private void loadMines( int offsetTiming ) {
         List<Document> mineDocuments = coll.getAll();
 
+        int offset = 0;
         for (Document document : mineDocuments) {
             try {
                 Mine m = new Mine(document);
-                add(m, false);
+                add(m, false, offset);
+                offset += offsetTiming;
+                
             } catch (Exception e) {
                 Output.get()
                     .logError("&cFailed to load mine " + document.getOrDefault("name", "null"), e);
@@ -171,7 +185,7 @@ public class MineManager
     }
 
     public void saveMines(){
-        for (Mine m : mines){
+        for (Mine m : getMines()){
             saveMine(m);
         }
     }
@@ -184,13 +198,19 @@ public class MineManager
      * @return An optional containing either the {@link Mine} if it could be found, or empty if it
      * does not exist by the specified name.
      */
-    public Optional<Mine> getMine(String name) {
-        return mines.stream().filter(mine -> mine.getName().equals(name)).findFirst();
+    public Mine getMine(String mineName) {
+    	return (mineName == null ? null : getMinesByName().get( mineName.toLowerCase() ));
+    	
+        //return mines.stream().filter(mine -> mine.getName().equals(name)).findFirst();
     }
 
     public List<Mine> getMines() {
         return mines;
     }
+
+	public TreeMap<String, Mine> getMinesByName() {
+		return minesByName;
+	}
 
 	public boolean isMineStats()
 	{
@@ -220,8 +240,7 @@ public class MineManager
 		String results = null;
 
 		if ( placeHolderKey != null && placeHolderKey.getData() != null ) {
-			Optional<Mine> mineOptional = getMine( placeHolderKey.getData() );
-			Mine mine = mineOptional.isPresent() ? mineOptional.get() : null;
+			Mine mine = getMine( placeHolderKey.getData() );
 
 			if ( mine != null ) {
 				DecimalFormat dFmt = new DecimalFormat("#,##0.00");

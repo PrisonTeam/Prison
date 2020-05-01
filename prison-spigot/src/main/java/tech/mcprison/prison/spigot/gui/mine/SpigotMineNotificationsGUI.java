@@ -34,7 +34,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
         // Init variables
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(minename).get();
+        Mine m = pMines.getMine(minename);
         String enabledOrDisabled = m.getNotificationMode().name();
 
         // Create a new lore

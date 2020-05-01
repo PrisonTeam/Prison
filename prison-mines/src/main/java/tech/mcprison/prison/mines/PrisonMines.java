@@ -44,9 +44,6 @@ import tech.mcprison.prison.store.Database;
  */
 public class PrisonMines extends Module {
 	public static final String MODULE_NAME = "Mines";
-    /*
-     * Fields & Constants
-     */
 
     private static PrisonMines i = null;
     private MinesConfig config;
@@ -93,9 +90,6 @@ public class PrisonMines extends Module {
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }
 
-//    private void initGson() {
-//        gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-//    }
 
     private void initDb() {
         Optional<Database> dbOptional =
@@ -127,36 +121,8 @@ public class PrisonMines extends Module {
         	config = (MinesConfig) getJsonFileIO().readJsonFile( configFile, config );
         }
         
-//
-//        if (!configFile.exists()) {
-//            try {
-//                configFile.createNewFile();
-//                String json = gson.toJson(config);
-//                Files.write(configFile.toPath(), json.getBytes());
-//            } catch (IOException e) {
-//                errorManager.throwError(
-//                    new Error("Failed to create config").appendStackTrace("while creating", e));
-//                getStatus().toFailed("Failed to create config");
-//            }
-//        } else {
-//            try {
-//                String json = new String(Files.readAllBytes(configFile.toPath()));
-//                config = gson.fromJson(json, MinesConfig.class);
-//            } catch (IOException e) {
-//                errorManager.throwError(
-//                    new Error("Failed to load config").appendStackTrace("while loading", e));
-//                getStatus().toFailed("Failed to load config");
-//            }
-//        }
     }
 
-//    private void initWorlds() {
-//        ListIterator<String> iterator = config.worlds.listIterator();
-//        worlds = new ArrayList<>();
-//        while (iterator.hasNext()) {
-//            worlds.add(iterator.next().toLowerCase());
-//        }
-//    }
 
     private void initMines() {
         mines = MineManager.fromDb();
@@ -176,8 +142,7 @@ public class PrisonMines extends Module {
      * 
      */
 	public void disable() {
-		
-//        mines.saveMines();
+		// Nothing to do...
     }
 
     public MinesConfig getConfig() {
@@ -196,6 +161,10 @@ public class PrisonMines extends Module {
         return mines.getMines();
     }
 
+    public Mine getMine(String mineName) {
+    	return mines.getMine(mineName);
+    }
+    
     public LocaleManager getMinesMessages() {
         return localeManager;
     }

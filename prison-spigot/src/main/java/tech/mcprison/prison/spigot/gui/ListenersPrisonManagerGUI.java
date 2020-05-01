@@ -496,10 +496,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 String minename = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
                 // Variables
-                @SuppressWarnings("unused")
-                Optional<Mine> mine = PrisonMines.getInstance().getMineManager().getMine(minename);
                 PrisonMines pMines = PrisonMines.getInstance();
-                Mine m = pMines.getMineManager().getMine(minename).get();
+                Mine m = pMines.getMine(minename);
 
                 // Check the clicks
                 if (e.isShiftClick() && e.isRightClick()) {
@@ -588,7 +586,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                         // Initialize the variables
                         PrisonMines pMines = PrisonMines.getInstance();
-                        Mine m = pMines.getMineManager().getMine(mineName).get();
+                        Mine m = pMines.getMine(mineName);
                         int val = m.getResetTime();
 
                         // Open the GUI
@@ -810,7 +808,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 // Init variables
                 PrisonMines pMines = PrisonMines.getInstance();
-                Mine m = pMines.getMineManager().getMine(mineName).get();
+                Mine m = pMines.getMine(mineName);
 
                 // Check the button name and do the actions
                 if (buttonname.equalsIgnoreCase("Within_Mode:")){

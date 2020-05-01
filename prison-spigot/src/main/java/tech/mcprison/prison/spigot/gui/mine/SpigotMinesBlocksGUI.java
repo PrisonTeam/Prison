@@ -1,18 +1,18 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -32,8 +32,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Get the variables
         PrisonMines pMines = PrisonMines.getInstance();
-        MineManager mMan = pMines.getMineManager();
-        Mine m = mMan.getMine(minename).get();
+        Mine m = pMines.getMine(minename);
 
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;

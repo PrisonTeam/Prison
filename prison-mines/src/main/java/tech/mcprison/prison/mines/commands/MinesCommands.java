@@ -65,7 +65,7 @@ public class MinesCommands {
 
     private boolean performCheckMineExists(CommandSender sender, String mineName) {
     	mineName = Text.stripColor( mineName );
-        if (!PrisonMines.getInstance().getMineManager().getMine(mineName).isPresent()) {
+        if (PrisonMines.getInstance().getMine(mineName) == null) {
             PrisonMines.getInstance().getMinesMessages().getLocalizable("mine_does_not_exist")
                 .sendTo(sender);
             return false;
@@ -93,8 +93,7 @@ public class MinesCommands {
             return;
         }
 
-        if (PrisonMines.getInstance().getMines().stream()
-            .anyMatch(mine -> mine.getName().equalsIgnoreCase(mineName))) {
+        if (PrisonMines.getInstance().getMine(mineName) != null) {
         	pMines.getMinesMessages().getLocalizable("mine_exists")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
@@ -121,8 +120,7 @@ public class MinesCommands {
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
-        if (!PrisonMines.getInstance().getMineManager().getMine(mineName).get().getWorld()
-            .isPresent()) {
+        if (!pMines.getMine(mineName).getWorld().isPresent()) {
             pMines.getMinesMessages().getLocalizable("missing_world")
                 .sendTo(sender);
             return;
@@ -130,8 +128,7 @@ public class MinesCommands {
 
         if (!((Player) sender).getLocation().getWorld().getName()
             .equalsIgnoreCase(
-                pMines.getMineManager().getMine(mineName).get().getWorld().get()
-                    .getName())) {
+                pMines.getMine(mineName).getWorld().get().getName())) {
             pMines.getMinesMessages().getLocalizable("spawnpoint_same_world")
                 .sendTo(sender);
             return;
@@ -139,7 +136,7 @@ public class MinesCommands {
 
         setLastMineReferenced(mineName);
         
-        Mine mine = pMines.getMineManager().getMine(mineName).get();
+        Mine mine = pMines.getMine(mineName);
         mine.setSpawn(((Player) sender).getLocation());
         pMines.getMineManager().saveMine(mine);
         pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
@@ -162,7 +159,7 @@ public class MinesCommands {
         
         setLastMineReferenced(mineName);
         
-        Mine m = pMines.getMineManager().getMine(mineName).get();
+        Mine m = pMines.getMine(mineName);
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
@@ -217,7 +214,7 @@ public class MinesCommands {
         setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(mineName).get();
+        Mine m = pMines.getMine(mineName);
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -283,7 +280,7 @@ public class MinesCommands {
         setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMineManager().getMine(mineName).get();
+        Mine m = pMines.getMine(mineName);
         
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -292,7 +289,7 @@ public class MinesCommands {
             return;
         }
 
-        if (m.isInMine(blockType)) {
+        if (!m.isInMine(blockType)) {
         	pMines.getMinesMessages().getLocalizable("block_not_removed")
                 .sendTo(sender);
             return;
@@ -301,16 +298,30 @@ public class MinesCommands {
         deleteBlock( sender, pMines, m, blockType );
     }
 
+    /**
+     * Delete only the first occurrence of a block with the given BlockType.
+     * 
+     * @param sender
+     * @param pMines
+     * @param m
+     * @param blockType
+     */
 	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, BlockType blockType )
 	{
-		m.getBlocks().removeIf(x -> x.getType() == blockType);
-        pMines.getMineManager().saveMine( m );
-        
-        pMines.getMinesMessages().getLocalizable("block_deleted")
-            .withReplacements(blockType.name(), m.getName()).sendTo(sender);
-        getBlocksList(m).send(sender);
-
-        //pMines.getMineManager().clearCache();
+		Block rBlock = null;
+		for ( Block block : m.getBlocks() ) {
+			if ( block.getType() ==  blockType ) {
+				rBlock = block;
+				break;
+			}
+		}
+		if ( m.getBlocks().remove( rBlock )) {
+			pMines.getMineManager().saveMine( m );
+			
+			pMines.getMinesMessages().getLocalizable("block_deleted")
+			.withReplacements(blockType.name(), m.getName()).sendTo(sender);
+			getBlocksList(m).send(sender);
+		}
 	}
 
     @Command(identifier = "mines block search", permissions = "mines.block", 
@@ -423,7 +434,7 @@ public class MinesCommands {
         	
         	PrisonMines pMines = PrisonMines.getInstance();
         	
-        	Mine mine = pMines.getMineManager().getMine(mineName).get();
+        	Mine mine = pMines.getMine(mineName);
         	
         	// Remove from the manager:
         	pMines.getMineManager().removeMine(mine);
@@ -490,7 +501,7 @@ public class MinesCommands {
         
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
-        Mine m = mMan.getMine(mineName).get();
+        Mine m = pMines.getMine(mineName);
 
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         
@@ -596,7 +607,7 @@ public class MinesCommands {
         
         PrisonMines pMines = PrisonMines.getInstance();
         try {
-        	pMines.getMineManager().getMine(mineName).get().manualReset();
+        	pMines.getMine(mineName).manualReset();
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
                 .sendTo(sender);
@@ -719,7 +730,7 @@ public class MinesCommands {
 							mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
 				} else {
 					PrisonMines pMines = PrisonMines.getInstance();
-					Mine m = pMines.getMineManager().getMine(mineName).get();
+					Mine m = pMines.getMine(mineName);
 					
 					m.setResetTime( resetTime );
 					
@@ -789,7 +800,7 @@ public class MinesCommands {
         		}
         		
         		PrisonMines pMines = PrisonMines.getInstance();
-        		Mine m = pMines.getMineManager().getMine(mineName).get();
+        		Mine m = pMines.getMine(mineName);
         		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
         			m.setNotificationMode( noteMode );
         			m.setNotificationRadius( noteRadius );
@@ -840,7 +851,7 @@ public class MinesCommands {
         
         setLastMineReferenced(mineName);
         
-        Mine m = pMines.getMineManager().getMine(mineName).get();
+        Mine m = pMines.getMine(mineName);
         m.setBounds(selection.asBounds());
         pMines.getMineManager().saveMine( m );
         
@@ -865,7 +876,7 @@ public class MinesCommands {
     	setLastMineReferenced(mineName);
 
     	PrisonMines pMines = PrisonMines.getInstance();
-    	Mine m = pMines.getMineManager().getMine(mineName).get();
+    	Mine m = pMines.getMine(mineName);
     	
     	if ( sender instanceof Player ) {
     		m.teleportPlayerOut( (Player) sender );
