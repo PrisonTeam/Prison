@@ -75,6 +75,12 @@ public class OnBlockBreakEventListener
     					
     					// Possible processing if mined percentage gets too high? Submit reset? 
     					
+    					// Reset if the mine runs out of blocks:
+    					if ( mine.getRemainingBlockCount() == 0 ) {
+    						// submit a manual reset since the mine is empty:
+    						mine.manualReset();
+    					}
+    					
     					break;
     				}
     			}
