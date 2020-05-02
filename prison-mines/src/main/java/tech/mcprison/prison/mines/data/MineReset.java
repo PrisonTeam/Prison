@@ -203,7 +203,7 @@ public abstract class MineReset
 						}
 						
 						if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
-							addBlockBreakCount();
+							incrementBlockBreakCount();
 						}
 					}
 				}
@@ -1048,7 +1048,7 @@ public abstract class MineReset
 		this.airCountElapsedTimeMs = airCountElapsedTimeMs;
 	}
 
-	public int addBlockBreakCount() {
+	public int incrementBlockBreakCount() {
 		return ++blockBreakCount;
 	}
 	public int getBlockBreakCount() {
