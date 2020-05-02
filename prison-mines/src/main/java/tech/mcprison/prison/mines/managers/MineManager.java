@@ -268,14 +268,13 @@ public class MineManager
 						
 					case prison_mr_minename:
 					case prison_mines_remaining_minename:
-						mine.refreshAirCount(); // async & delayed : Very high cost
 						int remainingBlocks = mine.getRemainingBlockCount();
 						results = iFmt.format( remainingBlocks );
 						break;
 						
 					case prison_mp_minename:
 					case prison_mines_percent_minename:
-						mine.refreshAirCount(); // async & delayed : Very high cost
+						// mine.refreshAirCount(); // async & delayed : Very high cost
 						double percentRemaining = mine.getPercentRemainingBlockCount();
 						results = dFmt.format( percentRemaining );
 						break;
@@ -284,15 +283,6 @@ public class MineManager
 					case prison_mines_player_count_minename:
 						results = iFmt.format( mine.getPlayerCount() );
 						break;
-						
-					// Temp to test the onBlockBreak event handling:
-					case prison_mrt_minename:
-					case prison_mines_remaining_temp_minename:
-						mine.refreshAirCount(); // async & delayed : Very high cost
-						int remainingBlocksTemp = mine.getBounds().getTotalBlockCount() - mine.getBlockBreakCount();
-						results = iFmt.format( remainingBlocksTemp );
-						break;
-						
 						
 					default:
 						break;

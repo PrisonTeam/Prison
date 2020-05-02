@@ -654,35 +654,35 @@ public abstract class MineReset
     	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 0L );
     }
 
-    /**
-     * <p>This function will identify how many air blocks are within a mine.
-     * </p>
-     */
-    public void refreshAirCount() {
-    	refreshAirCount(null);
-    }
+//    /**
+//     * <p>This function will identify how many air blocks are within a mine.
+//     * </p>
+//     */
+//    private void refreshAirCount() {
+//    	refreshAirCount(null);
+//    }
     
-    public void refreshAirCount(PrisonRunnable callback) {
-    	
-    	long elapsedTarget = getAirCountTimestamp() + MINE_RESET__AIR_COUNT_BASE_DELAY + 
-    			(getAirCountElapsedTimeMs() * MINE_RESET__AIR_COUNT_BASE_DELAY / 100);
-    	
-    	if ( getAirCountTimestamp() == 0L ||
-    			(elapsedTarget <= System.currentTimeMillis() )) {
-    		
-    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this, callback);
-    		
-    		submitSyncTask( cabAsyncTask );
-    		
-    		// Cannot run this async
-    		//submitAsyncTask( cabAsyncTask );
-    		
-//    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
-    		
-    		// Do not run this here, it must be ran as an async task... 
-//    		refreshAirCountAsyncTask();
-    	}
-    }
+//    private void refreshAirCount(PrisonRunnable callback) {
+//    	
+//    	long elapsedTarget = getAirCountTimestamp() + MINE_RESET__AIR_COUNT_BASE_DELAY + 
+//    			(getAirCountElapsedTimeMs() * MINE_RESET__AIR_COUNT_BASE_DELAY / 100);
+//    	
+//    	if ( getAirCountTimestamp() == 0L ||
+//    			(elapsedTarget <= System.currentTimeMillis() )) {
+//    		
+//    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this, callback);
+//    		
+//    		submitSyncTask( cabAsyncTask );
+//    		
+//    		// Cannot run this async
+//    		//submitAsyncTask( cabAsyncTask );
+//    		
+////    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
+//    		
+//    		// Do not run this here, it must be ran as an async task... 
+////    		refreshAirCountAsyncTask();
+//    	}
+//    }
 
     /**
      * This task should be ran upon loading of the mines upon server start.  
@@ -783,7 +783,8 @@ public abstract class MineReset
 	}
     
 	public int getRemainingBlockCount() {
-		int remainingBlocks = getBounds().getTotalBlockCount() - getAirCount();
+		int remainingBlocks = getBounds().getTotalBlockCount() - getBlockBreakCount();
+//		int remainingBlocks = getBounds().getTotalBlockCount() - getAirCount();
 		return remainingBlocks;
 	}
 	

@@ -108,8 +108,6 @@ public class IntegrationManager {
 		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 
-		prison_mrt_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
@@ -121,37 +119,6 @@ public class IntegrationManager {
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
 		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
 
-		// Temp placeholder to test the onBlockBreak event counting:
-		prison_mines_remaining_temp_minename(prison_mrt_minename, PlaceHolderFlags.MINES),
-		
-		
-		// Suppressable internal placeholders: some placeholder apis strip off the prefix:
-//		r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rankup_cost(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rankup_cost_percent(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rankup_rank(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-//		rankup_rank_tag(PlaceHolderFlags.PLAYER, PlaceHolderFlags.SUPRESS),
-
-//		mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.SUPRESS),
-//		mines_interval_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-//		mines_timeleft_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-//		mines_size_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-//		mines_remaining_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-//		mines_percent_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-//		mines_player_count_minename(PlaceHolderFlags.SUPRESS, PlaceHolderFlags.MINES),
-		
 		;
 		
 		
