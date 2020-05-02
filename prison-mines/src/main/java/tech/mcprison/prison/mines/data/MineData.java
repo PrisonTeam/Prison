@@ -76,7 +76,7 @@ public abstract class MineData {
     
     	this.skipResetEnabled = false;
         this.skipResetPercent = 80.0D;
-        this.skipResetBypassLimit = 10;
+        this.skipResetBypassLimit = 50;
         this.skipResetBypassCount = 0;
     }
 

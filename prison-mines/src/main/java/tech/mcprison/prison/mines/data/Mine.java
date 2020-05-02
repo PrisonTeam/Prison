@@ -121,8 +121,8 @@ public class Mine
         setSkipResetEnabled( skipResetEnabled == null ? false : skipResetEnabled.booleanValue() );
         Double skipResetPercent = (Double) document.get( "skipResetPercent" );
         setSkipResetPercent( skipResetPercent == null ? 80.0D : skipResetPercent.doubleValue() );
-        Integer skipResetBypassLimit = (Integer) document.get( "skipResetBypassLimit" );
-        setSkipResetBypassLimit( skipResetBypassLimit == null ? 10 : skipResetBypassLimit.intValue() );
+        Double skipResetBypassLimit = (Double) document.get( "skipResetBypassLimit" );
+        setSkipResetBypassLimit( skipResetBypassLimit == null ? 50 : skipResetBypassLimit.intValue() );
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
@@ -156,6 +156,10 @@ public class Mine
         ret.put("notificationMode", getNotificationMode().name() );
         ret.put("notificationRadius", Long.valueOf( getNotificationRadius() ));
 
+        ret.put( "skipResetEnabled", isSkipResetEnabled() );
+        ret.put( "skipResetPercent", getSkipResetPercent() );
+        ret.put( "skipResetBypassLimit", getSkipResetBypassLimit() );
+        
         if (isHasSpawn()) {
             ret.put("spawnX", getSpawn().getX());
             ret.put("spawnY", getSpawn().getY());

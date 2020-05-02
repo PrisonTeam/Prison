@@ -504,6 +504,7 @@ public class MinesCommands {
         Mine m = pMines.getMine(mineName);
 
         DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay(m.getName());
 
@@ -528,6 +529,19 @@ public class MinesCommands {
 
         {
         	RowComponent row = new RowComponent();
+
+        	long targetResetTime = m.getTargetRestTime();
+        	double remaining = ( targetResetTime <= 0 ? 0d : 
+        			(targetResetTime - System.currentTimeMillis()) / 1000d);
+        	double rtMinutes = remaining / 60.0D;
+		
+        	row.addTextComponent( "&3Time Remaining Until Reset: &7%s &3Secs (&7%.2f &3Mins)", 
+        			dFmt.format( remaining ), rtMinutes );
+        	chatDisplay.addComponent( row );
+        }
+        
+        {
+        	RowComponent row = new RowComponent();
         	row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
         			m.getNotificationMode().name(), 
         			( m.getNotificationMode() == MineNotificationMode.radius ? 
@@ -546,6 +560,35 @@ public class MinesCommands {
         	
         	row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
         			dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
+        	chatDisplay.addComponent( row );
+        }
+        
+        
+        {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
+        			dFmt.format( m.getRemainingBlockCount() ), 
+        			fFmt.format( m.getPercentRemainingBlockCount() ) );
+        	
+        	chatDisplay.addComponent( row );
+        }
+        
+        
+        if ( m.isSkipResetEnabled() ) {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent( "&3Skip Reset &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
+        			fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
+        	chatDisplay.addComponent( row );
+
+        	if ( m.getSkipResetBypassCount() > 0 ) {
+        		RowComponent row2 = new RowComponent();
+        		row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
+        				dFmt.format( m.getSkipResetBypassCount() ));
+        		chatDisplay.addComponent( row2 );
+        	}
+        } else {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
         	chatDisplay.addComponent( row );
         }
         
@@ -706,7 +749,90 @@ public class MinesCommands {
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines resettime", permissions = "mines.resettime", 
+    @Command(identifier = "mines skipReset", permissions = "mines.skipreset", 
+    		description = "Set a mine to skip the reset if not enough blocks have been mined.")
+    public void skipResetCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "enabled", description = "Enable the skip reset processing: 'Enabled' or 'Disable'", 
+        		def = "disabled") String enabled,
+        @Arg(name = "percent", description = "Percent threshold before resetting.", def = "80" ) String percent,
+        @Arg(name = "bypassLimit", description = "Limit number of skips before bypassing and performing a reset",
+        		def = "50") String bypassLimit
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+        	
+        	if ( enabled == null || !"enabled".equalsIgnoreCase( enabled ) && !"disabled".equalsIgnoreCase( enabled )) {
+        		Output.get().sendWarn( sender,"&7Invalid &benabled&7 value. Must be either &benabled&7 or " +
+        				"&bdisabled&7.  Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
+        		return;
+        	}
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+
+        	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled );
+        	double skipPercent = 80.0d;
+        	int skipBypassLimit = 50;
+        	
+        	try {
+				skipPercent = Double.parseDouble( percent );
+				if ( skipPercent < 0.0d ) {
+					skipPercent = 0.0d;
+				} else if ( skipPercent > 100.0d ) {
+					skipPercent = 100.0d;
+				}
+			}
+			catch ( NumberFormatException e1 ) {
+				Output.get().sendWarn( sender,"&7Invalid percentage. Not a number. " +
+						"Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
+				return;
+			}
+        	
+        	try {
+				skipBypassLimit = Integer.parseInt( bypassLimit );
+				if ( skipBypassLimit < 10 ) {
+					skipBypassLimit = 10;
+				} 
+			}
+			catch ( NumberFormatException e1 ) {
+				Output.get().sendWarn( sender,"&7Invalid bypass limit. Not number. " +
+						"Was &b%s&7.", (bypassLimit == null ? "-blank-" : bypassLimit) );
+			}
+        	
+        	m.setSkipResetEnabled( skipEnabled );
+        	m.setSkipResetPercent( skipPercent );
+        	m.setSkipResetBypassLimit( skipBypassLimit );
+        	
+        	pMines.getMineManager().saveMine( m );
+        	
+        	// User's message:
+        	String message = String.format( "&7mines skipreset for &b%s&7: &b%s&7  " +
+					        			"threshold: &b%.2f&7 percent  bypassLimit: &b%d", 
+					        			m.getName(), (skipEnabled ? "enabled" : "disabled"),
+					        			skipPercent, skipBypassLimit );
+        	Output.get().sendInfo( sender, message );
+        	
+        	// Server Log message:
+        	Player player = getPlayer( sender );
+        	Output.get().logInfo( "%s :: Changed by: %s", message,
+        								(player == null ? "console" : player.getDisplayName()) );
+        } 
+    }
+
+
+
+    /**
+     * <p>The following command will change the mine's time between resets. But it will
+     * not be applied until after the next reset.
+     * </p>
+     * 
+     * @param sender
+     * @param mineName
+     * @param time
+     */
+    @Command(identifier = "mines resetTime", permissions = "mines.resettime", 
     		description = "Set a mine's time  to reset.")
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -742,7 +868,7 @@ public class MinesCommands {
 					// Server Log message:
 					Player player = getPlayer( sender );
 					Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
-							(player == null ? "console?" : player.getDisplayName()), m.getName(), resetTime  );
+							(player == null ? "console" : player.getDisplayName()), m.getName(), resetTime  );
 				}
 			}
 			catch ( NumberFormatException e ) {

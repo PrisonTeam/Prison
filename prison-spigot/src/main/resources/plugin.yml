@@ -80,8 +80,11 @@ permissions:
   mines.reset:
     description: Access to the /mines reset command.
     
+  mines.skipreset:
+    description: Access to the /mines skipReset command.
+    
   mines.resettime:
-    description: Access to the /mines resettime command.
+    description: Access to the /mines resetTime command.
 
   mines.notification:
     description: Access to the /mines notification command.
@@ -101,6 +104,7 @@ permissions:
       mines.wand: true
       mines.list: true
       mines.reset: true
+      mines.skipreset: true
       mines.resettime: true
       mines.notification: true
       mines.tp: true
