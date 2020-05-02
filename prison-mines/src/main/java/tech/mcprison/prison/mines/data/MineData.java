@@ -15,7 +15,7 @@ import tech.mcprison.prison.util.Location;
 public abstract class MineData {
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
-	public static final int MINE_RESET__TIME_SEC__MINIMUM = 2 * 60; // 2 minutes
+	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
 		
 	private Bounds bounds;
