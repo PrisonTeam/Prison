@@ -992,7 +992,47 @@ public class ListenersPrisonManagerGUI implements Listener {
                     String buttonname = parts[0];
                     String mode = parts[1];
 
-                    if (buttonname.equalsIgnoreCase("All")){
+                    if (buttonname.equalsIgnoreCase("Full_Inv_Play_Sound")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.General.playSoundIfInventoryIsFull", false);
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isRightClick()){
+                                configThings.set("Options.General.playSoundIfInventoryIsFull", true);
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    } else if (buttonname.equalsIgnoreCase("Full_Inv_Hologram")){
+                        if (mode.equalsIgnoreCase("Enabled")){
+                            if (e.isRightClick() && e.isShiftClick()){
+                                configThings.set("Options.General.hologramIfInventoryIsFull", false);
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        } else if (mode.equalsIgnoreCase("Disabled")){
+                            if (e.isRightClick()){
+                                configThings.set("Options.General.hologramIfInventoryIsFull", true);
+                                SpigotPrison.getInstance().saveAutoFeaturesConfig();
+                                e.setCancelled(true);
+                                p.closeInventory();
+                                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                                gui.open();
+                            }
+                        }
+                    } else if (buttonname.equalsIgnoreCase("All")){
                         if (mode.equalsIgnoreCase("Enabled")){
                             if (e.isRightClick() && e.isShiftClick()){
                                 configThings.set("Options.General.AreEnabledFeatures", false);

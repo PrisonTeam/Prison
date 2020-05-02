@@ -5,13 +5,18 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -100,6 +105,16 @@ public class AutoManager implements Listener {
     	}
     }
 
+    // Prevents players from picking up armorStands (used for holograms), only if they're invisible
+	@EventHandler
+	public void manipulate(PlayerArmorStandManipulateEvent e)
+	{
+		if(!e.getRightClicked().isVisible())
+		{
+			e.setCancelled(true);
+		}
+	}
+
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine, Player p ) {
 		// Change this to true to enable these features
 
@@ -109,6 +124,8 @@ public class AutoManager implements Listener {
 		if (areEnabledFeatures) {
 			
 			boolean dropItemsIfInventoryIsFull = autoConfigs.getBoolean("Options.General.DropItemsIfInventoryIsFull");
+			boolean playSoundIfInventoryIsFull = autoConfigs.getBoolean("Options.General.playSoundIfInventoryIsFull");
+			boolean hologramIfInventoryIsFull = autoConfigs.getBoolean("Options.General.hologramIfInventoryIsFull");
 			
 			// AutoPickup booleans from configs
 			boolean autoPickupEnabled = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEnabled");
@@ -163,20 +180,50 @@ public class AutoManager implements Listener {
 			
 			// Check if the inventory's full
 			if (p.getInventory().firstEmpty() == -1){
-				
+
+				// Play sound when full
+				if (playSoundIfInventoryIsFull) {
+					p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 10F, 1F);
+				}
+
+				String message;
+
 				// Drop items when full
 				if (dropItemsIfInventoryIsFull) {
+
+					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems"));
 					
-					p.sendMessage(SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems")));
+					p.sendMessage(message);
+
+					if (hologramIfInventoryIsFull) {
+						ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
+						as.setGravity(false);
+						as.setCanPickupItems(false);
+						as.setCustomNameVisible(true);
+						as.setVisible(false);
+						as.setCustomName(message);
+						Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
+					}
+
+				} else { // Lose items when full
+
+					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems"));
 					
-				} else if (!(dropItemsIfInventoryIsFull)){ // Lose items when full
-					
-					p.sendMessage(SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems")));
-					
+					p.sendMessage(message);
+
+					if (hologramIfInventoryIsFull) {
+						ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
+						as.setGravity(false);
+						as.setCanPickupItems(false);
+						as.setCustomNameVisible(true);
+						as.setVisible(false);
+						as.setCustomName(message);
+						Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
+					}
+
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
 					e.getBlock().setType(Material.AIR);
-					
 				}
 				return;
 			}

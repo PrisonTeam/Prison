@@ -33,6 +33,40 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         ItemStack autoSmelt;
         ItemStack autoBlock;
         ItemStack enabledOrDisabled;
+        ItemStack playSound;
+        ItemStack hologram;
+
+        if (configThings.getBoolean("Options.General.playSoundIfInventoryIsFull")){
+
+            List<String> EnabledOrDisabledLore = createLore(
+                    "&aFull Inventory, notify with sound enabled",
+                    "&cPress Shift + Right click to disable");
+            playSound = createButton(Material.EMERALD_BLOCK, 1, EnabledOrDisabledLore, SpigotPrison.format("&a" + "Full_Inv_Play_Sound Enabled"));
+
+        } else {
+
+            List<String> EnabledOrDisabledLore = createLore(
+                    "&cFull Inventory, notify with sound disabled",
+                    "&aRight click to enable");
+            playSound = createButton(Material.REDSTONE_BLOCK, 1, EnabledOrDisabledLore, SpigotPrison.format("&c" + "Full_Inv_Play_Sound Disabled"));
+
+        }
+
+        if (configThings.getBoolean("Options.General.hologramIfInventoryIsFull")){
+
+            List<String> EnabledOrDisabledLore = createLore(
+                    "&aFull Inventory, notify with hologram enabled",
+                    "&cPress Shift + Right click to disable");
+            hologram = createButton(Material.EMERALD_BLOCK, 1, EnabledOrDisabledLore, SpigotPrison.format("&a" + "Full_Inv_Hologram Enabled"));
+
+        } else {
+
+            List<String> EnabledOrDisabledLore = createLore(
+                    "&cFull Inventory, notify with hologram disabled",
+                    "&aRight click to enable");
+            hologram = createButton(Material.REDSTONE_BLOCK, 1, EnabledOrDisabledLore, SpigotPrison.format("&c" + "Full_Inv_Hologram Disabled"));
+
+        }
 
         if (configThings.getBoolean("Options.General.AreEnabledFeatures")){
 
@@ -102,6 +136,12 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
                     "&8Left Click to open.");
             autoBlock = createButton(Material.REDSTONE_BLOCK, 1, autoBlockLore, SpigotPrison.format("&3" + "AutoBlock Disabled"));
         }
+
+        //Position of the button
+        inv.setItem(3, playSound);
+
+        //Position of the button
+        inv.setItem(5, hologram);
 
         //Position of the button
         inv.setItem(10, autoPickup);

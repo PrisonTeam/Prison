@@ -32,7 +32,8 @@ public class AutoFeaturesFileConfig {
 	    	
 		    	areEnabledFeatures(general, false),
 		    	dropItemsIfInventoryIsFull(general, true),
-    	
+				playSoundIfInventoryIsFull(general, true),
+				hologramIfInventoryIsFull(general, true),
     	
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
@@ -219,6 +220,8 @@ public class AutoFeaturesFileConfig {
 				
 				conf.set("Options.General.AreEnabledFeatures", false);
 				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
+				conf.set("Options.General.playSoundIfInventoryIsFull", true);
+				conf.set("Options.General.hologramIfInventoryIsFull", true);
 				
 				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
 				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
