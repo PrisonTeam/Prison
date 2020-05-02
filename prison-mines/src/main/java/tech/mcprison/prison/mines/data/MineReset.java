@@ -790,9 +790,11 @@ public abstract class MineReset
 	
 	public double getPercentRemainingBlockCount() {
 		int totalCount = getBounds().getTotalBlockCount();
-		double remainingBlocksP = (totalCount - getAirCount()) * 100d;
-		double originalCount = totalCount - getAirCountOriginal();
-		double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
+		int remainingCount = getRemainingBlockCount();
+		double percentRemaining = (totalCount == 0d ? 0d : (remainingCount * 100d) / (double) totalCount);
+//		double remainingBlocksP = (totalCount - getAirCount()) * 100d;
+//		double originalCount = totalCount - getAirCountOriginal();
+//		double percentRemaining = (originalCount == 0d ? 0d : remainingBlocksP / originalCount);
 		return percentRemaining;
 	}
 	
