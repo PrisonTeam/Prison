@@ -249,6 +249,9 @@ public abstract class MineData {
 		this.skipResetBypassLimit = skipResetBypassLimit;
 	}
 
+	public int incrementSkipResetBypassCount() {
+		return ++skipResetBypassCount;
+	}
 	public int getSkipResetBypassCount() {
 		return skipResetBypassCount;
 	}

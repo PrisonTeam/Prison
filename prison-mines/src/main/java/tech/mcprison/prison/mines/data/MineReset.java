@@ -131,90 +131,103 @@ public abstract class MineReset
      */
     protected void resetSynchonously() {
 
-    	long start = System.currentTimeMillis();
-    	long time2 = 0L;
+//    	if ( !isSkipResetEnabled() || 
+//    		  isSkipResetEnabled() && 
+//    		  getPercentRemainingBlockCount() < getSkipResetPercent() || 
+//    		  isSkipResetEnabled() && 
+//    		  incrementSkipResetBypassCount() > getSkipResetBypassLimit() ) {
+//    		setSkipResetBypassCount(0);
+    		
+    		long start = System.currentTimeMillis();
+    		
+    		// The all-important event
+    		MineResetEvent event = new MineResetEvent(this);
+    		Prison.get().getEventBus().post(event);
+    		if (!event.isCanceled()) {
+    			resetSynchonouslyInternal();
+    		}
+    		
+    		long stop = System.currentTimeMillis();
+    		setStatsResetTimeMS( stop - start );
+    		
+    		// Tie to the command stats mode so it logs it if stats are enabled:
+    		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+    			DecimalFormat dFmt = new DecimalFormat("#,##0");
+    			Output.get().logInfo("&cMine reset: &7" + getName() + 
+    					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+    					statsMessage() );
+    		}
+//    	} else {
+//    		// Reset has been skipped.  Do not log.  skipResetBypassCount was incremented.
+//    	}
     	
-        // The all-important event
-        MineResetEvent event = new MineResetEvent(this);
-        Prison.get().getEventBus().post(event);
-        if (!event.isCanceled()) {
-        	
-        	try {
-        		Optional<World> worldOptional = getWorld();
-        		if (!worldOptional.isPresent()) {
-        			Output.get().logError("Could not reset mine " + getName() +
-        						" because the world it was created in does not exist.");
-        			return;
-        		}
-        		World world = worldOptional.get();
-        		
-        		// Generate new set of randomized blocks each time:  This is the ONLY thing that can be async!! ;(
-        		generateBlockList();
-        		
-        		setStatsTeleport1TimeMS(
-        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-        		
-        		time2 = System.currentTimeMillis();
-        		
-        		boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
-
-        		Location altTp = alternativeTpLocation();
-        		altTp.setY( altTp.getBlockY() - 1 ); // Set Y one lower to 
-            	//boolean replaceGlassBlock = ( isFillMode && altTp.getBlockAt().getType() == BlockType.GLASS );
-            		
-        		// Reset the block break count before resetting the blocks:
-        		setBlockBreakCount( 0 );
-        		
-        		int i = 0;
-        		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
-//    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
-        			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
-        				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
-        					Location targetBlock = new Location(world, x, y, z);
-        					if (!isFillMode || 
-        							isFillMode && targetBlock.getBlockAt().isEmpty() ||
-        							isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
-        						targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
-        					}
-        					
-        					if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
-        						addBlockBreakCount();
-        					}
-        				}
-        			}
-        		}
-        		time2 = System.currentTimeMillis() - time2;
-        		setStatsBlockUpdateTimeMS( time2 );
-        		
-        		
-        		// If a player falls back in to the mine before it is fully done being reset, 
-        		// such as could happen if there is lag or a lot going on within the server, 
-        		// this will TP anyone out who would otherwise suffocate.  I hope! lol
-        		setStatsTeleport2TimeMS(
-        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-        		
-        		// free up memory:
-        		getRandomizedBlocks().clear();
-        		
-        		// Broadcast message to all players within a certain radius of this mine:
-        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
-        		
-        	} catch (Exception e) {
-        		Output.get().logError("&cFailed to reset mine " + getName(), e);
-        	}
-        }
-        
-        long stop = System.currentTimeMillis();
-        setStatsResetTimeMS( stop - start );
-        
-        // Tie to the command stats mode so it logs it if stats are enabled:
-        if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
-        	DecimalFormat dFmt = new DecimalFormat("#,##0");
-        	Output.get().logInfo("&cMine reset: &7" + getName() + 
-        			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
-        			statsMessage() );
-        }
     }
+
+	private void resetSynchonouslyInternal() {
+		try {
+			Optional<World> worldOptional = getWorld();
+			if (!worldOptional.isPresent()) {
+				Output.get().logError("Could not reset mine " + getName() +
+							" because the world it was created in does not exist.");
+				return;
+			}
+			World world = worldOptional.get();
+			
+			// Generate new set of randomized blocks each time:  This is the ONLY thing that can be async!! ;(
+			generateBlockList();
+			
+			setStatsTeleport1TimeMS(
+					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+			
+			long time2 = System.currentTimeMillis();
+			
+			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+
+			Location altTp = alternativeTpLocation();
+			altTp.setY( altTp.getBlockY() - 1 ); // Set Y one lower to 
+			//boolean replaceGlassBlock = ( isFillMode && altTp.getBlockAt().getType() == BlockType.GLASS );
+				
+			// Reset the block break count before resetting the blocks:
+			setBlockBreakCount( 0 );
+			
+			int i = 0;
+			for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
+//    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
+				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
+					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+						Location targetBlock = new Location(world, x, y, z);
+						if (!isFillMode || 
+								isFillMode && targetBlock.getBlockAt().isEmpty() ||
+								isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
+							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
+						}
+						
+						if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+							addBlockBreakCount();
+						}
+					}
+				}
+			}
+			time2 = System.currentTimeMillis() - time2;
+			setStatsBlockUpdateTimeMS( time2 );
+			
+			
+			// If a player falls back in to the mine before it is fully done being reset, 
+			// such as could happen if there is lag or a lot going on within the server, 
+			// this will TP anyone out who would otherwise suffocate.  I hope! lol
+			setStatsTeleport2TimeMS(
+					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+			
+			// free up memory:
+			getRandomizedBlocks().clear();
+			
+			// Broadcast message to all players within a certain radius of this mine:
+			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+			
+		} catch (Exception e) {
+			Output.get().logError("&cFailed to reset mine " + getName(), e);
+		}
+	}
 
     
     public String statsMessage() {
@@ -250,6 +263,7 @@ public abstract class MineReset
 		// used to pick up where it left off.
     	setResetPosition( 0 );
     	
+    	setSkipResetBypassCount( 0 );
     	
     	// NOTE: DO NOT reset blockBreakCount here!  Players can break many blocks between
     	//       here and when the mine actually starts to reset.

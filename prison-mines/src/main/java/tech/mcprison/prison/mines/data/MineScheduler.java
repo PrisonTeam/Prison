@@ -234,10 +234,21 @@ public abstract class MineScheduler
 		getJobStack().addAll( getJobWorkflow() );
 	}
 	
-	
+	/**
+	 * Calculate if the reset should be skipped. If it should, increment the skip count
+ 	 * at the end, and skip the generation of the next block list and the actual resets.
+	 */
 	@Override
 	public void run()
 	{
+		
+    	boolean skip =
+    			isSkipResetEnabled() && 
+    				getPercentRemainingBlockCount() < getSkipResetPercent() || 
+    			isSkipResetEnabled() && 
+    				getSkipResetBypassCount() >= getSkipResetBypassLimit();
+    	
+		
 		switch ( getCurrentJob().getAction() )
 		{
 			case MESSAGE_GATHER:
@@ -251,18 +262,24 @@ public abstract class MineScheduler
 				break;
 				
 			case RESET_BUILD_BLOCKS_ASYNC:
-				generateBlockListAsync();
+				if ( !skip ) {
+					generateBlockListAsync();
+				}
 
 				break;
 
 			case RESET_ASYNC:
-				// Not yet implemented:
+				if ( !skip ) {
+					// Not yet implemented:
+				}
 				
 				break;
 				
 			case RESET:
 				// synchronous reset.  Will be phased out in the future?
-				resetSynchonously();
+				if ( !skip ) {
+					resetSynchonously();
+				}
 				
 				break;
 				
@@ -277,6 +294,10 @@ public abstract class MineScheduler
 //			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
 //		}
 //		
+		if ( skip ) {
+			incrementSkipResetBypassCount();
+		}
+		
 		submitNextAction();
 	}
 
