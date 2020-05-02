@@ -195,15 +195,7 @@ public class AutoManager implements Listener {
 					
 					p.sendMessage(message);
 
-					if (hologramIfInventoryIsFull) {
-						ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
-						as.setGravity(false);
-						as.setCanPickupItems(false);
-						as.setCustomNameVisible(true);
-						as.setVisible(false);
-						as.setCustomName(message);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
-					}
+					hologram(e, message, hologramIfInventoryIsFull);
 
 				} else { // Lose items when full
 
@@ -211,15 +203,7 @@ public class AutoManager implements Listener {
 					
 					p.sendMessage(message);
 
-					if (hologramIfInventoryIsFull) {
-						ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
-						as.setGravity(false);
-						as.setCanPickupItems(false);
-						as.setCustomNameVisible(true);
-						as.setVisible(false);
-						as.setCustomName(message);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
-					}
+					hologram(e, message, hologramIfInventoryIsFull);
 
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
@@ -447,6 +431,18 @@ public class AutoManager implements Listener {
 				Prison.get().getPlatform().showActionBar( prisonPlayer, 
 						autoConfigs.getString( "Messages.InventoryIsFull" ), 6 );
 			}
+		}
+	}
+
+	private void hologram(BlockBreakEvent e, String message, Boolean enabled){
+		if (enabled = true){
+			ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
+			as.setGravity(false);
+			as.setCanPickupItems(false);
+			as.setCustomNameVisible(true);
+			as.setVisible(false);
+			as.setCustomName(message);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
 		}
 	}
 
