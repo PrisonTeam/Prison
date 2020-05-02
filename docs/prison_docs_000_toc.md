@@ -16,10 +16,10 @@
 
 
 * [Setting up a Spigot Server](prison_docs_010_setting_up_a_spigot_server.md)
-	Setting up Java. Setting up and running BuildTool. Creating a runnable Spigot Server.
+    Setting up Java. Setting up and running BuildTool. Creating a runnable Spigot Server.
 
 
-* **Todo:** Setting up Prison - **Required** - 
+* [Setting up Prison - Basics **Required**](prison_docs_012_setting_up_prison_basics.md) 
     Adding the plugin to your server.
 
 
@@ -117,6 +117,9 @@ This section of guides will focus more on other plugins and how they can integra
     This guide uses LuckPerms in the examples, but any other permission plugin will work just as well.
 
 * [Setting up EssentialsX Warps for Players](prison_docs_630_configuring_warps.md)
+
+
+* [Ideas on Setting up Donor Mines and Private Mines](prison_docs_628_configuring_private_mines.md)
 
 
 

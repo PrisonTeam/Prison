@@ -178,6 +178,8 @@ public class SpigotPrison extends JavaPlugin {
 
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );
+		
+		Output.get().logInfo( "Prison - Finished loading." );
     }
 
     @Override

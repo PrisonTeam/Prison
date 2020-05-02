@@ -8,13 +8,31 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.11 - 2020-04-29
+## tag v3.2.1-alpha.11 - 2020-05-01
+
+
+* **Internal Mine Optimizations**
+Refactored a lot of stuff with mines to eliminate wasteful operations.
+Setup a collection organized by name for quicker access when there are larger number of mines within a prison.
+Changed remove block to remove ONLY the first block so as to help admins remove duplicates instead of having to go back and readd them. Fixed issue with missing not on if blocktype is in mine.
+Cleaned up the save mine function in relationship to the initial loading of mines to simplify the code and to eliminate possible problems.
+
+
+* **New Feature: Starting to track actual block breaks in mines**
+Hooked up an even monitor for BlockBreakEvents to track them within each mine.
+This is a work in progress to eliminate the counting of air blocks, of which could be a strain on the server if something like holographic displays is hooked up to each mine, and runs a few times per second.
+Upon server startup, had to count air blocks, but changed it to sync since on server load it was throwing too many exceptions due to entities within those chunks.
+Hooked up a temp placeholder to test with, which will be removed shortly once moved in to production.
 
 
 * **Async issue: Mine air counts**
 Async failure: Well, found out the hard way there is even less that can be done with async threads. Even just checking the air counts that does not update the world can cause problems and could throw an exception.
 The issue is that if a chunk has to be loaded and if there are any entities, then it will throw an exception and could possibly corrupt something.
 For now i'm catching the exception and logging it.  Will eliminate the async air counting in the next few days when I hook up live block counts of mined blocks.
+
+
+* **Clear coordinates after usage**
+Made changes to ensure that the coordinates are cleared after they are used.  Also same for the last used mine name when that mine is deleted.
 
 
 * **Enhancement: Better logging if major failure with rankup**
