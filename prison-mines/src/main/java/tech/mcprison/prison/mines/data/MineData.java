@@ -32,6 +32,8 @@ public abstract class MineData {
 	
     private List<Block> blocks;
     
+    private long totalBlocksMined = 0;
+    
     
     private boolean skipResetEnabled = false;
     private double skipResetPercent;
@@ -226,6 +228,23 @@ public abstract class MineData {
 	}
 	public void setTargetRestTime( long targetRestTime ) {
 		this.targetRestTime = targetRestTime;
+	}
+
+	/**
+	 * May not be 100% thread safe, but odds of collisions will be minimal and
+	 * if its off by a few blocks its not a big deal since the value resets
+	 * when the server resets.
+	 * 
+	 * @return
+	 */
+	public long incrementTotalBlocksMined() {
+		return ++totalBlocksMined;
+	}
+	public long getTotalBlocksMined() {
+		return totalBlocksMined;
+	}
+	public void setTotalBlocksMined( long totalBlocksMined ) {
+		this.totalBlocksMined = totalBlocksMined;
 	}
 
 	public boolean isSkipResetEnabled() {
