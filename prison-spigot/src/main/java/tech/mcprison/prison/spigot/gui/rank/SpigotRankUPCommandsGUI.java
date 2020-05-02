@@ -17,9 +17,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
  */
 public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
-    private Rank rank;
+    private final Player p;
+    private final Rank rank;
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -32,7 +31,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         ItemStack itemcommand;
 
         // Get the dimensions and if needed increases them
-        dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D)*9;
+        int dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D) * 9;
 
         // If the inventory is empty
         if (dimension == 0){

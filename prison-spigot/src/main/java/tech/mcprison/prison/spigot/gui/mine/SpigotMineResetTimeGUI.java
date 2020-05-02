@@ -15,10 +15,9 @@ import java.util.List;
  */
 public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
 
-    private int dimension = 45;
-    private Player p;
-    private String minename;
-    private Integer val;
+    private final Player p;
+    private final String minename;
+    private final Integer val;
 
     public SpigotMineResetTimeGUI(Player p, Integer val, String minename){
         this.p = p;
@@ -29,6 +28,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create a new inventory
+        int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesInfo -> ResetTime"));
 
         // Create a new lore

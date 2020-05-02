@@ -66,28 +66,12 @@ public class ListenersPrisonManagerGUI implements Listener {
 
         Player p = (Player) e.getPlayer();
 
-        if(activeGui.contains(p.getName()))
-            activeGui.remove(p.getName());
+        activeGui.remove(p.getName());
     }
-
 
     public void addToGUIBlocker(Player p){
         if(!activeGui.contains(p.getName()))
             activeGui.add(p.getName());
-    }
-
-    public void removeFromGUIBlocker(Player p){
-        if(activeGui.contains(p.getName()))
-            activeGui.remove(p.getName());
-    }
-
-    public boolean invalidClick(Player player, InventoryClickEvent event){
-        if(activeGui.contains(player.getName()))
-            if(event.getSlot() == -999 // Checks if player clicks outside the inventory
-                    || event.getCurrentItem() == null // Checks for invalid item
-                    || event.getCurrentItem().getType() == Material.AIR) // Checks for clicking empty slot
-                return true;
-        return false;
     }
 
     @EventHandler
@@ -341,8 +325,10 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 } else if (buttonname.equalsIgnoreCase("RankPrice")){
 
-                    SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rankOptional.get().cost, rankOptional.get().name);
-                    gui.open();
+                    if(rankOptional.isPresent()) {
+                        SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rankOptional.get().cost, rankOptional.get().name);
+                        gui.open();
+                    }
 
                 } else if (buttonname.equalsIgnoreCase("RankTag")){
 

@@ -14,8 +14,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
+    private final Player p;
 
     public SpigotPrisonGUI(Player p){
         this.p = p;
@@ -24,6 +23,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
+        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager"));
 
         // Lore of the button

@@ -19,9 +19,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
  */
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
-    private String minename;
+    private final Player p;
+    private final String minename;
 
     public SpigotMinesBlocksGUI(Player p, String minename){
         this.p = p;
@@ -35,7 +34,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(minename);
 
         // Get the dimensions and if needed increases them
-        dimension = (int) Math.ceil(m.getBlocks().size() / 9D)*9;
+        int dimension = (int) Math.ceil(m.getBlocks().size() / 9D) * 9;
 
         // If the inventory is empty
         if (dimension == 0){

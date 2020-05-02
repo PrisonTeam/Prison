@@ -16,9 +16,8 @@ import java.util.List;
  */
 public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
-    private Rank rank;
+    private final Player p;
+    private final Rank rank;
 
     public SpigotRankManagerGUI(Player p, Rank rank) {
         this.p = p;
@@ -28,6 +27,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
+        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> RankManager"));
 
         // Create the lore
@@ -37,15 +37,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 "&8&l|&3Info&8|"
         );
 
-        if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0){
-            rankupCommandsLore.add(SpigotPrison.format("&3The Rank " + rank.name + " contains no commands."));
-        } else {
-            rankupCommandsLore.add(SpigotPrison.format("&8There're &3" + rank.rankUpCommands.size() + " &3Commands &8in this ladder:"));
-            for (String command : rank.rankUpCommands) {
-                rankupCommandsLore.add(SpigotPrison.format("&8&l|&3RankUPCommands&8| &8&l- &3" + command));
-            }
-            rankupCommandsLore.add(SpigotPrison.format("&8Click to manage RankUPCommands."));
-        }
+        SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
 
         // Create the lore
         List<String> editPriceLore = createLore(

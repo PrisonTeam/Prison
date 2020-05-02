@@ -13,8 +13,7 @@ import java.util.List;
 
 public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
+    private final Player p;
 
     public SpigotAutoFeaturesGUI(Player p){
         this.p = p;
@@ -23,6 +22,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
+        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> AutoFeatures"));
 
         // Config
@@ -138,10 +138,10 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         }
 
         //Position of the button
-        inv.setItem(3, playSound);
+        inv.setItem(2, playSound);
 
         //Position of the button
-        inv.setItem(5, hologram);
+        inv.setItem(6, hologram);
 
         //Position of the button
         inv.setItem(10, autoPickup);

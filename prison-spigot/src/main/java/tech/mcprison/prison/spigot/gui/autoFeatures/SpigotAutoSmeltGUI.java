@@ -13,8 +13,7 @@ import java.util.List;
 
 public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
+    private final Player p;
 
     public SpigotAutoSmeltGUI(Player p){
         this.p = p;
@@ -23,6 +22,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
+        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
         // Config

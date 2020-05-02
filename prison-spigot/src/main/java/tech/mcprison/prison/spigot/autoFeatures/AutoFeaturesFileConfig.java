@@ -15,7 +15,6 @@ public class AutoFeaturesFileConfig {
 	private File configFile;
     private FileConfiguration config;
 
-    
     public enum AutoFeatures {
 
     	

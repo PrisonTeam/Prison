@@ -197,7 +197,7 @@ public class AutoManager implements Listener {
 
 					hologram(e, message, hologramIfInventoryIsFull);
 
-				} else { // Lose items when full
+				} else {  // Lose items when full
 
 					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems"));
 					
@@ -327,20 +327,17 @@ public class AutoManager implements Listener {
 		if (autoPickup) {
 			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
 			if (drops != null && drops.size() > 0 ) {
-				
-				if ( drops != null && drops.size() > 0 ) {
-					
-					// Add the item to the inventory
-					for ( ItemStack itemStack : drops ) {
-						count += itemStack.getAmount();
-						dropExtra( p.getInventory().addItem(itemStack), p);
-					}
-					
-					if ( count > 0 ) {
-						// Set the broken block to AIR and cancel the event
-						e.setCancelled(true);
-						e.getBlock().setType(Material.AIR);
-					}
+
+				// Add the item to the inventory
+				for ( ItemStack itemStack : drops ) {
+					count += itemStack.getAmount();
+					dropExtra( p.getInventory().addItem(itemStack), p);
+				}
+
+				if ( count > 0 ) {
+					// Set the broken block to AIR and cancel the event
+					e.setCancelled(true);
+					e.getBlock().setType(Material.AIR);
 				}
 			}
 		}
@@ -435,7 +432,7 @@ public class AutoManager implements Listener {
 	}
 
 	private void hologram(BlockBreakEvent e, String message, Boolean enabled){
-		if (enabled = true){
+		if (enabled){
 			ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
 			as.setGravity(false);
 			as.setCanPickupItems(false);

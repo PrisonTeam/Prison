@@ -15,11 +15,10 @@ import java.util.List;
  */
 public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
 
-    private int dimension = 45;
-    private Player p;
-    private String minename;
-    private long val;
-    private String typeNotification;
+    private final Player p;
+    private final String minename;
+    private final long val;
+    private final String typeNotification;
 
     public SpigotMineNotificationRadiusGUI(Player p, Long val, String typeNotification, String minename){
         this.p = p;
@@ -31,6 +30,7 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create a new inventory
+        int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineNotifications -> Radius"));
 
         // Create new lore

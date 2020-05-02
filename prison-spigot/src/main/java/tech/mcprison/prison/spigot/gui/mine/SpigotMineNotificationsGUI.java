@@ -18,9 +18,8 @@ import java.util.List;
  */
 public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
-    private int dimension = 27;
-    private Player p;
-    private String minename;
+    private final Player p;
+    private final String minename;
 
     public SpigotMineNotificationsGUI(Player p, String minename){
         this.p = p;
@@ -30,6 +29,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create a new inventory
+        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> MineNotifications"));
 
         // Init variables

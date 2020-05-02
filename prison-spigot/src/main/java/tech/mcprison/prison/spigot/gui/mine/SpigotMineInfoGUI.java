@@ -17,10 +17,9 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
  */
 public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
-    private int dimension = 45;
-    private Player p;
-	private Mine mine;
-    private String minename;
+    private final Player p;
+	private final Mine mine;
+    private final String minename;
 
     public SpigotMineInfoGUI(Player p, Mine mine, String minename){
         this.p = p;
@@ -30,6 +29,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
     public void open(){
 
+        int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> MineInfo"));
 
         // The Reset Mine button and lore
