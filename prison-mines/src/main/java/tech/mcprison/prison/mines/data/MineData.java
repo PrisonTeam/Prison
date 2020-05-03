@@ -33,6 +33,7 @@ public abstract class MineData {
     private List<Block> blocks;
     
     private long totalBlocksMined = 0;
+    private int zeroBlockResetDelaySec;
     
     
     private boolean skipResetEnabled = false;
@@ -75,6 +76,8 @@ public abstract class MineData {
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     	
     	this.targetRestTime = 0;
+    	this.totalBlocksMined = 0;
+    	this.zeroBlockResetDelaySec = 0;
     
     	this.skipResetEnabled = false;
         this.skipResetPercent = 80.0D;
@@ -245,6 +248,13 @@ public abstract class MineData {
 	}
 	public void setTotalBlocksMined( long totalBlocksMined ) {
 		this.totalBlocksMined = totalBlocksMined;
+	}
+
+	public int getZeroBlockResetDelaySec() {
+		return zeroBlockResetDelaySec;
+	}
+	public void setZeroBlockResetDelaySec( int zeroBlockResetDelaySec ) {
+		this.zeroBlockResetDelaySec = zeroBlockResetDelaySec;
 	}
 
 	public boolean isSkipResetEnabled() {

@@ -41,7 +41,8 @@ public class CommandPagedData {
 
 		this.curPage = 1;
 		this.pageSize = isShowAll() ? itemSize : MAX_PAGE_SIZE;
-		this.pages = isShowAll() ? 1 : (itemSize / pageSize) + 1;
+		this.pages = isShowAll() ? 1 : (itemSize / pageSize) + 
+										(itemSize % pageSize == 0 ? 0 : 1);
 		this.extraPages = isShowAll() ? 0 : extraPages;
 		
 		
@@ -56,7 +57,7 @@ public class CommandPagedData {
 					(curPage > (pages + extraPages) ? (pages + extraPages) : curPage ));
 		
 		// Just set to defaults for the pre-list pages:
-		this.pageStart = 1;
+		this.pageStart = 0;
 		this.pageEnd = (itemSize < pageSize ? itemSize : pageSize);
 		
 		if ( isShowAll() ) {

@@ -366,6 +366,9 @@ public abstract class MineScheduler
 		submitTask();
 	}
 
+	public void manualReset() {
+		manualReset( 0 );
+	}
 	
 	/**
 	 * <p>This function should only be called from the commands to manually force a mine to reset.
@@ -376,7 +379,7 @@ public abstract class MineScheduler
 	 * </p>
 	 * 
 	 */
-	public void manualReset() {
+	public void manualReset( int delayActionSec ) {
 		// cancel existing job:
 		if ( getTaskId() != null ) {
 			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );
@@ -384,7 +387,7 @@ public abstract class MineScheduler
 		
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
-		setCurrentJob( new MineJob( MineJobAction.RESET, 0, 0) );
+		setCurrentJob( new MineJob( MineJobAction.RESET, delayActionSec, 0) );
     	
 		// Submit to run:
 		submitTask();

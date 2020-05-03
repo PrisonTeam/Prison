@@ -190,7 +190,7 @@ public class OnBlockBreakEventListener
 		// Reset if the mine runs out of blocks:
 		if ( mine.getRemainingBlockCount() == 0 ) {
 			// submit a manual reset since the mine is empty:
-			mine.manualReset();
+			mine.manualReset( mine.getZeroBlockResetDelaySec() );
 		}
 	}
 

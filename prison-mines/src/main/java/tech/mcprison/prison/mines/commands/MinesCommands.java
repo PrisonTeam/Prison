@@ -589,6 +589,14 @@ public class MinesCommands {
         		chatDisplay.addComponent( row );
         	}
         	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
+        				dFmt.format( m.getZeroBlockResetDelaySec() ) );
+        		
+        		chatDisplay.addComponent( row );
+        	}
+        	
         	
         	if ( m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
@@ -907,6 +915,66 @@ public class MinesCommands {
         } 
     }
 
+    
+    
+    /**
+     * <p>The following command will change the mine's time between resets. But it will
+     * not be applied until after the next reset.
+     * </p>
+     * 
+     * @param sender
+     * @param mineName
+     * @param time
+     */
+    @Command(identifier = "mines zeroBlockResetDelay", permissions = "mines.zeroblockresetdelay", 
+    		description = "Set a mine's delay before reset when it reaches zero blocks.")
+    public void zeroBlockResetDelayCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+    		@Arg(name = "time", description = "Delay in seconds before resetting when the mine reaches " +
+    				"zero blocks." ) String time
+    		
+    		) {
+    	
+    	if (performCheckMineExists(sender, mineName)) {
+    		setLastMineReferenced(mineName);
+    		
+    		try {
+    			int resetTime = 0;
+    			
+    			if ( time != null && time.trim().length() > 0 ) {
+    				resetTime = Integer.parseInt( time );
+    				
+    				if ( resetTime < 0 ) {
+    					resetTime = 0;
+    				}
+    			}
+    			
+    			PrisonMines pMines = PrisonMines.getInstance();
+    			Mine m = pMines.getMine(mineName);
+    			
+    			m.setZeroBlockResetDelaySec( resetTime );
+    			
+    			pMines.getMineManager().saveMine( m );
+    			
+    			DecimalFormat dFmt = new DecimalFormat("#,##0");
+    			// User's message:
+    			Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &b%s &7sec", 
+    					m.getName(), dFmt.format( resetTime ) );
+    			
+    			// Server Log message:
+    			Player player = getPlayer( sender );
+    			Output.get().logInfo( "&7Mine &b%s Zero Block Reset Delay: &b%s &7set it to &b%s &7sec",
+    					(player == null ? "console" : player.getDisplayName()), m.getName(), dFmt.format( resetTime )  );
+    		}
+    		catch ( NumberFormatException e ) {
+    			Output.get().sendWarn( sender, 
+    					"&7Invalid zeroBlockResetDelay value for &b%s&7. Must be an integer value of &b0 &7or " +
+    					"greater. [&b%s&7]",
+    					mineName, time );
+    		}
+    	} 
+    }
+    
 
     @Command(identifier = "mines notification", permissions = "mines.notification", 
     		description = "Set a mine's notification mode.")
