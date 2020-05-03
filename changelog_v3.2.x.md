@@ -8,7 +8,47 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.11 - 2020-05-01
+## tag v3.2.1-alpha.11 - 2020-05-02
+
+
+* **New Feature: Setup a packaged paging system for the commands**
+New feature: Created a new class to encapsulate multiple pages for commands.  Based upon /mines block search and hooked it up to /mines info.
+Provisions for pre-pages that are shown before the listings, such as the first page of /mines info. Will expand to other commands later.
+
+
+* **Bug Fix: If BlockType does not exist use STONE instead**
+Bug fix: Found a problem that if you put a Block Type in a mine that does not exist on the server it fails to reset the mine and there really are no errors shown in game.  
+Default to STONE if the material does not exist.
+
+
+* **New Feature: New Placeholder for mines. Blocks Mined!**
+Added new placeholder blocks mined.  This reports on the total blocks that have been mined within a mine since the server restart.
+
+
+* **Improved Performance: AutoManager by extending from OnBlockBreakEventListener**
+Extend the AutoManager so the same BlockBreakEvent logic for cacheing the player's last mine used to optimize performance.
+By extending the class, and creating the doAction() function allows for simple reuse of the event listener.  
+It is also critical that the AutoManager is able to set a LOW event priority.
+
+
+* **Improved performance: for the onBlockBreak event listener**
+This is the code that monitors the number of blocks remaining in a mine.  This logic will also be applied to the auto features since it needs to perform the same basic initial setup and checking to ensure the blocks are within a mine.
+
+Significant improvements to the OnBlockBreakEventListener to try to minimize overhead and to improve individual performance for all players.
+The biggest hit, performance wise, will be when mining outside of the prison mines since it would have to check to ensure it's not within a mine, and will go through the whole list.  It's just simple math, but performed for each mine that exists so it will add up.
+Overall, the overhead is not much, but efforts were made to reduce it as best as possible, of which, I think is the best that can be done with the current environment.
+Also renamed addBlockBreakCount function to incrementBlockBreakCount since that's what it is doing.
+
+
+* **New Feature: Hooked up auto mine reset when blocks remaining reaches zero**
+When a mine reaches zero blocks left, then it will auto reset.
+This is hooked in to the onBlockBreak monitor and all it does is cancels the current mine's reset and then resubmits it to reset.
+This could allow for the creation of a one block grinder.  Although there may need more work, such as delays to slow down the reset since it is able to reset at blistering speeds.
+ 
+
+* **New Feature: Enabled the blockBreakCount feature**
+Using the new blockBreakCount feature on the placeholders to eliminate the use of the old refreshAirCount() function. 
+This should provide a lot of performance improvements and will allow for live updates without much overhead on the server.
 
 
 * **Internal Mine Optimizations**
