@@ -57,6 +57,9 @@ public class SpigotUtil {
     @SuppressWarnings( "deprecation" )
 	public static MaterialData blockTypeToMaterial(BlockType type) {
         Material material = Material.getMaterial(type.getLegacyId());
+        if ( material == null ) {
+        	material = Material.STONE;
+        }
         return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
     }
 
