@@ -42,8 +42,6 @@ import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
-import tech.mcprison.prison.output.ButtonComponent;
-import tech.mcprison.prison.output.ButtonComponent.Style;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
@@ -192,7 +190,7 @@ public class MinesCommands {
         
         pMines.getMinesMessages().getLocalizable("block_added")
             .withReplacements(block, mineName).sendTo(sender);
-        getBlocksList(m).send(sender);
+        getBlocksList(m, null).send(sender);
 
         //pMines.getMineManager().clearCache();
     }
@@ -262,7 +260,7 @@ public class MinesCommands {
         
         pMines.getMinesMessages().getLocalizable("block_set")
             .withReplacements(block, mineName).sendTo(sender);
-        getBlocksList(m).send(sender);
+        getBlocksList(m, null).send(sender);
 
         //pMines.getMineManager().clearCache();
 
@@ -320,7 +318,7 @@ public class MinesCommands {
 			
 			pMines.getMinesMessages().getLocalizable("block_deleted")
 			.withReplacements(blockType.name(), m.getName()).sendTo(sender);
-			getBlocksList(m).send(sender);
+			getBlocksList(m, null).send(sender);
 		}
 	}
 
@@ -356,20 +354,26 @@ public class MinesCommands {
 			}
 		}
     	
-    	int curPage = 1;
-    	int pageSize = 10;
-    	int pages = (blocks.size() / pageSize) + 1;
-    	try
-		{
-			curPage = Integer.parseInt(page);
-		}
-		catch ( NumberFormatException e )
-		{
-			// Ignore: Not an integer, will use the default value.
-		}
-    	curPage = ( curPage < 1 ? 1 : (curPage > pages ? pages : curPage ));
-    	int pageStart = (curPage - 1) * pageSize;
-    	int pageEnd = ((pageStart + pageSize) > blocks.size() ? blocks.size() : pageStart + pageSize);
+        
+        CommandPagedData cmdPageData = new CommandPagedData(
+        		"/mines block search " + search, blocks.size(),
+        		0, page );
+    	
+    	// Same page logic as in mines info
+//    	int curPage = 1;
+//    	int pageSize = 10;
+//    	int pages = (blocks.size() / pageSize) + 1;
+//    	try
+//		{
+//			curPage = Integer.parseInt(page);
+//		}
+//		catch ( NumberFormatException e )
+//		{
+//			// Ignore: Not an integer, will use the default value.
+//		}
+//    	curPage = ( curPage < 1 ? 1 : (curPage > pages ? pages : curPage ));
+//    	int pageStart = (curPage - 1) * pageSize;
+//    	int pageEnd = ((pageStart + pageSize) > blocks.size() ? blocks.size() : pageStart + pageSize);
 
     	
         ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
@@ -377,7 +381,7 @@ public class MinesCommands {
         
         BulletedListComponent.BulletedListBuilder builder =
         						new BulletedListComponent.BulletedListBuilder();
-        for ( int i = pageStart; i < pageEnd; i++ )
+        for ( int i = cmdPageData.getPageStart(); i < cmdPageData.getPageEnd(); i++ )
         {
         	BlockType block = blocks.get(i);
             FancyMessage msg =
@@ -390,27 +394,10 @@ public class MinesCommands {
         }
         display.addComponent(builder.build());
         
-        // Need to construct a dynamic row of buttons. It may have no buttons, both, or
-        // a combination of previous page or next page.  But it will always have a page
-        // count between the two.
-        RowComponent row = new RowComponent();
-        if ( curPage > 1 )
-        {
-        	row.addFancy( 
-        			new ButtonComponent( "&e<-- Prev Page", '-', Style.NEGATIVE)
-        			.runCommand("/mines block search " + search + " " + (curPage - 1), 
-        					"View the prior page of search results").getFancyMessage() );
-        }
-        row.addFancy( 
-        		new FancyMessage(" &9< &3Page " + curPage + " of " + pages + " &9> ") );
-        if ( curPage < pages )
-        {
-   			row.addFancy( 
-        			new ButtonComponent( "&eNext Page -->", '+', Style.POSITIVE)
-        			.runCommand("/mines block search " + search + " " + (curPage + 1), 
-        					"View the prior page of search results").getFancyMessage() );
-        }
-        display.addComponent( row );
+        // This command plus parameters used:
+//        String pageCmd = "/mines block search " + search;
+        
+        cmdPageData.generatePagedCommandFooter( display );
         
 		return display;
 	}
@@ -492,143 +479,184 @@ public class MinesCommands {
     @Command(identifier = "mines info", permissions = "mines.info", onlyPlayers = false, 
     				description = "Lists information about a mine.")
     public void infoCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to view.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
+        @Arg(name = "page", def = "1", 
+        				description = "Page of search results (optional) [1-n, ALL]") String page 
+    		) {
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
+        
         setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
         Mine m = pMines.getMine(mineName);
+        
+        
+        CommandPagedData cmdPageData = new CommandPagedData(
+        		"/mines info " + m.getName(), m.getBlocks().size(),
+        		1, page );
+        
+//        // Same page logic as in mines block search:
+//    	int curPage = 1;
+//    	int pageSize = 10;
+//    	int pages = (m.getBlocks().size() / pageSize) + 1;
+//    	try
+//		{
+//			curPage = Integer.parseInt(page);
+//		}
+//		catch ( NumberFormatException e )
+//		{
+//			// Ignore: Not an integer, will use the default value.
+//		}
+//    	curPage = ( curPage < 1 ? 1 : (curPage > pages ? pages : curPage ));
+//    	int pageStart = (curPage - 1) * pageSize;
+//    	int pageEnd = ((pageStart + pageSize) > m.getBlocks().size() ? m.getBlocks().size() : pageStart + pageSize);
+
+    	
 
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         
-        ChatDisplay chatDisplay = new ChatDisplay(m.getName());
+        ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
-        String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
-        chatDisplay.text("&3World: &7%s", worldName);
-
-        String minCoords = m.getBounds().getMin().toBlockCoordinates();
-        String maxCoords = m.getBounds().getMax().toBlockCoordinates();
-        chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
-
-        chatDisplay.text("&3Center: &7%s", m.getBounds().getCenter().toBlockCoordinates());
-        if ( mMan.isMineStats() ) {
-        }
-
-        {
-        	RowComponent row = new RowComponent();
-        	double rtMinutes = m.getResetTime() / 60.0D;
-        	row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
-        			Integer.toString(m.getResetTime()), rtMinutes );
-        	chatDisplay.addComponent( row );
-        }
-
-        {
-        	RowComponent row = new RowComponent();
-
-        	long targetResetTime = m.getTargetRestTime();
-        	double remaining = ( targetResetTime <= 0 ? 0d : 
+        // Display Mine Info only:
+        if ( cmdPageData.getCurPage() == 1 ) {
+        	String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
+        	chatDisplay.text("&3World: &7%s", worldName);
+        	
+        	String minCoords = m.getBounds().getMin().toBlockCoordinates();
+        	String maxCoords = m.getBounds().getMax().toBlockCoordinates();
+        	chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
+        	
+        	chatDisplay.text("&3Center: &7%s", m.getBounds().getCenter().toBlockCoordinates());
+        	if ( mMan.isMineStats() ) {
+        	}
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		double rtMinutes = m.getResetTime() / 60.0D;
+        		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
+        				Integer.toString(m.getResetTime()), rtMinutes );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		
+        		long targetResetTime = m.getTargetRestTime();
+        		double remaining = ( targetResetTime <= 0 ? 0d : 
         			(targetResetTime - System.currentTimeMillis()) / 1000d);
-        	double rtMinutes = remaining / 60.0D;
-		
-        	row.addTextComponent( "&3Time Remaining Until Reset: &7%s &3Secs (&7%.2f &3Mins)", 
-        			dFmt.format( remaining ), rtMinutes );
-        	chatDisplay.addComponent( row );
-        }
-        
-        {
-        	RowComponent row = new RowComponent();
-        	row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
-        			m.getNotificationMode().name(), 
-        			( m.getNotificationMode() == MineNotificationMode.radius ? 
-        					dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
-        	chatDisplay.addComponent( row );
-        }
-
-        
+        		double rtMinutes = remaining / 60.0D;
+        		
+        		row.addTextComponent( "&3Time Remaining Until Reset: &7%s &3Secs (&7%.2f &3Mins)", 
+        				dFmt.format( remaining ), rtMinutes );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
+        				m.getNotificationMode().name(), 
+        				( m.getNotificationMode() == MineNotificationMode.radius ? 
+        						dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
-
-        {
-        	RowComponent row = new RowComponent();
-        	row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-        			Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
         	
-        	row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
-        			dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
-        	chatDisplay.addComponent( row );
-        }
-        
-        
-        {
-        	RowComponent row = new RowComponent();
-        	row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
-        			dFmt.format( m.getRemainingBlockCount() ), 
-        			fFmt.format( m.getPercentRemainingBlockCount() ) );
-        	
-        	chatDisplay.addComponent( row );
-        }
-        
-        
-        if ( m.isSkipResetEnabled() ) {
-        	RowComponent row = new RowComponent();
-        	row.addTextComponent( "&3Skip Reset &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
-        			fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
-        	chatDisplay.addComponent( row );
-
-        	if ( m.getSkipResetBypassCount() > 0 ) {
-        		RowComponent row2 = new RowComponent();
-        		row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
-        				dFmt.format( m.getSkipResetBypassCount() ));
-        		chatDisplay.addComponent( row2 );
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+        				Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
+        		
+        		row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
+        				dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
+        		chatDisplay.addComponent( row );
         	}
-        } else {
-        	RowComponent row = new RowComponent();
-        	row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
-        	chatDisplay.addComponent( row );
+        	
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
+        				dFmt.format( m.getRemainingBlockCount() ), 
+        				fFmt.format( m.getPercentRemainingBlockCount() ) );
+        		
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	if ( m.isSkipResetEnabled() ) {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Skip Reset &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
+        				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
+        		chatDisplay.addComponent( row );
+        		
+        		if ( m.getSkipResetBypassCount() > 0 ) {
+        			RowComponent row2 = new RowComponent();
+        			row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
+        					dFmt.format( m.getSkipResetBypassCount() ));
+        			chatDisplay.addComponent( row2 );
+        		}
+        	} else {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
+        	chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
+        	
+        	if ( mMan.isMineStats() ) {
+        		RowComponent rowStats = new RowComponent();
+        		rowStats.addTextComponent( "  -- &7 Stats :: " );
+        		rowStats.addTextComponent( m.statsMessage() );
+        		
+        		chatDisplay.addComponent(rowStats);
+        	}
+        	
         }
         
-        
-        String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
-
-        if ( mMan.isMineStats() ) {
-        	RowComponent rowStats = new RowComponent();
-        	rowStats.addTextComponent( "  -- &7 Stats :: " );
-        	rowStats.addTextComponent( m.statsMessage() );
-       	  
-        	chatDisplay.addComponent(rowStats);
+        if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
+        	chatDisplay.text("&3Blocks:");
+        	chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
+        	BulletedListComponent list = getBlocksList(m, cmdPageData);
+        	
+        	chatDisplay.addComponent(list);
         }
         
-        chatDisplay.text("&3Blocks:");
-        chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
-        BulletedListComponent list = getBlocksList(m);
-        chatDisplay.addComponent(list);
+        cmdPageData.generatePagedCommandFooter( chatDisplay );
 
         chatDisplay.send(sender);
     }
 
-    private BulletedListComponent getBlocksList(Mine m) {
+    private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData) {
         BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
+        int count = 0;
         for (Block block : m.getBlocks()) {
             double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
             totalChance += chance;
-
-            String blockName =
-                StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-            String percent = dFmt.format(chance) + "%";
-            FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
-            					percent, block.getType().name(), blockName))
-                .suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
-                .tooltip("&7Click to edit the block's chance.");
-            builder.add(msg);
+ 
+            if ( cmdPageData == null ||
+            		count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+            	String blockName =
+            			StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
+            	String percent = dFmt.format(chance) + "%";
+            	FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
+            			percent, block.getType().name(), blockName))
+            			.suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
+            			.tooltip("&7Click to edit the block's chance.");
+            	builder.add(msg);
+            	
+            }
         }
 
         if (totalChance < 100.0d) {
