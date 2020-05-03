@@ -140,7 +140,7 @@ public class OnBlockBreakEventListener
     	// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
     	if ( getPrisonMineManager() != null ) {
     		
-    		long startNano = System.nanoTime();
+    		// long startNano = System.nanoTime();
     		
     		boolean isAir = e.getBlock().getType() != null && e.getBlock().getType() == Material.AIR;
 
@@ -169,26 +169,30 @@ public class OnBlockBreakEventListener
     			
     			// This is where the processing actually happens:
     			if ( mine != null ) {
-    				mine.incrementBlockBreakCount();
-    				mine.incrementTotalBlocksMined();
-    				
-    				// Other possible processing:
-    				
-    				// Reset if the mine runs out of blocks:
-    				if ( mine.getRemainingBlockCount() == 0 ) {
-    					// submit a manual reset since the mine is empty:
-    					mine.manualReset();
-    				}
+    				doAction( mine, e );
     			}
     		}
     		
-    		// for debug use:
-    		String message = incrementUses(System.nanoTime() - startNano);
-    		if ( message != null ) {
-    			e.getPlayer().sendMessage( message );
-    		}
+    		// for debug use: Uncomment to use.
+//    		String message = incrementUses(System.nanoTime() - startNano);
+//    		if ( message != null ) {
+//    			e.getPlayer().sendMessage( message );
+//    		}
     	}
     }
+
+	public void doAction( Mine mine, BlockBreakEvent e ) {
+		mine.incrementBlockBreakCount();
+		mine.incrementTotalBlocksMined();
+		
+		// Other possible processing:
+		
+		// Reset if the mine runs out of blocks:
+		if ( mine.getRemainingBlockCount() == 0 ) {
+			// submit a manual reset since the mine is empty:
+			mine.manualReset();
+		}
+	}
 
     /**
      * <p>Search all mines to find if the given block is located within any
@@ -234,6 +238,7 @@ public class OnBlockBreakEventListener
 	}
 
 	
+	@SuppressWarnings( "unused" )
 	private synchronized String incrementUses(Long elapsedNano) {
 		String message = null;
 		usesElapsedTimeNano += elapsedNano;

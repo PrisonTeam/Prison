@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.autoFeatures;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -21,11 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
@@ -33,7 +30,9 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class AutoManager implements Listener {
+public class AutoManager 
+	extends OnBlockBreakEventListener
+	implements Listener {
 
 	private Random random = new Random();
 	
@@ -69,54 +68,78 @@ public class AutoManager implements Listener {
         return j;
     }
 
+//    /**
+//     * <p>Had to set to a EventPriorty.LOW so other plugins can work with the blocks.
+//     * The other plugins were EZBlock & SellAll. This function was canceling the
+//     * event after it auto picked it up, so the other plugins were not registering
+//     * the blocks as being broken.
+//     * </p>
+//     * 
+//     * @param e
+//     */
+//    @EventHandler(priority=EventPriority.LOW) 
+//    public void onBlockBreak(BlockBreakEvent e) {
+//    	
+//    	if ( !e.isCancelled() && e.getBlock().getType() != null) {
+//    		
+//    		// Get the player objects: Spigot and the Prison player:
+//    		Player p = e.getPlayer();
+//    		// SpigotPlayer player = new SpigotPlayer( p );
+//    		
+//    		// Validate that the event is happening within a mine since the
+//    		// onBlockBreak events here are only valid within the mines:
+//    		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+//    		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
+//    			PrisonMines mineManager = (PrisonMines) mmOptional.get();
+//    			
+//    			for ( Mine mine : mineManager.getMines() ) {
+//    				SpigotBlock block = new SpigotBlock(e.getBlock());
+//    				if ( mine.isInMine( block.getLocation() ) ) {
+//    					
+//    					applyAutoEvents( e, mine, p );
+//    					break;
+//    				}
+//    			}
+//    		}
+//    	}
+//    }
+
     /**
+     * <p>The optimized logic on how an BlockBreakEvent is handled is within the OnBlockBreakEventListener
+     * class and optimizes mine reuse.
+     * </p>
+     *
      * <p>Had to set to a EventPriorty.LOW so other plugins can work with the blocks.
      * The other plugins were EZBlock & SellAll. This function was canceling the
      * event after it auto picked it up, so the other plugins were not registering
      * the blocks as being broken.
      * </p>
      * 
-     * @param e
+     * 
      */
+    @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
-    	
-    	if ( !e.isCancelled() && e.getBlock().getType() != null) {
-    		
-    		// Get the player objects: Spigot and the Prison player:
-    		Player p = e.getPlayer();
-    		// SpigotPlayer player = new SpigotPlayer( p );
-    		
-    		// Validate that the event is happening within a mine since the
-    		// onBlockBreak events here are only valid within the mines:
-    		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-    		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-    			PrisonMines mineManager = (PrisonMines) mmOptional.get();
-    			
-    			for ( Mine mine : mineManager.getMines() ) {
-    				SpigotBlock block = new SpigotBlock(e.getBlock());
-    				if ( mine.isInMine( block.getLocation() ) ) {
-    					
-    					applyAutoEvents( e, mine, p );
-    					break;
-    				}
-    			}
-    		}
-    	}
+    	super.onBlockBreak(e);
     }
-
+    
+    @Override
+	public void doAction( Mine mine, BlockBreakEvent e ) {
+    	applyAutoEvents( e, mine );
+	}
+    
     // Prevents players from picking up armorStands (used for holograms), only if they're invisible
 	@EventHandler
-	public void manipulate(PlayerArmorStandManipulateEvent e)
-	{
-		if(!e.getRightClicked().isVisible())
-		{
+	public void manipulate(PlayerArmorStandManipulateEvent e) {
+		if(!e.getRightClicked().isVisible()) {
 			e.setCancelled(true);
 		}
 	}
 
-	private void applyAutoEvents( BlockBreakEvent e, Mine mine, Player p ) {
+	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
 		// Change this to true to enable these features
+		
+		Player p = e.getPlayer();
 
 		this.autoConfigs = SpigotPrison.getInstance().getAutoFeaturesConfig();
 		boolean areEnabledFeatures = autoConfigs.getBoolean("Options.General.AreEnabledFeatures");
