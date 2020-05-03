@@ -104,8 +104,19 @@ public class CommandHandler {
             List<RegisteredCommand> subcommands = command.getSuffixes();
             if (subcommands.size() > 0) {
                 message.add(ChatColor.DARK_AQUA + "Subcommands:");
+                // Force a sorting by use of a TreeSet. Collections.sort() would not work.
+                TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
-                    message.add(scommand.getUsage());
+                	String subCmd = scommand.getUsage();
+
+                	int subCmdSubCnt = scommand.getSuffixes().size();
+                	
+                	subCommandSet.add(subCmd + (subCmdSubCnt <= 1 ? "" : 
+                			ChatColor.DARK_AQUA + " (" + subCmdSubCnt + 
+                			" Subcommands)"));
+                }
+                for (String subCmd : subCommandSet) {
+                	message.add(subCmd);
                 }
             }
 
