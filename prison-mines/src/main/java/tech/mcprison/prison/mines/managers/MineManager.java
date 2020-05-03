@@ -284,6 +284,11 @@ public class MineManager
 						results = iFmt.format( mine.getPlayerCount() );
 						break;
 						
+					case prison_mbm_minename:
+					case prison_mines_blocks_mined_minename:
+						results = iFmt.format( mine.getTotalBlocksMined() );
+						break;
+						
 					default:
 						break;
 				}
