@@ -611,6 +611,26 @@ public abstract class MineReset
     }
     
 
+    /**
+     * <p>This is the synchronous part of the job that actually updates the blocks.
+     * It will only replace what it can within the given allocated milliseconds,
+     * then it will terminate and allow this process to re-run, picking up where it
+     * left off.
+     * </p>
+     * 
+     * <p>Paging is what this is doing. Running, and doing what it can within it's 
+     * limited amount of time, then yielding to any other task, then resuming later.
+     * This is a way of running a massive synchronous task, without hogging all the
+     * resources and killing the TPS.
+     * </p>
+     * 
+     * <p>NOTE: The values for MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT and for
+     * MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS are set to arbitrary values and may not
+     * be the correct values.  They may be too large and may have to be adjusted to 
+     * smaller values to better tune the process.
+     * </p>
+     *  
+     */
     private void resetAsynchonouslyUpdate() {
 		World world = getBounds().getCenter().getWorld();
 		

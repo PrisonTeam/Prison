@@ -8,7 +8,37 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.11 - 2020-05-02
+## tag v3.2.1-alpha.11 - 2020-05-04
+
+
+* **New Feature; Slime Block Fun!**
+Simple feature to add some bounce to the Prison fun!  
+Different items in hand increases boost.  After jumping on a slime block, the player gains immunity from fall damage, but they can still die if they land in lava, the void, etc... 
+Not really sure what the life span of this will be? 
+
+
+* **New Features: Command /mines list now has paging! Plus useful sorting.**
+Major changes to the /mines list command by adding paging and better to read formatting. 
+Now you can specify a page and be able to read what's in the list. In game you can click to page to other pages.
+This listing is sorted by Blocks Mined (since last server restart) then by Mine Name.  This help to put the more active mines on page 1 and the inactive ones at the bottom of the list
+There is an option for pages of ALL so you can get a full dump.  If you want it.
+
+
+* **Minor refactoring: Remaining Time before the Mine Resets**
+Moving the calculations for the remainingTime in to the core mine classes so it can be accessed by other functions.  This also moves the business logic out of the MineManager and puts it in the mine, where it should be.
+
+
+* **Typo fix: Noticed a field was named "Rest" instead of "Reset".**
+The fixing of the name does not alter the behavior of the code, but the wrong name could confuse someone.
+
+
+* **New Feature:  New Mine Placeholder! Mines Reset Count.**
+Added a new mines placeholder: Mines Reset Count.  Identifies how many times the mine was reset since the last server restart.
+
+
+
+* **New Feature: Zero Block Mine Reset Delay**
+Added a new parameter to mines for a mine reset delay when the mine reaches zero blocks.
 
 
 * **New Feature: Setup a packaged paging system for the commands**
