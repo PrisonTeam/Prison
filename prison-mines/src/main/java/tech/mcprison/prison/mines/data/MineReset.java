@@ -211,6 +211,7 @@ public abstract class MineReset
 			time2 = System.currentTimeMillis() - time2;
 			setStatsBlockUpdateTimeMS( time2 );
 			
+			incrementResetCount();
 			
 			// If a player falls back in to the mine before it is fully done being reset, 
 			// such as could happen if there is lag or a lot going on within the server, 
@@ -498,7 +499,7 @@ public abstract class MineReset
         		setStatsTeleport2TimeMS(
         				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
-
+        		incrementResetCount();
         		
         		// Broadcast message to all players within a certain radius of this mine:
         		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
@@ -514,6 +515,8 @@ public abstract class MineReset
     		} else {
     			//TODO resubmit... 
     			
+    			
+//    			submitSyncTask( callbackSync );
     			
     		}
     	}

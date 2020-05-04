@@ -545,6 +545,13 @@ public class MinesCommands {
         	
         	{
         		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
+        				dFmt.format(m.getResetCount()) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	{
+        		RowComponent row = new RowComponent();
         		
         		long targetResetTime = m.getTargetRestTime();
         		double remaining = ( targetResetTime <= 0 ? 0d : 

@@ -289,6 +289,11 @@ public class MineManager
 						results = iFmt.format( mine.getTotalBlocksMined() );
 						break;
 						
+					case prison_mrc_minename:
+					case prison_mines_reset_count_minename:
+						results = iFmt.format( mine.getResetCount() );
+						break;
+						
 					default:
 						break;
 				}
