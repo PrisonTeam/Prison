@@ -255,10 +255,7 @@ public class MineManager
 					case prison_mtl_minename:
 					case prison_mines_timeleft_minename:
 						// NOTE: timeleft can vary based upon server loads:
-						long targetResetTime = mine.getTargetRestTime();
-						double remaining = ( targetResetTime <= 0 ? 0d : 
-							(targetResetTime - System.currentTimeMillis()) / 1000d);
-						results = dFmt.format( remaining );
+						results = dFmt.format( mine.getRemainingTimeSec() );
 						break;
 						
 					case prison_ms_minename:

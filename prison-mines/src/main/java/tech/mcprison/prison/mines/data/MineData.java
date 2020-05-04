@@ -235,9 +235,29 @@ public abstract class MineData {
 		this.targetResetTime = targetResetTime;
 	}
 	
+	/**
+	 * <p>This is the remaining time until a reset, in seconds.
+	 * This is based upon the getTargetResetTime() in ms and the current
+	 * System.currentTimeMillis().
+	 * </p>
+	 * 
+	 * <p>The actual remaining time can vargy greatly and is highly
+	 * dependent upon the server load.  Since many jobs within the whole
+	 * mine reset process are scheduled to run in the future, their run
+	 * time is just a request and it can vary if there are demanding jobs
+	 * that are running, or if the bukkit/spigot's TPS starts dropping 
+	 * below 20.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public double getRemainingTimeSec() {
+		// NOTE: timeleft can vary based upon server loads:
+		long targetResetTime = getTargetResetTime();
+		double remaining = ( targetResetTime <= 0 ? 0d : 
+			(targetResetTime - System.currentTimeMillis()) / 1000d);
+		return remaining;
 	}
-	public void setTargetRestTime( long targetRestTime ) {
-		this.targetRestTime = targetRestTime;
 
 	public int incrementResetCount() {
 		return ++resetCount;
