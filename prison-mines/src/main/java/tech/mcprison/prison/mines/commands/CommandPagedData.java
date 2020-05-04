@@ -20,6 +20,9 @@ public class CommandPagedData {
 	private int pageStart = 1;
 	private int pageEnd = 1;
 
+	public CommandPagedData( String pageCommand, int itemSize, int extraPages, String page) {
+		this( pageCommand, itemSize, extraPages, page, MAX_PAGE_SIZE );
+	}
 	
 	/**
 	 * 
@@ -30,7 +33,7 @@ public class CommandPagedData {
 	 * 			would be the /prison info command with the mine details being on page 1.
 	 * @param page The raw page String from the command interface. May contain invalid data.
 	 */
-	public CommandPagedData( String pageCommand, int itemSize, int extraPages, String page ) {
+	public CommandPagedData( String pageCommand, int itemSize, int extraPages, String page, int pageSize ) {
 		super();
 		
 		this.pageCommand = pageCommand;
@@ -40,9 +43,9 @@ public class CommandPagedData {
 		} 
 
 		this.curPage = 1;
-		this.pageSize = isShowAll() ? itemSize : MAX_PAGE_SIZE;
-		this.pages = isShowAll() ? 1 : (itemSize / pageSize) + 
-										(itemSize % pageSize == 0 ? 0 : 1);
+		this.pageSize = isShowAll() ? itemSize : pageSize;
+		this.pages = isShowAll() ? 1 : (itemSize / getPageSize()) + 
+										(itemSize % getPageSize() == 0 ? 0 : 1);
 		this.extraPages = isShowAll() ? 0 : extraPages;
 		
 		
@@ -54,19 +57,19 @@ public class CommandPagedData {
 		}
 
 		curPage = ( isShowAll() || curPage < 1 ? 1 : 
-					(curPage > (pages + extraPages) ? (pages + extraPages) : curPage ));
+					(curPage > (pages + getExtraPages()) ? (pages + getExtraPages()) : curPage ));
 		
 		// Just set to defaults for the pre-list pages:
 		this.pageStart = 0;
-		this.pageEnd = (itemSize < pageSize ? itemSize : pageSize);
+		this.pageEnd = (itemSize < getPageSize() ? itemSize : getPageSize());
 		
 		if ( isShowAll() ) {
 			this.pageEnd = itemSize;
 			this.pages = 1;
 		}
-		else if ( (curPage - extraPages) >= 1 ) {
-			this.pageStart = (curPage - extraPages - 1) * pageSize;
-			this.pageEnd = ((pageStart + pageSize) > itemSize ? itemSize : pageStart + pageSize);
+		else if ( (curPage - getExtraPages()) >= 1 ) {
+			this.pageStart = (curPage - getExtraPages() - 1) * getPageSize();
+			this.pageEnd = ((pageStart + getPageSize()) > itemSize ? itemSize : pageStart + getPageSize());
 		}
 
 //		Output.get().logInfo( "CommandPagedData: pageStart=" + pageStart + "  pageEnd=" + pageEnd);

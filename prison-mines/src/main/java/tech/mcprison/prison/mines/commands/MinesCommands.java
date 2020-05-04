@@ -705,85 +705,160 @@ public class MinesCommands {
 
 
     @Command(identifier = "mines list", permissions = "mines.list", onlyPlayers = false)
-    public void listCommand(CommandSender sender) {
+    public void listCommand(CommandSender sender, 
+            @Arg(name = "page", def = "1", 
+            	description = "Page of search results (optional) [1-n, ALL]") String page 
+    		) {
         ChatDisplay display = new ChatDisplay("Mines");
         display.text("&8Click a mine's name to see more information.");
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        
     	Player player = getPlayer( sender );
     	
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
-
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
-        for (Mine m : pMines.getMines()) {
-        	
-        	 RowComponent row = new RowComponent();
-        	 
-        	 row.addTextComponent( m.getWorldName() + " " );
-
-        	 row.addFancy( 
-        			 new FancyMessage("&7" + m.getName()).command("/mines info " + m.getName())
-        			 		.tooltip("&7Click to view info."));
-
-        	 row.addTextComponent( "&r - " );
-        	 
-        	 row.addFancy( 
-        			 new FancyMessage("&eTP").command("/mines tp " + m.getName())
-        			 .tooltip("&7Click to TP to the mine"));
-        	 
-        	 row.addTextComponent( "&r - " );
-
-        	 row.addFancy( 
-        			 new FancyMessage(Integer.toString(m.getResetTime())).tooltip( "Reset time in seconds" ) );
-
-        	 row.addTextComponent( "&r - " );
-        	 
-        	 String noteMode = m.getNotificationMode().name() + 
-        			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
-        					 " " + dFmt.format( m.getNotificationRadius() ) : "" );
-        	 row.addFancy( 
-        			 new FancyMessage(noteMode).tooltip( "Notification Mode" ) );
-        	 
-        	 row.addTextComponent( "&r - " );
-
-        	 row.addFancy( 
-        			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
-        	 
-        	 row.addTextComponent( "&r - ");
-        	
-        	 row.addFancy( 
-        			 new FancyMessage("&7" + dFmt.format(m.getBounds().getTotalBlockCount())).
-        			 	tooltip( "Volume in Blocks" ) );
-        	 
-        	 if ( player != null && m.getBounds().withinSameWorld( player.getLocation() ) ) {
-        		 
-        		 row.addTextComponent( "&r - &7Distance: ");
-        		 row.addFancy( 
-        				 new FancyMessage( "&7" + dFmt.format(m.getBounds().getDistance(player.getLocation()))).
-        				 	tooltip("Distance to the Mine") );
-        		 
-        	 }
-        	 
-             builder.add(row.getFancy());
-             
-             if ( mMan.isMineStats() ) {
-            	 RowComponent rowStats = new RowComponent();
-            	 
-            	 rowStats.addTextComponent( "  -- &7 Stats :: " );
-
-            	 rowStats.addTextComponent( m.statsMessage() );
-            	  
-            	 builder.add(rowStats.getFancy());
-             }
-        }
-        display.addComponent(builder.build());
+    	
+    	
+    	// Sort mines by: total blocks mined, name
+    	List<Mine> mineList = pMines.getMines();
+    	
+    	// Sort first by name, then blocks mined so final sort order will be:
+    	//   Most blocks mined, then alphabetical
+    	mineList.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+    	mineList.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    	
+        
+        CommandPagedData cmdPageData = new CommandPagedData(
+        		"/mines list", pMines.getMines().size(),
+        		0, page, 6 );
+        
+        BulletedListComponent list = 
+        		getMinesLineItemList(pMines.getMines(), player, cmdPageData, mMan.isMineStats());
+    	
+    	display.addComponent(list);
+    	
+        
+        cmdPageData.generatePagedCommandFooter( display );
+        
         display.send(sender);
     }
 
 
-    /**
+    private BulletedListComponent getMinesLineItemList( List<Mine> mines, Player player,
+    		CommandPagedData cmdPageData, boolean isMineStatsEnabled )
+	{
+    	BulletedListComponent.BulletedListBuilder builder =
+    			new BulletedListComponent.BulletedListBuilder();
+    	    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	
+    	int count = 0;
+    	 
+        for (Mine m : mines) {
+        	
+            if ( cmdPageData == null ||
+            		count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+            
+            	RowComponent row = new RowComponent();
+            	
+            	//row.addTextComponent( m.getWorldName() + " " );
+            	
+            	row.addFancy( 
+            			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
+            					.command("/mines info " + m.getName())
+            					.tooltip("&7Click to view info."));
+            	
+            	
+            	row.addFancy( 
+            			new FancyMessage("&eTP").command("/mines tp " + m.getName())
+            			.tooltip("&7Click to TP to the mine"));
+            	
+            	row.addTextComponent( " &3Reset: &7" );
+            	
+            	row.addFancy( 
+            			new FancyMessage(dFmt.format(m.getRemainingTimeSec()))
+            			.tooltip( "Estimated time in seconds before the mine resets" ) );
+            	row.addTextComponent( " sec &3(&b" );
+            	row.addFancy( 
+            			new FancyMessage(dFmt.format(m.getResetTime()))
+            			.tooltip( "Reset time in seconds" ) );
+            	row.addTextComponent( " sec&3)&b" );
+            	
+            	if ( player != null && m.getBounds().withinSameWorld( player.getLocation() ) ) {
+            		
+            		row.addTextComponent( " &3Dist: &7");
+            		row.addFancy( 
+            				new FancyMessage( dFmt.format(m.getBounds().getDistance(player.getLocation()))).
+            				tooltip("Distance to the Mine") );
+            		
+            	}
+            	
+            	builder.add(row.getFancy());
+            	
+            	
+            	
+            	RowComponent row2 = new RowComponent();
+//            	row2.addTextComponent( "            &3Rem: " );
+            	
+            	// Right justify the total blocks mined, with 1000's separators:
+            	String blocksMined = "           " + dFmt.format( m.getTotalBlocksMined() );
+            	blocksMined = blocksMined.substring( blocksMined.length() - 10);
+            	
+            	row2.addFancy( 
+            			new FancyMessage( String.format("%s &3Rem: ", blocksMined)).
+            			tooltip( "Blocks mined" ) );
+            	
+            	row2.addFancy( 
+            			new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
+            			tooltip( "Percent Blocks Remaining" ) );
+            	
+            	row2.addTextComponent( "%%&3 RCnt: &7" );
+            	
+            	row2.addFancy( 
+            			new FancyMessage(dFmt.format(m.getResetCount())).
+            			tooltip( "Times the mine was reset." ) );
+            	
+            	
+            	row2.addTextComponent( "&3 Vol: &7" );
+            	row2.addFancy( 
+            			new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
+            			tooltip( "Volume in Blocks" ) );
+            	
+            	
+//       	 String noteMode = m.getNotificationMode().name() + 
+//       			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
+//       					 " " + dFmt.format( m.getNotificationRadius() ) : "" );
+//       	 row.addFancy( 
+//       			 new FancyMessage(noteMode).tooltip( "Notification Mode" ) );
+//       	 
+//       	 row.addTextComponent( "&7 - &b" );
+//
+//       	 row.addFancy( 
+//       			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
+//       	 
+//       	 row.addTextComponent( "&7 - &b");
+            
+            	builder.add(row2.getFancy());
+            	
+            	
+            	if ( isMineStatsEnabled ) {
+            		RowComponent rowStats = new RowComponent();
+            		
+            		rowStats.addTextComponent( "  -- &7 Stats :: " );
+            		
+            		rowStats.addTextComponent( m.statsMessage() );
+            		
+            		builder.add(rowStats.getFancy());
+            	}
+        	
+            }
+       }
+       
+//        display.addComponent(builder.build());
+
+		return builder.build();
+	}
+
+	/**
      * <p>The following command will change the mine's time between resets. But it will
      * not be applied until after the next reset.
      * </p>
