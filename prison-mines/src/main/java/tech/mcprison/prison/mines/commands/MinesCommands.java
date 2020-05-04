@@ -592,7 +592,7 @@ public class MinesCommands {
         	{
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
-        				dFmt.format( m.getZeroBlockResetDelaySec() ) );
+        				fFmt.format( m.getZeroBlockResetDelaySec() ) );
         		
         		chatDisplay.addComponent( row );
         	}
@@ -918,8 +918,15 @@ public class MinesCommands {
     
     
     /**
-     * <p>The following command will change the mine's time between resets. But it will
-     * not be applied until after the next reset.
+     * <p>When a mine reaches zero blocks, a manual reset will be issued to run.  By default
+     * it will have a 0 second delay before running, but this command controls how long of
+     * a delay to use.
+     * </p>
+     * 
+     * <p>Although the delay is in seconds, it should be known that the value will be multiplied
+     * by 20 to convert it to ticks.  So any value less than 0.05 will be treated as zero and
+     * effectively will be in 0.05 increments.  Give or take a tick should not matter, but 
+     * beware if a player, or owner, complains that 0.17 is the same as 0.15.   
      * </p>
      * 
      * @param sender
@@ -939,13 +946,17 @@ public class MinesCommands {
     		setLastMineReferenced(mineName);
     		
     		try {
-    			int resetTime = 0;
+    			double resetTime = 0.0d;
     			
     			if ( time != null && time.trim().length() > 0 ) {
-    				resetTime = Integer.parseInt( time );
+    				resetTime = Double.parseDouble( time );
     				
-    				if ( resetTime < 0 ) {
-    					resetTime = 0;
+    				// Only displaying two decimal positions, since 0.01 is 10 ms. 
+    				// Anything less than 0.01 is set to ZERO so it does not mess with anything unseen.
+    				// Also any value less than 0.05 is basically zero since this value has to be
+    				// converted to ticks.
+    				if ( resetTime < 0.01d ) {
+    					resetTime = 0.0d;
     				}
     			}
     			
@@ -956,7 +967,7 @@ public class MinesCommands {
     			
     			pMines.getMineManager().saveMine( m );
     			
-    			DecimalFormat dFmt = new DecimalFormat("#,##0");
+    			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     			// User's message:
     			Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &b%s &7sec", 
     					m.getName(), dFmt.format( resetTime ) );
@@ -964,11 +975,12 @@ public class MinesCommands {
     			// Server Log message:
     			Player player = getPlayer( sender );
     			Output.get().logInfo( "&7Mine &b%s Zero Block Reset Delay: &b%s &7set it to &b%s &7sec",
-    					(player == null ? "console" : player.getDisplayName()), m.getName(), dFmt.format( resetTime )  );
+    					(player == null ? "console" : player.getDisplayName()), 
+    					m.getName(), dFmt.format( resetTime )  );
     		}
     		catch ( NumberFormatException e ) {
     			Output.get().sendWarn( sender, 
-    					"&7Invalid zeroBlockResetDelay value for &b%s&7. Must be an integer value of &b0 &7or " +
+    					"&7Invalid zeroBlockResetDelay value for &b%s&7. Must be an double value of &b0.00 &7or " +
     					"greater. [&b%s&7]",
     					mineName, time );
     		}

@@ -95,10 +95,10 @@ public abstract class MineScheduler
 	public class MineJob 
 	{
 		private MineJobAction action;
-		private int delayActionSec;
-		private int resetInSec;
+		private double delayActionSec;
+		private double resetInSec;
 		
-		public MineJob( MineJobAction action, int delayActionSec, int resetInSec )
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
 		{
 			super();
 			
@@ -107,7 +107,7 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 		}
 		
-		public int getJobSubmitResetInSec() {
+		public double getJobSubmitResetInSec() {
 			return getResetInSec() + getDelayActionSec();
 		}
 		
@@ -128,20 +128,20 @@ public abstract class MineScheduler
 			this.action = action;
 		}
 
-		public int getDelayActionSec()
+		public double getDelayActionSec()
 		{
 			return delayActionSec;
 		}
-		public void setDelayActionSec( int delayActionSec )
+		public void setDelayActionSec( double delayActionSec )
 		{
 			this.delayActionSec = delayActionSec;
 		}
 
-		public int getResetInSec()
+		public double getResetInSec()
 		{
 			return resetInSec;
 		}
-		public void setResetInSec( int resetInSec )
+		public void setResetInSec( double resetInSec )
 		{
 			this.resetInSec = resetInSec;
 		}
@@ -181,7 +181,7 @@ public abstract class MineScheduler
 	 * @param rwTimes
 	 * @return
 	 */
-	protected List<MineJob> initializeJobWorkflow( int resetTime, boolean includeMessages, ArrayList<Integer> rwTimes )
+	protected List<MineJob> initializeJobWorkflow( double resetTime, boolean includeMessages, ArrayList<Integer> rwTimes )
 	{
 		List<MineJob> workflow = new ArrayList<>();
 		
@@ -190,12 +190,12 @@ public abstract class MineScheduler
 //			ArrayList<Integer> rwTimes = PrisonMines.getInstance().getConfig().resetWarningTimes;
 			Collections.sort( rwTimes );
 			
-			int total = 0;
+			double total = 0;
 			for ( Integer time : rwTimes )
 			{
 				if ( time < resetTime ) {
 					// if reset time is less than warning time, then skip warning:
-					int elapsed = time - total;
+					double elapsed = time - total;
 					workflow.add( 
 							new MineJob( workflow.size() == 0 ? MineJobAction.RESET : MineJobAction.MESSAGE, 
 									elapsed, total) );
@@ -223,10 +223,10 @@ public abstract class MineScheduler
 	private void resetJobStack() {
 		getJobStack().clear();
 		
-		int oldResetTime = getJobWorkflow() == null || getJobWorkflow().size() == 0 ? 0 :
+		double oldResetTime = getJobWorkflow() == null || getJobWorkflow().size() == 0 ? 0.0d :
 								getJobWorkflow().get( 0 ).getJobSubmitResetInSec();
 		
-		if ( oldResetTime == 0 || oldResetTime != getResetTime() ) {
+		if ( oldResetTime == 0.0d || oldResetTime != getResetTime() ) {
 			// need to rebuild JobWorkflow if reset time ever changes:
 			setJobWorkflow( initializeJobWorkflow() );
 		}
@@ -315,10 +315,11 @@ public abstract class MineScheduler
 	private void submitTask() {
 		if ( getCurrentJob() != null ) {
 			// Need to set the targetRestTime when the job is first submitted since that is the ideal time:
-			long targetRestTime = System.currentTimeMillis() + (getCurrentJob().getJobSubmitResetInSec() * 1000);
+			long targetRestTime = System.currentTimeMillis() + 
+									Math.round(getCurrentJob().getJobSubmitResetInSec() * 1000.0d);
 			setTargetRestTime( targetRestTime );
 			
-			long ticksToWait = getCurrentJob().getDelayActionSec() * 20;
+			long ticksToWait = Math.round( getCurrentJob().getDelayActionSec() * 20.0d);
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
 			int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
@@ -379,7 +380,7 @@ public abstract class MineScheduler
 	 * </p>
 	 * 
 	 */
-	public void manualReset( int delayActionSec ) {
+	public void manualReset( double delayActionSec ) {
 		// cancel existing job:
 		if ( getTaskId() != null ) {
 			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );

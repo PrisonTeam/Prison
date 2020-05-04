@@ -33,7 +33,7 @@ public abstract class MineData {
     private List<Block> blocks;
     
     private long totalBlocksMined = 0;
-    private int zeroBlockResetDelaySec;
+    private double zeroBlockResetDelaySec;
     
     
     private boolean skipResetEnabled = false;
@@ -250,10 +250,10 @@ public abstract class MineData {
 		this.totalBlocksMined = totalBlocksMined;
 	}
 
-	public int getZeroBlockResetDelaySec() {
+	public double getZeroBlockResetDelaySec() {
 		return zeroBlockResetDelaySec;
 	}
-	public void setZeroBlockResetDelaySec( int zeroBlockResetDelaySec ) {
+	public void setZeroBlockResetDelaySec( double zeroBlockResetDelaySec ) {
 		this.zeroBlockResetDelaySec = zeroBlockResetDelaySec;
 	}
 

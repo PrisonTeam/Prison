@@ -935,7 +935,8 @@ public abstract class MineReset
     				
             		PrisonMines.getInstance().getMinesMessages()
 		                .getLocalizable("reset_warning")
-		                .withReplacements( getName(), Text.getTimeUntilString(mineJob.getResetInSec() * 1000) )
+		                .withReplacements( getName(), 
+		                		Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
 		                .sendTo(player);
             	
 //    				player.sendMessage( "The mine " + getName() + " will reset in " + 

@@ -118,7 +118,7 @@ public class Mine
         setNotificationRadius( noteRadius == null ? MINE_RESET__BROADCAST_RADIUS_BLOCKS : noteRadius.longValue() );
 
         Double zeroBlockResetDelaySec = (Double) document.get("zeroBlockResetDelaySec");
-        setZeroBlockResetDelaySec( zeroBlockResetDelaySec == null ? 0 : zeroBlockResetDelaySec.intValue() );
+        setZeroBlockResetDelaySec( zeroBlockResetDelaySec == null ? 0.0d : zeroBlockResetDelaySec.doubleValue() );
         
         Boolean skipResetEnabled = (Boolean) document.get( "skipResetEnabled" );
         setSkipResetEnabled( skipResetEnabled == null ? false : skipResetEnabled.booleanValue() );
@@ -159,7 +159,7 @@ public class Mine
         ret.put("notificationMode", getNotificationMode().name() );
         ret.put("notificationRadius", Long.valueOf( getNotificationRadius() ));
 
-        ret.put( "zeroBlockResetDelaySec", Integer.valueOf( getZeroBlockResetDelaySec() ) );
+        ret.put( "zeroBlockResetDelaySec", Double.valueOf( getZeroBlockResetDelaySec() ) );
         
         ret.put( "skipResetEnabled", isSkipResetEnabled() );
         ret.put( "skipResetPercent", getSkipResetPercent() );

@@ -49,8 +49,8 @@ public class MineSchedulerTest
 			
 			// Tests that the first job that is popped off the stack is a message and not the reset:
 			assertTrue( job1.getAction() == MineJobAction.MESSAGE );
-			assertEquals( 181, job1.getDelayActionSec() );
-			assertEquals( 120, job1.getResetInSec() );
+			assertEquals( 181.0d, job1.getDelayActionSec(), 0.1d );
+			assertEquals( 120.0d, job1.getResetInSec(), 0.1d );
 			totalTime += job1.getDelayActionSec();
 		}
 		
@@ -60,8 +60,8 @@ public class MineSchedulerTest
 			assertEquals( 1, jobStack.size() );
 			
 			assertTrue( job2.getAction() == MineJobAction.MESSAGE );
-			assertEquals( 75, job2.getDelayActionSec() );
-			assertEquals( 45, job2.getResetInSec() );
+			assertEquals( 75.0d, job2.getDelayActionSec(), 0.1d );
+			assertEquals( 45.0d, job2.getResetInSec(), 0.1d );
 			totalTime += job2.getDelayActionSec();
 		}
 		
@@ -71,8 +71,8 @@ public class MineSchedulerTest
 			assertEquals( 0, jobStack.size() );
 			
 			assertTrue( job3.getAction() == MineJobAction.RESET );
-			assertEquals( 45, job3.getDelayActionSec() );
-			assertEquals( 0, job3.getResetInSec() );
+			assertEquals( 45.0d, job3.getDelayActionSec(), 0.1d );
+			assertEquals( 0.0d, job3.getResetInSec(), 0.1d );
 			totalTime += job3.getDelayActionSec();
 		}
 		
@@ -100,20 +100,20 @@ public class MineSchedulerTest
 		
 		List<MineJob> jWorkflow = initializeJobWorkflow( resetTime, includeMessages, rwTimes );
 		
-		assertEquals( (long) 1, (long) jWorkflow.size() );
+		assertEquals( 1L, jWorkflow.size() );
 		
 		Stack<MineJob> jobStack = new Stack<>();
 		jobStack.addAll( jWorkflow );
 		
-		assertEquals( (long) 1, (long) jobStack.size() );
+		assertEquals( 1L, jobStack.size() );
 		
 		MineJob job = jobStack.pop();
 		
-		assertEquals( (long) 0, (long) jobStack.size() );
+		assertEquals( 0L, jobStack.size() );
 		
 		// Tests that the first job that is popped off the stack is a message and not the reset:
 		assertTrue( job.getAction() == MineJobAction.RESET );
-		assertEquals( resetTime, job.getDelayActionSec() );
+		assertEquals( resetTime, job.getDelayActionSec(), 0.1d );
 		
 	}
 
