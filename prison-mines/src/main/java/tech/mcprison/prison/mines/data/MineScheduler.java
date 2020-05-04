@@ -315,9 +315,9 @@ public abstract class MineScheduler
 	private void submitTask() {
 		if ( getCurrentJob() != null ) {
 			// Need to set the targetRestTime when the job is first submitted since that is the ideal time:
-			long targetRestTime = System.currentTimeMillis() + 
+			long targetResetTime = System.currentTimeMillis() + 
 									Math.round(getCurrentJob().getJobSubmitResetInSec() * 1000.0d);
-			setTargetRestTime( targetRestTime );
+			setTargetResetTime( targetResetTime );
 			
 			long ticksToWait = Math.round( getCurrentJob().getDelayActionSec() * 20.0d);
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.

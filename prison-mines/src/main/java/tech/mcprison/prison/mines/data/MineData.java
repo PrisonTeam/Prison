@@ -28,7 +28,7 @@ public abstract class MineData {
     private MineNotificationMode notificationMode;
 	private long notificationRadius;
     
-	private long targetRestTime;
+	private long targetResetTime;
 	private int resetCount = 0;
 	
     private List<Block> blocks;
@@ -76,7 +76,7 @@ public abstract class MineData {
     	this.notificationMode = MineNotificationMode.radius;
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     	
-    	this.targetRestTime = 0;
+    	this.targetResetTime = 0;
     	this.resetCount = 0;
     	this.totalBlocksMined = 0;
     	this.zeroBlockResetDelaySec = 0;
@@ -228,8 +228,13 @@ public abstract class MineData {
 		this.notificationRadius = notificationRadius;
 	}
 
-	public long getTargetRestTime() {
-		return targetRestTime;
+	public long getTargetResetTime() {
+		return targetResetTime;
+	}
+	public void setTargetResetTime( long targetResetTime ) {
+		this.targetResetTime = targetResetTime;
+	}
+	
 	}
 	public void setTargetRestTime( long targetRestTime ) {
 		this.targetRestTime = targetRestTime;

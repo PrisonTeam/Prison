@@ -553,7 +553,7 @@ public class MinesCommands {
         	{
         		RowComponent row = new RowComponent();
         		
-        		long targetResetTime = m.getTargetRestTime();
+        		long targetResetTime = m.getTargetResetTime();
         		double remaining = ( targetResetTime <= 0 ? 0d : 
         			(targetResetTime - System.currentTimeMillis()) / 1000d);
         		double rtMinutes = remaining / 60.0D;
