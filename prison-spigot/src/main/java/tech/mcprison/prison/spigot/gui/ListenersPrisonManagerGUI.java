@@ -113,6 +113,12 @@ public class ListenersPrisonManagerGUI implements Listener {
         }
     }
 
+    private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
+        if(activeGui.contains(p.getName())) {
+            e.setCancelled(true);
+        }
+    }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
@@ -121,90 +127,14 @@ public class ListenersPrisonManagerGUI implements Listener {
 
         // If you click an empty slot, this should avoid the error
         if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) {
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
+            activeGuiEventCanceller(p, e);
             return;
         }
 
         InventoryAction action = e.getAction();
 
-        if (action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.HOTBAR_SWAP)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.HOTBAR_MOVE_AND_READD)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.NOTHING)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.CLONE_STACK)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.COLLECT_TO_CURSOR)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.DROP_ONE_SLOT)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.DROP_ONE_CURSOR)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.DROP_ALL_SLOT)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.DROP_ALL_CURSOR)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PICKUP_ALL)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PICKUP_HALF)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PICKUP_ONE)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PICKUP_SOME)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PLACE_ALL)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PLACE_ONE)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.PLACE_SOME)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.SWAP_WITH_CURSOR)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        } else if (action.equals(InventoryAction.UNKNOWN)){
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
+        if ((action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) || action.equals(InventoryAction.HOTBAR_SWAP)) || action.equals(InventoryAction.HOTBAR_MOVE_AND_READD) || action.equals(InventoryAction.NOTHING) || action.equals(InventoryAction.CLONE_STACK) || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.DROP_ONE_SLOT) || action.equals(InventoryAction.DROP_ONE_CURSOR) || action.equals(InventoryAction.DROP_ALL_SLOT) || action.equals(InventoryAction.DROP_ALL_CURSOR) || action.equals(InventoryAction.PICKUP_ALL) || action.equals(InventoryAction.PICKUP_HALF) || action.equals(InventoryAction.PICKUP_ONE) || action.equals(InventoryAction.PICKUP_SOME) || action.equals(InventoryAction.PLACE_ALL) || action.equals(InventoryAction.PLACE_ONE) || action.equals(InventoryAction.PLACE_SOME) || action.equals(InventoryAction.SWAP_WITH_CURSOR) || action.equals(InventoryAction.UNKNOWN)) {
+            activeGuiEventCanceller(p, e);
         }
 
         // check if the item has itemMeta
