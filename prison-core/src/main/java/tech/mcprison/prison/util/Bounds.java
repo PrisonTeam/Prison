@@ -189,6 +189,14 @@ public class Bounds {
     	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
 		return Math.round( distance );
     }    	
+    
+    public double getDistance3d(Location location) {
+    	double deltaX = getCenter().getX() - location.getX();
+    	double deltaY = getCenter().getY() - location.getY();
+    	double deltaZ = getCenter().getZ() - location.getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+    	return distance;
+    }    	
 
     public String getDimensions() {
     	return "&7" + Math.round(getWidth()) + "&8x&7" +

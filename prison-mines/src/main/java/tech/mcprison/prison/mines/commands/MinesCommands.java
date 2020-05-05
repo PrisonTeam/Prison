@@ -530,8 +530,13 @@ public class MinesCommands {
         	String minCoords = m.getBounds().getMin().toBlockCoordinates();
         	String maxCoords = m.getBounds().getMax().toBlockCoordinates();
         	chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
+        	Player player = getPlayer( sender );
         	
-        	chatDisplay.text("&3Center: &7%s", m.getBounds().getCenter().toBlockCoordinates());
+        	chatDisplay.text("&3Center: &7%s   &3%s &7%s", 
+        			m.getBounds().getCenter().toBlockCoordinates(), 
+        			(player == null ? "" : "Distance:"),
+        			(player == null ? "" : fFmt.format( m.getBounds().getDistance3d( player.getLocation() ) ))
+        			);
         	if ( mMan.isMineStats() ) {
         	}
         	
@@ -787,7 +792,7 @@ public class MinesCommands {
             		
             		row.addTextComponent( " &3Dist: &7");
             		row.addFancy( 
-            				new FancyMessage( dFmt.format(m.getBounds().getDistance(player.getLocation()))).
+            				new FancyMessage( fFmt.format(m.getBounds().getDistance3d(player.getLocation()))).
             				tooltip("Distance to the Mine") );
             		
             	}
@@ -1249,7 +1254,7 @@ public class MinesCommands {
     		// some arbitrary distance as a max radius.  We do not want to use the individual values
     		// that have been set for each mine.
     		else if ( mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
-    			Double distance = mine.getBounds().getDistance( player.getLocation() );
+    			Double distance = mine.getBounds().getDistance3d( player.getLocation() );
 //    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}
