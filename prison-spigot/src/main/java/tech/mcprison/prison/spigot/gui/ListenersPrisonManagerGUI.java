@@ -11,14 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import tech.mcprison.prison.mines.PrisonMines;
@@ -47,6 +40,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger
  */
 public class ListenersPrisonManagerGUI implements Listener {
 
@@ -100,58 +94,6 @@ public class ListenersPrisonManagerGUI implements Listener {
         }
     }
 
-    @EventHandler
-    public void onDragEvent(InventoryDragEvent e){
-        Player p = (Player) e.getWhoClicked();
-
-        // If you click an empty slot, this should avoid the error
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-    }
-
-    @EventHandler
-    public void onMoveItem(InventoryMoveItemEvent e){
-        Player p = (Player) e.getHandlers();
-
-        // If you click an empty slot, this should avoid the error
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-    }
-
-    @EventHandler
-    public void onInteractEvent(InventoryInteractEvent e){
-
-        Player p = (Player) e.getWhoClicked();
-
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-    }
-
-    @EventHandler
-    public void onPickupItem(InventoryPickupItemEvent e){
-        Player p = (Player) e.getHandlers();
-
-        if(activeGui.contains(p.getName())) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onCreativeEvent(InventoryCreativeEvent e){
-
-        Player p = (Player) e.getWhoClicked();
-
-        // If you click an empty slot, this should avoid the error
-        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) {
-            if(activeGui.contains(p.getName())) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
     @EventHandler (priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e)
     {
@@ -183,6 +125,86 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.setCancelled(true);
             }
             return;
+        }
+
+        InventoryAction action = e.getAction();
+
+        if (action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.HOTBAR_SWAP)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.HOTBAR_MOVE_AND_READD)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.NOTHING)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.CLONE_STACK)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.COLLECT_TO_CURSOR)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.DROP_ONE_SLOT)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.DROP_ONE_CURSOR)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.DROP_ALL_SLOT)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.DROP_ALL_CURSOR)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PICKUP_ALL)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PICKUP_HALF)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PICKUP_ONE)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PICKUP_SOME)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PLACE_ALL)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PLACE_ONE)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.PLACE_SOME)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.SWAP_WITH_CURSOR)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
+        } else if (action.equals(InventoryAction.UNKNOWN)){
+            if(activeGui.contains(p.getName())) {
+                e.setCancelled(true);
+            }
         }
 
         // check if the item has itemMeta
