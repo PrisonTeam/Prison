@@ -1,12 +1,6 @@
 ### Prison Documentation 
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-## Setting up Vault
-
-This document provides a quick explanation about how to install vault on your server.
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
 # Setting up Vault
 
 To set-up Vault, please follow the instructions listed below:
@@ -23,7 +17,7 @@ To set-up Vault, please follow the instructions listed below:
 * Restart your server. Do not use **/reload** (or it could seal Vault).
 
 
-* The plugin's ready as it is and will give economy supports hooked with EssentialsX economy.
+* The plugin's ready as it is and will give economy supports hooked with EssentialsX economy or any economy plugin compatible or built on vault.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -31,8 +25,6 @@ To set-up Vault, please follow the instructions listed below:
 
 
 
-
-
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkxNTAxOTU3M119
+eyJoaXN0b3J5IjpbMTEyNzEwMzc5NV19
 -->
