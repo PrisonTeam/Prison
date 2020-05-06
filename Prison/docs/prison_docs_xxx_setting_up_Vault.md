@@ -7,17 +7,7 @@ This document provides a quick explanation about how to install vault on your se
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-
-
-# Dependencies 
-
-* **Vault** - **Required** - Provides the permission integration with Prison
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
-# Setting up Ultra Permissions
+# Setting up Vault
 
 To set-up Ultra Permissions, please follow the instructions listed below:
 
@@ -54,5 +44,5 @@ To set-up Ultra Permissions, please follow the instructions listed below:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgxMzk1NTU1MF19
+eyJoaXN0b3J5IjpbLTE1NjU1MzgyMzVdfQ==
 -->
