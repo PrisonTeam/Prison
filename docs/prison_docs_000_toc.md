@@ -23,7 +23,7 @@
     Adding the plugin to your server.
 
 
-* **Todo:** Setting up Vault - 
+* [Setting up Vault](prison_docs_xxx_setting_up_Vault.md) - 
     Including Vault is Strongly Suggested.
 
 
@@ -45,7 +45,7 @@
     Installing the plugins
 
 
-* **Todo:** Setting up PlaceholderAPI - Strongly Suggested if using placeholders
+* [Setting up PlaceholderAPI](prison_docs_xxx_setting_up_PlaceholderAPI.md) - Strongly Suggested if using placeholders
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
