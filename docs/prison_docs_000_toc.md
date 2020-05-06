@@ -27,7 +27,7 @@
     Including Vault is Strongly Suggested.
 
 
-* **Todo:** Setting up EssentialsX - 
+* [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md) - 
     Including EssentialsX is Strongly Suggested - Recommend which modules to include.
 
 
