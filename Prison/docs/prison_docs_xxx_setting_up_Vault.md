@@ -20,29 +20,19 @@ To set-up Vault, please follow the instructions listed below:
 * Copy to your server's plugin directory.
 
 
-* Restart your server. Do not use **/reload** (see below).
+* Restart your server. Do not use **/reload** (or it could seal Vault).
 
 
-* The plugin is ready to use as-is, but if you want to customize the settings, please follow the Ultra Permissions documentation that is available on their [wiki page](https://ultrapermissions.com/wiki/).
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
-# Special Notices
-
-* Do not use **/reload** with this plugin since it may not correctly grab all the required permission nodes.
-
-
-* You are required to add yourself as a super user by running the following command `upc addsuperadmin [player]` if you wish to use the in-game GUI or run any Ultra Permissions related commands.
+* The plugin's ready as it is and will give economy supports hooked with EssentialsX economy.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNzQwMDE4NTRdfQ==
+eyJoaXN0b3J5IjpbMTkxNTAxOTU3M119
 -->
