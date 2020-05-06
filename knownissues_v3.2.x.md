@@ -24,11 +24,16 @@ Work to be considered.
 * **Add parameter to charge player for Promote command**
 
 
+* **When creating a new mine, register that mine with the placeholders**
+Might be easier to just reregister all mines?  Not sure if that will work?
+Right now, if a mine is added, in order for it to show up in the placeholders, you would have to restart the server so all the placeholders are reregistered.
+
+
 * **Add /ranks remove currency [rankName] [currency]**
 Done. Currently no way to remove a currency from a Rank to return it to normal currency.
 
 
-* **Add onBlockBreak monitor to prison mines to count blocks mined**
+* **DONE: Add onBlockBreak monitor to prison mines to count blocks mined**
 Set EventPriority to monitor. Don't change anything. Just confirm block was changed to air and increment the count.
 Do not have to precheck if the block was air before, since air cannot trigger a block break event.  Just confirm it is air when monitoring to ensure it was removed. If this works, then this would allow the elimination of the air counts.
 

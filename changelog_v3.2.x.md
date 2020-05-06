@@ -8,13 +8,19 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.11 - 2020-05-04
+## tag v3.2.1-alpha.12 - 2020-05-05
+
+* **Added 3d distances to some mine related commands**
+Added the distance the player is from the mine to the /mines info command. 
+Created a 3d distance function to use for displaying distances to the mine. 
+For mine related messaging, its using 2d distances, ignoring the Y axis.
 
 
 * **New Feature; Slime Block Fun!**
 Simple feature to add some bounce to the Prison fun!  
 Different items in hand increases boost.  After jumping on a slime block, the player gains immunity from fall damage, but they can still die if they land in lava, the void, etc... 
 Not really sure what the life span of this will be? 
+To enable, set the configuration property "slim-fun" to true in plugins/Prison/plugin.yml.
 
 
 * **New Features: Command /mines list now has paging! Plus useful sorting.**
