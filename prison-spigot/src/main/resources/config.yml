@@ -8,6 +8,8 @@ debug: false
 check-updates: true
 send-metrics: true
 show-alerts: true
+slime-fun: false
+
 default-language: en_US
 
 # The storage engine that Prison should use to store data.

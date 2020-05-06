@@ -21,109 +21,192 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 public class OnPlayerMoveEventListener 
 	implements Listener {
 	
+	private boolean enabled = false;
 
-	private final TreeMap<Long, Long> playerSlimeJumpCache;
+	private final TreeMap<Long, OnPlayerMoveEventData> playerSlimeJumpCache;
 
 	public OnPlayerMoveEventListener() {
 		super();
 		
 		this.playerSlimeJumpCache = new TreeMap<>();
+		
+		this.enabled = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
 	public void onPlayerJumpOnSlime(PlayerMoveEvent e ) {
-		
-		Player player = e.getPlayer();
-		Vector velocity = player.getVelocity();
-		double velY = velocity.getY();
-
-		if ( velY > 0.15 ) {
-			Location location = player.getLocation();
-			location.setY( location.getY() - 1 );
-			
-			Block onBlock = location.getBlock();
-			
-			if ( onBlock.getType() == Material.SLIME_BLOCK ) {
-//				String blockType = (onBlock == null ? "no block" : onBlock.getType().name() );
-//				Output.get().logInfo( "%s  %s ", blockType, Double.toString( velY ) );
-				
-    			// Record player's System time stamp on Jump Boost:
-    			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
-    			getPlayerSlimeJumpCache().put( playerUUIDLSB, Long.valueOf( System.currentTimeMillis() ) );
-				
-    			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-    			
-    			double boost = 1.40d;
-    			
-    			switch ( itemInHand.getType() )
-				{
-					case DIAMOND_PICKAXE:
-					case GOLD_PICKAXE:
-					case IRON_PICKAXE:
-					case STONE_PICKAXE:
-					case WOOD_PICKAXE:
-						boost *= 2.0;
-						break;
-
-					case DIAMOND_BLOCK:
-						boost *= 1.50;
-						break;
-						
-					case GOLD_BLOCK:
-						boost *= 1.35;
-						break;
-						
-					case IRON_BLOCK:
-						boost *= 1.25;
-						break;
-						
-
-					default:
-						break;
-				}
-    			
-    			
-				Vector newVel = velocity.clone();
-				boost = newVel.getY() * boost;
-				newVel.setY( boost );
-				
-				player.setVelocity( newVel );
-				
-				DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
-				player.sendMessage( "Slime Block Bounce: boost= " + fFmt.format( boost ) + 
-							"  inHand= " + itemInHand.getType().name() );
-			}
+		if ( !isEnabled() ) {
+			return;
 		}
 		
+		Player player = e.getPlayer();
+
+		Location loc = player.getLocation();
+		Location loc1 = loc.clone();
+		loc1.setY( loc.getY() - 1 );
+		Block onBlock1 = loc1.getBlock();
+		
+		if ( onBlock1.getType() == Material.AIR ||
+				onBlock1.getType() == Material.SLIME_BLOCK
+					) {
+			
+			Vector velocity = player.getVelocity();
+			double velY = velocity.getY();
+
+			// Record player's System time stamp on Jump Boost:
+			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
+			
+			if ( onBlock1.getType() == Material.AIR && 
+					getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) ) {
+				
+				OnPlayerMoveEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
+				
+				if ( moveEventData != null ) {
+					moveEventData.inAir( loc1.getY(), player );
+				}
+				
+			}
+			else if ( velY > 0.2 ) {
+				
+				// checking and boosting over two blocks below feet caused server to crash: :)
+//				Location loc2 = loc1.clone();
+//				loc2.setY( loc2.getY() - 1 );
+//				Block onBlock2 = loc2.getBlock();
+				
+				if ( onBlock1.getType() == Material.SLIME_BLOCK  
+//				 || onBlock2.getType() == Material.SLIME_BLOCK
+						) {
+					
+					ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+					
+					double boost = getBoost( itemInHand );
+					
+					
+					// Record player's System time stamp on Jump Boost:
+					// Add player jump data to the cache:
+					if ( !getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) ) {
+						OnPlayerMoveEventData moveEventData = new OnPlayerMoveEventData( playerUUIDLSB, loc.getY() );
+						getPlayerSlimeJumpCache().put( playerUUIDLSB, moveEventData );
+						
+						player.sendMessage( "SlimeBlockFun: Use at your own risk. Jumpping out of the " +
+												"world may crash the server." );
+					}
+					
+					getPlayerSlimeJumpCache().get( playerUUIDLSB )
+														.addJumpEvent( loc1.getY(), boost, velY );
+					
+					Vector newVelocity = calculateVelocityY( boost, velocity, player );
+					
+					player.setVelocity( newVelocity );
+					
+//					DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+//					player.sendMessage( "SlimeBlockFun:   boost= " + fFmt.format( boost ) + 
+//							"  inHand= " + itemInHand.getType().name() );
+				}
+			}
+		
+		}
+	}
+
+	/**
+	 * <p>If max velocity exceeds 1024 then the server could crash.
+	 * This function makes sure that the calculated velocity for y does not
+	 * exceed 1024; if it does, then it is set to 1024.
+	 * </p>
+	 * 
+	 * @param boost
+	 * @param velocityOriginal
+	 * @param player
+	 * @return
+	 */
+	private Vector calculateVelocityY( double boost, Vector velocityOriginal, Player player ) {
+		Vector newVelocity = velocityOriginal.clone();
+		double velocityY = newVelocity.getY() * boost;
+		
+		if ( velocityY > 1024.0 ) {
+			DecimalFormat f4Fmt = new DecimalFormat("#,##0.0000");
+			
+			player.sendMessage( "SlimeBlockFun: Exceeded max velocity!! velY:" + 
+						f4Fmt.format( velocityY ) );
+			
+			velocityY = 1024.0;
+		}
+		
+		newVelocity.setY( velocityY );
+
+		return newVelocity;
+	}
+
+	private double getBoost( ItemStack itemInHand )
+	{
+		double boost = 1.27d;
+		
+		switch ( itemInHand.getType() )
+		{
+			case DIAMOND_PICKAXE:
+				boost *= 2.0;
+				break;
+				
+			case GOLD_PICKAXE:
+			case IRON_PICKAXE:
+			case STONE_PICKAXE:
+			case WOOD_PICKAXE:
+				boost *= 2.85;
+				break;
+
+			case DIAMOND_BLOCK:
+				boost *= 1.65;
+				break;
+				
+			case GOLD_BLOCK:
+				boost *= 1.45;
+				break;
+				
+			case IRON_BLOCK:
+				boost *= 1.20;
+				break;
+				
+
+			default:
+				break;
+		}
+		return boost;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onEntityDamageEvent(final EntityDamageEvent e) {
-		e.getEntity().sendMessage( "ouch!!  " + e.getCause().name() );
-		
-        if (!(e.getEntity() instanceof Player)) {
+        if (!isEnabled() || !(e.getEntity() instanceof Player)) {
             return;
         }
-        Player p = (Player) e.getEntity();
+
         if (e.getCause() == DamageCause.FALL) {
+        	
+        	Player p = (Player) e.getEntity();
         	
 			// Record player's System time stamp on Jump Boost:
 			Long playerUUIDLSB = Long.valueOf( p.getUniqueId().getLeastSignificantBits() );
 			if ( getPlayerSlimeJumpCache().containsKey( playerUUIDLSB )) {
-				Long jumpTime = getPlayerSlimeJumpCache().get( playerUUIDLSB );
+				OnPlayerMoveEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
 				
-				// If player jumpped on slime within 20 seconds, cancel fall damage:
-				if ( System.currentTimeMillis() - jumpTime.longValue() <= 20 * 1000 ) {
+				// If player jumped on slime within 16 seconds, cancel fall damage:
+				if ( moveEventData.hasLanded(p) ) {
 					
 					e.setCancelled( true );
 					p.sendMessage( "By the grace of the Great Slime Block you survive!" );
-				}
+				} 
 			}
         	
         }
 	}
 	
-	public TreeMap<Long, Long> getPlayerSlimeJumpCache()
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled( boolean enabled ) {
+		this.enabled = enabled;
+	}
+
+	public TreeMap<Long, OnPlayerMoveEventData> getPlayerSlimeJumpCache()
 	{
 		return playerSlimeJumpCache;
 	}

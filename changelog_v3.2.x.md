@@ -20,7 +20,7 @@ For mine related messaging, its using 2d distances, ignoring the Y axis.
 Simple feature to add some bounce to the Prison fun!  
 Different items in hand increases boost.  After jumping on a slime block, the player gains immunity from fall damage, but they can still die if they land in lava, the void, etc... 
 Not really sure what the life span of this will be? 
-To enable, set the configuration property "slim-fun" to true in plugins/Prison/plugin.yml.
+To enable, set the configuration property "slim-fun" to true in plugins/Prison/config.yml.
 
 
 * **New Features: Command /mines list now has paging! Plus useful sorting.**
