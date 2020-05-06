@@ -13,8 +13,8 @@ To set-up Vault, please follow the instructions listed below:
 
 * Download Vault:
     - Go to the SpigotMC.org Vault resource page:
-        - [Vault Download]https://www.spigotmc.org/resources/vault.34315/(https://www.spigotmc.org/resources/vault.34315/)
-    - All versions appear to be compatible with Prison v3.2.x, so download the latest release.
+        - [Vault Download](https://www.spigotmc.org/resources/vault.34315/)
+    - Download one of the latest releases or the one for your server version, every version of Vault should works.
 
 
 * Copy to your server's plugin directory.
@@ -44,5 +44,5 @@ To set-up Vault, please follow the instructions listed below:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE5NTY3NzQ3MV19
+eyJoaXN0b3J5IjpbLTEzNzQwMDE4NTRdfQ==
 -->
