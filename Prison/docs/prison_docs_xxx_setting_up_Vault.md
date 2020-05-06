@@ -9,11 +9,11 @@ This document provides a quick explanation about how to install vault on your se
 
 # Setting up Vault
 
-To set-up Ultra Permissions, please follow the instructions listed below:
+To set-up Vault, please follow the instructions listed below:
 
-* Download Ultra Permissions:
-    - Go to the SpigotMC.org Ultra Permissions resource page:
-        - [Ultra Permissions Download](https://www.spigotmc.org/resources/ultra-permissions.42678/)
+* Download Vault:
+    - Go to the SpigotMC.org Vault resource page:
+        - [Vault Download]https://www.spigotmc.org/resources/vault.34315/(https://www.spigotmc.org/resources/vault.34315/)
     - All versions appear to be compatible with Prison v3.2.x, so download the latest release.
 
 
@@ -44,5 +44,5 @@ To set-up Ultra Permissions, please follow the instructions listed below:
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NjU1MzgyMzVdfQ==
+eyJoaXN0b3J5IjpbMTE5NTY3NzQ3MV19
 -->
