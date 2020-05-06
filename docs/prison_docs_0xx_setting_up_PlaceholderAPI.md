@@ -18,7 +18,7 @@ This document provides a quick overview on how to install PlaceholderAPI.
 
 
 
-# Setting up PermissionsEX
+# Setting up PlaceholderAPI
 
 Setting up PlaceholderAPI just need couple of steps:
 
