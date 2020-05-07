@@ -4,7 +4,9 @@ import java.text.DecimalFormat;
 
 import org.bukkit.entity.Player;
 
-public class OnPlayerMoveEventData {
+import tech.mcprison.prison.util.Text;
+
+public class SlimeBlockFunEventData {
 
 	private Long playerUUIDLSB;
 	private long timestamp;
@@ -17,12 +19,14 @@ public class OnPlayerMoveEventData {
 	private boolean jumping = false;
 	
 	private double recordHeight = 0.0;
-	private double maxBoost = 0.0;
+	private double recordY = 0.0;
+	private double recordBoost = 0.0;
+	private double recordVelocity = 0.0;
 	
-	private DecimalFormat fFmt = new DecimalFormat("#,##0.00");
-//	private DecimalFormat f4Fmt = new DecimalFormat("#,##0.0000");
+	private DecimalFormat sFmt = new DecimalFormat("#,##0.0");
+	private DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 	
-	public OnPlayerMoveEventData( Long playerUUIDLSB, double y ) {
+	public SlimeBlockFunEventData( Long playerUUIDLSB, double y ) {
 		super();
 		
 		this.playerUUIDLSB = playerUUIDLSB;
@@ -32,12 +36,13 @@ public class OnPlayerMoveEventData {
 		this.maxY = y;
 		this.jumping = false;
 		this.recordHeight = 0.0;
+		this.recordY = 0.0;
 	}
 
 	public void addJumpEvent( double y, double boost, double velocityY ) {
 		
 		long currentTime = System.currentTimeMillis();
-		if ( !isJumping() ) { // && (currentTime - this.timestamp) > 1000 ) {
+		if ( !isJumping() ) {
 			this.boostCount = 0;
 			this.jumping = true;
 
@@ -56,21 +61,17 @@ public class OnPlayerMoveEventData {
 	public void inAir( double currentY, Player player ) {
 		if ( isJumping() ) {
 			
-			if ( currentY >= 255 ) {
-				player.sendMessage( "SlimeBlockFun: You jumped out of the world! " + 
-							" y= " + currentY );
-				
-				atTopOfJump( player );
-				
-//				Vector velocity = player.getVelocity();
-//				velocity.setY( 0 );
-//				player.setVelocity( velocity );
-			}
-			else if ( currentY > getMaxY() ) {
+			if ( currentY > getMaxY() ) {
 				// Going up!  Keep recording height!
 				setMaxY( currentY );
 			}
 			else if ( currentY < getMaxY() ) {
+				
+				if ( currentY >= 255 ) {
+					player.sendMessage( "SlimeFun: You jumped out of the world! " + 
+							" y= " + dFmt.format( currentY ));
+				}
+
 				// Just starting to go back down!!
 				// Stop recording the jump:
 				atTopOfJump( player );
@@ -82,20 +83,44 @@ public class OnPlayerMoveEventData {
 	{
 		double height = getMaxY() - getInitialY();
 
-		player.sendMessage( "SlimeBlockFun: h:" +  
-				fFmt.format(height) + 
-				" (y:" + fFmt.format(getMaxY()) + ") " +
-				"boost:" + fFmt.format(getBoost()) + 
-				" (" + getBoostCount() +
-				") velY:" + fFmt.format(getVelocityY()) );
+		boolean recY = ( getMaxY() > getRecordY() );
+		boolean recH = ( height > getRecordHeight() );
+		boolean recB = ( getBoost() > getRecordBoost() );
+		boolean recV = ( getVelocityY() > getRecordVelocity() );
 		
-		if ( height > getRecordHeight() ) {
-			setRecordHeight( height );
-			
-			player.sendMessage( 
-					"Congrats! New height record! " +
-							fFmt.format( getRecordHeight()) );
+		if ( recY ) {
+			setRecordY( getMaxY() );
 		}
+		if ( recH ) {
+			setRecordHeight( height );
+		}
+		if ( recB ) {
+			setRecordBoost( getBoost() );
+		}
+		if ( recV ) {
+			setRecordVelocity( getVelocityY() );
+		}
+		
+		String message1 = Text.translateAmpColorCodes(  
+				String.format("&a%s  &3Height: &7%s    &a%s      &3maxY: &7%s  &a%s",
+						(recY || recH || recB || recV ? "&6.-=New=-." : "__Slime__"),
+						sFmt.format(height), 
+						(recH ? "&6" : "" ) + sFmt.format( getRecordHeight() ),
+						sFmt.format(getMaxY()), 
+						(recY ? "&6" : "" ) + sFmt.format( getRecordY())
+						));
+		
+		String message2 = Text.translateAmpColorCodes(  
+				String.format("&a%s  &3Boost: &7%s  &b%s  &a%s   &3Velocity: &7%s  &a%s",   
+						(recY || recH || recB || recV ? "&6-Record!-" : "__Fun!!__"),
+						
+						dFmt.format(getBoost()), Integer.toString( getBoostCount()),
+						(recB ? "&6" : "" ) + dFmt.format( getRecordBoost() ),
+						dFmt.format(getVelocityY()),
+						(recV ? "&6" : "" ) + dFmt.format(getRecordVelocity())
+						));
+		player.sendMessage( message1 );
+		player.sendMessage( message2 );
 		
 		// Reset key values:
 		setJumping( false );
@@ -104,20 +129,20 @@ public class OnPlayerMoveEventData {
 	}
 	
 	public boolean hasLanded(Player p) {
-		boolean jumping = false;
+		boolean wasJumping = false;
 		
 		long inAir = System.currentTimeMillis() - getTimestamp();
 		
 		if ( inAir <= (16 * 1000) ) {
-			jumping = true;
+			wasJumping = true;
 			
 			setJumping( false );
 			setBoostCount( 0 );
 			setBoost( 1.0 );
-			setTimestamp( 0 );
+			//setTimestamp( 0 );
 		} 
 		
-		return jumping;
+		return wasJumping;
 	}
 	
 	public Long getPlayerUUIDLSB() {
@@ -183,11 +208,25 @@ public class OnPlayerMoveEventData {
 		this.recordHeight = recordHeight;
 	}
 
-	public double getMaxBoost() {
-		return maxBoost;
+	public double getRecordBoost() {
+		return recordBoost;
 	}
-	public void setMaxBoost( double maxBoost ) {
-		this.maxBoost = maxBoost;
+	public void setRecordBoost( double recordBoost ) {
+		this.recordBoost = recordBoost;
+	}
+
+	public double getRecordY() {
+		return recordY;
+	}
+	public void setRecordY( double recordY ) {
+		this.recordY = recordY;
+	}
+
+	public double getRecordVelocity() {
+		return recordVelocity;
+	}
+	public void setRecordVelocity( double recordVelocity ) {
+		this.recordVelocity = recordVelocity;
 	}
 	
 }

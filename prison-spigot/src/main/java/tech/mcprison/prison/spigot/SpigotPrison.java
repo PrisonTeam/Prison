@@ -67,7 +67,7 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.player.OnPlayerMoveEventListener;
+import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
@@ -142,7 +142,7 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManagerGUI(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
-        Bukkit.getPluginManager().registerEvents(new OnPlayerMoveEventListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         
         
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());

@@ -18,14 +18,14 @@ import org.bukkit.util.Vector;
 
 import tech.mcprison.prison.spigot.SpigotPrison;
 
-public class OnPlayerMoveEventListener 
+public class SlimeBlockFunEventListener 
 	implements Listener {
 	
 	private boolean enabled = false;
 
-	private final TreeMap<Long, OnPlayerMoveEventData> playerSlimeJumpCache;
+	private final TreeMap<Long, SlimeBlockFunEventData> playerSlimeJumpCache;
 
-	public OnPlayerMoveEventListener() {
+	public SlimeBlockFunEventListener() {
 		super();
 		
 		this.playerSlimeJumpCache = new TreeMap<>();
@@ -59,7 +59,7 @@ public class OnPlayerMoveEventListener
 			if ( onBlock1.getType() == Material.AIR && 
 					getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) ) {
 				
-				OnPlayerMoveEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
+				SlimeBlockFunEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
 				
 				if ( moveEventData != null ) {
 					moveEventData.inAir( loc1.getY(), player );
@@ -68,7 +68,9 @@ public class OnPlayerMoveEventListener
 			}
 			else if ( velY > 0.2 ) {
 				
-				// checking and boosting over two blocks below feet caused server to crash: :)
+				// checking and boosting over two blocks below feet caused server to crash due to too much boost! :)
+				// Too much boost, multiplied by the vector will crash the server if it exceeds 1024, of which
+				// is prevented... so don't worry about it. :)
 //				Location loc2 = loc1.clone();
 //				loc2.setY( loc2.getY() - 1 );
 //				Block onBlock2 = loc2.getBlock();
@@ -85,10 +87,10 @@ public class OnPlayerMoveEventListener
 					// Record player's System time stamp on Jump Boost:
 					// Add player jump data to the cache:
 					if ( !getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) ) {
-						OnPlayerMoveEventData moveEventData = new OnPlayerMoveEventData( playerUUIDLSB, loc.getY() );
+						SlimeBlockFunEventData moveEventData = new SlimeBlockFunEventData( playerUUIDLSB, loc.getY() );
 						getPlayerSlimeJumpCache().put( playerUUIDLSB, moveEventData );
 						
-						player.sendMessage( "SlimeBlockFun: Use at your own risk. Jumpping out of the " +
+						player.sendMessage( "SlimeFun: Use at your own risk. Jumpping out of the " +
 												"world may crash the server." );
 					}
 					
@@ -99,9 +101,6 @@ public class OnPlayerMoveEventListener
 					
 					player.setVelocity( newVelocity );
 					
-//					DecimalFormat fFmt = new DecimalFormat("#,##0.00");
-//					player.sendMessage( "SlimeBlockFun:   boost= " + fFmt.format( boost ) + 
-//							"  inHand= " + itemInHand.getType().name() );
 				}
 			}
 		
@@ -126,7 +125,7 @@ public class OnPlayerMoveEventListener
 		if ( velocityY > 1024.0 ) {
 			DecimalFormat f4Fmt = new DecimalFormat("#,##0.0000");
 			
-			player.sendMessage( "SlimeBlockFun: Exceeded max velocity!! velY:" + 
+			player.sendMessage( "SlimeFun: Exceeded max velocity!! velY:" + 
 						f4Fmt.format( velocityY ) );
 			
 			velocityY = 1024.0;
@@ -186,7 +185,7 @@ public class OnPlayerMoveEventListener
 			// Record player's System time stamp on Jump Boost:
 			Long playerUUIDLSB = Long.valueOf( p.getUniqueId().getLeastSignificantBits() );
 			if ( getPlayerSlimeJumpCache().containsKey( playerUUIDLSB )) {
-				OnPlayerMoveEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
+				SlimeBlockFunEventData moveEventData = getPlayerSlimeJumpCache().get( playerUUIDLSB );
 				
 				// If player jumped on slime within 16 seconds, cancel fall damage:
 				if ( moveEventData.hasLanded(p) ) {
@@ -206,7 +205,7 @@ public class OnPlayerMoveEventListener
 		this.enabled = enabled;
 	}
 
-	public TreeMap<Long, OnPlayerMoveEventData> getPlayerSlimeJumpCache()
+	public TreeMap<Long, SlimeBlockFunEventData> getPlayerSlimeJumpCache()
 	{
 		return playerSlimeJumpCache;
 	}
