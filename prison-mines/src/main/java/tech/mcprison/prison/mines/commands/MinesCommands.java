@@ -768,16 +768,16 @@ public class MinesCommands {
             	//row.addTextComponent( m.getWorldName() + " " );
             	
             	row.addFancy( 
-            			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
+            			new FancyMessage( String.format("&3Mine: &7% s ", m.getName()) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
             	
             	
             	row.addFancy( 
-            			new FancyMessage("&eTP").command("/mines tp " + m.getName())
+            			new FancyMessage("&eTP ").command("/mines tp " + m.getName())
             			.tooltip("&7Click to TP to the mine"));
             	
-            	row.addTextComponent( " &3Reset: &7" );
+            	row.addTextComponent( "  &3Reset: &7" );
             	
             	row.addFancy( 
             			new FancyMessage(dFmt.format(m.getRemainingTimeSec()))
@@ -790,7 +790,7 @@ public class MinesCommands {
             	
             	if ( player != null && m.getBounds().withinSameWorld( player.getLocation() ) ) {
             		
-            		row.addTextComponent( " &3Dist: &7");
+            		row.addTextComponent( "  &3Dist: &7");
             		row.addFancy( 
             				new FancyMessage( fFmt.format(m.getBounds().getDistance3d(player.getLocation()))).
             				tooltip("Distance to the Mine") );
@@ -809,21 +809,21 @@ public class MinesCommands {
             	blocksMined = blocksMined.substring( blocksMined.length() - 10);
             	
             	row2.addFancy( 
-            			new FancyMessage( String.format("%s &3Rem: ", blocksMined)).
+            			new FancyMessage( String.format("  %s  &3Rem: ", blocksMined)).
             			tooltip( "Blocks mined" ) );
             	
             	row2.addFancy( 
             			new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
             			tooltip( "Percent Blocks Remaining" ) );
             	
-            	row2.addTextComponent( "%%&3 RCnt: &7" );
+            	row2.addTextComponent( "%%  &3RCnt: &7" );
             	
             	row2.addFancy( 
             			new FancyMessage(dFmt.format(m.getResetCount())).
             			tooltip( "Times the mine was reset." ) );
             	
             	
-            	row2.addTextComponent( "&3 Vol: &7" );
+            	row2.addTextComponent( " &3 Vol: &7" );
             	row2.addFancy( 
             			new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
             			tooltip( "Volume in Blocks" ) );
