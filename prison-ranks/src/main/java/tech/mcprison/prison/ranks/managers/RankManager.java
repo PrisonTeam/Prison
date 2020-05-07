@@ -278,12 +278,17 @@ public class RankManager {
 			
     		Rank rankLast = null;
     		for ( PositionRank pRank : rLadder.ranks ) {
-				Rank rank = rLadder.getByPosition(pRank.getPosition()).get();
-				if ( rankLast != null ) {
-					rank.rankPrior = rankLast;
-					rankLast.rankNext = rank;
-				}
-				rankLast = rank;
+    			if ( pRank != null && pRank.getPosition() >= 0 ) {
+    				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
+    				if ( opRank.isPresent() ) {
+    					Rank rank = opRank.get();
+    					if ( rankLast != null ) {
+    						rank.rankPrior = rankLast;
+    						rankLast.rankNext = rank;
+    					}
+    					rankLast = rank;
+    				}
+    			}
 			}
 		}
     }
