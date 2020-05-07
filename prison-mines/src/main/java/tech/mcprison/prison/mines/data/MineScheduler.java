@@ -79,6 +79,11 @@ public abstract class MineScheduler
 		}
 	}
 	
+	public enum MineResetType {
+		NORMAL,
+		FORCED;
+	}
+	
 	/**
 	 * <p>This class represents a workflow action.  The action can be one of either MESSAGE, or
 	 * RESET.  The delayActionSec is how many seconds the job must wait until taking action.
@@ -97,6 +102,7 @@ public abstract class MineScheduler
 		private MineJobAction action;
 		private double delayActionSec;
 		private double resetInSec;
+		private MineResetType resetType;
 		
 		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
 		{
@@ -105,6 +111,8 @@ public abstract class MineScheduler
 			this.action = action;
 			this.delayActionSec = delayActionSec;
 			this.resetInSec = resetInSec;
+			
+			this.resetType = MineResetType.NORMAL;
 		}
 		
 		public double getJobSubmitResetInSec() {
@@ -145,6 +153,16 @@ public abstract class MineScheduler
 		{
 			this.resetInSec = resetInSec;
 		}
+
+		public MineResetType getResetType()
+		{
+			return resetType;
+		}
+		public void setResetType( MineResetType resetType )
+		{
+			this.resetType = resetType;
+		}
+
 
 	}
 	
@@ -241,13 +259,17 @@ public abstract class MineScheduler
 	@Override
 	public void run()
 	{
+		boolean forced = getCurrentJob() != null && 
+							getCurrentJob().getResetType() == MineResetType.FORCED;
 		
-    	boolean skip =
+    	boolean skip = !forced && 
     			isSkipResetEnabled() && 
-    				getPercentRemainingBlockCount() < getSkipResetPercent() || 
-    			isSkipResetEnabled() && 
-    				getSkipResetBypassCount() >= getSkipResetBypassLimit();
+    				getPercentRemainingBlockCount() >= getSkipResetPercent() &&
+    				getSkipResetBypassCount() < getSkipResetBypassLimit();
     	
+//    	Output.get().logInfo( "Mine Reset: Run: Mine= %s action= %s skip= %s forced= %s ", 
+//    			this.getName(), getCurrentJob().getAction().name(),
+//    			Boolean.valueOf( skip ).toString(), Boolean.valueOf( forced ).toString() );
 		
 		switch ( getCurrentJob().getAction() )
 		{
@@ -271,6 +293,8 @@ public abstract class MineScheduler
 			case RESET_ASYNC:
 				if ( !skip ) {
 					// Not yet implemented:
+				} else {
+					incrementSkipResetBypassCount();
 				}
 				
 				break;
@@ -279,6 +303,8 @@ public abstract class MineScheduler
 				// synchronous reset.  Will be phased out in the future?
 				if ( !skip ) {
 					resetSynchonously();
+				} else {
+					incrementSkipResetBypassCount();
 				}
 				
 				break;
@@ -294,9 +320,6 @@ public abstract class MineScheduler
 //			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
 //		}
 //		
-		if ( skip ) {
-			incrementSkipResetBypassCount();
-		}
 		
 		submitNextAction();
 	}
@@ -320,6 +343,8 @@ public abstract class MineScheduler
 			setTargetResetTime( targetResetTime );
 			
 			long ticksToWait = Math.round( getCurrentJob().getDelayActionSec() * 20.0d);
+			
+			
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
 			int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
@@ -367,8 +392,26 @@ public abstract class MineScheduler
 		submitTask();
 	}
 
+	/**
+	 * This is called by the MineCommand.resetCommand() function, which is 
+	 * triggered by a player.
+	 * 
+	 */
 	public void manualReset() {
-		manualReset( 0 );
+		manualReset( MineResetType.FORCED, 0 );
+	}
+	
+	
+	public boolean checkZeroBlockReset() {
+		boolean reset = false;
+		
+		// Reset if the mine runs out of blocks:
+		if ( getRemainingBlockCount() == 0 ) {
+			// submit a manual reset since the mine is empty:
+			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );
+			reset = true;
+		}
+		return reset;
 	}
 	
 	/**
@@ -378,9 +421,11 @@ public abstract class MineScheduler
 	 * beginning.  A manual reset not only resets the mine, but it resets the workflow schedule 
 	 * from the beginning.
 	 * </p>
+	 * @param resetType
+	 * @param delayActionSec Delay in seconds before resetting mine. 
 	 * 
 	 */
-	public void manualReset( double delayActionSec ) {
+	private void manualReset( MineResetType resetType, double delayActionSec ) {
 		// cancel existing job:
 		if ( getTaskId() != null ) {
 			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );
@@ -388,8 +433,13 @@ public abstract class MineScheduler
 		
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
-		setCurrentJob( new MineJob( MineJobAction.RESET, delayActionSec, 0) );
+		
+		MineJob mineJob = new MineJob( MineJobAction.RESET, delayActionSec, 0);
+		mineJob.setResetType( resetType );;
+		setCurrentJob( mineJob );
     	
+		// Force reset even if skip is enabled:
+		
 		// Submit to run:
 		submitTask();
 	}

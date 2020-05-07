@@ -915,8 +915,8 @@ public class MinesCommands {
         	
         	try {
 				skipBypassLimit = Integer.parseInt( bypassLimit );
-				if ( skipBypassLimit < 10 ) {
-					skipBypassLimit = 10;
+				if ( skipBypassLimit < 1 ) {
+					skipBypassLimit = 1;
 				} 
 			}
 			catch ( NumberFormatException e1 ) {

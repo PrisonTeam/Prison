@@ -165,6 +165,8 @@ public abstract class MineReset
 
 	private void resetSynchonouslyInternal() {
 		try {
+			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
+
 			Optional<World> worldOptional = getWorld();
 			if (!worldOptional.isPresent()) {
 				Output.get().logError("Could not reset mine " + getName() +
@@ -212,6 +214,10 @@ public abstract class MineReset
 			setStatsBlockUpdateTimeMS( time2 );
 			
 			incrementResetCount();
+			
+			
+			setSkipResetBypassCount(0);
+			
 			
 			// If a player falls back in to the mine before it is fully done being reset, 
 			// such as could happen if there is lag or a lot going on within the server, 
@@ -474,6 +480,9 @@ public abstract class MineReset
     protected void resetAsynchonously() {
     	boolean canceled = false;
     	
+//		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
+
+    	
     	if ( getResetPage() == 0 ) {
     		canceled = resetAsynchonouslyInitiate();
     	}
@@ -633,6 +642,8 @@ public abstract class MineReset
      */
     private void resetAsynchonouslyUpdate() {
 		World world = getBounds().getCenter().getWorld();
+		
+//		Output.get().logInfo( "MineRest.resetAsynchonouslyUpdate() " + getName() + " resetPage= " + getResetPage() );
 		
 //		setStatsTeleport1TimeMS(
 //				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
