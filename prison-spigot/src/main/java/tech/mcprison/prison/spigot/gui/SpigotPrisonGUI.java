@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -26,20 +27,23 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager"));
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // Lore of the button
         List<String> rankslore = createLore(
-        		"&8Ranks GUI manager.",
-        		"&8Click to open.");
+        		GuiConfig.getString("Gui.Lore.RanksButton"),
+        		GuiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> prisontaskslore = createLore(
-                "&8Prison Tasks GUI manager.",
-                "&8Click to open.");
+                GuiConfig.getString("Gui.Lore.PrisonTasksButton"),
+                GuiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> mineslore = createLore(
-                "&8Mines GUI manager.",
-                "&8Click to open.");
+                GuiConfig.getString("Gui.Lore.MinesButton"),
+                GuiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + "Ranks"));

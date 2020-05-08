@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,9 +37,12 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format("&cSorry, but the GUI's &c&lempty&c and have no reason to exist or open"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
             if (p.getOpenInventory() != null){
                 p.closeInventory();
                 return;
@@ -48,7 +52,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format("&cSorry, but there're too many ladders and the max's 54 for the GUI"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyLadders")));
             p.closeInventory();
             return;
         }
@@ -61,8 +65,8 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> ladderslore = createLore(
-                    "&8Click to open.",
-                    "&cPress Shift + Right click to delete.");
+                    GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable"));
 
             // Create the button
             itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));

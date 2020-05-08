@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +29,9 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         // Create the inventory
         int dimension = 9;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> Delete"));
+
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // Blocks of the mine
         List<String> confirmlore = createLore(

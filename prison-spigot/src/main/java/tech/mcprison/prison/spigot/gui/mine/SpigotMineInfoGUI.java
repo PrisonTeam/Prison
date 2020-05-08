@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,38 +33,41 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> MineInfo"));
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(
-                "&8Click to use.",
-                "&8Resets the mine.");
+                GuiConfig.getString("Gui.Lore.ClickToUse"),
+                GuiConfig.getString("Gui.Lore.ResetButton"));
 
         // Set the Mine spawn at your location
         List<String> MineSpawnlore = createLore(
-                "&8Click to use.",
-                "&8Set the mine spawn point at your location."
+                GuiConfig.getString("Gui.Lore.ClickToUse"),
+                GuiConfig.getString("Gui.Lore.SpawnPoint2")
         );
 
         // Lore and button
         List<String> MinesNotificationsLore = createLore(
-                "&8Click to open.",
-                "&8Change Mines notifications."
+                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                GuiConfig.getString("Gui.Lore.Notifications")
         );
 
         // Lore and button
         List<String> MinesTpLore = createLore(
                 "&8Click to teleport.",
-                "&8Tp to the mine."
+                GuiConfig.getString("Gui.Lore.Tp")
         );
 
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
-                "&8Click to open.",
-                "&8Manage the blocks of the Mine.");
+                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                GuiConfig.getString("Gui.Lore.Blocks2"));
 
         // Blocks of the mine button and lore
         List<String> mineResetTimeLore = createLore(
-                "&8Click to manage.",
-                "&8Manage the reset time of the Mine.",
+                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                GuiConfig.getString("Gui.Lore.ManageResetTime"),
                 "&3Reset time: &7" + mine.getResetTime());
 
         // Create the button, set up the material, amount, lore and name

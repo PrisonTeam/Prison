@@ -21,6 +21,9 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     public void open() {
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
@@ -29,11 +32,11 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
         List<String> enabledLore = createLore(
-                "&cPress Shift + Right click to disable."
+                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
 
         List<String> disabledLore = createLore(
-                "&8Right Click to enable"
+                GuiConfig.getString("Gui.Lore.RightClickToEnable")
         );
 
         if (configThings.getBoolean("Options.AutoBlock.AutoBlockAllBlocks")) {

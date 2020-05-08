@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -43,9 +45,12 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
         }
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format("&cSorry, but the GUI's &c&lempty&c and have no reason to exist or open"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
             if (p.getOpenInventory() != null){
                 p.closeInventory();
                 return;
@@ -75,25 +80,25 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
                 // Init the lore array with default values for ladders
                 List<String> rankslore = createLore(
-                        "&cPress Shift + Right click to delete.",
-                        "&8Click to manage the rank.",
+                        GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable"),
+                        GuiConfig.getString("Gui.Lore.ClickToManageRank"),
                         "",
-                        "&8&l|&3Info&8|");
+                        GuiConfig.getString("Gui.Lore.Info"));
 
                 // Get the specific rank
                 Rank rank = rankOptional.get();
 
                 // Add the RankID Lore
-                rankslore.add(SpigotPrison.format("&3Rank id: &7" + rank.id));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Id") + rank.id));
 
                 // Add the RankName lore
-                rankslore.add(SpigotPrison.format("&3Rank Name: &7" + rank.name));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Name") + rank.name));
 
                 // Add the Rank Tag lore
-                rankslore.add(SpigotPrison.format("&3Rank Tag: &7" + ChatColor.translateAlternateColorCodes('&', rank.tag)));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
 
                 // Add the Price lore
-                rankslore.add(SpigotPrison.format("&3Rank Price: &a" + rank.cost));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Price3") + rank.cost));
 
                 // Init a variable
                 List<RankPlayer> players =
@@ -102,7 +107,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                                 .collect(Collectors.toList());
 
                 // Add the number of players with this rank
-                rankslore.add(SpigotPrison.format("&3Players with this rank: &7" + players.size()));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
 
                 // RankUpCommands info lore
                 rankslore.add("");
@@ -121,14 +126,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     }
 
     static void getCommands(List<String> rankslore, Rank rank) {
+
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            rankslore.add(SpigotPrison.format("&3The Rank " + rank.name + " contains no commands."));
+            rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ContainsTheRank") + rank.name + GuiConfig.getString("Gui.Lore.ContainsNoCommands")));
         } else {
-            rankslore.add(SpigotPrison.format("&8There're &3" + rank.rankUpCommands.size() + " &3Commands &8in this ladder:"));
+            rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.LadderThereAre") + rank.rankUpCommands.size() + GuiConfig.getString("Gui.Lore.LadderCommands")));
             for (String command : rank.rankUpCommands) {
-                rankslore.add(SpigotPrison.format("&8&l|&3RankUPCommands&8| &8&l- &3" + command));
+                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.RankupCommands") + command));
             }
-            rankslore.add(SpigotPrison.format("&8Click to manage RankUPCommands."));
+            rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ClickToManageCommands")));
         }
     }
 }

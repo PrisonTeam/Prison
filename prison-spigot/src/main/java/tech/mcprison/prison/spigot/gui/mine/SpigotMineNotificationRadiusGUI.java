@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -33,21 +34,24 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineNotifications -> Radius"));
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // Create new lore
         List<String> changeDecreaseValueLore = createLore(
-                "&8Click to decrease."
+                GuiConfig.getString("Gui.Lore.ClickToDecrease")
         );
 
         // Create a new lore
         List<String> confirmButtonLore = createLore(
-                "&aLeft-Click to confirm.",
-                "&8Radius: " + val,
-                "&cRight-Click to cancel."
+                GuiConfig.getString("Gui.Lore.LeftClickToConfirm"),
+                GuiConfig.getString("Gui.Lore.Radius") + val,
+                GuiConfig.getString("Gui.Lore.RightClickToCancel")
         );
 
         // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
-                "&8Click to increase."
+                GuiConfig.getString("Gui.Lore.ClickToIncrease")
         );
 
         // Decrease buttons

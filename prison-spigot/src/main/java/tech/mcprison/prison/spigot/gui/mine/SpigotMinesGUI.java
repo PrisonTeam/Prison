@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -37,9 +38,12 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(pMines.getMines().size() / 9D) * 9;
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format("&cSorry, but the GUI's &c&lempty&c and have no reason to exist or open"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
             if (p.getOpenInventory() != null){
                 p.closeInventory();
                 return;
@@ -49,7 +53,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format("&cSorry, but there're too many mines and the max's 54 for the GUI"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -62,29 +66,29 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> mineslore = createLore(
-                    "&8Left Click to open.",
-                    "&cPress Shift + Right click to delete.",
+                    GuiConfig.getString("Gui.Lore.LeftClickToOpen"),
+                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                     "",
-                    "&8&l|&3Info&8|");
+                    GuiConfig.getString("Gui.Lore.Info"));
 
             // Add a lore
-            mineslore.add(SpigotPrison.format("&3World: &7" +  m.getWorldName()));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.World") +  m.getWorldName()));
 
             // Init a variable and add it to the lore
             String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-            mineslore.add(SpigotPrison.format("&3Spawnpoint: &7" + spawnPoint));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.SpawnPoint") + spawnPoint));
 
             // Add a lore
-            mineslore.add(SpigotPrison.format("&3Reset time in seconds: &7" + m.getResetTime()));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ResetTime") + m.getResetTime()));
 
             // Add a lore
-            mineslore.add(SpigotPrison.format("&3Size of Mine: &7" + m.getBounds().getDimensions()));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
 
             // Add a lore
-            mineslore.add(SpigotPrison.format("&3Volume in Blocks: &7" + m.getBounds().getTotalBlockCount()));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
 
             // Add a lore
-            mineslore.add(SpigotPrison.format("&3Blocks:"));
+            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Blocks")));
 
             // Init some variables and do the actions
             DecimalFormat dFmt = new DecimalFormat("##0.00");

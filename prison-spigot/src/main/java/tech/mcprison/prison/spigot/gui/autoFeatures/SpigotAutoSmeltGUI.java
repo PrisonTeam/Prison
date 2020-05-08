@@ -25,12 +25,15 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // Config
         Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
 
         List<String> enabledLore = createLore(
-                "&cPress Shift + Right click to disable."
+                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
 
         List<String> disabledLore = createLore(
