@@ -7,6 +7,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -33,6 +34,10 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 public class AutoManager 
 	extends OnBlockBreakEventListener
 	implements Listener {
+	
+	private boolean dropItemsIfInventoryIsFull = false;
+	private boolean playSoundIfInventoryIsFull = false;
+	private boolean hologramIfInventoryIsFull = false;
 
 	private Random random = new Random();
 	
@@ -146,9 +151,9 @@ public class AutoManager
 		
 		if (areEnabledFeatures) {
 			
-			boolean dropItemsIfInventoryIsFull = autoConfigs.getBoolean("Options.General.DropItemsIfInventoryIsFull");
-			boolean playSoundIfInventoryIsFull = autoConfigs.getBoolean("Options.General.playSoundIfInventoryIsFull");
-			boolean hologramIfInventoryIsFull = autoConfigs.getBoolean("Options.General.hologramIfInventoryIsFull");
+			this.dropItemsIfInventoryIsFull = autoConfigs.getBoolean("Options.General.DropItemsIfInventoryIsFull");
+			this.playSoundIfInventoryIsFull = autoConfigs.getBoolean("Options.General.playSoundIfInventoryIsFull");
+			this.hologramIfInventoryIsFull = autoConfigs.getBoolean("Options.General.hologramIfInventoryIsFull");
 			
 			// AutoPickup booleans from configs
 			boolean autoPickupEnabled = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEnabled");
@@ -189,7 +194,8 @@ public class AutoManager
 			
 
 			// Init variables
-			Material brokenBlock = e.getBlock().getType();
+			Block block = e.getBlock();
+			Material brokenBlock = block.getType();
 			String blockName = brokenBlock.toString().toLowerCase();
 			
 			
@@ -201,39 +207,39 @@ public class AutoManager
 //			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 //			int dropNumber = getDropCount(fortuneLevel);
 			
-			// Check if the inventory's full
-			if (p.getInventory().firstEmpty() == -1){
-
-				// Play sound when full
-				if (playSoundIfInventoryIsFull) {
-					p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 10F, 1F);
-				}
-
-				String message;
-
-				// Drop items when full
-				if (dropItemsIfInventoryIsFull) {
-
-					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems"));
-					
-					p.sendMessage(message);
-
-					hologram(e, message, hologramIfInventoryIsFull);
-
-				} else {  // Lose items when full
-
-					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems"));
-					
-					p.sendMessage(message);
-
-					hologram(e, message, hologramIfInventoryIsFull);
-
-					// Set the broken block to AIR and cancel the event
-					e.setCancelled(true);
-					e.getBlock().setType(Material.AIR);
-				}
-				return;
-			}
+//			// Check if the inventory's full
+//			if (p.getInventory().firstEmpty() == -1){
+//
+//				// Play sound when full
+//				if (playSoundIfInventoryIsFull) {
+//					p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 10F, 1F);
+//				}
+//
+//				String message;
+//
+//				// Drop items when full
+//				if (dropItemsIfInventoryIsFull) {
+//
+//					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems"));
+//					
+//					p.sendMessage(message);
+//
+//					hologram(e, message, hologramIfInventoryIsFull);
+//
+//				} else {  // Lose items when full
+//
+//					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems"));
+//					
+//					p.sendMessage(message);
+//
+//					hologram(e, message, hologramIfInventoryIsFull);
+//
+//					// Set the broken block to AIR and cancel the event
+//					e.setCancelled(true);
+//					e.getBlock().setType(Material.AIR);
+//				}
+//				return;
+//			}
 			
 			// AutoPickup
 			if (autoPickupEnabled) {
@@ -308,9 +314,9 @@ public class AutoManager
 			// AutoSmelt
 			if (autoSmeltEnabled){
 				
-				autoSmelt( autoSmeltGoldOre, Material.GOLD_ORE, Material.GOLD_INGOT, p );
+				autoSmelt( autoSmeltGoldOre, Material.GOLD_ORE, Material.GOLD_INGOT, p, block );
 
-				autoSmelt( autoSmeltIronOre, Material.IRON_ORE, Material.IRON_INGOT, p );
+				autoSmelt( autoSmeltIronOre, Material.IRON_ORE, Material.IRON_INGOT, p, block );
 			}
 			
 			// AutoBlock
@@ -318,27 +324,27 @@ public class AutoManager
 				// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
 				// checks within each block type's function call.  So in one pass, could hit on more 
 				// than one of these for multiple times too.
-				autoBlock( autoBlockGoldBlock, Material.GOLD_INGOT, Material.GOLD_BLOCK, p );
+				autoBlock( autoBlockGoldBlock, Material.GOLD_INGOT, Material.GOLD_BLOCK, p, block );
 				
-				autoBlock( autoBlockIronBlock, Material.IRON_INGOT, Material.IRON_BLOCK, p );
+				autoBlock( autoBlockIronBlock, Material.IRON_INGOT, Material.IRON_BLOCK, p, block );
 
-				autoBlock( autoBlockCoalBlock, Material.COAL, Material.COAL_BLOCK, p );
+				autoBlock( autoBlockCoalBlock, Material.COAL, Material.COAL_BLOCK, p, block );
 				
-				autoBlock( autoBlockDiamondBlock, Material.DIAMOND, Material.DIAMOND_BLOCK, p );
+				autoBlock( autoBlockDiamondBlock, Material.DIAMOND, Material.DIAMOND_BLOCK, p, block );
 
-				autoBlock( autoBlockRedstoneBlock, Material.REDSTONE, Material.REDSTONE_BLOCK, p );
+				autoBlock( autoBlockRedstoneBlock, Material.REDSTONE, Material.REDSTONE_BLOCK, p, block );
 				
-				autoBlock( autoBlockEmeraldBlock, Material.EMERALD, Material.EMERALD_BLOCK, p );
+				autoBlock( autoBlockEmeraldBlock, Material.EMERALD, Material.EMERALD_BLOCK, p, block );
 
-				autoBlock( autoBlockQuartzBlock, Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p );
+				autoBlock( autoBlockQuartzBlock, Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p, block );
 
-				autoBlock( autoBlockPrismarineBlock, Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p );
+				autoBlock( autoBlockPrismarineBlock, Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p, block );
 
-				autoBlock( autoBlockSnowBlock, Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p );
+				autoBlock( autoBlockSnowBlock, Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p, block );
 
-				autoBlock( autoBlockGlowstone, Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p );
+				autoBlock( autoBlockGlowstone, Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p, block );
 				
-				autoBlockLapis( autoBlockLapisBlock, p );
+				autoBlockLapis( autoBlockLapisBlock, p, block );
 					
 			}
 			
@@ -354,7 +360,7 @@ public class AutoManager
 				// Add the item to the inventory
 				for ( ItemStack itemStack : drops ) {
 					count += itemStack.getAmount();
-					dropExtra( p.getInventory().addItem(itemStack), p);
+					dropExtra( p.getInventory().addItem(itemStack), p, e.getBlock() );
 				}
 
 				if ( count > 0 ) {
@@ -367,27 +373,27 @@ public class AutoManager
 		return count;	
 	}
 
-	private void autoSmelt( boolean autoSmelt, Material source, Material destination, Player p ) {
+	private void autoSmelt( boolean autoSmelt, Material source, Material destination, Player p, Block block  ) {
 		if (autoSmelt && p.getInventory().contains(source)) {
 			int count = itemCount(source, p);
 			if ( count > 0 ) {
 				p.getInventory().removeItem(new ItemStack(source, count));
-				dropExtra( p.getInventory().addItem(new ItemStack(destination, count)), p);
+				dropExtra( p.getInventory().addItem(new ItemStack(destination, count)), p, block );
 			}
 		}
 	}
-	private void autoBlock( boolean autoBlock, Material source, Material destination, Player p ) {
-		autoBlock(autoBlock, source, destination, 9, p );
+	private void autoBlock( boolean autoBlock, Material source, Material destination, Player p, Block block  ) {
+		autoBlock(autoBlock, source, destination, 9, p, block );
 	}
 	
-	private void autoBlock( boolean autoBlock, Material source, Material destination, int targetCount, Player p ) {
+	private void autoBlock( boolean autoBlock, Material source, Material destination, int targetCount, Player p, Block block  ) {
 		if ( autoBlock ) {
 			int count = itemCount(source, p);
 			if ( count >= targetCount ) {
 				int mult = count / targetCount;
 				
 				p.getInventory().removeItem(new ItemStack(source, mult * targetCount));
-				dropExtra( p.getInventory().addItem(new ItemStack(destination, mult)), p);
+				dropExtra( p.getInventory().addItem(new ItemStack(destination, mult)), p, block);
 			}
 		}
 	}
@@ -404,7 +410,7 @@ public class AutoManager
 	 * @param autoBlock
 	 * @param player
 	 */
-	private void autoBlockLapis( boolean autoBlock, Player player ) {
+	private void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
 		if ( autoBlock ) {
 			// ink_sack = 351:4 
 			ItemStack lapisItemStack = new ItemStack(Material.INK_SACK, 1, (short) 4);
@@ -415,7 +421,7 @@ public class AutoManager
 				
 				ItemStack removeLapisItemStack = new ItemStack(Material.INK_SACK,  mult * 9, (short) 4);
 				player.getInventory().removeItem(removeLapisItemStack);
-				dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player);
+				dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
 				
 			}
 		}
@@ -442,32 +448,72 @@ public class AutoManager
 		return count;
 	}
 	
-	private void dropExtra( HashMap<Integer, ItemStack> extra, Player player ) {
+	private void dropExtra( HashMap<Integer, ItemStack> extra, Player player, Block block ) {
 		if ( extra != null && extra.size() > 0 ) {
 			for ( ItemStack itemStack : extra.values() ) {
 				player.getWorld().dropItem( player.getLocation(), itemStack );
 				
-				SpigotPlayer prisonPlayer = new SpigotPlayer( player );
-				Prison.get().getPlatform().showActionBar( prisonPlayer, 
-						autoConfigs.getString( "Messages.InventoryIsFull" ), 6 );
+				notifyPlayerThatInventoryIsFull( player, block );
 			}
 		}
 	}
 
-	private void hologram(BlockBreakEvent e, String message, Boolean enabled){
-		if (enabled){
-			ArmorStand as = (ArmorStand) e.getBlock().getLocation().getWorld().spawnEntity(e.getBlock().getLocation(), EntityType.ARMOR_STAND);
-			as.setGravity(false);
-			as.setCanPickupItems(false);
-			as.setCustomNameVisible(true);
-			as.setVisible(false);
-			as.setCustomName(message);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, 20L * 3);
+	private void notifyPlayerThatInventoryIsFull( Player player, Block block ) {
+
+		String message = autoConfigs.getString( "Messages.InventoryIsFull" );
+		
+		// Play sound when full
+		if ( isPlaySoundIfInventoryIsFull() ) {
+			Prison.get().getMinecraftVersion() ;
+			
+			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
+			Sound sound;
+			try {
+			    sound = Sound.valueOf("ANVIL_USE"); // pre 1.9 sound
+			} catch(IllegalArgumentException e) {
+			    sound = Sound.valueOf("BLOCK_ANVIL_PLACE"); // post 1.9 sound
+			}
+			
+			player.playSound(player.getLocation(), sound, 10F, 1F);
 		}
+		
+		if ( isHologramIfInventoryIsFull() ) {
+			displayMessageHologram( block, message );
+		}
+		else {
+			displayActionBarMessage( player, message );
+		}
+	}
+	
+	private void displayMessageHologram(Block block, String message ){
+		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(block.getLocation(), EntityType.ARMOR_STAND);
+		as.setGravity(false);
+		as.setCanPickupItems(false);
+		as.setCustomNameVisible(true);
+		as.setVisible(false);
+		as.setCustomName(message);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, (7L * 20L));
+	}
+	
+	private void displayActionBarMessage(Player player, String message) {
+		SpigotPlayer prisonPlayer = new SpigotPlayer( player );
+		Prison.get().getPlatform().showActionBar( prisonPlayer, message, 80 );
 	}
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public boolean isDropItemsIfInventoryIsFull() {
+		return dropItemsIfInventoryIsFull;
+	}
+
+	public boolean isPlaySoundIfInventoryIsFull() {
+		return playSoundIfInventoryIsFull;
+	}
+
+	public boolean isHologramIfInventoryIsFull() {
+		return hologramIfInventoryIsFull;
 	}
 
 }
