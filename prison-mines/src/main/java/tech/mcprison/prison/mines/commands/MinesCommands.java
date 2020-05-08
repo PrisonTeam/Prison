@@ -768,7 +768,7 @@ public class MinesCommands {
             	//row.addTextComponent( m.getWorldName() + " " );
             	
             	row.addFancy( 
-            			new FancyMessage( String.format("&3Mine: &7% s ", m.getName()) )
+            			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
             	
@@ -1322,7 +1322,8 @@ public class MinesCommands {
 	 */
 	public String getLastMineReferenced()
 	{
-		if ( System.currentTimeMillis() - getLastMineReferencedTimestamp() > (30 * 60 * 1000))
+		if ( getLastMineReferencedTimestamp() != null &&
+				System.currentTimeMillis() - getLastMineReferencedTimestamp() > (30 * 60 * 1000))
 		{
 			setLastMineReferenced( null );
 		}
