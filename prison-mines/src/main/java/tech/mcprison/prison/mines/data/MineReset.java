@@ -336,6 +336,13 @@ public abstract class MineReset
      * the glass block will become part of the landscape.
      * <p>
      * 
+     * <p>Do not show any TP notifications.  It will be obvious that the mine
+     * just reset and that they were teleported out of the mine.  Since there is no
+     * control over this message, like enabling or disabling, then I'm just 
+     * removing it since it just clutters chat and provides no real additional 
+     * value.
+     * </p>
+     * 
      * @param player
      */
     public void teleportPlayerOut(Player player) {
@@ -351,8 +358,8 @@ public abstract class MineReset
     	}
     	
     	player.teleport( target );
-    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-    			.withReplacements(this.getName()).sendTo(player);
+//    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
+//    			.withReplacements(this.getName()).sendTo(player);
     }
 
 
