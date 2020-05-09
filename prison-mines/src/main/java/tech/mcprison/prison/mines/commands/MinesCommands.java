@@ -603,8 +603,12 @@ public class MinesCommands {
         	
         	{
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
-        				fFmt.format( m.getZeroBlockResetDelaySec() ) );
+        		if ( m.isZeroBlockResetDisabled() ) {
+        			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
+        		} else {
+        			row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
+        					fFmt.format( m.getZeroBlockResetDelaySec() ));
+        		}
         		
         		chatDisplay.addComponent( row );
         	}
@@ -1024,8 +1028,8 @@ public class MinesCommands {
     		description = "Set a mine's delay before reset when it reaches zero blocks.")
     public void zeroBlockResetDelayCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-    		@Arg(name = "time", description = "Delay in seconds before resetting when the mine reaches " +
-    				"zero blocks." ) String time
+    		@Arg(name = "time/DISABLE", description = "Delay in seconds before resetting when the mine reaches " +
+    				"zero blocks, or DISABLE." ) String time
     		
     		) {
     	
@@ -1033,9 +1037,11 @@ public class MinesCommands {
     		setLastMineReferenced(mineName);
     		
     		try {
-    			double resetTime = 0.0d;
+    			double resetTime = 
+    						time != null && "disable".equalsIgnoreCase( time ) ? -1.0d : 
+    						0.0d;
     			
-    			if ( time != null && time.trim().length() > 0 ) {
+    			if ( resetTime != -1.0d && time != null && time.trim().length() > 0 ) {
     				resetTime = Double.parseDouble( time );
     				
     				// Only displaying two decimal positions, since 0.01 is 10 ms. 
@@ -1056,8 +1062,15 @@ public class MinesCommands {
     			
     			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     			// User's message:
-    			Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &b%s &7sec", 
-    					m.getName(), dFmt.format( resetTime ) );
+    			if ( m.isZeroBlockResetDisabled() ) {
+    				Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &cDISABLED", 
+    						m.getName(), dFmt.format( resetTime ) );
+    				
+    			} else {
+    				Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &b%s &7sec", 
+    						m.getName(), dFmt.format( resetTime ) );
+    				
+    			}
     			
     			// Server Log message:
     			Player player = getPlayer( sender );

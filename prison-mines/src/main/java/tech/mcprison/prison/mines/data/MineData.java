@@ -286,6 +286,9 @@ public abstract class MineData {
 		this.totalBlocksMined = totalBlocksMined;
 	}
 
+	public boolean isZeroBlockResetDisabled() {
+		return zeroBlockResetDelaySec == -1.0d;
+	}
 	public double getZeroBlockResetDelaySec() {
 		return zeroBlockResetDelaySec;
 	}

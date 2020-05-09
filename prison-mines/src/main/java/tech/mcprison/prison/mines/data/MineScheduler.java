@@ -406,7 +406,8 @@ public abstract class MineScheduler
 		boolean reset = false;
 		
 		// Reset if the mine runs out of blocks:
-		if ( getRemainingBlockCount() == 0 ) {
+		
+		if ( getRemainingBlockCount() == 0 && !isZeroBlockResetDisabled()) {
 			// submit a manual reset since the mine is empty:
 			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );
 			reset = true;
