@@ -491,7 +491,7 @@ public class AutoManager
 		as.setCanPickupItems(false);
 		as.setCustomNameVisible(true);
 		as.setVisible(false);
-		as.setCustomName(message);
+		as.setCustomName(SpigotPrison.format(message));
 		Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, (7L * 20L));
 	}
 	
