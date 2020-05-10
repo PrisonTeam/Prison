@@ -482,22 +482,23 @@ public class AutoManager
 		
 		if ( isHologramIfInventoryIsFull() ) {
 			displayMessageHologram( block, message , player);
-			ActionBarVersion(player, message);
 		}
 		else {
-			ActionBarVersion(player, message);
+			actionBarVersion(player, message);
 		}
 	}
 
-	private void ActionBarVersion(Player player, String message) {
+	private void actionBarVersion(Player player, String message) {
 		String ver = Bukkit.getVersion().trim();
 		ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
 		BluesSemanticVersionData semVerMin = new BluesSemanticVersionData("1.9.0");
 		BluesSemanticVersionData semVerTest = new BluesSemanticVersionData(ver);
 		if ( semVerTest.compareTo(semVerMin ) < 0 ) {
-			return;
+			displayActionBarMessage(player, message);
+		} 
+		else {
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
 		}
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
 	}
 
 	private void displayMessageHologram(Block block, String message, Player p){
