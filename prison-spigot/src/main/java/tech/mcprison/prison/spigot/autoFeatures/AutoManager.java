@@ -22,12 +22,12 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import org.bukkit.util.Vector;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 
 
 /**
@@ -482,13 +482,24 @@ public class AutoManager
 		
 		if ( isHologramIfInventoryIsFull() ) {
 			displayMessageHologram( block, message , player);
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
+			ActionBarVersion(player, message);
 		}
 		else {
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
+			ActionBarVersion(player, message);
 		}
 	}
-	
+
+	private void ActionBarVersion(Player player, String message) {
+		String ver = Bukkit.getVersion().trim();
+		ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
+		BluesSemanticVersionData semVerMin = new BluesSemanticVersionData("1.9.0");
+		BluesSemanticVersionData semVerTest = new BluesSemanticVersionData(ver);
+		if ( semVerTest.compareTo(semVerMin ) < 0 ) {
+			return;
+		}
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
+	}
+
 	private void displayMessageHologram(Block block, String message, Player p){
 		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
 		as.setGravity(false);
