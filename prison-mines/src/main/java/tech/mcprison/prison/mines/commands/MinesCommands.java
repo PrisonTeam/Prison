@@ -447,7 +447,7 @@ public class MinesCommands {
         			.suggest("/mines delete " + mineName + " cancel"));
         	
         	builder.add( new FancyMessage(
-        			"&3Enter: &7/mines delete" + mineName + " confirm" )
+        			"&3Enter: &7/mines delete " + mineName + " confirm" )
         			.suggest("/mines delete " + mineName + " cancel"));
         	
         	builder.add( new FancyMessage(
