@@ -23,6 +23,10 @@
     Adding the plugin to your server.
 
 
+* [Prison - Getting Help - **Important**](prison_docs_013_Prison_help.md) 
+    Upgrading Prison. Getting help for issues.
+
+
 * [Setting up Vault](prison_docs_0xx_setting_up_Vault.md) - 
     Including Vault is Strongly Suggested.
 
