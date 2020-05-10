@@ -35,11 +35,11 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
         // Blocks of the mine
         List<String> confirmlore = createLore(
-                "&8Click to &aconfirm.");
+                GuiConfig.getString("Gui.Lore.ClickToConfirm"));
 
         // Blocks of the mine
         List<String> cancelore = createLore(
-                "&8Click to &ccancel.");
+                GuiConfig.getString("Gui.Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, SpigotPrison.format("&3" + "Confirm: " + mineName));
@@ -48,10 +48,10 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelore, SpigotPrison.format("&3" + "Cancel: " + mineName));
 
         // Position of the button
-        inv.setItem(10, confirm);
+        inv.setItem(2, confirm);
 
         // Position of the button
-        inv.setItem(16, cancel);
+        inv.setItem(6, cancel);
 
         // Open the inventory
         this.p.openInventory(inv);

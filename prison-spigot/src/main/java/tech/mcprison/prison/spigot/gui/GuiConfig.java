@@ -34,6 +34,7 @@ public class GuiConfig {
                 conf.set("Gui.Lore.ClickToManageRank", SpigotPrison.format("&8Click to manage the rank."));
                 conf.set("Gui.Lore.ClickToManageCommands", SpigotPrison.format("&8Click to manage RankUPCommands."));
                 conf.set("Gui.Lore.ClickToOpen", SpigotPrison.format("&8Click to open."));
+                conf.set("Gui.Lore.ClickToTeleport", SpigotPrison.format("&8Click to teleport."));
                 conf.set("Gui.Lore.ClickToUse", SpigotPrison.format("&8Click to use."));
                 conf.set("Gui.Lore.Chance", SpigotPrison.format("&3Chance: "));
                 conf.set("Gui.Lore.Command", SpigotPrison.format("&3Command: &7"));

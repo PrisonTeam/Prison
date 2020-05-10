@@ -55,7 +55,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         // Lore and button
         List<String> MinesTpLore = createLore(
-                "&8Click to teleport.",
+                GuiConfig.getString("Gui.Lore.ClickToTeleport"),
                 GuiConfig.getString("Gui.Lore.Tp")
         );
 
@@ -68,7 +68,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         List<String> mineResetTimeLore = createLore(
                 GuiConfig.getString("Gui.Lore.ClickToOpen"),
                 GuiConfig.getString("Gui.Lore.ManageResetTime"),
-                "&3Reset time: &7" + mine.getResetTime());
+                GuiConfig.getString("Gui.Lore.ResetTime") + mine.getResetTime());
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + minename));

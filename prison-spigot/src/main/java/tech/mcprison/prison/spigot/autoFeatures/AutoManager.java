@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,6 +22,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import org.bukkit.util.Vector;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -478,15 +481,16 @@ public class AutoManager
 		}
 		
 		if ( isHologramIfInventoryIsFull() ) {
-			displayMessageHologram( block, message );
+			displayMessageHologram( block, message , player);
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
 		}
 		else {
-			displayActionBarMessage( player, message );
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
 		}
 	}
 	
-	private void displayMessageHologram(Block block, String message ){
-		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(block.getLocation(), EntityType.ARMOR_STAND);
+	private void displayMessageHologram(Block block, String message, Player p){
+		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
 		as.setGravity(false);
 		as.setCanPickupItems(false);
 		as.setCustomNameVisible(true);
