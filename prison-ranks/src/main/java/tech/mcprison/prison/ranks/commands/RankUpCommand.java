@@ -29,6 +29,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
+import tech.mcprison.prison.ranks.RankUtil.RankupModes;
+import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
 import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -44,11 +46,24 @@ public class RankUpCommand {
     /*
      * /rankup command
      */
-
-    @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
+	
+    @Command(identifier = "rankupMax", description = "Ranks up to the max rank that the player can afford.", 
     			permissions = "ranks.user", onlyPlayers = true) 
+    public void rankUpMax(Player sender,
+    		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
+    		) {
+    	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS );
+    }
+	
+    @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
+			permissions = "ranks.user", onlyPlayers = true) 
     public void rankUp(Player sender,
-        @Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder) {
+		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
+		) {
+    	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK );
+    }
+
+    private void rankUpPrivate(Player sender, String ladder, RankupModes mode ) {
 
         // RETRIEVE THE LADDER
 
@@ -61,6 +76,15 @@ public class RankUpCommand {
             return;
         }
 
+        
+        // 
+        if ( mode == null ) {
+        	
+        	Output.get()
+        		.sendError(sender, "&7Invalid rankup mode. Internal failure. Please report." );
+        	return;
+        }
+        
         UUID playerUuid = sender.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
@@ -75,6 +99,11 @@ public class RankUpCommand {
         	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
+        	
+        	if ( results.getStatus() == RankupStatus.RANKUP_SUCCESS && 
+        			mode != null && mode == RankupModes.MAX_RANKS ) {
+        		rankUpPrivate( sender, ladder, mode );
+        	}
         }
     }
 
@@ -291,7 +320,7 @@ public class RankUpCommand {
             
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
 				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
-																			"loaded economies.", currency);
+													"loaded economies.", results.getTargetRank().currency);
 				break;
 				
 			case IN_PROGRESS:

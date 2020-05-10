@@ -65,7 +65,7 @@ public class PrisonRanks extends Module {
 
     @Override
     public String getBaseCommands() {
-    	return "&2/ranks &2/rankup";
+    	return "&2/ranks &2/rankup &2/rankupMax";
     }
     
     /*

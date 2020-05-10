@@ -49,6 +49,11 @@ public class RankUtil {
 		setrank;
 	}
 	
+	public enum RankupModes {
+		ONE_RANK,
+		MAX_RANKS
+	}
+	
 	
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
