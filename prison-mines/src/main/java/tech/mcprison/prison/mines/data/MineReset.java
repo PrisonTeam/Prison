@@ -229,7 +229,8 @@ public abstract class MineReset
 			getRandomizedBlocks().clear();
 			
 			// Broadcast message to all players within a certain radius of this mine:
-			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+			broadcastResetMessageToAllPlayersWithRadius();
+//			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
 			
 		} catch (Exception e) {
 			Output.get().logError("&cFailed to reset mine " + getName(), e);
@@ -518,7 +519,8 @@ public abstract class MineReset
         		incrementResetCount();
         		
         		// Broadcast message to all players within a certain radius of this mine:
-        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+        		broadcastResetMessageToAllPlayersWithRadius();
+//        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
 
                 
                 // Tie to the command stats mode so it logs it if stats are enabled:
@@ -932,29 +934,33 @@ public abstract class MineReset
 	}
     
     
-    private void broadcastResetMessageToAllPlayersWithRadius(long radius) {
+    private void broadcastResetMessageToAllPlayersWithRadius() {
     	long start = System.currentTimeMillis();
     	
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
     		
-    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    			Prison.get().getPlatform().getOnlinePlayers());
-    		for (Player player : players) {
-    			
-    			// Check for either mode: Within the mine, or by radius from mines center:
-    			if ( getNotificationMode() == MineNotificationMode.within && 
-						getBounds().within(player.getLocation() ) ||
-					getNotificationMode() == MineNotificationMode.radius && 
-    					getBounds().within(player.getLocation(), radius) ) {
+    		if ( world != null ) {
+    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    				Prison.get().getPlatform().getOnlinePlayers());
+    			for (Player player : players) {
     				
-            		PrisonMines.getInstance().getMinesMessages()
-		                .getLocalizable("reset_message").withReplacements( getName() )
-		                .sendTo(player);
-    				
+    				// Check for either mode: Within the mine, or by radius from mines center:
+    				if ( getNotificationMode() == MineNotificationMode.within && 
+    						getBounds().within(player.getLocation() ) ||
+    						getNotificationMode() == MineNotificationMode.radius && 
+    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
+    					
+    					PrisonMines.getInstance().getMinesMessages()
+    					.getLocalizable("reset_message").withReplacements( getName() )
+    					.sendTo(player);
+    					
 //    				player.sendMessage( "The mine " + getName() + " has just reset." );
+    				}
     			}
+    			
     		}
+    		
     	}
     	
         long stop = System.currentTimeMillis();
@@ -962,28 +968,32 @@ public abstract class MineReset
         setStatsMessageBroadcastTimeMS( stop - start );
     }
     
-    protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob, long radius) {
+    protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
-    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    			Prison.get().getPlatform().getOnlinePlayers());
-    		for (Player player : players) {
-    			// Check for either mode: Within the mine, or by radius from mines center:
-    			if ( getNotificationMode() == MineNotificationMode.within && 
-						getBounds().within(player.getLocation() ) ||
-					getNotificationMode() == MineNotificationMode.radius && 
-    					getBounds().within(player.getLocation(), radius) ) {
-    				
-            		PrisonMines.getInstance().getMinesMessages()
-		                .getLocalizable("reset_warning")
-		                .withReplacements( getName(), 
-		                		Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
-		                .sendTo(player);
-            	
+    		
+    		if ( world != null ) {
+    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    				Prison.get().getPlatform().getOnlinePlayers());
+    			for (Player player : players) {
+    				// Check for either mode: Within the mine, or by radius from mines center:
+    				if ( getNotificationMode() == MineNotificationMode.within && 
+    						getBounds().within(player.getLocation() ) ||
+    						getNotificationMode() == MineNotificationMode.radius && 
+    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
+    					
+    					PrisonMines.getInstance().getMinesMessages()
+    					.getLocalizable("reset_warning")
+    					.withReplacements( getName(), 
+    							Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
+    					.sendTo(player);
+    					
 //    				player.sendMessage( "The mine " + getName() + " will reset in " + 
 //    						Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
-    				
+    					
+    				}
     			}
+    			
     		}
     	}
     }

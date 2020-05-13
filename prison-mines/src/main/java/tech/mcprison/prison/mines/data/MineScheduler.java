@@ -278,8 +278,7 @@ public abstract class MineScheduler
 			
 			case MESSAGE:
 				// Send reset message:
-				broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), 
-										MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+				broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob() );
 
 				break;
 				
