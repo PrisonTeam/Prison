@@ -18,41 +18,31 @@ Work to be considered.
   Holding up release v3.2.1.
 
 
-* **Delay Mine Resets based upon blocks remaining**
-  Holding up release v3.2.1.
-
-* **Add parameter to charge player for Promote command**
-
-
 * **When creating a new mine, register that mine with the placeholders**
 Might be easier to just reregister all mines?  Not sure if that will work?
 Right now, if a mine is added, in order for it to show up in the placeholders, you would have to restart the server so all the placeholders are reregistered.
+
+
+* **Remove world check before loading mine**
+This is a problem with Multiverse-core plugin since a softdepend loads way before a hard depend. As such, the worlds that were created with Multiverse-core have not yet been added to the bukkit list of worlds.
+
+If the world is checked after the server is running, they will be available.  Put in a class variable that identifies if the world was verified, and if not, then check. 
+
+Problem is that at startup time, we won't know if there is a problem with missing worlds.
+
 
 
 * **Add /ranks remove currency [rankName] [currency]**
 Done. Currently no way to remove a currency from a Rank to return it to normal currency.
 
 
-* **DONE: Add onBlockBreak monitor to prison mines to count blocks mined**
-Set EventPriority to monitor. Don't change anything. Just confirm block was changed to air and increment the count.
-Do not have to precheck if the block was air before, since air cannot trigger a block break event.  Just confirm it is air when monitoring to ensure it was removed. If this works, then this would allow the elimination of the air counts.
-
-
 * **Add permissions to the AutoManger**
 Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
  
+ 
+ * **Add Prestige and Rebirth**
+ 
 
-* **Add placeholder aliases so they are not as long**
-Done.
-
-* **Eliminate the internal Placeholders**
-Done.  Performance improvement.
-
-* **Integrate GUI in to bleeding**
-Done.  More GUI features will be added in the next release.
-
-* **Setup GUI to use /prison gui**
-Done.
 
 * **Get started on new Multi-Language Support**
 This is put on hold for the v3.2.2 release.
@@ -65,27 +55,10 @@ Ability to exclude, or ignore, specific commands upon startup.
 NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command.
 
 
-
 * **Upon startup validate all Blocks that are defined in the mines**
 
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
-
-* **Skip Mine Resets - Based upon usage and percent remaining**
-* If a mine is not being used, this can greatly reduce the processing needs within the server. If there are about 30 mines, and no players are online for hours, then it can greatly reduce the server loads and reduce the number of chunk updates.
-* Placeholder added percent mined so data exists to use for this calculation.
-* At reset time, if enabled, check to see how many blocks were mined.
-* If more than threshold percentage, such as 10%, then reset the mine.
-* Even if one block is mined, and it is below the threshold, may want to reset the mine after X number of *skipped* resets. 
-* Do not count as skipped if zero blocks are mined.
-* All mines will reset after server reload, after the timer expires the first time, since in-mine block data and stats are not saved to the file system. 
-
-
-* Fields to add to the Mine data:
-    * skipReset - true = enabled, false = disabled
-    * skipResetPercent - double - threshold to reset based upon blocks mined. Does not include original air-blocks.
-    * skipResetBypassThreshold - int - number of *skips* before a forced reset.
-    * skipResetBypassCount - transient - int - counts the number of times a reset is skipped. This is transient value and is never saved.
 
 
 * **Support QuickSell project for use with Prison *Only* **
@@ -114,6 +87,7 @@ Currently 15 forks.  Activity unknown.
 Check to see if the commands are being ran sync or async.  Add a parameter support so 
 commands that can be ran async.
 
+
 * **Add prison Placeholders to papi's website for downloads**
 Prison is already using papi (PlaceholderAPI).  But see if we can add prison to the supported
 plugis for papi's cloud.  Should time this with the v3.2.1 release so there are more 
@@ -126,53 +100,25 @@ They have those expansions which hook other plug-ins
 
 https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
 
+
 * **Add support for player use of /mines tp**
 Could be done through other perms and then checking to see if they have access to
 that mine.  Perm:  prison.playertp and prison.playertp.a
-
-* **Document how to use essentials warps for each mine**
-
-In the plugins/Essentials/config.yml is this:
-
-// Set this true to enable permission per warp.
-per-warp-permission: false
-
-Set that to true.
- 	
-essentials.warp 	Allow access to the /warp command.
-essentials.warp.list 	Specifies whether you can view warp list with /warp.
-essentials.warps.[warpname] 	If you have per-warp-permission set to true in the config.yml then you can limit what warps players can use. This also controls what players would see with /warp.
-
-set:
-per-warp-permission: true
-
-essentials.warp
-essentials.warp.list
-essentials.warps.a
-essentials.warps.b
-essentials.warps.c
-
-Then add them to the rank commands using pex:
-
-/ranks command add a pex user {player} add essentials.warps.a
-/ranks command add b pex user {player} add essentials.warps.b
-/ranks command add c pex user {player} add essentials.warps.c
-
-
-http://ess.khhq.net/wiki/Command_Reference
-http://wiki.mc-ess.net/doc/
 
 
 * **Improve some of the display pages for ranks and ladders**
 Can add more information to the listings so they have more value.
 
+
 * **Tab Completion**
 Hook up tab completion on the prison commands.
+
 
 * **Better logging of major events**
 Need to log major events such as rankups, both to the server log, and also
 to the community.  Server logs for these events, especially when money is
 involved, is important.
+
 
 * **Block Types for Specific Versions of Minecraft**
 Add in support for the loss of magic values, and also provide for newer block
@@ -180,14 +126,11 @@ types too.  Basically have a minecraft version selector that can
 tailor the list of available block types that can be used, based upon the
 minecraft version that is running.
 
-* **New Feature: Upon block break events, log block changes**
-This will allow dynamic live tracking of mine stats, such as how many blocks
-remain and relating percentages.  The new async processing will enable this
-to actually track individual blocks.
 
 * **Possible new feature: Track how many blocks a player mines, including types**
 Stats could be interesting over time, and could also be used for in game
 bonuses and rewards and incentives.
+
 
 * **Redesign the save files to eliminate the magic numbers**
 Most of the save files within prison, for players, ranks, and ladders, are
@@ -203,6 +146,8 @@ A plugin named EZprestige has been attempted to be used with prison. Not sure if
 
 
 * **Notification that inventory is full**
+In progress!
+
 
 * **Built in selling system**
 
@@ -246,8 +191,67 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 # Features recently added:
 
+
+* **DONE: Add onBlockBreak monitor to prison mines to count blocks mined**
+Set EventPriority to monitor. Don't change anything. Just confirm block was changed to air and increment the count.
+Do not have to precheck if the block was air before, since air cannot trigger a block break event.  Just confirm it is air when monitoring to ensure it was removed. If this works, then this would allow the elimination of the air counts.
+
+
+* **DONE: Delay Mine Resets based upon blocks remaining**
+ Done: This is the Skip Mine Reset processing.  It will not do a reset until enough blocks are mined.
+
+
+* **DONE: Skip Mine Resets - Based upon usage and percent remaining**
+    * If a mine is not being used, this can greatly reduce the processing needs within the server. If there are about 30 mines, and no players are online for hours, then it can greatly reduce the server loads and reduce the number of chunk updates.
+    * Placeholder added percent mined so data exists to use for this calculation.
+    * At reset time, if enabled, check to see how many blocks were mined.
+    * If more than threshold percentage, such as 10%, then reset the mine.
+    * Even if one block is mined, and it is below the threshold, may want to reset the mine after X number of *skipped* resets. 
+    * Do not count as skipped if zero blocks are mined.
+    * All mines will reset after server reload, after the timer expires the first time, since in-mine block data and stats are not saved to the file system. 
+
+    * Fields to add to the Mine data:
+      * skipReset - true = enabled, false = disabled
+      * skipResetPercent - double - threshold to reset based upon blocks mined. Does not include original air-blocks.
+      * skipResetBypassThreshold - int - number of *skips* before a forced reset.
+      * skipResetBypassCount - transient - int - counts the number of times a reset is skipped. This is transient value and is never saved.
+
+
+
+
+* **DONE: Add parameter to charge player for Promote command**
+On /ranks promote you can now charage a player for that rank.  Also on /ranks demote you can issue a refund to the player too.  See the actual commands for usage.
+
+
+* **DONE: New Feature: Upon block break events, log block changes**
+This will allow dynamic live tracking of mine stats, such as how many blocks
+remain and relating percentages.  The new async processing will enable this
+to actually track individual blocks.
+
+
+* **DONE: Document how to use essentials warps for each mine**
+See documentation within github for these details.
+
+
+* **DONE: Add placeholder aliases so they are not as long**
+Done.
+
+
+* **DONE: Eliminate the internal Placeholders**
+Done.  Performance improvement.
+
+
+* **DONE: Integrate GUI in to bleeding**
+Done.  More GUI features will be added in the next release.
+
+
+* **DONE: Setup GUI to use /prison gui**
+Done.
+
+
 * **DONE: Mine Placeholders**
 Added a number of placeholders for mines.
+
 
 * **DONE: Player Placeholder - prison_rankup_rank_tag**
 When adding the new placeholder code, the prison_rankup_rank was set to return the 
@@ -293,6 +297,21 @@ On startup, gather all currencies that are defined within the Ranks, confirm the
 
 
 ## Known Issues - v3.2.1-alpha.9 - 2020-04-26
+
+
+* **Multiverse-core prevents worlds from loading**
+Multiverse-core when it is a softdepend prevents prison from being able to access all of the worlds that it will normally load.  When it is a softdepend Prison loads prior to multiverse-core so bukkit has no knowledge of those worlds.
+
+To fix this problem, you must manually add Multiverse-core as a hard dependency. 
+
+**NOTICE** the line that starts with **depend:** since that line does not exist in the normal config.yml file. 
+
+```
+website: https://mc-prison.tech
+softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, GemsEconomy, WorldEdit, WorldGuard, ProtocolLib, PerWorldInventory, Multiverse-SignPortals, Multiverse-NetherPortals ]
+depend: [Multiverse-Core]
+commands:
+```
 
 
 * **Prison v3.2.0 (and older) has limited Placeholder Support**

@@ -8,7 +8,42 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.12 - 2020-05-05
+## tag v3.2.1-alpha.12 - 2020-05-13
+
+
+* **New Feature: Start to properly deal with delayed world loading**
+Plugins such as Multiverse-core may load most of their worlds after Prison has tried to load the mines.  During the creation of the mines, the worlds must exist, otherwise the mines cannot be loaded under the older way prison was doing things.  
+
+This change allows mines to be loaded, but will delay their hook up to the
+world until the worlds are formally done loading.
+
+This is a work in progress and is not complete yet.
+
+
+* **New Feature: New command /rankupMax will rank up the player until they are unable to afford the next rank.**
+
+
+* **New feature: Provided a way to disable the resetting of the mine when reaching zero blocks.**
+
+
+* **New feature: Can now disable the reset when a mine reaches zero blocks"
+Provided a way to disable the resetting of the mine when reaching zero blocks.
+
+
+* **Updates to AutoManager: Full Inventory**
+Improve the full inventory handling.  Basically always try to work with inventory items (auto pickup, auto smelt, and auto block) and if they cannot fit back in to inventory then just drop them.  That allows them to fill up inventory slots that may not be full.
+Have the dropExtra function use either the specified holographs or the action bar to show the inventory is full message.
+
+
+* **Few fixes to mine commands, rank loading**
+Fixed an issue with Mines commands.  The one was a typo (had to be a stray space) and the other was using block search before using any other mine command (missed testing that before).  Tweak formatting on mines info to make it easier to read.
+
+  Fixed an edge case situation where the next rank was not available.  Not really sure what caused it to be missing, but this prevents issues from happening within prison.
+
+
+* **Improve how bypass resets works.**
+Fine tune the bypass resets so it works better.  Found some issues & fixed them.
+
 
 * **Added 3d distances to some mine related commands**
 Added the distance the player is from the mine to the /mines info command. 

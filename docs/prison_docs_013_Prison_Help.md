@@ -8,6 +8,36 @@ This document provides some important information on how to find help in setting
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+
+# Prison v3.2.1 and it's Pre-Release Versions
+
+
+The Prison startup screen contains a lot of information that can be used help identify issues that are detected by Prison on start up, and can provide useful information about the general environment.  See the screen prints below.
+
+If you are having problems and need to ask for help, please provide all of this information when requested. Screen prints are preferred.  When asked what versions of prison and platform that you are running, copying the following three lines is what is needed to answer that question:
+
+```
+[18:40:20 INFO]: | Prison | Loading Prison version: 3.2.1-alpha.12
+[18:40:20 INFO]: | Prison | Running on platform: SpigotPlatform
+[18:40:20 INFO]: | Prison | Minecraft version: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)
+```
+
+<img src="images/prison_docs_013_Prison_Help_startup_1.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="500" />
+<img src="images/prison_docs_013_Prison_Help_startup_2.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="500" />
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+** incomplete - Work in progress **
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 # Prison v3.1.1 and Earlier
 
 There is zero support available for these earlier versions of Prison.  It is therefore highly recommended that you upgrade to the latest release of Prison.  Once a version of prison is released, we cannot go back and apply any fixes; fixes will be applied to the next release.
@@ -39,22 +69,6 @@ Once you are running Prison v3.x.x then you can safely upgrade to Prison v3.2.0,
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-# Prison v3.2.1 and it's Pre-Release Versions
-
-
-To try to help solve issues with Prison, and to help rule out configuration problems with other plugins, a lot of effort has been put in to the Prison startup screen, and the **/prison version** command.  These contain a lot of useful details that can help get you running Prison, and can save the developers a ton of time too.
-
-![Prison Startup Screen 1](images/prison_docs_013_Prison_Help_startup_1.png "Prison Startup Screen")
-![Prison Startup Screen 1](images/prison_docs_013_Prison_Help_startup_2.png "Prison Startup Screen")
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
-** incomplete - Work in progress **
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
