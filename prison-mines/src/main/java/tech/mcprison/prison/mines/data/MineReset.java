@@ -947,7 +947,7 @@ public abstract class MineReset
     				
     				// Check for either mode: Within the mine, or by radius from mines center:
     				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().within(player.getLocation() ) ||
+    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					
@@ -978,7 +978,7 @@ public abstract class MineReset
     			for (Player player : players) {
     				// Check for either mode: Within the mine, or by radius from mines center:
     				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().within(player.getLocation() ) ||
+    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					

@@ -109,6 +109,14 @@ public class Bounds {
             + getHeight() * getWidth());
     }
 
+    public boolean within(Location location) {
+    	return within( location, false );
+    }
+    
+    public boolean withinIncludeTopOfMine(Location location) {
+    	return within( location, true );
+    }
+    
     /**
      * Returns whether or not a single point is within these boundaries.  Ensure the same worlds
      * are being compared too.
@@ -120,7 +128,7 @@ public class Bounds {
      * @param location The {@link Location} to check.
      * @return true if the location is within the bounds, false otherwise.
      */
-    public boolean within(Location location) {
+    private boolean within(Location location, boolean includeTopOfMine ) {
     	boolean results = false;
     	
     	if ( withinSameWorld( location )) {
@@ -130,7 +138,7 @@ public class Bounds {
     		double ourZ = Math.floor(location.getZ());
     		
     		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= (getyMin() - 1) && ourY <= getyMax() // Within Y
+    				&& ourY >= (getyMin() - 1) && ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
     				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
     	}
 
