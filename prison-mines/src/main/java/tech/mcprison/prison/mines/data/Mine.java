@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
@@ -60,7 +61,39 @@ public class Mine
     }
     
     /**
-     * Loads a mine from a document.
+     * <p>Loads a mine from a document.
+     * </p>
+     * 
+     * <p>Note that the location where the loadFromDocument() occurs in the whole 
+     * "create the objects" is in the "middle".  All classes that are extended
+     * from are instantiated first due to the super() function call.  So when Mine
+     * tries to be instantiated, it first drills all the way down to MineData and 
+     * then runs all the initialization code within MineData and then works back 
+     * through all of the classes, instantiating everything, one layer at a time.
+     * </p>
+     * 
+     * <p>Then when it gets back up to this class, Mine, all parents have been fully
+     * instantiated so all collections will have been assigned non-null values 
+     * as an example.  Then this class loads the data from the document object.
+     * This is important, since all parents have been initialized, now the document
+     * loader is making it a "mine". 
+     * </p>
+     * 
+     * <p>Then at that point, after the mine data is loaded, it once again drills all the
+     * way down to the MineData ancestor class, using the initialize() functions, where
+     * it then starts to initialize all classes from MineData, back up to Mine.
+     * What this enables and allows, is when a class is initialized, it will have access
+     * to the fully loaded mine data.  This is a perfect example of being able to start
+     * submitting the mine reset jobs since all data has been loaded, and all lower 
+     * functions have been ran.
+     * </p>
+     * 
+     * <p>So the over all design of the Mine objects is that all ancestors instantiate
+     * first, from MineData to Mine. Then the mine is loaded from the file system.
+     * Then all ancestors are initialized from MineData to Mine.  This gives a high
+     * degree of control over when actions can be ran over a mine, and have confidence the
+     * data and conditions will be there.
+     * </p>
      *
      * @param document The document to load from.
      * @throws MineException If the mine couldn't be loaded from the document.
@@ -89,13 +122,46 @@ public class Mine
     	
     }
 
+	/**
+	 * <p>The loading of a mine checks to ensure if the world exists.  If not, then 
+	 * traditionally, it would not load the mine.  The problem with this model is 
+	 * the world may not exist yet, if running Multiverse-core (or another similar 
+	 * plugin) and as such, may falsely cause mine failures.  This is the situation if
+	 * the mine exists within a world that must be loaded by Multiverse-core.  If it was
+	 * a standard world, then it would be fine. 
+	 * </p>
+	 * 
+	 * <p>Soft dependencies do not provide a solution. One bad solution for this 
+	 * situation, is to manually add a hard dependency to Multiverse-core. This
+	 * should not be used.
+	 * </p>
+	 * 
+	 * <p>As a better solution to this problem, mines will be loaded as normal, but
+	 * if the world does not exist, then their initialization, or enablement, will be
+	 * delayed until the world is available. 
+	 * </p>
+	 * 
+	 * @param document
+	 * @throws MineException
+	 */
 	private void loadFromDocument( Document document )
 			throws MineException {
-		Optional<World> worldOptional = Prison.get().getPlatform().getWorld((String) document.get("world"));
+		String worldName = (String) document.get("world");
+        setWorldName( worldName );
+		
+		World world = null;
+		
+		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
         if (!worldOptional.isPresent()) {
-            throw new MineException("world doesn't exist");
+            Output.get().logWarn( "Mine.loadFromDocument(): world doesn't exist. This is a " +
+            		"temporary condition until the world can be loaded. " +
+            		" worldName= " + worldName );
         }
-        World world = worldOptional.get();
+        else {
+        	world = worldOptional.get();
+        }
+        
+//        World world = worldOptional.get();
 
         setName((String) document.get("name"));
         
@@ -111,7 +177,6 @@ public class Mine
         	setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
         }
 
-        setWorldName(world.getName());
         
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
         Double noteRadius = (Double) document.get("notificationRadius");

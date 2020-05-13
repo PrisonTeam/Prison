@@ -108,6 +108,17 @@ class SpigotPlatform implements Platform {
         }
 
         if (Bukkit.getWorld(name) == null) {
+        	StringBuilder sb = new StringBuilder();
+        	for ( org.bukkit.World bukkitWorld : Bukkit.getWorlds() ) {
+        		if ( sb.length() > 0 ) {
+        			sb.append( " " );
+        		}
+        		sb.append( bukkitWorld.getName() );
+        	}
+        	
+        	Output.get().logWarn( "SpigotPlatform.getWorld(): World does not exist: " + name + 
+        			"  Available worlds: " + sb.toString() );
+        	
             return Optional.empty(); // Avoid NPE
         }
         SpigotWorld newWorld = new SpigotWorld(Bukkit.getWorld(name));

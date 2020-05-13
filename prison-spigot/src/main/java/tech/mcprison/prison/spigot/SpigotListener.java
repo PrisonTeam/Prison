@@ -32,11 +32,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
+import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -101,6 +103,21 @@ public class SpigotListener implements Listener {
                     block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
+    }
+    
+    /**
+     * <p>Monitors when new worlds are loaded, then it fires off a Prison's version of the
+     * same event type.  This is used to initialize mines that are waiting for world to be
+     * loaded through plugins such as Multiverse-core.
+     * </p>
+     * 
+     * @param e The world event
+     */
+    @EventHandler
+    public void onWorldLoadEvent( WorldLoadEvent e ) {
+    	PrisonWorldLoadEvent pwlEvent = new PrisonWorldLoadEvent(e.getWorld().getName());
+    	
+    	Prison.get().getEventBus().post(pwlEvent);
     }
 
     @EventHandler public void onPlayerInteract(PlayerInteractEvent e) {
