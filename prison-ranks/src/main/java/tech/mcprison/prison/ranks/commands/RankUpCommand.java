@@ -60,11 +60,6 @@ public class RankUpCommand {
     public void rankUp(Player sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
-    	if (ladder.equalsIgnoreCase("prestiges")){
-			if (!(sender.hasPermission("prison.prestige"))){
-				return;
-			}
-		}
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK );
     }
 

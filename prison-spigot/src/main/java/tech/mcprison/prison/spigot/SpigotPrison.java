@@ -50,9 +50,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.autoFeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.spigot.autoFeatures.AutoManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrestigesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
-import tech.mcprison.prison.spigot.commands.PrestigesPrestigeCommand;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -148,9 +146,6 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
 
 
-
-        getCommand("prestige").setExecutor(new PrestigesPrestigeCommand());
-        getCommand("prestiges").setExecutor(new PrestigesCommands());
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         
         new SpigotListener(this).init();
