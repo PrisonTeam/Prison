@@ -18,6 +18,15 @@
 
 package tech.mcprison.prison;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
@@ -31,9 +40,6 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * @author Faizaan A. Datoo
@@ -149,4 +155,18 @@ public class TestPlatform implements Platform {
         return new FileStorage(getPluginDirectory());
     }
 
+    @Override
+	public void identifyRegisteredPlugins() {
+		 PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+		 
+		 // reset so it will reload cleanly:
+		 cmdVersion.getRegisteredPluginData().clear();
+	
+		 RegisteredPluginsData rpd1 = cmdVersion.addRegisteredPlugin( "TestPlugin", "3.2.1-alpha.13" );
+		 RegisteredPluginsData rpd2 = cmdVersion.addRegisteredPlugin( "AnotherPlugin", "0.1.1" );
+		 
+		 cmdVersion.addPluginDetails( rpd1.getPluginName(), rpd1.getPluginVersion(), "lol", new ArrayList<>() );
+		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "crime", new ArrayList<>() );
+		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "justice", new ArrayList<>() );
+    }
 }

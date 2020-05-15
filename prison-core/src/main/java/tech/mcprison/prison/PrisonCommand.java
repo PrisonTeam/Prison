@@ -20,6 +20,7 @@ package tech.mcprison.prison;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -46,11 +47,154 @@ public class PrisonCommand {
 
 	private List<String> registeredPlugins = new ArrayList<>();
 	
+	private TreeMap<String, RegisteredPluginsData> registeredPluginData = new TreeMap<>();
+	
+	
     @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
     public void versionCommand(CommandSender sender) {
     	ChatDisplay display = displayVersion();
     	
         display.send(sender);
+    }
+    
+    /**
+     * <p>This class contains the data that is used to log the plugins, commands, and their aliases,
+     * that may be setup on the server.  This is setting the ground work to store the command
+     * data that can be used to trouble shoot complex problems, such as conflicts, that are
+     * occuring with the prison plugin.
+     * </p>
+     * 
+     * <p>This is just the data, and does not interact, or modify, any of the other commands.
+     * </p>
+     *
+     */
+    public class RegisteredPluginsData {
+    	private String pluginName;
+    	private String pluginVersion;
+    	private List<RegisteredPluginCommandData> registeredCommands;
+    	
+    	private boolean registered = false;
+    	private int aliasCount = 0;
+    	
+    	public RegisteredPluginsData( String pluginName, String pluginVersion, boolean registered ) {
+    		super();
+    		
+    		this.pluginName = pluginName;
+    		this.pluginVersion = pluginVersion;
+    		this.registered = registered;
+    		
+    		this.registeredCommands = new ArrayList<>();
+    	}
+    	
+    	public void addCommand( String commandName, List<String> commandAliases ) {
+    		RegisteredPluginCommandData command =
+    				new RegisteredPluginCommandData( commandName, commandAliases );
+    		
+    		getRegisteredCommands().add( command );
+    		
+    		setAliasCount( getAliasCount() + commandAliases.size() );
+    	}
+
+
+		public Object formatted()
+		{
+			String message = String.format( "&7%s &c%s&3(&a%s &7c:&a%s &7a:&a%s &3)", 
+						getPluginName(), 
+						(isRegistered() ? "" : "*"),
+						getPluginVersion(), 
+						Integer.toString(getRegisteredCommands().size()), 
+						Integer.toString(getAliasCount()));
+			return message;
+		}
+		
+
+		public String getdetails() {
+			StringBuilder sbCmd = new StringBuilder();
+			StringBuilder sbAlias = new StringBuilder();
+			for ( RegisteredPluginCommandData cmd : getRegisteredCommands() )
+			{
+				if ( sbCmd.length() > 0 ) {
+					sbCmd.append( " " );
+				}
+				sbCmd.append( cmd.getCommand() );
+				
+				for ( String alias : cmd.getAliases() )
+				{
+					if ( sbAlias.length() > 0 ) {
+						sbAlias.append( " " );
+					}
+					sbAlias.append( alias );
+				}
+				
+			}
+			
+			return "Plugin: " + getPluginName() + " cmd: " + sbCmd.toString() + 
+					(sbAlias.length() == 0 ? "" :
+						" alias: " + sbAlias.toString());
+		}
+		
+		public String getPluginName() {
+			return pluginName;
+		}
+		public void setPluginName( String pluginName ) {
+			this.pluginName = pluginName;
+		}
+
+		public String getPluginVersion() {
+			return pluginVersion;
+		}
+		public void setPluginVersion( String pluginVersion ) {
+			this.pluginVersion = pluginVersion;
+		}
+
+		public boolean isRegistered() {
+			return registered;
+		}
+		public void setRegistered( boolean registered ) {
+			this.registered = registered;
+		}
+
+		public List<RegisteredPluginCommandData> getRegisteredCommands() {
+			return registeredCommands;
+		}
+		public void setRegisteredCommands( List<RegisteredPluginCommandData> registeredCommands ) {
+			this.registeredCommands = registeredCommands;
+		}
+
+		public int getAliasCount() {
+			return aliasCount;
+		}
+		public void setAliasCount( int aliasCount ) {
+			this.aliasCount = aliasCount;
+		}
+
+    	
+    }
+    
+    public class RegisteredPluginCommandData {
+    	private String command;
+    	private List<String> aliases;
+    	
+    	public RegisteredPluginCommandData( String command, List<String> aliases ) {
+    		super();
+    		
+    		this.command = command;
+    		this.aliases = aliases;
+    	}
+
+		public String getCommand() {
+			return command;
+		}
+		public void setCommand( String command ) {
+			this.command = command;
+		}
+
+		public List<String> getAliases() {
+			return aliases;
+		}
+		public void setAliases( List<String> aliases ) {
+			this.aliases = aliases;
+		}
     }
     
     public ChatDisplay displayVersion() {
@@ -103,7 +247,9 @@ public class PrisonCommand {
         	display.addComponent( component );
 		}
         
+        Prison.get().getPlatform().identifyRegisteredPlugins();
         
+        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
         // Display all loaded plugins:
         if ( getRegisteredPlugins().size() > 0 ) {
         	display.text( "&7Registered Plugins: " );
@@ -124,6 +270,36 @@ public class PrisonCommand {
         	}
         }
         
+        // This version of plugins does not have all the registered commands:
+//        // The new plugin listings:
+//        if ( getRegisteredPluginData().size() > 0 ) {
+//        	display.text( "&7Registered Plugins Detailed: " );
+//        	StringBuilder sb = new StringBuilder();
+//        	Set<String> keys = getRegisteredPluginData().keySet();
+//        	
+//        	for ( String key : keys ) {
+//        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+//        		
+//        		if ( sb.length() == 0) {
+//        			sb.append( "  " );
+//        			sb.append( plugin.formatted() );
+//        		} else {
+//        			sb.append( ",  " );
+//        			sb.append( plugin.formatted() );
+//        			display.text( sb.toString() );
+//        			sb.setLength( 0 );
+//        		}
+//        	}
+//        	if ( sb.length() > 0 ) {
+//        		display.text( sb.toString());
+//        	}
+//        }
+        
+        
+        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+        String pluginDetails = plugin.getdetails();
+        
+        display.text( pluginDetails );
         
         return display;
     }
@@ -192,6 +368,36 @@ public class PrisonCommand {
 
 	public List<String> getRegisteredPlugins() {
 		return registeredPlugins;
+	}
+
+	public TreeMap<String, RegisteredPluginsData> getRegisteredPluginData()
+	{
+		return registeredPluginData;
+	}
+
+	public RegisteredPluginsData addRegisteredPlugin( String pluginName, String pluginVersion ) {
+		RegisteredPluginsData rpd = new RegisteredPluginsData( pluginName, pluginVersion, true );
+		getRegisteredPluginData().put( pluginName, rpd);
+		return rpd;
+	}
+	
+	public RegisteredPluginsData addUnregisteredPlugin( String pluginName, String pluginVersion ) {
+		RegisteredPluginsData rpd = new RegisteredPluginsData( pluginName, pluginVersion, false );
+		if ( !getRegisteredPluginData().containsKey( pluginName ) ) {
+			getRegisteredPluginData().put( pluginName, rpd);
+		}
+		return rpd;
+	}
+	
+	public void addPluginDetails( String pluginName, String pluginVersion, 
+											String command, List<String> commandAliases ) {
+		
+		// just in case this plugin was not registered before:
+		addUnregisteredPlugin( pluginName, pluginVersion );
+		
+		RegisteredPluginsData plugin = getRegisteredPluginData().get( pluginName );
+		
+		plugin.addCommand( command, commandAliases );
 	}
 
 }

@@ -220,4 +220,7 @@ public interface Platform {
     boolean shouldShowAlerts();
 
 
+    
+    public void identifyRegisteredPlugins();
+    
 }

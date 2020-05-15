@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -41,8 +42,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
+import org.bukkit.plugin.Plugin;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -201,27 +204,25 @@ class SpigotPlatform implements Platform {
 
     @Override public void registerCommand(PluginCommand command) {
         try {
-            ((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
-                .register(command.getLabel(), "prison",
-                    new Command(command.getLabel(), command.getDescription(), command.getUsage(),
-                        Collections.emptyList()) {
+        	Command cmd = new Command(command.getLabel(), command.getDescription(), command.getUsage(),
+                    Collections.emptyList()) {
 
-                        @Override public boolean execute(CommandSender sender, String commandLabel,
-                            String[] args) {
-                            if (sender instanceof org.bukkit.entity.Player) {
-                                return Prison.get().getCommandHandler()
-                                    .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
-                                        command, commandLabel, args);
-                            }
+                    @Override public boolean execute(CommandSender sender, String commandLabel,
+                        String[] args) {
+                        if (sender instanceof org.bukkit.entity.Player) {
                             return Prison.get().getCommandHandler()
-                                .onCommand(new SpigotCommandSender(sender), command, commandLabel,
-                                    args);
+                                .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
+                                    command, commandLabel, args);
                         }
-/*
- * ###Tab-Complete###
- * 
- * Disabled for now until a full solution can be implemented for tab complete.
- * 
+                        return Prison.get().getCommandHandler()
+                            .onCommand(new SpigotCommandSender(sender), command, commandLabel,
+                                args);
+                        
+                        /*
+                         * ###Tab-Complete###
+                         * 
+                         * Disabled for now until a full solution can be implemented for tab complete.
+                         * 
 	//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
 	//                  		command.getLabel(), command.getUsage() );
 						@Override
@@ -240,10 +241,22 @@ class SpigotPlatform implements Platform {
 							// TODO Auto-generated method stub
 							return super.tabComplete( sender, alias, args );
 						}
- */
-
-                    });
+                         */
+                    }       
+            };
+        	
+            @SuppressWarnings( "unused" )
+			boolean success = 
+            			((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
+            				.register(command.getLabel(), "prison", cmd );
+            
             commands.add(command);
+            
+//            if ( !success ) {
+//            	Output.get().logInfo( "SpigotPlatform.registerCommand: %s  " +
+//            			"Duplicate command. Fall back to Prison: [%s] ", command.getLabel(), 
+//            			cmd.getLabel() );
+//            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -379,5 +392,82 @@ class SpigotPlatform implements Platform {
         capabilities.put(Capability.GUI, true);
         return capabilities;
     }
+
+    @Override
+	public void identifyRegisteredPlugins() {
+		 PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+		 
+		 // reset so it will reload cleanly:
+		 cmdVersion.getRegisteredPlugins().clear();
+//		 cmdVersion.getRegisteredPluginData().clear();
+		 
+		 Server server = SpigotPrison.getInstance().getServer();
+		 
+        // Finally print the version after loading the prison plugin:
+//        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+        
+        // Store all loaded plugins within the PrisonCommand for later inclusion:
+        for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
+        	String name = plugin.getName();
+        	String version = plugin.getDescription().getVersion();
+        	String value = "&7" + name + " &3(&a" + version + "&3)";
+        	cmdVersion.getRegisteredPlugins().add( value );
+        	
+        	cmdVersion.addRegisteredPlugin( name, version );
+		}
+
+        // NOTE: The following code does not actually get all of the commands that have been
+        //       registered with the bukkit plugin registry.  So commenting this out and may revisit
+        //       in the future.  Only tested with 1.8.8 so may work better with more cent version.
+//        SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
+//        
+//        try {
+//        	// The following code is based upon work provided by Technius:
+//        	// https://bukkit.org/threads/get-all-the-available-commands.61941/
+//			PluginManager manager = server.getPluginManager();
+//			SimplePluginManager spm = (SimplePluginManager) manager;
+//			//List<Plugin> plugins = null;
+//			//Map<String, Plugin> lookupNames = null;
+//			SimpleCommandMap commandMap = null;
+//			Map<String, Command> knownCommands = null;
+//			if (spm != null) {
+//			    //Field pluginsField = spm.getClass().getDeclaredField("plugins");
+//			    //Field lookupNamesField = spm.getClass().getDeclaredField("lookupNames");
+//			    Field commandMapField = spm.getClass().getDeclaredField("commandMap");
+//			    //pluginsField.setAccessible(true);
+//			    //lookupNamesField.setAccessible(true);
+//			    commandMapField.setAccessible(true);
+//			    //plugins = (List<Plugin>) pluginsField.get(spm);
+//			    //lookupNames = (Map<String, Plugin>) lookupNamesField.get(spm);
+//			    commandMap = (SimpleCommandMap) commandMapField.get(spm);
+//			    Field knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+//			    knownCommandsField.setAccessible(true);
+//			    knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
+//			}
+//			 
+//			if (commandMap != null) {
+//			    for (Iterator<Map.Entry<String, Command>> it = knownCommands.entrySet().iterator(); it.hasNext(); ) {
+//			        Map.Entry<String, Command> entry = it.next();
+//			        if (entry.getValue() instanceof org.bukkit.command.PluginCommand) {
+//			        	org.bukkit.command.PluginCommand c = (org.bukkit.command.PluginCommand) entry.getValue();
+//			            //"c" is the command
+//			            
+//			            String pluginName = c.getPlugin().getName();
+//			            String pluginVersion = c.getPlugin().getDescription().getVersion();
+//			            String commandName = c.getName();
+//			            List<String> commandAliases = c.getAliases();
+//			            
+//			            // Log the command and it's aliases:
+//			            cmdVersion.addPluginDetails( pluginName, pluginVersion, commandName, commandAliases );
+//			        }
+//			    }
+//			}
+//		}
+//		catch ( NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e ) {
+//			e.printStackTrace();
+//		}
+        
+        
+	}
 
 }

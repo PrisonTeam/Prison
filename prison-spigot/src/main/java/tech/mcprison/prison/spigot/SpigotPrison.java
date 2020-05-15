@@ -32,7 +32,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
@@ -172,13 +171,13 @@ public class SpigotPrison extends JavaPlugin {
         // Finally print the version after loading the prison plugin:
         PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
         
-        // Store all loaded plugins within the PrisonCommand for later inclusion:
-        for ( Plugin plugin : Bukkit.getPluginManager().getPlugins() ) {
-        	String name = plugin.getName();
-        	String version = plugin.getDescription().getVersion();
-        	String value = "&7" + name + " &3(&a" + version + "&3)";
-        	cmdVersion.getRegisteredPlugins().add( value );
-		}
+//        // Store all loaded plugins within the PrisonCommand for later inclusion:
+//        for ( Plugin plugin : Bukkit.getPluginManager().getPlugins() ) {
+//        	String name = plugin.getName();
+//        	String version = plugin.getDescription().getVersion();
+//        	String value = "&7" + name + " &3(&a" + version + "&3)";
+//        	cmdVersion.getRegisteredPlugins().add( value );
+//		}
 
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );
