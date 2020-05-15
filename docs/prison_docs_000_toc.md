@@ -27,8 +27,9 @@
     Upgrading Prison. Getting help for issues.
 
 
-* [Setting up Vault](prison_docs_0xx_setting_up_Vault.md) - 
+* **Setting up Vault** - (coming soon)
     Including Vault is Strongly Suggested.
+    Hint: Download from spigotmc.org and copy jar to plugin folder. Zero setup.
 
 
 * [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md) - 
