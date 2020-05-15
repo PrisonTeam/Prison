@@ -8,6 +8,12 @@ commands:
   prisonmanager:
     description: Call a fancy GUI where manage the ranks and mines
     usage: /<command> gui
+  prestiges:
+    description: Prestiges command list
+    usage: /<command>
+  prestige:
+    description: Prestige
+    usage: /<command>
   # ======================================================
   # New commands compatible only with spigot
   # ======================================================
@@ -155,3 +161,10 @@ permissions:
       ranks.delete: true
       ranks.promote: true
       ranks.demote: true
+
+  # =====================
+  # Prestiges permissions
+  # =====================
+
+  prison.prestige:
+    description: Permission needed to prestige

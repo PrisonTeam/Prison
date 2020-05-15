@@ -34,7 +34,7 @@ public class PrisonSpigotCommands implements CommandExecutor {
             sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager gui"));
             return true;
         }
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)) {
             sender.sendMessage(SpigotPrison.format("&cFor some reasons, it looks like you aren't a player"));
             return true;
         }

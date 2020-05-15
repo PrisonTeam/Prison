@@ -8,8 +8,12 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 
+/**
+ * @author RoyalBlueRanger
+ * @author GABRYCA
+ */
 public class PrisonGuiCommands {
-	
+
 	/**
 	 * <p>This command, <b>/Prison gui</b> is more of convenience command which
 	 * allows access to the gui from the base /prison commands. This will allow
@@ -24,6 +28,7 @@ public class PrisonGuiCommands {
 	 * 
 	 * @param sender
 	 */
+
     @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.", 
 			permissions = "prison.gui", onlyPlayers = true) 
 	public void prisonGui(CommandSender sender) {
