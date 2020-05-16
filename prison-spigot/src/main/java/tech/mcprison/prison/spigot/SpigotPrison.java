@@ -187,7 +187,9 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.scheduler.cancelAll();
+    	if (this.scheduler != null ) {
+    		this.scheduler.cancelAll();
+    	}
         Prison.get().deinit();
     }
 
