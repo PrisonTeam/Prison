@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.store.Document;
 
@@ -70,14 +71,26 @@ public class Rank {
 
     @SuppressWarnings( "unchecked" )
 	public Rank(Document document) {
-        this.id = RankUtil.doubleToInt(document.get("id"));
-        this.name = (String) document.get("name");
-        this.tag = (String) document.get("tag");
-        this.cost = (double) document.get("cost");
-		String currency = (String) document.get("currency");
-		this.currency = (currency == null || 
-				"null".equalsIgnoreCase( currency ) ? null : currency);
-        this.rankUpCommands = (List<String>) document.get("commands");
+        try
+		{
+			this.id = RankUtil.doubleToInt(document.get("id"));
+			this.name = (String) document.get("name");
+			this.tag = (String) document.get("tag");
+			this.cost = (double) document.get("cost");
+			String currency = (String) document.get("currency");
+			this.currency = (currency == null || 
+					"null".equalsIgnoreCase( currency ) ? null : currency);
+			this.rankUpCommands = (List<String>) document.get("commands");
+		}
+		catch ( Exception e )
+		{
+			Output.get().logError( 
+					String.format( "&aFailure: Loading Ranks! &7Exception parsing rank documents. " +
+					"Rank id= %s name= %s  [%s]", 
+					Integer.toString( this.id ), (this.name == null ? "null" : this.name ),
+					e.getMessage())
+					);
+		}
     }
 
     public Document toDocument() {
