@@ -50,11 +50,19 @@ public class Mine
     }
 
     
+    /**
+     * <p>This is called when a mine is first created.
+     * </p>
+     * 
+     * @param name
+     * @param selection
+     */
     public Mine(String name, Selection selection) {
     	super();
     	
     	setName(name);
     	setBounds(selection.asBounds());
+    	setEnabled( true );
         
         // Kick off the initialize:
         initialize();
