@@ -31,6 +31,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
@@ -49,6 +50,18 @@ public interface Platform {
      */
     Optional<World> getWorld(String name);
 
+    
+    /**
+     * <p>This function allows the PrisonCommand to get a list of any possible world
+     * load failures.
+     * </p>
+     * 
+     * @param display
+     * @return
+     */
+    public void getWorldLoadErrors( ChatDisplay display );
+    
+    
     /**
      * Returns the player with the specified name.
      */

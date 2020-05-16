@@ -296,10 +296,15 @@ public class PrisonCommand {
 //        }
         
         
-        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
-        String pluginDetails = plugin.getdetails();
+//        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+//        String pluginDetails = plugin.getdetails();
+//        
+//        display.text( pluginDetails );
         
-        display.text( pluginDetails );
+
+        
+        Prison.get().getPlatform().getWorldLoadErrors( display );
+        
         
         return display;
     }

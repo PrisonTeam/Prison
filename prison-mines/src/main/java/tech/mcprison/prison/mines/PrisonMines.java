@@ -54,7 +54,7 @@ public class PrisonMines extends Module {
     
     private JsonFileIO jsonFileIO;
 
-    private MineManager mines;
+    private MineManager mineManager;
     private PlayerManager player;
 
     public PrisonMines(String version) {
@@ -73,15 +73,21 @@ public class PrisonMines extends Module {
     public void enable() {
         i = this;
 
-        errorManager = new ErrorManager(this);
+        this.errorManager = new ErrorManager(this);
         this.jsonFileIO = new JsonFileIO( errorManager, getStatus() );
         
         initDb();
         initConfig();
-        localeManager = new LocaleManager(this, "lang/mines");
+        this.localeManager = new LocaleManager(this, "lang/mines");
 
 //        initWorlds();
-        initMines();
+        
+        this.mineManager = new MineManager();
+        getMineManager().loadFromDbCollection(this);
+        
+        player = new PlayerManager();
+        
+//        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
@@ -124,11 +130,11 @@ public class PrisonMines extends Module {
     }
 
 
-    private void initMines() {
-        mines = MineManager.fromDb();
-        player = new PlayerManager();
-//        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
-    }
+//    private void initMines() {
+////        mines = MineManager.fromDb();
+////        player = new PlayerManager();
+////        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
+//    }
 
     public JsonFileIO getJsonFileIO()
 	{
@@ -154,15 +160,15 @@ public class PrisonMines extends Module {
     }
 
     public MineManager getMineManager() {
-        return mines;
+        return mineManager;
     }
 
     public List<Mine> getMines() {
-        return mines.getMines();
+        return getMineManager().getMines();
     }
 
     public Mine getMine(String mineName) {
-    	return mines.getMine(mineName);
+    	return getMineManager().getMine(mineName);
     }
     
     public LocaleManager getMinesMessages() {

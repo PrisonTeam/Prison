@@ -37,6 +37,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -58,6 +59,11 @@ public class TestPlatform implements Platform {
         return Optional.of(new TestWorld(name));
     }
 
+    @Override 
+    public void getWorldLoadErrors( ChatDisplay display ) {
+    	
+    }
+    
     @Override public Optional<Player> getPlayer(String name) {
         return null;
     }

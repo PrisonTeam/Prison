@@ -118,7 +118,9 @@ public class MinesCommands {
         }
 
         PrisonMines pMines = PrisonMines.getInstance();
-        if (!pMines.getMine(mineName).getWorld().isPresent()) {
+        Mine mine = pMines.getMine(mineName);
+
+        if (!mine.getWorld().isPresent()) {
             pMines.getMinesMessages().getLocalizable("missing_world")
                 .sendTo(sender);
             return;
@@ -126,7 +128,7 @@ public class MinesCommands {
 
         if (!((Player) sender).getLocation().getWorld().getName()
             .equalsIgnoreCase(
-                pMines.getMine(mineName).getWorld().get().getName())) {
+                mine.getWorldName())) {
             pMines.getMinesMessages().getLocalizable("spawnpoint_same_world")
                 .sendTo(sender);
             return;
@@ -134,7 +136,6 @@ public class MinesCommands {
 
         setLastMineReferenced(mineName);
         
-        Mine mine = pMines.getMine(mineName);
         mine.setSpawn(((Player) sender).getLocation());
         pMines.getMineManager().saveMine(mine);
         pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
@@ -158,6 +159,12 @@ public class MinesCommands {
         setLastMineReferenced(mineName);
         
         Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
 
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
@@ -214,6 +221,11 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
 
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
         	pMines.getMinesMessages().getLocalizable("not_a_block")
@@ -279,6 +291,11 @@ public class MinesCommands {
         
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
         
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -423,6 +440,11 @@ public class MinesCommands {
         	
         	Mine mine = pMines.getMine(mineName);
         	
+            if ( !mine.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+        	
         	// Remove from the manager:
         	pMines.getMineManager().removeMine(mine);
         	
@@ -524,6 +546,12 @@ public class MinesCommands {
 
         // Display Mine Info only:
         if ( cmdPageData.getCurPage() == 1 ) {
+        	
+        	if ( !m.isEnabled() ) {
+        		chatDisplay.text("&cWarning!! This mine is &lDISABLED&r&c!!" );
+        	}
+        	
+        	
         	String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
         	chatDisplay.text("&3World: &7%s", worldName);
         	
@@ -701,8 +729,16 @@ public class MinesCommands {
         setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
+        
+        Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
         try {
-        	pMines.getMine(mineName).manualReset();
+        	m.manualReset();
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
                 .sendTo(sender);
@@ -776,6 +812,13 @@ public class MinesCommands {
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
             	
+            	if ( !m.isEnabled() ) {
+            		row.addFancy(  
+            				new FancyMessage( "&cDISABLED!! " )
+            				.command("/mines info " + m.getName())
+            				.tooltip("&7Click to view possible reason why the mine is " +
+            						"disabled. World may not exist? "));
+            	}
             	
             	row.addFancy( 
             			new FancyMessage("&eTP ").command("/mines tp " + m.getName())
@@ -898,7 +941,12 @@ public class MinesCommands {
 
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
-
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+            
         	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled );
         	double skipPercent = 80.0d;
         	int skipBypassLimit = 50;
@@ -984,6 +1032,11 @@ public class MinesCommands {
 				} else {
 					PrisonMines pMines = PrisonMines.getInstance();
 					Mine m = pMines.getMine(mineName);
+			        
+			        if ( !m.isEnabled() ) {
+			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+			        	return;
+			        }
 					
 					m.setResetTime( resetTime );
 					
@@ -1055,6 +1108,11 @@ public class MinesCommands {
     			
     			PrisonMines pMines = PrisonMines.getInstance();
     			Mine m = pMines.getMine(mineName);
+    	        
+    	        if ( !m.isEnabled() ) {
+    	        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+    	        	return;
+    	        }
     			
     			m.setZeroBlockResetDelaySec( resetTime );
     			
@@ -1102,6 +1160,14 @@ public class MinesCommands {
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+        	
         	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
         	
         	if ( noteMode == MineNotificationMode.displayOptions ) {
@@ -1133,8 +1199,6 @@ public class MinesCommands {
         			}
         		}
         		
-        		PrisonMines pMines = PrisonMines.getInstance();
-        		Mine m = pMines.getMine(mineName);
         		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
         			m.setNotificationMode( noteMode );
         			m.setNotificationRadius( noteRadius );
@@ -1166,8 +1230,16 @@ public class MinesCommands {
     		return;
     	}
 
-        Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
         PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
+        Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
+        
         if (!selection.isComplete()) {
         	pMines.getMinesMessages().getLocalizable("select_bounds")
                 .sendTo(sender);
@@ -1185,7 +1257,6 @@ public class MinesCommands {
         
         setLastMineReferenced(mineName);
         
-        Mine m = pMines.getMine(mineName);
         m.setBounds(selection.asBounds());
         pMines.getMineManager().saveMine( m );
         
@@ -1211,7 +1282,12 @@ public class MinesCommands {
 
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine m = pMines.getMine(mineName);
-    	
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
     	if ( sender instanceof Player ) {
     		m.teleportPlayerOut( (Player) sender );
     	} else {

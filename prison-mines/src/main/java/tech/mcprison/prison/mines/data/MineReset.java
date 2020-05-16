@@ -131,48 +131,42 @@ public abstract class MineReset
      */
     protected void resetSynchonously() {
 
-//    	if ( !isSkipResetEnabled() || 
-//    		  isSkipResetEnabled() && 
-//    		  getPercentRemainingBlockCount() < getSkipResetPercent() || 
-//    		  isSkipResetEnabled() && 
-//    		  incrementSkipResetBypassCount() > getSkipResetBypassLimit() ) {
-//    		setSkipResetBypassCount(0);
-    		
-    		long start = System.currentTimeMillis();
-    		
-    		// The all-important event
-    		MineResetEvent event = new MineResetEvent(this);
-    		Prison.get().getEventBus().post(event);
-    		if (!event.isCanceled()) {
-    			resetSynchonouslyInternal();
-    		}
-    		
-    		long stop = System.currentTimeMillis();
-    		setStatsResetTimeMS( stop - start );
-    		
-    		// Tie to the command stats mode so it logs it if stats are enabled:
-    		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
-    			DecimalFormat dFmt = new DecimalFormat("#,##0");
-    			Output.get().logInfo("&cMine reset: &7" + getName() + 
-    					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
-    					statsMessage() );
-    		}
-//    	} else {
-//    		// Reset has been skipped.  Do not log.  skipResetBypassCount was incremented.
-//    	}
+		long start = System.currentTimeMillis();
+		
+		// The all-important event
+		MineResetEvent event = new MineResetEvent(this);
+		Prison.get().getEventBus().post(event);
+		if (!event.isCanceled()) {
+			resetSynchonouslyInternal();
+		}
+		
+		long stop = System.currentTimeMillis();
+		setStatsResetTimeMS( stop - start );
+		
+		// Tie to the command stats mode so it logs it if stats are enabled:
+		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+			DecimalFormat dFmt = new DecimalFormat("#,##0");
+			Output.get().logInfo("&cMine reset: &7" + getName() + 
+					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+					statsMessage() );
+		}
     	
     }
 
 	private void resetSynchonouslyInternal() {
 		try {
+			
+			if ( !isEnabled() ) {
+				Output.get().logError(
+						String.format( "MineReset: Reset failure: Mine is not enabled. " +
+								"Ensure world exists. mine= %s ", 
+								getName()  ));
+				return;
+			}
+			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 			Optional<World> worldOptional = getWorld();
-			if (!worldOptional.isPresent()) {
-				Output.get().logError("Could not reset mine " + getName() +
-							" because the world it was created in does not exist.");
-				return;
-			}
 			World world = worldOptional.get();
 			
 			// Generate new set of randomized blocks each time:  This is the ONLY thing that can be async!! ;(
@@ -308,14 +302,16 @@ public abstract class MineReset
     	
     	World world = getBounds().getCenter().getWorld();
 
-    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    							Prison.get().getPlatform().getOnlinePlayers());
-    	for (Player player : players) {
-            if ( getBounds().within(player.getLocation()) ) {
-            	
-            	teleportPlayerOut(player);
-            }
-        }
+    	if ( isEnabled() && world != null ) {
+    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    			Prison.get().getPlatform().getOnlinePlayers());
+    		for (Player player : players) {
+    			if ( getBounds().within(player.getLocation()) ) {
+    				
+    				teleportPlayerOut(player);
+    			}
+    		}
+    	}
     	
     	return System.currentTimeMillis() - start;
     }
@@ -347,20 +343,31 @@ public abstract class MineReset
      * @param player
      */
     public void teleportPlayerOut(Player player) {
-    	Location altTp = alternativeTpLocation();
-    	Location target = isHasSpawn() ? getSpawn() : altTp;
-    	
-    	// Player needs to stand on something.  If block below feet is air, change it to a 
-    	// glass block:
-    	Location targetGround = new Location( target );
-    	targetGround.setY( target.getBlockY() - 1 );
-    	if ( targetGround.getBlockAt().isEmpty() ) {
-    		targetGround.getBlockAt().setType( BlockType.GLASS );
-    	}
-    	
-    	player.teleport( target );
+		
+		if ( !isEnabled() ) {
+			player.sendMessage( 
+					String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
+							"Ensure world exists. mine= &3%s ", 
+							getName()  ));
+		}
+		else {
+			Location altTp = alternativeTpLocation();
+			Location target = isHasSpawn() ? getSpawn() : altTp;
+			
+			// Player needs to stand on something.  If block below feet is air, change it to a 
+			// glass block:
+			Location targetGround = new Location( target );
+			targetGround.setY( target.getBlockY() - 1 );
+			if ( targetGround.getBlockAt().isEmpty() ) {
+				targetGround.getBlockAt().setType( BlockType.GLASS );
+			}
+			
+			player.teleport( target );
+			
 //    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
 //    			.withReplacements(this.getName()).sendTo(player);
+		}
+
     }
 
 
@@ -374,15 +381,18 @@ public abstract class MineReset
 	public int getPlayerCount() {
 		int count = 0;
 		
-    	World world = getBounds().getCenter().getWorld();
+		if ( isEnabled() ) {
 
-    	List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    							Prison.get().getPlatform().getOnlinePlayers());
-    	for (Player player : players) {
-            if ( getBounds().within(player.getLocation()) ) {
-            	count++;
-            }
-        }
+			World world = getWorld().get();
+			
+			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+				Prison.get().getPlatform().getOnlinePlayers());
+			for (Player player : players) {
+				if ( getBounds().within(player.getLocation()) ) {
+					count++;
+				}
+			}
+		}
 		
 		return count;
 	}
@@ -424,8 +434,16 @@ public abstract class MineReset
      * 
      */
     protected void generateBlockListAsync() {
-    	
-		long start = System.currentTimeMillis();
+		
+		if ( !isEnabled() ) {
+			Output.get().logError(
+					String.format( "MineReset: Block count failure: Mine is not enabled. " +
+							"Ensure world exists. mine= %s ", 
+							getName()  ));
+			return;
+		}
+		
+    	long start = System.currentTimeMillis();
 		
 		// Reset stats:
 		resetStats();
@@ -594,37 +612,39 @@ public abstract class MineReset
 
     private boolean resetAsynchonouslyInitiate() {
     	boolean canceled = false;
-    	
-    	long start = System.currentTimeMillis();
-    	
-        // The all-important event
-        MineResetEvent event = new MineResetEvent(this);
-        Prison.get().getEventBus().post(event);
-        
-        canceled = event.isCanceled();
-        if (!canceled) {
-        	
-        	try {
-        		Optional<World> worldOptional = getWorld();
-        		if (!worldOptional.isPresent()) {
-        			Output.get().logError("Could not reset mine " + getName() +
-        						" because the world it was created in does not exist.");
-        			canceled = true;
-        		} else {
-        			
-        			setStatsTeleport1TimeMS(
-        					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-        		}
-        		
-        	} catch (Exception e) {
-        		Output.get().logError("&cFailed to reset mine " + getName(), e);
-        		canceled = true;
-        	}
-        }
-        
-        long stop = System.currentTimeMillis();
-        setStatsResetTimeMS( stop - start );
-        
+		
+		if ( !isEnabled() ) {
+			Output.get().logError(
+					String.format( "MineReset: resetAsynchonouslyInitiate failure: Mine is not enabled. " +
+							"Ensure world exists. mine= %s ", 
+							getName()  ));
+			canceled = true;
+		}
+		else {
+			long start = System.currentTimeMillis();
+			
+			// The all-important event
+			MineResetEvent event = new MineResetEvent(this);
+			Prison.get().getEventBus().post(event);
+			
+			canceled = event.isCanceled();
+			if (!canceled) {
+				
+				try {
+					setStatsTeleport1TimeMS(
+							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+					
+				} catch (Exception e) {
+					Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
+									getName(), e);
+					canceled = true;
+				}
+			}
+			
+			long stop = System.currentTimeMillis();
+			setStatsResetTimeMS( stop - start );
+		}
+
     	return canceled;
     }
     
@@ -650,51 +670,57 @@ public abstract class MineReset
      *  
      */
     private void resetAsynchonouslyUpdate() {
-		World world = getBounds().getCenter().getWorld();
-		
-//		Output.get().logInfo( "MineRest.resetAsynchonouslyUpdate() " + getName() + " resetPage= " + getResetPage() );
-		
-//		setStatsTeleport1TimeMS(
-//				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-		
-		long start = System.currentTimeMillis();
-		
-		boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
-		
-		int i = getResetPosition();
-		for ( ; i < getMineTargetBlocks().size(); i++ )
-		{
-			MineTargetBlock target = getMineTargetBlocks().get(i);
+    	
+    	if ( !isEnabled() ) {
+			Output.get().logError(
+					String.format( "MineReset: resetAsynchonouslyUpdate failure: Mine is not enabled. " +
+							"Ensure world exists. mine= %s ", 
+							getName()  ));
+		}
+		else {
+			World world = getBounds().getCenter().getWorld();
 			
-			Location targetBlock = new Location(world, 
-					target.getBlockKey().getX(), target.getBlockKey().getY(), 
-					target.getBlockKey().getZ());
+			long start = System.currentTimeMillis();
 			
-			if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
-				targetBlock.getBlockAt().setType(target.getBlockType());
-			} 
+			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
 			
-			/**
-			 * About every 500 blocks, check to see if the current wall time spent is greater than
-			 * the threshold.  If it is greater, then end the update and let it resubmit.  
-			 * It does not matter how many blocks were actually updated during this "page", 
-			 * but it is more important the actual elapsed time.  This is to allow other
-			 * processes to get processing time and to eliminate possible lagging.
-			 */
-			if ( i % MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT == 0 ) {
-				long elapsed = start = System.currentTimeMillis();
-				if ( elapsed > MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS ) {
-					break;
+			int i = getResetPosition();
+			for ( ; i < getMineTargetBlocks().size(); i++ )
+			{
+				MineTargetBlock target = getMineTargetBlocks().get(i);
+				
+				Location targetBlock = new Location(world, 
+						target.getBlockKey().getX(), target.getBlockKey().getY(), 
+						target.getBlockKey().getZ());
+				
+				if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
+					targetBlock.getBlockAt().setType(target.getBlockType());
+				} 
+				
+				/**
+				 * About every 500 blocks, check to see if the current wall time spent is greater than
+				 * the threshold.  If it is greater, then end the update and let it resubmit.  
+				 * It does not matter how many blocks were actually updated during this "page", 
+				 * but what it is more important is the actual elapsed time.  This is to allow other
+				 * processes to get processing time and to eliminate possible lagging.
+				 */
+				if ( i % MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT == 0 ) {
+					long elapsed = System.currentTimeMillis() - start;
+					if ( elapsed > MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS ) {
+						break;
+					}
 				}
 			}
+			setResetPosition( i );
+			
+			setResetPage( getResetPage() + 1 ); 
+			
+			long time = System.currentTimeMillis() - start;
+			setStatsBlockUpdateTimeMS( time + getStatsBlockUpdateTimeMS() );
+			setStatsResetTimeMS( time + getStatsResetTimeMS() );
+			
 		}
-		setResetPosition( i );
-		
-		setResetPage( getResetPage() + 1 ); 
-		
-		long time = System.currentTimeMillis() - start;
-		setStatsBlockUpdateTimeMS( time + getStatsBlockUpdateTimeMS() );
-		setStatsResetTimeMS( time + getStatsResetTimeMS() );
+    	
 
     }
     
@@ -769,13 +795,16 @@ public abstract class MineReset
      */
 	protected void refreshAirCountAsyncTask()
 	{
-		long start = System.currentTimeMillis();
-		Optional<World> worldOptional = getWorld();
-		if (!worldOptional.isPresent()) {
-			Output.get().logError("Could not count mine " + getName() +
-					" air blocks because the world it was created in does not exist.");
-		} else {
-			
+    	
+    	if ( !isEnabled() ) {
+			Output.get().logError(
+					String.format( "MineReset: refreshAirCountAsyncTask failure: Mine is not enabled. " +
+							"Ensure world exists. mine= %s ", 
+							getName()  ));
+		}
+		else {
+			long start = System.currentTimeMillis();
+			Optional<World> worldOptional = getWorld();
 			World world = worldOptional.get();
 			
 			
@@ -804,7 +833,7 @@ public abstract class MineReset
 							if ( errorCount ++ == 0 ) {
 								String message = String.format( 
 										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
-										"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
+												"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
 								if ( e.getMessage().contains( "Asynchronous entity world add" )) {
 									Output.get().logWarn( message );
 								} else {
@@ -837,6 +866,7 @@ public abstract class MineReset
 			setAirCountElapsedTimeMs( elapsed );
 			setAirCountTimestamp( stop );
 		}
+		
 	}
     
 	public int getRemainingBlockCount() {

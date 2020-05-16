@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -18,10 +17,13 @@ public abstract class MineData {
 	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
 		
+	private String name;
+	private boolean enabled = false;
+	
 	private Bounds bounds;
 
 	private Location spawn;
-    private String worldName, name;
+    private String worldName;
     private boolean hasSpawn = false;
 
     private int resetTime;
@@ -72,6 +74,8 @@ public abstract class MineData {
     public MineData() {
     	this.blocks = new ArrayList<>();
     	
+    	this.enabled = false;
+    	
     	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
@@ -97,26 +101,110 @@ public abstract class MineData {
     	
     }
     
-    
+  
+	
+  
+    public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled( boolean enabled ) {
+		this.enabled = enabled;
+	}
+
     /**
-     * Gets the world
+     * Gets the name of this mine
+     *
+     * @return the name of this mine
      */
-    public Optional<World> getWorld() {
-        return Prison.get().getPlatform().getWorld(worldName);
+    public String getName() {
+        return name;
     }
+
+    /**
+     * Sets the name of this mine
+     *
+     * @param name the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+	public String getWorldName() {
+		return worldName;
+	}
+	public void setWorldName( String worldName ) {
+		this.worldName = worldName;
+	}
+	
+	/**
+	 * <p>A mine cannot be created without defining the bounds.  Therefore,
+	 * the "World" is stored within the bounds and that's where it should come from.
+	 * At least this way, once the world is loaded, it will be set once and for all
+	 * within the bounds and as such, it will help eliminate the overhead incurred by
+	 * trying to get it from the platform object.
+	 * </p>
+	 * 
+	 * <p>Until the world is fully loaded and processed by the prison mine manager,
+	 * this function will not be able to return a value for world.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public Optional<World> getWorld() {
+		return Optional.ofNullable( getBounds().getMin().getWorld() );
+//        return Prison.get().getPlatform().getWorld(worldName);
+    }
+	
+	/**
+	 * <p>This function sets the world object for this mine, then 
+	 * indicates that this mine is enabled.
+	 * This will be needed if the world in which the mine is located
+	 * has not yet been loaded.  This may be the situation when using a
+	 * world generated and loaded by Multiverse-core, or similar plugin.
+	 * </p>
+	 * 
+	 * @param world
+	 */
+	public void setWorld( World world ) {
+    	
+    	// Must add world to the two Bounds locations: Min and Max!
+    	getBounds().getMin().setWorld( world );
+    	getBounds().getMax().setWorld( world );
+    	getBounds().getCenter().setWorld( world );
+    	
+    	// Add world to Spawn, if it exists:
+    	if ( getSpawn() != null ) {
+    		getSpawn().setWorld( world );
+    	}
+
+    	setEnabled( world != null );
+	}
 
     public Bounds getBounds() {
         return bounds;
     }
 
     /**
-     * (Re)defines the boundaries for this mine
+     * <p>(Re)defines the boundaries for this mine.
+     * </p>
+     * 
+     * <p>This function used to set the world name every time the bounds would 
+     * change.  The world name MUST NEVER be changed.  If world is null then it will screw
+     *  up the original location of when the was created.  World name is set
+     *  in the document loader under Mine.loadFromDocument as the first field
+     *  that is set when restoring from the file.
+     * </p>
      *
      * @param bounds the new boundaries
      */
     public void setBounds(Bounds bounds) {
     	this.bounds = bounds;
-        this.worldName = bounds.getMin().getWorld().getName();
+        
+    	// The world name MUST NEVER be changed.  If world is null then it will screw
+    	// up the original location of when the was created.  World name is set
+    	// in the document loader under Mine.loadFromDocument as the first field
+    	// that is set when restoring from the file.
+    	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
     public List<Block> getBlocks() {
@@ -175,31 +263,6 @@ public abstract class MineData {
         spawn = location;
     }
     
-    /**
-     * Gets the name of this mine
-     *
-     * @return the name of this mine
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of this mine
-     *
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-	public String getWorldName() {
-		return worldName;
-	}
-	public void setWorldName( String worldName ) {
-		this.worldName = worldName;
-	}
-
 	public boolean isHasSpawn() {
 		return hasSpawn;
 	}

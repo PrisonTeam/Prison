@@ -57,7 +57,11 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.BulletedListComponent;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -105,7 +109,8 @@ class SpigotPlatform implements Platform {
         return storage;
     }
 
-    @Override public Optional<World> getWorld(String name) {
+    @Override 
+    public Optional<World> getWorld(String name) {
         if (worlds.containsKey(name)) {
             return Optional.of(worlds.get(name));
         }
@@ -119,8 +124,8 @@ class SpigotPlatform implements Platform {
         		sb.append( bukkitWorld.getName() );
         	}
         	
-        	Output.get().logWarn( "SpigotPlatform.getWorld(): World does not exist: " + name + 
-        			"  Available worlds: " + sb.toString() );
+        	Output.get().logWarn( "&cWorld does not exist: &a" + name + 
+        			"  &7Available worlds: &a" + sb.toString() );
         	
             return Optional.empty(); // Avoid NPE
         }
@@ -129,6 +134,26 @@ class SpigotPlatform implements Platform {
         return Optional.of(newWorld);
     }
 
+    @Override 
+    public void getWorldLoadErrors( ChatDisplay display ) {
+    
+    	Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+    	
+    	if ( prisonMinesOpt.isPresent() ) {
+    		MineManager mineManager = ((PrisonMines) prisonMinesOpt.get()).getMineManager();
+    		
+    		// When finished loading the mines, then if there are any worlds that
+    		// could not be loaded, dump the details:
+    		List<String> unavailableWorlds = mineManager.getUnavailableWorldsListings();
+    		for ( String uWorld : unavailableWorlds ) {
+    			
+    			display.text( uWorld );
+    		}
+    		
+    	}
+        
+    }
+    
     @Override public Optional<Player> getPlayer(String name) {
         return Optional.ofNullable(
             players.stream().filter(player -> player.getName().equals(name)).findFirst()

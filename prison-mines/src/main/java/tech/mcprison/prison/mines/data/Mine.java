@@ -26,7 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
@@ -148,22 +148,28 @@ public class Mine
 			throws MineException {
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
+        setName((String) document.get("name")); // Mine name:
 		
 		World world = null;
 		
 		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
         if (!worldOptional.isPresent()) {
-            Output.get().logWarn( "Mine.loadFromDocument(): world doesn't exist. This is a " +
-            		"temporary condition until the world can be loaded. " +
-            		" worldName= " + worldName );
+            MineManager mineMan = PrisonMines.getInstance().getMineManager();
+            
+            // Store this mine and the world in MineManager's unavailableWorld for later
+            // processing and hooking up to the world object. Print an error message upon
+            // the first mine's world not existing.
+            mineMan.addUnavailableWorld( worldName, this );
+            
+            setEnabled( false );
         }
         else {
         	world = worldOptional.get();
+        	setEnabled( true );
         }
         
 //        World world = worldOptional.get();
 
-        setName((String) document.get("name"));
         
         Double resetTimeDouble = (Double) document.get("resetTime");
         setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );

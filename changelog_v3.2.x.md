@@ -8,7 +8,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.12 - 2020-05-13
+## tag v3.2.1-alpha.12 - 2020-05-16
+
+
+* **New Feature: Now Supports delayed world loading! Multiverse-core now properly supported!**
+New Feature: Major modifications to support delayed world loading. This supports Multiverse-core, and other plugins, that may load worlds.  
+You cannot use softdepends or hard depends to ensure the world is loaded, but instead must use WorldLoadEvent events.
+These changes enables the mines to load even when their world has not been loaded yet. It also disables any function or changes that could corrupt the mine's data by not having the world enabled and loaded.
+
+
+* **Bug fix: Reset Radius Notification not working**
+The message notification functions were not using the mine's radius value, so all radius notifications were based upon a distance of 150 blocks.
+Extend within notifications to include players standing on top of the mines too.
 
 
 * **New Feature: Start to properly deal with delayed world loading**

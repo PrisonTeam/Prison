@@ -21,13 +21,16 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
@@ -45,6 +48,8 @@ public class MineManager
     // Base list
     private List<Mine> mines;
     private TreeMap<String, Mine> minesByName;
+    
+    private TreeMap<String, List<Mine>> unavailableWorlds;
 
     private Collection coll;
 
@@ -53,20 +58,51 @@ public class MineManager
     private boolean mineStats = false;
 
     /**
-     * Initializes a new instance of {@link MineManager}
+     * <p>MineManager must be fully instantiated prior to trying to load the mines,
+     * otherwise if the mines cannot find the world they should be, they will be
+     * unable to register that the world is unavailable.
+     * </p>
+     * 
      */
-    public MineManager(tech.mcprison.prison.store.Collection collection) {
-        this.mines = new ArrayList<>();
-        this.minesByName = new TreeMap<>();
+    public MineManager() {
+    	this.mines = new ArrayList<>();
+    	this.minesByName = new TreeMap<>();
+    	
+    	this.unavailableWorlds = new TreeMap<>();
+    	
+    	this.coll = null;
+    	
+    }
+    
+
+    public void loadFromDbCollection( PrisonMines pMines ) {
         
-        this.coll = collection;
+        Optional<Collection> collOptional = pMines.getDb().getCollection("mines");
+
+        if (!collOptional.isPresent()) {
+        	Output.get().logError("Could not create 'mines' collection.");
+        	pMines.getStatus().toFailed("Could not create mines collection in storage.");
+        	return;
+        }
+
+        this.coll = collOptional.get();
 
         int offsetTiming = 5;
         loadMines(offsetTiming);
+        
 
         Output.get().logInfo( String.format("Loaded %d mines and submitted with a %d " +
         		"second offset timing for auto resets.", 
         			getMines().size(), offsetTiming));
+        
+        
+//        // When finished loading the mines, then if there are any worlds that
+//        // could not be loaded, dump the details:
+//        List<String> unavailableWorlds = getUnavailableWorldsListings();
+//        for ( String uWorld : unavailableWorlds ) {
+//			Output.get().logInfo( uWorld );
+//		}
+        
         
 //        // Submit all the loaded mines to run:
 //        int offset = 0;
@@ -145,19 +181,7 @@ public class MineManager
 	    return success;
     }
 
-    public static MineManager fromDb() {
-    	PrisonMines pMines = PrisonMines.getInstance();
-    	
-        Optional<Collection> collOptional = pMines.getDb().getCollection("mines");
 
-        if (!collOptional.isPresent()) {
-        	Output.get().logError("Could not create 'mines' collection.");
-        	pMines.getStatus().toFailed("Could not create mines collection in storage.");
-        	return null;
-        }
-
-        return new MineManager(collOptional.get());
-    }
 
     private void loadMines( int offsetTiming ) {
         List<Document> mineDocuments = coll.getAll();
@@ -174,6 +198,7 @@ public class MineManager
                     .logError("&cFailed to load mine " + document.getOrDefault("name", "null"), e);
             }
         }
+        
     }
 
     /**
@@ -220,9 +245,111 @@ public class MineManager
 	{
 		this.mineStats = mineStats;
 	}
-
 	
-    public String getTranslateMinesPlaceHolder( String identifier ) {
+	
+
+	/**
+	 * <p>Add the missing world and the associated mine to the collection. Create the
+	 * base entries if needed.
+	 * </p>
+	 * 
+	 * <p>Upon the first entry in to this collection of worlds and mines, an error
+	 * message will be generated indicating the world does not exist.
+	 * </p>
+	 * 
+	 * @param worldName
+	 * @param mine
+	 */
+	public void addUnavailableWorld( String worldName, Mine mine ) {
+		if ( worldName != null && worldName.trim().length() > 0 && mine != null ) {
+			if ( !getUnavailableWorlds().containsKey( worldName )) {
+				getUnavailableWorlds().put( worldName, new ArrayList<>() );
+				
+				Output.get().logWarn( "&7Mine Loader: &aWorld does not exist! " +
+						"&7This maybe a temporary " +
+	            		"condition until the world can be loaded. " +
+	            		" &3worldName= " + worldName );
+			}
+
+			if ( !getUnavailableWorlds().get( worldName ).contains( mine )) {
+				getUnavailableWorlds().get( worldName ).add( mine );
+			}
+		}
+	}
+    public TreeMap<String, List<Mine>> getUnavailableWorlds() {
+		return unavailableWorlds;
+	}
+	public void setUnavailableWorlds( TreeMap<String, List<Mine>> unavailableWorlds ) {
+		this.unavailableWorlds = unavailableWorlds;
+	}
+
+	public void assignAvailableWorld( String worldName ) {
+    	if ( worldName != null && worldName.trim().length() > 0 ) {
+    		
+    		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
+    		
+    		if ( worldOptional.isPresent() && getUnavailableWorlds().containsKey( worldName )) {
+    			World world = worldOptional.get();
+    			
+    			// Store this mine and the world in MineManager's unavailableWorld for later
+    			// processing and hooking up to the world object.
+    			List<Mine> unenabledMines = getUnavailableWorlds().get( worldName );
+
+//    			List<Mine> remove = new ArrayList<>();
+    			
+    			for ( Mine mine : unenabledMines ) {
+    				if ( !mine.isEnabled() ) {
+    					mine.setWorld( world );
+    				}
+//    				remove.add( mine );
+    			}
+    			
+//    			// Purge all removed mines from the unenabledMines list:
+//    			if ( remove.size() > 0 ) {
+//    				unenabledMines.removeAll( remove );
+//    			}
+    			
+//    			// If no mines remain, then remove this world from unavailableWorlds:
+//    			if ( unenabledMines.size() == 0 ) {
+//    				getUnavailableWorlds().remove( worldName );
+//    			}
+    			
+    			// Since the world is loaded and all available mines have been hooked up
+    			// with the world, so remove these entries.
+    			unenabledMines.clear();
+    			getUnavailableWorlds().remove( worldName );
+    		}
+    	}
+	}
+	
+    public List<String> getUnavailableWorldsListings() {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( getUnavailableWorlds().size() > 0 ) {
+    		results.add( "&cUnavailable Worlds: &3Deferred loading of mines." );
+
+    		Set<String> worlds = getUnavailableWorlds().keySet();
+    		
+    		for ( String worldName : worlds ) {
+    			int enabledCount = 0;
+    			
+				List<Mine> mines = getUnavailableWorlds().get( worldName );
+				for ( Mine mine : mines ) {
+					if ( mine.isEnabled() ) {
+						enabledCount++;
+					}
+				}
+				results.add( 
+						String.format( "&7    world: &3%s &7(&c%s &7of &c%s &7mines enabled) ", 
+								worldName, Integer.toString( enabledCount ),
+								Integer.toString( mines.size() )));
+			}
+    	}
+    	
+    	return results;
+    }
+	
+	public String getTranslateMinesPlaceHolder( String identifier ) {
     	String results = null;
     	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     	

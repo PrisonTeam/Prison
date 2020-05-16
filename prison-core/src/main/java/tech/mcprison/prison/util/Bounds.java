@@ -146,8 +146,9 @@ public class Bounds {
     }
     
     public boolean withinSameWorld(Location location) {
-    	return getCenter().getWorld().getName().equalsIgnoreCase( 
-    			location.getWorld().getName() );
+    	return getCenter().getWorld() != null && location.getWorld() != null &&
+    			getCenter().getWorld().getName().equalsIgnoreCase( 
+    						location.getWorld().getName() );
     	}	
     
     /**

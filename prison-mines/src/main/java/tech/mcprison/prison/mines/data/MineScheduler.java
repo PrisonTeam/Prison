@@ -3,9 +3,11 @@ package tech.mcprison.prison.mines.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.output.Output;
 
@@ -259,6 +261,10 @@ public abstract class MineScheduler
 	@Override
 	public void run()
 	{
+		// TODO track how many times the world fails to load? Then terminate the mine job if it
+		// appears like it will never load?
+		checkWorld();
+		
 		boolean forced = getCurrentJob() != null && 
 							getCurrentJob().getResetType() == MineResetType.FORCED;
 		
@@ -275,6 +281,13 @@ public abstract class MineScheduler
 		{
 			case MESSAGE_GATHER:
 				// Not yet implemented: let MESSAGE process this request:
+
+				// The idea here is to check how far all players are from the mine.  If they are
+				// candidates to get a message, then collect a list of players async.  This 
+				// should be safe to run, since the active players would already have the 
+				// chunks where they are already loaded so as to prevent corruption if 
+				// this process "forces" an unloaded chunk to load.
+				
 			
 			case MESSAGE:
 				// Send reset message:
@@ -323,7 +336,30 @@ public abstract class MineScheduler
 		submitNextAction();
 	}
 
-	
+	/**
+	 * <p>This checks to see if the world stored for the mine is null, if it is, it
+	 * tries to reload it the platform (spigot?) and then it updates all world instances
+	 * within the Bound object for the mine, including spawn.
+	 * </p>
+	 * 
+	 */
+	private void checkWorld()
+	{
+		if ( !isEnabled() ) {
+			// Must try to load world again:
+			Optional<World> worldOptional = Prison.get().getPlatform().getWorld( getWorldName() );
+	        if (!worldOptional.isPresent()) {
+	            Output.get().logWarn( "&7MineScheduler.checkWorld: World STILL doesn't exist. " +
+	            		"This is serious. &aworldName= " + getWorldName() );
+	        }
+	        else {
+	        	World world = worldOptional.get();
+	        	
+	        	setWorld( world );
+	        }
+		}
+	}
+
 	/**
 	 * <p>This task performs the job submission.  If the currentJob is null, then it will generate an 
 	 * exception in the console. Manually resetting the mine will resubmit the workflow. 
