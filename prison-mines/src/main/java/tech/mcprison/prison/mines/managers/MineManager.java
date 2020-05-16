@@ -45,6 +45,12 @@ import tech.mcprison.prison.store.Document;
 public class MineManager 
 	implements ManagerPlaceholders {
 
+	public static final double TIME_SECOND = 1.0;
+	public static final double TIME_MINUTE = TIME_SECOND * 60.0;
+	public static final double TIME_HOUR = TIME_MINUTE * 60.0;
+	public static final double TIME_DAY = TIME_HOUR * 24.0;
+	
+	
     // Base list
     private List<Mine> mines;
     private TreeMap<String, Mine> minesByName;
@@ -379,10 +385,23 @@ public class MineManager
 						results = iFmt.format( mine.getResetTime() );
 						break;
 						
+					case prison_mif_minename:
+					case prison_mines_interval_formatted_minename:
+						double timeMif = mine.getResetTime();
+						results = formattedTime( timeMif );
+						break;
+						
 					case prison_mtl_minename:
 					case prison_mines_timeleft_minename:
 						// NOTE: timeleft can vary based upon server loads:
 						results = dFmt.format( mine.getRemainingTimeSec() );
+						break;
+						
+					case prison_mtlf_minename:
+					case prison_mines_timeleft_formatted_minename:
+						// NOTE: timeleft can vary based upon server loads:
+						double timeMtlf = mine.getRemainingTimeSec();
+						results = formattedTime( timeMtlf );
 						break;
 						
 					case prison_ms_minename:
@@ -429,7 +448,41 @@ public class MineManager
     }
     
 
-    /**
+    private String formattedTime( double time ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	long days = (long)(time / TIME_DAY);
+    	time -= (days * TIME_DAY);
+    	if ( days > 0 ) {
+    		sb.append( days );
+    		sb.append( "d " );
+    	}
+    	
+    	long hours = (long)(time / TIME_HOUR);
+    	time -= (hours * TIME_HOUR);
+    	if ( sb.length() > 0 || hours > 0 ) {
+    		sb.append( hours );
+    		sb.append( "h " );
+    	}
+    	
+    	long mins = (long)(time / TIME_MINUTE);
+    	time -= (mins * TIME_MINUTE);
+    	if ( sb.length() > 0 || mins > 0 ) {
+    		sb.append( mins );
+    		sb.append( "m " );
+    	}
+    	
+    	double secs = (double)(time / TIME_SECOND);
+    	time -= (secs * TIME_SECOND);
+    	DecimalFormat dFmt = new DecimalFormat("#0.00");
+    	sb.append( dFmt.format( secs ));
+    	sb.append( "s " );
+    	
+		return sb.toString();
+	}
+
+
+	/**
      * <p>Generates a list of all of the placeholder keys, which includes the
      * mine name, the placeholder enumeration, and then the actual translated
      * placeholder with the mine's name. This is generated only once, but if new

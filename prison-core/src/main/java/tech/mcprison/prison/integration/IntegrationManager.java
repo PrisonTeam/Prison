@@ -102,7 +102,9 @@ public class IntegrationManager {
 		
 		// Mine aliases:
 		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mif_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mtlf_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
@@ -115,7 +117,9 @@ public class IntegrationManager {
 		// player_count
 		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
 		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
+		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceHolderFlags.MINES),
 		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
+		prison_mines_timeleft_formatted_minename(prison_mtlf_minename, PlaceHolderFlags.MINES),
 		prison_mines_size_minename(prison_ms_minename, PlaceHolderFlags.MINES),
 		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
