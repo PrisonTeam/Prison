@@ -1,6 +1,10 @@
 package tech.mcprison.prison.spigot.spiget;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -154,6 +158,15 @@ public class BluesSemanticVersionDataTest
 		assertTrue(svDataCheck.compareTo( svData ) == 0 );
 		assertTrue(svData.compareTo( svDataCheck ) == 0 );
 
+		
+		// Test the compareTo function:
+		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.8.0", "1.9.0" ) < 0 );
+		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.8.8", "1.9.0" ) < 0 );
+		assertFalse( new BluesSpigetSemVerComparator().compareTo( "1.9.0", "1.9.0" ) < 0 );
+		assertFalse( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) < 0 );
+		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.9.0", "1.9.0" ) == 0 );
+		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) > 0 );
+		
 	}
 
 }

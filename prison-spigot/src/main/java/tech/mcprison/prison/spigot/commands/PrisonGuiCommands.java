@@ -1,12 +1,11 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.Bukkit;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
  * @author RoyalBlueRanger
@@ -33,11 +32,7 @@ public class PrisonGuiCommands {
 			permissions = "prison.gui", onlyPlayers = true) 
 	public void prisonGui(CommandSender sender) {
 
-		String ver = Bukkit.getVersion().trim();
-		ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
-		BluesSemanticVersionData semVerMin = new BluesSemanticVersionData("1.9.0");
-		BluesSemanticVersionData semVerTest = new BluesSemanticVersionData(ver);
-		if ( semVerTest.compareTo(semVerMin ) < 0 ) {
+		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
 			sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
 			return;
 		}

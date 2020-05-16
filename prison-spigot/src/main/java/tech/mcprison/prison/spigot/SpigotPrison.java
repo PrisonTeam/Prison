@@ -322,21 +322,8 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     private void initCompatibility() {
-        String[] version = Bukkit.getVersion().split("\\.");
-        int minorVersionInt = 9;
-        try {
-            minorVersionInt = Integer.parseInt(version[1]);
-        } catch (NumberFormatException e) {
-            try {
-                minorVersionInt =
-                        Integer.parseInt(version[1].substring(0, version[1].indexOf(')')));
-            } catch (Exception ex) {
-                Output.get().logError(
-                        "Unable to determine server version. Assuming spigot 1.9 or greater.");
-            }
-        }
-
-        if (minorVersionInt <= 8) {
+    	
+    	if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
             compatibility = new Spigot18();
         } else {
             compatibility = new Spigot19();
@@ -345,7 +332,8 @@ public class SpigotPrison extends JavaPlugin {
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }
 
-    private void initIntegrations() {
+
+	private void initIntegrations() {
 
     	registerIntegration(new VaultEconomy());
         registerIntegration(new EssentialsEconomy());

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.spiget;
 
+import org.bukkit.Bukkit;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 /**
@@ -68,4 +69,70 @@ public class BluesSpigetSemVerComparator
 		return (checkSemVer.compareTo( currentSemVer ) > 0);
 	}
 		
+	/**
+	 * <p>Example how to use:
+	 * </p>
+	 * 
+	 * <pre>
+	 * String ver = Bukkit.getVersion().trim();
+	 * ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
+	 * if ( new BluesSpigetSemVerComparator().compareTo(ver, "1.9.0") ) {
+	 *     // if mc version is less than 1.9.0
+	 * }
+	 * </pre>
+	 * 
+	 * @param currentVersion
+	 * @param checkVersion
+	 * @return
+	 */
+	public int compareTo( String currentVersion, String checkVersion ) {
+		
+		BluesSemanticVersionData currentSemVer = new BluesSemanticVersionData(currentVersion);
+		BluesSemanticVersionData checkSemVer = new BluesSemanticVersionData(checkVersion);
+
+		return currentSemVer.compareTo( checkSemVer );
+	}
+
+	/**
+	 * <p>This uses the minecraft version of the server to compare to the provided version.
+	 * </p>
+	 * 
+	 * <p>Samples of what a bukkit, spigot, and paper version would look like. Notice
+	 * they all have the version at the end between <b>(MC:</b> and <b>)</b>.
+	 * </p>
+	 * 
+	 * <ul>
+	 *     <li>Spigot 1.8.8: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)</li>
+	 *     <li>Spigot 1.10.2: git-Spigot-de459a2-51263e9 (MC: 1.10.2)</li>
+	 *     <li>Spigot 1.12.2: git-Spigot-79a30d7-acbc348 (MC: 1.12.2)</li>
+	 *     <li>Spigot 1.15.2: git-Spigot-2040c4c-893ad93 (MC: 1.15.2)</li>
+	 *     <li>Paper 1.10.2: git-Paper-916.2 (MC: 1.10.2)</li>
+	 *     <li>Paper 1.14.2: git-Paper-234 (MC: 1.14.4)</li>
+	 * </ul>
+	 * 
+	 * 	 * <p>Example how to use:
+	 * </p>
+	 * 
+	 * <pre>
+	 * if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
+	 *     // if mc version is less than 1.9.0
+	 * }
+	 * </pre>
+	 * 
+	 * @param checkVersion
+	 * @return
+	 */
+	public int compareMCVersionTo( String checkVersion ) {
+		int results = -1;
+		String currentVersion = Bukkit.getVersion().trim().toLowerCase();
+		int i = currentVersion.indexOf("(mc:");
+		int len = currentVersion.length();
+		if ( i >= 0 && (i+4 < len)) {
+			currentVersion = currentVersion.substring( i + 4, len -1 ).trim();
+			
+			results = compareTo( currentVersion, checkVersion );
+		}
+		return results;
+	}
+
 }

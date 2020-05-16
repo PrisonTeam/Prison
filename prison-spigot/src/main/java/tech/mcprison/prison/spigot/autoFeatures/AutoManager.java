@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -22,12 +20,15 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 
 /**
@@ -489,11 +490,7 @@ public class AutoManager
 	}
 
 	private void actionBarVersion(Player player, String message) {
-		String ver = Bukkit.getVersion().trim();
-		ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
-		BluesSemanticVersionData semVerMin = new BluesSemanticVersionData("1.9.0");
-		BluesSemanticVersionData semVerTest = new BluesSemanticVersionData(ver);
-		if ( semVerTest.compareTo(semVerMin ) < 0 ) {
+		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
 			displayActionBarMessage(player, message);
 		} 
 		else {
