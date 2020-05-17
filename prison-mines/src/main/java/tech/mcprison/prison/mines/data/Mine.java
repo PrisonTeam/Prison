@@ -62,6 +62,9 @@ public class Mine
     	
     	setName(name);
     	setBounds(selection.asBounds());
+    	
+    	setWorldName( getBounds().getMin().getWorld().getName());
+    	
     	setEnabled( true );
         
         // Kick off the initialize:
