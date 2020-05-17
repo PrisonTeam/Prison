@@ -38,8 +38,18 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToUse"),
-                GuiConfig.getString("Gui.Lore.ResetButton"));
+                GuiConfig.getString("Gui.Lore.LeftClickToReset"),
+                "",
+                GuiConfig.getString("Gui.Lore.RightClickToToggle"),
+                GuiConfig.getString("Gui.Lore.SkipReset1"),
+                GuiConfig.getString("Gui.Lore.SkipReset2"),
+                GuiConfig.getString("Gui.Lore.SkipReset3"),
+                "",
+                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToToggle"),
+                GuiConfig.getString("Gui.Message.ZeroBlocksReset1"),
+                GuiConfig.getString("Gui.Message.ZeroBlocksReset2"),
+                GuiConfig.getString("Gui.Message.ZeroBlocksReset3")
+        );
 
         // Set the Mine spawn at your location
         List<String> MineSpawnlore = createLore(

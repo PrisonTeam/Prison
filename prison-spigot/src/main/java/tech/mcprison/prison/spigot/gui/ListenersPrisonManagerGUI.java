@@ -484,8 +484,16 @@ public class ListenersPrisonManagerGUI implements Listener {
                     // Check the name of the button and do the actions
                     case "Reset_Mine:":
 
-                        // Execute the command
-                        Bukkit.dispatchCommand(p, "mines reset " + mineName);
+                        if (e.isLeftClick()) {
+                            // Execute the command
+                            Bukkit.dispatchCommand(p, "mines reset " + mineName);
+                        } else if (e.isRightClick()){
+                            // Execute the command
+                            Bukkit.dispatchCommand(p, "mines set skipReset " + mineName);
+                       } else if (e.isRightClick() && e.isShiftClick()){
+                            // Execute the command
+                            Bukkit.dispatchCommand(p, "mines set zeroBlockResetDelay " + mineName);
+                        }
 
                         e.setCancelled(true);
 

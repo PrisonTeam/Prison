@@ -53,6 +53,7 @@ public class GuiConfig {
                 conf.set("Gui.Lore.LadderCommands", SpigotPrison.format(" &3Commands &8in this ladder:"));
                 conf.set("Gui.Lore.LeftClickToConfirm", SpigotPrison.format("&aLeft-Click to confirm."));
                 conf.set("Gui.Lore.LeftClickToOpen", SpigotPrison.format("&8Left Click to open."));
+                conf.set("Gui.Lore.LeftClickToReset", SpigotPrison.format("&aLeft Click to reset"));
                 conf.set("Gui.Lore.ManageResetTime", SpigotPrison.format("&8Manage the reset time of the Mine."));
                 conf.set("Gui.Lore.MinesButton", SpigotPrison.format("&8Mines GUI manager."));
                 conf.set("Gui.Lore.Name", SpigotPrison.format("&3Rank Name: &7"));
@@ -69,12 +70,19 @@ public class GuiConfig {
                 conf.set("Gui.Lore.ResetButton", SpigotPrison.format("&8Resets the mine."));
                 conf.set("Gui.Lore.RightClickToCancel", SpigotPrison.format("&cRight-Click to cancel."));
                 conf.set("Gui.Lore.RightClickToEnable", SpigotPrison.format("&aRight click to enable"));
+                conf.set("Gui.Lore.RightClickToToggle", SpigotPrison.format("&cRight click to toggle"));
                 conf.set("Gui.Lore.SpawnPoint", SpigotPrison.format("&3Spawnpoint: &7"));
                 conf.set("Gui.Lore.SpawnPoint2", SpigotPrison.format("&8Set the mine spawn point at your location."));
                 conf.set("Gui.Lore.SizeOfMine", SpigotPrison.format("&3Size of Mine: &7"));
                 conf.set("Gui.Lore.Selected", SpigotPrison.format("&3Selected"));
                 conf.set("Gui.Lore.ShiftAndRightClickToDelete", SpigotPrison.format("&cPress Shift + Right click to delete."));
                 conf.set("Gui.Lore.ShiftAndRightClickToDisable", SpigotPrison.format("&cPress Shift + Right click to disable"));
+                conf.set("Gui.Lore.ShiftAndRightClickToToggle", SpigotPrison.format("&cPress Shift + Right click to toggle"));
+                conf.set("Gui.Lore.StatusEnabled", SpigotPrison.format("&8Enabled"));
+                conf.set("Gui.Lore.StatusDisabled", SpigotPrison.format("&8Disabled"));
+                conf.set("Gui.Lore.SkipReset1", SpigotPrison.format("&8Skip the reset if"));
+                conf.set("Gui.Lore.SkipReset2", SpigotPrison.format("&8not enough blocks"));
+                conf.set("Gui.Lore.SkipReset3", SpigotPrison.format("&8have been mined."));
                 conf.set("Gui.Lore.Tp", SpigotPrison.format("&8Tp to the mine."));
                 conf.set("Gui.Lore.Tag", SpigotPrison.format("&3Tag: &8"));
                 conf.set("Gui.Lore.Tag2", SpigotPrison.format("&3Rank Tag: &7"));
@@ -86,6 +94,9 @@ public class GuiConfig {
                 conf.set("Gui.Message.TooManyLadders", SpigotPrison.format("&cSorry, but there're too many ladders and the max's 54 for the GUI"));
                 conf.set("Gui.Message.TooManyMines", SpigotPrison.format("&cSorry, but there're too many mines and the max's 54 for the GUI"));
                 conf.set("Gui.Message.TooManyRankupCommands", SpigotPrison.format("&cSorry, but there're too many RankupCommands and the max's 54 for the GUI"));
+                conf.set("Gui.Message.ZeroBlocksReset1", SpigotPrison.format("&8Set a mine's delay"));
+                conf.set("Gui.Message.ZeroBlocksReset2", SpigotPrison.format("&8before reset when it"));
+                conf.set("Gui.Message.ZeroBlocksReset3", SpigotPrison.format("&8reaches zero blocks."));
                 conf.save(file);
             } catch (IOException e) {
                 e.printStackTrace();
