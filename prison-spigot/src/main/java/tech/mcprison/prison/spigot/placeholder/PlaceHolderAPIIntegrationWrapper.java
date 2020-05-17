@@ -70,7 +70,9 @@ public class PlaceHolderAPIIntegrationWrapper
 		UUID playerUuid = player.getUniqueId();
 		
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
+		if ( pm != null ) {
+			results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
+		}
 		
 		// If it did not match on a player placeholder, then try mines:
 		if ( results == null ) {
