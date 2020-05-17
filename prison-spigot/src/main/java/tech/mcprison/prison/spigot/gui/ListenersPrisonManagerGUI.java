@@ -639,7 +639,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (e.isLeftClick()){
 
                         // Execute the command
-                        Bukkit.dispatchCommand(p,"mines resettime " + part2 + " " + part3);
+                        Bukkit.dispatchCommand(p,"mines set resettime " + part2 + " " + part3);
 
                         e.setCancelled(true);
 
@@ -756,7 +756,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     typeNotification = "within";
 
                     // Execute command
-                    Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
+                    Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
 
                     // Cancel the event and close the inventory
                     e.setCancelled(true);
@@ -782,7 +782,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     typeNotification = "disabled";
 
                     // Execute the command
-                    Bukkit.dispatchCommand(p, "mines notification " + mineName + " " + typeNotification + " " + "0");
+                    Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
 
                     // Cancel the event and close the inventory
                     e.setCancelled(true);
@@ -832,7 +832,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     if (e.isLeftClick()){
 
                         // Execute the command
-                        Bukkit.dispatchCommand(p,"mines notification " + part2 + " " + typeNotification + " " + part3);
+                        Bukkit.dispatchCommand(p,"mines set notification " + part2 + " " + typeNotification + " " + part3);
 
                         e.setCancelled(true);
 
