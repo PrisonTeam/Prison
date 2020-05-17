@@ -44,6 +44,8 @@ public enum BlockType {
 	 * of the Material.
 	 */
 	
+	IGNORE( MaterialType.BLOCK ),
+	
     // This was auto-generated from WorldEdit's blocks.json
     // @formatter:off
 	AIR( 0, "minecraft:air", 0, MaterialType.BLOCK ),
