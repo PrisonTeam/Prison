@@ -946,7 +946,7 @@ public class MinesCommands {
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines skipReset", permissions = "mines.skipreset", 
+    @Command(identifier = "mines set skipReset", permissions = "mines.skipreset", 
     		description = "Set a mine to skip the reset if not enough blocks have been mined.")
     public void skipResetCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -1034,7 +1034,7 @@ public class MinesCommands {
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines resetTime", permissions = "mines.resettime", 
+    @Command(identifier = "mines set resetTime", permissions = "mines.resettime", 
     		description = "Set a mine's time  to reset.")
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -1104,7 +1104,7 @@ public class MinesCommands {
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines zeroBlockResetDelay", permissions = "mines.zeroblockresetdelay", 
+    @Command(identifier = "mines set zeroBlockResetDelay", permissions = "mines.zeroblockresetdelay", 
     		description = "Set a mine's delay before reset when it reaches zero blocks.")
     public void zeroBlockResetDelayCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -1173,7 +1173,7 @@ public class MinesCommands {
     }
     
 
-    @Command(identifier = "mines notification", permissions = "mines.notification", 
+    @Command(identifier = "mines set notification", permissions = "mines.notification", 
     		description = "Set a mine's notification mode.")
     public void setNotificationCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
