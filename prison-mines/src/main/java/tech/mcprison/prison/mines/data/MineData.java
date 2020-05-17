@@ -167,15 +167,15 @@ public abstract class MineData {
 	 */
 	public void setWorld( World world ) {
     	
-    	// Must add world to the two Bounds locations: Min and Max!
-    	getBounds().getMin().setWorld( world );
-    	getBounds().getMax().setWorld( world );
-    	getBounds().getCenter().setWorld( world );
-    	
-    	// Add world to Spawn, if it exists:
-    	if ( getSpawn() != null ) {
-    		getSpawn().setWorld( world );
-    	}
+		// Must add world to the two Bounds locations: 
+		if ( world != null ) {
+			getBounds().setWorld( world );
+			
+			// Add world to Spawn, if it exists:
+			if ( getSpawn() != null ) {
+				getSpawn().setWorld( world );
+			}
+		}
 
     	setEnabled( world != null );
 	}

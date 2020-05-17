@@ -263,7 +263,7 @@ public abstract class MineScheduler
 	{
 		// TODO track how many times the world fails to load? Then terminate the mine job if it
 		// appears like it will never load?
-		checkWorld();
+		//checkWorld();
 		
 		boolean forced = getCurrentJob() != null && 
 							getCurrentJob().getResetType() == MineResetType.FORCED;
@@ -343,6 +343,7 @@ public abstract class MineScheduler
 	 * </p>
 	 * 
 	 */
+	@SuppressWarnings( "unused" )
 	private void checkWorld()
 	{
 		if ( !isEnabled() ) {

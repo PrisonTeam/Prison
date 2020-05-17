@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import tech.mcprison.prison.internal.World;
+
 /**
  * Represents the area between two {@link Location}s.
  *
@@ -66,6 +68,21 @@ public class Bounds {
         			(getyBlockMax() - getyBlockMin() + 1) *
         			(getxBlockMax() - getxBlockMin() + 1) *
         			(getzBlockMax() - getzBlockMin() + 1);
+    }
+    
+    public void setWorld( World world ) {
+    	if ( world != null ) {
+    		
+    		if ( getMin().getWorld() == null ) {
+    			getMin().setWorld( world );
+    		}
+    		if ( getMax().getWorld() == null ) {
+    			getMax().setWorld( world );
+    		}
+    		if ( getCenter().getWorld() == null ) {
+    			getCenter().setWorld( world );
+    		}
+    	}
     }
     
     /**

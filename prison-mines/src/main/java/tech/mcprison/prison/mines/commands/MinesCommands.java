@@ -120,6 +120,11 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine mine = pMines.getMine(mineName);
 
+        if ( !mine.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
         if (!mine.getWorld().isPresent()) {
             pMines.getMinesMessages().getLocalizable("missing_world")
                 .sendTo(sender);
