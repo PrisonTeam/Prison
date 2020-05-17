@@ -44,6 +44,8 @@ public abstract class MineData {
     private int skipResetBypassLimit;
     private transient int skipResetBypassCount;
     
+    private List<String> resetCommands;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -89,6 +91,8 @@ public abstract class MineData {
         this.skipResetPercent = 80.0D;
         this.skipResetBypassLimit = 50;
         this.skipResetBypassCount = 0;
+        
+        this.resetCommands = new ArrayList<>();
     }
 
     /**
@@ -390,4 +394,11 @@ public abstract class MineData {
 		this.skipResetBypassCount = skipResetBypassCount;
 	}
 
+	public List<String> getResetCommands() {
+		return resetCommands;
+	}
+	public void setResetCommands( List<String> resetCommands ) {
+		this.resetCommands = resetCommands;
+	}
+	
 }

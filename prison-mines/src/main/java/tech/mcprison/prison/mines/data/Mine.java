@@ -155,6 +155,7 @@ public class Mine
 	 * @param document
 	 * @throws MineException
 	 */
+	@SuppressWarnings( "unchecked" )
 	private void loadFromDocument( Document document )
 			throws MineException {
 		String worldName = (String) document.get("world");
@@ -211,7 +212,6 @@ public class Mine
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
-        @SuppressWarnings( "unchecked" )
 		List<String> docBlocks = (List<String>) document.get("blocks");
         for (String docBlock : docBlocks) {
             String[] split = docBlock.split("-");
@@ -222,6 +222,9 @@ public class Mine
             Block block = new Block(BlockType.getBlock(blockTypeName), chance);
             getBlocks().add(block);
         }
+        
+        List<String> commands = (List<String>) document.get("commands");
+        setResetCommands( commands == null ? new ArrayList<>() : commands );
 	}
 
     
@@ -263,6 +266,8 @@ public class Mine
         }
         ret.put("blocks", blockStrings);
 
+        ret.put("commands", getResetCommands());
+        
         return ret;
     }
 

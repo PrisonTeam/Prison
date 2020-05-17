@@ -32,6 +32,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.Localizable;
@@ -43,6 +44,7 @@ import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
@@ -573,6 +575,19 @@ public class MinesCommands {
         	if ( mMan.isMineStats() ) {
         	}
         	
+        	
+        	String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
+        	chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
+        	
+        	if ( mMan.isMineStats() ) {
+        		RowComponent rowStats = new RowComponent();
+        		rowStats.addTextComponent( "  -- &7 Stats :: " );
+        		rowStats.addTextComponent( m.statsMessage() );
+        		
+        		chatDisplay.addComponent(rowStats);
+        	}
+        	
+        	
         	{
         		RowComponent row = new RowComponent();
         		double rtMinutes = m.getResetTime() / 60.0D;
@@ -666,16 +681,23 @@ public class MinesCommands {
         	}
         	
         	
-        	String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        	chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
-        	
-        	if ( mMan.isMineStats() ) {
-        		RowComponent rowStats = new RowComponent();
-        		rowStats.addTextComponent( "  -- &7 Stats :: " );
-        		rowStats.addTextComponent( m.statsMessage() );
+        	if ( m.getResetCommands() != null && m.getResetCommands().size() > 0 ) {
+//        		RowComponent row = new RowComponent();
+//        		row.addTextComponent( "&3Reset Commands: &7%s ",
+//        				dFmt.format( m.getResetCommands().size() ) );
+
+        		BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
+
+        		FancyMessage msg = new FancyMessage(String.format("&3Reset Commands: &7%s", 
+        				dFmt.format( m.getResetCommands().size() )))
+            			.suggest("/mines command list " + m.getName())
+            			.tooltip("&7Click to list to view the reset commands.");
         		
-        		chatDisplay.addComponent(rowStats);
+        		builder.add(msg);
+        		
+        		chatDisplay.addComponent( builder.build() );
         	}
+
         	
         }
         
@@ -1395,6 +1417,150 @@ public class MinesCommands {
     }
 
 
+
+    @SuppressWarnings( "unused" )
+	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 
+    						onlyPlayers = false, permissions = "mines.command")
+    public void commandList(CommandSender sender, 
+    				@Arg(name = "mineName") String mineName) {
+    	
+    	if ( 1 < 2 ) {
+    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+    		return;
+    	}
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if (m.getResetCommands() == null || m.getResetCommands().size() == 0) {
+            Output.get().sendInfo(sender, "The mine '%s' contains no commands.", m.getName());
+            return;
+        }
+
+
+        ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
+        display.text("&8Click a command to remove it.");
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
+
+        for (String command : m.getResetCommands()) {
+            FancyMessage msg = new FancyMessage("&3/" + command)
+                .command("/mines command remove " + mineName + " " + command)
+                .tooltip("Click to remove.");
+            builder.add(msg);
+        }
+
+        display.addComponent(builder.build());
+        display.addComponent(new FancyMessageComponent(
+            new FancyMessage("&7[&a+&7] Add").suggest("/mines command add " + mineName + " /")
+                .tooltip("&7Add a new command.")));
+        display.send(sender);
+    }
+
+
+    @SuppressWarnings( "unused" )
+	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 
+    		onlyPlayers = false, permissions = "mines.command")
+    public void commandRemove(CommandSender sender, 
+    				@Arg(name = "mineName") String mineName,
+    				@Arg(name = "command") @Wildcard String command) {
+    	
+    	if ( 1 < 2 ) {
+    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+    		return;
+    	}
+    	
+        if (command.startsWith("/")) {
+            command = command.replaceFirst("/", "");
+        }
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+        
+        if (m.getResetCommands() == null || m.getResetCommands().size() == 0) {
+            Output.get().sendInfo(sender, "The mine '%s' contains no commands.", m.getName());
+            return;
+        }
+
+        if ( m.getResetCommands().remove(command) ) {
+        	
+        	pMines.getMineManager().saveMine( m );
+            	
+        	Output.get().sendInfo(sender, "Removed command '%s' from the mine '%s'.", 
+        				command, m.getName());
+        } else {
+        	Output.get().sendWarn(sender, 
+        			String.format("The mine %s doesn't contain that command. Nothing was changed.", 
+        						m.getName()));
+        }
+    }
+
+    @SuppressWarnings( "unused" )
+	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
+    		onlyPlayers = false, permissions = "mines.command")
+    public void commandAdd(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "command") @Wildcard String command) {
+    	
+    	if ( 1 < 2 ) {
+    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+    		return;
+    	}
+
+    	if (command.startsWith("/")) {
+            command = command.replaceFirst("/", "");
+        }
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( !m.isEnabled() ) {
+        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+        	return;
+        }
+
+        if ( command == null || command.trim().length() == 0 ) {
+        	sender.sendMessage( 
+        			String.format( "&7Please provide a valid command: command=[%s]", command) );
+        	return;
+        	
+        }
+        
+        m.getResetCommands().add(command);
+
+        pMines.getMineManager().saveMine( m );
+        
+        Output.get().sendInfo(sender, "Added command '%s' to the mine '%s'.", 
+        			command, m.getName());
+
+    }
     
 	public Long getConfirmTimestamp()
 	{

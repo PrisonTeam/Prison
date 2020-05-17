@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -221,6 +222,16 @@ public abstract class MineReset
 			
 			// free up memory:
 			getRandomizedBlocks().clear();
+			
+			
+	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+	        	
+	        	for (String cmd : getResetCommands() ) {
+//	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//	        				.replace("{player_uid}", player.uid.toString());
+	        		PrisonAPI.dispatchCommand(cmd);
+	        	}
+	        }
 			
 			// Broadcast message to all players within a certain radius of this mine:
 			broadcastResetMessageToAllPlayersWithRadius();
@@ -535,6 +546,17 @@ public abstract class MineReset
         				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
         		incrementResetCount();
+        		
+    			
+    	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+    	        	
+    	        	for (String cmd : getResetCommands() ) {
+//    	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//    	        				.replace("{player_uid}", player.uid.toString());
+    	        		PrisonAPI.dispatchCommand(cmd);
+    	        	}
+    	        }
+    	        
         		
         		// Broadcast message to all players within a certain radius of this mine:
         		broadcastResetMessageToAllPlayersWithRadius();
