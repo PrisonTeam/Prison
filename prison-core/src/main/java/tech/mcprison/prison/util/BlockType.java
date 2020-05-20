@@ -685,6 +685,32 @@ public enum BlockType {
 	DISC_11( 2266, "minecraft:record_11", 0 ),
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
+	
+//	Testing to see if we can inject 1.13 block types: :( nope... does not work.
+//  Commenting out for now, will revisit later.
+//
+//	AIR_113( "air", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+//	QUARTZ_113( "quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	NETHER_QUARTZ_ORE_113( "nether_quartz_ore", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_BLOCK_113( "quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	CHISELED_QUARTZ_BLOCK_113( "chiseled_quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_PILLAR_113( "quartz_pillar", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_SLAB_113( "quartz_slab", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SMOOTH_QUARTZ_113( "smooth_quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//
+//	OAK_LOG_113( "oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SPRUCE_LOG_113( "spruce_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	BIRCH_LOG_113( "birch_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	JUNGLE_LOG_113( "jungle_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+//	OAK_WOOD_113( "oak_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SPRUCE_WOOD_113( "spruce_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	BIRCH_WOOD_113( "birch_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	JUNGLE_WOOD_113( "jungle_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+	
+	
 	;
     // @formatter:on
 
@@ -692,13 +718,24 @@ public enum BlockType {
     private final String id;
     private final short data;
     private final MaterialType materialType;
+    private final MaterialVersion materialVersion;
 
     BlockType(int legacyId, String id, int data, MaterialType materialType) {
     	this.legacyId = legacyId;
     	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
     	this.data = (short) data;
     	this.materialType = materialType;
+    	this.materialVersion = MaterialVersion.v1_8;
     }
+    
+    BlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
+    	this.legacyId = -1;
+    	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
+    	this.data = 0;
+    	this.materialType = materialType;
+    	this.materialVersion = materialVersion;
+    }
+    
     BlockType(MaterialType materialType) {
     	this(0, null, 0, materialType);
     }
@@ -822,9 +859,12 @@ public enum BlockType {
     	return materialType == MaterialType.ITEM;
     }
 
-    public MaterialType getMaterialType()
-	{
+    public MaterialType getMaterialType() {
 		return materialType;
+	}
+
+	public MaterialVersion getMaterialVersion() {
+		return materialVersion;
 	}
 
 	@Override public String toString() {

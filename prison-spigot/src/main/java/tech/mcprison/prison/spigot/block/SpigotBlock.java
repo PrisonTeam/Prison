@@ -23,9 +23,11 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.MaterialVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +65,19 @@ public class SpigotBlock implements Block {
 	@Override public void setType(BlockType type) {
     	
     	if ( type != BlockType.IGNORE ) {
-    		MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-    		bBlock.setType(materialData.getItemType(), false);
-    		bBlock.setData(materialData.getData(), false);
+    		try {
+				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+				bBlock.setType(materialData.getItemType(), false);
+				if ( type.getMaterialVersion() == MaterialVersion.v1_8) {
+					
+					bBlock.setData(materialData.getData(), false);
+				}
+			}
+			catch ( Exception e ) {
+				Output.get().logError( 
+						String.format( "BlockType could not be set: %s %s ", 
+						type.name(), e.getMessage()) );
+			}
     	}
     }
 

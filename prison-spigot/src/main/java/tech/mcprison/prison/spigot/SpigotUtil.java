@@ -18,22 +18,23 @@
 
 package tech.mcprison.prison.spigot;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
+
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Utilities for converting Prison-Core types to Spigot types.
@@ -61,7 +62,82 @@ public class SpigotUtil {
         	material = Material.STONE;
         }
         return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+//		Material material = Material.getMaterial(type.getLegacyId());
+//		if ( material == null ) {
+//			material = Material.STONE;
+//		}
+//		
+//		return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+//
+//    	
+//    	
+//    	MaterialData results = null;
+//    	
+//    	if ( type.getMaterialVersion() == MaterialVersion.v1_13 ) {
+//    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_13 : %s ",
+//    				type.getId()) );
+//    		
+//    		// Material type for 1.13 and higher have a legacyID == 0:
+//    		Material material = null;
+//    		material = getMaterial( type.getId() );
+//    		
+//    		if ( material == null ) {
+//    			String materialName = type.getId().toUpperCase();
+//    			material = getMaterial( materialName );
+//    			
+//    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
+//    					type.name(), materialName, (material == null ? "null" : "NOT null")) );
+//    			
+////    			if ( material == null ) {
+////    				material = Material.
+////    				Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
+////    						type.name(), materialName, (material == null ? "null" : "NOT null")) );
+////    				
+////    			}
+//    		}
+//    		else {
+//    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: %s [%s]", 
+//    					type.name(), (material == null ? "null" : "NOT null")) );
+//    			
+//    		}
+//    		
+//    		if ( material == null ) {
+//    			material = Material.STONE;
+//    		}
+//    		results = new MaterialData(material);
+//    	} 
+//    	else {
+////    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_8 : %s  %s  data=%s", 
+////    				type.getId(), Integer.toString( type.getLegacyId()), 
+////    				Integer.toString( type.getData())) );
+////    		// type.getMaterialVersion() == MaterialVersion.v1_8
+//    		
+//    		// Material types for 1.12 and lower:
+//    		Material material = Material.getMaterial(type.getLegacyId());
+//    		if ( material == null ) {
+//    			material = Material.STONE;
+//    		}
+//    		
+//    		results = new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+//    		
+//    	}
+//    	return results;
     }
+    
+//    private static Material getMaterial( String materialName ) {
+//    	Material results = null;
+//    	
+//    	try {
+//    		results = Material.matchMaterial( materialName );
+//    	}
+//    	catch ( Exception e ) {
+//    		// Do nothing for now... 
+//    		// Will try other combination later and will report failure if needed;
+//    		Output.get().logInfo( "&cSpigotUtil.getMaterial() Failure : &7" + e.getMessage() );
+//    	}
+//    	
+//    	return results;
+//    }
 
   /*
    * Location
