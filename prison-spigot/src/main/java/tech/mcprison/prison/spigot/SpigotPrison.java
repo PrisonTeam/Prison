@@ -183,6 +183,7 @@ public class SpigotPrison extends JavaPlugin {
 		cdVersion.toLog( LogLevel.INFO );
 		
 		Output.get().logInfo( "Prison - Finished loading." );
+		
     }
 
     @Override
@@ -346,10 +347,14 @@ public class SpigotPrison extends JavaPlugin {
 
         registerIntegration(new MVdWPlaceholderIntegration());
         registerIntegration(new PlaceHolderAPIIntegration());
+        
+//        registerIntegration(new WorldGuard6Integration());
+//        registerIntegration(new WorldGuard7Integration());
     }
     
     private void registerIntegration(Integration integration) {
-    	integration.setRegistered( Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()) );
+    	integration.setRegistered( 
+    			Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()) );
 
     	integration.integrate();
 		

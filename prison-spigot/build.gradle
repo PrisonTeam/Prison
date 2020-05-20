@@ -29,6 +29,7 @@ repositories {
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+  //  maven { url = 'https://maven.enginehub.org/repo/' }
     jcenter()
 }
 
@@ -49,6 +50,9 @@ dependencies {
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
+
+ //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
+    
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 }
 
