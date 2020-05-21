@@ -8,7 +8,48 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.12 - 2020-05-16
+## tag v3.2.1-alpha.13 - 2020-05-21
+
+
+* **New Feature: Placeholder tools.**
+You can now test all placeholders, including multiple placeholders within one test.
+Also you can fully search for any placeholder, either player based or mine based placeholder.  If you run the commands from console, you cannot use the player placeholders.
+The commands:  /prison placeholders test  and  /prison placeholders list.
+
+
+* **Start the ground work for supporting another integration**
+Initial setup for WorldGuard. Ran in to issues with lack of v6.x even existing in maven, which is needed for minecraft 1.8 through 1.12.2.  WorldGuard v7.x is for minecraft versions 1.13.0 through 1.15.2.
+Also both WG versions appear to use the same package and class names too, so how to include both in the build without conflict? Yeah, not sure.  Will have to figure that out too. 
+Anyway, starting to provide the basic integrations hooks, which are disabled right now, but will be enabled as the details are worked out, and as Prison is adjusted to work better with it.
+
+
+* **Failed Attempt to Enable 1.13 Flattened Materials**
+Failed attempt to give 1.15.x the ability to have native block types. This code has been commented out with hopes that it could be used in the future.
+The reason why this won't work, is not that the codes entered are incorrect, but it appears like the Material object that is actually being used when running on a Spigot 1.15.2 server is actually using code from Spigot 1.9.2 since none of the 1.13 materials are recognized at runtime.  
+So the "wrong" classes could be included in the build artifact, which in turns get's used during runtime.  But should it? 
+So for now, its all disabled so it can be revisted later.
+
+
+* **New Feature: Mine commands.**
+Added commands to mines. This may be complete, but not fully tested, so disabling so it cannot be used.  Will enable when it is proven to work well.
+The concept with mine commands, is that after every reset, it will run a set of commands associated with the mine, of which could permit new and complex types of mines.
+
+
+* **New Feature: IGNORE BlockType added.**
+Created a new block type that will allow ignoring what is already there. 
+Ignore can be used instead of air, and as such it will not replace whatever is there. 
+It is possible that all blocks are 100% ignore so that way nothing in the mine changes during a reset.
+
+
+* **New feature! Two new placeholders: formatted time.**
+The placeholders for reset interval and time left now have formatted versions and aliases.
+The format is 13d 21h 13m 1.23s.  1h 0m 13.13s.
+It does not show leading digits if they are zero, such as days will be suppressed if zero. And days, hours, and minutes will all be suppressed if they are all zero. But if hour is non
+
+
+* **Bug fix: Failure in logging upon plugin startup**
+There was a failure on getting and calculating a paper 1.10.0 version due to a period to the left of the primary version. As such, the old code could not deal with it and was throwing a failure. To add to that failure, since it was during start up of the plugin, the resources were not yet setup for to allow the logging to work so that was causing another failure. 
+This fix allows the output of the log message to System.err so it will be at least recorded in the log files.
 
 
 * **New Feature: Now Supports delayed world loading! Multiverse-core now properly supported!**

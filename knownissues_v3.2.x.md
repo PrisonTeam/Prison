@@ -18,30 +18,36 @@ Work to be considered.
   Holding up release v3.2.1.
 
 
+* **Add a placeholder test command**
+Create a command, like under **/prison** that can be used to test placeholders.
+Have one where the user can enter any free text and then translate it.
+Also have a page(s) that goes through all of them printing the place holder name and the current values.
+
+
 * **When creating a new mine, register that mine with the placeholders**
 Might be easier to just reregister all mines?  Not sure if that will work?
 Right now, if a mine is added, in order for it to show up in the placeholders, you would have to restart the server so all the placeholders are reregistered.
 
 
-* **Remove world check before loading mine**
-This is a problem with Multiverse-core plugin since a softdepend loads way before a hard depend. As such, the worlds that were created with Multiverse-core have not yet been added to the bukkit list of worlds.
 
-If the world is checked after the server is running, they will be available.  Put in a class variable that identifies if the world was verified, and if not, then check. 
+* **Add WorldGuard Support**
+This is a work in progress. The biggest problem is that although older versions exist, they only support the latest version, and they have removed the older documentation and maven repositories. So access is highly limited to functional resources for performing builds.  The current documentation identifies that major functional changes exist even between minor versions.  So one API for v6.1 (supports mc 1.7 through 1.8 only) may not work WG v6.2.2 (supports only mc 1.12), and may not even be close to support v7.0.2 (supports 1.14 through 1.15).  
 
-Problem is that at startup time, we won't know if there is a problem with missing worlds.
+Not knowing what "range" of WorldGuard behaviors are supported through the API, or if they are even the same, the initial range of supported integrations for WorldGuard will be very limited until it can be fully tested to see where those limits are.
 
-
-
-* **Add /ranks remove currency [rankName] [currency]**
-Done. Currently no way to remove a currency from a Rank to return it to normal currency.
+List of features that could be nice to have, ordered from easiest to most difficult to implement, with the possibility of never being able to do any of these:
+  * Using prison's mine boundaries, set a WorldEdit selection to those same dimensions so the user does not have to reselect the same area. 
+  * Using prison's mine boundaries, define, or resize, a given WorldGuard region.  Using a Prison defined naming schema.
+  * If a prison is deleted, then remove the Prison's WorldGuard region.
+  * Auto define the WorldGuard global templates and permissions, then auto define, update, and remove all mine related regions as the mines are added, changed, or removed.   * Detect if there is an out of sync situation between prison and worldGuard.
+  
 
 
 * **Add permissions to the AutoManger**
 Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
  
  
- * **Add Prestige and Rebirth**
- 
+ * **Add Prestige and Rebirth**In progress. 
 
 
 * **Get started on new Multi-Language Support**
@@ -55,31 +61,31 @@ Ability to exclude, or ignore, specific commands upon startup.
 NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command.
 
 
+
+
+
+* **New block handling system**
+Current system is based upon enumerations which are static and may not reflect the actual run time environment.  Prison is compiled with 1.9.4, but yet the list may not include all blocks for all versions of bukkit/spigot/minecraft.
+
+If the new block handling system gets all blocks from org.bukkit.Material.values(), then it should reflect what's available on the server version that is running.  If the server owner decides to upgrade, or down grade, their server version, then they will be responsible for "correcting" any block name that is no longer supported.  This would be the negative for such a system.
+
+The benefits would be less to manage within prison; attitude of do what you want to do, instead of micro managing the list of blocks.  Dynamic to support newest blocks available on minecraft/bukkit/spigot, or another platform.  Ability to pickup custom blocks if they have been injected in to the Material enumeration.
+
+Currently there is a HUGE problem.  Upon testing, I have determined that although a block exists within the server's org.bukkit.Material enum, Prison cannot select it.  I do not know why. It could be related to the fact that prison is built with Gradle using spigot v1.9.4 and that imposes restrictions upon what enumerations can be accessed at runtime?  That makes no sense since no artifacts of org.bukkit.Material should be carried over outside of the compile time instance.  Until this issue can be addressed, there will be no work around or implmentation. 
+
+
 * **Upon startup validate all Blocks that are defined in the mines**
 
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
 
 
-* **Support QuickSell project for use with Prison *Only* **
-
-*Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
-
-QuickSell has be abandoned, but could be very useful for prison to provide a simplified integration of features. 
-
-Quickly reviewed code and it looks fairly good and probably has very low maintenance. Base initial support could be updating dependencies within Maven. Goal to get QuickSell to work with all supported versions of Prison and all supported versions of spigot.
-
-Explicit support going forward would be directly related to Prison. If a support issue has to do with another 3rd party plugin, then support "could" be refused or unsupported 3rd party plugins could be removed. Primary focus would be for the support of Prison and to provide a QuickSell feature to users of the Prison plugin.
-
-https://www.spigotmc.org/resources/quicksell.6107/
-
-https://github.com/TheBusyBiscuit/QuickSell
-Currently 15 forks.  Activity unknown.
-
-
-
 
 <h2>To consider - Lower priority</h2>
+
+
+* **Update the Prison command handlers to support help context**
+This would show the parameter details for the commands. Right now the annotations that defines the command parameters has descriptions for the command and the parameters, but they are not displayed anywhere useful.
 
 
 
@@ -151,7 +157,7 @@ In progress!
 
 * **Built in selling system**
 
-* **Custom Mine reset messsages per mine**
+* **Custom Mine reset messages per mine**
 
 
 * **Enhancement: Multi-Language Support**
@@ -161,9 +167,10 @@ Offers for translation:
   Greek : NerdTastic
   German: DeadlyKill ?? Did not ask, but a possibility?
   French: LeBonnetRouge
+  Portuguese: 1Pedro ? 
   
 
-* **Auto-Config of other Prison Releated Plugins**
+* **Auto-Config of other Prison Related Plugins**
 
 GABRYCA: [Idea]
 
@@ -189,7 +196,38 @@ Areas of possibilities in "Auto-Configure Prison Environment":
 I think those few integrations could really provide a huge bootstrap to getting the basics of a prison server up and running.
 
 
+
+* **Support QuickSell project for use with Prison *Only* **
+
+*Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
+
+QuickSell has be abandoned, but could be very useful for prison to provide a simplified integration of features. 
+
+Quickly reviewed code and it looks fairly good and probably has very low maintenance. Base initial support could be updating dependencies within Maven. Goal to get QuickSell to work with all supported versions of Prison and all supported versions of spigot.
+
+Explicit support going forward would be directly related to Prison. If a support issue has to do with another 3rd party plugin, then support "could" be refused or unsupported 3rd party plugins could be removed. Primary focus would be for the support of Prison and to provide a QuickSell feature to users of the Prison plugin.
+
+https://www.spigotmc.org/resources/quicksell.6107/
+
+https://github.com/TheBusyBiscuit/QuickSell
+Currently 15 forks.  Activity unknown.
+
+
 # Features recently added:
+
+
+
+* **DONE: Remove world check before loading mine**
+Now supports deferred world loading, where the world loads after prison initializes.
+This is a problem with Multiverse-core plugin since a softdepend loads way before a hard depend. As such, the worlds that were created with Multiverse-core have not yet been added to the bukkit list of worlds.
+
+If the world is checked after the server is running, they will be available.  Put in a class variable that identifies if the world was verified, and if not, then check. 
+
+Problem is that at startup time, we won't know if there is a problem with missing worlds.
+
+
+* **DONE: Add /ranks remove currency [rankName] [currency]**
+Done. Currently no way to remove a currency from a Rank to return it to normal currency.
 
 
 * **DONE: Add onBlockBreak monitor to prison mines to count blocks mined**
