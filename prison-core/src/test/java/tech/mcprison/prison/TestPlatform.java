@@ -192,12 +192,12 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
-	public List<String> placeholderList( UUID playerUuid, String[] pattern ) {
+	public List<String> placeholderSearch( UUID playerUuid, String[] pattern ) {
 		return null;
 	}
 
 	@Override
-	public List<String> placeholderList( String[] patterns ) {
+	public List<String> placeholderSearch( String[] patterns ) {
 		return null;
 	}
 }

@@ -314,7 +314,8 @@ public class PrisonCommand {
         return display;
     }
 
-    @Command(identifier = "prison modules", description = "Lists the modules that hook into Prison to give it functionality.", onlyPlayers = false, permissions = "prison.modules")
+    @Command(identifier = "prison modules", onlyPlayers = false, permissions = "prison.modules", 
+    				description = "Lists the modules that hook into Prison to give it functionality.")
     public void modulesCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison modules");
         display.emptyLine();
@@ -331,7 +332,8 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", onlyPlayers = false, permissions = "prison.troubleshoot")
+    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", 
+    					onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootCommand(CommandSender sender,
         @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
         // They just want to list stuff
@@ -355,7 +357,8 @@ public class PrisonCommand {
 
     }
 
-    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", onlyPlayers = false, permissions = "prison.troubleshoot")
+    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", 
+    						onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootListCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Troubleshooters");
         display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
@@ -400,16 +403,22 @@ public class PrisonCommand {
 		return player.isPresent() ? player.get() : null;
 	}
    
-    @Command(identifier = "prison placeholders list", 
-    				description = "List all placeholders that match all patterns", 
+    @Command(identifier = "prison placeholders search", 
+    				description = "Search all placeholders that match all patterns", 
     		onlyPlayers = false, permissions = "prison.placeholder")
-    public void placeholdersListCommand(CommandSender sender,
+    public void placeholdersSearchCommand(CommandSender sender,
     		@Arg(name = "page", description = "page number of results to display") String pageNumber,
     		@Wildcard(join=true)
-    		@Arg(name = "patterns", description = "Patterns of placeholders to display", def = " " ) String patterns ) {
+    		@Arg(name = "patterns", description = "Patterns of placeholders to search for", 
+    					def = " " ) String patterns ) {
     
     	int page = 1;
     	
+    	/**
+    	 * Please note: Page is optional and defaults to a value of 1.  But when it is not
+    	 * provided, it "grabs" the first pattern.  So basically, if pageNumber proves not
+    	 * to be a number, then we must prefix whatever is in patterns with that value.
+    	 */
     	if ( pageNumber != null ) {
     		
     		try {
@@ -423,11 +432,12 @@ public class PrisonCommand {
     		
     	}
     	
+    	// Cannot allow pages less than 1:
     	if ( page < 1 ) {
     		page = 1;
     	}
     	
-    	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	ChatDisplay display = new ChatDisplay("Placeholders Search");
     
     	
     	if ( patterns == null || patterns.trim().length() == 0 ) {
@@ -438,22 +448,22 @@ public class PrisonCommand {
         BulletedListComponent.BulletedListBuilder builder =
                 						new BulletedListComponent.BulletedListBuilder();
         
-        builder.add( String.format( "&a    Include one or more patterns to list placeholder. If more"));
-        builder.add( String.format( "&a    than one is provided, the returned placeholder must hit on all."));
+        builder.add( String.format( "&a    Include one or more patterns to search for placeholders. If more"));
+        builder.add( String.format( "&a    than one is provided, the returned placeholder will hit on all."));
         
-        builder.add( String.format( "&7  Original:  &3%s", patterns,
-        				String.join( " " )));
+        builder.add( String.format( "&7  Original patterns:  &3%s", patterns ));
 
     	Player player = getPlayer( sender );
     	UUID playerUuid = (player == null ? null : player.getUUID());
     	
     	List<String> placeholders = Prison.get().getPlatform()
-    						.placeholderList( playerUuid, patterns.split( " " ) );
+    						.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
     	
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/prison placeholders list", placeholders.size(),
+        		"/prison placeholders search", placeholders.size(),
         		0, Integer.toString( page ), 12 );
+        // Need to provide more "parts" to the command that follows the page number:
         cmdPageData.setPageCommandSuffix( patterns );
     	
         int count = 0;
@@ -473,12 +483,38 @@ public class PrisonCommand {
     	display.send(sender);
     }
     
+    
+    @Command(identifier = "prison placeholders list", 
+    		description = "List all placeholders templates", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersListCommand(CommandSender sender
+    		) {
+    	
+    	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	
+    	display.text( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
+    	display.text( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
+    	display.text( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
+    	
+    	List<DisplayComponent> placeholders = new ArrayList<>();
+        Prison.get().getIntegrationManager().getPlaceholderTemplateList( placeholders );
+
+
+    	for ( DisplayComponent placeholder : placeholders ) {
+    		display.addComponent( placeholder );
+    	}
+    	
+    	display.send(sender);
+    }
+    
 
     
     
-// This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x then they must first upgrade to
+// This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
+//							    then they must first upgrade to
 // prison v3.0.0 and perform the upgrade, at the most recent, then v3.1.1.
-//    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
+//    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", 
+//						    onlyPlayers = false, permissions = "prison.convert")
 //    public void convertCommand(CommandSender sender) {
 //        sender.sendMessage(Prison.get().getPlatform().runConverter());
 //    }

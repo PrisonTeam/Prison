@@ -388,31 +388,7 @@ public class IntegrationManager {
         	// Generates the placeholder list for the /prison version command, printing
         	// two placeholders per line.
 			if ( integType ==  IntegrationType.PLACEHOLDER ) {
-				results.add( new TextComponent( "  &7Available PlaceHolders: " ));
-			
-				List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
-				StringBuilder sb = new StringBuilder();
-				for ( String placeholder : placeholders ) {
-					if ( sb.length() == 0) {
-						sb.append( "      " );
-						sb.append( placeholder );
-					} 
-					else if ( (sb.length() + placeholder.length()) > 90) {
-						// will be too long combined so write existing sb then start over:
-						results.add( new TextComponent( sb.toString() ));
-						sb.setLength( 0 );
-						
-						sb.append( "      " );
-						sb.append( placeholder );
-					} else {
-						sb.append( placeholder );
-						results.add( new TextComponent( sb.toString() ));
-						sb.setLength( 0 );
-					}
-				}
-				if ( sb.length() > 0 ) {
-					results.add( new TextComponent( sb.toString() ));
-				}
+				getPlaceholderTemplateList( results );
 			}
 			
 			List<Integration> plugins = getAllForType( integType );
@@ -462,6 +438,35 @@ public class IntegrationManager {
     	
     	return results;
     }
+
+	public void getPlaceholderTemplateList( List<DisplayComponent> results )
+	{
+		results.add( new TextComponent( "  &7Available PlaceHolders: " ));
+
+		List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
+		StringBuilder sb = new StringBuilder();
+		for ( String placeholder : placeholders ) {
+			if ( sb.length() == 0) {
+				sb.append( "      " );
+				sb.append( placeholder );
+			} 
+			else if ( (sb.length() + placeholder.length()) > 90) {
+				// will be too long combined so write existing sb then start over:
+				results.add( new TextComponent( sb.toString() ));
+				sb.setLength( 0 );
+				
+				sb.append( "      " );
+				sb.append( placeholder );
+			} else {
+				sb.append( placeholder );
+				results.add( new TextComponent( sb.toString() ));
+				sb.setLength( 0 );
+			}
+		}
+		if ( sb.length() > 0 ) {
+			results.add( new TextComponent( sb.toString() ));
+		}
+	}
 
 	public List<Integration> getDeferredIntegrations() {
 		return deferredIntegrations;

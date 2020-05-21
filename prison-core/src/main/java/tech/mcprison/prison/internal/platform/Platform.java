@@ -246,9 +246,9 @@ public interface Platform {
 	public String placeholderTranslateText( UUID playerUuid, String text );
 
 
-	public List<String> placeholderList( UUID playerUuid, String[] pattern );
+	public List<String> placeholderSearch( UUID playerUuid, String[] pattern );
 
 
-	public List<String> placeholderList( String[] patterns );
+	public List<String> placeholderSearch( String[] patterns );
     
 }

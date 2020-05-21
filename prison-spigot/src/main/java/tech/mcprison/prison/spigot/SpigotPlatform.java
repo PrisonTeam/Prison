@@ -585,7 +585,7 @@ class SpigotPlatform implements Platform {
     }
 
 	@Override
-	public List<String> placeholderList( UUID playerUuid, String[] patterns )
+	public List<String> placeholderSearch( UUID playerUuid, String[] patterns )
 	{
 		List<String> results = new ArrayList<>();
 		
@@ -596,18 +596,19 @@ class SpigotPlatform implements Platform {
     		List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
     		
     		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-    			if ( placeholderKeyContains(placeHolderKey, patterns) ) {
+    			if ( placeHolderKey.isPrimary() && 
+    					placeholderKeyContains(placeHolderKey, patterns) ) {
     				String key = "{" + placeHolderKey.getKey() + "}";
     				String value = pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() );
     				
-    				PrisonPlaceHolders alias = placeHolderKey.getPlaceholder().getAlias();
-    				String keyAlias = ( alias == null ? null : "{" + alias.name() + "}");
+    				String keyAlias = ( placeHolderKey.getAliasName() == null ? null : 
+    											"{" + placeHolderKey.getAliasName() + "}");
 
     				String placeholder = String.format( "  &7%s: &3%s", key, value );
     				results.add( placeholder );
     				
     				if ( keyAlias != null ) {
-    					String placeholderAlias = String.format( "    &9%s: &b%s", keyAlias, value );
+    					String placeholderAlias = String.format( "    &7Alias:  &b%s:", keyAlias );
     					results.add( placeholderAlias );
     				}
     			}
@@ -615,13 +616,13 @@ class SpigotPlatform implements Platform {
     		}
     	}
 		
-    	results.addAll(  placeholderList( patterns )  );
+    	results.addAll(  placeholderSearch( patterns )  );
     	
 		return results;
 	}
 	
 	@Override
-	public List<String> placeholderList( String[] patterns ) 	{
+	public List<String> placeholderSearch( String[] patterns ) 	{
 		List<String> results = new ArrayList<>();
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
@@ -638,11 +639,11 @@ class SpigotPlatform implements Platform {
 				String keyAlias = ( placeHolderKey.getAliasName() == null ? null : 
 											"{" + placeHolderKey.getAliasName() + "}");
 				
-				String placeholder = String.format( "  &3%s: &3%s", key, value );
+				String placeholder = String.format( "  &7%s: &3%s", key, value );
 				results.add( placeholder );
 				
 				if ( keyAlias != null ) {
-					String placeholderAlias = String.format( "    &7Alias:  &3%s:", keyAlias );
+					String placeholderAlias = String.format( "    &7Alias:  &b%s:", keyAlias );
 					results.add( placeholderAlias );
 				}
 			}
