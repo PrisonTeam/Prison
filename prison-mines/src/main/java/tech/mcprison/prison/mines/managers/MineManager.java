@@ -501,13 +501,19 @@ public class MineManager
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
     						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() );
+    				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
+    				if ( ph.getAlias() != null ) {
+    					String aliasName = ph.getAlias().name().replace( 
+    							IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() );
+    					placeholder.setAliasName( aliasName );
+    				}
     				translatedPlaceHolderKeys.add( placeholder );
     				
     				// Now generate a new key based upon the first key, but without the prison_ prefix:
     				String key2 = key.replace( 
     						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName() );
+    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName(), false );
     				translatedPlaceHolderKeys.add( placeholder2 );
     				
     			}

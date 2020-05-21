@@ -235,5 +235,20 @@ public interface Platform {
 
     
     public void identifyRegisteredPlugins();
+
+
+	public String placeholderTranslate( UUID playerUuid, String identifier );
+
+
+	public String placeholderTranslateText( String text );
+
+
+	public String placeholderTranslateText( UUID playerUuid, String text );
+
+
+	public List<String> placeholderList( UUID playerUuid, String[] pattern );
+
+
+	public List<String> placeholderList( String[] patterns );
     
 }

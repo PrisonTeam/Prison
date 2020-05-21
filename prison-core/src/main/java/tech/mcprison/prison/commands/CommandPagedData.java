@@ -1,4 +1,4 @@
-package tech.mcprison.prison.mines.commands;
+package tech.mcprison.prison.commands;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.output.ButtonComponent;
@@ -10,6 +10,8 @@ public class CommandPagedData {
 	public static final int MAX_PAGE_SIZE = 10;
 
 	private String pageCommand;
+	private String pageCommandSuffix;
+	
 	private int curPage = 1;
 	private boolean showAll = false;
 	
@@ -84,7 +86,8 @@ public class CommandPagedData {
         {
         	row.addFancy( 
         			new ButtonComponent( "&e<-- Prev Page", '-', Style.NEGATIVE)
-        			.runCommand(pageCommand + " " + (getCurPage() - 1), 
+        			.runCommand(pageCommand + " " + (getCurPage() - 1) + 
+        					(getPageCommandSuffix() == null ? "" : " " + getPageCommandSuffix()), 
         					"View the prior page of search results").getFancyMessage() );
         }
         row.addFancy( 
@@ -94,7 +97,8 @@ public class CommandPagedData {
         {
    			row.addFancy( 
         			new ButtonComponent( "&eNext Page -->", '+', Style.POSITIVE)
-        			.runCommand(pageCommand + " " + (getCurPage() + 1), 
+        			.runCommand(pageCommand + " " + (getCurPage() + 1) + 
+        					(getPageCommandSuffix() == null ? "" : " " + getPageCommandSuffix()), 
         					"View the prior page of search results").getFancyMessage() );
         }
         display.addComponent( row );
@@ -107,6 +111,13 @@ public class CommandPagedData {
 	}
 	public void setPageCommand( String pageCommand ) {
 		this.pageCommand = pageCommand;
+	}
+
+	public String getPageCommandSuffix() {
+		return pageCommandSuffix;
+	}
+	public void setPageCommandSuffix( String pageCommandSuffix ) {
+		this.pageCommandSuffix = pageCommandSuffix;
 	}
 
 	public int getCurPage() {

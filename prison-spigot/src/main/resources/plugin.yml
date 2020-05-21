@@ -39,6 +39,9 @@ permissions:
   prison.prisonmanagergui:
     description: Opens the Prison's GUI menu.
 
+  prison.placeholder:
+    description: Tools to list and test placeholders.
+    
   # Permission Kits
   prison.admin:
     description: Administrative access to Prison's functionality.
@@ -51,6 +54,7 @@ permissions:
       prison.alerts.clear.all: true
       prison.gui: true
       prison.prisonmanagergui: true
+      prison.placeholder: true
 
   # ==================
   # Mines permissions

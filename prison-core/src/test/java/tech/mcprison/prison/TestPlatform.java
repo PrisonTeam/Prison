@@ -175,4 +175,29 @@ public class TestPlatform implements Platform {
 		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "crime", new ArrayList<>() );
 		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "justice", new ArrayList<>() );
     }
+
+	@Override
+	public String placeholderTranslate( UUID playerUuid, String identifier ) {
+		return null;
+	}
+
+	@Override
+	public String placeholderTranslateText( String text ) {
+		return null;
+	}
+
+	@Override
+	public String placeholderTranslateText( UUID playerUuid, String text ) {
+		return null;
+	}
+
+	@Override
+	public List<String> placeholderList( UUID playerUuid, String[] pattern ) {
+		return null;
+	}
+
+	@Override
+	public List<String> placeholderList( String[] patterns ) {
+		return null;
+	}
 }

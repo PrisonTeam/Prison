@@ -20,13 +20,18 @@ package tech.mcprison.prison;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.CommandPagedData;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -366,17 +371,123 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
-    public void convertCommand(CommandSender sender) {
-        sender.sendMessage(Prison.get().getPlatform().runConverter());
+    
+    @Command(identifier = "prison placeholders test", description = "Converts any placeholders in the text", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersTestCommand(CommandSender sender,
+    		@Wildcard(join=true)
+    		@Arg(name = "text", description = "Placeholder text to convert" ) String text ) {
+    	
+    	ChatDisplay display = new ChatDisplay("Placeholder Test");
+    	
+        BulletedListComponent.BulletedListBuilder builder =
+                new BulletedListComponent.BulletedListBuilder();
+        
+    	Player player = getPlayer( sender );
+    	UUID playerUuid = (player == null ? null : player.getUUID());
+    	String translated = Prison.get().getPlatform().placeholderTranslateText( playerUuid, text );
+    	
+    	builder.add( String.format( "&a    Include one or more placeholders with other text..."));
+    	builder.add( String.format( "&7  Original:   %s", text));
+    	builder.add( String.format( "&7  Translated: %s", translated));
+    	
+    	display.addComponent(builder.build());
+    	display.send(sender);
     }
+    
+	private Player getPlayer( CommandSender sender ) {
+		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
+		return player.isPresent() ? player.get() : null;
+	}
+   
+    @Command(identifier = "prison placeholders list", 
+    				description = "List all placeholders that match all patterns", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersListCommand(CommandSender sender,
+    		@Arg(name = "page", description = "page number of results to display") String pageNumber,
+    		@Wildcard(join=true)
+    		@Arg(name = "patterns", description = "Patterns of placeholders to display", def = " " ) String patterns ) {
+    
+    	int page = 1;
+    	
+    	if ( pageNumber != null ) {
+    		
+    		try {
+				page = Integer.parseInt( pageNumber );
+			}
+    		catch ( NumberFormatException e ) {
+    			// If exception, add pageNumber to the beginning patterns.
+    			// So no page number was specified, it was part of the patterns
+    			patterns = (pageNumber.trim() + " " + patterns).trim();
+			}
+    		
+    	}
+    	
+    	if ( page < 1 ) {
+    		page = 1;
+    	}
+    	
+    	ChatDisplay display = new ChatDisplay("Placeholders List");
+    
+    	
+    	if ( patterns == null || patterns.trim().length() == 0 ) {
+    		sender.sendMessage( "&7Pattern required. Placeholder results must match all pattern terms." );
+    		return;
+    	}
+    	
+        BulletedListComponent.BulletedListBuilder builder =
+                						new BulletedListComponent.BulletedListBuilder();
+        
+        builder.add( String.format( "&a    Include one or more patterns to list placeholder. If more"));
+        builder.add( String.format( "&a    than one is provided, the returned placeholder must hit on all."));
+        
+        builder.add( String.format( "&7  Original:  &3%s", patterns,
+        				String.join( " " )));
+
+    	Player player = getPlayer( sender );
+    	UUID playerUuid = (player == null ? null : player.getUUID());
+    	
+    	List<String> placeholders = Prison.get().getPlatform()
+    						.placeholderList( playerUuid, patterns.split( " " ) );
+    	
+        
+        CommandPagedData cmdPageData = new CommandPagedData(
+        		"/prison placeholders list", placeholders.size(),
+        		0, Integer.toString( page ), 12 );
+        cmdPageData.setPageCommandSuffix( patterns );
+    	
+        int count = 0;
+    	for ( String placeholder : placeholders ) {
+    		if ( cmdPageData == null ||
+            		count++ >= cmdPageData.getPageStart() && 
+            		count <= cmdPageData.getPageEnd() ) {
+    			
+    			builder.add( String.format( placeholder ));
+    		}
+		}
+    	
+    	display.addComponent(builder.build());
+    	
+    	cmdPageData.generatePagedCommandFooter( display );
+    	
+    	display.send(sender);
+    }
+    
+
+    
+    
+// This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x then they must first upgrade to
+// prison v3.0.0 and perform the upgrade, at the most recent, then v3.1.1.
+//    @Command(identifier = "prison convert", description = "Convert your Prison 2 data to Prison 3 data.", onlyPlayers = false, permissions = "prison.convert")
+//    public void convertCommand(CommandSender sender) {
+//        sender.sendMessage(Prison.get().getPlatform().runConverter());
+//    }
 
 	public List<String> getRegisteredPlugins() {
 		return registeredPlugins;
 	}
 
-	public TreeMap<String, RegisteredPluginsData> getRegisteredPluginData()
-	{
+	public TreeMap<String, RegisteredPluginsData> getRegisteredPluginData() {
 		return registeredPluginData;
 	}
 

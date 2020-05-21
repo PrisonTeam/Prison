@@ -457,12 +457,17 @@ public class PlayerManager
     	List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYER );
     	for ( PrisonPlaceHolders ph : placeHolders ) {
 			PlaceHolderKey placeholder = new PlaceHolderKey(ph.name(), ph );
+			if ( ph.getAlias() != null ) {
+				String aliasName = ph.getAlias().name();
+				placeholder.setAliasName( aliasName );
+			}
+
 			results.add( placeholder );
 			
 			// Now generate a new key based upon the first key, but without the prison_ prefix:
 			String key2 = ph.name().replace( 
 					IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-			PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph );
+			PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, false );
 			results.add( placeholder2 );
 		}
     	

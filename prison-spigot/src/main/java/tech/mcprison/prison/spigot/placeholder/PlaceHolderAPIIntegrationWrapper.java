@@ -5,12 +5,9 @@ import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.managers.MineManager;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.managers.PlayerManager;
 
 public class PlaceHolderAPIIntegrationWrapper
 	extends PlaceholderExpansion 
@@ -65,20 +62,21 @@ public class PlaceHolderAPIIntegrationWrapper
 	 */
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
-		String results = null;
 		
 		UUID playerUuid = player.getUniqueId();
+		String results = Prison.get().getPlatform()
+									.placeholderTranslate( playerUuid, identifier );
 		
-		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		if ( pm != null ) {
-			results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
-		}
-		
-		// If it did not match on a player placeholder, then try mines:
-		if ( results == null ) {
-			MineManager mm = PrisonMines.getInstance().getMineManager();
-			results = mm.getTranslateMinesPlaceHolder( identifier );
-		}
+//		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//		if ( pm != null ) {
+//			results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
+//		}
+//		
+//		// If it did not match on a player placeholder, then try mines:
+//		if ( results == null ) {
+//			MineManager mm = PrisonMines.getInstance().getMineManager();
+//			results = mm.getTranslateMinesPlaceHolder( identifier );
+//		}
 		
 		return results;
 	}

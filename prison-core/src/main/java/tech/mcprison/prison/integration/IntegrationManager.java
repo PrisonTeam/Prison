@@ -124,7 +124,7 @@ public class IntegrationManager {
 		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
 		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_mined_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceHolderFlags.MINES),
 		prison_mines_reset_count_minename(prison_mrc_minename, PlaceHolderFlags.MINES),
 
 		;
