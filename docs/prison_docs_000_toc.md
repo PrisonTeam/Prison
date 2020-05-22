@@ -23,7 +23,7 @@
     Adding the plugin to your server.
 
 
-* [Prison - Getting Help - **Important**](prison_docs_013_Prison_help.md) 
+* [Prison - Getting Help - **Important**](prison_docs_013_Prison_Help.md) 
     Upgrading Prison. Getting help for issues.
 
 
