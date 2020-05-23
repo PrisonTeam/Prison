@@ -8,6 +8,8 @@
 * **[Prison LICENSE.md](../LICENSE.md)**
 * **[Prison Change logs](../changelog_v3.2.x.md)** Detailed changes to prison.
 * **[Prison Known Issues](../knownissues_v3.2.x.md)** Known Issues and To Do's.
+* **[Prison Discord Server](https://discord.gg/396ed5F)** Get help here.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -33,7 +35,7 @@
 
 
 * [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md) - 
-    Including EssentialsX is Strongly Suggested - Recommend which modules to include.
+    Including EssentialsX is Strongly Suggested - Configuring EssentialsX Chat placeholders - Recommend which modules to include.
 
 
 * [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md)

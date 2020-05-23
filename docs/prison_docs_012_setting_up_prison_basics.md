@@ -20,7 +20,7 @@ There may be no hard dependencies that will prevent Prison from running, but the
 * **Vault** - Optional, but STRONGLY Suggested - This is perhaps the most important plugin.  This plugin provides a common way to access other plugins running on your server, but without having to write any code within Prison to support them.  Vault provides the mapping of a plugin's unique APIs to a common Vault API.  Vault helps support Economy, Permissions, and Placeholders.  Because of Vault, Prison can work flawlessly with dozens of other plugins.  Please refer to Vault's documentation for what it supports.
 
 
-* **EssentialsX** - Optional, but STRONGLY Suggested - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands.
+* **EssentialsX** - Optional, but STRONGLY Suggested - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands.  EssentialsX is not Essentials, since Essentials is an older abandoned project, and EssentialsX is a forked project that is still maintained.  Unfortunately, internally it is identified as simply Essentials, but you can tell it's EssentialsX if the version is greater than 2.15.x.
 
 
 * **EssentialsX Chat** - Optional - Enhanced Chat experience.
@@ -35,7 +35,7 @@ There may be no hard dependencies that will prevent Prison from running, but the
     * Strongly suggest using LuckPerms v5.0.x with latest pre-release version of Prison.
 
 
-* **PlaceholderAPI** - Used through Vault, it is free and provides the core interfaces in to the usage of placeholders.
+* **PlaceholderAPI** - Used through Vault, it is free and provides the core interfaces in to the usage of placeholders.  Prison also has a special integration setup for PlaceholderAPI to register all of the Prison placeholders dynamically upon startup.  You do not need to download anything from the cloud for prison to work with this plugin.
  
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -110,7 +110,7 @@ everything from the first line to the last. Please take a screen print and provi
 discord with a detailed explanation of the issue.  Include everything from:
 
 ```
-	[16:21:30 INFO]: [Prison] Enabling Prison v3.2.1-alpha.11
+	[16:21:30 INFO]: [Prison] Enabling Prison v3.2.1-alpha.13
 ```
 
 through:
@@ -118,8 +118,6 @@ through:
 ```
 	[16:21:31 INFO]: | Prison | Prison - Finished loading.
 ```
-
-# Getting Started
 
 
 
@@ -133,7 +131,7 @@ On the startup screen, prison shows all of the base commands that are active. Fr
 * **/rankup** 
 
 
-These commands are intended to run in game, but most can be ran from the system console.  Sometimes the system console is easier to displays longer listings, such as **/mines list** or 
+These commands are intended to run in game, but most can be ran from the system console.  Sometimes the system console is easier to displays longer listings, such as **/mines list**.  Also the console is better with wider text, and with easier to read text since it's not trying to display over a mc world.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
