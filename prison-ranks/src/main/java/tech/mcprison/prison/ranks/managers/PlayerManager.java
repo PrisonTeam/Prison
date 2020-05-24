@@ -306,12 +306,12 @@ public class PlayerManager
         }
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00%");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
     				if ( sb.length() > 0 ) {
-    					sb.append(", ");
+    					sb.append(",  ");
     				}
     				
     				Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
