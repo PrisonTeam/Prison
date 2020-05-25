@@ -107,6 +107,10 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 # Guides [3xx] - 
 
+
+* [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) How to use
+
+
 **Work In Progress**
 
 
