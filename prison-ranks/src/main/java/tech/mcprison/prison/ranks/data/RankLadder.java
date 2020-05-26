@@ -66,6 +66,9 @@ public class RankLadder {
             ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
                     RankUtil.doubleToInt((rank.get("rankId")))));
         }
+        
+        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+        
     }
 
     public Document toDocument() {
