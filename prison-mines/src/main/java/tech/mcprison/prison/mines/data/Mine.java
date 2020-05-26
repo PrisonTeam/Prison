@@ -27,6 +27,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
@@ -163,6 +164,12 @@ public class Mine
         setName((String) document.get("name")); // Mine name:
 		
 		World world = null;
+		
+		if ( worldName == null ) {
+			Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
+					"Contact support on how to fix.",  
+					getName());
+		}
 		
 		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
         if (!worldOptional.isPresent()) {

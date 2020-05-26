@@ -115,11 +115,12 @@ class SpigotPlatform implements Platform {
 
     @Override 
     public Optional<World> getWorld(String name) {
-        if (worlds.containsKey(name)) {
+        if (name != null && worlds.containsKey(name)) {
             return Optional.of(worlds.get(name));
         }
 
-        if (Bukkit.getWorld(name) == null) {
+        if (name == null || name.trim().length() == 0 || 
+        		Bukkit.getWorld(name) == null) {
         	StringBuilder sb = new StringBuilder();
         	for ( org.bukkit.World bukkitWorld : Bukkit.getWorlds() ) {
         		if ( sb.length() > 0 ) {
