@@ -65,11 +65,21 @@ public class RegisteredCommand {
     boolean doesSuffixCommandExist(String suffix) {
         return suffixesByName.get(suffix) != null;
     }
+    
+    public String getCompleteLabel() {
+    	return (parent == null ? "" : parent.getCompleteLabel() + " " ) + 
+    			(label == null ? "-noCommandLabelDefined-" : label) ;
+    }
 
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
                 .sendTo(sender, Localizable.Level.ERROR);
+            
+            Output.get().logInfo( "&cLack of Permission Error: &7Player &3%s &7lacks permission to " +
+            		"run the command &3%s&7. Permissions needed: [&3%s&7]", 
+            			sender.getName(), getCompleteLabel(),
+            			(permissions == null ? "-none-" : String.join( ", ", permissions )));
             return;
         }
 
