@@ -19,6 +19,7 @@ package tech.mcprison.prison.ranks.managers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -276,12 +277,20 @@ public class RankManager {
     	
     	for ( RankLadder rLadder : lman.getLadders() ) {
 			
+    		rLadder.ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+    		
     		Rank rankLast = null;
     		for ( PositionRank pRank : rLadder.ranks ) {
     			if ( pRank != null && pRank.getPosition() >= 0 ) {
     				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
     				if ( opRank.isPresent() ) {
     					Rank rank = opRank.get();
+    					
+    					// reset the rankPrior and rankNext in case there are no hookups:
+    					// Important if ranks are removed, or inserted, or moved:
+    					rank.rankPrior = null;
+    					rank.rankNext = null;
+    					
     					if ( rankLast != null ) {
     						rank.rankPrior = rankLast;
     						rankLast.rankNext = rank;

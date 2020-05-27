@@ -18,7 +18,6 @@
 package tech.mcprison.prison.ranks.data;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +100,8 @@ public class RankLadder {
 
         ranks.add(new PositionRank(position, rank.id));
         
+        // Ranks will be reordered within connectRanks() so don't sort here:
+        
         // Reset the rank relationships:
         PrisonRanks.getInstance().getRankManager().connectRanks();
     }
@@ -108,6 +109,8 @@ public class RankLadder {
     /**
      * Add a rank to this ladder. The rank's position will be set to the next available position
      * (i.e. at the end of the ladder).
+     * 
+     * The sort the ladder based upon the 
      *
      * @param rank The {@link Rank} to add.
      */
@@ -142,15 +145,18 @@ public class RankLadder {
         PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
-    /**
-     * Orders the ranks in the rank list of this ladder by their position, in ascending order.
-     */
-    public void orderRanksByPosition() {
-        ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
-        
-        // Reset the rank relationships:
-        PrisonRanks.getInstance().getRankManager().connectRanks();
-    }
+//    /**
+//     * Orders the ranks in the rank list of this ladder by their position, in ascending order.
+//     */
+//    public void orderRanksByPosition() {
+//        
+//    	// Do not sort here:
+//    	//The ranks within a ladder will be sorted within the function connectRanks():
+//    	//ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+//        
+//        // Reset the rank relationships:
+//        PrisonRanks.getInstance().getRankManager().connectRanks();
+//    }
 
     /*
      * Getters & Setters
@@ -270,7 +276,10 @@ public class RankLadder {
             return 0; // obviously, if it's empty, we want to start at the bottom
         }
 
-        orderRanksByPosition();
+        //orderRanksByPosition();
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
+        
         return ranks.get(ranks.size() - 1).getPosition() + 1;
     }
 
