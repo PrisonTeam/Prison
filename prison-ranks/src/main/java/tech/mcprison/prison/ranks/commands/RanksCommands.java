@@ -38,7 +38,11 @@ public class RanksCommands {
     public void baseCommand(CommandSender sender,
         @Arg(name = "ladder", def = "default") String ladderName) {
         if (!sender.hasPermission("ranks.admin")) {
-            sender.dispatchCommand("ranks list " + ladderName);
+            if (ladderName.equalsIgnoreCase("default")){
+                sender.dispatchCommand("prisonmanager ranks");
+            } else {
+                sender.dispatchCommand("ranks list " + ladderName);
+            }
         } else {
             sender.dispatchCommand("ranks help");
         }

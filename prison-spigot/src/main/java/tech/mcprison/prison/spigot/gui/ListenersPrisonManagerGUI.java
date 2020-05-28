@@ -85,7 +85,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("PrisonManager -> AutoFeatures") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoPickup") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoSmelt")||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoBlock")
+                e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoBlock")||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> PlayerRanks")
         ){
 
             // Add the player to the list of those who can't move items in the inventory
@@ -297,6 +298,9 @@ public class ListenersPrisonManagerGUI implements Listener {
 
                 e.setCancelled(true);
                 break;
+            }
+            case "Ranks -> PlayerRanks":{
+                e.setCancelled(true);
             }
             case "RankManager -> RankUPCommands": {
 

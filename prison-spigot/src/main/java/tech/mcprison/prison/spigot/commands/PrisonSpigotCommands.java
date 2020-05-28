@@ -5,12 +5,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import tech.mcprison.prison.ranks.commands.RankUpCommand;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger
  */
 public class PrisonSpigotCommands implements CommandExecutor {
 
@@ -22,10 +26,6 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        if (!(sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))) {
-            sender.sendMessage(SpigotPrison.format("&cSorry, but you don't have the permission &1[&c-Prison.admin &1or &c-Prison.prisonmanagergui"));
-            return true;
-        }
         if (args.length == 0) {
             sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager gui"));
             return true;
@@ -35,8 +35,25 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
+        if (!(sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))) {
+            if (args[0].equalsIgnoreCase("ranks")){
+                Player p = null;
+                if (sender instanceof Player) {
+                    p = (Player) sender;
+                }
+                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+                gui.open();
+            } else {
+                sender.sendMessage(SpigotPrison.format("&cSorry, but you don't have the permission &1[&c-Prison.admin &1or &c-prison.admin"));
+                return true;
+            }
+        }
+
         if (args[0].equalsIgnoreCase("gui")) {
-            Player p = (Player) sender;
+            Player p = null;
+            if (sender instanceof Player) {
+                p = (Player) sender;
+            }
             SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
             gui.open();
         }
