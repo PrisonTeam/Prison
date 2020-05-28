@@ -5,12 +5,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+
+import java.util.Map;
 
 /**
  * @author GABRYCA
@@ -41,7 +48,12 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     p = (Player) sender;
                 }
-                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+
+                // tech.mcprison.prison.internal.Player player = (tech.mcprison.prison.internal.Player) sender;
+
+                // RankPlayer rankPlayer = (new RankUpCommand()).getPlayer(player, player.getUUID());
+
+                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p /*rankPlayer*/);
                 gui.open();
             } else {
                 sender.sendMessage(SpigotPrison.format("&cSorry, but you don't have the permission &1[&c-Prison.admin &1or &c-prison.admin"));
