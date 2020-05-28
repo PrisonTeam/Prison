@@ -11,6 +11,9 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotRankPriceGUI extends SpigotGUIComponents {
 
     private final Player p;

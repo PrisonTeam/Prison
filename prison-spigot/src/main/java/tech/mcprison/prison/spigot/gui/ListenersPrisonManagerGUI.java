@@ -494,7 +494,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                         } else if (e.isRightClick()){
                             // Execute the command
                             Bukkit.dispatchCommand(p, "mines set skipReset " + mineName);
-                       } else if (e.isRightClick() && e.isShiftClick()){
+                        } else if (e.isRightClick() && e.isShiftClick()){
                             // Execute the command
                             Bukkit.dispatchCommand(p, "mines set zeroBlockResetDelay " + mineName);
                         }
