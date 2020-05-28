@@ -134,6 +134,62 @@ Once setup, restart the server. Or use **/essentials reload**.  Do not use force
 
 # Enabling HolographicDisplays Placeholders
 
+Follow directions on how to install and configure the HolographicDisplays plugin.
+
+
+An important detail to realize, is that HolographicDisplays can only use placeholders that related to the server.  It cannot access any of the prison placeholders on its own.  It needs the help of other plugins to extend it's functionality.
+
+* [HolographicDisplays Download](https://dev.bukkit.org/projects/holographic-displays)
+* [HolographicDisplays' Documentation](https://filoghost.me/docs/holographic-displays)
+
+* [HolographicExtension](https://www.spigotmc.org/resources/holographicextension.18461/)
+* [PlaceholderAPI Setup Details](prison_docs_0xx_setting_up_PlaceholderAPI.md)
+* [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)
+
+The simple directions on how to get everything to work is to download these plugins, and place them all in to your server's plugin directory.  There is no need to modify any config files to get them to work with prison.  Prison will register all of the internal placeholders with PlaceholderAPI so it knows they are valid and where to find them (where to send them to be resolved).
+
+The simpliest way to create a HolographicDisplay would be to stand where you want one.  Then enter the following command:
+
+```
+/hd create test
+```
+
+Then on the server file system, open the file:
+
+```
+plugins\HolographicDisplays\database.yml
+```
+
+Then edit the file. Keep in mind it is a yml file and must be valid yml.
+
+This is an example of a holographic sign:
+
+```
+temp5:
+  location: world, -99.832, 74.500, 191.215
+  lines:
+  - 'Welcome to Prison Mine: temp5'
+  - 'Reset Interval: {slowest}%prison_mines_interval_temp5% - {slowest}%prison_mines_interval_formatted_temp5%'
+  - 'Reset Time Left: {medium}%prison_mines_timeleft_temp5% - {fast}%prison_mtlf_temp5%'
+  - 'Reset Count: {medium}%prison_mines_reset_count_temp5%'
+  - 'Mine Size: {slowest}%prison_mines_size_temp5%'
+  - 'Blocks Remaining: {slowest}%prison_mr_temp5% {slowest}%prison_mp_temp5%%'
+  - 'Players in Mine: {slowest}%prison_mines_player_count_temp5%'
+```
+
+Notice that the prison placeholders are wrapped in the % % escape characters.  The prefixed placeholders such as {slowest} and {fast} are for the plugin HolographicExtensions and they control how frequently the placeholders are refreshed.
+
+Once you update and save the database.yml file, you can have HolographicDisaplys reload from the files:
+
+```
+/hd reload
+```
+
+The above example will produce a holograph that is too tall and the bottom part will be underground.  You can raise it up by manually increasing the **Y** value stored in *location:*.  As you raise it up, and save the file, then you use **/hd reload** to refresh.  It's also easier to make changes directly to the database.yml file. Repeat until it looks right.
+
+
+One  word of warning about editing the yml file, is that it must be valid yml, if not, then it could fail to load, or it may reset to a default file.  If you're unsure about the file being proper yml, make sure you save a backup before trying to reload the HolographicDisplays settings.  You can also run it through an online yml validator to fix any issues.  To find an online yml validator, search for: "online yaml lint" or "online yaml validator".
+
  (will be added shortly...)
 
 
