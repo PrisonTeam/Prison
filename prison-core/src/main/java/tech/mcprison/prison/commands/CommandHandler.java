@@ -99,6 +99,20 @@ public class CommandHandler {
                         }
                     }
                 }
+                if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
+                	message.add(ChatColor.DARK_AQUA + "Permissions:");
+                	
+                	StringBuilder sb = new StringBuilder();
+                	for ( String perm : command.getPermissions() ) {
+						if ( sb.length() > 0 ) {
+							sb.append( " " );
+						}
+						sb.append( perm );
+					}
+                	sb.insert( 0, ChatColor.AQUA );
+                	sb.insert( 0, "   " );
+                	message.add( sb.toString() );
+                }
             }
 
             List<RegisteredCommand> subcommands = command.getSuffixes();
