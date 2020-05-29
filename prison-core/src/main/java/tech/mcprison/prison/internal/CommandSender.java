@@ -73,5 +73,8 @@ public interface CommandSender {
      * @param json The JSON message. Must be in proper format.
      */
     void sendRaw(String json);
+    
+    
+    public boolean isOp();
 
 }

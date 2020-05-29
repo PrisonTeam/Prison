@@ -1298,19 +1298,32 @@ public class MinesCommands {
 
     
 
-    @Command(identifier = "mines tp", permissions = "mines.tp", description = "TP to the mine.")
+    @Command(identifier = "mines tp", description = "TP to the mine.", 
+    		altPermissions = {"mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName) {
     	
+    	// Load mine information first to confirm the mine exists and the parameter is correct:
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
 
     	setLastMineReferenced(mineName);
-
+    	
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine m = pMines.getMine(mineName);
-        
+    	
+    	String minePermission = "mines.tp." + m.getName().toLowerCase();
+    	if ( !sender.isOp() &&
+    			!sender.hasPermission("mines.tp") && 
+    			!sender.hasPermission( minePermission ) ) {
+                Output.get()
+                    .sendError(sender, "You need the permission '%s' or '%s' to tp to this mine.",
+                        "mines.tp", minePermission );
+                return;
+            }
+    	
+
         if ( !m.isEnabled() ) {
         	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
         	return;
