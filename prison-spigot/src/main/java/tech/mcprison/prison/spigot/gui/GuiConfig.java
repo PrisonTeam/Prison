@@ -18,6 +18,10 @@ public class GuiConfig {
                 file.createNewFile();
                 conf = YamlConfiguration.loadConfiguration(file);
                 conf.createSection("Gui");
+                conf.createSection("Options");
+                conf.set("Options.Ranks.Ladder", SpigotPrison.format("default"));
+                conf.set("Options.Mines.PermissionWarpPlugin", SpigotPrison.format("essentials.warps."));
+                conf.set("Options.Mines.CommandWarpPlugin", SpigotPrison.format("warp"));
                 conf.set("Gui.Lore.ActivateWithinMode", SpigotPrison.format("&8Activate Within mode."));
                 conf.set("Gui.Lore.ActivateRadiusMode", SpigotPrison.format("&8Activate Radius mode."));
                 conf.set("Gui.Lore.AutoPickupGuiManager", SpigotPrison.format("&8AutoPickup GUI manager."));
@@ -72,6 +76,8 @@ public class GuiConfig {
                 conf.set("Gui.Lore.RightClickToEnable", SpigotPrison.format("&aRight click to enable"));
                 conf.set("Gui.Lore.RightClickToToggle", SpigotPrison.format("&cRight click to toggle"));
                 conf.set("Gui.Lore.SpawnPoint", SpigotPrison.format("&3Spawnpoint: &7"));
+                conf.set("Gui.Lore.StatusLockedMine", SpigotPrison.format("&8Status: &cLocked"));
+                conf.set("Gui.Lore.StatusUnlockedMine", SpigotPrison.format("&8Status: &aUnlocked"));
                 conf.set("Gui.Lore.SpawnPoint2", SpigotPrison.format("&8Set the mine spawn point at your location."));
                 conf.set("Gui.Lore.SizeOfMine", SpigotPrison.format("&3Size of Mine: &7"));
                 conf.set("Gui.Lore.Selected", SpigotPrison.format("&3Selected"));

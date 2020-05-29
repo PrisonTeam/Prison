@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,7 +87,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoPickup") ||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoSmelt")||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoBlock")||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> PlayerRanks")
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> PlayerRanks")||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> PlayerMines")
         ){
 
             // Add the player to the list of those who can't move items in the inventory
@@ -461,6 +463,19 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.setCancelled(true);
 
                 // Check the title of the inventory and do the actions
+                break;
+            }
+            case "Mines -> PlayerMines": {
+
+                String minename = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Load config
+                Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
+                if (p.hasPermission(SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin") + minename))){
+                    Bukkit.dispatchCommand(p, SpigotPrison.format(GuiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + minename));
+                }
+
                 break;
             }
             case "Mines -> MineInfo": {

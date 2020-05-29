@@ -26,62 +26,65 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private final Player player;
-    
+
     private final PrisonRanks rankPlugin;
     private final RankPlayer rankPlayer;
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
-        
+
         // If you need to get a SpigotPlayer:
 //        SpigotPlayer sPlayer = new SpigotPlayer(p);
-        
-		Server server = SpigotPrison.getInstance().getServer();
-	    
-		PrisonRanks rankPlugin = null;
-		RankPlayer rPlayer = null;
-	    Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
-	    if ( plugin != null && plugin instanceof PrisonRanks ) {
-	    	 rankPlugin = (PrisonRanks) plugin;
-	    	 Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().getPlayer( getPlayer().getUniqueId() );
-	    	 if ( oPlayer.isPresent() ) {
-	    		 rPlayer = oPlayer.get();
-	    	 }
-	    }
-	    this.rankPlugin = rankPlugin;
-	    this.rankPlayer = rPlayer;
-        
+
+        Server server = SpigotPrison.getInstance().getServer();
+
+        PrisonRanks rankPlugin = null;
+        RankPlayer rPlayer = null;
+        Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
+        if ( plugin != null && plugin instanceof PrisonRanks ) {
+            rankPlugin = (PrisonRanks) plugin;
+            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().getPlayer( getPlayer().getUniqueId() );
+            if ( oPlayer.isPresent() ) {
+                rPlayer = oPlayer.get();
+            }
+        }
+        this.rankPlugin = rankPlugin;
+        this.rankPlayer = rPlayer;
+
     }
 
     public Player getPlayer() {
-		return player;
-	}
+        return player;
+    }
 
-	public PrisonRanks getRankPlugin() {
-		return rankPlugin;
-	}
+    public PrisonRanks getRankPlugin() {
+        return rankPlugin;
+    }
 
-	public RankPlayer getRankPlayer() {
-		return rankPlayer;
-	}
+    public RankPlayer getRankPlayer() {
+        return rankPlayer;
+    }
 
-	public void open() {
+    public void open() {
 
-		// First ensure the ranks module is enabled:
+        // First ensure the ranks module is enabled:
         if ( getRankPlugin() == null ) {
-        	// Error? Cannot open if Rank module is not loaded.
-        	getPlayer().closeInventory();
-        	return;
+            // Error? Cannot open if Rank module is not loaded.
+            getPlayer().closeInventory();
+            return;
         }
-        
+
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         LadderManager lm = getRankPlugin().getLadderManager();
-        Optional<RankLadder> ladder = lm.getLadder("default");
+        Optional<RankLadder> ladder = lm.getLadder(GuiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
         if ( !ladder.isPresent() || !ladder.get().getLowestRank().isPresent() ){
-        	getPlayer().closeInventory();
+            getPlayer().closeInventory();
             return;
-        } 
+        }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
@@ -92,7 +95,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         Configuration guiConfig = SpigotPrison.getGuiConfig();
         Rank rank = ladderData.getLowestRank().get();
-        
+
         Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
 
         // Not sure how you want to represent this:
@@ -111,16 +114,16 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             /*if (rank == playerRank){
                 haveTheRank = false;
             }*/
-        	
-        	boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
-        	
+
+            boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
+
             List<String> rankslore = createLore(
                     guiConfig.getString("Gui.Lore.Info"),
                     guiConfig.getString("Gui.Lore.Price3") + rank.cost
             );
-            ItemStack itemrank = createButton( 
-            					(playerHasThisRank ? materialHas : materialHasNot), 
-            					amount++, rankslore, SpigotPrison.format(rank.tag));
+            ItemStack itemrank = createButton(
+                    (playerHasThisRank ? materialHas : materialHasNot),
+                    amount++, rankslore, SpigotPrison.format(rank.tag));
             inv.addItem(itemrank);
 
             rank = rank.rankNext;

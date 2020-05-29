@@ -14,6 +14,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
@@ -55,19 +56,50 @@ public class PrisonSpigotCommands implements CommandExecutor {
 
                 SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p /*rankPlayer*/);
                 gui.open();
-            } else {
-                sender.sendMessage(SpigotPrison.format("&cSorry, but you don't have the permission &1[&c-Prison.admin &1or &c-prison.admin"));
+                return true;
+            } else if (args[0].equalsIgnoreCase("mines")){
+                Player p = null;
+                if (sender instanceof Player){
+                    p = (Player) sender;
+                }
+
+                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                gui.open();
                 return true;
             }
-        }
+        } else {
+            if (args[0].equalsIgnoreCase("ranks")){
+                Player p = null;
+                if (sender instanceof Player) {
+                    p = (Player) sender;
+                }
 
-        if (args[0].equalsIgnoreCase("gui")) {
-            Player p = null;
-            if (sender instanceof Player) {
-                p = (Player) sender;
+                // tech.mcprison.prison.internal.Player player = (tech.mcprison.prison.internal.Player) sender;
+
+                // RankPlayer rankPlayer = (new RankUpCommand()).getPlayer(player, player.getUUID());
+
+                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p /*rankPlayer*/);
+                gui.open();
+                return true;
+            } else if (args[0].equalsIgnoreCase("mines")){
+                Player p = null;
+                if (sender instanceof Player){
+                    p = (Player) sender;
+                }
+
+                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                gui.open();
+                return true;
             }
-            SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
-            gui.open();
+            if (args[0].equalsIgnoreCase("gui")) {
+                Player p = null;
+                if (sender instanceof Player) {
+                    p = (Player) sender;
+                }
+                SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
+                gui.open();
+                return true;
+            }
         }
 
         return true;
