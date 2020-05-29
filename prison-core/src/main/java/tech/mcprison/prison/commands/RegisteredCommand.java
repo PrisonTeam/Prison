@@ -35,6 +35,7 @@ public class RegisteredCommand {
     private RegisteredCommand parent;
     private String description;
     private String[] permissions;
+    private String[] altPermissions;
     private boolean onlyPlayers;
     private Method method;
     private Object methodInstance;
@@ -77,9 +78,11 @@ public class RegisteredCommand {
                 .sendTo(sender, Localizable.Level.ERROR);
             
             Output.get().logInfo( "&cLack of Permission Error: &7Player &3%s &7lacks permission to " +
-            		"run the command &3%s&7. Permissions needed: [&3%s&7]", 
+            		"run the command &3%s&7. Permissions needed: [&3%s&7]. Alt Permissions: [&3%s&7]", 
             			sender.getName(), getCompleteLabel(),
-            			(permissions == null ? "-none-" : String.join( ", ", permissions )));
+            			(permissions == null ? "-none-" : String.join( ", ", permissions )),
+            			(altPermissions == null ? "-none-" : String.join( ", ", altPermissions ))
+            		);
             return;
         }
 
@@ -193,6 +196,10 @@ public class RegisteredCommand {
         return permissions;
     }
 
+    public String[] getAltPermissions() {
+		return altPermissions;
+	}
+
     public RegisteredCommand getSuffixCommand(String suffix) {
         return suffixesByName.get(suffix);
     }
@@ -233,6 +240,7 @@ public class RegisteredCommand {
         Flags flagsAnnotation = method.getAnnotation(Flags.class);
         this.description = command.description();
         this.permissions = command.permissions();
+        this.altPermissions = command.altPermissions();
         this.onlyPlayers = command.onlyPlayers();
 
         Class<?>[] methodParameters = method.getParameterTypes();

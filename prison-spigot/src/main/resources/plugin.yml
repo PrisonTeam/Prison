@@ -160,6 +160,9 @@ permissions:
 
   ranks.demote:
     description: Access to the /ranks demote command.
+    
+  ranks.setrank:
+    description: Access to the /ranks set rank command.
 
   
   ranks.admin:
@@ -175,3 +178,4 @@ permissions:
       ranks.delete: true
       ranks.promote: true
       ranks.demote: true
+      ranks.setrank: true

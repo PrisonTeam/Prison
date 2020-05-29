@@ -99,19 +99,36 @@ public class CommandHandler {
                         }
                     }
                 }
-                if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
-                	message.add(ChatColor.DARK_AQUA + "Permissions:");
+                if ( command.getPermissions() != null && command.getPermissions().length > 0 ||
+                	 command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
                 	
                 	StringBuilder sb = new StringBuilder();
-                	for ( String perm : command.getPermissions() ) {
-						if ( sb.length() > 0 ) {
-							sb.append( " " );
-						}
-						sb.append( perm );
-					}
-                	sb.insert( 0, ChatColor.AQUA );
-                	sb.insert( 0, "   " );
-                	message.add( sb.toString() );
+                	
+                	if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
+                		for ( String perm : command.getPermissions() ) {
+                			if ( sb.length() > 0 ) {
+                				sb.append( " " );
+                			}
+                			sb.append( perm );
+                		}
+                	}
+            		if ( command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
+            			for ( String altPerm : command.getAltPermissions() ) {
+            				if ( sb.length() > 0 ) {
+            					sb.append( " " );
+            				}
+            				sb.append( altPerm );
+            			}
+            		}
+            		
+            		if ( sb.length() > 0 ) {
+            			message.add(ChatColor.DARK_AQUA + "Permissions:");
+            			
+            			sb.insert( 0, ChatColor.AQUA );
+            			sb.insert( 0, "   " );
+            			message.add( sb.toString() );
+            		}
+                	
                 }
             }
 

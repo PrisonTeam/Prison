@@ -34,9 +34,12 @@ import tech.mcprison.prison.util.Text;
 public class RanksCommands {
 
 
-    @Command(identifier = "ranks", onlyPlayers = false)
+    @Command(identifier = "ranks", onlyPlayers = false, 
+    		altPermissions = {"-none-", "ranks.admin"})
     public void baseCommand(CommandSender sender,
-        @Arg(name = "ladder", def = "default") String ladderName) {
+        @Arg(name = "ladder", def = "default", 
+        	description = "If player has no permission to /ranks then /ranks list will be ran instead.") 
+    			String ladderName) {
         if (!sender.hasPermission("ranks.admin")) {
             sender.dispatchCommand("ranks list " + ladderName);
         } else {

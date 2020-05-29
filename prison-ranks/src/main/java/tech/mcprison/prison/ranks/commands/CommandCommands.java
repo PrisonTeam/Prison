@@ -21,7 +21,8 @@ import java.util.Optional;
  */
 public class CommandCommands {
 
-    @Command(identifier = "ranks command add", description = "Adds a command to a rank using {player} and {player_uid} as placeholders.", 
+    @Command(identifier = "ranks command add", 
+    		description = "Adds a command to a rank using {player} and {player_uid} as placeholders.", 
     		onlyPlayers = false, permissions = "ranks.command")
     public void commandAdd(CommandSender sender, @Arg(name = "rankName") String rankName,
         @Arg(name = "command") @Wildcard String command) {
@@ -54,7 +55,8 @@ public class CommandCommands {
 
     }
 
-    @Command(identifier = "ranks command remove", description = "Removes a command from a rank.", onlyPlayers = false, permissions = "ranks.command")
+    @Command(identifier = "ranks command remove", description = "Removes a command from a rank.", 
+    		onlyPlayers = false, permissions = "ranks.command")
     public void commandRemove(CommandSender sender, @Arg(name = "rankName") String rankName,
         @Arg(name = "command") @Wildcard String command) {
         if (command.startsWith("/")) {
@@ -90,7 +92,8 @@ public class CommandCommands {
         }
     }
 
-    @Command(identifier = "ranks command list", description = "Lists the commands for a rank.", onlyPlayers = false, permissions = "ranks.command")
+    @Command(identifier = "ranks command list", description = "Lists the commands for a rank.", 
+    		onlyPlayers = false, permissions = "ranks.command")
     public void commandList(CommandSender sender, @Arg(name = "rankName") String rankName) {
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {

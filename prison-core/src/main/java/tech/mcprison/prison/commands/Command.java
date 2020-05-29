@@ -55,4 +55,26 @@ import java.lang.annotation.Target;
      * error message stating that they do not have permission to use the command.
      */
     String[] permissions() default {};
+
+    
+    /**
+     * AltPermissions are alternative permissions that are not checked internally, or automatically.
+     * It is up to the programmer to put hooks in to the code to check on these altPermissions.
+     * This field of altPermissions is strictly for displaying helpful information to the end users
+     * and it is only helpful if it is included.
+     * 
+     * For example the command /rankup has an optional parameter ladderName.  If a ladderName is 
+     * provided, then it checks to see if the player has the permission: ranks.rankup.[ladderName].
+     * 
+     * Because these permissions are not ever used to check for actual permissions, it is very
+     * important to provide parameters such as [ladderName] to signify where the server owner, or
+     * admin, must place the real ladder name within the permission.
+     * 
+     * This is such a critically helpful feature because otherwise the only way you would know 
+     * that you need this permission is to look at the source code, of which many cannot do, and 
+     * those who can, may not know where to look.  So this provides very important information that
+     * was not available before.
+     * 
+     */
+    String[] altPermissions() default {};
 }

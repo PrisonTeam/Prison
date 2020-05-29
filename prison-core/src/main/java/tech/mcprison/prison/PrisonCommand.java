@@ -55,7 +55,8 @@ public class PrisonCommand {
 	private TreeMap<String, RegisteredPluginsData> registeredPluginData = new TreeMap<>();
 	
 	
-    @Command(identifier = "prison version", description = "Displays version information.", onlyPlayers = false)
+    @Command(identifier = "prison version", description = "Displays version information.", 
+    		onlyPlayers = false )
     public void versionCommand(CommandSender sender) {
     	ChatDisplay display = displayVersion();
     	
