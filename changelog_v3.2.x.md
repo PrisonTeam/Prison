@@ -8,7 +8,45 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.13 - 2020-05-21
+## tag v3.2.1-alpha.13 - 2020-05-28
+
+
+* **New feature: The /mines tp now can be used by players**
+If a player has the new permission: mines.tp.[mineName] they can use this command to tp to the mine.
+The mine name must be all lower case.
+
+
+* **New Feature: altPermissions on commands!**
+Now if there is a permission that is internally checked within a command, it can be reported with the altPermissions so it can displayed if the user does the help keyword.
+Examples: /rankup, /mines tp, and /ranks
+
+AltPermissions are alternative permissions that are not checked internally, or automatically.
+It is up to the programmer to put hooks in to the code to check on these altPermissions.
+This field of altPermissions is strictly for displaying helpful information to the end users
+and it is only helpful if it is included.
+ 
+For example the command /rankup has an optional parameter ladderName.  If a ladderName is 
+provided, then it checks to see if the player has the permission: ranks.rankup.[ladderName].
+ 
+Because these permissions are not ever used to check for actual permissions, it is very
+important to provide parameters such as [ladderName] to signify where the server owner, or
+admin, must place the real ladder name within the permission.
+ 
+This is such a critically helpful feature because otherwise the only way you would know 
+that you need this permission is to look at the source code, of which many cannot do, and 
+those who can, may not know where to look.  So this provides very important information that
+was not available before.
+     
+
+* **New Feature: Command help keyword now includes permissions**
+New Feature: Now includes the permissions in the help commands so users do not have to guess or hunt down what permissions are needed for these commands.
+
+
+* **Fixes ladder commands: delrank and addrank**
+Fixes the problem with removal and readding ranks from a ladder.
+You can use /ranks ladder delrank <ladderName> <rankName> to disconnect a rank from the ladder.  Then use /ranks ladder addrank <ladderName> <rankName> <position> to put it back in to the ladder in a new position.
+
+These changes makes sure that the rankPrior and rankNext are set to null to remove dead or changed connections.  It also sorts each ladder before hooking up the those links.
 
 
 * **New Feature: Placeholder tools.**
