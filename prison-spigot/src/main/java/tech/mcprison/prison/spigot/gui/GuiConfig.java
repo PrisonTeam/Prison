@@ -20,8 +20,8 @@ public class GuiConfig {
                 conf.createSection("Gui");
                 conf.createSection("Options");
                 conf.set("Options.Ranks.Ladder", SpigotPrison.format("default"));
-                conf.set("Options.Mines.PermissionWarpPlugin", SpigotPrison.format("essentials.warps."));
-                conf.set("Options.Mines.CommandWarpPlugin", SpigotPrison.format("warp"));
+                conf.set("Options.Mines.PermissionWarpPlugin", SpigotPrison.format("mines.tp."));
+                conf.set("Options.Mines.CommandWarpPlugin", SpigotPrison.format("mines tp"));
                 conf.set("Gui.Lore.ActivateWithinMode", SpigotPrison.format("&8Activate Within mode."));
                 conf.set("Gui.Lore.ActivateRadiusMode", SpigotPrison.format("&8Activate Radius mode."));
                 conf.set("Gui.Lore.AutoPickupGuiManager", SpigotPrison.format("&8AutoPickup GUI manager."));
