@@ -26,7 +26,7 @@
 
 
 * [Prison - Getting Help - **Important**](prison_docs_013_Prison_Help.md) 
-    Upgrading Prison. Getting help for issues.
+    Commands. Getting help for issues. Upgrading Prison.
 
 
 * **Setting up Vault** - (coming soon)

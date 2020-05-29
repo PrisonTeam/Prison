@@ -20,6 +20,62 @@ If you are having problem, please take a quick look at the following documents a
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# General Information on Prison Commands
+
+All of the commands for Prison can be ran in-game, and most can be ran from the console. When running commands from the console, you do not have to prefix the commands with a **/**.  But within these documents, all commands will be referenced with a prefixed **/** so it is clear that it's a command.  Just don't include it when running within the console.
+
+Personal preference is to run the commands from the console since there are less restrictions on width or number of lines shown, and they are easier to see without the busy background of the game.
+
+Within most of these documents, the console will be used to screen print from for those reasons.
+
+The only commands that cannot be ran from the console are the commands that expect you to be an in-game player.  Examples are **/mines whereami** and **/mines tp <mineName>**.
+
+If you need to do some maintenance, or configurating of your Prison, the console could be an easier environment to use.
+
+But in-game, some commands have clickable actions.  Such as page next or page prior.  Or even command completion, such as with **/mines block search** and clicking on a search result provides you with a filled in copy of **/mines block add** where all you need to do is just fill in the percentage.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Prison Commands and Using "help"
+
+It may be helpful to know what commands are available, and what options exist for those commands.
+
+Upon startup, prison lists many details about the environment, and one set of those details, are the base commands that are available within Prison.  See the area pertaining to the modules, since the commands generally are tied to modules.
+
+
+<img src="images/prison_docs_013_Prison_Help_startup_5.png" alt="Prison Commands" title="Prison Commands" width="600" />
+
+
+Many commands within prison are compound commands, such that they start with a base command, followed by one or more other commands.  When Prison lists the available commands, if there are sub commands, that information is included in the command listing, including the sub command count.  For example:
+
+* **/mines**
+* **/mines set**
+* **/mines set spawn**
+
+If for a given set of commands, such as **/mines set**, has sub commands, then Prison will present a listing of all sub commands and their parameters.  
+
+<img src="images/prison_docs_013_Prison_Help_startup_3.png" alt="Prison Mines Commands" title="Prison Mines Commands" width="600" />
+
+In this screen print, you can see the hierarchy of **/mines** and **/mines set**.  The parameter listing is helpful, but it does not provide all the information that is available.
+
+Let's take a closer look at **/mines set notification** and how the **help** keyword can provide a lot more meaningful details.  If you just enter that command, without any parameters, Prison reports an error message, depending upon which parameter failed. See the next screen print and the related *Error* message.  It's not helpful in the least, especially if you are not certain what each parameter is supposed to be.
+
+
+<img src="images/prison_docs_013_Prison_Help_startup_4.png" alt="Prison Mines Commands" title="Prison Mines Commands" width="600" />
+
+But notice within the above screen print, the same command has been entered, but this time with the keyword **help** added as if it were the first parameter.  For example, **/mines set notification help**.  Prison recognizes that you are requesting help for that command, and then it displays all of the information it has for each parameter.  Finally, that is truly help.
+
+
+Prison automatically inserts the **help** keyword if you enter the base commands.  So **/mines** is really injecting the **help** keyword for you so it will generate the list.  It's like you've entered **/mines help**.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Where to ask for help: The Prison Discord Server
 
 The best place to ask for help, and to get answers quickly (within a few hours) would be without a doubt the Prison Discord Server.
@@ -31,6 +87,7 @@ You can also submit a help ticket on the Prison github Issues tab, but the respo
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Asking for Help
@@ -57,19 +114,15 @@ If you are having problems and need to ask for help, please provide all of this 
 [18:40:20 INFO]: | Prison | Minecraft version: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)
 ```
 
-<img src="images/prison_docs_013_Prison_Help_startup_1.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="500" />
-<img src="images/prison_docs_013_Prison_Help_startup_2.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="500" />
+<img src="images/prison_docs_013_Prison_Help_startup_1.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="600" />
+<img src="images/prison_docs_013_Prison_Help_startup_2.png" alt="Prison Startup Screen" title="Prison Startup Screen" width="600" />
 
 
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
-** incomplete - Work in progress **
+These screen prints may not contain the most recent enhancements to prison, since they are based upon an alpha release. Please see your server's console for details pertaining to your environment.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Prison v3.1.0 and Earlier - General Information
