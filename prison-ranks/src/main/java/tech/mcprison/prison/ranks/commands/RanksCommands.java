@@ -252,7 +252,8 @@ public class RanksCommands {
     }
 
     @Command(identifier = "ranks info", description = "Information about a rank.", 
-    													onlyPlayers = false, permissions = "ranks.info")
+    											onlyPlayers = false, permissions = "ranks.info", 
+    											altPermissions = "ranks.admin" )
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
         Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOpt.isPresent()) {
@@ -458,6 +459,80 @@ public class RanksCommands {
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
+    
+    
+//    /**
+//     * This function is just an arbitrary test to access the various components.
+//     * 
+//     * @param sender
+//     * @param playerName
+//     */
+//    @Command( identifier = "ranks test", onlyPlayers = false, permissions = "prison.admin" )
+//    public void prisonModuleTest(CommandSender sender,
+//			@Arg(name = "player", def = "", description = "Player name") String playerName){
+//    	
+// 		ModuleManager modMan = Prison.get().getModuleManager();
+// 	    Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+//
+// 	    int moduleCount = (modMan == null ? 0 : modMan.getModules().size());
+// 	    sender.sendMessage(String.format( "prisonModuleTest: prison=%s moduleManager=%s " +
+// 	    		"registeredModules=%s PrisonRanks=%s", 
+// 	    		(Prison.get() == null ? "null" : "active"),
+// 	    		(Prison.get().getModuleManager() == null ? "null" : "active"),
+// 	    		Integer.toString( moduleCount ),
+// 	    		(modMan.getModule( PrisonRanks.MODULE_NAME ) == null ? "null" : "active")
+// 	    		) );
+//
+// 	    if ( module == null || !(module instanceof PrisonRanks) ) {
+// 	    	
+// 	    	sender.sendMessage( "prisonModuleTest: Cannot get PrisonRanks. Terminating" );
+// 	    	return;
+// 	    }
+// 	    
+//
+// 	    PrisonRanks rankPlugin = (PrisonRanks) module;
+//
+// 	    if ( rankPlugin == null || rankPlugin.getPlayerManager() == null ) {
+// 	    	sender.sendMessage( "prisonModuleTest: PrisonRanks could not be created. Terminating" );
+// 	    	return;
+// 	    }
+//
+// 	    
+// 	    PlayerManager playerManager = rankPlugin.getPlayerManager();
+//    	Player player = getPlayer( sender, playerName );
+//
+//    	sender.sendMessage( String.format( "prisonModuleTest: PlayerManager=%s player=%s sender=%s playerName=%s",
+//    				(playerManager == null ? "null" : "active"), (player == null ? "null" : player.getName()),
+//    				(sender == null ? "null" : sender.getName()), (playerName == null ? "null" : playerName)
+//    			));
+//
+//    	
+//    	if ( player == null ) {
+//    		sender.sendMessage( "prisonModuleTest: Cannot get a valid player. " +
+//    				"If console, must supply a valid name. Terminating" );
+//    		return;
+//    	}
+// 
+//    	RankPlayer rPlayer = playerManager.getPlayer( player.getUUID() ).orElse( null );
+//        LadderManager lm = rankPlugin.getLadderManager();
+//        
+//        for ( RankLadder ladderData : lm.getLadders() ) {
+//        	Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
+//        	Rank rank = ladderData.getLowestRank().orElse( null );
+//        	
+//        	while ( rank != null ) {
+//        		boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
+//        		
+//        		sender.sendMessage(String.format( "prisonModuleTest: ladder=%s rank=%s playerRank=%s hasRank=%s", 
+//        				ladderData.name, rank.name, (playerRank == null ? "null" : playerRank.name ),
+//        				Boolean.valueOf( playerHasThisRank ).toString()
+//        				));
+//        		
+//        		rank = rank.rankNext;
+//        	}
+//        }
+//    }
+    
     
     /**
      * <p>Gets a player by name.  If the player is not online, then try to get them from 
