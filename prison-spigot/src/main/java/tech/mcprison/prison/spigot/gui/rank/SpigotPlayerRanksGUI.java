@@ -7,17 +7,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -28,8 +33,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private final Player player;
 
-    private final PrisonRanks rankPlugin;
-    private final RankPlayer rankPlayer;
+    private PrisonRanks rankPlugin;
+    private RankPlayer rankPlayer;
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
@@ -39,10 +44,40 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         Server server = SpigotPrison.getInstance().getServer();
 
-        PrisonRanks rankPlugin = null;
-        RankPlayer rPlayer = null;
+        PrisonRanks rankPlugin;
+        RankPlayer rPlayer;
+
+        ModuleManager modMan = Prison.get().getModuleManager();
+ 	    Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+
+	    if (!(module instanceof PrisonRanks)) {
+	        return;
+ 	    }
+
+ 	    rankPlugin = (PrisonRanks) module;
+
+ 	    if (rankPlugin.getPlayerManager() == null) {
+ 	    	return;
+ 	    }
+
+ 	    PlayerManager playerManager = rankPlugin.getPlayerManager();
+
+    	rPlayer = playerManager.getPlayer( player.getUniqueId() ).orElse( null );
+        LadderManager lm = rankPlugin.getLadderManager();
+
+        for ( RankLadder ladderData : lm.getLadders() ) {
+        	Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
+        	Rank rank = ladderData.getLowestRank().orElse( null );
+
+        	while ( rank != null ) {
+        		boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
+
+        		rank = rank.rankNext;
+        	}
+        }
+
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
-        if ( plugin != null && plugin instanceof PrisonRanks ) {
+        if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
             Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().getPlayer( getPlayer().getUniqueId() );
             if ( oPlayer.isPresent() ) {
@@ -100,23 +135,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
 
         // Not sure how you want to represent this:
-        Material materialHas = Material.TRIPWIRE_HOOK;
-        Material materialHasNot = Material.REDSTONE_BLOCK;
+        Material materialHas = Material.getMaterial(GuiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        Material materialHasNot = Material.getMaterial(GuiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
-        // boolean haveTheRank = true;
+        boolean playerHasThisRank = true;
+        int hackyCounterEnchant = 0;
 
         int amount = 1;
         while ( rank != null ) {
-            /*if (!(haveTheRank)){
-                material = Material.REDSTONE_BLOCK;
-                itemrank.addEnchantment(Enchantment.LUCK, 1);
-            }*/
-//            amount++;
-            /*if (rank == playerRank){
-                haveTheRank = false;
-            }*/
-
-            boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
 
             List<String> rankslore = createLore(
                     guiConfig.getString("Gui.Lore.Info"),
@@ -125,6 +151,17 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
                     amount++, rankslore, SpigotPrison.format(rank.tag));
+            if (playerRank != null && playerRank.equals( rank )){
+                playerHasThisRank = false;
+            }
+            if (!(playerHasThisRank)){
+                if (hackyCounterEnchant <= 0) {
+                    hackyCounterEnchant++;
+                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                        itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                    }
+                }
+            }
             inv.addItem(itemrank);
 
             rank = rank.rankNext;

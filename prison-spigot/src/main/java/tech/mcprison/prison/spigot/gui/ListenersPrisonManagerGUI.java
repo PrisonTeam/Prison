@@ -308,7 +308,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                 // Load config
                 Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
-                if (buttonName.equals(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Rankup")))){
+                if (buttonName.equals(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Rankup").substring(2)))){
                     Bukkit.dispatchCommand(p, "rankup " + GuiConfig.getString("Options.Ranks.Ladder"));
                     p.closeInventory();
                 }

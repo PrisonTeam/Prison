@@ -20,6 +20,9 @@ public class GuiConfig {
                 conf.createSection("Gui");
                 conf.createSection("Options");
                 conf.set("Options.Ranks.Ladder", SpigotPrison.format("default"));
+                conf.set("Options.Ranks.Item_gotten_rank", SpigotPrison.format("TRIPWIRE_HOOK"));
+                conf.set("Options.Ranks.Item_not_gotten_rank", SpigotPrison.format("REDSTONE_BLOCK"));
+                conf.set("Options.Ranks.Enchantment_effect_current_rank", SpigotPrison.format("true"));
                 conf.set("Options.Mines.PermissionWarpPlugin", SpigotPrison.format("mines.tp."));
                 conf.set("Options.Mines.CommandWarpPlugin", SpigotPrison.format("mines tp"));
                 conf.set("Gui.Lore.ActivateWithinMode", SpigotPrison.format("&8Activate Within mode."));
