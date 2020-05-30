@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
@@ -32,5 +37,12 @@ public abstract class SpigotGUIComponents {
             results.add( SpigotPrison.format(lore) );
         }
         return results;
+    }
+
+    protected boolean checkRanks(Player p){
+        Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+        p.sendMessage(SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
+        p.closeInventory();
+        return module != null && module instanceof PrisonRanks;
     }
 }

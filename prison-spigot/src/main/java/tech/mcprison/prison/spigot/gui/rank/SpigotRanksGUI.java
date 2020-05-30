@@ -39,6 +39,11 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         int dimension = 27;
 
+        // Check if Ranks are enabled
+        if (!(checkRanks(p))){
+            return;
+        }
+
         // Get the dimensions and if needed increases them
         if (ladder.isPresent()) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;

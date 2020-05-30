@@ -31,6 +31,11 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // Init the ItemStack
         ItemStack itemcommand;
 
+        // Check if Ranks are enabled
+        if (!(checkRanks(p))){
+            return;
+        }
+
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D) * 9;
 

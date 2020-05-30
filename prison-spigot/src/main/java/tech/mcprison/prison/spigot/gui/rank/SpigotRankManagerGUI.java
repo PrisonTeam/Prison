@@ -27,6 +27,11 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
     public void open() {
 
+        // Check if Ranks are enabled
+        if (!(checkRanks(p))){
+            return;
+        }
+
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> RankManager"));

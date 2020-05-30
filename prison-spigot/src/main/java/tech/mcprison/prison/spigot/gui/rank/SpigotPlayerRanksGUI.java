@@ -50,9 +50,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         ModuleManager modMan = Prison.get().getModuleManager();
  	    Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
-	    if (!(module instanceof PrisonRanks)) {
-	        return;
- 	    }
+ 	    // Check
+        if (checkRanks(player)){
+            return;
+        }
 
  	    rankPlugin = (PrisonRanks) module;
 
