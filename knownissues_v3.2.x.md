@@ -18,10 +18,26 @@ Work to be considered.
   Holding up release v3.2.1.
 
 
-* **Add a placeholder test command**
-Create a command, like under **/prison** that can be used to test placeholders.
-Have one where the user can enter any free text and then translate it.
-Also have a page(s) that goes through all of them printing the place holder name and the current values.
+* **Enhance AutoManager**
+Make auto manager more like vanilla on the drops and support silking.  Try to make more consistent between versions.
+
+
+
+* **Add permissions to the AutoManger***
+Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
+
+
+* **Refactor GUI?**
+ 
+ 
+* **Add Prestige and Rebirth**
+  *In progress.*
+
+
+
+
+<h2>To consider - Lower priority</h2>
+
 
 
 * **When creating a new mine, register that mine with the placeholders**
@@ -42,46 +58,14 @@ List of features that could be nice to have, ordered from easiest to most diffic
   * Auto define the WorldGuard global templates and permissions, then auto define, update, and remove all mine related regions as the mines are added, changed, or removed.   * Detect if there is an out of sync situation between prison and worldGuard.
   
 
-
-* **Add permissions to the AutoManger**
-Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
- 
- 
- * **Add Prestige and Rebirth**In progress. 
-
-
 * **Get started on new Multi-Language Support**
 This is put on hold for the v3.2.2 release.
 
-
-* **Exclude specific Prison commands**
-
-Ability to exclude, or ignore, specific commands upon startup.  
-
-NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command.
-
-
-
-
-
-* **New block handling system**
-Current system is based upon enumerations which are static and may not reflect the actual run time environment.  Prison is compiled with 1.9.4, but yet the list may not include all blocks for all versions of bukkit/spigot/minecraft.
-
-If the new block handling system gets all blocks from org.bukkit.Material.values(), then it should reflect what's available on the server version that is running.  If the server owner decides to upgrade, or down grade, their server version, then they will be responsible for "correcting" any block name that is no longer supported.  This would be the negative for such a system.
-
-The benefits would be less to manage within prison; attitude of do what you want to do, instead of micro managing the list of blocks.  Dynamic to support newest blocks available on minecraft/bukkit/spigot, or another platform.  Ability to pickup custom blocks if they have been injected in to the Material enumeration.
-
-Currently there is a HUGE problem.  Upon testing, I have determined that although a block exists within the server's org.bukkit.Material enum, Prison cannot select it.  I do not know why. It could be related to the fact that prison is built with Gradle using spigot v1.9.4 and that imposes restrictions upon what enumerations can be accessed at runtime?  That makes no sense since no artifacts of org.bukkit.Material should be carried over outside of the compile time instance.  Until this issue can be addressed, there will be no work around or implmentation. 
 
 
 * **Upon startup validate all Blocks that are defined in the mines**
 
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
-
-
-
-
-<h2>To consider - Lower priority</h2>
 
 
 * **Update the Prison command handlers to support help context**
@@ -107,38 +91,68 @@ They have those expansions which hook other plug-ins
 https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
 
 
-* **Add support for player use of /mines tp**
-Could be done through other perms and then checking to see if they have access to
-that mine.  Perm:  prison.playertp and prison.playertp.a
 
-
-* **Improve some of the display pages for ranks and ladders**
+* **Improve some of the display pages for ranks and ladders***
 Can add more information to the listings so they have more value.
 
 
-* **Tab Completion**
+* **Tab Completion***
 Hook up tab completion on the prison commands.
 
 
-* **Better logging of major events**
+* **Better logging of major events***
 Need to log major events such as rankups, both to the server log, and also
 to the community.  Server logs for these events, especially when money is
 involved, is important.
 
 
+
+
+* **Exclude specific Prison commands**
+
+
+Ability to exclude, or ignore, specific commands upon startup. 
+
+
+NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command
+
+
+
+
+
+
+* **New block handling system - put on hold**
+
+Current system is based upon enumerations which are static and may not reflect the actual run time environment.  Prison is compiled with 1.9.4, but yet the list may not include all blocks for all versions of bukkit/spigot/minecraft
+
+
+If the new block handling system gets all blocks from org.bukkit.Material.values(), then it should reflect what's available on the server version that is running.  If the server owner decides to upgrade, or down grade, their server version, then they will be responsible for "correcting" any block name that is no longer supported.  This would be the negative for such a system
+
+
+The benefits would be less to manage within prison; attitude of do what you want to do, instead of micro managing the list of blocks.  Dynamic to support newest blocks available on minecraft/bukkit/spigot, or another platform.  Ability to pickup custom blocks if they have been injected in to the Material enumeration
+
+
+Currently there is a HUGE problem.  Upon testing, I have determined that although a block exists within the server's org.bukkit.Material enum, Prison cannot select it.  I do not know why. It could be related to the fact that prison is built with Gradle using spigot v1.9.4 and that imposes restrictions upon what enumerations can be accessed at runtime?  That makes no sense since no artifacts of org.bukkit.Material should be carried over outside of the compile time instance.  Until this issue can be addressed, there will be no work around or implmentation.
+
+
 * **Block Types for Specific Versions of Minecraft**
-Add in support for the loss of magic values, and also provide for newer block
-types too.  Basically have a minecraft version selector that can 
-tailor the list of available block types that can be used, based upon the
-minecraft version that is running.
+
+Add in support for the loss of magic values, and also provide for newer bloc
+
+types too.  Basically have a minecraft version selector that can
+
+tailor the list of available block types that can be used, based upon th
+
+minecraft version that is running
 
 
-* **Possible new feature: Track how many blocks a player mines, including types**
+
+* **Possible new feature: Track how many blocks a player mines, including types***
 Stats could be interesting over time, and could also be used for in game
 bonuses and rewards and incentives.
 
 
-* **Redesign the save files to eliminate the magic numbers**
+* **Redesign the save files to eliminate the magic numbers***
 Most of the save files within prison, for players, ranks, and ladders, are
 using magic numbers which is highly prone to errors and is considered 
 very dangerous.  Also prison would benefit from a redesign in file layout
@@ -147,20 +161,20 @@ the complexities within the actual prison code, which in turn will help
 eliminate possible bugs too and give tighter code.
 
 
-* **Improve the prestige laddering system**
+* **Improve the prestige laddering system***
 A plugin named EZprestige has been attempted to be used with prison. Not sure if successful?
 
 
-* **Notification that inventory is full**
+* **Notification that inventory is full***
 In progress!
 
 
-* **Built in selling system**
+* **Built in selling system***
 
-* **Custom Mine reset messages per mine**
+* **Custom Mine reset messages per mine***
 
 
-* **Enhancement: Multi-Language Support**
+* **Enhancement: Multi-Language Support***
 
 Offers for translation:
   Italian : Gabryca
@@ -170,7 +184,7 @@ Offers for translation:
   Portuguese: 1Pedro ? 
   
 
-* **Auto-Config of other Prison Related Plugins**
+* **Auto-Config of other Prison Related Plugins***
 
 GABRYCA: [Idea]
 
@@ -197,7 +211,7 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 
-* **Support QuickSell project for use with Prison *Only* **
+* **Support QuickSell project for use with Prison *Only* ***
 
 *Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
 
@@ -216,8 +230,23 @@ Currently 15 forks.  Activity unknown.
 # Features recently added:
 
 
+* **DONE: Add support for player use of /mines tp**
 
-* **DONE: Remove world check before loading mine**
+Could be done through other perms and then checking to see if they have access t
+
+that mine.  Perm:  mines.tp (all mines) or mines.tp.<mineName>.
+
+
+
+* **DONE: Add a placeholder test command**
+Create a command, like under **/prison** that can be used to test placeholders.
+Have one where the user can enter any free text and then translate it.
+Also have a page(s) that goes through all of them printing the place holder name and the current values.
+
+
+
+
+* **DONE: Remove world check before loading mine***
 Now supports deferred world loading, where the world loads after prison initializes.
 This is a problem with Multiverse-core plugin since a softdepend loads way before a hard depend. As such, the worlds that were created with Multiverse-core have not yet been added to the bukkit list of worlds.
 
