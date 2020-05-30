@@ -40,6 +40,7 @@ public class GuiConfig {
                 conf.set("Gui.Lore.ClickToOpen", SpigotPrison.format("&8Click to open."));
                 conf.set("Gui.Lore.ClickToTeleport", SpigotPrison.format("&8Click to teleport."));
                 conf.set("Gui.Lore.ClickToUse", SpigotPrison.format("&8Click to use."));
+                conf.set("Gui.Lore.ClickToRankup", SpigotPrison.format("&8Click to rankup"));
                 conf.set("Gui.Lore.Chance", SpigotPrison.format("&3Chance: "));
                 conf.set("Gui.Lore.Command", SpigotPrison.format("&3Command: &7"));
                 conf.set("Gui.Lore.ContainsTheRank", SpigotPrison.format("&3The Rank "));
@@ -53,6 +54,7 @@ public class GuiConfig {
                 conf.set("Gui.Lore.FullHologramDisabled", SpigotPrison.format("&cFull Inventory, notify with hologram disabled"));
                 conf.set("Gui.Lore.Id", SpigotPrison.format("&3Rank id: &7"));
                 conf.set("Gui.Lore.Info", SpigotPrison.format("&8&l|&3Info&8|"));
+                conf.set("Gui.Lore.IfYouHaveEnoughMoney", SpigotPrison.format("&8If you have enough money"));
                 conf.set("Gui.Lore.LadderThereAre", SpigotPrison.format("&8There're &3"));
                 conf.set("Gui.Lore.LadderCommands", SpigotPrison.format(" &3Commands &8in this ladder:"));
                 conf.set("Gui.Lore.LeftClickToConfirm", SpigotPrison.format("&aLeft-Click to confirm."));
@@ -70,6 +72,7 @@ public class GuiConfig {
                 conf.set("Gui.Lore.ResetTime", SpigotPrison.format("&3Reset time in seconds: &7"));
                 conf.set("Gui.Lore.Radius", SpigotPrison.format("&8Radius: "));
                 conf.set("Gui.Lore.RankupCommands", SpigotPrison.format("&8&l|&3RankUPCommands&8| &8&l- &3"));
+                conf.set("Gui.Lore.Rankup", SpigotPrison.format("&aRankup"));
                 conf.set("Gui.Lore.RanksButton", SpigotPrison.format("&8Ranks GUI manager."));
                 conf.set("Gui.Lore.ResetButton", SpigotPrison.format("&8Resets the mine."));
                 conf.set("Gui.Lore.RightClickToCancel", SpigotPrison.format("&cRight-Click to cancel."));

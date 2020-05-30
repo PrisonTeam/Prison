@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -87,7 +88,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
+        int dimension = (int) (Math.ceil(ladder.get().ranks.size() / 9D) * 9) + 9;
 
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
 
@@ -128,6 +129,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             rank = rank.rankNext;
         }
+
+        List<String> rankupLore = createLore(
+                GuiConfig.getString("Gui.Lore.IfYouHaveEnoughMoney"),
+                GuiConfig.getString("Gui.Lore.ClickToRankup")
+        );
+
+        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format(GuiConfig.getString("Gui.Lore.Rankup")));
+        inv.setItem(dimension - 5, rankupButton);
 
         // Open the inventory
         getPlayer().openInventory(inv);

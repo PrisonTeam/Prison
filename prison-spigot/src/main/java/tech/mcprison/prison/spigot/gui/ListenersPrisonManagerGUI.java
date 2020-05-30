@@ -302,6 +302,17 @@ public class ListenersPrisonManagerGUI implements Listener {
                 break;
             }
             case "Ranks -> PlayerRanks":{
+
+                String buttonName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                // Load config
+                Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
+                if (buttonName.equals(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Rankup")))){
+                    Bukkit.dispatchCommand(p, "rankup " + GuiConfig.getString("Options.Ranks.Ladder"));
+                    p.closeInventory();
+                }
+
                 e.setCancelled(true);
             }
             case "RankManager -> RankUPCommands": {
