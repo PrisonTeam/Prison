@@ -41,8 +41,11 @@ public abstract class SpigotGUIComponents {
 
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-        p.sendMessage(SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
-        p.closeInventory();
-        return module != null && module instanceof PrisonRanks;
+        if(!(module instanceof PrisonRanks)){
+            p.sendMessage(SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
+            p.closeInventory();
+            p.closeInventory();
+        }
+        return module instanceof PrisonRanks;
     }
 }

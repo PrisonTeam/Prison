@@ -37,7 +37,6 @@ public class PrisonGuiCommands {
 			return;
 		}
     	String formatted = "prisonmanager gui";
-        PrisonAPI.dispatchCommand(formatted);
-        Prison.get().getPlatform().dispatchCommand( sender, formatted );
+		Prison.get().getPlatform().dispatchCommand(sender, formatted);
 	}
 }

@@ -51,7 +51,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
  	    Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
  	    // Check
-        if (checkRanks(player)){
+        if (!(checkRanks(player))){
             return;
         }
 

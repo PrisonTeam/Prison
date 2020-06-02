@@ -6,21 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.mines.managers.PlayerManager;
-import tech.mcprison.prison.ranks.commands.RankUpCommand;
-import tech.mcprison.prison.ranks.data.Rank;
-import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
-
-import java.util.Map;
 
 /**
  * @author GABRYCA
@@ -36,10 +26,12 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        Player p = null;
-        if(sender instanceof Player){
-            p = (Player) sender;
+        if(!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)){
+            sender.sendMessage(SpigotPrison.format("&cLooks like you aren't a player"));
+            return true;
         }
+
+        Player p = (Player) sender;
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
@@ -49,36 +41,7 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        if (!(sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))) {
-
-            if (args[0].equalsIgnoreCase("ranks")){
-                if (GuiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true")) {
-                    if (GuiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
-                        if (sender.hasPermission(GuiConfig.getString("Options.Ranks.Permission_GUI"))) {
-                            SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
-                            gui.open();
-                        }
-                        return true;
-                    }
-                    SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
-                    gui.open();
-                }
-            } else if (args[0].equalsIgnoreCase("mines")){
-                if (GuiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true")){
-                    if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
-                        if (sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))) {
-                            SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                            gui.open();
-                        }
-                        return true;
-                    }
-                    SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                    gui.open();
-                }
-            }
-            return true;
-
-        } else {
+        if (sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) {
 
             if (args[0].equalsIgnoreCase("gui")){
                 SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
@@ -86,6 +49,36 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 return true;
             }
 
+        }
+
+        if (args[0].equalsIgnoreCase("ranks")){
+            if (GuiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true")) {
+                if (GuiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
+                    if (sender.hasPermission(GuiConfig.getString("Options.Ranks.Permission_GUI"))) {
+                        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+                        gui.open();
+                        return true;
+                    }
+                    return true;
+                }
+                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+                gui.open();
+                return true;
+            }
+        } else if (args[0].equalsIgnoreCase("mines")){
+            if (GuiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true")){
+                if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
+                    if (sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))) {
+                        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                        gui.open();
+                        return true;
+                    }
+                    return true;
+                }
+                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                gui.open();
+                return true;
+            }
         }
 
         return true;
