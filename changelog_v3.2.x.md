@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.13 - 2020-05-28
+## tag v3.2.1-alpha.14 - 2020-06-01
+
+
+* **Performance improvement in auto manager.**
+This change to the auto manager has a significant performance improvement per block break by not having to reload all of the parameters each and every time a block breaks (it no longer loads from the file on each block break event which really reduced the overhead too).
+This also sets up the auto manager for the next phase of enhancements.
 
 
 * **New feature: The /mines tp now can be used by players**

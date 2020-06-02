@@ -47,8 +47,8 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.spigot.autoFeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.spigot.autoFeatures.AutoManager;
+import tech.mcprison.prison.spigot.autoFeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
@@ -86,7 +86,8 @@ public class SpigotPrison extends JavaPlugin {
     private File dataDirectory;
     private boolean doAlertAboutConvert = false;
     
-    private FileConfiguration autoFeaturesConfig = null;
+    private AutoManagerFeatures autoFeatures = null;
+//    private FileConfiguration autoFeaturesConfig = null;
 
     private static SpigotPrison config;
 
@@ -149,7 +150,6 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         
         new SpigotListener(this).init();
-        getAutoFeaturesConfig();
 
         Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
         
@@ -199,33 +199,16 @@ public class SpigotPrison extends JavaPlugin {
         return messages.getFileGuiConfig();
     }
 
-    /**
-     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
-     * the file is loaded from the file system only one time and only when it is first
-     * used.  This ensures that if it is never used, it is never loaded in to memory.
-     * </p>
-     * 
-     * @return
-     */
-    public FileConfiguration getAutoFeaturesConfig() {
-    	if ( this.autoFeaturesConfig == null ) {
-    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-    		this.autoFeaturesConfig = afc.getConfig();
-    	}
-        return autoFeaturesConfig;
-    }
     
     
-    public boolean saveAutoFeaturesConfig() {
-    	boolean success = false;
-    	FileConfiguration afConfig = getAutoFeaturesConfig();
-  
-    	if ( afConfig != null ) {
-    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-    		success = afc.saveConf(afConfig);
-    	}
-    	return success;
-    }
+    public AutoManagerFeatures getAutoFeatures() {
+		return autoFeatures;
+	}
+
+	public void setAutoFeatures( AutoManagerFeatures autoFeatures ) {
+		this.autoFeatures = autoFeatures;
+	}
+
     
     
 

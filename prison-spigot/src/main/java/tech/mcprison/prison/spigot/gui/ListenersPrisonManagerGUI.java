@@ -957,7 +957,7 @@ public class ListenersPrisonManagerGUI implements Listener {
             case "PrisonManager -> AutoFeatures":
                 {
 
-                    FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
+                    FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
                     // Get the button name without colors but with the minename too
                     String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1066,7 +1066,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoPickup":{
 
-                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1211,7 +1211,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoSmelt":{
 
-                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1276,7 +1276,7 @@ public class ListenersPrisonManagerGUI implements Listener {
 
             case "AutoFeatures -> AutoBlock":{
 
-                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
+                FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
                 // Get the button name without colors but with the minename too
                 String buttonnamemain = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
@@ -1434,34 +1434,40 @@ public class ListenersPrisonManagerGUI implements Listener {
 
     }
 
+    
+    /**
+     * Save the auto features, and then cancel the event and close the inventory.
+     * 
+     * @param e
+     * @param player
+     */
+    private void saveAutoFeatures( InventoryClickEvent e, Player player ) {
+    	SpigotPrison.getInstance().getAutoFeatures().saveAutoFeaturesConfig();
+    	e.setCancelled(true);
+    	player.closeInventory();
+    }
+
+    
     private void saveConfigBlock(InventoryClickEvent e, Player p) {
-        SpigotPrison.getInstance().saveAutoFeaturesConfig();
-        e.setCancelled(true);
-        p.closeInventory();
+        saveAutoFeatures( e, p );
         SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
         gui.open();
     }
 
     private void saveConfigSmelt(InventoryClickEvent e, Player p) {
-        SpigotPrison.getInstance().saveAutoFeaturesConfig();
-        e.setCancelled(true);
-        p.closeInventory();
+        saveAutoFeatures( e, p );
         SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
         gui.open();
     }
 
     private void saveConfigPickup(InventoryClickEvent e, Player p) {
-        SpigotPrison.getInstance().saveAutoFeaturesConfig();
-        e.setCancelled(true);
-        p.closeInventory();
+        saveAutoFeatures( e, p );
         SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
         gui.open();
     }
 
     private void saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
-        SpigotPrison.getInstance().saveAutoFeaturesConfig();
-        e.setCancelled(true);
-        p.closeInventory();
+        saveAutoFeatures( e, p );
         SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
         gui.open();
     }

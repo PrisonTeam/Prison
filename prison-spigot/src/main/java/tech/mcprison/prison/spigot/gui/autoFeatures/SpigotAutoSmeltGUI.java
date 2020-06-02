@@ -32,7 +32,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // Config
-        Configuration configThings = SpigotPrison.getInstance().getAutoFeaturesConfig();
+        Configuration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
 
         List<String> enabledLore = createLore(
