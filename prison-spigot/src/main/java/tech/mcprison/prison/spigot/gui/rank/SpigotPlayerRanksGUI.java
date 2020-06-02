@@ -40,7 +40,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         this.player = player;
 
         // If you need to get a SpigotPlayer:
-//        SpigotPlayer sPlayer = new SpigotPlayer(p);
+        //        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Server server = SpigotPrison.getInstance().getServer();
 
