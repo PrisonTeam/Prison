@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.1-alpha.14 - 2020-06-01
 
 
+* **PlaceholderAPI Troubleshooting and Tips**
+Update PlaceholderAPI install docs to reflect a possible way to get it to work with other plugins when the other third-party placeholders are not working.
+At this time, it does not appear like this applies to Prison, but it coud be a tip that could be a solution for an edge case issue that someone may experince in the future.
+
+
 * **Performance improvement in auto manager.**
 This change to the auto manager has a significant performance improvement per block break by not having to reload all of the parameters each and every time a block breaks (it no longer loads from the file on each block break event which really reduced the overhead too).
 This also sets up the auto manager for the next phase of enhancements.
