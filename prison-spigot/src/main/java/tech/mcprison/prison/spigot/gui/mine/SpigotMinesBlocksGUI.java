@@ -77,7 +77,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
             // Create the lore
             List<String> blockslore = createLore(
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable"),
+                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                     "",
                     GuiConfig.getString("Gui.Lore.Info"));
 

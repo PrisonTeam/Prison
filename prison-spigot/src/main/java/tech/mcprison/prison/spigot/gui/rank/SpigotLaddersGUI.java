@@ -74,7 +74,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
             // Init the lore array with default values for ladders
             List<String> ladderslore = createLore(
                     GuiConfig.getString("Gui.Lore.ClickToOpen"),
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable"));
+                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"));
 
             // Create the button
             itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));

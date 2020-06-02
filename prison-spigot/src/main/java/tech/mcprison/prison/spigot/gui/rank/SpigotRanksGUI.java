@@ -84,7 +84,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
                 // Init the lore array with default values for ladders
                 List<String> rankslore = createLore(
-                        GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable"),
+                        GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                         GuiConfig.getString("Gui.Lore.ClickToManageRank"),
                         "",
                         GuiConfig.getString("Gui.Lore.Info"));
