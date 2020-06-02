@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
@@ -13,6 +14,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -34,72 +36,56 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        if (args.length == 0) {
-            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager gui"));
-            return true;
+        Player p = null;
+        if(sender instanceof Player){
+            p = (Player) sender;
         }
-        if (!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)) {
-            sender.sendMessage(SpigotPrison.format("&cFor some reasons, it looks like you aren't a player"));
+
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
+        if (args.length == 0) {
+            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui_or_ranks_or_mines-"));
             return true;
         }
 
         if (!(sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))) {
+
             if (args[0].equalsIgnoreCase("ranks")){
-                Player p = null;
-                if (sender instanceof Player) {
-                    p = (Player) sender;
+                if (GuiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true")) {
+                    if (GuiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
+                        if (sender.hasPermission(GuiConfig.getString("Options.Ranks.Permission_GUI"))) {
+                            SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+                            gui.open();
+                        }
+                        return true;
+                    }
+                    SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+                    gui.open();
                 }
-
-                // tech.mcprison.prison.internal.Player player = (tech.mcprison.prison.internal.Player) sender;
-
-                // RankPlayer rankPlayer = (new RankUpCommand()).getPlayer(player, player.getUUID());
-
-                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p /*rankPlayer*/);
-                gui.open();
-                return true;
             } else if (args[0].equalsIgnoreCase("mines")){
-                Player p = null;
-                if (sender instanceof Player){
-                    p = (Player) sender;
+                if (GuiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true")){
+                    if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
+                        if (sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))) {
+                            SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                            gui.open();
+                        }
+                        return true;
+                    }
+                    SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                    gui.open();
                 }
-
-                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                gui.open();
-                return true;
             }
+            return true;
+
         } else {
-            if (args[0].equalsIgnoreCase("ranks")){
-                Player p = null;
-                if (sender instanceof Player) {
-                    p = (Player) sender;
-                }
 
-                // tech.mcprison.prison.internal.Player player = (tech.mcprison.prison.internal.Player) sender;
-
-                // RankPlayer rankPlayer = (new RankUpCommand()).getPlayer(player, player.getUUID());
-
-                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p /*rankPlayer*/);
-                gui.open();
-                return true;
-            } else if (args[0].equalsIgnoreCase("mines")){
-                Player p = null;
-                if (sender instanceof Player){
-                    p = (Player) sender;
-                }
-
-                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                gui.open();
-                return true;
-            }
-            if (args[0].equalsIgnoreCase("gui")) {
-                Player p = null;
-                if (sender instanceof Player) {
-                    p = (Player) sender;
-                }
+            if (args[0].equalsIgnoreCase("gui")){
                 SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
                 gui.open();
                 return true;
             }
+
         }
 
         return true;

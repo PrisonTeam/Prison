@@ -19,6 +19,12 @@ public class GuiConfig {
                 conf = YamlConfiguration.loadConfiguration(file);
                 conf.createSection("Gui");
                 conf.createSection("Options");
+                conf.set("Options.Ranks.GUI_Enabled",SpigotPrison.format("true"));
+                conf.set("Options.Ranks.Permission_GUI_Enabled",SpigotPrison.format("false"));
+                conf.set("Options.Ranks.Permission_GUI",SpigotPrison.format("prison.gui.ranks"));
+                conf.set("Options.Mines.GUI_Enabled", SpigotPrison.format("true"));
+                conf.set("Options.Mines.Permission_GUI_Enabled", SpigotPrison.format("false"));
+                conf.set("Options.Mines.Permission_GUI", SpigotPrison.format("prison.gui.mines"));
                 conf.set("Options.Ranks.Ladder", SpigotPrison.format("default"));
                 conf.set("Options.Ranks.Item_gotten_rank", SpigotPrison.format("TRIPWIRE_HOOK"));
                 conf.set("Options.Ranks.Item_not_gotten_rank", SpigotPrison.format("REDSTONE_BLOCK"));
