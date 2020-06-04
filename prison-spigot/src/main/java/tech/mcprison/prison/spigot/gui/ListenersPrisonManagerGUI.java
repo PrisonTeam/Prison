@@ -46,7 +46,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 public class ListenersPrisonManagerGUI implements Listener {
 
     SpigotPrison plugin;
-    public List <String> activeGui = new ArrayList<String>();
+    public List <String> activeGui = new ArrayList<>();
     public boolean isChatEventActive = false;
     public int id;
     public String rankNameOfChat;

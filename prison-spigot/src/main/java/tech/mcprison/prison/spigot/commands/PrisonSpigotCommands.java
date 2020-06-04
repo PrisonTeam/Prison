@@ -31,7 +31,10 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        Player p = (Player) sender;
+        Player p = null;
+        if (sender instanceof Player) {
+            p = (Player) sender;
+        }
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();

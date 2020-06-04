@@ -9,9 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;

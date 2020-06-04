@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.commands;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -29,7 +28,7 @@ public class PrisonGuiCommands {
 	 */
 
     @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.", 
-			permissions = "prison.gui", onlyPlayers = true) 
+			permissions = "prison.gui", onlyPlayers = true)
 	public void prisonGui(CommandSender sender) {
 
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {

@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -57,25 +56,19 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
  	    rankPlugin = (PrisonRanks) module;
 
+        if (rankPlugin == null){
+            player.sendMessage(SpigotPrison.format("&cError: rankPlugin == null"));
+            return;
+        }
+
  	    if (rankPlugin.getPlayerManager() == null) {
+ 	        player.sendMessage(SpigotPrison.format("&cError: rankPlugin.getPlayerManager() == null"));
  	    	return;
  	    }
 
  	    PlayerManager playerManager = rankPlugin.getPlayerManager();
 
     	rPlayer = playerManager.getPlayer( player.getUniqueId() ).orElse( null );
-        LadderManager lm = rankPlugin.getLadderManager();
-
-        for ( RankLadder ladderData : lm.getLadders() ) {
-        	Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
-        	Rank rank = ladderData.getLowestRank().orElse( null );
-
-        	while ( rank != null ) {
-        		boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
-
-        		rank = rank.rankNext;
-        	}
-        }
 
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
         if (plugin instanceof PrisonRanks) {
