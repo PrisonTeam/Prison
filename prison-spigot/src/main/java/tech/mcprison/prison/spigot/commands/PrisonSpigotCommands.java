@@ -1,11 +1,15 @@
 package tech.mcprison.prison.spigot.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
@@ -22,11 +26,6 @@ public class PrisonSpigotCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
-            sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
-            return true;
-        }
-
         if(!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)){
             sender.sendMessage(SpigotPrison.format("&cLooks like you aren't a player"));
             return true;
@@ -41,11 +40,15 @@ public class PrisonSpigotCommands implements CommandExecutor {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         if (args.length == 0) {
-            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui_or_ranks_or_mines-"));
+            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui-ranks-mines-"));
             return true;
         }
 
         if ((sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) && args[0].equalsIgnoreCase("gui")){
+            if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
+                sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
+                return true;
+            }
             SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
             gui.open();
             return true;

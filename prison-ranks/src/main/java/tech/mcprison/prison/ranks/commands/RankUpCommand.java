@@ -121,8 +121,8 @@ public class RankUpCommand {
         	
         	processResults( sender, null, results, true, null, ladder, currency );
         	
-        	if ( results.getStatus() == RankupStatus.RANKUP_SUCCESS && 
-        			mode != null && mode == RankupModes.MAX_RANKS ) {
+        	if ( results.getStatus() == RankupStatus.RANKUP_SUCCESS &&
+					mode != null && mode == RankupModes.MAX_RANKS ) {
         		rankUpPrivate( sender, ladder, mode );
         	}
         }

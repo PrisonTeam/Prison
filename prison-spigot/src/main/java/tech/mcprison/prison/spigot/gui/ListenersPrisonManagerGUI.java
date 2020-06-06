@@ -88,7 +88,8 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoSmelt")||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("AutoFeatures -> AutoBlock")||
                 e.getView().getTitle().substring(2).equalsIgnoreCase("Ranks -> PlayerRanks")||
-                e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> PlayerMines")
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Mines -> PlayerMines")||
+                e.getView().getTitle().substring(2).equalsIgnoreCase("Prestige -> Confirmation")
         ){
 
             // Add the player to the list of those who can't move items in the inventory
@@ -244,7 +245,22 @@ public class ListenersPrisonManagerGUI implements Listener {
                 String buttonName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
 
                 if (buttonName.equals(SpigotPrison.format("Prestige").substring(2))){
+                    p.closeInventory();
+                    Bukkit.dispatchCommand(p, "prestige");
+                }
+
+                e.setCancelled(true);
+
+                break;
+            }
+            case "Prestige -> Confirmation": {
+
+                String buttonName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                if (buttonName.equals(SpigotPrison.format("Confirm: Prestige").substring(2))){
                     Bukkit.dispatchCommand(p, "rankup prestiges");
+                } else if (buttonName.equals((SpigotPrison.format("Cancel: Don't Prestige").substring(2)))){
+                    p.sendMessage(SpigotPrison.format("&cCancelled"));
                     p.closeInventory();
                 }
 
@@ -306,7 +322,7 @@ public class ListenersPrisonManagerGUI implements Listener {
                     rankNameOfChat = rankName;
                     id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                         isChatEventActive = false;
-                        p.sendMessage(SpigotPrison.format("&cYou run out of time, tag not changed."));
+                        p.sendMessage(SpigotPrison.format("&cYou ran out of time, tag not changed."));
                     }, 20L * 30);
                     p.closeInventory();
                 }
