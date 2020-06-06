@@ -4,10 +4,13 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+
+import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -137,10 +140,21 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.MONITOR) 
     public void onBlockBreak(BlockBreakEvent e) {
     	
-    	// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
+    	genericBlockEvent( e );
+    }
+    
+    @EventHandler(priority=EventPriority.MONITOR) 
+    public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    	
+    	genericBlockExplodeEvent( e );
+    }
+
+	private void genericBlockEvent( BlockBreakEvent e ) {
+		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
     	if ( getPrisonMineManager() != null ) {
     		
     		// long startNano = System.nanoTime();
+    		
     		
     		boolean isAir = e.getBlock().getType() != null && e.getBlock().getType() == Material.AIR;
 
@@ -179,8 +193,89 @@ public class OnBlockBreakEventListener
 //    			e.getPlayer().sendMessage( message );
 //    		}
     	}
-    }
+	}
 
+
+	/**
+	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
+	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * </p>
+	 * 
+	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
+	 * event contains multiple blocks so it's far more efficient to process the player data once. 
+	 * So that basically needed a slight refactoring.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	private void genericBlockExplodeEvent( TEBlockExplodeEvent e )
+	{
+		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
+    	if ( getPrisonMineManager() != null ) {
+    		
+    		// long startNano = System.nanoTime();
+    		Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
+    		
+    		// Get the cached mine, if it exists:
+    		Mine mine = getPlayerCache().get( playerUUIDLSB );
+    		
+    		if ( mine == null ) {
+    			
+    			// have to go through all blocks since some blocks may be outside the mine.
+    			// but terminate search upon first find:
+    			for ( Block blk : e.blockList() ) {
+    				// Need to wrap in a Prison block so it can be used with the mines:
+    				SpigotBlock block = new SpigotBlock(blk);
+    				
+    				// Look for the correct mine to use. 
+    				// Set mine to null so if cannot find the right one it will return a null:
+    				mine = findMineLocation( block );
+    				
+    				// Store the mine in the player cache if not null:
+    				if ( mine != null ) {
+    					getPlayerCache().put( playerUUIDLSB, mine );
+    					
+    					// we found the mine!
+    					break;
+    				}
+    			}
+    		}
+    		
+    		// now process all blocks:
+    		if ( mine != null ) {
+    			// have to go through all blocks since some blocks may be outside the mine.
+    			// but terminate search upon first find:
+    			for ( Block blk : e.blockList() ) {
+    				boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
+    				
+    				// If canceled it must be AIR, otherwise if it is not canceled then 
+    				// count it since it will be a normal drop
+    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
+    					
+    					// Need to wrap in a Prison block so it can be used with the mines:
+    					SpigotBlock block = new SpigotBlock(blk);
+    					
+    					if ( !mine.isInMine( block.getLocation() ) ) {
+    						
+    						// This is where the processing actually happens:
+    						doAction( mine, e );
+    					}
+    					
+    				}
+    			}
+    		}
+    			
+    		
+    		
+    		// for debug use: Uncomment to use.
+//    		String message = incrementUses(System.nanoTime() - startNano);
+//    		if ( message != null ) {
+//    			e.getPlayer().sendMessage( message );
+//    		}
+    	}
+	}
+
+	
 	public void doAction( Mine mine, BlockBreakEvent e ) {
 		mine.incrementBlockBreakCount();
 		mine.incrementTotalBlocksMined();
@@ -191,7 +286,18 @@ public class OnBlockBreakEventListener
 		// it will reset the mine:
 		mine.checkZeroBlockReset();
 	}
-
+	
+	public void doAction( Mine mine, TEBlockExplodeEvent e ) {
+		mine.incrementBlockBreakCount();
+		mine.incrementTotalBlocksMined();
+		
+		// Other possible processing:
+		
+		// Checks to see if the mine ran out of blocks, and if it did, then
+		// it will reset the mine:
+		mine.checkZeroBlockReset();
+	}
+	
     /**
      * <p>Search all mines to find if the given block is located within any
      * of the mines. If not, then return a null.
