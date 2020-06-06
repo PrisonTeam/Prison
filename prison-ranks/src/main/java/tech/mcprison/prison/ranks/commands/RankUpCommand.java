@@ -95,10 +95,10 @@ public class RankUpCommand {
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
         Rank pRank = rankPlayer.getRank( ladder );
+		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+		boolean WillPrestige = false;
 
-        if (ladder.equalsIgnoreCase("prestiges")) {
-
-        	LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+		if (ladder.equalsIgnoreCase("prestiges")) {
 
 			Rank pRankSecond = rankPlayer.getRank("default");
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
@@ -111,6 +111,7 @@ public class RankUpCommand {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou aren't at the last rank!"));
 				return;
 			}
+			WillPrestige = true;
 		}
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -120,12 +121,17 @@ public class RankUpCommand {
         	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
-        	
+
         	if ( results.getStatus() == RankupStatus.RANKUP_SUCCESS &&
 					mode != null && mode == RankupModes.MAX_RANKS ) {
         		rankUpPrivate( sender, ladder, mode );
         	}
         }
+        if (WillPrestige) {
+			if (pRank == lm.getLadder("default").get().getLowestRank().get()) {
+				// TODO: 07/06/2020 set the player balance to 0 or just reset it...
+			}
+		}
     }
 
 
