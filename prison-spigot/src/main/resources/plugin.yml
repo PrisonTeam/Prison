@@ -8,6 +8,12 @@ commands:
   prisonmanager:
     description: Call a fancy GUI where manage the ranks and mines
     usage: /<command> gui
+  prestiges:
+    description: Prestiges command list
+    usage: /<command>
+  prestige:
+    description: Prestige
+    usage: /<command>
   # ======================================================
   # New commands compatible only with spigot
   # ======================================================
@@ -41,7 +47,7 @@ permissions:
 
   prison.placeholder:
     description: Tools to list and test placeholders.
-    
+
   # Permission Kits
   prison.admin:
     description: Administrative access to Prison's functionality.
@@ -77,7 +83,7 @@ permissions:
 
   mines.reset:
     description: Access to the /mines reset command.
-    
+
   mines.wand:
     description: Access to the /mines wand command.
 
@@ -86,13 +92,13 @@ permissions:
 
   mines.skipreset:
     description: Access to the /mines set skipReset command.
-    
+
   mines.zeroblockresetdelay:
     description: Access to the /mines set zeroBlockResetDelay command.
-    
+
   mines.stats:
     description: Access to the /mines stats command.
-    
+
   mines.whereami:
     description: Access to the /mines whereami command.
     
@@ -160,7 +166,7 @@ permissions:
 
   ranks.demote:
     description: Access to the /ranks demote command.
-    
+
   ranks.setrank:
     description: Access to the /ranks set rank command.
 

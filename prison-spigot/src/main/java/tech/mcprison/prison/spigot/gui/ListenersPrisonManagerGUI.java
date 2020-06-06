@@ -239,6 +239,19 @@ public class ListenersPrisonManagerGUI implements Listener {
                 e.setCancelled(true);
                 break;
             }
+            case "Prestiges -> PlayerPrestiges": {
+
+                String buttonName = e.getCurrentItem().getItemMeta().getDisplayName().substring(2);
+
+                if (buttonName.equals(SpigotPrison.format("Prestige").substring(2))){
+                    Bukkit.dispatchCommand(p, "rankup prestiges");
+                    p.closeInventory();
+                }
+
+                e.setCancelled(true);
+
+                break;
+            }
             // Check the title of the inventory and do things
             case "Ranks -> RankManager": {
 

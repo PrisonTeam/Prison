@@ -25,6 +25,8 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -35,6 +37,8 @@ import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.util.ChatColor;
 
 /**
  * The commands for this module.
@@ -91,6 +95,23 @@ public class RankUpCommand {
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
         Rank pRank = rankPlayer.getRank( ladder );
+
+        if (ladder.equalsIgnoreCase("prestiges")) {
+
+        	LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+
+			Rank pRankSecond = rankPlayer.getRank("default");
+			Rank rank = lm.getLadder("default").get().getLowestRank().get();
+
+			while (rank.rankNext != null) {
+				rank = rank.rankNext;
+			}
+
+			if (!(rank == pRankSecond)) {
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou aren't at the last rank!"));
+				return;
+			}
+		}
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;

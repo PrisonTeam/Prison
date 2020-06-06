@@ -173,7 +173,7 @@ public class PrisonRanks extends Module {
     }
 
     /**
-     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist.
+     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
      */
     private void createDefaultLadder() {
         if (!ladderManager.getLadder("default").isPresent()) {
@@ -194,6 +194,26 @@ public class PrisonRanks extends Module {
                 super.getStatus().toFailed("&c" + message);
             }
         }
+
+        if (!ladderManager.getLadder("prestiges").isPresent()) {
+            Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("prestiges");
+
+            if (!rankLadderOptional.isPresent()) {
+                String message = "Failed to create a new prestiges ladder, preexisting one not be found.";
+                Output.get().logError(message);
+                super.getStatus().toFailed("&c" + message);
+                return;
+            }
+
+            try {
+                ladderManager.saveLadder(rankLadderOptional.get());
+            } catch (IOException e) {
+                String message = "Failed to save a new prestiges ladder, preexisting one not be found.";
+                Output.get().logError(message, e);
+                super.getStatus().toFailed("&c" + message);
+            }
+        }
+
     }
 
     /*

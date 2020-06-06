@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
@@ -44,14 +45,10 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
-        if (sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) {
-
-            if (args[0].equalsIgnoreCase("gui")){
-                SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
-                gui.open();
-                return true;
-            }
-
+        if ((sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) && args[0].equalsIgnoreCase("gui")){
+            SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
+            gui.open();
+            return true;
         }
 
         if (args[0].equalsIgnoreCase("ranks")){
@@ -82,6 +79,14 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 gui.open();
                 return true;
             }
+        } else if (args[0].equalsIgnoreCase("prestiges")){
+            p = null;
+            if (sender instanceof Player) {
+                p = (Player) sender;
+            }
+            SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
+            gui.open();
+            return true;
         }
 
         return true;

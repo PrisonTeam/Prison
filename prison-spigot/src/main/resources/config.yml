@@ -9,6 +9,7 @@ check-updates: true
 send-metrics: true
 show-alerts: true
 slime-fun: false
+prestiges: false
 
 default-language: en_US
 

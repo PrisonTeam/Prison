@@ -7,6 +7,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author GABRYCA
+ */
 public class GuiConfig {
 
     private FileConfiguration conf;
