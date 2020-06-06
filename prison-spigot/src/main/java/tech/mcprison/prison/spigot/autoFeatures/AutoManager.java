@@ -1,11 +1,5 @@
 package tech.mcprison.prison.spigot.autoFeatures;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,12 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 
@@ -30,29 +22,7 @@ public class AutoManager
 	extends AutoManagerFeatures
 	implements Listener {
 	
-	public enum ItemLoreCounters {
-		
-		// NOTE: the String value must include a trailing space!
-		
-		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
-							ChatColor.GRAY + " "),
-		
-		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
-							ChatColor.GRAY + " ");
-		
-		
-		private final String lore;
-		ItemLoreCounters( String lore ) {
-			this.lore = lore;
-		}
-		public String getLore() {
-			return lore;
-		}
-		
-	}
-
-	
-    public AutoManager() {
+	public AutoManager() {
         super();
         
         // Save this instance within the SpigotPrison instance so it can be accessed
@@ -131,8 +101,8 @@ public class AutoManager
     
     
     @Override
-    public void doAction( Mine mine, TEBlockExplodeEvent e ) {
-    	applyAutoEvents( e, mine );
+    public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount ) {
+    	applyAutoEvents( e, mine, blockCount );
     }
     
     // Prevents players from picking up armorStands (used for holograms), only if they're invisible
@@ -146,25 +116,38 @@ public class AutoManager
 
 	
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
-		// Change this to true to enable these features
 		
 		Player p = e.getPlayer();
+		
+		double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
+		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
+		double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
+		
+		boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
+				lorePickup == 100.0 ||
+				lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
+		boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
+				loreSmelt == 100.0 ||
+				loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
+		boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
+				loreBlock == 100.0 ||
+				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
-		if (isAreEnabledFeatures()) {
+		if ( permPickup || permSmelt || permBlock ||
+				isAreEnabledFeatures()) {
 			
-	
 
 			// Init variables
-			Block block = e.getBlock();
-			Material brokenBlock = block.getType();
-			String blockName = brokenBlock.toString().toLowerCase();
+//			Block block = e.getBlock();
+//			Material brokenBlock = block.getType();
+//			String blockName = brokenBlock.toString().toLowerCase();
 			
 			
 			// Minecraft's formular for fortune: Should implement it to be fair.
 			// https://minecraft.gamepedia.com/Fortune
 			
-			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
-			
+//			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
+//			
 	
 //			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 //			int dropNumber = getDropCount(fortuneLevel);
@@ -204,139 +187,84 @@ public class AutoManager
 //			}
 			
 			// AutoPickup
-			if (isAutoPickupEnabled()) {
+			if ( permPickup ||
+					isAreEnabledFeatures() && isAutoPickupEnabled()) {
 				
-				@SuppressWarnings( "unused" )
-				int count = 0;
-				
-				switch (blockName) {
-					case "cobblestone":
-						count += autoPickup( isAutoPickupCobbleStone(), p, itemInHand, e );
-						break;
-						
-					case "stone":
-						count += autoPickup( isAutoPickupStone(), p, itemInHand, e );
-						break;
-						
-					case "gold_ore":
-						count += autoPickup( isAutoPickupGoldOre(), p, itemInHand, e );
-						break;
-						
-					case "iron_ore":
-						count += autoPickup( isAutoPickupIronOre(), p, itemInHand, e );
-						break;
-						
-					case "coal_ore":
-						count += autoPickup( isAutoPickupCoalOre(), p, itemInHand, e );
-						break;
-						
-					case "diamond_ore":
-						count += autoPickup( isAutoPickupDiamondOre(), p, itemInHand, e );
-						break;
-						
-					case "redstone_ore":
-						count += autoPickup( isAutoPickupRedstoneOre(), p, itemInHand, e );
-						break;
-						
-					case "emerald_ore":
-						count += autoPickup( isAutoPickupEmeraldOre(), p, itemInHand, e );
-						break;
-						
-					case "quartz_ore":
-						count += autoPickup( isAutoPickupQuartzOre(), p, itemInHand, e );
-						break;
-						
-					case "lapis_ore":
-						count += autoPickup( isAutoPickupLapisOre(), p, itemInHand, e );
-						break;
-						
-					case "snow_ball":
-						count += autoPickup( isAutoPickupSnowBall(), p, itemInHand, e );
-						break;
-						
-					case "glowstone_dust": // works 1.15.2
-						count += autoPickup( isAutoPickupGlowstoneDust(), p, itemInHand, e );
-						break;
-						
-					default:
-						count += autoPickup( isAutoPickupAllBlocks(), p, itemInHand, e );
-						break;
-							
-				}
-				
-//				Output.get().logInfo( "In mine: %s  blockName= [%s] %s  drops= %s  count= %s  dropNumber= %s ", 
-//						mine.getName(), blockName, Integer.toString( dropNumber ),
-//						(e.getBlock().getDrops(itemInHand) != null ? e.getBlock().getDrops(itemInHand).size() : "-=null=-"), 
-//						Integer.toString( count ), Integer.toString( dropNumber )
-//						);
-//				
-
+				autoFeaturePickup( e, p );
 			}
 			
+			
 			// AutoSmelt
-			if (isAutoSmeltEnabled()){
+			if ( permSmelt ||
+					isAreEnabledFeatures() && isAutoSmeltEnabled()){
 				
-				autoSmelt( isAutoSmeltGoldOre(), Material.GOLD_ORE, Material.GOLD_INGOT, p, block );
-
-				autoSmelt( isAutoSmeltIronOre(), Material.IRON_ORE, Material.IRON_INGOT, p, block );
+				autoFeatureSmelt( e, p );
 			}
 			
 			// AutoBlock
-			if (isAutoBlockEnabled()) {
-				// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
-				// checks within each block type's function call.  So in one pass, could hit on more 
-				// than one of these for multiple times too.
-				autoBlock( isAutoBlockGoldBlock(), Material.GOLD_INGOT, Material.GOLD_BLOCK, p, block );
+			if ( permBlock ||
+					isAreEnabledFeatures() && isAutoBlockEnabled()) {
 				
-				autoBlock( isAutoBlockIronBlock(), Material.IRON_INGOT, Material.IRON_BLOCK, p, block );
-
-				autoBlock( isAutoBlockCoalBlock(), Material.COAL, Material.COAL_BLOCK, p, block );
-				
-				autoBlock( isAutoBlockDiamondBlock(), Material.DIAMOND, Material.DIAMOND_BLOCK, p, block );
-
-				autoBlock( isAutoBlockRedstoneBlock(), Material.REDSTONE, Material.REDSTONE_BLOCK, p, block );
-				
-				autoBlock( isAutoBlockEmeraldBlock(), Material.EMERALD, Material.EMERALD_BLOCK, p, block );
-
-				autoBlock( isAutoBlockQuartzBlock(), Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p, block );
-
-				autoBlock( isAutoBlockPrismarineBlock(), Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p, block );
-
-				autoBlock( isAutoBlockSnowBlock(), Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p, block );
-
-				autoBlock( isAutoBlockGlowstone(), Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p, block );
-				
-				autoBlockLapis( isAutoBlockLapisBlock(), p, block );
-					
+				autoFeatureBlock( e, p );
 			}
 			
 			
 			if ( e.isCancelled() ) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
-//				itemInHand;
+				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
+				
 				
 				itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockBreakCount, 1 );
-				
-				
-//				ArrayList<String> lore = new ArrayList<String>();
-//				lore.add(ChatColor.GRAY + "Click to select server"); //Add the lore
-//				meta.setLore(lore); //Set the lore to the item
-//				meta.setDisplayName(ChatColor.DARK_GRAY + "[" + ChatColor.RED + "Server Selector" + ChatColor.DARK_GRAY + "]"); //Set the display name (aka the name of the item)
-//				itemInHand.setItemMeta(meta); //Set it to the item
-////				player.getInventory().setItem(0, selector);
-				
 			}
-			
 		}
 	}
 
-	
-	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine ) {
+
+	/**
+	 * <p>This function gets called for EACH block that is impacted by the
+	 * explosion event.  The event may have have a list of blocks, but not all
+	 * blocks may be included in the mine. This function is called ONLY when
+	 * a block is within a mine,
+	 * </p>
+	 * 
+	 * <p>The event TEBlockExplodeEvent has already taken place and it handles all
+	 * actions such as auto pickup, auto smelt, and auto block.  The only thing we
+	 * need to do is to record the number of blocks that were removed during 
+	 * the explosion event. The blocks should have been replaced by air.
+	 * </p>
+	 * 
+	 * <p>Normally, prison based auto features, and or the perms need to be enabled 
+	 * for the auto features to be enabled, but since this is originating from another
+	 * plugin and another external configuration, we cannot test for any real perms
+	 * or configs.  The fact that this event happens within one of the mines is 
+	 * good enough, and must be counted.
+	 * </p>
+	 * 
+	 * @param e
+	 * @param mine
+	 */
+	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, int blockCount ) {
 		
 		Player p = e.getPlayer();
+		
+//		double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
+//		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
+//		double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
+//		
+//		boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
+//				lorePickup == 100.0 ||
+//				lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
+//		boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
+//				loreSmelt == 100.0 ||
+//				loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
+//		boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
+//				loreBlock == 100.0 ||
+//				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
-		if (isAreEnabledFeatures()) {
+//		if ( permPickup || permSmelt || permBlock ||
+//				isAreEnabledFeatures()) 
+		{
 			
 			
 			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
@@ -345,121 +273,9 @@ public class AutoManager
 			if ( e.isCancelled() ) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
-				//			itemInHand;
-				int blocks = e.blockList().size();
-				itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockExplodeCount, blocks );
-				
-				
-//			ArrayList<String> lore = new ArrayList<String>();
-//			lore.add(ChatColor.GRAY + "Click to select server"); //Add the lore
-//			meta.setLore(lore); //Set the lore to the item
-//			meta.setDisplayName(ChatColor.DARK_GRAY + "[" + ChatColor.RED + "Server Selector" + ChatColor.DARK_GRAY + "]"); //Set the display name (aka the name of the item)
-//			itemInHand.setItemMeta(meta); //Set it to the item
-////			player.getInventory().setItem(0, selector);
-				
+			itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockExplodeCount, blockCount );
 			}
 		}			
 	}
-
-	private void itemLoreCounter( ItemStack itemInHand, ItemLoreCounters itemLore, int blocks )
-	{
-		if ( itemInHand.hasItemMeta() ) {
-
-			List<String> lore = new ArrayList<>();
-			
-			String prisonBlockBroken = itemLore.getLore();
-			
-			ItemMeta meta = itemInHand.getItemMeta();
-			
-			if ( meta.hasLore() ) {
-				lore = meta.getLore();
-				
-				boolean found = false;
-				for( int i = 0; i < lore.size(); i++ ) {
-					if ( lore.get( i ).startsWith( prisonBlockBroken ) ) {
-						String val = lore.get( i ).replace( prisonBlockBroken, "" ).trim();
-						
-						int count = blocks;
-						try {
-							count += Integer.parseInt( val );
-						}
-						catch ( NumberFormatException e1 ) {
-							Output.get().logError( "AutoManager: tool counter failure. lore= [" +
-									lore.get( i ) + "] val= [" + val + "] error: " + 
-									e1.getMessage() );								}
-						
-						lore.set( i, prisonBlockBroken + count );
-						
-						found = true;
-						break;
-					}
-				}
-				
-				if ( !found ) {
-					lore.add( prisonBlockBroken + 1 );
-				}
-				
-				
-			} else {
-				lore.add( prisonBlockBroken + 1 );
-			}
-			
-			meta.setLore( lore );
-			
-			itemInHand.setItemMeta( meta );
-			
-			// incrementCounterInName( itemInHand, meta );
-			
-		}
-	}
-
-
-	private void incrementCounterInName( ItemStack itemInHand, ItemMeta meta )
-	{
-		String name = meta.getDisplayName();
-		if ( !meta.hasDisplayName() || name == null || name.trim().length() == 0 ) {
-			name = itemInHand.getType().name().toLowerCase().replace("_", " ").trim();
-			name += " [1]";
-		} else {
-			
-			int j = name.lastIndexOf( ']' );
-			if ( j == -1 ) {
-				name += " [1]";
-			} else {
-			
-				if ( j != -1 ) {
-					int i = name.lastIndexOf( '[', j );
-					
-					if ( i != -1 ) {
-						String numStr = name.substring( i + 1, j );
-						
-//									Output.get().logInfo( String.format( "AutoManager: name:  %s : %s ",  
-//											name, numStr) );
-						
-						
-						try {
-							int blocksMined = Integer.parseInt( numStr );
-							name = name.substring( 0, i ).trim() + " [" + ++blocksMined + "]";
-						}
-						catch ( NumberFormatException e1 ) {
-							Output.get().logError( "AutoManager: tool counter failure. tool name= [" +
-									name + "] error: " + 
-									e1.getMessage() );
-						}
-						
-					}
-				}
-			}
-			
-		
-		}
-		if ( name != null ) {
-			meta.setDisplayName( name );
-			itemInHand.setItemMeta( meta );
-			
-		}
-	}
-
-
 
 }

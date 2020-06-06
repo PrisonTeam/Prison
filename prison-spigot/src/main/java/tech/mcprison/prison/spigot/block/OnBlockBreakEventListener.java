@@ -245,6 +245,8 @@ public class OnBlockBreakEventListener
     		if ( mine != null ) {
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
+    			
+    			int blockCount = 0;
     			for ( Block blk : e.blockList() ) {
     				boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
     				
@@ -257,11 +259,15 @@ public class OnBlockBreakEventListener
     					
     					if ( !mine.isInMine( block.getLocation() ) ) {
     						
-    						// This is where the processing actually happens:
-    						doAction( mine, e );
+    						blockCount++;
     					}
     					
     				}
+    			}
+    			if ( blockCount > 0 ) {
+    				// This is where the processing actually happens:
+    				doAction( mine, e, blockCount );
+    				
     			}
     		}
     			
@@ -287,9 +293,10 @@ public class OnBlockBreakEventListener
 		mine.checkZeroBlockReset();
 	}
 	
-	public void doAction( Mine mine, TEBlockExplodeEvent e ) {
-		mine.incrementBlockBreakCount();
-		mine.incrementTotalBlocksMined();
+	public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount ) {
+		
+		mine.addBlockBreakCount( blockCount );
+		mine.addTotalBlocksMined( blockCount );
 		
 		// Other possible processing:
 		

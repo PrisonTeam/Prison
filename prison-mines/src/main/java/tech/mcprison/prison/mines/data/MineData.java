@@ -343,6 +343,9 @@ public abstract class MineData {
 	 * 
 	 * @return
 	 */
+	public long addTotalBlocksMined( int blockCount ) {
+		return totalBlocksMined += blockCount;
+	}
 	public long incrementTotalBlocksMined() {
 		return ++totalBlocksMined;
 	}

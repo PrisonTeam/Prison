@@ -8,7 +8,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.14 - 2020-06-01
+## tag v3.2.1-alpha.14 - 2020-06-06
+
+
+* **New features: AutoManager perms and lore enabled.**
+Players can now use auto pickup, auto smelt, and auto block can be used if they either have the perms (all or nothing) or if the tools have the lore (0 to 100.00 percent chance).
+The tool lore supports full enablement (no number following the lore) or a percent chance than can range from 0.001 through 100.000.  Allows for tools to gain better chance.
+The config setting Options.General.AreEnabledFeatures enables all mines and overrides player perms and lore. Set to false to allow perms and lore to work.
+May need more testing, but looks functional so far.
+Added new command /prison automanager to just display info on automanager and the perms that will enable it.  The command only shows the help.
 
 
 * **PlaceholderAPI Troubleshooting and Tips**

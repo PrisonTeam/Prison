@@ -1152,6 +1152,9 @@ public abstract class MineReset
 		this.airCountElapsedTimeMs = airCountElapsedTimeMs;
 	}
 
+	public int addBlockBreakCount( int blockCount ) {
+		return blockBreakCount += blockCount;
+	}
 	public int incrementBlockBreakCount() {
 		return ++blockBreakCount;
 	}

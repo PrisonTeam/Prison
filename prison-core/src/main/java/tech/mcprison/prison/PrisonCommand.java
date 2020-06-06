@@ -508,7 +508,42 @@ public class PrisonCommand {
     	display.send(sender);
     }
     
+    
+    /**
+     * This command does not do anything, except to provide a command placeholder to
+     * make owners aware that there is auto features enabled within prison. 
+     * Running this command will show the permissions needed to use these auto features.
+     * @param sender
+     */
+    @Command(identifier = "prison autofeatures", 
+    		description = "Autofeatures for prison: pickup, smelt, and block", 
+    		onlyPlayers = false, 
+    		altPermissions = { "prison.autofeatures.pickup", "prison.autofeatures.smelt" , 
+    				"prison.autofeatures.block" })
+    public void autoFeaturesInformation(CommandSender sender) {
+    	
+    	ChatDisplay display = new ChatDisplay("Auto Features Information");
+    	
+    	display.text( "&a Prison auto features provide the following options:");
+    	display.text( "&7   Auto pickup - &aUpon block break, items are placed directly in to player inventory.");
+    	display.text( "&7   Auto smelt - &aItems that can be smelted will be smelted automatically.");
+    	display.text( "&7   Auto block - &aConverts ores to blocks.");
+    	display.text( "&7   Tool lore starts with: Pickup, Smelt, or Block. Only one per line." );
+    	display.text( "&7   Tool lore 100 percent with just name. Can have value 0.001 to 100.0 percent." );
+    	display.text( "&7   Tool lore examples: Pickup, Pickup 7.13, Smelt 55, Block 75.123" );
+    	
+    	display.text( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
+    	display.text( "&a Or use &7/prison gui");
+    	
+    	display.send(sender);
 
+    	// After displaying the help information above, rerun the same command for the player
+    	// with the help keyword to show the permissions.
+    	String formatted = "prison autofeatures help";
+		Prison.get().getPlatform().dispatchCommand(sender, formatted);
+        
+    }
+    
     
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
