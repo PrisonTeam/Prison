@@ -734,8 +734,191 @@ public class AutoManagerFeatures
 			player.updateInventory();
 			
 		}
+	}
+	
+	/**
+	 * <p>This function is based upon the following wiki page. 
+	 * </p>
+	 * https://minecraft.gamepedia.com/Fortune
+	 * 
+	 * <p>"<b>Ore:</b> For coal ore, diamond ore, emerald ore, lapis lazuli ore, 
+	 * nether gold ore,‌[upcoming: JE 1.16] and nether quartz ore, 
+	 * Fortune I gives a 33% chance to multiply drops by 2 (averaging 33% increase), 
+	 * Fortune II gives a chance to multiply drops by 2 or 3 (25% chance each, 
+	 * averaging 75% increase), and Fortune III gives a chance to multiply drops 
+	 * by 2, 3, or 4 (20% chance each, averaging 120% increase).
+	 * </p>
+	 * <p>"Generally speaking, Fortune gives a weight of 2 to a normal drop chance 
+	 * and adds a weight of 1 for each extra drop multiplier. The drop multipliers 
+	 * are the integers between 2 and Fortune Level + 1, inclusive.
+	 * </p>
+	 * <p>"The formula to calculate the average drops multiplier is 
+	 * 1/(Fortune Level+2) + (Fortune Level+1)/2, which means 
+	 * Fortune IV gives 2.67x drops on average, Fortune V gives 
+	 * 3.14x drops on average, etc. "
+	 * </p>
+	 * 
+	 * <p><b>Discrete random</b> Glowstone, melons, nether wart, redstone ore, 
+	 * sea lanterns, and sweet berries use a discrete uniform distribution, 
+	 * meaning each possible drop amount is equally likely to be dropped. 
+	 * Fortune increases the maximum number of drops by 1 per level. However, 
+	 * maximum drop limitations may apply: glowstone has a cap of 4 glowstone 
+	 * dust, sea lanterns have a cap of 5 prismarine crystals, and melons have 
+	 * a cap of 9 melon slices. If a drop higher than these maximums is rolled, 
+	 * it is rounded down to the cap. 
+	 * </p>
+	 * 
+	 * 
+	 * @param blocks
+	 * @param fortuneLevel
+	 */
+	protected void calculateFortune( ItemStack blocks, short fortuneLevel ) {
 		
+		int count = blocks.getAmount();
 		
+		int multiplier = 1;
+		
+		switch ( blocks.getType() ){
+			
+			case COAL:
+			case DIAMOND:
+			case EMERALD:
+			case LAPIS_BLOCK:
+			case GOLD_BLOCK:
+			case QUARTZ_BLOCK:
+			case COAL_ORE:
+			case DIAMOND_ORE:
+			case EMERALD_ORE:
+			case LAPIS_ORE:
+			case GOLD_ORE:
+			case QUARTZ_ORE:
+				
+				int rnd = getRandom().nextInt( 100 );
+
+				switch ( fortuneLevel )
+				{
+					case 0:
+						break;
+					case 1:
+						if ( rnd <= 33 ) {
+							multiplier = 2;
+						}
+						break;
+						
+					case 2:
+						if ( rnd <= 25 ) {
+							multiplier = 2;
+						}
+						else if ( rnd <= 50 ) {
+							multiplier = 3;
+						}
+						break;
+						
+					case 3: 
+						if ( rnd <= 20 ) {
+							multiplier = 2;
+						}
+						else if ( rnd <= 40 ) {
+							multiplier = 3;
+						}
+						else if ( rnd <= 60 ) {
+							multiplier = 4;
+						}
+						break;
+						
+						
+					case 4: 
+						if ( rnd <= 16 ) {
+							multiplier = 2;
+						}
+						else if ( rnd <= 32 ) {
+							multiplier = 3;
+						}
+						else if ( rnd <= 48 ) {
+							multiplier = 4;
+						}
+						else if ( rnd <= 64 ) {
+							multiplier = 5;
+						}
+						break;
+						
+					default:
+						// values of 5 or higher
+						if ( rnd <= 16 ) {
+							multiplier = 2;
+						}
+						else if ( rnd <= 32 ) {
+							multiplier = 3;
+						}
+						else if ( rnd <= 48 ) {
+							multiplier = 4;
+						}
+						else if ( rnd <= 64 ) {
+							multiplier = 5;
+						}
+						else if ( rnd <= 74 ) {
+							// Only 8% not 16% chance
+							multiplier = 6;
+						}
+						break;
+				}
+				
+				// multiply the multiplier:
+				count *= multiplier;
+				break;
+
+			case GLOWSTONE:
+			case GLOWSTONE_DUST:
+			case REDSTONE:
+			case SEA_LANTERN:
+			case GLOWING_REDSTONE_ORE:
+			case PRISMARINE:
+
+			case BEETROOT_SEEDS:
+			case CARROT:
+			case MELON:
+			case MELON_SEEDS:
+			case NETHER_WARTS:
+			case POTATO:
+			case GRASS:
+			case WHEAT:
+			
+				multiplier = getRandom().nextInt( fortuneLevel );
+				
+				switch ( blocks.getType() )
+				{
+					// limits slightly greater than standard:
+					case GLOWSTONE:
+						// standard: 4
+						if ( multiplier > 5 ) {
+							multiplier = 5;
+						}
+						break;
+					case SEA_LANTERN:
+						// standard: 5
+						if ( multiplier > 6 ) {
+							multiplier = 6;
+						}
+						break;
+					case MELON:
+						// standard: 9
+						if ( multiplier > 11 ) {
+							multiplier = 11;
+						}
+
+					default:
+						break;
+				}
+				
+				// add the multiplier to the count:
+				count += multiplier;
+				
+			default:
+				break;
+		}
+		
+		// The count has the final value so set it as the amount:
+		blocks.setAmount( count );
 	}
 	
 	
