@@ -13,6 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -678,6 +679,63 @@ public class AutoManagerFeatures
 			itemInHand.setItemMeta( meta );
 			
 		}
+	}
+	
+	/**
+	 * <p>This should calculate and apply the durability consumption on the tool.
+	 * </p>
+	 * 
+	 * <p>The damage is calculated as a value of one durability, but all damage can be
+	 * skipped if the tool has a durability enchantment.  If it does, then there is a
+	 * percent chance of 1 in (1 + durabilityLevel).  So if a tool has a durability level
+	 * of 1, then there is a 50% chance. Level of 2, then a 66.6% chance. Level of 3 has
+	 * a 75% chance. And a level of 9 has a 90% chance. There are no upper limits on
+	 * durability enchantment levels.
+	 * </p>
+	 * 
+	 * <p>Some blocks may have a damage of greater than 1, but for now, this
+	 * does not take that in to consideration. If hooking up in the future, just 
+	 * set the initial damage to the correct value based upon block type that was mined.
+	 * </p>
+	 * 
+	 * <p>Based upon the following URL.  See Tool Durability.
+	 * </p>
+	 * https://minecraft.gamepedia.com/Item_durability
+	 * 
+	 * @param itemInHand
+	 */
+	protected void calculateDurability( Player player, ItemStack itemInHand ) {
+		short damage = 1;  // Generally 1 unless instant break block then zero.
+
+		if ( itemInHand.containsEnchantment( Enchantment.DURABILITY ) ) {
+			int durabilityLevel = itemInHand.getEnchantmentLevel( Enchantment.DURABILITY );
+
+			// the chance of losing durability is 1 in (1+level)
+			// So if the random int == 0, then take damage, otherwise none.
+			if ( getRandom().nextInt( durabilityLevel ) > 0 ) {
+				damage = 0;
+			}
+		}
+		
+		if ( damage > 0 ) {
+			short maxDurability = itemInHand.getType().getMaxDurability();
+			short durability = itemInHand.getDurability();
+			
+			int newDurability = durability + damage;
+			
+			if ( newDurability > maxDurability ) {
+				// Item breaks! ;(
+				SpigotPrison.getInstance().getCompatibility().breakItemInMainHand( player );
+	        } 
+			else {
+				itemInHand.setDurability( (short) newDurability );
+			}
+			
+			player.updateInventory();
+			
+		}
+		
+		
 	}
 	
 	
