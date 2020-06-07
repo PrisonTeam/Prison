@@ -105,11 +105,11 @@ public class RankUpCommand {
 
 			Rank pRankSecond = rankPlayer.getRank("default");
 			if (!(lm.getLadder("default").isPresent())){
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThere isn't a default ladder!"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] There isn't a default ladder! Please report this to an admin!"));
 				return;
 			}
 			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cCan't get the lowest rank!"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&[ERROR] cCan't get the lowest rank! Please report this to an admin!"));
 				return;
 			}
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
