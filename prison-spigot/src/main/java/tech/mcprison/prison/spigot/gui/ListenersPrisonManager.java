@@ -34,11 +34,7 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.rank.*;
 
 
 /**
@@ -462,7 +458,7 @@ public class ListenersPrisonManager implements Listener {
     private void PlayerPrestigesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the button name and do the actions
-        if (buttonNameMain.equals(SpigotPrison.format("Prestige").substring(2))){
+        if (buttonNameMain.equalsIgnoreCase("Prestige")){
             // Close the inventory
             p.closeInventory();
             // Execute the command
@@ -476,10 +472,12 @@ public class ListenersPrisonManager implements Listener {
     private void PrestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the button name and do the actions
-        if (buttonNameMain.equals(SpigotPrison.format("Confirm: Prestige").substring(2))){
+        if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
             // Execute the command
             Bukkit.dispatchCommand(p, "rankup prestiges");
-        } else if (buttonNameMain.equals((SpigotPrison.format("Cancel: Don't Prestige").substring(2)))){
+            // Close the inventory
+            p.closeInventory();
+        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
             // Send a message to the player
             p.sendMessage(SpigotPrison.format("&7[&3Info&7] &cCancelled"));
             // Close the inventory

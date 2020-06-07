@@ -98,12 +98,13 @@ public class RankUpCommand {
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid );
         Rank pRank = rankPlayer.getRank( ladder );
+		Rank pRankSecond = rankPlayer.getRank("default");
+		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 		boolean WillPrestige = false;
 
 		if (ladder.equalsIgnoreCase("prestiges")) {
 
-			Rank pRankSecond = rankPlayer.getRank("default");
 			if (!(lm.getLadder("default").isPresent())){
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] There isn't a default ladder! Please report this to an admin!"));
 				return;
@@ -112,6 +113,7 @@ public class RankUpCommand {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] Can't get the lowest rank! Please report this to an admin!"));
 				return;
 			}
+
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
 
 			while (rank.rankNext != null) {
@@ -141,16 +143,20 @@ public class RankUpCommand {
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;
 			}
+
+        	pRankAfter = rankPlayer.getRank(ladder);
+
         }
-        if (WillPrestige) {
-			if (pRank == lm.getLadder("default").get().getLowestRank().get()) {
-				if (rankupWithSuccess) {
-					EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-					economy.setBalance(sender, 0);
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3!"));
-				}
-			}
-		}
+
+        if (WillPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
+        	PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
+        	pRankSecond = rankPlayer.getRank("default");
+        	if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
+        		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+        		economy.setBalance(sender, 0);
+        		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
+        	}
+        }
     }
 
 
