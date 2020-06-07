@@ -109,7 +109,7 @@ public class RankUpCommand {
 				return;
 			}
 			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&[ERROR] cCan't get the lowest rank! Please report this to an admin!"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] Can't get the lowest rank! Please report this to an admin!"));
 				return;
 			}
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
