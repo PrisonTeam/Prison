@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The MC-Prison Team
+ * Copyright (C) 2017-2020 The MC-Prison Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.Module;
@@ -101,6 +104,14 @@ public class RankUpCommand {
 		if (ladder.equalsIgnoreCase("prestiges")) {
 
 			Rank pRankSecond = rankPlayer.getRank("default");
+			if (!(lm.getLadder("default").isPresent())){
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThere isn't a default ladder!"));
+				return;
+			}
+			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cCan't get the lowest rank!"));
+				return;
+			}
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
 
 			while (rank.rankNext != null) {
@@ -117,19 +128,27 @@ public class RankUpCommand {
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
+		boolean rankupWithSuccess = false;
+
         if ( ladder != null && rankPlayer != null ) {
         	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
-        	if ( results.getStatus() == RankupStatus.RANKUP_SUCCESS &&
-					mode != null && mode == RankupModes.MAX_RANKS ) {
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS) {
         		rankUpPrivate( sender, ladder, mode );
         	}
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
+        		rankupWithSuccess = true;
+			}
         }
         if (WillPrestige) {
 			if (pRank == lm.getLadder("default").get().getLowestRank().get()) {
-				// TODO: 07/06/2020 set the player balance to 0 or just reset it...
+				if (rankupWithSuccess) {
+					EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+					economy.setBalance(sender, 0);
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3!"));
+				}
 			}
 		}
     }
