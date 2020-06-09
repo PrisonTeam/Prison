@@ -103,6 +103,7 @@ public class RankUpCommand {
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 		boolean WillPrestige = false;
 
+		// If the ladder's the prestige one, it'll execute all of this
 		if (ladder.equalsIgnoreCase("prestiges")) {
 
 			if (!(lm.getLadder("default").isPresent())){
@@ -124,6 +125,7 @@ public class RankUpCommand {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou aren't at the last rank!"));
 				return;
 			}
+			// IF everything's ready, this will be true and the prestige method will start
 			WillPrestige = true;
 		}
         
@@ -137,30 +139,45 @@ public class RankUpCommand {
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
-        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS) {
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && !ladder.equals("prestiges")) {
         		rankUpPrivate( sender, ladder, mode );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;
 			}
 
+        	// Get the player rank after
         	pRankAfter = rankPlayer.getRank(ladder);
 
         }
 
-        if (WillPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
-        	PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
-        	pRankSecond = rankPlayer.getRank("default");
-        	if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
-        		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-        		economy.setBalance(sender, 0);
-        		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
-        	}
-        }
-    }
+        // Prestige method
+		prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+	}
+
+	private void prestigePlayer(Player sender, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+		// Get the player rank after, just to check if it has success
+    	Rank pRankSecond;
+    	// Conditions
+		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
+			// Set the player rank to the first one of the default ladder
+			PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
+			// Get that rank
+			pRankSecond = rankPlayer.getRank("default");
+			// Check if the ranks match
+			if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
+				// Get economy
+				EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+				// Set the player balance to 0 (reset)
+				economy.setBalance(sender, 0);
+				// Send a message to the player because he did prestige!
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
+			}
+		}
+	}
 
 
-    @Command(identifier = "ranks promote", description = "Promotes a player to the next rank.", 
+	@Command(identifier = "ranks promote", description = "Promotes a player to the next rank.",
     			permissions = "ranks.promote", onlyPlayers = true) 
     public void promotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
