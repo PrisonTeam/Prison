@@ -12,6 +12,7 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 
 /**
@@ -113,8 +114,10 @@ public class AutoManager
 		}
 	}
 
+	boolean isOnePointFourPointFour(){
+		return new BluesSpigetSemVerComparator().compareMCVersionTo("1.14.4") < 0;
+	}
 
-	
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
 		
 		Player p = e.getPlayer();
@@ -185,12 +188,12 @@ public class AutoManager
 //				}
 //				return;
 //			}
-			
+
 			// AutoPickup
 			if ( permPickup ||
 					isAreEnabledFeatures() && isAutoPickupEnabled()) {
-				
-				autoFeaturePickup( e, p );
+
+					autoFeaturePickup(e, p);
 			}
 			
 			

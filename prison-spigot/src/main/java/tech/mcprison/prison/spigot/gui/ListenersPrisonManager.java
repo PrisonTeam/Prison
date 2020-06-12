@@ -103,7 +103,6 @@ public class ListenersPrisonManager implements Listener {
 
                 // Add the player to the list of those who can't move items in the inventory
                 addToGUIBlocker(p);
-
             }
         }
     }

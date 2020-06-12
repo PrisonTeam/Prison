@@ -249,7 +249,18 @@ public class AutoManagerFeatures
 
         return j;
     }
-    
+
+
+    protected boolean workaroundSilkTouch (ItemStack itemInHand){
+		return itemInHand.getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+	}
+
+	/*
+	* Drops are wrong with old 1.14.4 releases of spigot
+	* but got fixed in newer versions.
+	*
+	* For older versions, a good way to get the right drops would be to use BlockDropItemEvent.getItems(), but it's deprecated
+	* */
 	protected int autoPickup( boolean autoPickup, Player p, ItemStack itemInHand, BlockBreakEvent e ) {
 		int count = 0;
 		if (autoPickup) {
@@ -466,7 +477,6 @@ public class AutoManagerFeatures
 		return results;
 	}
 
-
 	protected void autoFeaturePickup( BlockBreakEvent e, Player p )
 	{
 			Material brokenBlock = e.getBlock().getType();
@@ -476,7 +486,7 @@ public class AutoManagerFeatures
 			
 			@SuppressWarnings( "unused" )
 			int count = 0;
-			
+
 			switch (blockName) {
 				case "cobblestone":
 					count += autoPickup( isAutoPickupCobbleStone(), p, itemInHand, e );

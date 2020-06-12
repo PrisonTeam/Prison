@@ -47,6 +47,8 @@ import tech.mcprison.prison.util.ChatColor;
  * The commands for this module.
  *
  * @author Faizaan A. Datoo
+ * @author GABRYCA
+ * @author RoyalBlueRanger
  */
 public class RankUpCommand {
 
