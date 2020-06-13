@@ -8,7 +8,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.14 - 2020-06-06
+## tag v3.2.1-alpha.15 - 2020-06-13
+
+* **New Feature: Prestige!  Significant work on Prestige added!**
+Gabryca provided a lot of enhancements and features to the new Prestige system that he has been working on.  It was merged with bleeding from it's own branch.  It was pulled in because it has reached a point where it can start being used and undergo testing.
 
 
 * **New features: AutoManager perms and lore enabled.**
