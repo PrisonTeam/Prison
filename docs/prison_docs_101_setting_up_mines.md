@@ -1,0 +1,334 @@
+
+### Prison Documentation 
+[Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Prison - Setting Up Mines
+
+This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.  Initially it will cover the basics, but hopefully will expand to more advanced topics.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+# Overview
+
+This document should be able to provide the basic information to get your mines configured.  There are many options available within Prison, and also through the use of other plugins, and these advanced topics are beyond the scope of this document.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Getting Started
+
+Please review the Prison's [Table of Contents](prison_docs_000_toc.md) for information on how to configure your server, and which plugins are required, or at least suggested.  
+
+It is also strongly suggested that you review the documentation on [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md) since that explains a lot on how to setup the basics with your world, which will not be covered here. There will be references to this document, but this will be the only link provided. 
+
+These instructions assume you are OP'd since that is part of the above document pertaining to WorldGuard. If not, go ahead and OP yourself.
+
+To follow along with this documentation, you may want to crate your first mine as a test, with intentions of deleting it later.  It may be easier to remove it, than to convert it over to a final product.  The instructions here are informational, not focused on perfection.  So after you figure out how to create your mines, you may want to provide more attention to the details to ensure they are perfect.  But for now, the focus is on the commands.
+
+Please note that all command provide in this document will be treated as if they are in game.  If you use them from console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Create Your First Mine
+
+Being OP'd, find a good location for your mines.
+
+Also the following commands may help setup the environment.  Optional of course.  Having some block in your inventory can be useful for use as scaffolding or selecting.  I personally like to use sealanterns because they are not common block and they stand out well in low light conditions and are easier to see in screen prints. Giving yourself `/fly` and `/god` may not be necessary, but it could help if you need to find a good location, or if there are mobs in the area when you drop out of creative mode and back in to survival.
+
+```
+/op <yourIGN>
+/fly
+/god
+/gamemode creative
+/time day
+/give <yourIGN> sealantern 64
+
+```
+
+<h3>The wand</h3>
+
+Now give yourself a Prison wand.
+
+```
+/mines wand
+```
+
+
+<h3>Laying Out the New Mine</h3>
+
+For the sake of this document, and to keep things simple, the mines we are creating will be very small and will not be deep within the ground.
+
+
+First mark out the dimensions of your mine. As you can see here, I've marked my first mine out with sealanterns to show you how big it will be.  You really only need to mark opposing corners since that defines a cuboidal region. I've cleared away some of the dirt so you can see the lower blocks.  This mine will be 5 x 5 x 5 in size.
+
+<img src="images/prison_docs_101_setting_up_mines_01.png" alt="Laying out the new mine" title="Layout out the new mine" width="600" />  
+
+
+
+<h3>Define the New Mine</h3>
+
+Then holding the Prison's wand (blaze rod), left-click in one corner, and then right-click in the opposite corner.  In this example, I've left-clicked the lowest sealantern block, then right-clicked the highest sealantern block.  You should see a message indicating that you have successfully selected a region.
+
+<img src="images/prison_docs_101_setting_up_mines_02.png" alt="Selected the mine with the wand" title="Selected the mine with the wand" width="600" />  
+
+
+Then create the mine with:
+```
+/mines create test1
+```
+
+It will default to 100% air.  So then follow up creating the new mine with a reset to confirm everything is replaced with air:
+
+
+
+<h3>Reset the New Mine to Test it Exists</h3>
+
+```
+/mines reset test1
+```
+
+<img src="images/prison_docs_101_setting_up_mines_03.png" alt="The first reset with all air" title="The first reset with all air" width="600" />  
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+#Mine Commands Overview
+
+Now that we've created a mine, let's take a moment and review some of the available commands.  There are a lot of options available, and many of those options have numerous features, so this will just be an overview so you have a better idea of what you could possibly do with your new mines. This listing is generated within the console so it's easier to see.  This includes the main grouping of commands, which is displayed with `/mines` (remember, when using commands within the console drop the leading slash).  Then two sub-groups: `/mines block` and also `/mines set`.
+
+
+For the following commands, we can use the console, which is also easier to see for this documentation.  But these commands can just as easily be ran within game.
+
+
+
+<img src="images/prison_docs_101_setting_up_mines_04.png" alt="The Prison Commands" title="The Prison Commands" width="600" />  
+
+
+Some of the highlights of these commands are as follows:
+* `/mines create` : Create the mine based upon the wand selection.
+* `/mines command` : Not active. Future Feature. Will be able to run commands during mine resets, similar to running commands during /rankup.
+* `/mines delete` : Deletes a mine. You can always undelete a mine by going in to the server file system and rename the deleted mine, then restart the server.
+* `/mines info` : Very useful in viewing all information related to the mine.
+* `/mines list` : Displays all mines on your server.
+* `/mines reset` : Resets the mine. Forces a regeneration of all the blocks, even if the mine is in skip reset mode.
+* `/mines stats` : Toggles the display of stats that pertain to how long it takes to reset the mines.  View /mines info or /mines list to see the stats.  Use this command again to turn it off.
+* `/mines tp` : tp to a mine's spawn point, or the center of the mine if no spawn has been set.  If players are given the permissions, they too can use this command.  Use `/mines tp help` for a list of the perms.
+* `/mines whereami` : Shows you what mine you are in, or how far away you are from other mines in the area.  If you have a lot of mines, it's easy to lose track of where you are, and this may help get your bearings.
+
+
+* `/mines block add` : Add a new block type to a mine.  It's easier to start off with block search and have it fill in the commands for you.
+* `/mines block remove` : Remove a block type from a mine.
+* `/mines block search` : Search for a block type based up on a search string.
+* `/mines block set` : Edit the block's percentage within the mine.  A percent of zero will remove.  If the block does not already exist, it will be added. (Can replace add and remove).
+
+
+* `/mines set area` : Redefine the area of the mine.  Careful, this can wipe out builds if set incorrectly.
+* `/mines set notification` : Can turn off the notifications on a per-mine basis.  Or set the notification radius, or only notify players within the mine.  This command cannot change the message.
+* `/mines set resetTime` : Changes the time between resets, as expressed in seconds. Applies to each mine independently.
+* `/mines set skipReset` : When enabled, can prevent a mine from resetting if it has no activity.  Can set a threshold before the mine is reset, such as 80% will require 20% of the blocks be mined before being reset.  Can also set a bypassLimit so that if the reset is skipped X number of times, it will force a reset anyway.
+* `/mines set spawn` : Sets the mines spawn point. Whatever you are looking at is what the players will be looking at when they tp to that spot.
+* `/mines set zeroBlockResetDelay` : If the mine runs out of blocks, when enabled, it will force a manual reset after the specified delay. The delay can be zero for instant reset.
+
+Adding the term `help` to the end of any of the above listed commands will display additional information that is available for each command, including the parameters and also all permissions that are associated with the commands.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Customizing Your Mines
+
+Now that we have a mine created, let's go ahead and customize it.
+
+<h3>Inspect our New Mine</h3>
+
+Let's first take a quick look at the new mine with this command.  Let's view it now, before we start making changes.
+
+```
+/mines info test1
+```
+
+
+<img src="images/prison_docs_101_setting_up_mines_05.png" alt="Info on test1 mine" title="Info on test1 mine" width="600" />  
+
+
+
+
+<h3>Select a Few Blocks</h3>
+
+The easiest way to select blocks is to search for them.  Let's add a few such as cobble, glowstone, gold ore, and coal ore.  Use the block search with cobble:
+
+```
+/mines block search cobble
+```
+
+<img src="images/prison_docs_101_setting_up_mines_06.png" alt="Block search for cobble" title="Block search for cobble" width="600" />  
+
+When using the console with block search limits what you can do with the block search.  If you are in game, you can click on a block type that is displayed, and it will auto fill out the block add command for you, such that all you need to do is add the percentage at then end of the command.  Also in game, you can page through the results.  
+
+This is an example of in game use of this command.  Notice by clicking on cobble it pre-fills all the parameters for the `/mines block add`, including the most recently used mine name and the selected block.  This screen print shows that I added the value of `20` right after the percent sign.
+
+<img src="images/prison_docs_101_setting_up_mines_07.png" alt="Block search for cobble" title="Block search for cobble" width="600" />  
+
+Then let's take a look at the `/mines info test1 all` command, where all indicates all pages should be displayed in-line without paging.  Notice how Prison automatically provides the balance of air so the total percent is equal to 100.0%.
+
+
+<img src="images/prison_docs_101_setting_up_mines_08.png" alt="Mine info with cobble" title="Mine info with cobble" width="600" />  
+
+Now if we perform a `/mines reset test1` then we can see how the cobble is randomly placed at a rate of 20%, and the remainder is air.
+
+<img src="images/prison_docs_101_setting_up_mines_09.png" alt="Mine reset with cobble" title="Mine reset with cobble" width="600" />  
+
+
+Let's add the other blocks, each at 20% then take a look at the mine info and how it generates.  Please notice that you can add a single block with as little as 0.01%.  You can also add as many different blocks as you please too.  There are no meaningful restrictions. 
+
+
+With the additions of the other ores, including 1/2 a percent of sealanterns:
+
+<img src="images/prison_docs_101_setting_up_mines_10.png" alt="Mine test1 listing" title="Mine test1 listing" width="600" />  
+
+
+<img src="images/prison_docs_101_setting_up_mines_11.png" alt="Mine test1 listing" title="Mine test1 listing" width="600" />  
+
+
+Example of a mine reset including a sealantern.  Notice that there is still 19.5% air.
+
+<img src="images/prison_docs_101_setting_up_mines_12.png" alt="Mine reset with all new blocks" title="Mine reset with all new blocks" width="600" />  
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Next Steps
+
+
+The mine is now usable as-is, but there are still a lot of options that we can add to enhance the mine's behavior to better suit our needs.  For example, we can set a spawn point so we can control where players are teleported to when the mine resets, or if they tp to the mine.  
+
+For our example, let's use the console to set the notification, resetTime, skipRest, and the zeroBlockResetDelay.  We must be in game to set the spawn point since it uses where your player is standing and where you are looking.
+
+<h3>Customizing the Mine</h3>
+
+Issuing all these commands through the console, such as the following.  Note that the spawn point has been set in game, and the reset time has not be changed.
+
+<img src="images/prison_docs_101_setting_up_mines_13.png" alt="Mine customizing within console" title="Mine customizing within console" width="600" />  
+
+Mine info showing all changes.  Observe the spawn location now shows an actual location, but yet it does not show the pitch or yaw. The information also shows that the mine has reset 30 times since there server started, and that you must be standing within the mine to receive reset notifications.
+
+<img src="images/prison_docs_101_setting_up_mines_14.png" alt="Mine info with all details" title="Mine info with all details" width="600" />  
+
+
+<h3>Skip Reset Explained</h3>
+
+To better explain what the skipReset does, is it uses the threshold percent as the trigger to allow the mine to auto reset.  Once the **blocks remaining** value hits that value, or is less than that value, it will alloow the mine to rest at it's normal reset time.  If the blocks remaining is higher than the threshold, then it skips the reset and increments the skip counter (not shown in this screen print since it is zero).  Once the number of skips reaches, or exceeds, the Skip Limits value, then it will allow the mine to reset.  
+
+This behavior allows unused, or barely used, mines to avoid from always being reset.  This can reduce the server load and prevent lag on larger servers, or if there are many mines.
+
+This feature never will force a mine to reset early, nor will it ever make it reset.  The only active behavior it can alter, is to skip the automatic reset behavior. 
+
+If a mine is manually reset, then this feature will never prevent a manual reset from happening.  A manual reset will also reset the counter for how many times the mine skipped the automatic resets.
+
+
+<h3>Zero Blocks Reset Delay Explained</h3>
+
+The feature zero blocks reset delay identifies what should happen when Prison detects that there are no more blocks within the mine.  The only action actually is to force an early reset if this feature is enabled, but more specifically, it identifies how many seconds it should delay before forcing the reset.  
+
+If this feature is enabled, and the delay value is set to Zero, then the mine is forced to reset with no delay.  If there is a light load of jobs running on the server, then it will be instantly reset, otherwise there will be a delay for the job to wait its turn to run.
+
+If the reset delay is non-zero, the value is measured in seconds, with a valid value of 0.01 seconds.  But keep in mind that in reality the seconds are converted to ticks and is scheduled within the Bukkit job queue.  Therefore, since there are 1000 milliseonds within one second, and 20 ticks within one second, one tick is the smaller possible value, which equates to 50 milliseconds.  This is equivalent to 0.05 seconds. When the seconds are converted to ticks, the values will be rounded down to a whole integer value.  So if a value is provide such as 0.049 it will be submitted as 0 ticks, which will result in zero delay (if possible) before running.
+
+The bottom line is that this feature can force an earlier reset of the mine when it becomes totally empty of blocks.  A delay may be needed, or desired, to reach your perfection for the mine.  
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# A Single Block Mine Grinder
+
+
+To provide a slightly different perspective as to what you can do with your Prison mines, let's build a one block mine and demonstrate the power of what we can down with a few of these settings.  We're also going to tie this in to HolographicDisplays and use of the placeholders.
+
+So let's first setup a temporary placeholder for our new mine.  I want it to be a one block mine, one block off the ground.  So stack two blocks like this.  Added a platform, because why not?
+
+
+<img src="images/prison_docs_101_setting_up_mines_15.png" alt="One block mine setup" title="One block mine setup" width="600" />  
+
+
+<img src="images/prison_docs_101_setting_up_mines_16.png" alt="One block mine setup" title="One block mine setup" width="600" />  
+
+Next, using the Prison wand, right-click and left-click on the top block.  This will create a one block selection.  Then create the mine, naming it **one**.
+
+```
+/mines create one
+/mines block search ore
+```
+
+Then select the following ores and add them to the new mine, all at 10%.  Add gold_ore, iron_ore, coal_ore, Lapis ore, redstone_ore, emerald_ore, diamond ore, etc...  Then setup the reset time, turn off notifications, and set zero blocks reset delay to zero.
+
+<img src="images/prison_docs_101_setting_up_mines_17.png" alt="One block settings" title="One block settings" width="600" />  
+
+
+Now let's test our new mine.  But first let's make an OP pick.  Open the config file `/plugins/Essentials/config.yml` and search for `unsafe-enchantments` and set the value to `true` and then save and exit the file.  Then issue the commands in game, holding the pick after you get it.
+
+```
+/give <yourIGN> diamondpick 1
+/enchant efficiency 20
+/enchant durability 20
+/enchant fortune 5
+```
+
+Remove the block under the one block mine, then reset it with `/mines reset one`.
+
+Install HolographicDisplays as described in our documentation (see table of contents... must include HolographicExtensions and ProtocolLib).  Next we want to create two holographic displays for our one block mine, one above the block, and one below.  Do the `/mines info one` to find the *Center* of the mine, and let's use that to modify the HolographicDisplay scripts below.  In this example, our coordinates are `(-81, 70, -320)`.  Add these to the file `/plugins/HolographicDisplays/database.yml`...
+
+```
+oneTop:
+  location: world, -80.5, 72.5, -319.5
+  lines:
+  - 'Mine: one'
+  - 'Reset Interval: {slowest}%prison_mines_interval_one%'
+  - 'Reset Time Left: {fast}%prison_mines_timeleft_one% - {fast}%prison_mtlf_one%'
+  - 'Blocks Remaining: {slowest}%prison_mr_one% {slowest}%prison_mp_one%%'
+oneBottom:
+  location: world, -80.5, 69.8, -319.5
+  lines:
+  - 'Blocks Mined: {fast}%prison_mbm_one%'
+  - 'Reset Count: {fast}%prison_mines_reset_count_one%'
+
+```
+
+Once you make these changes and save them, reload bolographic displays with `/hd reload`.  You can then tweak the position of the HolographicDisplays so they are just centered on the mine, and keep reloading until you get it right.  The X and Z axis should be x.5 and z.5, or "point 5", or half blocks to exactly center them.  First get them centered on the mine, you can walk around the mine to confirm it looks centered.  Then move each one up, or down, as needed.  With the results looking like the following...
+
+
+<img src="images/prison_docs_101_setting_up_mines_18.png" alt="One block Holographs" title="One block Holographs" width="600" />  
+
+
+Now to complete this mine, let's enable auto manager.  We can do that by turning on Auto Manager for all of our mines, or we can just add a few ore entries to our OP pick.  For this example, let's go with the lore.  Enter these commands (assuming you have Essentials installed).  Using `/prison autofeatures` command to review the correct names for the lore.  Please note for this example I'm using 100% since no numbers are specified with these Lore names.
+
+```
+/prison autofeatures
+/i diamondpick 1 efficiency:20 durability:20 fortune:5 lore:Pickup|Smelt|Block
+```
+
+More information on the EssentialX's lore settings can be found here: [EssentialsX Item_Meta](http://ess.khhq.net/wiki/Item_Meta).
+
+
+<img src="images/prison_docs_101_setting_up_mines_19.png" alt="OP Pick with Lore" title="OP Pick with Lore" width="600" />  
+
+Note, because we are using Lore on your pickaxe, we don't have to enable the auto features, such as with `AreEnabledFeatures`, but the individual elements should be all be set to `true`, or the `AllBlocks` should be set to `true`.  The Lore on a tool can bypass the global settings.  Also make sure you drop back in to survival mode to get the normal speed for your OP pick.
+
+``` 
+/gamemode survival
+```
+
+
+<img src="images/prison_docs_101_setting_up_mines_20.gif" alt="OP Pick with Lore" title="OP Pick with Lore" width="600" />  
+
+
+And that's it for now.  This is what I would consider a draft copy, and I will come back in a few days to refine this document (and remove this comment).
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

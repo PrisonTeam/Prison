@@ -81,7 +81,7 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 * Prison Command Overview: /prison /mines /ranks /rankup
 
-* Setting up Mines
+* [Setting up Mines](prison_docs_101_setting_up_mines.md)
 
 
 * Changing Mine Settings
