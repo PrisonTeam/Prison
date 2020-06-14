@@ -710,7 +710,8 @@ public class MinesCommands {
         	chatDisplay.addComponent(list);
         }
         
-        cmdPageData.generatePagedCommandFooter( chatDisplay );
+        String message = m.getBlocks().size() != 0 ? null : " &cNo Blocks Defined";
+        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
 
         chatDisplay.send(sender);
     }

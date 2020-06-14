@@ -4,6 +4,7 @@ import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.output.ButtonComponent;
 import tech.mcprison.prison.output.ButtonComponent.Style;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 
 public class CommandPagedData {
@@ -78,6 +79,10 @@ public class CommandPagedData {
 	}
 	
 	public void generatePagedCommandFooter( ChatDisplay display ) {
+		generatePagedCommandFooter( display, null );
+	}
+	
+	public void generatePagedCommandFooter( ChatDisplay display, String message ) {
 		// Need to construct a dynamic row of buttons. It may have no buttons, both, or
         // a combination of previous page or next page.  But it will always have a page
         // count between the two.
@@ -92,7 +97,9 @@ public class CommandPagedData {
         }
         row.addFancy( 
         		new FancyMessage(" &9< &3Page " + curPage + " of " + 
-        						(getPages() + getExtraPages() ) + " &9> ") );
+        						(getPages() + getExtraPages() ) + " &9> " +
+        				(message == null || message.trim().length() == 0 ? "" : "  " + message ) + "&3"));
+        
         if ( getCurPage() < (getPages() + getExtraPages()) )
         {
    			row.addFancy( 
