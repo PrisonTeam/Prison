@@ -63,6 +63,12 @@ public class RanksCommands {
                 .sendWarn(sender, "A rank by this name already exists. Try a different name.");
             return;
         }
+        
+        // Ensure a rank with the name doesn't already exist
+        if (name == null || name.trim().length() == 0 || name.contains( "&" )) {
+        	Output.get().sendWarn(sender, "A rank name is required and cannot contain formatting codes.");
+        	return;
+        }
 
         // Fetch the ladder first, so we can see if it exists
 
@@ -187,7 +193,12 @@ public class RanksCommands {
                 			Text.numberToDollars(rank.cost),
                 			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
                 			rank.rankUpCommands.size());
-            FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
+            
+            String rankName = rank.name;
+            if ( rankName.contains( "&" ) ) {
+            	rankName = rankName.replace( "&", "-" );
+            }
+            FancyMessage msg = new FancyMessage(text).command("/ranks info " + rankName)
                 .tooltip("&7Click to view info.");
             builder.add(msg);
         	
@@ -255,10 +266,14 @@ public class RanksCommands {
     											onlyPlayers = false, permissions = "ranks.info", 
     											altPermissions = "ranks.admin" )
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
+    	
         Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOpt.isPresent()) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
-            return;
+        	rankOpt = PrisonRanks.getInstance().getRankManager().getRankEscaped(rankName);
+        	if (!rankOpt.isPresent()) {
+        		Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+        		return;
+        	}
         }
 
         Rank rank = rankOpt.get(); 

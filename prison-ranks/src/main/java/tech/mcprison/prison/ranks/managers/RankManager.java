@@ -176,6 +176,14 @@ public class RankManager {
     public Optional<Rank> getRank(String name) {
         return loadedRanks.stream().filter(rank -> rank.name.equals(name)).findFirst();
     }
+    
+    /**
+     * Returns the first rank that has an escaped name that has the & replaced with -.
+     */
+    public Optional<Rank> getRankEscaped(String name) {
+    	return loadedRanks.stream().filter(rank -> 
+    					rank.name.replace( "&", "-" ).equals(name)).findFirst();
+    }
 
     /**
      * Removes the provided rank. This will go through the process of removing the rank from the loaded
