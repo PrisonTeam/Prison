@@ -16,104 +16,61 @@ public class GuiConfig {
 
     public GuiConfig() {
 
-        String[] path = new String[96];
-        path[0] = "Options.Ranks.GUI_Enabled";
-        path[1] = "Options.Ranks.Permission_GUI_Enabled";
-        path[2] = "Options.Ranks.Permission_GUI";
-        path[3] = "Options.Mines.GUI_Enabled";
-        path[4] = "Options.Mines.Permission_GUI_Enabled";
-        path[5] = "Options.Mines.Permission_GUI";
-        path[6] = "Options.Ranks.Ladder";
-        path[7] = "Options.Ranks.Item_gotten_rank";
-        path[8] = "Options.Ranks.Item_not_gotten_rank";
-        path[9] = "Options.Ranks.Enchantment_effect_current_rank";
-        path[10] = "Options.Mines.PermissionWarpPlugin";
-        path[11] = "Options.Mines.CommandWarpPlugin";
-        path[12] = "Gui.Lore.ActivateWithinMode";
-        path[13] = "Gui.Lore.ActivateRadiusMode";
-        path[14] = "Gui.Lore.AutoPickupGuiManager";
-        path[15] = "Gui.Lore.AutoSmeltGuiManager";
-        path[16] = "Gui.Lore.AutoBlockGuiManager";
-        path[17] = "Gui.Lore.BlockType";
-        path[18] = "Gui.Lore.Blocks";
-        path[19] = "Gui.Lore.Blocks2";
-        path[20] = "Gui.Lore.ClickToChoose";
-        path[21] = "Gui.Lore.ClickToConfirm";
-        path[22] = "Gui.Lore.ClickToCancel";
-        path[23] = "Gui.Lore.ClickToDecrease";
-        path[24] = "Gui.Lore.ClickToIncrease";
-        path[25] = "Gui.Lore.ClickToManageRank";
-        path[26] = "Gui.Lore.ClickToManageCommands";
-        path[27] = "Gui.Lore.ClickToOpen";
-        path[28] = "Gui.Lore.ClickToTeleport";
-        path[29] = "Gui.Lore.ClickToUse";
-        path[30] = "Gui.Lore.ClickToRankup";
-        path[31] = "Gui.Lore.Chance";
-        path[32] = "Gui.Lore.Command";
-        path[33] = "Gui.Lore.ContainsTheRank";
-        path[34] = "Gui.Lore.ContainsNoCommands";
-        path[35] = "Gui.Lore.DisableNotifications";
-        path[36] = "Gui.Lore.EnabledAll";
-        path[37] = "Gui.Lore.DisabledAll";
-        path[38] = "Gui.Lore.FullSoundEnabled";
-        path[39] = "Gui.Lore.FullSoundDisabled";
-        path[40] = "Gui.Lore.FullHologramEnabled";
-        path[41] = "Gui.Lore.FullHologramDisabled";
-        path[42] = "Gui.Lore.Id";
-        path[43] = "Gui.Lore.Info";
-        path[44] = "Gui.Lore.IfYouHaveEnoughMoney";
-        path[45] = "Gui.Lore.LadderThereAre";
-        path[46] = "Gui.Lore.LadderCommands";
-        path[47] = "Gui.Lore.LeftClickToConfirm";
-        path[48] = "Gui.Lore.LeftClickToOpen";
-        path[49] = "Gui.Lore.LeftClickToReset";
-        path[50] = "Gui.Lore.ManageResetTime";
-        path[51] = "Gui.Lore.MinesButton";
-        path[52] = "Gui.Lore.Name";
-        path[53] = "Gui.Lore.Notifications";
-        path[54] = "Gui.Lore.PlayersWithTheRank";
-        path[55] = "Gui.Lore.Price";
-        path[56] = "Gui.Lore.Price2";
-        path[57] = "Gui.Lore.Price3";
-        path[58] = "Gui.Lore.PrisonTasksButton";
-        path[59] = "Gui.Lore.ResetTime";
-        path[60] = "Gui.Lore.Radius";
-        path[61] = "Gui.Lore.RankupCommands";
-        path[62] = "Gui.Lore.Rankup";
-        path[63] = "Gui.Lore.RanksButton";
-        path[64] = "Gui.Lore.ResetButton";
-        path[65] = "Gui.Lore.RightClickToCancel";
-        path[66] = "Gui.Lore.RightClickToEnable";
-        path[67] = "Gui.Lore.RightClickToToggle";
-        path[68] = "Gui.Lore.SpawnPoint";
-        path[69] = "Gui.Lore.StatusLockedMine";
-        path[70] = "Gui.Lore.StatusUnlockedMine";
-        path[71] = "Gui.Lore.SpawnPoint2";
-        path[72] = "Gui.Lore.SizeOfMine";
-        path[73] = "Gui.Lore.Selected";
-        path[74] = "Gui.Lore.ShiftAndRightClickToDelete";
-        path[75] = "Gui.Lore.ShiftAndRightClickToDisable";
-        path[76] = "Gui.Lore.ShiftAndRightClickToToggle";
-        path[77] = "Gui.Lore.StatusEnabled";
-        path[78] = "Gui.Lore.StatusDisabled";
-        path[79] = "Gui.Lore.SkipReset1";
-        path[80] = "Gui.Lore.SkipReset2";
-        path[81] = "Gui.Lore.SkipReset3";
-        path[82] = "Gui.Lore.Tp";
-        path[83] = "Gui.Lore.Tag";
-        path[84] = "Gui.Lore.Tag2";
-        path[85] = "Gui.Lore.Time";
-        path[86] = "Gui.Lore.Volume";
-        path[87] = "Gui.Lore.World";
-        path[88] = "Gui.Message.EmptyGui";
-        path[89] = "Gui.Message.TooManyBlocks";
-        path[90] = "Gui.Message.TooManyLadders";
-        path[91] = "Gui.Message.TooManyMines";
-        path[92] = "Gui.Message.TooManyRankupCommands";
-        path[93] = "Gui.Message.ZeroBlocksReset1";
-        path[94] = "Gui.Message.ZeroBlocksReset2";
-        path[95] = "Gui.Message.ZeroBlocksReset3";
+        // Get array class with Path and Objects strings
+        String[] path = getPath();
+        String[] object = getObject();
+        // Filepath
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
+        // Call a method, this makes a new file or update the old one
+        fileChecker(path, object, file);
+
+        // Get the final config
+        conf = YamlConfiguration.loadConfiguration(file);
+    }
+
+    // Check the config and makes a new one or update it
+    private void fileChecker(String[] path, String[] object, File file) {
+        // Check if the config exists
+        if(!file.exists()){
+            // Call method
+            newFile(path, object, file);
+        } else {
+            // Call method
+            fileUpdater(path, object, file);
+        }
+    }
+
+    // Check if something's missing and update the config
+    private void fileUpdater(String[] path, String[] object, File file) {
+        try {
+            conf = YamlConfiguration.loadConfiguration(file);
+            for (int i = 0; path.length > i; i++) {
+                if (getFileGuiConfig().getString(path[i]) == null){
+                    conf.set(path[i], SpigotPrison.format(object[i]));
+                }
+            }
+            conf.save(file);
+        } catch (IOException e2){
+            e2.printStackTrace();
+        }
+    }
+
+    // Make a new config if missing
+    private void newFile(String[] path, String[] object, File file) {
+        try {
+            file.createNewFile();
+            conf = YamlConfiguration.loadConfiguration(file);
+            for(int i = 0; path.length>i; i++){
+                conf.set(path[i], SpigotPrison.format(object[i]));
+            }
+            conf.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String[] getObject() {
         String[] object = new String[96];
         object[0] = "true";
         object[1] = "false";
@@ -211,35 +168,108 @@ public class GuiConfig {
         object[93] = "&8Set a mine's delay ";
         object[94] = "&8before reset when it ";
         object[95] = "&8reaches zero blocks.";
+        return object;
+    }
 
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
-
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-                conf = YamlConfiguration.loadConfiguration(file);
-                for(int i = 0; path.length>i; i++){
-                    conf.set(path[i], SpigotPrison.format(object[i]));
-                }
-                conf.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                conf = YamlConfiguration.loadConfiguration(file);
-                for (int i = 0; path.length > i; i++) {
-                    if (getFileGuiConfig().getString(path[i]) == null){
-                        conf.set(path[i], SpigotPrison.format(object[i]));
-                    }
-                }
-                conf.save(file);
-            } catch (IOException e2){
-                e2.printStackTrace();
-            }
-        }
-
-        conf = YamlConfiguration.loadConfiguration(file);
+    private String[] getPath() {
+        String[] path = new String[96];
+        path[0] = "Options.Ranks.GUI_Enabled";
+        path[1] = "Options.Ranks.Permission_GUI_Enabled";
+        path[2] = "Options.Ranks.Permission_GUI";
+        path[3] = "Options.Mines.GUI_Enabled";
+        path[4] = "Options.Mines.Permission_GUI_Enabled";
+        path[5] = "Options.Mines.Permission_GUI";
+        path[6] = "Options.Ranks.Ladder";
+        path[7] = "Options.Ranks.Item_gotten_rank";
+        path[8] = "Options.Ranks.Item_not_gotten_rank";
+        path[9] = "Options.Ranks.Enchantment_effect_current_rank";
+        path[10] = "Options.Mines.PermissionWarpPlugin";
+        path[11] = "Options.Mines.CommandWarpPlugin";
+        path[12] = "Gui.Lore.ActivateWithinMode";
+        path[13] = "Gui.Lore.ActivateRadiusMode";
+        path[14] = "Gui.Lore.AutoPickupGuiManager";
+        path[15] = "Gui.Lore.AutoSmeltGuiManager";
+        path[16] = "Gui.Lore.AutoBlockGuiManager";
+        path[17] = "Gui.Lore.BlockType";
+        path[18] = "Gui.Lore.Blocks";
+        path[19] = "Gui.Lore.Blocks2";
+        path[20] = "Gui.Lore.ClickToChoose";
+        path[21] = "Gui.Lore.ClickToConfirm";
+        path[22] = "Gui.Lore.ClickToCancel";
+        path[23] = "Gui.Lore.ClickToDecrease";
+        path[24] = "Gui.Lore.ClickToIncrease";
+        path[25] = "Gui.Lore.ClickToManageRank";
+        path[26] = "Gui.Lore.ClickToManageCommands";
+        path[27] = "Gui.Lore.ClickToOpen";
+        path[28] = "Gui.Lore.ClickToTeleport";
+        path[29] = "Gui.Lore.ClickToUse";
+        path[30] = "Gui.Lore.ClickToRankup";
+        path[31] = "Gui.Lore.Chance";
+        path[32] = "Gui.Lore.Command";
+        path[33] = "Gui.Lore.ContainsTheRank";
+        path[34] = "Gui.Lore.ContainsNoCommands";
+        path[35] = "Gui.Lore.DisableNotifications";
+        path[36] = "Gui.Lore.EnabledAll";
+        path[37] = "Gui.Lore.DisabledAll";
+        path[38] = "Gui.Lore.FullSoundEnabled";
+        path[39] = "Gui.Lore.FullSoundDisabled";
+        path[40] = "Gui.Lore.FullHologramEnabled";
+        path[41] = "Gui.Lore.FullHologramDisabled";
+        path[42] = "Gui.Lore.Id";
+        path[43] = "Gui.Lore.Info";
+        path[44] = "Gui.Lore.IfYouHaveEnoughMoney";
+        path[45] = "Gui.Lore.LadderThereAre";
+        path[46] = "Gui.Lore.LadderCommands";
+        path[47] = "Gui.Lore.LeftClickToConfirm";
+        path[48] = "Gui.Lore.LeftClickToOpen";
+        path[49] = "Gui.Lore.LeftClickToReset";
+        path[50] = "Gui.Lore.ManageResetTime";
+        path[51] = "Gui.Lore.MinesButton";
+        path[52] = "Gui.Lore.Name";
+        path[53] = "Gui.Lore.Notifications";
+        path[54] = "Gui.Lore.PlayersWithTheRank";
+        path[55] = "Gui.Lore.Price";
+        path[56] = "Gui.Lore.Price2";
+        path[57] = "Gui.Lore.Price3";
+        path[58] = "Gui.Lore.PrisonTasksButton";
+        path[59] = "Gui.Lore.ResetTime";
+        path[60] = "Gui.Lore.Radius";
+        path[61] = "Gui.Lore.RankupCommands";
+        path[62] = "Gui.Lore.Rankup";
+        path[63] = "Gui.Lore.RanksButton";
+        path[64] = "Gui.Lore.ResetButton";
+        path[65] = "Gui.Lore.RightClickToCancel";
+        path[66] = "Gui.Lore.RightClickToEnable";
+        path[67] = "Gui.Lore.RightClickToToggle";
+        path[68] = "Gui.Lore.SpawnPoint";
+        path[69] = "Gui.Lore.StatusLockedMine";
+        path[70] = "Gui.Lore.StatusUnlockedMine";
+        path[71] = "Gui.Lore.SpawnPoint2";
+        path[72] = "Gui.Lore.SizeOfMine";
+        path[73] = "Gui.Lore.Selected";
+        path[74] = "Gui.Lore.ShiftAndRightClickToDelete";
+        path[75] = "Gui.Lore.ShiftAndRightClickToDisable";
+        path[76] = "Gui.Lore.ShiftAndRightClickToToggle";
+        path[77] = "Gui.Lore.StatusEnabled";
+        path[78] = "Gui.Lore.StatusDisabled";
+        path[79] = "Gui.Lore.SkipReset1";
+        path[80] = "Gui.Lore.SkipReset2";
+        path[81] = "Gui.Lore.SkipReset3";
+        path[82] = "Gui.Lore.Tp";
+        path[83] = "Gui.Lore.Tag";
+        path[84] = "Gui.Lore.Tag2";
+        path[85] = "Gui.Lore.Time";
+        path[86] = "Gui.Lore.Volume";
+        path[87] = "Gui.Lore.World";
+        path[88] = "Gui.Message.EmptyGui";
+        path[89] = "Gui.Message.TooManyBlocks";
+        path[90] = "Gui.Message.TooManyLadders";
+        path[91] = "Gui.Message.TooManyMines";
+        path[92] = "Gui.Message.TooManyRankupCommands";
+        path[93] = "Gui.Message.ZeroBlocksReset1";
+        path[94] = "Gui.Message.ZeroBlocksReset2";
+        path[95] = "Gui.Message.ZeroBlocksReset3";
+        return path;
     }
 
     public FileConfiguration getFileGuiConfig(){
