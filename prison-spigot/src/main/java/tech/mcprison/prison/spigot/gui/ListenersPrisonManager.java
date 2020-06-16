@@ -7,12 +7,14 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import tech.mcprison.prison.Prison;
@@ -23,6 +25,8 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autoFeatures.SpigotAutoPickupGUI;
@@ -34,7 +38,11 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
-import tech.mcprison.prison.spigot.gui.rank.*;
+import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 
 
 /**
@@ -1173,61 +1181,63 @@ public class ListenersPrisonManager implements Listener {
     private void AutoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
         String mode = parts[1];
+        
+        boolean enabled = mode.equalsIgnoreCase("Enabled");
 
         // Check the buttonName and do the actionsm also check the clickType etc
         if (buttonname.equalsIgnoreCase("Full_Inv_Play_Sound")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.General.playSoundIfInventoryIsFull", false);
+                	afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.General.playSoundIfInventoryIsFull", true);
+                	afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
             }
         } else if (buttonname.equalsIgnoreCase("Full_Inv_Hologram")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.General.hologramIfInventoryIsFull", false);
+                	afConfig.setFeature( AutoFeatures.hologramIfInventoryIsFull, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.General.hologramIfInventoryIsFull", true);
+                	afConfig.setFeature( AutoFeatures.hologramIfInventoryIsFull, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
             }
         } else if (buttonname.equalsIgnoreCase("All")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.General.AreEnabledFeatures", false);
+                	afConfig.setFeature( AutoFeatures.areEnabledFeatures, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.General.AreEnabledFeatures", true);
+                	afConfig.setFeature( AutoFeatures.areEnabledFeatures, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
             }
         } else if (buttonname.equalsIgnoreCase("AutoPickup")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.AutoPickup.AutoPickupEnabled", false);
+                	afConfig.setFeature( AutoFeatures.autoPickupEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                     SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
                     gui.open();
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.AutoPickup.AutoPickupEnabled", true);
+                	afConfig.setFeature( AutoFeatures.autoPickupEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                 SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
@@ -1235,17 +1245,17 @@ public class ListenersPrisonManager implements Listener {
                 }
             }
         } else if (buttonname.equalsIgnoreCase("AutoSmelt")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.AutoSmelt.AutoSmeltEnabled", false);
+                	afConfig.setFeature( AutoFeatures.autoSmeltEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                     SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
                     gui.open();
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+                	afConfig.setFeature( AutoFeatures.autoSmeltEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                     SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
@@ -1253,17 +1263,17 @@ public class ListenersPrisonManager implements Listener {
                 }
             }
         } else if (buttonname.equalsIgnoreCase("AutoBlock")){
-            if (mode.equalsIgnoreCase("Enabled")){
+            if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                    configThings.set("Options.AutoBlock.AutoBlockEnabled", false);
+                	afConfig.setFeature( AutoFeatures.autoBlockEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                     SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
                     gui.open();
                 }
-            } else if (mode.equalsIgnoreCase("Disabled")){
+            } else {
                 if (e.isRightClick()){
-                    configThings.set("Options.AutoBlock.AutoBlockEnabled", true);
+                	afConfig.setFeature( AutoFeatures.autoBlockEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 } else if (e.isLeftClick()){
                     SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
@@ -1271,369 +1281,194 @@ public class ListenersPrisonManager implements Listener {
                 }
             }
         }
-        e.setCancelled(true);
     }
 
     private void AutoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
         String mode = parts[1];
 
-        // Check the mode and do the actions
-        if (mode.equalsIgnoreCase("Enabled")){
-
-            // Check the click and do the actions, also the buttonName
-            if (e.isRightClick() && e.isShiftClick()){
-
-                if (buttonname.equalsIgnoreCase("All_Blocks")){
-                    configThings.set("Options.AutoPickup.AutoPickupAllBlocks", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Gold_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupGoldOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupIronOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Coal_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupCoalOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Diamond_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupDiamondOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Redstone_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Emerald_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Quartz_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupQuartzOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Lapis_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupLapisOre", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Snow_Ball")){
-                    configThings.set("Options.AutoPickup.AutoPickupSnowBall", false);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
-                    configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", false);
-                    saveConfigPickup(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
-        // Check the mode and do the actions
-        } else if (mode.equalsIgnoreCase("Disabled")){
-
-            // Check the clickType and the buttonName
-            if (e.isRightClick()){
-
-                if (buttonname.equalsIgnoreCase("All_Blocks")){
-                    configThings.set("Options.AutoPickup.AutoPickupAllBlocks", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Gold_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupGoldOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupIronOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Coal_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupCoalOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Diamond_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupDiamondOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Redstone_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Emerald_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Quartz_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupQuartzOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Lapis_Ore")){
-                    configThings.set("Options.AutoPickup.AutoPickupLapisOre", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Snow_Ball")){
-                    configThings.set("Options.AutoPickup.AutoPickupSnowBall", true);
-                    saveConfigPickup(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
-                    configThings.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
-                    saveConfigPickup(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
+        boolean enabled = mode.equalsIgnoreCase("Enabled");
+        
+        
+        // Check the click and do the actions, also the buttonName
+        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+        		!enabled && e.isRightClick() ){
+        	
+        	if (buttonname.equalsIgnoreCase("All_Blocks")){
+        		afConfig.setFeature( AutoFeatures.autoPickupAllBlocks, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Gold_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupGoldOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Iron_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupIronOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Coal_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupCoalOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Diamond_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupDiamondOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Redstone_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupRedStoneOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Emerald_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupEmeraldOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Quartz_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupQuartzOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Lapis_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoPickupLapisOre, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Snow_Ball")){
+        		afConfig.setFeature( AutoFeatures.autoPickupSnowBall, !enabled );
+        		saveConfigPickup(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
+        		afConfig.setFeature( AutoFeatures.autoPickupGlowstoneDust, !enabled );
+        		saveConfigPickup(e, p);
+        	}
         }
+
+
     }
 
     private void AutoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
         String mode = parts[1];
+        
+        boolean enabled = mode.equalsIgnoreCase("Enabled");
 
-        // Check the mode and do the actions
-        if (mode.equalsIgnoreCase("Enabled")){
-
-            // Check the clickType and do the actions
-            if (e.isRightClick() && e.isShiftClick()){
-
-                if (buttonname.equalsIgnoreCase("Gold_Ore")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", false);
-                    saveConfigSmelt(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Ore")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltIronOre", false);
-                    saveConfigSmelt(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("All_Ores")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", false);
-                    saveConfigSmelt(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
-        // Check the mode and do the actions
-        } else if (mode.equalsIgnoreCase("Disabled")){
-
-            // Check the clickType and do the actions
-            if (e.isRightClick()){
-
-                if (buttonname.equalsIgnoreCase("Gold_Ore")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
-                    saveConfigSmelt(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Ore")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltIronOre", true);
-                    saveConfigSmelt(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("All_Ores")){
-                    configThings.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
-                    saveConfigSmelt(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
+        // Check the clickType and do the actions
+        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+        		!enabled && e.isRightClick()){
+        	
+        	if (buttonname.equalsIgnoreCase("Gold_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoSmeltGoldOre, !enabled );
+        		saveConfigSmelt(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Iron_Ore")){
+        		afConfig.setFeature( AutoFeatures.autoSmeltIronOre, !enabled );
+        		saveConfigSmelt(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("All_Ores")){
+        		afConfig.setFeature( AutoFeatures.autoSmeltAllBlocks, !enabled );
+        		saveConfigSmelt(e, p);
+        	}
+        	
         }
     }
 
     private void AutoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        FileConfiguration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
         String mode = parts[1];
 
-        // Check the mode and do the actions
-        if (mode.equalsIgnoreCase("Enabled")){
+        boolean enabled = mode.equalsIgnoreCase("Enabled");
 
-            // Check the clickType and do the actions
-            if (e.isRightClick() && e.isShiftClick()){
-
-                if (buttonname.equalsIgnoreCase("Gold_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockGoldBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockIronBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Coal_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockCoalBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Diamond_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Redstone_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Emerald_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Quartz_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Prismarine_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Lapis_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockLapisBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Snow_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockSnowBlock", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Glowstone_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockGlowstone", false);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("All_Blocks")){
-                    configThings.set("Options.AutoBlock.AutoBlockAllBlocks", false);
-                    saveConfigBlock(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
-        // Check the mode and do the actions
-        } else if (mode.equalsIgnoreCase("Disabled")){
-
-            // Check the clickType and do the actions
-            if (e.isRightClick()){
-
-                if (buttonname.equalsIgnoreCase("Gold_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockGoldBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Iron_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockIronBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Coal_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockCoalBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Diamond_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Redstone_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Emerald_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Quartz_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Prismarine_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Lapis_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockLapisBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Snow_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockSnowBlock", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("Glowstone_Block")){
-                    configThings.set("Options.AutoBlock.AutoBlockGlowstone", true);
-                    saveConfigBlock(e, p);
-                }
-
-                if (buttonname.equalsIgnoreCase("All_Blocks")){
-                    configThings.set("Options.AutoBlock.AutoBlockAllBlocks", true);
-                    saveConfigBlock(e, p);
-                }
-
-            }
-
-            // Cancel the event
-            e.setCancelled(true);
-
+        // Check the clickType and do the actions
+        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+        		!enabled && e.isRightClick()){
+        	
+        	if (buttonname.equalsIgnoreCase("Gold_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockGoldBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Iron_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockIronBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Coal_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockCoalBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Diamond_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockDiamondBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Redstone_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockRedstoneBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Emerald_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockEmeraldBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Quartz_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockQuartzBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Prismarine_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockPrismarineBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Lapis_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockLapisBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Snow_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockSnowBlock, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("Glowstone_Block")){
+        		afConfig.setFeature( AutoFeatures.autoBlockGlowstone, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
+        	if (buttonname.equalsIgnoreCase("All_Blocks")){
+        		afConfig.setFeature( AutoFeatures.autoBlockAllBlocks, !enabled );
+        		saveConfigBlock(e, p);
+        	}
+        	
         }
+
     }
 
 
@@ -1643,34 +1478,39 @@ public class ListenersPrisonManager implements Listener {
      * @param e
      * @param player
      */
-    private void saveAutoFeatures( InventoryClickEvent e, Player player ) {
-    	SpigotPrison.getInstance().getAutoFeatures().saveAutoFeaturesConfig();
+    private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
+    	boolean success = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig().saveConf();
     	e.setCancelled(true);
     	player.closeInventory();
+    	return success;
     }
 
     
-    private void saveConfigBlock(InventoryClickEvent e, Player p) {
-        saveAutoFeatures( e, p );
+    private boolean saveConfigBlock(InventoryClickEvent e, Player p) {
+    	boolean success = saveAutoFeatures( e, p );
         SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
         gui.open();
+        return success;
     }
 
-    private void saveConfigSmelt(InventoryClickEvent e, Player p) {
-        saveAutoFeatures( e, p );
+    private boolean saveConfigSmelt(InventoryClickEvent e, Player p) {
+    	boolean success = saveAutoFeatures( e, p );
         SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
         gui.open();
+        return success;
     }
 
-    private void saveConfigPickup(InventoryClickEvent e, Player p) {
-        saveAutoFeatures( e, p );
+    private boolean saveConfigPickup(InventoryClickEvent e, Player p) {
+    	boolean success = saveAutoFeatures( e, p );
         SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
         gui.open();
+        return success;
     }
 
-    private void saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
-        saveAutoFeatures( e, p );
+    private boolean saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
+    	boolean success = saveAutoFeatures( e, p );
         SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
         gui.open();
+        return success;
     }
 }

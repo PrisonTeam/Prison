@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // Config
-        Configuration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         // Declare buttons
         ItemStack autoPickup;
@@ -42,7 +44,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         ItemStack playSound;
         ItemStack hologram;
 
-        if (configThings.getBoolean("Options.General.playSoundIfInventoryIsFull")){
+        if ( afConfig.isFeatureBoolean( AutoFeatures.playSoundIfInventoryIsFull ) ){
 
             List<String> EnabledOrDisabledLore = createLore(
                     GuiConfig.getString("Gui.Lore.FullSoundEnabled"),
@@ -58,7 +60,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         }
 
-        if (configThings.getBoolean("Options.General.hologramIfInventoryIsFull")){
+        if ( afConfig.isFeatureBoolean( AutoFeatures.hologramIfInventoryIsFull ) ){
 
             List<String> EnabledOrDisabledLore = createLore(
                     GuiConfig.getString("Gui.Lore.FullHologramEnabled"),
@@ -74,7 +76,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         }
 
-        if (configThings.getBoolean("Options.General.AreEnabledFeatures")){
+        if ( afConfig.isFeatureBoolean( AutoFeatures.areEnabledFeatures ) ){
 
             List<String> EnabledOrDisabledLore = createLore(
                     GuiConfig.getString("Gui.Lore.EnabledAll"),
@@ -90,7 +92,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         }
 
-        if (configThings.getBoolean("Options.AutoPickup.AutoPickupEnabled")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupEnabled ) ) {
             // Lore of the button
             List<String> autoPickupLore = createLore(
                     GuiConfig.getString("Gui.Lore.AutoPickupGuiManager"),
@@ -103,12 +105,12 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
                     GuiConfig.getString("Gui.Lore.AutoPickupGuiManager"),
                     GuiConfig.getString("Gui.Lore.RightClickToEnable"),
                     GuiConfig.getString("Gui.Lore.LeftClickToOpen"));
-            autoPickup = createButton(Material.REDSTONE_BLOCK, 1, autoPickupLore, SpigotPrison.format("&3" + "AutoPickup Disabled"));
+            autoPickup = createButton(Material.REDSTONE_BLOCK, 1, autoPickupLore, SpigotPrison.format("&c" + "AutoPickup Disabled"));
         }
 
 
 
-        if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltEnabled")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltEnabled ) ) {
             // Lore of the button
             List<String> autoSmeltLore = createLore(
                     GuiConfig.getString("Gui.Lore.AutoSmeltGuiManager"),
@@ -121,12 +123,12 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
                     GuiConfig.getString("Gui.Lore.AutoSmeltGuiManager"),
                     GuiConfig.getString("Gui.Lore.RightClickToEnable"),
                     GuiConfig.getString("Gui.Lore.LeftClickToOpen"));
-            autoSmelt = createButton(Material.REDSTONE_BLOCK, 1, autoSmeltLore, SpigotPrison.format("&3" + "AutoSmelt Disabled"));
+            autoSmelt = createButton(Material.REDSTONE_BLOCK, 1, autoSmeltLore, SpigotPrison.format("&c" + "AutoSmelt Disabled"));
         }
 
 
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockEnabled")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockEnabled ) ) {
             // Lore of the button
             List<String> autoBlockLore = createLore(
                     GuiConfig.getString("Gui.Lore.AutoBlockGuiManager"),
@@ -140,7 +142,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
                     GuiConfig.getString("Gui.Lore.AutoBlockGuiManager"),
                     GuiConfig.getString("Gui.Lore.RightClickToEnable"),
                     GuiConfig.getString("Gui.Lore.LeftClickToOpen"));
-            autoBlock = createButton(Material.REDSTONE_BLOCK, 1, autoBlockLore, SpigotPrison.format("&3" + "AutoBlock Disabled"));
+            autoBlock = createButton(Material.REDSTONE_BLOCK, 1, autoBlockLore, SpigotPrison.format("&c" + "AutoBlock Disabled"));
         }
 
         //Position of the button

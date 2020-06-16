@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // Config
-        Configuration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
 
         List<String> enabledLore = createLore(
@@ -43,7 +45,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
                 "&8Right Click to enable"
         );
 
-        if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltAllBlocks")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltAllBlocks ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -51,7 +53,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltGoldOre")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltGoldOre ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -59,7 +61,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoSmelt.AutoSmeltIronOre")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltIronOre ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
             inv.addItem(Enabled);
         } else {

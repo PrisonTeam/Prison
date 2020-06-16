@@ -33,7 +33,13 @@ public class AutoFeaturesFileConfig {
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, true),
-    	
+
+			lore(options),
+				isLoreEnabled(lore, true),
+				lorePickupValue(lore, "Pickup"),
+				loreSmeltValue(lore, "Smelt"),
+				loreBlockValue(lore, "Block"),
+				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
 		    	autoPickupAllBlocks(autoPickup, true),
@@ -79,37 +85,57 @@ public class AutoFeaturesFileConfig {
     	;
 
 
-    	private final boolean section;
+    	private final boolean isSection;
+    	private final boolean isBoolean;
+    	private final boolean isMessage;
+    	
     	private final String path;
     	private final String message;
     	private final Boolean value;
+    	
     	private AutoFeatures() {
-    		this.section = true;
+    		this.isSection = true;
+    		this.isBoolean = false;
+    		this.isMessage = false;
     		this.path = null;
     		this.message = null;
     		this.value = null;
     	}
     	private AutoFeatures(AutoFeatures section) {
-    		this.section = true;
+    		this.isSection = true;
+    		this.isBoolean = false;
+    		this.isMessage = false;
     		this.path = section.getKey();
     		this.message = null;
     		this.value = null;
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
-    		this.section = false;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = true;
     		this.path = section.getKey();
     		this.message = message;
     		this.value = null;
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
-    		this.section = false;
+    		this.isSection = false;
+    		this.isBoolean = true;
+    		this.isMessage = false;
     		this.path = section.getKey();
     		this.message = null;
     		this.value = value == null ? Boolean.FALSE : value;
     	}
+    	
 		public boolean isSection() {
-			return section;
+			return isSection;
 		}
+		public boolean isBoolean() {
+			return isBoolean;
+		}
+		public boolean isMessage() {
+			return isMessage;
+		}
+		
 		public String getPath() {
 			return path;
 		}
@@ -182,6 +208,11 @@ public class AutoFeaturesFileConfig {
         
         if(!getConfigFile().exists()){
             createConfigurationFile();
+            
+            Output.get().logWarn( 
+            		String.format( "Notice: AutoManager config was just created. " +
+            				"You must configure it to use it. File: %s", 
+            				getConfigFile().getName()) );
         }
 
         // Load the configuration file:
@@ -205,56 +236,56 @@ public class AutoFeaturesFileConfig {
 				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
 				
 				// Not yet enabled... this will fully replace the line items below:
-//			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
-//					autoFeat.setFileConfig( conf );
-//				}
+			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
+					autoFeat.setFileConfig( conf );
+				}
 				
 				
-				conf.createSection("Messages");
-				conf.createSection("Options");
-				
-				conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
-				conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
-				conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
-				
-				conf.set("Options.General.AreEnabledFeatures", false);
-				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
-				conf.set("Options.General.playSoundIfInventoryIsFull", true);
-				conf.set("Options.General.hologramIfInventoryIsFull", true);
-				
-				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
-				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
-				conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
-				conf.set("Options.AutoPickup.AutoPickupStone",true);
-				conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
-				conf.set("Options.AutoPickup.AutoPickupIronOre", true);
-				conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
-				conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
-				conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
-				conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
-				conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
-				conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
-				conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
-				conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
-				
-				conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
-				conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
-				conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
-				conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
-				
-				conf.set("Options.AutoBlock.AutoBlockEnabled", true);
-				conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
-				conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
-				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
+//				conf.createSection("Messages");
+//				conf.createSection("Options");
+//				
+//				conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
+//				conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
+//				conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
+//				
+//				conf.set("Options.General.AreEnabledFeatures", false);
+//				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
+//				conf.set("Options.General.playSoundIfInventoryIsFull", true);
+//				conf.set("Options.General.hologramIfInventoryIsFull", true);
+//				
+//				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
+//				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
+//				conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
+//				conf.set("Options.AutoPickup.AutoPickupStone",true);
+//				conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupIronOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
+//				conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
+//				conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
+//				
+//				conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+//				conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
+//				conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
+//				conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+//				
+//				conf.set("Options.AutoBlock.AutoBlockEnabled", true);
+//				conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
+//				conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
+//				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
 				
 				conf.save(getConfigFile());
 			} catch (IOException e) {
@@ -268,6 +299,83 @@ public class AutoFeaturesFileConfig {
 		
 	}
 
+	/**
+	 * <p>This updates AutoFeatures with a String value.
+	 * </p>
+	 * 
+	 * @param feature
+	 * @param value
+	 */
+	public void setFeature( AutoFeatures feature, String value ) {
+		
+		if ( feature.isSection() ) {
+			Output.get().logError( 
+					String.format( "Error: AutoFeature %s is a section (path) and cannot be " +
+							"used with a value. value = [%s]", 
+							feature.getKey(), 
+							( value == null ? "null" : value )) );
+			
+		}
+		else if ( value == null || value.trim().length() == 0 ) {
+			Output.get().logError( 
+					String.format( "Error: AutoFeature %s value cannot be null or empty.", 
+							feature.getKey()) );
+		} 
+		else if ( !feature.isMessage() ) {
+			Output.get().logError( 
+					String.format( "Error: AutoFeature %s value is not a message type so it " +
+							"cannot be assigned a message.", 
+							feature.getKey()) );
+		}
+		else {
+			getConfig().set( feature.getKey(), value.trim() );
+		}
+		
+	}
+	
+	/**
+	 * <p>This updates AutoFeatures with a boolean value.
+	 * </p>
+	 * 
+	 * @param feature
+	 * @param value
+	 */
+	public void setFeature( AutoFeatures feature, boolean value ) {
+		
+		if ( feature.isSection() ) {
+			Output.get().logError( 
+					String.format( "Error: AutoFeature %s is a section (path) and cannot be " +
+							"used with a value. value = [%s]", 
+							feature.getKey(), 
+							Boolean.valueOf( value ).toString() ) );
+			
+		} 
+		else if ( !feature.isBoolean() ) {
+			Output.get().logError( 
+					String.format( "Error: AutoFeature %s value is not a boolean type so it " +
+							"cannot be assigned a boolean value.", 
+							feature.getKey()) );
+		}
+		else {
+			getConfig().set( feature.getKey(), value );
+		}
+		
+	}
+	
+
+
+	public boolean isFeatureBoolean( AutoFeatures feature ) {
+		return getConfig().getBoolean( feature.getKey()) ;
+	}
+	
+	
+	public String getFeatureMessage( AutoFeatures feature ) {
+		return getConfig().getString( feature.getKey() );
+	}
+	
+	public boolean saveConf() {
+		return saveConf( getConfig() );
+	}
 
 	/**
 	 * <p>This function attempts to save the AutoFeatures configurations to the
@@ -281,8 +389,7 @@ public class AutoFeaturesFileConfig {
 	 * @param afConfig
 	 * @return
 	 */
-	public boolean saveConf( FileConfiguration afConfig )
-	{
+	private boolean saveConf( FileConfiguration afConfig ) {
 		boolean success = false;
 		
 		File cFile = getConfigFile();
@@ -310,6 +417,7 @@ public class AutoFeaturesFileConfig {
 		return success;
 	}
 
+	
 	public File getConfigFile() {
 		if ( this.configFile == null ) {
 			this.configFile = new File(
@@ -321,11 +429,12 @@ public class AutoFeaturesFileConfig {
 		this.configFile = configFile;
 	}
 
-	public FileConfiguration getConfig() {
+	private FileConfiguration getConfig() {
 		return config;
 	}
-	public void setConfig( FileConfiguration config ) {
+	private void setConfig( FileConfiguration config ) {
 		this.config = config;
 	}
+
 
 }

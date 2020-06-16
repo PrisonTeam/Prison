@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
 
         // Config
-        Configuration configThings = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         List<String> enabledLore = createLore(
                 GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
@@ -42,7 +44,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
                 GuiConfig.getString("Gui.Lore.RightClickToEnable")
         );
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockAllBlocks")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockAllBlocks ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -50,7 +52,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockGoldBlock")) {
+        if (  afConfig.isFeatureBoolean( AutoFeatures.autoBlockGoldBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -58,7 +60,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockIronBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockIronBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Iron_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -66,7 +68,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockCoalBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockCoalBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Coal_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -74,7 +76,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockDiamondBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockDiamondBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Diamond_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -82,7 +84,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockRedstoneBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockRedstoneBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Redstone_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -90,7 +92,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockEmeraldBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockEmeraldBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Emerald_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -98,7 +100,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockQuartzBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockQuartzBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -106,7 +108,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockPrismarineBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockPrismarineBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Prismarine_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -114,7 +116,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockLapisBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockLapisBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Lapis_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -122,7 +124,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockSnowBlock")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockSnowBlock ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Block Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -130,7 +132,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if (configThings.getBoolean("Options.AutoBlock.AutoBlockGlowstone")) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockGlowstone ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Glowstone_Block Enabled"));
             inv.addItem(Enabled);
         } else {

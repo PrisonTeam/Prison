@@ -11,8 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -27,6 +25,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
@@ -75,9 +74,9 @@ public class AutoManagerFeatures
 
 	private Random random = new Random();
 	
-    private FileConfiguration autoFeaturesConfig = null;
+    private AutoFeaturesFileConfig autoFeaturesConfig = null;
 	
-	private Configuration autoConfigs;
+//	private Configuration autoConfigs;
 	
 	private boolean areEnabledFeatures = false;
 
@@ -131,99 +130,108 @@ public class AutoManagerFeatures
 	
 	private void setup() {
 		
-		this.autoConfigs = getAutoFeaturesConfig();
+		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
+		
+//		this.autoConfigs = getAutoFeaturesConfig();
 //		this.autoConfigs = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
-		this.areEnabledFeatures = autoConfigs.getBoolean("Options.General.AreEnabledFeatures");
+		this.areEnabledFeatures = isBoolean( AutoFeatures.areEnabledFeatures );
 		
 		//if (isAreEnabledFeatures()) 
 		{
 			
-			this.dropItemsIfInventoryIsFull = autoConfigs.getBoolean("Options.General.DropItemsIfInventoryIsFull");
-			this.playSoundIfInventoryIsFull = autoConfigs.getBoolean("Options.General.playSoundIfInventoryIsFull");
-			this.hologramIfInventoryIsFull = autoConfigs.getBoolean("Options.General.hologramIfInventoryIsFull");
+			this.dropItemsIfInventoryIsFull = isBoolean( AutoFeatures.dropItemsIfInventoryIsFull );
+			this.playSoundIfInventoryIsFull = isBoolean( AutoFeatures.playSoundIfInventoryIsFull );
+			this.hologramIfInventoryIsFull = isBoolean( AutoFeatures.hologramIfInventoryIsFull );
 			
 			// AutoPickup booleans from configs
-			this.autoPickupEnabled = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEnabled");
-			this.autoPickupAllBlocks = autoConfigs.getBoolean("Options.AutoPickup.AutoPickupAllBlocks");
-			this.autoPickupCobbleStone = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupCobbleStone");
-			this.autoPickupStone = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupStone");
-			this.autoPickupGoldOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupGoldOre");
-			this.autoPickupIronOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupIronOre");
-			this.autoPickupCoalOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupCoalOre");
-			this.autoPickupDiamondOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupDiamondOre");
-			this.autoPickupRedstoneOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupRedstoneOre");
-			this.autoPickupEmeraldOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupEmeraldOre");
-			this.autoPickupQuartzOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupQuartzOre");
-			this.autoPickupLapisOre = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupLapisOre");
-			this.autoPickupSnowBall = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupSnowBall");
-			this.autoPickupGlowstoneDust = autoPickupAllBlocks || autoConfigs.getBoolean("Options.AutoPickup.AutoPickupGlowstoneDust");
+			this.autoPickupEnabled = isBoolean( AutoFeatures.autoPickupEnabled );
+			this.autoPickupAllBlocks = isBoolean( AutoFeatures.autoPickupAllBlocks );
+			this.autoPickupCobbleStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCobbleStone );
+			this.autoPickupStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupStone );
+			this.autoPickupGoldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGoldOre );
+			this.autoPickupIronOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupIronOre );
+			this.autoPickupCoalOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCoalOre );
+			this.autoPickupDiamondOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupDiamondOre );
+			this.autoPickupRedstoneOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupRedStoneOre );
+			this.autoPickupEmeraldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupEmeraldOre );
+			this.autoPickupQuartzOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupQuartzOre );
+			this.autoPickupLapisOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupLapisOre );
+			this.autoPickupSnowBall = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupSnowBall );
+			this.autoPickupGlowstoneDust = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGlowstoneDust );
 			
 			// AutoSmelt booleans from configs
-			this.autoSmeltEnabled = autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltEnabled");
-			this.autoSmeltAllBlocks = autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltAllBlocks");
-			this.autoSmeltGoldOre = autoSmeltAllBlocks || autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltGoldOre");
-			this.autoSmeltIronOre = autoSmeltAllBlocks || autoConfigs.getBoolean("Options.AutoSmelt.AutoSmeltIronOre");
+			this.autoSmeltEnabled = isBoolean( AutoFeatures.autoSmeltEnabled );
+			this.autoSmeltAllBlocks = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+			this.autoSmeltGoldOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltGoldOre );
+			this.autoSmeltIronOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltIronOre );
 			
 			// AutoBlock booleans from configs
-			this.autoBlockEnabled = autoConfigs.getBoolean("Options.AutoBlock.AutoBlockEnabled");
-			this.autoBlockAllBlocks = autoConfigs.getBoolean("Options.AutoBlock.AutoBlockAllBlocks");
-			this.autoBlockGoldBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockGoldBlock");
-			this.autoBlockIronBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockIronBlock");
-			this.autoBlockCoalBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockCoalBlock");
-			this.autoBlockDiamondBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockDiamondBlock");
-			this.autoBlockRedstoneBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockRedstoneBlock");
-			this.autoBlockEmeraldBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockEmeraldBlock");
-			this.autoBlockQuartzBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockQuartzBlock");
-			this.autoBlockPrismarineBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockPrismarineBlock");
-			this.autoBlockLapisBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockLapisBlock");
-			this.autoBlockSnowBlock = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockSnowBlock");
-			this.autoBlockGlowstone = autoBlockAllBlocks || autoConfigs.getBoolean("Options.AutoBlock.AutoBlockGlowstone");
+			this.autoBlockEnabled = isBoolean( AutoFeatures.autoBlockEnabled );
+			this.autoBlockAllBlocks = isBoolean( AutoFeatures.autoBlockAllBlocks );
+			this.autoBlockGoldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGoldBlock );
+			this.autoBlockIronBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockIronBlock );
+			this.autoBlockCoalBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockCoalBlock );
+			this.autoBlockDiamondBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockDiamondBlock );
+			this.autoBlockRedstoneBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockRedstoneBlock );
+			this.autoBlockEmeraldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockEmeraldBlock );
+			this.autoBlockQuartzBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockQuartzBlock );
+			this.autoBlockPrismarineBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockPrismarineBlock );
+			this.autoBlockLapisBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockLapisBlock );
+			this.autoBlockSnowBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockSnowBlock );
+			this.autoBlockGlowstone = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGlowstone );
 			
 		}
 	}
 	
+	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
+		return autoFeaturesConfig;
+	}
+	
+	private boolean isBoolean( AutoFeatures feature ) {
+		return autoFeaturesConfig.isFeatureBoolean( feature );
+	}
 	
 
-	/**
-     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
-     * the file is loaded from the file system only one time and only when it is first
-     * used.  This ensures that if it is never used, it is never loaded in to memory.
-     * </p>
-     * 
-     * @return
-     */
-    public FileConfiguration getAutoFeaturesConfig() {
-    	if ( this.autoFeaturesConfig == null ) {
-    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-    		this.autoFeaturesConfig = afc.getConfig();
-
-    	}
-        return autoFeaturesConfig;
-    }
+//	/**
+//     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
+//     * the file is loaded from the file system only one time and only when it is first
+//     * used.  This ensures that if it is never used, it is never loaded in to memory.
+//     * </p>
+//     * 
+//     * @return
+//     */
+//    private FileConfiguration getAutoFeaturesConfig() {
+//    	if ( this.autoFeaturesConfig == null ) {
+//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
+//    		this.autoFeaturesConfig = afc.getConfig();
+//
+//    	}
+//        return autoFeaturesConfig;
+//    }
     
     
-    /**
-     * <p>This change in this function, to move it in to this class, allows the 
-     * reloading of the parameters that controls all of the behaviors whenever
-     * the data is saved.
-     * </p>
-     * 
-     * @return
-     */
-    public boolean saveAutoFeaturesConfig() {
-    	boolean success = false;
-    	FileConfiguration afConfig = getAutoFeaturesConfig();
-  
-    	if ( afConfig != null ) {
-    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-    		success = afc.saveConf(afConfig);
-    		
-    		// reload the internal settings:
-    		setup();
-    	}
-    	return success;
-    }
+//    /**
+//     * <p>This change in this function, to move it in to this class, allows the 
+//     * reloading of the parameters that controls all of the behaviors whenever
+//     * the data is saved.
+//     * </p>
+//     * 
+//     * @return
+//     */
+//    public boolean saveAutoFeaturesConfig() {
+//    	boolean success = false;
+//    	FileConfiguration afConfig = getAutoFeaturesConfig();
+//  
+//    	if ( afConfig != null ) {
+//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
+//    		success = afc.saveConf(afConfig);
+//    		
+//    		// reload the internal settings:
+//    		setup();
+//    	}
+//    	return success;
+//    }
 	
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
@@ -370,7 +378,7 @@ public class AutoManagerFeatures
 
 	private void notifyPlayerThatInventoryIsFull( Player player, Block block ) {
 
-		String message = autoConfigs.getString( "Messages.InventoryIsFull" );
+		String message = autoFeaturesConfig.getFeatureMessage( AutoFeatures.inventoryIsFull );
 		
 		// Play sound when full
 		if ( isPlaySoundIfInventoryIsFull() ) {
@@ -950,10 +958,6 @@ public class AutoManagerFeatures
 
 	public boolean isHologramIfInventoryIsFull() {
 		return hologramIfInventoryIsFull;
-	}
-
-	public Configuration getAutoConfigs() {
-		return autoConfigs;
 	}
 
 	public boolean isAutoPickupEnabled() {
