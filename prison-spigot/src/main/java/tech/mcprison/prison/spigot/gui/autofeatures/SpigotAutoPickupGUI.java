@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui.autoFeatures;
+package tech.mcprison.prison.spigot.gui.autofeatures;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
