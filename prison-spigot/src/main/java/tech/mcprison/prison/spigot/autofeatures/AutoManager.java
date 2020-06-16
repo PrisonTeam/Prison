@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autoFeatures;
+package tech.mcprison.prison.spigot.autofeatures;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

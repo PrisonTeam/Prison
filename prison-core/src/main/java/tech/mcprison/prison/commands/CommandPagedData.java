@@ -4,7 +4,6 @@ import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.output.ButtonComponent;
 import tech.mcprison.prison.output.ButtonComponent.Style;
 import tech.mcprison.prison.output.ChatDisplay;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 
 public class CommandPagedData {

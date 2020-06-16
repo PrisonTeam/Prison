@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autoFeatures;
+package tech.mcprison.prison.spigot.autofeatures;
 
 import java.io.File;
 import java.io.IOException;

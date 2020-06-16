@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autoFeatures;
+package tech.mcprison.prison.spigot.autofeatures;
 
 import java.util.ArrayList;
 import java.util.Collection;
