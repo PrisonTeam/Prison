@@ -17,7 +17,7 @@ public class PrestigesCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (SpigotPrison.getInstance().getConfig().getBoolean("prestiges")) {
+        if (SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true")) {
 
             if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");

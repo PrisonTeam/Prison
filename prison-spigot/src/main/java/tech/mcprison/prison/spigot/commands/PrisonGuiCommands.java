@@ -31,6 +31,10 @@ public class PrisonGuiCommands {
 			permissions = "prison.gui", onlyPlayers = true)
 	public void prisonGui(CommandSender sender) {
 
+    	if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+    		return;
+		}
+
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
 			sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
 			return;

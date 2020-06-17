@@ -65,6 +65,10 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onGuiClosing(InventoryCloseEvent e){
 
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+            return;
+        }
+
         Player p = (Player) e.getPlayer();
 
         activeGui.remove(p.getName());
@@ -77,6 +81,10 @@ public class ListenersPrisonManager implements Listener {
 
     @EventHandler
     public void onOpenInventory(InventoryOpenEvent e) {
+
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+            return;
+        }
 
         // Get the player
         Player p = (Player) e.getPlayer();
@@ -145,6 +153,10 @@ public class ListenersPrisonManager implements Listener {
     // InventoryClickEvent
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
+
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+            return;
+        }
 
         Player p = (Player) e.getWhoClicked();
 

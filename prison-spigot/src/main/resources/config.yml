@@ -11,6 +11,9 @@ show-alerts: true
 slime-fun: false
 prestiges: false
 
+# Enable or disable all the GUIs, for more options please check inside the GuiConfig.yml
+prison-gui-enabled: true
+
 default-language: en_US
 
 # The storage engine that Prison should use to store data.

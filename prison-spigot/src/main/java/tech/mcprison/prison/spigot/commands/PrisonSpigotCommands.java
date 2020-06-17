@@ -26,6 +26,10 @@ public class PrisonSpigotCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+            return true;
+        }
+
         if(!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)){
             sender.sendMessage(SpigotPrison.format("&cLooks like you aren't a player"));
             return true;
@@ -40,7 +44,7 @@ public class PrisonSpigotCommands implements CommandExecutor {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         if (args.length == 0) {
-            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui-ranks-mines-"));
+            sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui-ranks-mines-prestiges-"));
             return true;
         }
 
@@ -70,12 +74,9 @@ public class PrisonSpigotCommands implements CommandExecutor {
             }
         } else if (args[0].equalsIgnoreCase("mines")){
             if (GuiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true")){
-                if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
-                    if (sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))) {
-                        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                        gui.open();
-                        return true;
-                    }
+                if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true") && sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))){
+                    SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+                    gui.open();
                     return true;
                 }
                 SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
@@ -83,13 +84,16 @@ public class PrisonSpigotCommands implements CommandExecutor {
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("prestiges")){
-            p = null;
-            if (sender instanceof Player) {
-                p = (Player) sender;
+            if (GuiConfig.getString("Options.Prestiges.GUI_Enabled").equalsIgnoreCase("true")){
+                if (GuiConfig.getString("Options.Prestiges.Permission_GUI_Enabled").equalsIgnoreCase("true") && sender.hasPermission(GuiConfig.getString("Options.Prestiges.Permission_GUI"))){
+                    SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
+                    gui.open();
+                    return true;
+                }
+                SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
+                gui.open();
+                return true;
             }
-            SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
-            gui.open();
-            return true;
         }
 
         return true;
