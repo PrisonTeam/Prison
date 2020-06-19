@@ -64,7 +64,7 @@ public class SpigotBlock implements Block {
     @SuppressWarnings( "deprecation" )
 	@Override public void setType(BlockType type) {
     	
-    	if ( type != BlockType.IGNORE ) {
+    	if ( type != null && type != BlockType.IGNORE ) {
     		try {
 				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
 				bBlock.setType(materialData.getItemType(), false);
@@ -76,7 +76,7 @@ public class SpigotBlock implements Block {
 			catch ( Exception e ) {
 				Output.get().logError( 
 						String.format( "BlockType could not be set: %s %s ", 
-						type.name(), e.getMessage()) );
+						(type == null ? "(null)" : type.name()), e.getMessage()) );
 			}
     	}
     }
