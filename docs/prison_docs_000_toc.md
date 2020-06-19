@@ -63,9 +63,12 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
  
 **Work In Progress**
 
-* Setting up mines
+* [Setting up Mines](prison_docs_101_setting_up_mines.md)
+	Basics of creating. Searching for Blocks. Customizing. One-block mine example with HolographicDisplays.
+
 
 * Setting up Ranks & Ladders
+
 
 * Configuring Commands for the Ranks
 
@@ -81,13 +84,12 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 * Prison Command Overview: /prison /mines /ranks /rankup
 
-* [Setting up Mines](prison_docs_101_setting_up_mines.md)
-
 
 * Changing Mine Settings
 
 
 * Setting up Ranks
+
 
 * Changing Rank Settings
 

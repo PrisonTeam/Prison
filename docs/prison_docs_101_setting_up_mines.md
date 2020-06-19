@@ -13,6 +13,12 @@ This document provides some highlights to how to setup mines.  It is a work in p
 This document should be able to provide the basic information to get your mines configured.  There are many options available within Prison, and also through the use of other plugins, and these advanced topics are beyond the scope of this document.
 
 
+Items to add to this document:
+* Use of **/mines set area** to change the mine size without deleting it.
+* Use of **/mines delete** how it works and how to recover a deleted mine.
+* Use of **/mines list**
+* Use of **/mines reset** provide a little information about how it works in relationship to the other settings and commands.  There are some internal things that happen and this will help clarify how the other settings are impacted.
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
@@ -26,7 +32,7 @@ These instructions assume you are OP'd since that is part of the above document 
 
 To follow along with this documentation, you may want to crate your first mine as a test, with intentions of deleting it later.  It may be easier to remove it, than to convert it over to a final product.  The instructions here are informational, not focused on perfection.  So after you figure out how to create your mines, you may want to provide more attention to the details to ensure they are perfect.  But for now, the focus is on the commands.
 
-Please note that all command provide in this document will be treated as if they are in game.  If you use them from console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.
+Please note that all command provide in this document will be written as if they were entered within the game.  If you use some of them from the console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -36,7 +42,7 @@ Please note that all command provide in this document will be treated as if they
 
 Being OP'd, find a good location for your mines.
 
-Also the following commands may help setup the environment.  Optional of course.  Having some block in your inventory can be useful for use as scaffolding or selecting.  I personally like to use sealanterns because they are not common block and they stand out well in low light conditions and are easier to see in screen prints. Giving yourself `/fly` and `/god` may not be necessary, but it could help if you need to find a good location, or if there are mobs in the area when you drop out of creative mode and back in to survival.
+Also the following commands may help setup the environment.  Optional of course.  Having some block in your inventory can be useful for use as scaffolding or selecting.  I personally like to use sealanterns because they are not a common block and they stand out well in low light conditions and are easier to see in screen prints. Giving yourself `/fly` and `/god` may not be necessary, but it could help if you need to find a good location, or if there are mobs in the area when you drop out of creative mode and back in to survival.
 
 ```
 /op <yourIGN>
@@ -80,11 +86,13 @@ Then create the mine with:
 /mines create test1
 ```
 
-It will default to 100% air.  So then follow up creating the new mine with a reset to confirm everything is replaced with air:
+It will default to 100% air.  So then follow up creating the new mine with a reset to confirm everything is replaced with air.
 
 
 
 <h3>Reset the New Mine to Test it Exists</h3>
+
+Go ahead and reset the mine.  All of the sealanters that were used to mark the mine are now gone, and so are the two layers of dirt.  That confirms success with our first mine.
 
 ```
 /mines reset test1
@@ -96,7 +104,9 @@ It will default to 100% air.  So then follow up creating the new mine with a res
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-#Mine Commands Overview
+
+
+# Mine Commands Overview
 
 Now that we've created a mine, let's take a moment and review some of the available commands.  There are a lot of options available, and many of those options have numerous features, so this will just be an overview so you have a better idea of what you could possibly do with your new mines. This listing is generated within the console so it's easier to see.  This includes the main grouping of commands, which is displayed with `/mines` (remember, when using commands within the console drop the leading slash).  Then two sub-groups: `/mines block` and also `/mines set`.
 
@@ -110,7 +120,7 @@ For the following commands, we can use the console, which is also easier to see 
 
 Some of the highlights of these commands are as follows:
 * `/mines create` : Create the mine based upon the wand selection.
-* `/mines command` : Not active. Future Feature. Will be able to run commands during mine resets, similar to running commands during /rankup.
+* `/mines command` : Not yet active. This is a future feature.  Commands have been hooked hooked up and can run, but have been disabled since there are other Features that are needed to support more complex resets.  Will be able to run commands during mine resets, similar to running commands during /rankup. The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
 * `/mines delete` : Deletes a mine. You can always undelete a mine by going in to the server file system and rename the deleted mine, then restart the server.
 * `/mines info` : Very useful in viewing all information related to the mine.
 * `/mines list` : Displays all mines on your server.
@@ -271,9 +281,10 @@ Then select the following ores and add them to the new mine, all at 10%.  Add go
 <img src="images/prison_docs_101_setting_up_mines_17.png" alt="One block settings" title="One block settings" width="600" />  
 
 
-Now let's test our new mine.  But first let's make an OP pick.  Open the config file `/plugins/Essentials/config.yml` and search for `unsafe-enchantments` and set the value to `true` and then save and exit the file.  Then issue the commands in game, holding the pick after you get it.
+Now let's test our new mine.  But first let's make an OP pick.  Open the config file `/plugins/Essentials/config.yml` and search for `unsafe-enchantments` and set the value to `true` and then save and exit the file.  You can either restart the server, or use `/essentials reload` to apply those changes.  Then issue the commands in game, holding the pick after you get it.
 
 ```
+/essentials reload
 /give <yourIGN> diamondpick 1
 /enchant efficiency 20
 /enchant durability 20
@@ -300,13 +311,15 @@ oneBottom:
 
 ```
 
-Once you make these changes and save them, reload bolographic displays with `/hd reload`.  You can then tweak the position of the HolographicDisplays so they are just centered on the mine, and keep reloading until you get it right.  The X and Z axis should be x.5 and z.5, or "point 5", or half blocks to exactly center them.  First get them centered on the mine, you can walk around the mine to confirm it looks centered.  Then move each one up, or down, as needed.  With the results looking like the following...
+Once you make these changes and save them, reload bolographic displays with `/hd reload`.  You can then tweak the position of the HolographicDisplays so they are just centered on the mine, and keep reloading until you get it right.  The X and Z axis should be x.5 and z.5, or "point 5", or half blocks to exactly center them.  First get them centered on the mine, you can walk around the mine to confirm it looks centered.  Then move each one up, or down, as needed.  With the results looking like the following:
 
 
 <img src="images/prison_docs_101_setting_up_mines_18.png" alt="One block Holographs" title="One block Holographs" width="600" />  
 
 
 Now to complete this mine, let's enable auto manager.  We can do that by turning on Auto Manager for all of our mines, or we can just add a few ore entries to our OP pick.  For this example, let's go with the lore.  Enter these commands (assuming you have Essentials installed).  Using `/prison autofeatures` command to review the correct names for the lore.  Please note for this example I'm using 100% since no numbers are specified with these Lore names.
+
+It should be noted that Prison's Auto Features is currently in a state of development and may change with how these settings should be applied.  Efforts will be made to keep these instructions up to date, but they may be missed.  If you notice that this has happened, then please contact RoyalBlueRanger on the discord server and he will get this corrected. ###  Auto Features are not needed to demonstrate this one block mine, but it does illustrate a few more capabilities that exist within Prison and how a few settings can provide a different experience.
 
 ```
 /prison autofeatures

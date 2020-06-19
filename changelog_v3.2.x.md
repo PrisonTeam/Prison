@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.1-alpha.15 - 2020-06-13
 
+
+* **Ranks names cannot contain formating**
+Made it so new rank names cannot contain & formatting.  It causes issues and that's what tags are for.
+This change mitigates any preexisting ranks that may have been created with formatting, the /ranks list now escapes the & characters by replacing them with -.  Then the /ranks info command is now  able to use those escaped names.  The results of this change is that new ranks cannot contain & formatting, but preexisting ranks should continue to work and could eliminate issues.
+There was an issue with /ranks list and formatted names causing issues with on click events.
+
+
 * **New Feature: Prestige!  Significant work on Prestige added!**
 Gabryca provided a lot of enhancements and features to the new Prestige system that he has been working on.  It was merged with bleeding from it's own branch.  It was pulled in because it has reached a point where it can start being used and undergo testing.
 
