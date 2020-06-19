@@ -220,7 +220,7 @@ public class PlayerManager
 		if ( !rankPlayer.getRanks().isEmpty()) {
 			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
 				if ( sb.length() > 0 ) {
-					sb.append(", ");
+					sb.append(" ");
 				}
 				sb.append(entry.getValue().name);
 			}
@@ -234,9 +234,9 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
-    			if ( sb.length() > 0 ) {
-    				sb.append(", ");
-    			}
+//    			if ( sb.length() > 0 ) {
+//    				sb.append(" ");
+//    			}
     			sb.append(entry.getValue().tag);
     		}
     	}
@@ -369,7 +369,7 @@ public class PlayerManager
     			RankLadder key = entry.getKey();
     			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
     				if ( sb.length() > 0 ) {
-    					sb.append(", ");
+    					sb.append(" ");
     				}
     				sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().name);
     			}
@@ -386,9 +386,9 @@ public class PlayerManager
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
-    				if ( sb.length() > 0 ) {
-    					sb.append(", ");
-    				}
+//    				if ( sb.length() > 0 ) {
+//    					sb.append(", ");
+//    				}
     				sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().tag);
     			}
     		}
