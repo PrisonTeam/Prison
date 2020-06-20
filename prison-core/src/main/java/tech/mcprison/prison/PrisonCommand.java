@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -391,7 +392,8 @@ public class PrisonCommand {
     	UUID playerUuid = (player == null ? null : player.getUUID());
     	String translated = Prison.get().getPlatform().placeholderTranslateText( playerUuid, text );
     	
-    	builder.add( String.format( "&a    Include one or more placeholders with other text..."));
+    	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
+    	builder.add( String.format( "&a    Use { } to escape the placeholders."));
     	builder.add( String.format( "&7  Original:   %s", text));
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
@@ -404,15 +406,62 @@ public class PrisonCommand {
 		return player.isPresent() ? player.get() : null;
 	}
    
+
+    /**
+     * <p>Gets a player by name.  If the player is not online, then try to get them from 
+     * the offline player list. If not one is found, then return a null.
+     * </p>
+     * 
+     * @param sender
+     * @param playerName is optional, if not supplied, then sender will be used
+     * @return Player if found, or null.
+     */
+	private Player getPlayer( CommandSender sender, String playerName ) {
+		Player result = null;
+		
+		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
+		
+		if ( playerName != null ) {
+			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+			if ( !opt.isPresent() ) {
+				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+			}
+			if ( opt.isPresent() ) {
+				result = opt.get();
+			}
+		}
+		return result;
+	}
+	
     @Command(identifier = "prison placeholders search", 
     				description = "Search all placeholders that match all patterns", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersSearchCommand(CommandSender sender,
-    		@Arg(name = "page", description = "page number of results to display") String pageNumber,
+    		@Arg(name = "playerName", description = "Player name", def = "." ) String playerName,
+    		@Arg(name = "pageNumber", description = "page number of results", def = "." ) String pageNumber,
     		@Wildcard(join=true)
-    		@Arg(name = "patterns", description = "Patterns of placeholders to search for", 
-    					def = " " ) String patterns ) {
+    		@Arg(name = "patterns", description = "Patterns of placeholders to search for" ) String patterns ) {
     
+    	
+    	
+    	// blank defaults do not work when there are more than one at a time.  So had to
+    	// default to periods.  So convert periods to blanks initially:
+    	playerName = (playerName.equals( "." ) ? "" : playerName );
+    	pageNumber = (pageNumber.equals( "." ) ? "" : pageNumber );
+    	patterns = (patterns.equals( "." ) ? "" : patterns );
+    	
+    	Player player = getPlayer( null, playerName );
+    	if ( player == null ) {
+    		// No player found, or none specified. Need to shift parameters over by one:
+    		if ( pageNumber != null && pageNumber.trim().length() > 0 ) {
+    			
+    			// playerName should be moved to the pageNumber, after pageNumber is moved to patterns:
+    			patterns = (pageNumber.trim() + " " + patterns).trim();
+    		} 
+    		pageNumber = playerName;
+    	}
+    	
+    	
     	int page = 1;
     	
     	/**
@@ -433,6 +482,7 @@ public class PrisonCommand {
     		
     	}
     	
+
     	// Cannot allow pages less than 1:
     	if ( page < 1 ) {
     		page = 1;
@@ -449,16 +499,24 @@ public class PrisonCommand {
         BulletedListComponent.BulletedListBuilder builder =
                 						new BulletedListComponent.BulletedListBuilder();
         
+        if ( player == null ) {
+        	// playerName was not provided, or was invalid. So use sender.
+        	player = getPlayer( sender );
+        }
+        UUID playerUuid = (player == null ? null : player.getUUID());
+        
+        List<String> placeholders = Prison.get().getPlatform()
+        		.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
+        
         builder.add( String.format( "&a    Include one or more patterns to search for placeholders. If more"));
         builder.add( String.format( "&a    than one is provided, the returned placeholder will hit on all."));
+        builder.add( String.format( "&a    Player based placeholders will return nulls for values if ran from console,"));
+        builder.add( String.format( "&a    unless player name is specified. Can view placeholders for any player."));
         
-        builder.add( String.format( "&7  Original patterns:  &3%s", patterns ));
-
-    	Player player = getPlayer( sender );
-    	UUID playerUuid = (player == null ? null : player.getUUID());
-    	
-    	List<String> placeholders = Prison.get().getPlatform()
-    						.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
+        
+        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        builder.add( String.format( "&7  Results: &c%s  &7Original patterns:  &3%s", 
+        		dFmt.format(placeholders.size()), patterns ));
     	
         
         CommandPagedData cmdPageData = new CommandPagedData(

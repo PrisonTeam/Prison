@@ -59,7 +59,7 @@ public class ChatHandler {
     		String key = "{" + placeHolderKey.getKey() + "}";
     		if ( newFormat.contains( key )) {
     			newFormat = newFormat.replace(key, Text.translateAmpColorCodes(
-    					pm.getTranslatePlayerPlaceHolder( e.getPlayer().getUUID(), placeHolderKey.getPlaceholder() ) ));
+    					pm.getTranslatePlayerPlaceHolder( e.getPlayer().getUUID(), placeHolderKey ) ));
     		}
     	}
         

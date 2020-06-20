@@ -627,8 +627,12 @@ class SpigotPlatform implements Platform {
 		List<String> results = new ArrayList<>();
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
+		
+		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     	
-		List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
+		List<PlaceHolderKey> placeholderKeys = new ArrayList<>();
+		placeholderKeys.addAll( mm.getTranslatedPlaceHolderKeys() );
+		placeholderKeys.addAll( pm.getTranslatedPlaceHolderKeys() );
 		
 		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
 			if ( placeHolderKey.isPrimary() && 
@@ -667,11 +671,11 @@ class SpigotPlatform implements Platform {
 	}
 
 	private boolean placeholderKeyContains( PrisonPlaceHolders placeholder, String key, String... patterns ) {
-		boolean results = patterns != null && patterns.length > 0;
+		boolean results = key != null && patterns != null && patterns.length > 0;
 		
 		if ( results ) {
 			for ( String pattern : patterns ) {
-				if ( key == null || pattern == null || !key.contains( pattern ) ) {
+				if ( pattern == null || !key.contains( pattern ) ) {
 					results = false;
 					break;
 				}

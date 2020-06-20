@@ -33,10 +33,12 @@ public class IntegrationManager {
 
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
+    public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
     
     public enum PlaceHolderFlags {
     	
     	PLAYER,
+    	LADDERS,
     	MINES,
     	
     	SUPRESS,
@@ -98,6 +100,23 @@ public class IntegrationManager {
 		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
+		
+		
+		// Ladder aliases:
+		prison_r_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rc_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rrt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		
+		
+		prison_rank_laddername(prison_r_laddername, PlaceHolderFlags.LADDERS),
+		prison_rank_tag_laddername(prison_rt_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_laddername(prison_rc_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_rank_laddername(prison_rr_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceHolderFlags.LADDERS),
 		
 		
 		// Mine aliases:

@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.15 - 2020-06-13
+## tag v3.2.1-alpha.15 - 2020-06-20
+
+
+* **New Feature: Ladder specific placeholders for player ranks**
+Add in placeholders for ladders.  These are rank placeholders, but targeted for specific ladders.
+Enhanced the `/prison placeholders search` to work with player based placeholders, and added support to specify the actual player too so it can work from the console. The placeholder search should now work with all placeholders and will be able to provide values for players if ran in game, or if the player's name is provided within the console.
 
 
 * **Ranks names cannot contain formating**
