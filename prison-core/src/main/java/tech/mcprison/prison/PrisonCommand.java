@@ -506,7 +506,7 @@ public class PrisonCommand {
         UUID playerUuid = (player == null ? null : player.getUUID());
         
         List<String> placeholders = Prison.get().getPlatform()
-        		.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
+        					.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
         
         builder.add( String.format( "&a    Include one or more patterns to search for placeholders. If more"));
         builder.add( String.format( "&a    than one is provided, the returned placeholder will hit on all."));

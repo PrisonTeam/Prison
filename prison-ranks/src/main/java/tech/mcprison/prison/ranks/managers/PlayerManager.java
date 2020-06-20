@@ -419,16 +419,19 @@ public class PlayerManager
     }
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
-    	
     	String results = null;
-    	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
-    	
-    	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
-				results = getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey );
-				break;
-			}
-		}
+
+    	if ( playerUuid != null ) {
+    		
+    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
+    				results = getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey );
+    				break;
+    			}
+    		}
+    	}
     	
     	return results;
     }
@@ -436,60 +439,63 @@ public class PlayerManager
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, PlaceHolderKey placeHolderKey ) {
 		String results = null;
 
-		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
-		
-		String ladderName = placeHolderKey.getData();
-		
-		Optional<RankPlayer> oPlayer = getPlayer(playerUuid);
-		
-		if ( oPlayer.isPresent() ) {
-			RankPlayer rankPlayer = oPlayer.get();
+		if ( playerUuid != null ) {
 			
-			switch ( placeHolder ) {
-				case prison_r:
-				case prison_rank:
-				case prison_r_laddername:
-				case prison_rank_laddername:
-					results = getPlayerRankName( rankPlayer, ladderName );
-					break;
-
-				case prison_rt:
-				case prison_rank_tag:
-				case prison_rt_laddername:
-				case prison_rank_tag_laddername:
-					results = getPlayerRankTag( rankPlayer, ladderName );
-					break;
-					
-				case prison_rc:
-				case prison_rankup_cost:
-				case prison_rc_laddername:
-				case prison_rankup_cost_laddername:
-					results = getPlayerNextRankCost( rankPlayer, ladderName );
-					break;
-					
-				case prison_rcp:
-				case prison_rankup_cost_percent:
-				case prison_rcp_laddername:
-				case prison_rankup_cost_percent_laddername:
-					results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
-					break;
-					
-				case prison_rr:
-				case prison_rankup_rank:
-				case prison_rr_laddername:
-				case prison_rankup_rank_laddername:
-					results = getPlayerNextRankName( rankPlayer, ladderName );
-					break;
-					
-				case prison_rrt:
-				case prison_rankup_rank_tag:
-				case prison_rrt_laddername:
-				case prison_rankup_rank_tag_laddername:
-					results = getPlayerNextRankTag( rankPlayer, ladderName );
-					break;
-					
-				default:
-					break;
+			PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
+			
+			String ladderName = placeHolderKey.getData();
+			
+			Optional<RankPlayer> oPlayer = getPlayer(playerUuid);
+			
+			if ( oPlayer.isPresent() ) {
+				RankPlayer rankPlayer = oPlayer.get();
+				
+				switch ( placeHolder ) {
+					case prison_r:
+					case prison_rank:
+					case prison_r_laddername:
+					case prison_rank_laddername:
+						results = getPlayerRankName( rankPlayer, ladderName );
+						break;
+						
+					case prison_rt:
+					case prison_rank_tag:
+					case prison_rt_laddername:
+					case prison_rank_tag_laddername:
+						results = getPlayerRankTag( rankPlayer, ladderName );
+						break;
+						
+					case prison_rc:
+					case prison_rankup_cost:
+					case prison_rc_laddername:
+					case prison_rankup_cost_laddername:
+						results = getPlayerNextRankCost( rankPlayer, ladderName );
+						break;
+						
+					case prison_rcp:
+					case prison_rankup_cost_percent:
+					case prison_rcp_laddername:
+					case prison_rankup_cost_percent_laddername:
+						results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
+						break;
+						
+					case prison_rr:
+					case prison_rankup_rank:
+					case prison_rr_laddername:
+					case prison_rankup_rank_laddername:
+						results = getPlayerNextRankName( rankPlayer, ladderName );
+						break;
+						
+					case prison_rrt:
+					case prison_rankup_rank_tag:
+					case prison_rrt_laddername:
+					case prison_rankup_rank_tag_laddername:
+						results = getPlayerNextRankTag( rankPlayer, ladderName );
+						break;
+						
+					default:
+						break;
+				}
 			}
 		}
 		

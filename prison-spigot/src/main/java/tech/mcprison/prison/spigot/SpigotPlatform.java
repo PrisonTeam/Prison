@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,7 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.Player;
@@ -590,66 +593,43 @@ class SpigotPlatform implements Platform {
 	{
 		List<String> results = new ArrayList<>();
 		
-		// First check Ranks placeholders:
-    	if ( playerUuid != null ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		
-    		List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
-    		
-    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-    			if ( placeHolderKey.isPrimary() && 
-    					placeholderKeyContains(placeHolderKey, patterns) ) {
-    				String key = "{" + placeHolderKey.getKey() + "}";
-    				String value = pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() );
-    				
-    				String keyAlias = ( placeHolderKey.getAliasName() == null ? null : 
-    											"{" + placeHolderKey.getAliasName() + "}");
-
-    				String placeholder = String.format( "  &7%s: &3%s", key, value );
-    				results.add( placeholder );
-    				
-    				if ( keyAlias != null ) {
-    					String placeholderAlias = String.format( "    &7Alias:  &b%s:", keyAlias );
-    					results.add( placeholderAlias );
-    				}
-    			}
-
-    		}
-    	}
-		
-    	results.addAll(  placeholderSearch( patterns )  );
-    	
-		return results;
-	}
-	
-	@Override
-	public List<String> placeholderSearch( String[] patterns ) 	{
-		List<String> results = new ArrayList<>();
+//		TreeMap<String, PlaceHolderKey> placeholders = new TreeMap<>();
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
-		
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     	
-		List<PlaceHolderKey> placeholderKeys = new ArrayList<>();
-		placeholderKeys.addAll( mm.getTranslatedPlaceHolderKeys() );
-		placeholderKeys.addAll( pm.getTranslatedPlaceHolderKeys() );
+		TreeMap<String, PlaceHolderKey> placeholderKeys = new TreeMap<>();
+		addAllPlaceHolderKeys( placeholderKeys, mm.getTranslatedPlaceHolderKeys() );
+		addAllPlaceHolderKeys( placeholderKeys, pm.getTranslatedPlaceHolderKeys() );
+//		placeholderKeys.addAll( mm.getTranslatedPlaceHolderKeys() );
+//		placeholderKeys.addAll( pm.getTranslatedPlaceHolderKeys() );
 		
-		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+		Set<String> keys = placeholderKeys.keySet();
+		for ( String key : keys) {
+			PlaceHolderKey placeHolderKey = placeholderKeys.get( key );
 			if ( placeHolderKey.isPrimary() && 
-					placeholderKeyContains(placeHolderKey, patterns) ) {
+											placeholderKeyContains(placeHolderKey, patterns) ) {
+				String placeholder = "{" + placeHolderKey.getKey() + "}";
+				String value = null;
 				
-				String key = "{" + placeHolderKey.getKey() + "}";
-				String value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
+				if ( placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ) {
+					value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
+				}
+				else {
+					value = pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() );
+				}
 				
-				String keyAlias = ( placeHolderKey.getAliasName() == null ? null : 
-											"{" + placeHolderKey.getAliasName() + "}");
+				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 
+					"{" + placeHolderKey.getAliasName() + "}");
 				
-				String placeholder = String.format( "  &7%s: &3%s", key, value );
-				results.add( placeholder );
+				String placeholderResults = String.format( "  &7%s: &3%s", 
+									placeholder, 
+									(value == null ? "" : value) );
+				results.add( placeholderResults );
 				
-				if ( keyAlias != null ) {
-					String placeholderAlias = String.format( "    &7Alias:  &b%s:", keyAlias );
-					results.add( placeholderAlias );
+				if ( placeholderAlias != null ) {
+					String placeholderResultsAlias = String.format( "    &7Alias:  &7(&b%s&7)", placeholderAlias );
+					results.add( placeholderResultsAlias );
 				}
 			}
 			
@@ -657,6 +637,14 @@ class SpigotPlatform implements Platform {
 		
 		return results;
 	}
+	
+	private void addAllPlaceHolderKeys( TreeMap<String, PlaceHolderKey> placeholderKeys,
+							List<PlaceHolderKey> translatedPlaceHolderKeys ) {
+		for ( PlaceHolderKey placeHolderKey : translatedPlaceHolderKeys ) {
+			placeholderKeys.put( placeHolderKey.getKey(), placeHolderKey );
+		}
+	}
+
 	
 	private boolean placeholderKeyContains( PlaceHolderKey placeHolderKey, String... patterns ) {
 		PrisonPlaceHolders ph = placeHolderKey.getPlaceholder();

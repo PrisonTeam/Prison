@@ -249,6 +249,6 @@ public interface Platform {
 	public List<String> placeholderSearch( UUID playerUuid, String[] pattern );
 
 
-	public List<String> placeholderSearch( String[] patterns );
+//	public List<String> placeholderSearch( String[] patterns );
     
 }

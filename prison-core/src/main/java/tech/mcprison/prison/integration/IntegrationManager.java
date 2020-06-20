@@ -188,6 +188,9 @@ public class IntegrationManager {
 		public boolean isSuppressed() {
 			return flags.contains( PlaceHolderFlags.SUPRESS );
 		}
+		public boolean hasFlag( PlaceHolderFlags flag ) {
+			return flags.contains( flag );
+		}
 		public List<PlaceHolderFlags> getFlags() {
 			return flags;
 		}
