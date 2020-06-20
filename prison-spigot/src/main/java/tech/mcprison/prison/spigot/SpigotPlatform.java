@@ -161,7 +161,7 @@ class SpigotPlatform implements Platform {
     
     @Override public Optional<Player> getPlayer(String name) {
         return Optional.ofNullable(
-            players.stream().filter(player -> player.getName().equals(name)).findFirst()
+            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
                 .orElseGet(() -> {
                     if (Bukkit.getPlayer(name) == null) {
                         return null;
@@ -203,7 +203,7 @@ class SpigotPlatform implements Platform {
     	SpigotOfflinePlayer player = null;
     	
     	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
-    		if ( name != null && offP.getName().equals(name) ||
+    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
 					  uuid != null && offP.getUniqueId().equals(uuid) ) {
     			player = new SpigotOfflinePlayer( offP );
     			
