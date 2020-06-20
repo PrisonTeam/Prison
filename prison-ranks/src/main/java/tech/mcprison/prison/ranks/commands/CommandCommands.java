@@ -5,6 +5,8 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.localization.Localizable;
+import tech.mcprison.prison.localization.Localizable.Level;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -20,12 +22,27 @@ import java.util.Optional;
  * @author Faizaan A. Datoo
  */
 public class CommandCommands {
+	
+	public CommandCommands() {
+		super();
+		
+		// Now this is slight strange. Once in a while I've been seeing exceptions that the 
+		// following class cannot be resolved.  So I don't know why it can't, but it was not
+		// being used directly within this Ranks module, so it's being added here just to 
+		// allow the compiler to add it, and so hopefully the class loaders at run time can
+		// finally access it consistently.
+		@SuppressWarnings( "unused" )
+		Level force = Localizable.Level.ERROR;
+	}
 
     @Command(identifier = "ranks command add", 
     		description = "Adds a command to a rank using {player} and {player_uid} as placeholders.", 
     		onlyPlayers = false, permissions = "ranks.command")
-    public void commandAdd(CommandSender sender, @Arg(name = "rankName") String rankName,
-        @Arg(name = "command") @Wildcard String command) {
+    public void commandAdd(CommandSender sender, 
+    			@Arg(name = "rankName", description = "The Rank name that will recieve this command.") String rankName,
+    			@Arg(name = "command", 
+    				description = "The command to add without / prefix. Will be ran as a console command.") 
+    					@Wildcard String command) {
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
@@ -57,8 +74,11 @@ public class CommandCommands {
 
     @Command(identifier = "ranks command remove", description = "Removes a command from a rank.", 
     		onlyPlayers = false, permissions = "ranks.command")
-    public void commandRemove(CommandSender sender, @Arg(name = "rankName") String rankName,
-        @Arg(name = "command") @Wildcard String command) {
+    public void commandRemove(CommandSender sender, 
+    			@Arg(name = "rankName") String rankName,
+    			@Arg(name = "command", 
+    					description = "The command must be exactly the same as stored in the rank.") 
+    					@Wildcard String command) {
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
@@ -94,7 +114,9 @@ public class CommandCommands {
 
     @Command(identifier = "ranks command list", description = "Lists the commands for a rank.", 
     		onlyPlayers = false, permissions = "ranks.command")
-    public void commandList(CommandSender sender, @Arg(name = "rankName") String rankName) {
+    public void commandList(CommandSender sender, 
+    		@Arg(name = "rankName") String rankName) {
+    	
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if (!rankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);

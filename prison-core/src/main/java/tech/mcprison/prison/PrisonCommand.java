@@ -377,11 +377,12 @@ public class PrisonCommand {
     }
 
     
-    @Command(identifier = "prison placeholders test", description = "Converts any placeholders in the text", 
+    @Command(identifier = "prison placeholders test", 
+    		description = "Converts any Prison placeholders in the test string to their values", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
     		@Wildcard(join=true)
-    		@Arg(name = "text", description = "Placeholder text to convert" ) String text ) {
+    		@Arg(name = "text", description = "Placeholder text to test" ) String text ) {
     	
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
@@ -437,8 +438,9 @@ public class PrisonCommand {
     				description = "Search all placeholders that match all patterns", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersSearchCommand(CommandSender sender,
-    		@Arg(name = "playerName", description = "Player name", def = "." ) String playerName,
-    		@Arg(name = "pageNumber", description = "page number of results", def = "." ) String pageNumber,
+    		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
+    				def = "." ) String playerName,
+    		@Arg(name = "pageNumber", description = "page number of results to display", def = "." ) String pageNumber,
     		@Wildcard(join=true)
     		@Arg(name = "patterns", description = "Patterns of placeholders to search for" ) String patterns ) {
     
