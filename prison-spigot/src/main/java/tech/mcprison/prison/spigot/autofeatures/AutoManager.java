@@ -120,107 +120,56 @@ public class AutoManager
 
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
 		
-		Player p = e.getPlayer();
-		
-		double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
-		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
-		double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
-		
-		boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
-				lorePickup == 100.0 ||
-				lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-		boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
-				loreSmelt == 100.0 ||
-				loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-		boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
-				loreBlock == 100.0 ||
-				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
+		if ( isAutoManagerEnabled() && !e.isCancelled() ) {
+			
+			Player p = e.getPlayer();
+			
+			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
+			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
+			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
+			
+			boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
+					lorePickup == 100.0 ||
+					lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
+			boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
+					loreSmelt == 100.0 ||
+					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
+			boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
+					loreBlock == 100.0 ||
+					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
-		if ( permPickup || permSmelt || permBlock ||
-				isAreEnabledFeatures()) {
+			//
+					
 			
-
-			// Init variables
-//			Block block = e.getBlock();
-//			Material brokenBlock = block.getType();
-//			String blockName = brokenBlock.toString().toLowerCase();
-			
-			
-			// Minecraft's formular for fortune: Should implement it to be fair.
-			// https://minecraft.gamepedia.com/Fortune
-			
-//			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
-//			
-	
-//			int fortuneLevel = itemInHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
-//			int dropNumber = getDropCount(fortuneLevel);
-			
-//			// Check if the inventory's full
-//			if (p.getInventory().firstEmpty() == -1){
-//
-//				// Play sound when full
-//				if (playSoundIfInventoryIsFull) {
-//					p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 10F, 1F);
-//				}
-//
-//				String message;
-//
-//				// Drop items when full
-//				if (dropItemsIfInventoryIsFull) {
-//
-//					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullDroppingItems"));
-//					
-//					p.sendMessage(message);
-//
-//					hologram(e, message, hologramIfInventoryIsFull);
-//
-//				} else {  // Lose items when full
-//
-//					message = SpigotPrison.format(autoConfigs.getString("Messages.InventoryIsFullLosingItems"));
-//					
-//					p.sendMessage(message);
-//
-//					hologram(e, message, hologramIfInventoryIsFull);
-//
-//					// Set the broken block to AIR and cancel the event
-//					e.setCancelled(true);
-//					e.getBlock().setType(Material.AIR);
-//				}
-//				return;
-//			}
-
 			// AutoPickup
-			if ( permPickup ||
-					isAreEnabledFeatures() && isAutoPickupEnabled()) {
-
-					autoFeaturePickup(e, p);
+			if ( permPickup || isAutoPickupEnabled()) {
+				
+				autoFeaturePickup(e, p);
 			}
 			
 			
 			// AutoSmelt
-			if ( permSmelt ||
-					isAreEnabledFeatures() && isAutoSmeltEnabled()){
+			if ( permSmelt ||  isAutoSmeltEnabled()){
 				
 				autoFeatureSmelt( e, p );
 			}
 			
 			// AutoBlock
-			if ( permBlock ||
-					isAreEnabledFeatures() && isAutoBlockEnabled()) {
+			if ( permBlock || isAutoBlockEnabled()) {
 				
 				autoFeatureBlock( e, p );
 			}
 			
-			
-			if ( e.isCancelled() ) {
+					
+			if ( e.isCancelled() && ( permPickup || permSmelt || permBlock )) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
 				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
 				
-				
 				itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockBreakCount, 1 );
 			}
 		}
+
 	}
 
 

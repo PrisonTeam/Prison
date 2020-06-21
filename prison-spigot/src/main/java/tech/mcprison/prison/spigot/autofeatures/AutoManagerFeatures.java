@@ -78,7 +78,7 @@ public class AutoManagerFeatures
 	
 //	private Configuration autoConfigs;
 	
-	private boolean areEnabledFeatures = false;
+	private boolean isAutoManagerEnabled = false;
 
 	private boolean dropItemsIfInventoryIsFull = false;
 	private boolean playSoundIfInventoryIsFull = false;
@@ -135,7 +135,7 @@ public class AutoManagerFeatures
 //		this.autoConfigs = getAutoFeaturesConfig();
 //		this.autoConfigs = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
-		this.areEnabledFeatures = isBoolean( AutoFeatures.areEnabledFeatures );
+		this.isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
 		
 		//if (isAreEnabledFeatures()) 
 		{
@@ -395,12 +395,13 @@ public class AutoManagerFeatures
 			player.playSound(player.getLocation(), sound, 10F, 1F);
 		}
 		
-		if ( isHologramIfInventoryIsFull() ) {
-			displayMessageHologram( block, message , player);
-		}
-		else {
+		// holographic display for showing full inventory does not work well.
+//		if ( isHologramIfInventoryIsFull() ) {
+//			displayMessageHologram( block, message , player);
+//		}
+//		else {
 			actionBarVersion(player, message);
-		}
+//		}
 	}
 
 	private void actionBarVersion(Player player, String message) {
@@ -412,8 +413,21 @@ public class AutoManagerFeatures
 		}
 	}
 
+	/**
+	 * This is not usable since it not only prevents the player from mining when it is 
+	 * displayed, but it cannot be seen since it is shown above the player's head.
+	 * 
+	 * The player can continue to mine other materials even though one kind of resource 
+	 * be full.
+	 * 
+	 * @param block
+	 * @param message
+	 * @param p
+	 */
+	@SuppressWarnings( "unused" )
 	private void displayMessageHologram(Block block, String message, Player p){
-		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+		ArmorStand as = (ArmorStand) block.getLocation().getWorld().spawnEntity(
+											p.getLocation(), EntityType.ARMOR_STAND);
 		as.setGravity(false);
 		as.setCanPickupItems(false);
 		as.setCustomNameVisible(true);
@@ -944,8 +958,8 @@ public class AutoManagerFeatures
 		return random;
 	}
 
-	public boolean isAreEnabledFeatures() {
-		return areEnabledFeatures;
+	public boolean isAutoManagerEnabled() {
+		return isAutoManagerEnabled;
 	}
 
 	public boolean isDropItemsIfInventoryIsFull() {

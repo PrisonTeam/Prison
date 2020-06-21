@@ -1229,12 +1229,12 @@ public class ListenersPrisonManager implements Listener {
         } else if (buttonname.equalsIgnoreCase("All")){
             if ( enabled ){
                 if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.areEnabledFeatures, enabled );
+                	afConfig.setFeature( AutoFeatures.isAutoManagerEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
             } else {
                 if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.areEnabledFeatures, enabled );
+                	afConfig.setFeature( AutoFeatures.isAutoManagerEnabled, enabled );
                     saveConfigAutoFeatures(e, p);
                 }
             }

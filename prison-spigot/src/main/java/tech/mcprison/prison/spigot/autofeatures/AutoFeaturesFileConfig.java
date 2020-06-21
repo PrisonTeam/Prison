@@ -29,7 +29,7 @@ public class AutoFeaturesFileConfig {
     	
 	    	general(options),
 	    	
-		    	areEnabledFeatures(general, false),
+		    	isAutoManagerEnabled(general, false),
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, true),

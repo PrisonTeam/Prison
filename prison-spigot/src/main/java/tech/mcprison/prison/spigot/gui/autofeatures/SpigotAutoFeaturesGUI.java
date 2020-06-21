@@ -76,7 +76,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         }
 
-        if ( afConfig.isFeatureBoolean( AutoFeatures.areEnabledFeatures ) ){
+        if ( afConfig.isFeatureBoolean( AutoFeatures.isAutoManagerEnabled ) ){
 
             List<String> EnabledOrDisabledLore = createLore(
                     GuiConfig.getString("Gui.Lore.EnabledAll"),
