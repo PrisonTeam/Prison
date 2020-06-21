@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -52,6 +53,15 @@ import tech.mcprison.prison.output.Output;
  * 
  */
 public class JacksonYaml {
+	
+	public JacksonYaml() {
+		super();
+		
+		// The following class cannot be found at runtime, of which gradle cannot
+		// perform the build properly to include it, so reference it here so it
+		// will be included.
+		JsonFactory.builder();
+	}
 
 	/**
 	 * <p>This function will read a yaml file, which loads as a hierarchical

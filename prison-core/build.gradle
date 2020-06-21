@@ -44,6 +44,8 @@ shadowJar {
     dependencies {
         include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
+        include(dependency('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'))
+        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.10.4'))
     }
     classifier 'API'
     version = null
