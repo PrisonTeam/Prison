@@ -18,6 +18,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -25,8 +27,6 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig;
-import tech.mcprison.prison.spigot.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;

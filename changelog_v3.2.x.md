@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.15 - 2020-06-20
+## tag v3.2.1-alpha.15 - 2020-06-21
+
+
+* **New feature: Moved AutoManager to prison core and out of spigot module.**
+This will allow access to these settings in all other modules instead of just the spigot module.
+Rewrote the interface on how the the properties are saved and loaded to elimiante the dependancies upon spigot.
 
 
 * **New Feature: Ladder specific placeholders for player ranks**

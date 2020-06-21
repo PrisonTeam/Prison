@@ -1,19 +1,24 @@
-package tech.mcprison.prison.spigot.autofeatures;
+package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.jackson.JacksonYaml;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class AutoFeaturesFileConfig {
 
 	public static final String FILE_NAME__AUTO_FEATURES_CONFIG_YML = "/autoFeaturesConfig.yml";
 	private File configFile;
-    private FileConfiguration config;
+//    private FileConfiguration config;
+    
+    private Map<String, ValueNode> config;
 
     public enum AutoFeatures {
 
@@ -161,16 +166,20 @@ public class AutoFeaturesFileConfig {
     		return results;
     	}
 		
-    	public void setFileConfig( FileConfiguration conf ) {
+    	public void setFileConfig( Map<String, ValueNode> conf ) {
     		if ( isSection() ) {
-    			// create a section entry:
-    			conf.createSection( getKey() );
+    			// Skip this. The full path will be resolved in each key value for leaf nodes;
+    			
     		} else if ( getMessage() != null ) {
     			// create a message entry:
-    			conf.set(getKey(), getMessage());
+    			TextNode text = TextNode.valueOf( getMessage() );
+    			conf.put(getKey(), text);
+    			
     		} else if ( getValue() != null ) {
     			// create a boolean entry:
-    			conf.set(getKey(), getValue().booleanValue());
+    			BooleanNode bool = BooleanNode.valueOf( getValue().booleanValue() );
+    			conf.put( getKey(), bool );
+    			
     		}
     	}
     	
@@ -183,9 +192,18 @@ public class AutoFeaturesFileConfig {
 		 * @param conf
 		 * @return
 		 */
-    	public String getMessage( FileConfiguration conf ) {
-    		String message = conf.getString( getKey() );
-    		return  ( message != null ? message : (getMessage() != null ? getMessage() : ""));
+    	public String getMessage( Map<String, ValueNode> conf ) {
+    		String results = null;
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isTextual() ) {
+    			TextNode text = (TextNode) conf.get( getKey() );
+    			results = text.asText( getMessage() );
+    		}
+    		else if ( getMessage() != null ) {
+    			results = getMessage();
+    		}
+    		
+    		return results;
     	}
     	
     	/**
@@ -195,13 +213,21 @@ public class AutoFeaturesFileConfig {
     	 * @param conf
     	 * @return
     	 */
-    	public boolean getBoolean( FileConfiguration conf ) {
+    	public boolean getBoolean( Map<String, ValueNode> conf ) {
+    		boolean results = false;
     		
-    		return (conf.contains(getKey()) ? conf.getBoolean(getKey()) : 
-    			(getValue() != null ? getValue().booleanValue() : false) );
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBoolean() ) {
+    			BooleanNode bool = (BooleanNode) conf.get( getKey() );
+    			results = bool.asBoolean();
+    		}
+    		else if ( getValue() != null ) {
+    			results = getValue().booleanValue();
+    		}
+    		
+    		return results;
     	}
 
-    	
+    
     }
     
     public AutoFeaturesFileConfig() {
@@ -215,8 +241,13 @@ public class AutoFeaturesFileConfig {
             				getConfigFile().getName()) );
         }
 
+        
+        
         // Load the configuration file:
-        setConfig( YamlConfiguration.loadConfiguration(getConfigFile()) );
+        JacksonYaml jYaml = new JacksonYaml();
+        Map<String, ValueNode> map = jYaml.loadYamlConfigFile( getConfigFile() );
+        
+        setConfig( map );
     }
 
 	private void createConfigurationFile() {
@@ -233,11 +264,14 @@ public class AutoFeaturesFileConfig {
 			try {
 				getConfigFile().createNewFile();
 				
-				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
+				JacksonYaml jYaml = new JacksonYaml();
+				setConfig( jYaml.loadYamlConfigFile( getConfigFile()) );
+				
+//				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
 				
 				// Not yet enabled... this will fully replace the line items below:
 			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
-					autoFeat.setFileConfig( conf );
+					autoFeat.setFileConfig( getConfig() );
 				}
 				
 				
@@ -287,7 +321,9 @@ public class AutoFeaturesFileConfig {
 //				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
 //				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
 				
-				conf.save(getConfigFile());
+			    jYaml.writeYamlConfigFile( getConfigFile(), getConfig() );
+			    
+//				conf.save(getConfigFile());
 			} catch (IOException e) {
 				
 				Output.get().logError( 
@@ -328,7 +364,10 @@ public class AutoFeaturesFileConfig {
 							feature.getKey()) );
 		}
 		else {
-			getConfig().set( feature.getKey(), value.trim() );
+
+			TextNode text = TextNode.valueOf( value );
+			
+			getConfig().put( feature.getKey(), text );
 		}
 		
 	}
@@ -357,20 +396,28 @@ public class AutoFeaturesFileConfig {
 							feature.getKey()) );
 		}
 		else {
-			getConfig().set( feature.getKey(), value );
+			
+			BooleanNode bool = BooleanNode.valueOf( value  );
+			
+			getConfig().put( feature.getKey(), bool );
 		}
 		
 	}
 	
 
-
+	/**
+	 * This returns the config's feature value if it is a boolean.  If it is not
+	 * a boolean config value, it will return a value false.
+	 * 
+	 * @param feature
+	 * @return
+	 */
 	public boolean isFeatureBoolean( AutoFeatures feature ) {
-		return getConfig().getBoolean( feature.getKey()) ;
+		return feature.getBoolean( getConfig() );
 	}
 	
-	
 	public String getFeatureMessage( AutoFeatures feature ) {
-		return getConfig().getString( feature.getKey() );
+		return feature.getMessage( getConfig() );
 	}
 	
 	public boolean saveConf() {
@@ -389,7 +436,7 @@ public class AutoFeaturesFileConfig {
 	 * @param afConfig
 	 * @return
 	 */
-	private boolean saveConf( FileConfiguration afConfig ) {
+	private boolean saveConf( Map<String, ValueNode> config ) {
 		boolean success = false;
 		
 		File cFile = getConfigFile();
@@ -399,7 +446,8 @@ public class AutoFeaturesFileConfig {
 		try {
 			// First save to the temp file. If it fails it will throw an exception and 
 			// will prevent the deletion of the existing file:
-			afConfig.save( tempFile );
+			JacksonYaml jYaml = new JacksonYaml();
+			jYaml.writeYamlConfigFile( tempFile, getConfig() );
 			
 			if ( cFile.exists() ) {
 				cFile.delete();
@@ -408,7 +456,7 @@ public class AutoFeaturesFileConfig {
 			// The save cannot be considered successful until after the rename is complete.
 			success = tempFile.renameTo( cFile );
 		}
-		catch ( IOException e ) {
+		catch ( Exception e ) {
 			Output.get().logError( 
 					String.format( "Failure! Unable to save AutoFeatures config file. %s :: %s", 
 							cFile.getName(), e.getMessage()), e );
@@ -420,8 +468,9 @@ public class AutoFeaturesFileConfig {
 	
 	public File getConfigFile() {
 		if ( this.configFile == null ) {
+			
 			this.configFile = new File(
-					SpigotPrison.getInstance().getDataFolder() + FILE_NAME__AUTO_FEATURES_CONFIG_YML);
+					Prison.get().getDataFolder() + FILE_NAME__AUTO_FEATURES_CONFIG_YML);
 		}
 		return configFile;
 	}
@@ -429,12 +478,20 @@ public class AutoFeaturesFileConfig {
 		this.configFile = configFile;
 	}
 
-	private FileConfiguration getConfig() {
+	public Map<String, ValueNode> getConfig() {
 		return config;
 	}
-	private void setConfig( FileConfiguration config ) {
+
+	public void setConfig( Map<String, ValueNode> config ) {
 		this.config = config;
 	}
+
+//	private FileConfiguration getConfig() {
+//		return config;
+//	}
+//	private void setConfig( FileConfiguration config ) {
+//		this.config = config;
+//	}
 
 
 }
