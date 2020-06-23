@@ -630,7 +630,7 @@ public enum BlockType {
 	ENCHANTED_BOOK( 403, "minecraft:enchanted_book", 0 ),
 	REDSTONE_COMPARATOR( 404, "minecraft:comparator", 0, MaterialType.BLOCK ),
 	NETHER_BRICK_ITEM( 405, "minecraft:netherbrick", 0, MaterialType.BLOCK ),
-	NETHER_QUARTZ( 406, "minecraft:quartz", 0, MaterialType.BLOCK ),
+	NETHER_QUARTZ( 406, "minecraft:quartz", 0 ),
 	MINECART_WITH_TNT( 407, "minecraft:tnt_minecart", 0 ),
 	MINECART_WITH_HOPPER( 408, "minecraft:hopper_minecart", 0 ),
 	PRISMARINE_SHARD( 409, "minecraft:prismarine_shard", 0 ),
