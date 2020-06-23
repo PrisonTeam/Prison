@@ -30,6 +30,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>This class controls the data and the basic functions for auto features.
@@ -79,36 +80,36 @@ public class AutoManagerFeatures
 	
 //	private Configuration autoConfigs;
 	
-	private boolean isAutoManagerEnabled = false;
+//	private boolean isAutoManagerEnabled = false;
 
-	private boolean dropItemsIfInventoryIsFull = false;
-	private boolean playSoundIfInventoryIsFull = false;
-	private boolean hologramIfInventoryIsFull = false;
+//	private boolean dropItemsIfInventoryIsFull = false;
+//	private boolean playSoundIfInventoryIsFull = false;
+//	private boolean hologramIfInventoryIsFull = false;
 
-	private boolean autoPickupEnabled = false;
-	private boolean autoPickupAllBlocks = false;
-	private boolean autoPickupCobbleStone = false;
-	private boolean autoPickupStone = false;
-	private boolean autoPickupGoldOre = false;
-	private boolean autoPickupIronOre = false;
-	private boolean autoPickupCoalOre = false;
-	private boolean autoPickupDiamondOre = false;
-	private boolean autoPickupRedstoneOre = false;
-	private boolean autoPickupEmeraldOre = false;
-	private boolean autoPickupQuartzOre = false;
-	private boolean autoPickupLapisOre = false;
-	private boolean autoPickupSnowBall = false;
-	private boolean autoPickupGlowstoneDust = false;
+//	private boolean autoPickupEnabled = false;
+//	private boolean autoPickupAllBlocks = false;
+//	private boolean autoPickupCobbleStone = false;
+//	private boolean autoPickupStone = false;
+//	private boolean autoPickupGoldOre = false;
+//	private boolean autoPickupIronOre = false;
+//	private boolean autoPickupCoalOre = false;
+//	private boolean autoPickupDiamondOre = false;
+//	private boolean autoPickupRedstoneOre = false;
+//	private boolean autoPickupEmeraldOre = false;
+//	private boolean autoPickupQuartzOre = false;
+//	private boolean autoPickupLapisOre = false;
+//	private boolean autoPickupSnowBall = false;
+//	private boolean autoPickupGlowstoneDust = false;
 	
 	// AutoSmelt booleans from configs
-	private boolean autoSmeltEnabled = false;
-	private boolean autoSmeltAllBlocks = false;
-	private boolean autoSmeltGoldOre = false;
-	private boolean autoSmeltIronOre = false;
+//	private boolean autoSmeltEnabled = false;
+//	private boolean autoSmeltAllBlocks = false;
+//	private boolean autoSmeltGoldOre = false;
+//	private boolean autoSmeltIronOre = false;
 	
 	// AutoBlock booleans from configs
-	private boolean autoBlockEnabled = false;
-	private boolean autoBlockAllBlocks = false;
+//	private boolean autoBlockEnabled = false;
+//	private boolean autoBlockAllBlocks = false;
 	private boolean autoBlockGoldBlock = false;
 	private boolean autoBlockIronBlock = false;
 	private boolean autoBlockCoalBlock = false;
@@ -136,51 +137,51 @@ public class AutoManagerFeatures
 //		this.autoConfigs = getAutoFeaturesConfig();
 //		this.autoConfigs = SpigotPrison.getInstance().getAutoFeaturesConfig();
 
-		this.isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
+//		this.isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
 		
 		//if (isAreEnabledFeatures()) 
 		{
 			
-			this.dropItemsIfInventoryIsFull = isBoolean( AutoFeatures.dropItemsIfInventoryIsFull );
-			this.playSoundIfInventoryIsFull = isBoolean( AutoFeatures.playSoundIfInventoryIsFull );
-			this.hologramIfInventoryIsFull = isBoolean( AutoFeatures.hologramIfInventoryIsFull );
+//			this.dropItemsIfInventoryIsFull = isBoolean( AutoFeatures.dropItemsIfInventoryIsFull );
+//			this.playSoundIfInventoryIsFull = isBoolean( AutoFeatures.playSoundIfInventoryIsFull );
+//			this.hologramIfInventoryIsFull = isBoolean( AutoFeatures.hologramIfInventoryIsFull );
 			
 			// AutoPickup booleans from configs
-			this.autoPickupEnabled = isBoolean( AutoFeatures.autoPickupEnabled );
-			this.autoPickupAllBlocks = isBoolean( AutoFeatures.autoPickupAllBlocks );
-			this.autoPickupCobbleStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCobbleStone );
-			this.autoPickupStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupStone );
-			this.autoPickupGoldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGoldOre );
-			this.autoPickupIronOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupIronOre );
-			this.autoPickupCoalOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCoalOre );
-			this.autoPickupDiamondOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupDiamondOre );
-			this.autoPickupRedstoneOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupRedStoneOre );
-			this.autoPickupEmeraldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupEmeraldOre );
-			this.autoPickupQuartzOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupQuartzOre );
-			this.autoPickupLapisOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupLapisOre );
-			this.autoPickupSnowBall = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupSnowBall );
-			this.autoPickupGlowstoneDust = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGlowstoneDust );
+//			this.autoPickupEnabled = isBoolean( AutoFeatures.autoPickupEnabled );
+//			this.autoPickupAllBlocks = isBoolean( AutoFeatures.autoPickupAllBlocks );
+//			this.autoPickupCobbleStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCobbleStone );
+//			this.autoPickupStone = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupStone );
+//			this.autoPickupGoldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGoldOre );
+//			this.autoPickupIronOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupIronOre );
+//			this.autoPickupCoalOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupCoalOre );
+//			this.autoPickupDiamondOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupDiamondOre );
+//			this.autoPickupRedstoneOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupRedStoneOre );
+//			this.autoPickupEmeraldOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupEmeraldOre );
+//			this.autoPickupQuartzOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupQuartzOre );
+//			this.autoPickupLapisOre = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupLapisOre );
+//			this.autoPickupSnowBall = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupSnowBall );
+//			this.autoPickupGlowstoneDust = autoPickupAllBlocks || isBoolean( AutoFeatures.autoPickupGlowstoneDust );
 			
 			// AutoSmelt booleans from configs
-			this.autoSmeltEnabled = isBoolean( AutoFeatures.autoSmeltEnabled );
-			this.autoSmeltAllBlocks = isBoolean( AutoFeatures.autoSmeltAllBlocks );
-			this.autoSmeltGoldOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltGoldOre );
-			this.autoSmeltIronOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltIronOre );
+//			this.autoSmeltEnabled = isBoolean( AutoFeatures.autoSmeltEnabled );
+//			this.autoSmeltAllBlocks = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+//			this.autoSmeltGoldOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltGoldOre );
+//			this.autoSmeltIronOre = autoSmeltAllBlocks || isBoolean( AutoFeatures.autoSmeltIronOre );
 			
 			// AutoBlock booleans from configs
-			this.autoBlockEnabled = isBoolean( AutoFeatures.autoBlockEnabled );
-			this.autoBlockAllBlocks = isBoolean( AutoFeatures.autoBlockAllBlocks );
-			this.autoBlockGoldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGoldBlock );
-			this.autoBlockIronBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockIronBlock );
-			this.autoBlockCoalBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockCoalBlock );
-			this.autoBlockDiamondBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockDiamondBlock );
-			this.autoBlockRedstoneBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockRedstoneBlock );
-			this.autoBlockEmeraldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockEmeraldBlock );
-			this.autoBlockQuartzBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockQuartzBlock );
-			this.autoBlockPrismarineBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockPrismarineBlock );
-			this.autoBlockLapisBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockLapisBlock );
-			this.autoBlockSnowBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockSnowBlock );
-			this.autoBlockGlowstone = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGlowstone );
+//			this.autoBlockEnabled = isBoolean( AutoFeatures.autoBlockEnabled );
+//			this.autoBlockAllBlocks = isBoolean( AutoFeatures.autoBlockAllBlocks );
+//			this.autoBlockGoldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGoldBlock );
+//			this.autoBlockIronBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockIronBlock );
+//			this.autoBlockCoalBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockCoalBlock );
+//			this.autoBlockDiamondBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockDiamondBlock );
+//			this.autoBlockRedstoneBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockRedstoneBlock );
+//			this.autoBlockEmeraldBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockEmeraldBlock );
+//			this.autoBlockQuartzBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockQuartzBlock );
+//			this.autoBlockPrismarineBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockPrismarineBlock );
+//			this.autoBlockLapisBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockLapisBlock );
+//			this.autoBlockSnowBlock = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockSnowBlock );
+//			this.autoBlockGlowstone = autoBlockAllBlocks || isBoolean( AutoFeatures.autoBlockGlowstone );
 			
 		}
 	}
@@ -189,8 +190,12 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig;
 	}
 	
-	private boolean isBoolean( AutoFeatures feature ) {
+	protected boolean isBoolean( AutoFeatures feature ) {
 		return autoFeaturesConfig.isFeatureBoolean( feature );
+	}
+	
+	protected String getMessage( AutoFeatures feature ) {
+		return autoFeaturesConfig.getFeatureMessage( feature );
 	}
 	
 
@@ -382,7 +387,7 @@ public class AutoManagerFeatures
 		String message = autoFeaturesConfig.getFeatureMessage( AutoFeatures.inventoryIsFull );
 		
 		// Play sound when full
-		if ( isPlaySoundIfInventoryIsFull() ) {
+		if ( isBoolean( AutoFeatures.playSoundIfInventoryIsFull ) ) {
 			Prison.get().getMinecraftVersion() ;
 			
 			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
@@ -397,7 +402,7 @@ public class AutoManagerFeatures
 		}
 		
 		// holographic display for showing full inventory does not work well.
-//		if ( isHologramIfInventoryIsFull() ) {
+//		if ( isBoolean( AutoFeatures.hologramIfInventoryIsFull ) ) {
 //			displayMessageHologram( block, message , player);
 //		}
 //		else {
@@ -512,55 +517,79 @@ public class AutoManagerFeatures
 
 			switch (blockName) {
 				case "cobblestone":
-					count += autoPickup( isAutoPickupCobbleStone(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+								isBoolean( AutoFeatures.autoPickupCobbleStone ), 
+							p, itemInHand, e );
 					break;
 					
 				case "stone":
-					count += autoPickup( isAutoPickupStone(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+								isBoolean( AutoFeatures.autoPickupStone ), 
+							p, itemInHand, e );
 					break;
 					
 				case "gold_ore":
-					count += autoPickup( isAutoPickupGoldOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupGoldOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "iron_ore":
-					count += autoPickup( isAutoPickupIronOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupIronOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "coal_ore":
-					count += autoPickup( isAutoPickupCoalOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupCoalOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "diamond_ore":
-					count += autoPickup( isAutoPickupDiamondOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupDiamondOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "redstone_ore":
-					count += autoPickup( isAutoPickupRedstoneOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupRedStoneOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "emerald_ore":
-					count += autoPickup( isAutoPickupEmeraldOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupEmeraldOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "quartz_ore":
-					count += autoPickup( isAutoPickupQuartzOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupQuartzOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "lapis_ore":
-					count += autoPickup( isAutoPickupLapisOre(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupLapisOre ), 
+							p, itemInHand, e );
 					break;
 					
 				case "snow_ball":
-					count += autoPickup( isAutoPickupSnowBall(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupSnowBall ), 
+							p, itemInHand, e );
 					break;
 					
 				case "glowstone_dust": // works 1.15.2
-					count += autoPickup( isAutoPickupGlowstoneDust(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupGlowstoneDust ), 
+							p, itemInHand, e );
 					break;
 					
 				default:
-					count += autoPickup( isAutoPickupAllBlocks(), p, itemInHand, e );
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ), p, itemInHand, e );
 					break;
 						
 			}
@@ -578,9 +607,11 @@ public class AutoManagerFeatures
 	{
 		Block block = e.getBlock();
 	
-		autoSmelt( isAutoSmeltGoldOre(), Material.GOLD_ORE, Material.GOLD_INGOT, p, block );
+		autoSmelt( isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltGoldOre ), 
+				Material.GOLD_ORE, Material.GOLD_INGOT, p, block );
 	
-		autoSmelt( isAutoSmeltIronOre(), Material.IRON_ORE, Material.IRON_INGOT, p, block );
+		autoSmelt( isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltIronOre ), 
+				Material.IRON_ORE, Material.IRON_INGOT, p, block );
 	}
 
 
@@ -591,38 +622,64 @@ public class AutoManagerFeatures
 		// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
 		// checks within each block type's function call.  So in one pass, could hit on more 
 		// than one of these for multiple times too.
-		autoBlock( isAutoBlockGoldBlock(), Material.GOLD_INGOT, Material.GOLD_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockGoldBlock ), 
+				Material.GOLD_INGOT, Material.GOLD_BLOCK, p, block );
 		
-		autoBlock( isAutoBlockIronBlock(), Material.IRON_INGOT, Material.IRON_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockIronBlock ), 
+				Material.IRON_INGOT, Material.IRON_BLOCK, p, block );
 	
-		autoBlock( isAutoBlockCoalBlock(), Material.COAL, Material.COAL_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockCoalBlock ), 
+				Material.COAL, Material.COAL_BLOCK, p, block );
 		
-		autoBlock( isAutoBlockDiamondBlock(), Material.DIAMOND, Material.DIAMOND_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockDiamondBlock ), 
+				Material.DIAMOND, Material.DIAMOND_BLOCK, p, block );
 	
-		autoBlock( isAutoBlockRedstoneBlock(), Material.REDSTONE, Material.REDSTONE_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockRedstoneBlock ), 
+				Material.REDSTONE, Material.REDSTONE_BLOCK, p, block );
 		
-		autoBlock( isAutoBlockEmeraldBlock(), Material.EMERALD, Material.EMERALD_BLOCK, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockEmeraldBlock ), 
+				Material.EMERALD, Material.EMERALD_BLOCK, p, block );
 	
-		autoBlock( isAutoBlockQuartzBlock(), Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockQuartzBlock ), 
+				Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p, block );
 	
-		autoBlock( isAutoBlockPrismarineBlock(), Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockPrismarineBlock ), 
+				Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p, block );
 	
-		autoBlock( isAutoBlockSnowBlock(), Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockSnowBlock ), 
+				Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p, block );
 	
-		autoBlock( isAutoBlockGlowstone(), Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p, block );
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockGlowstone ), 
+				Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p, block );
 		
-		autoBlockLapis( isAutoBlockLapisBlock(), p, block );
+		autoBlockLapis( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+				isBoolean( AutoFeatures.autoBlockLapisBlock ), 
+				p, block );
 	}
 
 
 
-	protected void itemLoreCounter( ItemStack itemInHand, ItemLoreCounters itemLore, int blocks )
+	protected void itemLoreCounter( ItemStack itemInHand, String itemLore, int blocks )
 	{
 		if ( itemInHand.hasItemMeta() ) {
 	
 			List<String> lore = new ArrayList<>();
 			
-			String prisonBlockBroken = itemLore.getLore();
+			itemLore = itemLore.trim() + " ";
+			
+			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
+			
+//			String prisonBlockBroken = itemLore.getLore();
 			
 			ItemMeta meta = itemInHand.getItemMeta();
 			
@@ -631,8 +688,8 @@ public class AutoManagerFeatures
 				
 				boolean found = false;
 				for( int i = 0; i < lore.size(); i++ ) {
-					if ( lore.get( i ).startsWith( prisonBlockBroken ) ) {
-						String val = lore.get( i ).replace( prisonBlockBroken, "" ).trim();
+					if ( lore.get( i ).startsWith( itemLore ) ) {
+						String val = lore.get( i ).replace( itemLore, "" ).trim();
 						
 						int count = blocks;
 						try {
@@ -643,7 +700,7 @@ public class AutoManagerFeatures
 									lore.get( i ) + "] val= [" + val + "] error: " + 
 									e1.getMessage() );								}
 						
-						lore.set( i, prisonBlockBroken + count );
+						lore.set( i, itemLore + count );
 						
 						found = true;
 						break;
@@ -651,12 +708,12 @@ public class AutoManagerFeatures
 				}
 				
 				if ( !found ) {
-					lore.add( prisonBlockBroken + 1 );
+					lore.add( itemLore + 1 );
 				}
 				
 				
 			} else {
-				lore.add( prisonBlockBroken + 1 );
+				lore.add( itemLore + 1 );
 			}
 			
 			meta.setLore( lore );
@@ -959,101 +1016,101 @@ public class AutoManagerFeatures
 		return random;
 	}
 
-	public boolean isAutoManagerEnabled() {
-		return isAutoManagerEnabled;
-	}
+//	public boolean isAutoManagerEnabled() {
+//		return isAutoManagerEnabled;
+//	}
 
-	public boolean isDropItemsIfInventoryIsFull() {
-		return dropItemsIfInventoryIsFull;
-	}
+//	public boolean isDropItemsIfInventoryIsFull() {
+//		return dropItemsIfInventoryIsFull;
+//	}
 
-	public boolean isPlaySoundIfInventoryIsFull() {
-		return playSoundIfInventoryIsFull;
-	}
+//	public boolean isPlaySoundIfInventoryIsFull() {
+//		return playSoundIfInventoryIsFull;
+//	}
 
-	public boolean isHologramIfInventoryIsFull() {
-		return hologramIfInventoryIsFull;
-	}
+//	public boolean isHologramIfInventoryIsFull() {
+//		return hologramIfInventoryIsFull;
+//	}
 
-	public boolean isAutoPickupEnabled() {
-		return autoPickupEnabled;
-	}
+//	public boolean isAutoPickupEnabled() {
+//		return autoPickupEnabled;
+//	}
+//
+//	public boolean isAutoPickupAllBlocks() {
+//		return autoPickupAllBlocks;
+//	}
 
-	public boolean isAutoPickupAllBlocks() {
-		return autoPickupAllBlocks;
-	}
+//	public boolean isAutoPickupCobbleStone() {
+//		return autoPickupCobbleStone;
+//	}
+//
+//	public boolean isAutoPickupStone() {
+//		return autoPickupStone;
+//	}
+//
+//	public boolean isAutoPickupGoldOre() {
+//		return autoPickupGoldOre;
+//	}
+//
+//	public boolean isAutoPickupIronOre() {
+//		return autoPickupIronOre;
+//	}
+//
+//	public boolean isAutoPickupCoalOre() {
+//		return autoPickupCoalOre;
+//	}
+//
+//	public boolean isAutoPickupDiamondOre() {
+//		return autoPickupDiamondOre;
+//	}
+//
+//	public boolean isAutoPickupRedstoneOre() {
+//		return autoPickupRedstoneOre;
+//	}
+//
+//	public boolean isAutoPickupEmeraldOre() {
+//		return autoPickupEmeraldOre;
+//	}
+//
+//	public boolean isAutoPickupQuartzOre() {
+//		return autoPickupQuartzOre;
+//	}
+//
+//	public boolean isAutoPickupLapisOre() {
+//		return autoPickupLapisOre;
+//	}
+//
+//	public boolean isAutoPickupSnowBall() {
+//		return autoPickupSnowBall;
+//	}
+//
+//	public boolean isAutoPickupGlowstoneDust() {
+//		return autoPickupGlowstoneDust;
+//	}
 
-	public boolean isAutoPickupCobbleStone() {
-		return autoPickupCobbleStone;
-	}
+//	public boolean isAutoSmeltEnabled() {
+//		return autoSmeltEnabled;
+//	}
 
-	public boolean isAutoPickupStone() {
-		return autoPickupStone;
-	}
+//	public boolean isAutoSmeltAllBlocks() {
+//		return autoSmeltAllBlocks;
+//	}
+//
+//	public boolean isAutoSmeltGoldOre() {
+//		return autoSmeltGoldOre;
+//	}
+//
+//	public boolean isAutoSmeltIronOre() {
+//		return autoSmeltIronOre;
+//	}
 
-	public boolean isAutoPickupGoldOre() {
-		return autoPickupGoldOre;
-	}
-
-	public boolean isAutoPickupIronOre() {
-		return autoPickupIronOre;
-	}
-
-	public boolean isAutoPickupCoalOre() {
-		return autoPickupCoalOre;
-	}
-
-	public boolean isAutoPickupDiamondOre() {
-		return autoPickupDiamondOre;
-	}
-
-	public boolean isAutoPickupRedstoneOre() {
-		return autoPickupRedstoneOre;
-	}
-
-	public boolean isAutoPickupEmeraldOre() {
-		return autoPickupEmeraldOre;
-	}
-
-	public boolean isAutoPickupQuartzOre() {
-		return autoPickupQuartzOre;
-	}
-
-	public boolean isAutoPickupLapisOre() {
-		return autoPickupLapisOre;
-	}
-
-	public boolean isAutoPickupSnowBall() {
-		return autoPickupSnowBall;
-	}
-
-	public boolean isAutoPickupGlowstoneDust() {
-		return autoPickupGlowstoneDust;
-	}
-
-	public boolean isAutoSmeltEnabled() {
-		return autoSmeltEnabled;
-	}
-
-	public boolean isAutoSmeltAllBlocks() {
-		return autoSmeltAllBlocks;
-	}
-
-	public boolean isAutoSmeltGoldOre() {
-		return autoSmeltGoldOre;
-	}
-
-	public boolean isAutoSmeltIronOre() {
-		return autoSmeltIronOre;
-	}
-
-	public boolean isAutoBlockEnabled() {
-		return autoBlockEnabled;
-	}
-
-	public boolean isAutoBlockAllBlocks() {
-		return autoBlockAllBlocks;
-	}
+//	public boolean isAutoBlockEnabled() {
+//		return autoBlockEnabled;
+//	}
+//
+//	public boolean isAutoBlockAllBlocks() {
+//		return autoBlockAllBlocks;
+//	}
 
 	public boolean isAutoBlockGoldBlock() {
 		return autoBlockGoldBlock;

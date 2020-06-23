@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
@@ -120,7 +121,7 @@ public class AutoManager
 
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
 		
-		if ( isAutoManagerEnabled() && !e.isCancelled() ) {
+		if ( isBoolean( AutoFeatures.isAutoManagerEnabled ) && !e.isCancelled() ) {
 			
 			Player p = e.getPlayer();
 			
@@ -142,31 +143,35 @@ public class AutoManager
 					
 			
 			// AutoPickup
-			if ( permPickup || isAutoPickupEnabled()) {
+			if ( permPickup || isBoolean( AutoFeatures.autoPickupEnabled )) {
 				
 				autoFeaturePickup(e, p);
+
+				
 			}
 			
 			
 			// AutoSmelt
-			if ( permSmelt ||  isAutoSmeltEnabled()){
+			if ( permSmelt ||  isBoolean( AutoFeatures.autoSmeltEnabled )){
 				
 				autoFeatureSmelt( e, p );
 			}
 			
 			// AutoBlock
-			if ( permBlock || isAutoBlockEnabled()) {
+			if ( permBlock || isBoolean( AutoFeatures.autoBlockEnabled )) {
 				
 				autoFeatureBlock( e, p );
 			}
 			
-					
-			if ( e.isCancelled() && ( permPickup || permSmelt || permBlock )) {
+			// A block was broke... so record that event on the tool:	
+			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && 
+					e.isCancelled()) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
 				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
 				
-				itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockBreakCount, 1 );
+				itemLoreCounter( itemInHand, 
+						getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			}
 		}
 
@@ -225,7 +230,8 @@ public class AutoManager
 			if ( e.isCancelled() ) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
-			itemLoreCounter( itemInHand, ItemLoreCounters.itemLoreBlockExplodeCount, blockCount );
+			itemLoreCounter( itemInHand, 
+					getMessage( AutoFeatures.loreBlockExplosionCountName ), blockCount );
 			}
 		}			
 	}
