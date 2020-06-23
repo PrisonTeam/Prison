@@ -37,13 +37,25 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig,afConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
 
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
         List<String> enabledLore = createLore(
-                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
                 );
 
         List<String> disabledLore = createLore(
-                GuiConfig.getString("Gui.Lore.RightClickToEnable")
+                guiConfig.getString("Gui.Lore.RightClickToEnable")
         );
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
@@ -61,7 +73,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Cobblestone Disabled"));
             inv.addItem(Disabled);
         }
-        
+
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupStone ) ) {
         	ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Stone Enabled"));
         	inv.addItem(Enabled);
@@ -69,7 +81,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         	ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Stone Disabled"));
         	inv.addItem(Disabled);
         }
-        
+
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupGoldOre ) ) {
         	ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
         	inv.addItem(Enabled);
@@ -149,9 +161,6 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Glowstone_Dust Disabled"));
             inv.addItem(Disabled);
         }
-
-        this.p.openInventory(inv);
-
     }
 
 }

@@ -37,21 +37,34 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
+
+        // Open the inventory
+        this.p.openInventory(inv);
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Create new lore
         List<String> changeDecreaseValueLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToDecrease")
+                guiConfig.getString("Gui.Lore.ClickToDecrease")
         );
 
         // Create a new lore
         List<String> confirmButtonLore = createLore(
-                GuiConfig.getString("Gui.Lore.LeftClickToConfirm"),
-                GuiConfig.getString("Gui.Lore.Radius") + val,
-                GuiConfig.getString("Gui.Lore.RightClickToCancel")
+                guiConfig.getString("Gui.Lore.LeftClickToConfirm"),
+                guiConfig.getString("Gui.Lore.Radius") + val,
+                guiConfig.getString("Gui.Lore.RightClickToCancel")
         );
 
         // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToIncrease")
+                guiConfig.getString("Gui.Lore.ClickToIncrease")
         );
 
         // Decrease buttons
@@ -75,11 +88,9 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         inv.setItem(37, decreaseOf100);
 
 
-
         // Create a button and set the position of it
         ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val + " " + typeNotification));
         inv.setItem(22, confirmButton);
-
 
 
         // Increase buttons
@@ -101,9 +112,6 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         // Increase buttons
         ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + minename + " " + val + " + 100 " + typeNotification));
         inv.setItem(43, increaseOf100);
-
-        // Open the inventory
-        this.p.openInventory(inv);
     }
 
 }

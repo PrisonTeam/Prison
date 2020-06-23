@@ -32,7 +32,8 @@ public class PrisonGuiCommands {
 	public void prisonGui(CommandSender sender) {
 
     	if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
-    		return;
+			sender.sendMessage(SpigotPrison.format("&cThe GUI's disabled, if you want to use it, edit the config.yml!"));
+			return;
 		}
 
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {

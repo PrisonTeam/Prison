@@ -65,24 +65,36 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // For every command make a button
         for (String command : rank.rankUpCommands) {
 
-            // Init the lore array with default values for ladders
-            List<String> commandslore = createLore(
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                    "",
-                    GuiConfig.getString("Gui.Lore.Info"));
+            try {
+                buttonsSetup(GuiConfig, inv, command);
+            } catch (NullPointerException ex){
+                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                ex.printStackTrace();
+                return;
+            }
 
-            // Adding a lore
-            commandslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Command") + command));
-
-            // Make the button with materials, amount, lore and name
-            itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, SpigotPrison.format("&3" + rank.name + " " + command));
-
-            // Add the button to the inventory
-            inv.addItem(itemcommand);
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {
+        ItemStack itemcommand;
+        // Init the lore array with default values for ladders
+        List<String> commandslore = createLore(
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                "",
+                guiConfig.getString("Gui.Lore.Info"));
+
+        // Adding a lore
+        commandslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Command") + command));
+
+        // Make the button with materials, amount, lore and name
+        itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, SpigotPrison.format("&3" + rank.name + " " + command));
+
+        // Add the button to the inventory
+        inv.addItem(itemcommand);
     }
 }

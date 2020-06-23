@@ -154,10 +154,12 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
 
+        // Check if GUIs are enabled
         if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
             return;
         }
 
+        // Get the player
         Player p = (Player) e.getWhoClicked();
 
         // If you click an empty slot, this should avoid the error
@@ -191,7 +193,8 @@ public class ListenersPrisonManager implements Listener {
 
         // Get the button name
         String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
-        
+
+        // If the buttonmain have a name longer than 2 characters (should be with colors), it won't take care about the color ids
         if ( buttonNameMain.length() > 2 ) {
         	buttonNameMain = buttonNameMain.substring(2);
         }
@@ -205,6 +208,7 @@ public class ListenersPrisonManager implements Listener {
         // Check if the GUI have the right title and do the actions
         switch (e.getView().getTitle().substring(2)) {
 
+            // Check the title and do the actions
             case "PrisonManager":
 
                 // Call the method
@@ -1201,96 +1205,57 @@ public class ListenersPrisonManager implements Listener {
         
         boolean enabled = mode.equalsIgnoreCase("Enabled");
 
-        // Check the buttonName and do the actionsm also check the clickType etc
-        if (buttonname.equalsIgnoreCase("Full_Inv_Play_Sound")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
+        // Check the clickType and do the actions
+        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+                !enabled && e.isRightClick()){
+
+            if (buttonname.equalsIgnoreCase("Full_Inv_Play_Sound")){
+                afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, !enabled );
+                saveConfigAutoFeatures(e, p);
             }
-        } else if (buttonname.equalsIgnoreCase("Full_Inv_Hologram")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.hologramIfInventoryIsFull, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.hologramIfInventoryIsFull, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
+
+            if (buttonname.equalsIgnoreCase("Full_Inv_Hologram")){
+                afConfig.setFeature(AutoFeatures.hologramIfInventoryIsFull, !enabled);
+                saveConfigAutoFeatures(e,p);
             }
-        } else if (buttonname.equalsIgnoreCase("All")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.isAutoManagerEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.isAutoManagerEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                }
+
+            if (buttonname.equalsIgnoreCase("All")){
+                afConfig.setFeature(AutoFeatures.isAutoManagerEnabled, !enabled);
+                saveConfigAutoFeatures(e,p);
             }
-        } else if (buttonname.equalsIgnoreCase("AutoPickup")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.autoPickupEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
+
+        }
+
+        // Check the clickType and do the actions
+        if (enabled && e.isRightClick() && e.isShiftClick() || !enabled && e.isRightClick() || enabled && e.isLeftClick()){
+            if (buttonname.equalsIgnoreCase("AutoPickup")){
+                if (e.isLeftClick()){
                     SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
                     gui.open();
+                    return;
                 }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.autoPickupEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
-                SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
-                gui.open();
-                }
+                afConfig.setFeature(AutoFeatures.autoPickupEnabled, !enabled);
+                saveConfigAutoFeatures(e,p);
             }
-        } else if (buttonname.equalsIgnoreCase("AutoSmelt")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.autoSmeltEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
+
+            if (buttonname.equalsIgnoreCase("AutoSmelt")){
+                if (e.isLeftClick()){
                     SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
                     gui.open();
+                    return;
                 }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.autoSmeltEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
-                    SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
-                    gui.open();
-                }
+                afConfig.setFeature(AutoFeatures.autoSmeltEnabled, !enabled);
+                saveConfigAutoFeatures(e,p);
             }
-        } else if (buttonname.equalsIgnoreCase("AutoBlock")){
-            if ( enabled ){
-                if (e.isRightClick() && e.isShiftClick()){
-                	afConfig.setFeature( AutoFeatures.autoBlockEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
+
+            if (buttonname.equalsIgnoreCase("AutoBlock")){
+                if (e.isLeftClick()){
                     SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
                     gui.open();
+                    return;
                 }
-            } else {
-                if (e.isRightClick()){
-                	afConfig.setFeature( AutoFeatures.autoBlockEnabled, enabled );
-                    saveConfigAutoFeatures(e, p);
-                } else if (e.isLeftClick()){
-                    SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
-                    gui.open();
-                }
+                afConfig.setFeature(AutoFeatures.autoBlockEnabled, !enabled);
+                saveConfigAutoFeatures(e,p);
             }
         }
     }
@@ -1300,13 +1265,11 @@ public class ListenersPrisonManager implements Listener {
         // Get the config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
-
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
         String mode = parts[1];
 
         boolean enabled = mode.equalsIgnoreCase("Enabled");
-        
         
         // Check the click and do the actions, also the buttonName
         if ( enabled && e.isRightClick() && e.isShiftClick() ||
@@ -1316,6 +1279,11 @@ public class ListenersPrisonManager implements Listener {
         		afConfig.setFeature( AutoFeatures.autoPickupAllBlocks, !enabled );
         		saveConfigPickup(e, p);
         	}
+
+        	if (buttonname.equalsIgnoreCase("Cobblestone")){
+        	    afConfig.setFeature(AutoFeatures.autoPickupCobbleStone, !enabled);
+        	    saveConfigPickup(e,p);
+            }
         	
         	if (buttonname.equalsIgnoreCase("Gold_Ore")){
         		afConfig.setFeature( AutoFeatures.autoPickupGoldOre, !enabled );

@@ -75,41 +75,52 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 blockmaterialdisplay = blockmaterial;
             }
 
-            // Create the lore
-            List<String> blockslore = createLore(
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                    "",
-                    GuiConfig.getString("Gui.Lore.Info"));
-
-
-            boolean isEnum = true;
             try {
-                Material.valueOf(blockmaterial);
-            } catch (Exception e) {
-                isEnum = false;
+                buttonsSetup(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+            } catch (NullPointerException ex){
+                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                ex.printStackTrace();
+                return;
             }
 
-            if (!(isEnum)) {
-                blockmaterial = "BARRIER";
-            }
-
-            // Add a lore
-            blockslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-
-            // Add a lore
-            blockslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
-
-            // Make the item
-            ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + ": " + minename));
-
-            // Add the item to the inventory
-            inv.addItem(block1);
 
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+        // Create the lore
+        List<String> blockslore = createLore(
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                "",
+                guiConfig.getString("Gui.Lore.Info"));
+
+
+        boolean isEnum = true;
+        try {
+            Material.valueOf(blockmaterial);
+        } catch (Exception e) {
+            isEnum = false;
+        }
+
+        if (!(isEnum)) {
+            blockmaterial = "BARRIER";
+        }
+
+        // Add a lore
+        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
+
+        // Add a lore
+        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+
+        // Make the item
+        ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + ": " + minename));
+
+        // Add the item to the inventory
+        inv.addItem(block1);
     }
 
 }

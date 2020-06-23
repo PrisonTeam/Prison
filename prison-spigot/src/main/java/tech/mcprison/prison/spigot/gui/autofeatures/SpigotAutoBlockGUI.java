@@ -37,12 +37,25 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
+        try {
+            buttonsSetup(GuiConfig,inv,afConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
+
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, AutoFeaturesFileConfig afConfig) {
         List<String> enabledLore = createLore(
-                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
 
         List<String> disabledLore = createLore(
-                GuiConfig.getString("Gui.Lore.RightClickToEnable")
+                guiConfig.getString("Gui.Lore.RightClickToEnable")
         );
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockAllBlocks ) ) {
@@ -140,9 +153,6 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Glowstone_Block Disabled"));
             inv.addItem(Disabled);
         }
-
-        this.p.openInventory(inv);
-
     }
 
 }

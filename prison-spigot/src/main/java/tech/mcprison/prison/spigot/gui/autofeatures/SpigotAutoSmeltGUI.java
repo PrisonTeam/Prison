@@ -37,9 +37,21 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig,afConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
 
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
         List<String> enabledLore = createLore(
-                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
 
         List<String> disabledLore = createLore(
@@ -69,9 +81,6 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
             ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled"));
             inv.addItem(Disabled);
         }
-
-        this.p.openInventory(inv);
-
     }
 
 }

@@ -68,20 +68,32 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
 
-            // Init the lore array with default values for ladders
-            List<String> ladderslore = createLore(
-                    GuiConfig.getString("Gui.Lore.ClickToOpen"),
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"));
+            try {
+                buttonsSetup(GuiConfig, inv, ladder);
+            } catch (NullPointerException ex){
+                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                ex.printStackTrace();
+                return;
+            }
 
-            // Create the button
-            itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));
-
-            // Add the button to the inventory
-            inv.addItem(itemladder);
         }
 
         // Open the inventory
         this.p.openInventory(inv);
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+        ItemStack itemladder;
+        // Init the lore array with default values for ladders
+        List<String> ladderslore = createLore(
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"));
+
+        // Create the button
+        itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));
+
+        // Add the button to the inventory
+        inv.addItem(itemladder);
     }
 
 }

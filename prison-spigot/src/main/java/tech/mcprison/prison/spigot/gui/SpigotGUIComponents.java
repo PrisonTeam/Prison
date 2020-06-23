@@ -18,6 +18,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public abstract class SpigotGUIComponents {
 
+    // createButton method (create a button for the GUI - item)
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
         ItemStack item = new ItemStack(id, amount);
@@ -30,6 +31,7 @@ public abstract class SpigotGUIComponents {
         return item;
     }
 
+    // createLore method (create a lore for the button)
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
         for ( String lore : lores ) {
@@ -38,6 +40,7 @@ public abstract class SpigotGUIComponents {
         return results;
     }
 
+    // checkRanks method (check if the ranks module's enabled with success or disabled)
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
         if(!(module instanceof PrisonRanks)){

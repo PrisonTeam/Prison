@@ -39,29 +39,43 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
+
+        // Open the inventory
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Create the lore
         List<String> rankupCommandsLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
                 "",
-                GuiConfig.getString("Gui.Lore.Info")
+                guiConfig.getString("Gui.Lore.Info")
         );
 
         SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
 
         // Create the lore
         List<String> editPriceLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
                 "",
-                GuiConfig.getString("Gui.Lore.Info"),
-                GuiConfig.getString("Gui.Lore.Price") + rank.cost
+                guiConfig.getString("Gui.Lore.Info"),
+                guiConfig.getString("Gui.Lore.Price") + rank.cost
         );
 
         // Create the lore
         List<String> editTagLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
                 "",
-                GuiConfig.getString("Gui.Lore.Info"),
-                GuiConfig.getString("Gui.Lore.Tag") + rank.tag
+                guiConfig.getString("Gui.Lore.Info"),
+                guiConfig.getString("Gui.Lore.Tag") + rank.tag
         );
 
         // Create the button
@@ -81,10 +95,6 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         // Set the position and add it to the inventory
         inv.setItem(16, rankTag);
-
-        // Open the inventory
-        this.p.openInventory(inv);
-
     }
 
 }

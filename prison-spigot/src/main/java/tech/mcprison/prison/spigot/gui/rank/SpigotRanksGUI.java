@@ -82,51 +82,63 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                     continue; // Skip it
                 }
 
-                // Init the lore array with default values for ladders
-                List<String> rankslore = createLore(
-                        GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                        GuiConfig.getString("Gui.Lore.ClickToManageRank"),
-                        "",
-                        GuiConfig.getString("Gui.Lore.Info"));
+                try {
+                    buttonsSetup(GuiConfig, inv, rankOptional);
+                } catch (NullPointerException ex){
+                    p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                    ex.printStackTrace();
+                    return;
+                }
 
-                // Get the specific rank
-                Rank rank = rankOptional.get();
-
-                // Add the RankID Lore
-                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Id") + rank.id));
-
-                // Add the RankName lore
-                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Name") + rank.name));
-
-                // Add the Rank Tag lore
-                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
-
-                // Add the Price lore
-                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Price3") + rank.cost));
-
-                // Init a variable
-                List<RankPlayer> players =
-                        PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                                .filter(rankPlayer -> rankPlayer.getRanks().containsValue(rankOptional.get()))
-                                .collect(Collectors.toList());
-
-                // Add the number of players with this rank
-                rankslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
-
-                // RankUpCommands info lore
-                rankslore.add("");
-                getCommands(rankslore, rank);
-
-                // Make the button with materials, amount, lore and name
-                itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + rank.name));
-
-                // Add the button to the inventory
-                inv.addItem(itemrank);
             }
         }
 
         // Open the inventory
         this.p.openInventory(inv);
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Optional<Rank> rankOptional) {
+        ItemStack itemrank;
+        // Init the lore array with default values for ladders
+        List<String> rankslore = createLore(
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                guiConfig.getString("Gui.Lore.ClickToManageRank"),
+                "",
+                guiConfig.getString("Gui.Lore.Info"));
+
+        // Get the specific rank
+        Rank rank = rankOptional.get();
+
+        // Add the RankID Lore
+        rankslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Id") + rank.id));
+
+        // Add the RankName lore
+        rankslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Name") + rank.name));
+
+        // Add the Rank Tag lore
+        rankslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
+
+        // Add the Price lore
+        rankslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Price3") + rank.cost));
+
+        // Init a variable
+        List<RankPlayer> players =
+                PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+                        .filter(rankPlayer -> rankPlayer.getRanks().containsValue(rankOptional.get()))
+                        .collect(Collectors.toList());
+
+        // Add the number of players with this rank
+        rankslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
+
+        // RankUpCommands info lore
+        rankslore.add("");
+        getCommands(rankslore, rank);
+
+        // Make the button with materials, amount, lore and name
+        itemrank = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + rank.name));
+
+        // Add the button to the inventory
+        inv.addItem(itemrank);
     }
 
     static void getCommands(List<String> rankslore, Rank rank) {

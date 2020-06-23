@@ -62,27 +62,39 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             List<String> mineslore = createLore(
                    );
 
-            Material material;
-
-            if (p.hasPermission(GuiConfig.getString("Options.Mines.PermissionWarpPlugin") + m.getName())){
-                material = Material.COAL_ORE;
-                mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.StatusUnlockedMine")));
-                mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ClickToTeleport")));
-            } else {
-                material = Material.REDSTONE_BLOCK;
-                mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.StatusLockedMine")));
+            try {
+                buttonsSetup(GuiConfig, inv, m, mineslore);
+            } catch (NullPointerException ex){
+                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                ex.printStackTrace();
+                return;
             }
 
-            // Create the button
-            itemines = createButton(material, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
-
-            // Add the button to the inventory
-            inv.addItem(itemines);
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
+        ItemStack itemines;
+        Material material;
+
+        if (p.hasPermission(guiConfig.getString("Options.Mines.PermissionWarpPlugin") + m.getName())){
+            material = Material.COAL_ORE;
+            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.StatusUnlockedMine")));
+            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ClickToTeleport")));
+        } else {
+            material = Material.REDSTONE_BLOCK;
+            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.StatusLockedMine")));
+        }
+
+        // Create the button
+        itemines = createButton(material, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
+
+        // Add the button to the inventory
+        inv.addItem(itemines);
     }
 
 }

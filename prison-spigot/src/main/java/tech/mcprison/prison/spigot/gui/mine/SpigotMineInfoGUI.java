@@ -36,49 +36,63 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
+
+        // Opens the inventory
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(
-                GuiConfig.getString("Gui.Lore.LeftClickToReset"),
+                guiConfig.getString("Gui.Lore.LeftClickToReset"),
                 "",
-                GuiConfig.getString("Gui.Lore.RightClickToToggle"),
-                GuiConfig.getString("Gui.Lore.SkipReset1"),
-                GuiConfig.getString("Gui.Lore.SkipReset2"),
-                GuiConfig.getString("Gui.Lore.SkipReset3"),
+                guiConfig.getString("Gui.Lore.RightClickToToggle"),
+                guiConfig.getString("Gui.Lore.SkipReset1"),
+                guiConfig.getString("Gui.Lore.SkipReset2"),
+                guiConfig.getString("Gui.Lore.SkipReset3"),
                 "",
-                GuiConfig.getString("Gui.Lore.ShiftAndRightClickToToggle"),
-                GuiConfig.getString("Gui.Message.ZeroBlocksReset1"),
-                GuiConfig.getString("Gui.Message.ZeroBlocksReset2"),
-                GuiConfig.getString("Gui.Message.ZeroBlocksReset3")
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToToggle"),
+                guiConfig.getString("Gui.Message.ZeroBlocksReset1"),
+                guiConfig.getString("Gui.Message.ZeroBlocksReset2"),
+                guiConfig.getString("Gui.Message.ZeroBlocksReset3")
         );
 
         // Set the Mine spawn at your location
         List<String> MineSpawnlore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToUse"),
-                GuiConfig.getString("Gui.Lore.SpawnPoint2")
+                guiConfig.getString("Gui.Lore.ClickToUse"),
+                guiConfig.getString("Gui.Lore.SpawnPoint2")
         );
 
         // Lore and button
         List<String> MinesNotificationsLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
-                GuiConfig.getString("Gui.Lore.Notifications")
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.Notifications")
         );
 
         // Lore and button
         List<String> MinesTpLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToTeleport"),
-                GuiConfig.getString("Gui.Lore.Tp")
+                guiConfig.getString("Gui.Lore.ClickToTeleport"),
+                guiConfig.getString("Gui.Lore.Tp")
         );
 
         // Blocks of the mine button and lore
         List<String> blocksoftheminelore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
-                GuiConfig.getString("Gui.Lore.Blocks2"));
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.Blocks2"));
 
         // Blocks of the mine button and lore
         List<String> mineResetTimeLore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToOpen"),
-                GuiConfig.getString("Gui.Lore.ManageResetTime"),
-                GuiConfig.getString("Gui.Lore.ResetTime") + mine.getResetTime());
+                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                guiConfig.getString("Gui.Lore.ManageResetTime"),
+                guiConfig.getString("Gui.Lore.ResetTime") + mine.getResetTime());
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + minename));
@@ -115,10 +129,6 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         // Position of the button
         inv.setItem(34, mineResetTime);
-
-        // Opens the inventory
-        this.p.openInventory(inv);
-
     }
 
 }

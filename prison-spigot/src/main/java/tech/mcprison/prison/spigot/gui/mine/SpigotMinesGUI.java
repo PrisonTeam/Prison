@@ -64,58 +64,70 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Make the buttons for every Mine with info
         for (Mine m : pMines.getMines()) {
 
-            // Init the lore array with default values for ladders
-            List<String> mineslore = createLore(
-                    GuiConfig.getString("Gui.Lore.LeftClickToOpen"),
-                    GuiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                    "",
-                    GuiConfig.getString("Gui.Lore.Info"));
-
-            // Add a lore
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.World") +  m.getWorldName()));
-
-            // Init a variable and add it to the lore
-            String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.SpawnPoint") + spawnPoint));
-
-            // Add a lore
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ResetTime") + m.getResetTime()));
-
-            // Add a lore
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
-
-            // Add a lore
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
-
-            // Add a lore
-            mineslore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Blocks")));
-
-            // Init some variables and do the actions
-            DecimalFormat dFmt = new DecimalFormat("##0.00");
-            double totalChance = 0.0d;
-            for (Block block : m.getBlocks()) {
-                double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
-                totalChance += chance;
-
-                String blockName =
-                        StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-                mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
+            try {
+                buttonsSetup(GuiConfig, inv, m);
+            } catch (NullPointerException ex){
+                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+                ex.printStackTrace();
+                return;
             }
 
-            if (totalChance < 100.0d) {
-                mineslore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
-            }
-
-            // Create the button
-            itemines = createButton(Material.COAL_ORE, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
-
-            // Add the button to the inventory
-            inv.addItem(itemines);
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m) {
+        ItemStack itemines;
+        // Init the lore array with default values for ladders
+        List<String> mineslore = createLore(
+                guiConfig.getString("Gui.Lore.LeftClickToOpen"),
+                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                "",
+                guiConfig.getString("Gui.Lore.Info"));
+
+        // Add a lore
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.World") +  m.getWorldName()));
+
+        // Init a variable and add it to the lore
+        String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SpawnPoint") + spawnPoint));
+
+        // Add a lore
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ResetTime") + m.getResetTime()));
+
+        // Add a lore
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
+
+        // Add a lore
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
+
+        // Add a lore
+        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Blocks")));
+
+        // Init some variables and do the actions
+        DecimalFormat dFmt = new DecimalFormat("##0.00");
+        double totalChance = 0.0d;
+        for (Block block : m.getBlocks()) {
+            double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
+            totalChance += chance;
+
+            String blockName =
+                    StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
+            mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
+        }
+
+        if (totalChance < 100.0d) {
+            mineslore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
+        }
+
+        // Create the button
+        itemines = createButton(Material.COAL_ORE, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
+
+        // Add the button to the inventory
+        inv.addItem(itemines);
     }
 
 }

@@ -33,13 +33,27 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        try {
+            buttonsSetup(inv,GuiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return;
+        }
+
+        // Open the inventory
+        this.p.openInventory(inv);
+
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Blocks of the mine
         List<String> confirmlore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToConfirm"));
+                guiConfig.getString("Gui.Lore.ClickToConfirm"));
 
         // Blocks of the mine
         List<String> cancelore = createLore(
-                GuiConfig.getString("Gui.Lore.ClickToCancel"));
+                guiConfig.getString("Gui.Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, SpigotPrison.format("&3" + "Confirm: " + mineName));
@@ -52,10 +66,6 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
         // Position of the button
         inv.setItem(6, cancel);
-
-        // Open the inventory
-        this.p.openInventory(inv);
-
     }
 
 }

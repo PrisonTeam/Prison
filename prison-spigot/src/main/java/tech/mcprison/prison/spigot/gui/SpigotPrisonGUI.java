@@ -30,20 +30,32 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        try {
+            buttonsSetup(inv, GuiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+        }
+
+        // Open the inventory
+        this.p.openInventory(inv);
+    }
+
+    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Lore of the button
         List<String> rankslore = createLore(
-        		GuiConfig.getString("Gui.Lore.RanksButton"),
-        		GuiConfig.getString("Gui.Lore.ClickToOpen"));
+        		guiConfig.getString("Gui.Lore.RanksButton"),
+        		guiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> prisontaskslore = createLore(
-                GuiConfig.getString("Gui.Lore.PrisonTasksButton"),
-                GuiConfig.getString("Gui.Lore.ClickToOpen"));
+                guiConfig.getString("Gui.Lore.PrisonTasksButton"),
+                guiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> mineslore = createLore(
-                GuiConfig.getString("Gui.Lore.MinesButton"),
-                GuiConfig.getString("Gui.Lore.ClickToOpen"));
+                guiConfig.getString("Gui.Lore.MinesButton"),
+                guiConfig.getString("Gui.Lore.ClickToOpen"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + "Ranks"));
@@ -62,9 +74,6 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
         //Position of the button
         inv.setItem(16, mines);
-
-        // Open the inventory
-        this.p.openInventory(inv);
     }
 
 }
