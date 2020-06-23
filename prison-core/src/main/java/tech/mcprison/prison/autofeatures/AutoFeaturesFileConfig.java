@@ -1,15 +1,10 @@
 package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.jackson.JacksonYaml;
 import tech.mcprison.prison.output.Output;
 
 public class AutoFeaturesFileConfig {
@@ -37,13 +32,17 @@ public class AutoFeaturesFileConfig {
 		    	isAutoManagerEnabled(general, false),
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
-				hologramIfInventoryIsFull(general, true),
+				hologramIfInventoryIsFull(general, false),
 
 			lore(options),
 				isLoreEnabled(lore, true),
 				lorePickupValue(lore, "Pickup"),
 				loreSmeltValue(lore, "Smelt"),
 				loreBlockValue(lore, "Block"),
+				
+				loreTrackBlockBreakCount(lore, false),
+				loreBlockBreakCountName(lore, "&dPrison Blocks Mined:&7 "),
+				loreBlockExplosionCountName(lore, "&dPrison Blocks Exploded:&7 "),
 				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
@@ -195,9 +194,9 @@ public class AutoFeaturesFileConfig {
     	public String getMessage( Map<String, ValueNode> conf ) {
     		String results = null;
     		
-    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isTextual() ) {
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isTextNode() ) {
     			TextNode text = (TextNode) conf.get( getKey() );
-    			results = text.asText( getMessage() );
+    			results = text.getValue();
     		}
     		else if ( getMessage() != null ) {
     			results = getMessage();
@@ -216,9 +215,9 @@ public class AutoFeaturesFileConfig {
     	public boolean getBoolean( Map<String, ValueNode> conf ) {
     		boolean results = false;
     		
-    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBoolean() ) {
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBooleanNode() ) {
     			BooleanNode bool = (BooleanNode) conf.get( getKey() );
-    			results = bool.asBoolean();
+    			results = bool.value();
     		}
     		else if ( getValue() != null ) {
     			results = getValue().booleanValue();
@@ -232,6 +231,8 @@ public class AutoFeaturesFileConfig {
     
     public AutoFeaturesFileConfig() {
         
+    	this.config = new TreeMap<>();
+    	
         if(!getConfigFile().exists()){
             createConfigurationFile();
             
@@ -241,13 +242,16 @@ public class AutoFeaturesFileConfig {
             				getConfigFile().getName()) );
         }
 
+        // temp defaults... always off:
+	    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
+			autoFeat.setFileConfig( getConfig() );
+		}       
         
-        
-        // Load the configuration file:
-        JacksonYaml jYaml = new JacksonYaml();
-        Map<String, ValueNode> map = jYaml.loadYamlConfigFile( getConfigFile() );
-        
-        setConfig( map );
+//        // Load the configuration file:
+//        JacksonYaml jYaml = new JacksonYaml();
+//        Map<String, ValueNode> map = jYaml.loadYamlConfigFile( getConfigFile() );
+//        
+//        setConfig( map );
     }
 
 	private void createConfigurationFile() {
@@ -262,10 +266,15 @@ public class AutoFeaturesFileConfig {
 			}
 			
 			try {
-				getConfigFile().createNewFile();
+				// This creates an empty file which is pointless:
+//				getConfigFile().createNewFile();
 				
-				JacksonYaml jYaml = new JacksonYaml();
-				setConfig( jYaml.loadYamlConfigFile( getConfigFile()) );
+				Output.get().logInfo( "&c### ### : AutoFeatures are Disabled in this release. " +
+						"Please wait for the next release for them to be reenabled." );
+
+				// Does not make sense to try to load an empty file:
+//				JacksonYaml jYaml = new JacksonYaml();
+				//setConfig( jYaml.loadYamlConfigFile( getConfigFile()) );
 				
 //				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
 				
@@ -321,10 +330,14 @@ public class AutoFeaturesFileConfig {
 //				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
 //				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
 				
-			    jYaml.writeYamlConfigFile( getConfigFile(), getConfig() );
+			    
+			    
+			    
+//			    JacksonYaml jYaml = new JacksonYaml();
+//			    jYaml.writeYamlConfigFile( getConfigFile(), getConfig() );
 			    
 //				conf.save(getConfigFile());
-			} catch (IOException e) {
+			} catch (Exception e) {
 				
 				Output.get().logError( 
 						String.format( "Failure! Unable to initialize a new AutoFeatures config file. %s :: %s", 
@@ -439,28 +452,28 @@ public class AutoFeaturesFileConfig {
 	private boolean saveConf( Map<String, ValueNode> config ) {
 		boolean success = false;
 		
-		File cFile = getConfigFile();
-		String tempFileName = cFile.getName() + ".temp";
-		File tempFile = new File(cFile.getParentFile(), tempFileName);
-		
-		try {
-			// First save to the temp file. If it fails it will throw an exception and 
-			// will prevent the deletion of the existing file:
-			JacksonYaml jYaml = new JacksonYaml();
-			jYaml.writeYamlConfigFile( tempFile, getConfig() );
-			
-			if ( cFile.exists() ) {
-				cFile.delete();
-			}
-
-			// The save cannot be considered successful until after the rename is complete.
-			success = tempFile.renameTo( cFile );
-		}
-		catch ( Exception e ) {
-			Output.get().logError( 
-					String.format( "Failure! Unable to save AutoFeatures config file. %s :: %s", 
-							cFile.getName(), e.getMessage()), e );
-		}
+//		File cFile = getConfigFile();
+//		String tempFileName = cFile.getName() + ".temp";
+//		File tempFile = new File(cFile.getParentFile(), tempFileName);
+//		
+//		try {
+//			// First save to the temp file. If it fails it will throw an exception and 
+//			// will prevent the deletion of the existing file:
+//			JacksonYaml jYaml = new JacksonYaml();
+//			jYaml.writeYamlConfigFile( tempFile, getConfig() );
+//			
+//			if ( cFile.exists() ) {
+//				cFile.delete();
+//			}
+//
+//			// The save cannot be considered successful until after the rename is complete.
+//			success = tempFile.renameTo( cFile );
+//		}
+//		catch ( Exception e ) {
+//			Output.get().logError( 
+//					String.format( "Failure! Unable to save AutoFeatures config file. %s :: %s", 
+//							cFile.getName(), e.getMessage()), e );
+//		}
 		
 		return success;
 	}

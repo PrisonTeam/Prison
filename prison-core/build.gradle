@@ -25,8 +25,8 @@ repositories {
 
 dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.4'
+//    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.4'
     
     // For parsing hocon formatted files:
     //   https://github.com/jclawson/jackson-dataformat-hocon
@@ -44,8 +44,9 @@ shadowJar {
     dependencies {
         include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
-        include(dependency('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'))
-        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.10.4'))
+//        include(dependency('com.fasterxml.jackson.annotation:2.10.4'))
+//        include(dependency('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'))
+//        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.10.4'))
     }
     classifier 'API'
     version = null

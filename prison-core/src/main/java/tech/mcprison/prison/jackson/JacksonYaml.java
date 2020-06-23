@@ -1,22 +1,5 @@
 package tech.mcprison.prison.jackson;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
-import tech.mcprison.prison.output.Output;
-
 /**
  * <p>This class uses Jackson's YAML databind tools to
  * read and write to yaml configuration files.
@@ -57,161 +40,165 @@ public class JacksonYaml {
 	public JacksonYaml() {
 		super();
 		
-		// The following class cannot be found at runtime, of which gradle cannot
-		// perform the build properly to include it, so reference it here so it
-		// will be included.
-		JsonFactory.builder();
 	}
 
-	/**
-	 * <p>This function will read a yaml file, which loads as a hierarchical
-	 * map.  Then it will flatten the hierarchical map and return it. 
-	 * </p>
-	 * 
-	 * 
-	 * @param file
-	 */
-	public Map<String, ValueNode> loadYamlConfigFile( File file ) {
-		Map<String, ValueNode> map = null;
-		
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
-		// If using something like a custom date formatter, etc:
-		mapper.findAndRegisterModules();
-		
-
-		try {
-			JsonNode tree = mapper.readTree( file );
-			
-			map = flattenJson( tree );
-			
-//			for (Map.Entry<String, ValueNode> kv : map.entrySet()) {
-//				System.out.println(kv.getKey() + ": " + 
-//						kv.getValue().asText() + " [" + 
-//						kv.getValue().getClass() +  "]");
+//	/**
+//	 * <p>This function will read a yaml file, which loads as a hierarchical
+//	 * map.  Then it will flatten the hierarchical map and return it. 
+//	 * </p>
+//	 * 
+//	 * 
+//	 * @param file
+//	 */
+//	public Map<String, ValueNode> loadYamlConfigFile( File file ) {
+//		Map<String, ValueNode> map = null;
+//		
+//		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+//
+//		// If using something like a custom date formatter, etc:
+//		mapper.findAndRegisterModules();
+//		
+//
+//		try {
+//			JsonNode tree = mapper.readTree( file );
+//			
+//			map = flattenJson( tree );
+//			
+////			for (Map.Entry<String, ValueNode> kv : map.entrySet()) {
+////				System.out.println(kv.getKey() + ": " + 
+////						kv.getValue().asText() + " [" + 
+////						kv.getValue().getClass() +  "]");
+////			}
+//		}
+//		catch ( IOException e ) {
+//			Output.get().logError( String.format( "JacksonYaml.loadYamlConfigFile: " +
+//					"Failure: file= %s  :: %s ", file.getAbsoluteFile(), e.getMessage() ));
+//		}
+//		
+//		return map;
+//	}
+//
+//
+//
+//	private Map<String, ValueNode> flattenJson(JsonNode input) {
+//	    Map<String, ValueNode> map = new LinkedHashMap<>();
+//	    flattenJson(input, null, map);
+//	    return map;
+//	}
+//	
+//	private void flattenJson(JsonNode node, String parent, Map<String, ValueNode> map) {
+//	    if (node instanceof ValueNode) {
+//	        map.put(parent, (ValueNode)node);
+//	    } 
+//	    else {
+//	        String prefix = parent == null ? "" : parent + ".";
+//	        if (node instanceof ArrayNode) {
+//	            ArrayNode arrayNode = (ArrayNode)node;
+//	            for(int i = 0; i < arrayNode.size(); i++) {
+//	                flattenJson(arrayNode.get(i), prefix + i, map);
+//	            }
+//	        } 
+//	        else if (node instanceof ObjectNode) {
+//	            ObjectNode objectNode = (ObjectNode) node;
+//	            for (Iterator<Map.Entry<String, JsonNode>> it = objectNode.fields(); it.hasNext(); ) {
+//	                Map.Entry<String, JsonNode> field = it.next();
+//	                flattenJson(field.getValue(), prefix + field.getKey(), map);
+//	            }
+//	        } 
+//	        else {
+//				Output.get().logWarn( String.format( "JacksonYaml.flattenJson: " +
+//						"Warning: Unknown node type. node= %s ", node.getClass()));
+//
+//	        }
+//	    }
+//	}
+//	
+//	
+//	
+//	/**
+//	 * <p>This function will write a flat map to a yaml file after it
+//	 * expands it to an hierarchical map, expanding the key values on
+//	 * their periods. 
+//	 * </p>
+//	 * 
+//	 * @param file Target file to save to
+//	 * @param map A flat map of all the configs
+//	 */
+//	public void writeYamlConfigFile( File file, Map<String, ValueNode> map ) {
+//		
+//		String filenameTemp = file.getName() + ".tmp.yml";
+//		File fileTemp = new File( file.getParentFile(), filenameTemp );
+//		
+//		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+//
+//		// If using something like a custom date formatter, etc:
+//		mapper.findAndRegisterModules();
+//
+//		try {
+//			Map<String, Object> mapExpanded = expandMap( map );
+//			
+//			// Write to the temp file:
+//			mapper.writeValue( fileTemp, mapExpanded );
+//			
+//			// Delete the original file if it exists:
+//			if ( file.exists() ) {
+//				file.delete();
 //			}
-		}
-		catch ( IOException e ) {
-			Output.get().logError( String.format( "JacksonYaml.loadYamlConfigFile: " +
-					"Failure: file= %s  :: %s ", file.getAbsoluteFile(), e.getMessage() ));
-		}
-		
-		return map;
-	}
-
-
-
-	private Map<String, ValueNode> flattenJson(JsonNode input) {
-	    Map<String, ValueNode> map = new LinkedHashMap<>();
-	    flattenJson(input, null, map);
-	    return map;
-	}
-	
-	private void flattenJson(JsonNode node, String parent, Map<String, ValueNode> map) {
-	    if (node instanceof ValueNode) {
-	        map.put(parent, (ValueNode)node);
-	    } 
-	    else {
-	        String prefix = parent == null ? "" : parent + ".";
-	        if (node instanceof ArrayNode) {
-	            ArrayNode arrayNode = (ArrayNode)node;
-	            for(int i = 0; i < arrayNode.size(); i++) {
-	                flattenJson(arrayNode.get(i), prefix + i, map);
-	            }
-	        } 
-	        else if (node instanceof ObjectNode) {
-	            ObjectNode objectNode = (ObjectNode) node;
-	            for (Iterator<Map.Entry<String, JsonNode>> it = objectNode.fields(); it.hasNext(); ) {
-	                Map.Entry<String, JsonNode> field = it.next();
-	                flattenJson(field.getValue(), prefix + field.getKey(), map);
-	            }
-	        } 
-	        else {
-				Output.get().logWarn( String.format( "JacksonYaml.flattenJson: " +
-						"Warning: Unknown node type. node= %s ", node.getClass()));
-
-	        }
-	    }
-	}
-	
-	
-	
-	/**
-	 * <p>This function will write a flat map to a yaml file after it
-	 * expands it to an hierarchical map, expanding the key values on
-	 * their periods. 
-	 * </p>
-	 * 
-	 * @param file Target file to save to
-	 * @param map A flat map of all the configs
-	 */
-	public void writeYamlConfigFile( File file, Map<String, ValueNode> map ) {
-		
-		String filenameTemp = file.getName() + ".tmp.yml";
-		File fileTemp = new File( file.getParentFile(), filenameTemp );
-		
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
-		// If using something like a custom date formatter, etc:
-		mapper.findAndRegisterModules();
-
-		try {
-			Map<String, Object> mapExpanded = expandMap( map );
-			
-			// Write to the temp file:
-			mapper.writeValue( fileTemp, mapExpanded );
-			
-			// Delete the original file if it exists:
-			if ( file.exists() ) {
-				file.delete();
-			}
-			
-			// Rename the temp file to the actual file:
-			fileTemp.renameTo( file );
-		}
-		catch ( IOException e ) {
-			Output.get().logError( String.format( "JacksonYaml.writeYamlConfigFile: " +
-					"Failure: file= %s  :: %s ", file.getAbsoluteFile(), e.getMessage() ));
-		}
-	}
-
-	/**
-	 * <p>This takes a flat map and expands the keys, breaking on the periods, 
-	 * and builds a multi-level hierarchy.
-	 * </p>
-	 * 
-	 * @param map Flat map
-	 * @return Hierarchical map
-	 */
-	private Map<String, Object> expandMap( Map<String, ValueNode> map ) {
-		Map<String, Object> m = new LinkedHashMap<>();
-		
-		for ( Entry<String, ValueNode> node : map.entrySet() ) {
-			
-			String key = node.getKey();
-			ValueNode value = node.getValue();
-			
-			String[] keyz = key.split( "\\." );
-			Map<String, Object> child = getChildExpandedMap(m, keyz, 0);
-			
-			child.put( keyz[keyz.length-1], value );
-		}
-		
-		return m;
-	}
-
-	@SuppressWarnings( "unchecked" )
-	private Map<String, Object> getChildExpandedMap( Map<String, Object> map, String[] keyz, int pos ) {
-		if ( pos < keyz.length - 1 ) {
-			String key = keyz[pos];
-			if ( !map.containsKey( key ) ) {
-				map.put( key, new LinkedHashMap<>() );
-			}
-			return getChildExpandedMap( (Map<String, Object>) map.get( key ), keyz, pos + 1);
-		}
-
-		return map;
-	}
+//			
+//			// Rename the temp file to the actual file:
+//			fileTemp.renameTo( file );
+//		}
+//		catch ( IOException e ) {
+//			Output.get().logError( String.format( "JacksonYaml.writeYamlConfigFile: " +
+//					"Failure: file= %s  :: %s ", file.getAbsoluteFile(), e.getMessage() ));
+//		}
+//	}
+//
+//	/**
+//	 * <p>This takes a flat map and expands the keys, breaking on the periods, 
+//	 * and builds a multi-level hierarchy.
+//	 * </p>
+//	 * 
+//	 * @param map Flat map
+//	 * @return Hierarchical map
+//	 */
+//	private Map<String, Object> expandMap( Map<String, ValueNode> map ) {
+//		Map<String, Object> m = new LinkedHashMap<>();
+//		
+//		for ( Entry<String, ValueNode> node : map.entrySet() ) {
+//			
+//			String key = node.getKey();
+//			
+//			if ( key != null ) {
+//				
+//				ValueNode value = node.getValue();
+//				
+//				String[] keyz = key.split( "\\." );
+//
+//				// There are multiple depths and we must place the value at the
+//				// leaf nodes.  getChildExpandedMap traverses all the children
+//				// to get to the leaf node, making the nodes if needed.
+//				Map<String, Object> child = getChildExpandedMap(m, keyz, 0);
+//				
+//				child.put( keyz[keyz.length-1], value );
+//			}
+//		}
+//		
+//		return m;
+//	}
+//
+//	@SuppressWarnings( "unchecked" )
+//	private Map<String, Object> getChildExpandedMap( Map<String, Object> map, String[] keyz, int pos ) {
+//		if ( pos < keyz.length - 1 ) {
+//			String key = keyz[pos];
+//			if ( !map.containsKey( key ) ) {
+//				map.put( key, new LinkedHashMap<>() );
+//			}
+//			return getChildExpandedMap( (Map<String, Object>) map.get( key ), keyz, pos + 1);
+//		}
+//
+//		return map;
+//	}
 
 	
 }
