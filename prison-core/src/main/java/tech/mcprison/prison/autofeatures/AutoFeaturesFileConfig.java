@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.output.Output;
 
 public class AutoFeaturesFileConfig {
@@ -283,120 +284,116 @@ public class AutoFeaturesFileConfig {
         
     	this.config = new TreeMap<>();
     	
-        if(!getConfigFile().exists()){
-            createConfigurationFile();
-            
-            Output.get().logWarn( 
-            		String.format( "Notice: AutoManager config was just created. " +
-            				"You must configure it to use it. File: %s", 
-            				getConfigFile().getName()) );
-        }
-
-        // temp defaults... always off:
+		
+		// The following is strictly not needed to ensure that the configs are
+		// created, but this, somehow, does ensure that the order in which 
+		// the sections are written are in the order in which they are defined
+		// within the enum.
 	    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
 			autoFeat.setFileConfig( getConfig() );
-		}       
+		}
+	    
+	    
+
+        // This may sound counter intuitive if the config file does not exist, 
+        // but when trying to load the yaml with the
+	    // config fully loaded with the default values will trigger a save if 
+	    // anyone of them do not exist in the config file.
+        // So do not perform any special first time processing here since it
+        // is handled within the loadYamlAutoFeatures code.
         
-//        // Load the configuration file:
-//        JacksonYaml jYaml = new JacksonYaml();
-//        Map<String, ValueNode> map = jYaml.loadYamlConfigFile( getConfigFile() );
-//        
-//        setConfig( map );
+		YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		yamlFileIO.loadYamlAutoFeatures( config );
+
     }
 
-	private void createConfigurationFile() {
-		
-		// Make sure file does not exist prior to trying to create it with the YAML tool since
-		// it is unknown who it will react...
-		if ( !getConfigFile().exists() ) {
-			File dir = getConfigFile().getParentFile();
-
-			if ( !dir.exists() ) {
-				dir.mkdirs();
-			}
-			
-			try {
-				// This creates an empty file which is pointless:
-//				getConfigFile().createNewFile();
-				
-				Output.get().logInfo( "&c### ### : AutoFeatures are Disabled in this release. " +
-						"Please wait for the next release for them to be reenabled." );
-
-				// Does not make sense to try to load an empty file:
-//				JacksonYaml jYaml = new JacksonYaml();
-				//setConfig( jYaml.loadYamlConfigFile( getConfigFile()) );
-				
-//				FileConfiguration conf = YamlConfiguration.loadConfiguration(getConfigFile());
-				
-				// Not yet enabled... this will fully replace the line items below:
-			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
-					autoFeat.setFileConfig( getConfig() );
-				}
-				
-				
-//				conf.createSection("Messages");
-//				conf.createSection("Options");
+//	private void createConfigurationFile() {
+//		
+//		// Make sure file does not exist prior to trying to create it with the YAML tool since
+//		// it is unknown who it will react...
+//		if ( !getConfigFile().exists() ) {
+//
+//			try {
 //				
-//				conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
-//				conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
-//				conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
 //				
-//				conf.set("Options.General.AreEnabledFeatures", false);
-//				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
-//				conf.set("Options.General.playSoundIfInventoryIsFull", true);
-//				conf.set("Options.General.hologramIfInventoryIsFull", true);
+//				// The following is strictly not needed to ensure that the configs are
+//				// created, but this, somehow, does ensure that the order in which 
+//				// the sections are written are in the order in which they are defined
+//				// within the enum.
+//			    for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
+//					autoFeat.setFileConfig( getConfig() );
+//				}
 //				
-//				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
-//				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
-//				conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
-//				conf.set("Options.AutoPickup.AutoPickupStone",true);
-//				conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupIronOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
-//				conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
-//				conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
 //				
-//				conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
-//				conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
-//				conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
-//				conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+////				conf.createSection("Messages");
+////				conf.createSection("Options");
+////				
+////				conf.set("Messages.InventoryIsFullDroppingItems", "&cWARNING! Your inventory's full and you're dropping items!");
+////				conf.set("Messages.InventoryIsFullLosingItems", "&cWARNING! Your inventory's full and you're losing items!");
+////				conf.set("Messages.InventoryIsFull", "&cWARNING! Your inventory's full!");
+////				
+////				conf.set("Options.General.AreEnabledFeatures", false);
+////				conf.set("Options.General.DropItemsIfInventoryIsFull", true);
+////				conf.set("Options.General.playSoundIfInventoryIsFull", true);
+////				conf.set("Options.General.hologramIfInventoryIsFull", true);
+////				
+////				conf.set("Options.AutoPickup.AutoPickupEnabled", true);
+////				conf.set("Options.AutoPickup.AutoPickupAllBlocks",true);
+////				conf.set("Options.AutoPickup.AutoPickupCobbleStone",true);
+////				conf.set("Options.AutoPickup.AutoPickupStone",true);
+////				conf.set("Options.AutoPickup.AutoPickupGoldOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupIronOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupCoalOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupDiamondOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupRedstoneOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupEmeraldOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupQuartzOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupLapisOre", true);
+////				conf.set("Options.AutoPickup.AutoPickupSnowBall", true);
+////				conf.set("Options.AutoPickup.AutoPickupGlowstoneDust", true);
+////				
+////				conf.set("Options.AutoSmelt.AutoSmeltEnabled", true);
+////				conf.set("Options.AutoSmelt.AutoSmeltAllBlocks", true);
+////				conf.set("Options.AutoSmelt.AutoSmeltGoldOre", true);
+////				conf.set("Options.AutoSmelt.AutoSmeltIronOre", true);
+////				
+////				conf.set("Options.AutoBlock.AutoBlockEnabled", true);
+////				conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
+////				conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
+////				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
 //				
-//				conf.set("Options.AutoBlock.AutoBlockEnabled", true);
-//				conf.set("Options.AutoBlock.AutoBlockAllBlocks", true);
-//				conf.set("Options.AutoBlock.AutoBlockGoldBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockIronBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockCoalBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockDiamondBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockRedstoneBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockEmeraldBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockQuartzBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockPrismarineBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockLapisBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockSnowBlock", true);
-//				conf.set("Options.AutoBlock.AutoBlockGlowstone", true);
-				
-			    
-			    
-			    
-//			    JacksonYaml jYaml = new JacksonYaml();
-//			    jYaml.writeYamlConfigFile( getConfigFile(), getConfig() );
-			    
-//				conf.save(getConfigFile());
-			} catch (Exception e) {
-				
-				Output.get().logError( 
-						String.format( "Failure! Unable to initialize a new AutoFeatures config file. %s :: %s", 
-								getConfigFile().getName(), e.getMessage()), e );
-			}
-			
-		}
-		
-	}
+//			    //saveConf( getConfig() );
+//			    
+//			    
+//			    // This may sound counter intuitive, but when trying to load the yaml with the
+//			    // config fully loaded with the default values will trigger a save if 
+//			    // anyone of them do not exist in the config file.
+//			    YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+//				yamlFileIO.loadYamlAutoFeatures( config );
+//			    
+////			    JacksonYaml jYaml = new JacksonYaml();
+////			    jYaml.writeYamlConfigFile( getConfigFile(), getConfig() );
+//			    
+////				conf.save(getConfigFile());
+//			} catch (Exception e) {
+//				
+//				Output.get().logError( 
+//						String.format( "Failure! Unable to initialize a new AutoFeatures config file. %s :: %s", 
+//								getConfigFile().getName(), e.getMessage()), e );
+//			}
+//			
+//		}
+//		
+//	}
 
 	/**
 	 * <p>This updates AutoFeatures with a String value.
@@ -500,32 +497,9 @@ public class AutoFeaturesFileConfig {
 	 * @return
 	 */
 	private boolean saveConf( Map<String, ValueNode> config ) {
-		boolean success = false;
 		
-//		File cFile = getConfigFile();
-//		String tempFileName = cFile.getName() + ".temp";
-//		File tempFile = new File(cFile.getParentFile(), tempFileName);
-//		
-//		try {
-//			// First save to the temp file. If it fails it will throw an exception and 
-//			// will prevent the deletion of the existing file:
-//			JacksonYaml jYaml = new JacksonYaml();
-//			jYaml.writeYamlConfigFile( tempFile, getConfig() );
-//			
-//			if ( cFile.exists() ) {
-//				cFile.delete();
-//			}
-//
-//			// The save cannot be considered successful until after the rename is complete.
-//			success = tempFile.renameTo( cFile );
-//		}
-//		catch ( Exception e ) {
-//			Output.get().logError( 
-//					String.format( "Failure! Unable to save AutoFeatures config file. %s :: %s", 
-//							cFile.getName(), e.getMessage()), e );
-//		}
-		
-		return success;
+		YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		return yamlFileIO.saveYamlAutoFeatures( config );
 	}
 
 	
@@ -548,13 +522,5 @@ public class AutoFeaturesFileConfig {
 	public void setConfig( Map<String, ValueNode> config ) {
 		this.config = config;
 	}
-
-//	private FileConfiguration getConfig() {
-//		return config;
-//	}
-//	private void setConfig( FileConfiguration config ) {
-//		this.config = config;
-//	}
-
 
 }

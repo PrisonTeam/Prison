@@ -52,6 +52,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
+import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
@@ -78,6 +79,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
+import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -670,6 +672,12 @@ class SpigotPlatform implements Platform {
 			}
 		}
 		return results;
+	}
+	
+	
+	@Override
+	public YamlFileIO getYamlFileIO( File yamlFile ) {
+		return new SpigotYamlFileIO( yamlFile );
 	}
 	
 }

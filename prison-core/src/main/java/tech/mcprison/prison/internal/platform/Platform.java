@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tech.mcprison.prison.commands.PluginCommand;
+import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
@@ -251,4 +252,8 @@ public interface Platform {
 
 //	public List<String> placeholderSearch( String[] patterns );
     
+	
+	public YamlFileIO getYamlFileIO( File yamlFile );
+	
+	
 }

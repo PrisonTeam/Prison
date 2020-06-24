@@ -29,6 +29,7 @@ import java.util.UUID;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
+import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
@@ -193,6 +194,11 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public List<String> placeholderSearch( UUID playerUuid, String[] pattern ) {
+		return null;
+	}
+	
+	@Override
+	public YamlFileIO getYamlFileIO( File yamlFile ) {
 		return null;
 	}
 }
