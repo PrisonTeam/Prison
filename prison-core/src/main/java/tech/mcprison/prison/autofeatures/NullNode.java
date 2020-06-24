@@ -7,7 +7,7 @@ package tech.mcprison.prison.autofeatures;
 public class NullNode
 		extends ValueNode
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public final static NullNode instance = new NullNode();
 

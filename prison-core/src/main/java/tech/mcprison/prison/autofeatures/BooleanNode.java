@@ -6,7 +6,7 @@ package tech.mcprison.prison.autofeatures;
  */
 public class BooleanNode
 		extends ValueNode {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1L;
 
 	public final static BooleanNode TRUE = new BooleanNode(true);
     public final static BooleanNode FALSE = new BooleanNode(false);
@@ -22,7 +22,7 @@ public class BooleanNode
     public static BooleanNode valueOf(boolean b) { return b ? TRUE : FALSE; }
 
 	
-    public boolean value() {
+    public boolean getValue() {
         return value;
     }
     
@@ -45,10 +45,6 @@ public class BooleanNode
     @Override
     public boolean equals(Object o)
     {
-        /* 11-Mar-2013, tatu: Apparently ClassLoaders can manage to load
-         *    different instances, rendering identity comparisons broken.
-         *    So let's use value instead.
-         */
         if (o == this) return true;
         if (o == null) return false;
         if (!(o instanceof BooleanNode)) {

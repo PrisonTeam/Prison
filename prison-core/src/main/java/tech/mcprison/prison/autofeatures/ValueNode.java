@@ -27,6 +27,8 @@ public abstract class ValueNode
 	
 	public boolean isBooleanNode() { return false; }
 	
+	public boolean isIntegerNode() { return false; }
+	
 	public boolean isLongNode() { return false; }
 	
 	public boolean isDoubleNode() { return false; }

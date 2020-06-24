@@ -25,7 +25,7 @@ public class ValueNodeFactoryTest
 			assertNotNull( vn );
 			assertTrue( vn.isBooleanNode() );
 			assertTrue( vn instanceof BooleanNode );
-			assertTrue( ((BooleanNode) vn).value() );
+			assertTrue( ((BooleanNode) vn).getValue() );
 		}
 		
 		{
@@ -33,7 +33,7 @@ public class ValueNodeFactoryTest
 			assertNotNull( vn );
 			assertTrue( vn.isBooleanNode() );
 			assertTrue( vn instanceof BooleanNode );
-			assertFalse( ((BooleanNode) vn).value() );
+			assertFalse( ((BooleanNode) vn).getValue() );
 		}
 		
 		{
@@ -147,7 +147,7 @@ public class ValueNodeFactoryTest
 			assertNotNull( vn );
 			assertTrue( vn.isBooleanNode() );
 			assertTrue( vn instanceof BooleanNode );
-			assertTrue( ((BooleanNode) vn).value() );
+			assertTrue( ((BooleanNode) vn).getValue() );
 		}
 		
 		{
@@ -155,7 +155,7 @@ public class ValueNodeFactoryTest
 			assertNotNull( vn );
 			assertTrue( vn.isBooleanNode() );
 			assertTrue( vn instanceof BooleanNode );
-			assertFalse( ((BooleanNode) vn).value() );
+			assertFalse( ((BooleanNode) vn).getValue() );
 		}
 		
 		{

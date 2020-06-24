@@ -7,7 +7,7 @@ package tech.mcprison.prison.autofeatures;
 public class TextNode
 	extends ValueNode
 {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = -1L;
 
     final static TextNode EMPTY_STRING_NODE = new TextNode("");
 

@@ -6,7 +6,7 @@ package tech.mcprison.prison.autofeatures;
  */
 public class LongNode
 		extends ValueNode {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = -1L;
 	
 	protected final long value;
 	
