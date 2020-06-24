@@ -73,18 +73,22 @@ public abstract class YamlFileIO {
 	}
 	
 	/**
-	 * This function loads a yaml file based upon the AutoFeatures enumeration.
+	 * <p>This function loads a yaml file based upon the AutoFeatures enumeration.
 	 * It loads the proper ValueNode based upon the defined value within the
 	 * enum.  If there is a property that does not exist within the yaml file,
 	 * it will add it to the config object with the default value, plus it will
-	 * return a list of all features that do not exist (dne).
+	 * return a list of all features that do not exist (dne).  If any new settings
+	 * are added to the configuration uploading (ie. new features), then it will 
+	 * trigger a save to update the file so the new features will exist in there.
+	 * </p>
 	 * 
-	 * This way, if the dne List is not empty, then it needs to be saved to 
+	 * <p>This way, if the dne List is not empty, then it needs to be saved to 
 	 * update what is saved on the file system.  Only the new items, with the
 	 * default values, will be added; the original values will not be altered.
+	 * </p>
 	 * 
 	 * @param config
-	 * @return
+	 * @return List of AutoFeatures that were just added to the config file.
 	 */
 	public List<AutoFeatures> loadYamlAutoFeatures( Map<String, ValueNode> config ) {
 		List<AutoFeatures> dne = new ArrayList<>();

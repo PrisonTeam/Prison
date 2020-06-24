@@ -1,8 +1,8 @@
 package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.YamlFileIO;
@@ -282,7 +282,7 @@ public class AutoFeaturesFileConfig {
     
     public AutoFeaturesFileConfig() {
         
-    	this.config = new TreeMap<>();
+    	this.config = new LinkedHashMap<>();
     	
 		
 		// The following is strictly not needed to ensure that the configs are

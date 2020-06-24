@@ -14,7 +14,6 @@ import tech.mcprison.prison.output.Output;
 public class SpigotYamlFileIO 
 	extends YamlFileIO {
 	
-	
 	private YamlConfiguration yamlConfig;
 	
 	public SpigotYamlFileIO( File yamlFile ) {
@@ -40,8 +39,6 @@ public class SpigotYamlFileIO
 	            				"&cFile: &7%s   &cError: &7%s", 
 	            				getYamlFile().getName(), e.getMessage()) );
 			}
-			
-			
          }
 
         try {
