@@ -42,10 +42,6 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'me.clip:placeholderapi:2.9.1'
     
-//    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'
-//    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.4'
- 
-
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
 
@@ -59,14 +55,6 @@ dependencies {
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
     compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])
 
-
-//    compile fileTree(dir: 'lib', include: ['snakeyaml-1.26.jar'])
-//    compile fileTree(dir: 'lib', include: ['jackson-core-2.10.4.jar'])
-//    compile fileTree(dir: 'lib', include: ['jackson-annotations-2.10.4.jar'])
-    
-//    compile fileTree(dir: 'lib', include: ['jackson-dataformat-yaml-2.10.4.jar'])
-//    compile fileTree(dir: 'lib', include: ['jackson-databind-2.10.4.jar'])
- 
 }
 
 /*
