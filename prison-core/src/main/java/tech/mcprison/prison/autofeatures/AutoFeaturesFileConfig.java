@@ -92,42 +92,72 @@ public class AutoFeaturesFileConfig {
     	private final boolean isSection;
     	private final boolean isBoolean;
     	private final boolean isMessage;
+    	private final boolean isInteger;
+    	private final boolean isLong;
+    	private final boolean isDouble;
     	
     	private final String path;
     	private final String message;
     	private final Boolean value;
+    	private final Integer intValue;
+    	private final Long longValue;
+    	private final Double doubleValue;
     	
     	private AutoFeatures() {
     		this.isSection = true;
     		this.isBoolean = false;
     		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = false;
     		this.path = null;
     		this.message = null;
     		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section) {
     		this.isSection = true;
     		this.isBoolean = false;
     		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = false;
     		this.path = section.getKey();
     		this.message = null;
     		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
     		this.isSection = false;
     		this.isBoolean = false;
     		this.isMessage = true;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = false;
     		this.path = section.getKey();
     		this.message = message;
     		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
     		this.isSection = false;
     		this.isBoolean = true;
     		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = false;
     		this.path = section.getKey();
     		this.message = null;
     		this.value = value == null ? Boolean.FALSE : value;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = null;
     	}
     	
 		public boolean isSection() {
@@ -139,6 +169,15 @@ public class AutoFeaturesFileConfig {
 		public boolean isMessage() {
 			return isMessage;
 		}
+		public boolean isInteger() {
+			return isInteger;
+		}
+		public boolean isLong() {
+			return isLong;
+		}
+		public boolean isDouble() {
+			return isDouble;
+		}
 		
 		public String getPath() {
 			return path;
@@ -149,7 +188,18 @@ public class AutoFeaturesFileConfig {
 		public Boolean getValue() {
 			return value;
 		}
-    	public String getKey() {
+		
+    	public Integer getIntValue() {
+			return intValue;
+		}
+		public Long getLongValue() {
+			return longValue;
+		}
+		public Double getDoubleValue() {
+			return doubleValue;
+		}
+		
+		public String getKey() {
     		return (path != null ? path + "." : "") + this.name();
     	}
     	
@@ -217,7 +267,7 @@ public class AutoFeaturesFileConfig {
     		
     		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBooleanNode() ) {
     			BooleanNode bool = (BooleanNode) conf.get( getKey() );
-    			results = bool.value();
+    			results = bool.getValue();
     		}
     		else if ( getValue() != null ) {
     			results = getValue().booleanValue();
