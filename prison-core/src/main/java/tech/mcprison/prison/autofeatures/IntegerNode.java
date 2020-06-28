@@ -10,7 +10,12 @@ public class IntegerNode
     public IntegerNode(int v) { value = v; }
 
     public static IntegerNode valueOf(int i) { return new IntegerNode(i); }
-
+	
+	@Override
+	public String toString() {
+		return Integer.toString( getValue() );
+	}
+	
     public int getValue() {
     	return value;
     }

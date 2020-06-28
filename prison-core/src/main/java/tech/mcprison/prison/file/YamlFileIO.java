@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.autofeatures.BooleanNode;
 import tech.mcprison.prison.autofeatures.DoubleNode;
 import tech.mcprison.prison.autofeatures.IntegerNode;
 import tech.mcprison.prison.autofeatures.LongNode;
 import tech.mcprison.prison.autofeatures.TextNode;
 import tech.mcprison.prison.autofeatures.ValueNode;
+import tech.mcprison.prison.output.Output;
 
 public abstract class YamlFileIO {
 
@@ -96,33 +97,44 @@ public abstract class YamlFileIO {
 		// Load from the actual yaml file:
 		loadYaml();
 		
+		Map<String,Object> yaml = new TreeMap<>();
 		Set<String> keys = getKeys();
-
+		for ( String key : keys ) {
+			Object value = getValues().get( key );
+			yaml.put( key, value );
+		}
+		
 		for ( AutoFeatures autoFeat : AutoFeatures.values() ) {
 			ValueNode value = null;
-			
+			String key = autoFeat.getKey();
+					
 			if ( autoFeat.isSection() ) {
-				createSection( autoFeat.getKey() );
+				createSection( key );
 			}
 			else if ( autoFeat.isBoolean() ) {
-				value = BooleanNode.valueOf( 
-					getBoolean( autoFeat.getKey(), autoFeat.getValue().booleanValue() )	);
+				boolean boolVal = !yaml.containsKey( key ) ? autoFeat.getValue().booleanValue() : 
+					Boolean.parseBoolean( yaml.get( key ).toString() );
+				value = BooleanNode.valueOf( boolVal );
 			}
 			else if ( autoFeat.isMessage() ) {
-				value = TextNode.valueOf( 
-					getString( autoFeat.getKey(), autoFeat.getMessage() ));
+				String text = !yaml.containsKey( key ) ? autoFeat.getMessage() : 
+					yaml.get( key ).toString();
+				value = TextNode.valueOf( text );
 			}
 			else if ( autoFeat.isInteger() ) {
-				value = IntegerNode.valueOf(  
-					getInteger( autoFeat.getKey(), autoFeat.getIntValue().intValue() ));
+				int intVal = !yaml.containsKey( key ) ? autoFeat.getIntValue().intValue() : 
+					(int) yaml.get( key );
+				value = IntegerNode.valueOf( intVal);
 			}
 			else if ( autoFeat.isLong() ) {
-				value = LongNode.valueOf(  
-					getLong( autoFeat.getKey(), autoFeat.getLongValue().longValue() ));
+				long longVal = !yaml.containsKey( key ) ? autoFeat.getLongValue().longValue() : 
+					(long) yaml.get( key );
+				value = LongNode.valueOf( longVal );
 			}
 			else if ( autoFeat.isDouble() ) {
-				value = DoubleNode.valueOf(  
-					getDouble( autoFeat.getKey(), autoFeat.getDoubleValue().doubleValue() ));
+				double doubVal = !yaml.containsKey( key ) ? autoFeat.getDoubleValue().doubleValue() : 
+					(double) yaml.get( key );
+				value = DoubleNode.valueOf( doubVal );
 			}
 			
 			

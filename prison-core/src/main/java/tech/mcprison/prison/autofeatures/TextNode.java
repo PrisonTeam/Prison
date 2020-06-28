@@ -17,7 +17,12 @@ public class TextNode
     	super();
     	value = v; 
     }
-
+	
+	@Override
+	public String toString() {
+		return getValue();
+	}
+	
     /**
      * Factory method that should be used to construct instances.
      * For some common cases, can reuse canonical instances: currently

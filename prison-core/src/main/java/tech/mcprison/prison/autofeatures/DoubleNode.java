@@ -14,6 +14,11 @@ public class DoubleNode
 	
 	public static DoubleNode valueOf(double d) { return new DoubleNode(d); }
 	
+	@Override
+	public String toString() {
+		return Double.toString( getValue() );
+	}
+	
 	public double getValue() {
 		return value;
 	}

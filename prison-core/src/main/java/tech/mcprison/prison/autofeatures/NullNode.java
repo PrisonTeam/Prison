@@ -16,7 +16,12 @@ public class NullNode
     public boolean isNull() {
     	return true;
     }
-    
+	
+	@Override
+	public String toString() {
+		return Boolean.toString( true );
+	}
+	
     @Override
     public boolean isNullNode() { return true; }
     

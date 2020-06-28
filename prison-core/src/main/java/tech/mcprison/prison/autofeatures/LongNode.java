@@ -13,7 +13,12 @@ public class LongNode
     public LongNode(long v) { value = v; }
 
     public static LongNode valueOf(long l) { return new LongNode(l); }
-
+	
+	@Override
+	public String toString() {
+		return Long.toString( getValue() );
+	}
+	
     public long getValue() {
     	return value;
     }

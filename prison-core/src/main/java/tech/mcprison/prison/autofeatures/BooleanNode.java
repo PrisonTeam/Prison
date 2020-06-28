@@ -22,6 +22,11 @@ public class BooleanNode
     public static BooleanNode valueOf(boolean b) { return b ? TRUE : FALSE; }
 
 	
+	@Override
+	public String toString() {
+		return Boolean.toString( getValue() );
+	}
+	
     public boolean getValue() {
         return value;
     }

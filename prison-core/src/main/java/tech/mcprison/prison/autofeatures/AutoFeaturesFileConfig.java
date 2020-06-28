@@ -2,6 +2,7 @@ package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import tech.mcprison.prison.Prison;
@@ -303,8 +304,17 @@ public class AutoFeaturesFileConfig {
         // is handled within the loadYamlAutoFeatures code.
         
 		YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
-		yamlFileIO.loadYamlAutoFeatures( config );
+		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
 
+		dne.size();
+		
+//		Set<String> keys = getConfig().keySet();
+//		for ( String key : keys ) {
+//			ValueNode value = getConfig().get( key );
+//			Output.get().logInfo( "AutoFeaturesFileConfig: ### %s  %s", 
+//					key, value.toString() );
+//		}
+		
     }
 
 
