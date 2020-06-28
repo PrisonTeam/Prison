@@ -49,8 +49,16 @@ import tech.mcprison.prison.util.Location;
 /**
  * Posts Prison's internal events.
  *
+ * <p>getTypeId() was deprecated with 1.9.4.
+ * </p>
+ *  
+ * <p>PlayerPickupItemEvent is deprecated with spigot v1.12.2.
+ * </p>
+ * 
  * @author Faizaan A. Datoo
  */
+//@SuppressWarnings( "deprecation" )
+@SuppressWarnings( "deprecation" )
 public class SpigotListener implements Listener {
 
     private SpigotPrison spigotPrison;
@@ -81,7 +89,7 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
-    @SuppressWarnings( "deprecation" )
+    // @SuppressWarnings( "deprecation" ) // deprecated with v1.9.4
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
@@ -93,7 +101,7 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @SuppressWarnings( "deprecation" )
+    // @SuppressWarnings( "deprecation" ) // deprecated with v1.9.4
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
@@ -159,7 +167,10 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
+    // deprecated with v1.9.4
+    // spigot 1.12.4 deprecates PlayerPickupItemEvent
+    //@SuppressWarnings( "deprecation" ) 
+	@EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         PlayerPickUpItemEvent event = new PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
             SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
         Prison.get().getEventBus().post(event);

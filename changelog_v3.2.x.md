@@ -10,6 +10,17 @@ that you need.
 
 ## tag v3.2.1-alpha.15 - 2020-06-21
 
+* **Upgrade the Spigot API to v1.12.2 from v1.9.4**
+Prison was built on spigot api v1.9.4 for the longest time.  Looking in to trying better support newer block types, had to upgrade the version to something newer.  Tried v1.13.2 but it failed to compile.  V1.12.2 works well.  
+
+
+* **Fixes to AutoManager and new file IO**
+Got the new file IO working better since there were a few issues with getting the actual values from the spigot yaml reader.  Also made changes to the ValueNode objects to make them easier to use and to be consistent between them all.
+
+
+* **Bug Fix. NEATHER_QUARTZ is not a block**
+But its type was set to a MaterialType of BLOCK. It is actually the result of breaking NEATHER_QUARTZ_ORE, of which, that is the proper block type to use.  Use of neather_quartz would result in many exceptions in the console, one for each attempt.
+
 
 * **New feature: Moved AutoManager to prison core and out of spigot module.**
 This will allow access to these settings in all other modules instead of just the spigot module.
