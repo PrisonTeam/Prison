@@ -123,11 +123,11 @@ public class AutoManager
 		
 		if ( isBoolean( AutoFeatures.isAutoManagerEnabled ) && !e.isCancelled() ) {
 			
-			Player p = e.getPlayer();
+			Player player = e.getPlayer();
 			
-			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
-			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
-			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
+			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
+			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
+			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
 			
 			boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
 					lorePickup == 100.0 ||
@@ -145,30 +145,48 @@ public class AutoManager
 			// AutoPickup
 			if ( permPickup || isBoolean( AutoFeatures.autoPickupEnabled )) {
 				
-				autoFeaturePickup(e, p);
-
-				
+				autoFeaturePickup(e, player );
 			}
 			
 			
 			// AutoSmelt
 			if ( permSmelt ||  isBoolean( AutoFeatures.autoSmeltEnabled )){
 				
-				autoFeatureSmelt( e, p );
+				autoFeatureSmelt( e, player );
 			}
 			
 			// AutoBlock
 			if ( permBlock || isBoolean( AutoFeatures.autoBlockEnabled )) {
 				
-				autoFeatureBlock( e, p );
+				autoFeatureBlock( e, player );
 			}
+			
+			
+			// Calculate durability if enabled:
+			// isCalculateDurabilityEnabled must be enabled before loreDurabiltyResistance will
+			// even be checked. 
+			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) && 
+					e.isCancelled()) {
+				
+				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+
+				// value of 0 = normal durability. Value 100 = never calculate durability.
+				int durabilityResistance = 0;
+				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+					durabilityResistance = getDurabilityResistance( itemInHand, 
+							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+				}
+				
+				calculateDurability( player, itemInHand, durabilityResistance );
+			}
+			
 			
 			// A block was broke... so record that event on the tool:	
 			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && 
 					e.isCancelled()) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
-				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
+				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
 				
 				itemLoreCounter( itemInHand, 
 						getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );

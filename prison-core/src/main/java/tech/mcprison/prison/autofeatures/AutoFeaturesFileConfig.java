@@ -32,19 +32,27 @@ public class AutoFeaturesFileConfig {
 	    	general(options),
 	    	
 		    	isAutoManagerEnabled(general, false),
+		    	
+		    	isCalculateDurabilityEnabled(general, false),
+		    	isCalculateFortuneEnabled(general, true),
+		    	isCalculateSilkEnabled(general, true),
+		    	
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, false),
 
 			lore(options),
 				isLoreEnabled(lore, true),
-				lorePickupValue(lore, "Pickup"),
-				loreSmeltValue(lore, "Smelt"),
-				loreBlockValue(lore, "Block"),
+				lorePickupValue(lore, "&dPickup&7"),
+				loreSmeltValue(lore, "&dSmelt&7"),
+				loreBlockValue(lore, "&dBlock&7"),
 				
 				loreTrackBlockBreakCount(lore, false),
 				loreBlockBreakCountName(lore, "&dPrison Blocks Mined:&7 "),
 				loreBlockExplosionCountName(lore, "&dPrison Blocks Exploded:&7 "),
+				
+				loreDurabiltyResistance(lore, false),
+				loreDurabiltyResistanceName(lore, "&dDurability Resistance&7"),
 				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),

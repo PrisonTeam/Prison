@@ -110,17 +110,17 @@ public class AutoManagerFeatures
 	// AutoBlock booleans from configs
 //	private boolean autoBlockEnabled = false;
 //	private boolean autoBlockAllBlocks = false;
-	private boolean autoBlockGoldBlock = false;
-	private boolean autoBlockIronBlock = false;
-	private boolean autoBlockCoalBlock = false;
-	private boolean autoBlockDiamondBlock = false;
-	private boolean autoBlockRedstoneBlock = false;
-	private boolean autoBlockEmeraldBlock = false;
-	private boolean autoBlockQuartzBlock = false;
-	private boolean autoBlockPrismarineBlock = false;
-	private boolean autoBlockLapisBlock = false;
-	private boolean autoBlockSnowBlock = false;
-	private boolean autoBlockGlowstone = false;
+//	private boolean autoBlockGoldBlock = false;
+//	private boolean autoBlockIronBlock = false;
+//	private boolean autoBlockCoalBlock = false;
+//	private boolean autoBlockDiamondBlock = false;
+//	private boolean autoBlockRedstoneBlock = false;
+//	private boolean autoBlockEmeraldBlock = false;
+//	private boolean autoBlockQuartzBlock = false;
+//	private boolean autoBlockPrismarineBlock = false;
+//	private boolean autoBlockLapisBlock = false;
+//	private boolean autoBlockSnowBlock = false;
+//	private boolean autoBlockGlowstone = false;
 
 	
 	public AutoManagerFeatures() {
@@ -275,19 +275,25 @@ public class AutoManagerFeatures
 	*
 	* For older versions, a good way to get the right drops would be to use BlockDropItemEvent.getItems(), but it's deprecated
 	* */
-	protected int autoPickup( boolean autoPickup, Player p, ItemStack itemInHand, BlockBreakEvent e ) {
+	protected int autoPickup( boolean autoPickup, Player player, ItemStack itemInHand, BlockBreakEvent e ) {
 		int count = 0;
 		if (autoPickup) {
+
+			// Need better drop calculation that is not using the getDrops function.
+			//calculateFortune( ItemStack blocks, short fortuneLevel );
+			
+			// The following is not the correct drops:
 			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
 			if (drops != null && drops.size() > 0 ) {
 
 				// Add the item to the inventory
 				for ( ItemStack itemStack : drops ) {
 					count += itemStack.getAmount();
-					dropExtra( p.getInventory().addItem(itemStack), p, e.getBlock() );
+					dropExtra( player.getInventory().addItem(itemStack), player, e.getBlock() );
 				}
 
 				if ( count > 0 ) {
+					
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
 					e.getBlock().setType(Material.AIR);
@@ -297,7 +303,11 @@ public class AutoManagerFeatures
 		return count;	
 	}
 
-	protected void autoSmelt( boolean autoSmelt, Material source, Material destination, Player p, Block block  ) {
+	protected void autoSmelt( boolean autoSmelt, String sourceStr, String destinationStr, Player p, Block block  ) {
+		
+		Material source = Material.matchMaterial( sourceStr );
+		Material destination = Material.matchMaterial( destinationStr );
+		
 		if (autoSmelt && p.getInventory().contains(source)) {
 			int count = itemCount(source, p);
 			if ( count > 0 ) {
@@ -306,11 +316,15 @@ public class AutoManagerFeatures
 			}
 		}
 	}
-	protected void autoBlock( boolean autoBlock, Material source, Material destination, Player p, Block block  ) {
-		autoBlock(autoBlock, source, destination, 9, p, block );
+	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr, Player p, Block block  ) {
+		autoBlock(autoBlock, sourceStr, destinationStr, 9, p, block );
 	}
 	
-	protected void autoBlock( boolean autoBlock, Material source, Material destination, int targetCount, Player p, Block block  ) {
+	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr, int targetCount, Player p, Block block  ) {
+		
+		Material source = Material.matchMaterial( sourceStr );
+		Material destination = Material.matchMaterial( destinationStr );
+		
 		if ( autoBlock ) {
 			int count = itemCount(source, p);
 			if ( count >= targetCount ) {
@@ -337,17 +351,58 @@ public class AutoManagerFeatures
 	protected void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
 		if ( autoBlock ) {
 			// ink_sack = 351:4 
-			ItemStack lapisItemStack = new ItemStack(Material.INK_SACK, 1, (short) 4);
 			
-			int count = itemCount(lapisItemStack, player);
-			if ( count >= 9 ) {
-				int mult = count / 9;
-				
-				ItemStack removeLapisItemStack = new ItemStack(Material.INK_SACK,  mult * 9, (short) 4);
-				player.getInventory().removeItem(removeLapisItemStack);
-				dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-				
+			Material mat = Material.matchMaterial( "INK_SACK" );
+			short typeId = 4;
+
+			// try both methods to get lapis:
+			
+			try {
+				convertLapisBlock( player, block, mat, typeId );
 			}
+			catch ( Exception e ) {
+				// Ignore exception.
+			}
+			
+			mat = Material.matchMaterial( "lapis_lazuli" );
+			if ( mat != null ) {
+
+				try {
+					convertLapisBlock( player, block, mat );
+				}
+				catch ( Exception e ) {
+					// Ignore exception.
+				}
+			}
+
+		}
+	}
+
+
+	private void convertLapisBlock( Player player, Block block, Material mat, int typeId ) {
+		int count = itemCount(mat, typeId, player);
+		
+		if ( count >= 9 ) {
+			int mult = count / 9;
+					
+			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
+			player.getInventory().removeItem(removeLapisItemStack);
+			
+			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
+			
+		}
+	}
+
+	private void convertLapisBlock( Player player, Block block, Material mat ) {
+		int count = itemCount(mat, player);
+		
+		if ( count >= 9 ) {
+			int mult = count / 9;
+					
+			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
+			player.getInventory().removeItem(removeLapisItemStack);
+			
+			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
 		}
 	}
 	
@@ -356,17 +411,22 @@ public class AutoManagerFeatures
 		PlayerInventory inv = player.getInventory();
 		for (ItemStack is : inv.all(source).values()) {
 			if (is != null && is.getType() == source) {
-				count = count + is.getAmount();
+				count += is.getAmount();
 			}
 		}
 		return count;
 	}
-	private int itemCount(ItemStack source, Player player) {
+	private int itemCount(Material source, int typeId, Player player) {
 		int count = 0;
 		PlayerInventory inv = player.getInventory();
-		for (ItemStack is : inv.all(source).values()) {
-			if (is != null) {
-				count = count + is.getAmount();
+				
+		for (ItemStack is : inv.getContents()) {
+			
+			if ( is.getData() != null && is.getData().getItemType() != null ) {
+				
+				if (is != null && is.getData().getItemType().compareTo( source ) == 0 ) {
+					count += is.getAmount();
+				}
 			}
 		}
 		return count;
@@ -415,7 +475,8 @@ public class AutoManagerFeatures
 			displayActionBarMessage(player, message);
 		} 
 		else {
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, 
+							TextComponent.fromLegacyText(SpigotPrison.format(message)));
 		}
 	}
 
@@ -608,10 +669,10 @@ public class AutoManagerFeatures
 		Block block = e.getBlock();
 	
 		autoSmelt( isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltGoldOre ), 
-				Material.GOLD_ORE, Material.GOLD_INGOT, p, block );
+				"GOLD_ORE", "GOLD_INGOT", p, block );
 	
 		autoSmelt( isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltIronOre ), 
-				Material.IRON_ORE, Material.IRON_INGOT, p, block );
+				"IRON_ORE", "IRON_INGOT", p, block );
 	}
 
 
@@ -624,43 +685,43 @@ public class AutoManagerFeatures
 		// than one of these for multiple times too.
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockGoldBlock ), 
-				Material.GOLD_INGOT, Material.GOLD_BLOCK, p, block );
+				"GOLD_INGOT", "GOLD_BLOCK", p, block );
 		
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockIronBlock ), 
-				Material.IRON_INGOT, Material.IRON_BLOCK, p, block );
+				"IRON_INGOT", "IRON_BLOCK", p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockCoalBlock ), 
-				Material.COAL, Material.COAL_BLOCK, p, block );
+				"COAL", "COAL_BLOCK", p, block );
 		
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockDiamondBlock ), 
-				Material.DIAMOND, Material.DIAMOND_BLOCK, p, block );
+				"DIAMOND", "DIAMOND_BLOCK", p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockRedstoneBlock ), 
-				Material.REDSTONE, Material.REDSTONE_BLOCK, p, block );
+				"REDSTONE","REDSTONE_BLOCK", p, block );
 		
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockEmeraldBlock ), 
-				Material.EMERALD, Material.EMERALD_BLOCK, p, block );
+				"EMERALD", "EMERALD_BLOCK", p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockQuartzBlock ), 
-				Material.QUARTZ, Material.QUARTZ_BLOCK, 4, p, block );
+				"QUARTZ", "QUARTZ_BLOCK", 4, p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockPrismarineBlock ), 
-				Material.PRISMARINE_SHARD, Material.PRISMARINE, 4, p, block );
+				"PRISMARINE_SHARD", "PRISMARINE", 4, p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockSnowBlock ), 
-				Material.SNOW_BALL, Material.SNOW_BLOCK, 4, p, block );
+				"SNOW_BALL", "SNOW_BLOCK", 4, p, block );
 	
 		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockGlowstone ), 
-				Material.GLOWSTONE_DUST, Material.GLOWSTONE, 4, p, block );
+				"GLOWSTONE_DUST", "GLOWSTONE", 4, p, block );
 		
 		autoBlockLapis( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockLapisBlock ), 
@@ -723,6 +784,69 @@ public class AutoManagerFeatures
 			// incrementCounterInName( itemInHand, meta );
 			
 		}
+	}
+	
+	/**
+	 * <p>This function will search for the loreDurabiltyResistanceName within the
+	 * item in the hand, if found it will return the number if it exists.  If not 
+	 * found, then it will return 100.
+	 * </p>
+	 * 
+	 * <p>If there is no value after the lore name, then the default is 100 %.  
+	 * If a value follows the lore name, then it must be an integer.
+	 * If it is less than 0, then 0. If it is greater than 100, then 100.
+	 * </p>
+	 *  
+	 * @param itemInHand
+	 * @param itemLore
+	 * @return
+	 */
+	protected int getDurabilityResistance( ItemStack itemInHand, String itemLore ) {
+		int results = 100;
+		
+		if ( itemInHand.hasItemMeta() ) {
+			
+			List<String> lore = new ArrayList<>();
+			
+			itemLore = itemLore.trim() + " ";
+			
+			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
+			
+//			String prisonBlockBroken = itemLore.getLore();
+			
+			ItemMeta meta = itemInHand.getItemMeta();
+			
+			if ( meta.hasLore() ) {
+				lore = meta.getLore();
+				
+				for( int i = 0; i < lore.size(); i++ ) {
+					if ( lore.get( i ).startsWith( itemLore ) ) {
+						String val = lore.get( i ).replace( itemLore, "" ).trim();
+						
+						try {
+							results += Integer.parseInt( val );
+						}
+						catch ( NumberFormatException e1 ) {
+							Output.get().logError( "AutoManager: tool durability failure. lore= [" +
+									lore.get( i ) + "] val= [" + val + "] error: " + 
+									e1.getMessage() );								}
+						
+						break;
+					}
+				}
+				
+			}
+			
+			if ( results > 100d ) {
+				results = 100;
+			}
+			else if ( results < 0 ) {
+				results = 0;
+			}
+			
+		}
+		
+		return results;
 	}
 
 
@@ -788,16 +912,31 @@ public class AutoManagerFeatures
 	 * set the initial damage to the correct value based upon block type that was mined.
 	 * </p>
 	 * 
+	 * <p>The parameter durabilityResistance is optional, to disable use a value of ZERO.
+	 * This is a percentage and is calculated first.  If random value is equal to the parameter
+	 * or less, then it will skip the durability calculations for the current event.
+	 * </p>
+	 * 
 	 * <p>Based upon the following URL.  See Tool Durability.
 	 * </p>
 	 * https://minecraft.gamepedia.com/Item_durability
 	 * 
 	 * @param itemInHand
 	 */
-	protected void calculateDurability( Player player, ItemStack itemInHand ) {
+	protected void calculateDurability( Player player, ItemStack itemInHand, int durabilityResistance ) {
 		short damage = 1;  // Generally 1 unless instant break block then zero.
 
-		if ( itemInHand.containsEnchantment( Enchantment.DURABILITY ) ) {
+		if ( durabilityResistance >= 100 ) {
+			damage = 0;
+		}
+		else if ( durabilityResistance > 0 ) {
+			
+			if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
+				damage = 0;
+			}
+		}
+		
+		if ( damage > 0 && itemInHand.containsEnchantment( Enchantment.DURABILITY ) ) {
 			int durabilityLevel = itemInHand.getEnchantmentLevel( Enchantment.DURABILITY );
 
 			// the chance of losing durability is 1 in (1+level)
@@ -1112,47 +1251,47 @@ public class AutoManagerFeatures
 //		return autoBlockAllBlocks;
 //	}
 
-	public boolean isAutoBlockGoldBlock() {
-		return autoBlockGoldBlock;
-	}
-
-	public boolean isAutoBlockIronBlock() {
-		return autoBlockIronBlock;
-	}
-
-	public boolean isAutoBlockCoalBlock() {
-		return autoBlockCoalBlock;
-	}
-
-	public boolean isAutoBlockDiamondBlock() {
-		return autoBlockDiamondBlock;
-	}
-
-	public boolean isAutoBlockRedstoneBlock() {
-		return autoBlockRedstoneBlock;
-	}
-
-	public boolean isAutoBlockEmeraldBlock() {
-		return autoBlockEmeraldBlock;
-	}
-
-	public boolean isAutoBlockQuartzBlock() {
-		return autoBlockQuartzBlock;
-	}
-
-	public boolean isAutoBlockPrismarineBlock() {
-		return autoBlockPrismarineBlock;
-	}
-
-	public boolean isAutoBlockLapisBlock() {
-		return autoBlockLapisBlock;
-	}
-
-	public boolean isAutoBlockSnowBlock() {
-		return autoBlockSnowBlock;
-	}
-
-	public boolean isAutoBlockGlowstone() {
-		return autoBlockGlowstone;
-	}
+//	public boolean isAutoBlockGoldBlock() {
+//		return autoBlockGoldBlock;
+//	}
+//
+//	public boolean isAutoBlockIronBlock() {
+//		return autoBlockIronBlock;
+//	}
+//
+//	public boolean isAutoBlockCoalBlock() {
+//		return autoBlockCoalBlock;
+//	}
+//
+//	public boolean isAutoBlockDiamondBlock() {
+//		return autoBlockDiamondBlock;
+//	}
+//
+//	public boolean isAutoBlockRedstoneBlock() {
+//		return autoBlockRedstoneBlock;
+//	}
+//
+//	public boolean isAutoBlockEmeraldBlock() {
+//		return autoBlockEmeraldBlock;
+//	}
+//
+//	public boolean isAutoBlockQuartzBlock() {
+//		return autoBlockQuartzBlock;
+//	}
+//
+//	public boolean isAutoBlockPrismarineBlock() {
+//		return autoBlockPrismarineBlock;
+//	}
+//
+//	public boolean isAutoBlockLapisBlock() {
+//		return autoBlockLapisBlock;
+//	}
+//
+//	public boolean isAutoBlockSnowBlock() {
+//		return autoBlockSnowBlock;
+//	}
+//
+//	public boolean isAutoBlockGlowstone() {
+//		return autoBlockGlowstone;
+//	}
 }
