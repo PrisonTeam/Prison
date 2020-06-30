@@ -1,6 +1,7 @@
 package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,13 @@ public class AutoFeaturesFileConfig {
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, false),
 
+				
+			permissions(options),
+				permissionAutoPickup(permissions, "prison.automanager.pickup"),
+				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
+				permissionAutoBlock(permissions, "prison.automanager.block"),
+			
+				
 			lore(options),
 				isLoreEnabled(lore, true),
 				lorePickupValue(lore, "&dPickup&7"),
@@ -75,6 +83,7 @@ public class AutoFeaturesFileConfig {
 	    	autoSmelt(options),
 		    	autoSmeltEnabled(autoSmelt, true),
 		    	autoSmeltAllBlocks(autoSmelt, true),
+
 		    	
 		    	autoSmeltGoldOre(autoSmelt, true),
 		    	autoSmeltIronOre(autoSmelt, true),
@@ -83,6 +92,7 @@ public class AutoFeaturesFileConfig {
 	    	autoBlock(options),
 		    	autoBlockEnabled(autoBlock, true),
 		    	autoBlockAllBlocks(autoBlock, true),
+
 		    	
 		    	autoBlockGoldBlock(autoBlock, true),
 		    	autoBlockIronBlock(autoBlock, true),
@@ -99,6 +109,7 @@ public class AutoFeaturesFileConfig {
     	;
 
 
+    	private final AutoFeatures parent;
     	private final boolean isSection;
     	private final boolean isBoolean;
     	private final boolean isMessage;
@@ -114,6 +125,7 @@ public class AutoFeaturesFileConfig {
     	private final Double doubleValue;
     	
     	private AutoFeatures() {
+    		this.parent = null;
     		this.isSection = true;
     		this.isBoolean = false;
     		this.isMessage = false;
@@ -128,6 +140,7 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section) {
+    		this.parent = section;
     		this.isSection = true;
     		this.isBoolean = false;
     		this.isMessage = false;
@@ -142,6 +155,7 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
+    		this.parent = section;
     		this.isSection = false;
     		this.isBoolean = false;
     		this.isMessage = true;
@@ -156,6 +170,7 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
+    		this.parent = section;
     		this.isSection = false;
     		this.isBoolean = true;
     		this.isMessage = false;
@@ -170,6 +185,9 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     	}
     	
+		public AutoFeatures getParent() {
+			return parent;
+		}
 		public boolean isSection() {
 			return isSection;
 		}
@@ -286,6 +304,34 @@ public class AutoFeaturesFileConfig {
     		return results;
     	}
 
+    	/**
+    	 * <p>Get the children nodes to the given item.
+    	 * </p>
+    	 * 
+    	 * @return
+    	 */
+    	public List<AutoFeatures> getChildren() {
+    		return getChildren(this);
+    	}
+
+    	/**
+    	 * <p>Get the children for the specified node.
+    	 * </p>
+    	 * 
+    	 * @param parent
+    	 * @return
+    	 */
+    	public List<AutoFeatures> getChildren(AutoFeatures parent) {
+    		List<AutoFeatures> results = new ArrayList<>();
+    		
+    		for ( AutoFeatures af : values() ) {
+				if ( af.getParent() == parent ) {
+					results.add( af );
+				}
+			}
+    		
+    		return results;
+    	}
     
     }
     

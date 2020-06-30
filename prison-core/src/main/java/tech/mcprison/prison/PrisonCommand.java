@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
@@ -570,16 +571,24 @@ public class PrisonCommand {
     
     
     /**
-     * This command does not do anything, except to provide a command placeholder to
+     * <p>This command does not do anything, except to provide a command placeholder to
      * make owners aware that there is auto features enabled within prison. 
      * Running this command will show the permissions needed to use these auto features.
+     * </p>
+     * 
+     * <p>Cannot use the @Command altPermissions parameter since the permissions can be
+     * dynamically altered to fit the needs of the owner's server.  Using the command 
+     * altPermissions will also require a server restart to reflect any online changes, 
+     * not to mention a recompile since the end users cannot make these changes.
+     * </p>
+     * 
      * @param sender
      */
     @Command(identifier = "prison autofeatures", 
     		description = "Autofeatures for prison: pickup, smelt, and block", 
-    		onlyPlayers = false, 
-    		altPermissions = { "prison.autofeatures.pickup", "prison.autofeatures.smelt" , 
-    				"prison.autofeatures.block" })
+    		onlyPlayers = false )
+//    		, altPermissions = { "prison.autofeatures.pickup", "prison.autofeatures.smelt" , 
+//    				"prison.autofeatures.block" })
     public void autoFeaturesInformation(CommandSender sender) {
     	
     	ChatDisplay display = new ChatDisplay("Auto Features Information");
@@ -595,12 +604,24 @@ public class PrisonCommand {
     	display.text( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
     	display.text( "&a Or use &7/prison gui");
     	
+    	List<AutoFeatures> afs = AutoFeatures.permissions.getChildren();
+    	StringBuilder sb = new StringBuilder();
+    	for ( AutoFeatures af : afs ) {
+			if ( sb.length() > 0 ) {
+				sb.append( " " );
+			}
+			sb.append( af.getMessage() );
+		}
+    	display.text( "&3Permissions:" );
+    	display.text( "&b   %s", sb.toString() );
+    	
     	display.send(sender);
-
-    	// After displaying the help information above, rerun the same command for the player
-    	// with the help keyword to show the permissions.
-    	String formatted = "prison autofeatures help";
-		Prison.get().getPlatform().dispatchCommand(sender, formatted);
+    	
+    	// altPermissions are now a part of this command.
+//    	// After displaying the help information above, rerun the same command for the player
+//    	// with the help keyword to show the permissions.
+//    	String formatted = "prison autofeatures help";
+//		Prison.get().getPlatform().dispatchCommand(sender, formatted);
         
     }
     

@@ -8,7 +8,23 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.15 - 2020-06-21
+## tag v3.2.1-alpha.15 - 2020-06-30
+
+
+* **More Enhancements to AutoManager**
+Some refactoring and some enhancements to AutoManager.
+Added isCalculateDurabilityEnabled, isCalculateFortuneEnabled, isCalculateSilkEnabled, and lore durability resistance.
+Feature enhancement: Permissions added to config file so they can be customized as needed.  Added these custom permissions to the /prison automanager command so they always reflect the correct permissions.  If changed online, everything reflects the changes right away.  The AutoFeatures now are able to record their parents so it makes possible the ability to get all permissions related to a given section.  For example all permissions, or all autoPickup permissions.
+
+
+* **Enhance Auto Manager Features**
+Still a work in progress, but becoming more mature.  
+**Added new feature**: Durability able to be turned on/off.  
+**Added new feature**: Durability resistance is now able to be used as a lore. With no integer value it will have 100% effect and disable durability calculations on the item that has the lore.  If less than 100, then it's a percent chance durability will be skipped.
+**To do:** Hook up a new block drop calculation and use the new fortune and silk functions.
+Removed some hard coded Material types to make it more compatible with newer releases of spigot.
+Reworked how lapis lazuli auto block is processed to work with v1.13.x and higher.
+ 
 
 * **Upgrade the Spigot API to v1.12.2 from v1.9.4**
 Prison was built on spigot api v1.9.4 for the longest time.  Looking in to trying better support newer block types, had to upgrade the version to something newer.  Tried v1.13.2 but it failed to compile.  V1.12.2 works well.  

@@ -129,13 +129,16 @@ public class AutoManager
 			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
 			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
 			
-			boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
+			boolean permPickup = player.hasPermission(
+						getMessage( AutoFeatures.permissionAutoPickup ) ) ||
 					lorePickup == 100.0 ||
 					lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-			boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
+			boolean permSmelt = player.hasPermission( 
+						getMessage( AutoFeatures.permissionAutoSmelt ) ) ||
 					loreSmelt == 100.0 ||
 					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-			boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
+			boolean permBlock = player.hasPermission( 
+						getMessage( AutoFeatures.permissionAutoBlock ) ) ||
 					loreBlock == 100.0 ||
 					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
