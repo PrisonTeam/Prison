@@ -57,7 +57,7 @@ Setting up Prison is simple:
 * **Download Prison's Pre-Release Version**
     - Useful to access newer features and fixes
     - You can usually find a build on the Discord Server:
-        - [Prison Discord Server](https://discord.gg/396ed5F)
+        - [Prison Discord Server](https://discord.gg/DCJ3j6r)
 
 * Copy to your server's plugin directory
 
@@ -98,7 +98,7 @@ If you should run in to any questions or issues, please first review all online 
 
 
 If you cannot find what you need within the documentation, please visit our Discord server to get the quickest responses there.  
-[Prison Discord Server](https://discord.gg/396ed5F)
+[Prison Discord Server](https://discord.gg/DCJ3j6r)
 
 
 In order to provide the best support, the prison startup screen provides most of the information that is needed to help trouble shoot your issues.  Please take a screen print and provide on discord with a detailed explanation of the issue.

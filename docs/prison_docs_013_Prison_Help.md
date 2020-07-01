@@ -80,7 +80,7 @@ Prison automatically inserts the **help** keyword if you enter the base commands
 
 The best place to ask for help, and to get answers quickly (within a few hours) would be without a doubt the Prison Discord Server.
 
-[Prison Discord Server](https://discord.gg/396ed5F)
+[Prison Discord Server](https://discord.gg/DCJ3j6r)
 
 
 You can also submit a help ticket on the Prison github Issues tab, but the response may be slower and less detailed

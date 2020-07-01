@@ -8,7 +8,7 @@
 * **[Prison LICENSE.md](../LICENSE.md)**
 * **[Prison Change logs](../changelog_v3.2.x.md)** Detailed changes to prison.
 * **[Prison Known Issues](../knownissues_v3.2.x.md)** Known Issues and To Do's.
-* **[Prison Discord Server](https://discord.gg/396ed5F)** Get help here.
+* **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -41,8 +41,10 @@
 * [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md)
     Setting up LuckPerms. Warning about LuckPerms Versions.
 
+
 * [Setting up PermissionsEX](prison_docs_022_setting_up_PermissionsEX.md)
     Setting up PermissionsEX. Warning about being obsolete.
+
 
 * [Setting up Ultra Permissions](prison_docs_024_setting_up_Ultra_Permissions.md)
     Setting up Ultra Permissions. Compatible with Prison 3.2+
@@ -55,6 +57,7 @@
 * [Setting up PlaceholderAPI](prison_docs_0xx_setting_up_PlaceholderAPI.md) - Strongly Suggested if using placeholders. Troubleshooting.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Guides [1xx] - Configuring Prison
@@ -88,29 +91,20 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 * Changing Mine Settings
 
 
-* Setting up Ranks
+* Working with Ranks and Ladders
 
 
-* Changing Rank Settings
 
-
-* Working with Ladders
-
-
-* Working with Rank Commands
-
-
-* Working with Placeholders
 
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Guides [3xx] - 
+# Guides [3xx] - Working with other Plugins
 
 
-* [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) How to use
+* [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) How to use. Includes HolographicDisplays.
 
 
 **Work In Progress**
@@ -137,11 +131,6 @@ This section of guides will focus more on other plugins and how they can integra
 
 
 * **Work In Progress**
-
-
-* Place Holders: Setting up and using Holographic Displays & Holographic Extensions
-
-
 
 
 
