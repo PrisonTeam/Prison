@@ -162,7 +162,7 @@ public class GuiConfig {
                 "&8Time: ",
                 "&3Volume in Blocks: &7",
                 "&3World: &7",
-                "&cSorry, but the GUI's &c&lempty&c and doesn't have any reason to exist or open",
+                "&cSorry, some went wrong. There's nothing for the GUI to display.",
                 "&cSorry, but there're too many Blocks and the max's 54 for the GUI",
                 "&cSorry, but there're too many ladders and the max's 54 for the GUI",
                 "&cSorry, but there're too many mines and the max's 54 for the GUI",
