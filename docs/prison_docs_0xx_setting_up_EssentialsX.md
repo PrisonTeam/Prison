@@ -63,10 +63,44 @@ Setting up Essentials is easy, but you've to choose which plugins to add.
     ```
     format: '<{prison_rank_tag}:{DISPLAYNAME}>{MESSAGE}'
     ```
+
+Reload EssentialsX settings, or restart the server.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+    
+# Applying Settings and Reloading Essentials
+
 * Restart the server. Or use **/essentials reload**.
 
 
 * Notice: **Don't use /reload to reload the whole server!**  Using /reload or another tool such as plugman could corrupt plugins. Prison was not designed to do soft reloads and as such mines, ranks, ladders, and even some player settings and histories could be corrupted.
+
+
+<img src="images/prison_docs_0xx_setting_up_EssentialsX_01.png" alt="EssentialsX" title="EssentialsX" width="500" />  
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+# Essentials Currency Commands
+
+
+Eventually you may have to deal with currency, so here are the esstentals commands.
+
+* `/eco` - Show the EssentialsX economy commands
+* `/eco give <player> <amount>` - Give a player money
+* `/eco take <player> <amount>` - Take away money from a player
+* `/eco set <player> <amount>` - Set a player's balance to an amount. Resets the balance to a given amount.
+* `/bal <player>` - Shows the balance for a given player.
+
+
+<img src="images/prison_docs_0xx_setting_up_EssentialsX_02.png" alt="EssentialsX" title="EssentialsX" width="600" />  
+
+
 
 **End of the guide**
 

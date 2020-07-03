@@ -63,42 +63,29 @@
 # Guides [1xx] - Configuring Prison
 
 These guides cover the core fundamentals of Prison.  They may reference other plugins, but these guides will not go in to depth on how to install or use the other plugins; those details will be a focused guide of their own. 
- 
-**Work In Progress**
+
+
 
 * [Setting up Mines](prison_docs_101_setting_up_mines.md)
 	Basics of creating. Searching for Blocks. Customizing. One-block mine example with HolographicDisplays.
 
 
-* Setting up Ranks & Ladders
 
-
-* Configuring Commands for the Ranks
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+* [Setting up Ranks & Ladders](prison_docs_102_setting_up_ranks.md)
+	**-+= Coming Soon! =+-** Configuring and using Ranks and Ladders.
 
 
 
-# Guides [2xx] - Using Prison Features
-
-**Work In Progress**
-
-
-* Prison Command Overview: /prison /mines /ranks /rankup
-
-
-* Changing Mine Settings
-
-
-* Working with Ranks and Ladders
-
-
-
+* [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
+	Configuring and using Prestiges.
 
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
 
 
 # Guides [3xx] - Working with other Plugins
@@ -122,6 +109,7 @@ This section of guides will focus more on other plugins and how they can integra
 
 * [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md) 
     This guide uses LuckPerms in the examples, but any other permission plugin will work just as well.
+    
 
 * [Setting up EssentialsX Warps for Players](prison_docs_630_configuring_warps.md)
 

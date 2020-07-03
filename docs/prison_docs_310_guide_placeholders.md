@@ -124,6 +124,10 @@ Although no plugin is required for Prison to properly handle chat based placehol
 
 
 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Enabling EssentialX's Chat Placeholders
 
 Set up the EssentialX's Chat plugin: [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md).
@@ -135,19 +139,68 @@ Enabling the chat placeholder just requires editing one line within the `config.
 Once setup, restart the server. Or use **/essentials reload**.  Do not force all the plugins to be reloaded with a tool such as plugman since Prison (and other plugins) may fail to re-load properly.
 
 
+This will include all placeholders that are active for the player, including the prestige chat prefixes.  The only issue is that you cannot control the order of how they will display.
+
+
+It is possible to manually set the order by using the individual placeholders for each rank you want to show.  This allows you to omit certain placeholders too.  Please see the next section of this document to learn how to set them up.
+
+
+You can preview all of the placeholders with the placeholder search command.
+
+
+```
+/prison placeholder search <player> <page> rank_tag
+
+/prison placeholder search RoyalCoffeeBeans rank_tag
+/prison placeholder search RoyalCoffeeBeans 2 rank_tag
+```
+
+
+<img src="images/prison_docs_107_setting_up_prestiges_08.png" alt="Reviewing all placeholder tags" title="Reviewing all placeholder tags" width="650" />  
+
+
+The placeholders are interested in are: `prison_rank_tag_pretiges` and `prison_rank_tag_default`.  
+
+
+So to set them up in the EsstentialsX Chat prefix would be as follows:
+
+
+    format: '<{prison_rank_tag_prestiges}{prison_rank_tag_default}:{DISPLAYNAME}>{MESSAGE}'
+
+
+
 <h3>Ladder Specific Placeholders</h3>
 
 One of the newer features available for placeholders has to do with ladder specific placeholders.  This is similar to the mines placeholders but for ladders specifically.  These player ladder placeholders are just the same a the player rank, but only for one ladder.  The player rank placeholders will return all ranks on all ladders for that placeholder.
 
 This is an example of specifying the rank tag for both the prestige and default ladder.  This ensures the expected order of these two tags, but it will also exclude other tags from other ladders, such as donor ladders or mod ladders.
 
-    format: '<{prison_rank_tag_prestige}{prison_rt_default}:{DISPLAYNAME}>{MESSAGE}'
+    format: '<{prison_rank_tag_prestiges}{prison_rt_default}:{DISPLAYNAME}>{MESSAGE}'
 
 
 Use the placeholder tools under `/prison placeholders` for more information and to see what is available for use.
 
 
+
+For example, to preview all of the placeholders with the placeholder search command.
+
+
+```
+/prison placeholder search <player> <page> rank_tag
+
+/prison placeholder search RoyalCoffeeBeans rank_tag
+/prison placeholder search RoyalCoffeeBeans 2 rank_tag
+```
+
+
+<img src="images/prison_docs_107_setting_up_prestiges_08.png" alt="Reviewing all placeholder tags" title="Reviewing all placeholder tags" width="650" />  
+
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 
 
 # Enabling HolographicDisplays Placeholders

@@ -20,19 +20,38 @@ Work to be considered.
 
 * **Enhance AutoManager**
 Make auto manager more like vanilla on the drops and support silking.  Try to make more consistent between versions.
-
+** Inprogress **
 
 
 * **Add permissions to the AutoManger***
 Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
+** DONE? **
 
 
 * **Refactor GUI?**
  
  
 * **Add Prestige and Rebirth**
-  *In progress.*
+  **In progress.**
 
+
+* **Broadcast all rankups**
+Option to disable it in config settings.
+
+
+* **Prestige references**
+Add the prestige command to the /prison version page; rework the commands layout.
+Add the documentation for prestige.  Gabryca provided the base docs.
+
+
+* **Prestige Fixes**
+The existing prestige command is GUI only.  That may be an issue with 1.8.x. When testing, it appears to work, but may need an non-gui way to rank up.
+
+The /prestige command does not show the cost.  The cost must be shown, along with a warning that the player's balance will be set to zero.
+
+Since the player loses their balance, which may be far more than what the prestige may cost, there really must be a confirmation added confirming the cost, and the player's balance.  It should also identify that the excess amount of money the player will lose.
+
+Must change the cancel button lore.  It's grammatically incorrect with a double negative.  Should only be: "Cancel Prestige".  Likewise the confirmation button should just be "Confirm Prestige" since the colon is grammatically ambiguous.
 
 
 
