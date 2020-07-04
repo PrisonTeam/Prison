@@ -841,6 +841,17 @@ public class MinesCommands {
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
             	
+            	boolean hasCmds = m.getResetCommands().size() > 0;
+            	if ( hasCmds ) {
+            		row.addFancy( 
+                			new FancyMessage( String.format(" &cCmds: &7%s  ", 
+                					Integer.toString( m.getResetCommands().size() )) )
+                					.command("/mines commands list " + m.getName())
+                					.tooltip("&7Click to view commands."));
+            	}
+
+            	
+            	
             	if ( !m.isEnabled() ) {
             		row.addFancy(  
             				new FancyMessage( "&cDISABLED!! " )
@@ -1433,16 +1444,15 @@ public class MinesCommands {
 
 
 
-    @SuppressWarnings( "unused" )
 	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 
     						onlyPlayers = false, permissions = "mines.command")
     public void commandList(CommandSender sender, 
     				@Arg(name = "mineName") String mineName) {
     	
-    	if ( 1 < 2 ) {
-    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-    		return;
-    	}
+//    	if ( 1 < 2 ) {
+//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+//    		return;
+//    	}
     	
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -1467,7 +1477,7 @@ public class MinesCommands {
             new BulletedListComponent.BulletedListBuilder();
 
         for (String command : m.getResetCommands()) {
-            FancyMessage msg = new FancyMessage("&3/" + command)
+            FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" )
                 .command("/mines command remove " + mineName + " " + command)
                 .tooltip("Click to remove.");
             builder.add(msg);
@@ -1481,17 +1491,18 @@ public class MinesCommands {
     }
 
 
-    @SuppressWarnings( "unused" )
 	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 
     		onlyPlayers = false, permissions = "mines.command")
     public void commandRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
-    				@Arg(name = "command") @Wildcard String command) {
+    				@Arg(name = "command", 
+    					description = "Exact command to remove including the 'before: ' and 'after: ' states.") 
+    						@Wildcard String command) {
     	
-    	if ( 1 < 2 ) {
-    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-    		return;
-    	}
+//    	if ( 1 < 2 ) {
+//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+//    		return;
+//    	}
     	
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -1530,17 +1541,17 @@ public class MinesCommands {
         }
     }
 
-    @SuppressWarnings( "unused" )
 	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
     		onlyPlayers = false, permissions = "mines.command")
     public void commandAdd(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "state", def = "before", description = "State can be either before or after.") String state,
     			@Arg(name = "command") @Wildcard String command) {
     	
-    	if ( 1 < 2 ) {
-    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-    		return;
-    	}
+//    	if ( 1 < 2 ) {
+//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
+//    		return;
+//    	}
 
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -1548,6 +1559,13 @@ public class MinesCommands {
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
+        }
+        
+        if ( state == null || !state.equalsIgnoreCase( "before" ) && !state.equalsIgnoreCase( "after" )) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid state: b&before&7 or &bafter&7. Was state=[&b%s&7]",
+        			state ));
+        	return;
         }
         
         setLastMineReferenced(mineName);
@@ -1568,12 +1586,13 @@ public class MinesCommands {
         	
         }
         
-        m.getResetCommands().add(command);
+        String newComand = state + ": " + command;
+        m.getResetCommands().add(newComand);
 
         pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "Added command '%s' to the mine '%s'.", 
-        			command, m.getName());
+        Output.get().sendInfo(sender, "&7Added command '&b%s&7' to the mine '&b%s&7'.", 
+        		newComand, m.getName());
 
     }
     

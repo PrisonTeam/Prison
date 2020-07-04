@@ -176,6 +176,22 @@ public abstract class MineReset
 			setStatsTeleport1TimeMS(
 					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
+ 			// Before reset commands:
+ 	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+ 	        	
+ 	        	for (String command : getResetCommands() ) {
+// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+// 	        				.replace("{player_uid}", player.uid.toString());
+ 	        		if ( command.startsWith( "before: " )) {
+ 	        			String cmd = command.replace( "before: ", "" );
+
+ 	        			PrisonAPI.dispatchCommand(cmd);
+ 	        		}
+ 	        	}
+ 	        }
+
+
+			
 			long time2 = System.currentTimeMillis();
 			
 			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
@@ -224,14 +240,20 @@ public abstract class MineReset
 			getRandomizedBlocks().clear();
 			
 			
-	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-	        	
-	        	for (String cmd : getResetCommands() ) {
-//	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-//	        				.replace("{player_uid}", player.uid.toString());
-	        		PrisonAPI.dispatchCommand(cmd);
-	        	}
-	        }
+ 			// After reset commands:
+ 	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+ 	        	
+ 	        	for (String command : getResetCommands() ) {
+// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+// 	        				.replace("{player_uid}", player.uid.toString());
+ 	        		if ( command.startsWith( "after: " )) {
+ 	        			String cmd = command.replace( "after: ", "" );
+
+ 	        			PrisonAPI.dispatchCommand(cmd);
+ 	        		}
+ 	        	}
+ 	        }
+
 			
 			// Broadcast message to all players within a certain radius of this mine:
 			broadcastResetMessageToAllPlayersWithRadius();
@@ -526,13 +548,31 @@ public abstract class MineReset
     	
     	if ( !canceled ) {
     		
-    		 if ( getResetPosition() == 0 ) {
+    		// First time through... reset the block break count and run the before reset commands:
+    		if ( getResetPosition() == 0 ) {
     			// Reset the block break count before resetting the blocks:
     			// Set it to the original air count, if subtracted from total block count
     			// in the mine, then the result will be blocks remaining.
          		setBlockBreakCount( getAirCountOriginal() );
-    		 }
-    		
+         		
+         		
+         		// Before reset commands:
+         		if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+         			
+         			for (String command : getResetCommands() ) {
+// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+// 	        				.replace("{player_uid}", player.uid.toString());
+         				if ( command.startsWith( "before: " )) {
+         					String cmd = command.replace( "before: ", "" );
+         					
+         					PrisonAPI.dispatchCommand(cmd);
+         				}
+         			}
+         		}
+         		
+    		}
+
+    		 
     		resetAsynchonouslyUpdate();
     		
     		if ( getResetPosition() == getMineTargetBlocks().size() ) {
@@ -547,13 +587,17 @@ public abstract class MineReset
         		
         		incrementResetCount();
         		
-    			
+    			// After reset commands:
     	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
     	        	
-    	        	for (String cmd : getResetCommands() ) {
+    	        	for (String command : getResetCommands() ) {
 //    	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 //    	        				.replace("{player_uid}", player.uid.toString());
-    	        		PrisonAPI.dispatchCommand(cmd);
+    	        		if ( command.startsWith( "after: " )) {
+    	        			String cmd = command.replace( "after: ", "" );
+
+    	        			PrisonAPI.dispatchCommand(cmd);
+    	        		}
     	        	}
     	        }
     	        
