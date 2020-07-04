@@ -8,7 +8,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.15 - 2020-06-30
+## tag v3.2.1-alpha.16 - 2020-07-04
+
+
+* **Add documentation for Mine Commands**
+Added documents for mine commands.  Document how to setup a Parent Mine with Child Mines.
+
+
+* **New Enhancement: Mine Commands Enabled and Enhanced!**
+Mine commands have been enabled.  They have been enhanced by adding the ability to have some commands ran before the reset, or after the reset.  This gives a great control over customization and integrating external commands to operate most efficiently with actual block resets.  One example is to have a real forest of trees reset and completely rebuilt each time.  The other example of usage is to setup up a parent mine to control the resetting of all child mines.
+
+
+* **Alpha.16**
 
 
 * **More Enhancements to AutoManager**

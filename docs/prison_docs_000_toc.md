@@ -21,11 +21,11 @@
     Setting up Java. Setting up and running BuildTool. Creating a runnable Spigot Server.
 
 
-* [Setting up Prison - Basics **Required**](prison_docs_012_setting_up_prison_basics.md) 
+* [Setting up Prison - Basics](prison_docs_012_setting_up_prison_basics.md) **Required**
     Adding the plugin to your server.
 
 
-* [Prison - Getting Help - **Important**](prison_docs_013_Prison_Help.md) 
+* [Prison - Getting Help](prison_docs_013_Prison_Help.md) **Important**
     Commands. Getting help for issues. Upgrading Prison.
 
 
@@ -78,6 +78,11 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 * [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
 	Configuring and using Prestiges.
+
+
+
+* [Mine Commands](prison_docs_111_mine_commands.md)
+	What they are. Setting up. Working with Mine Commands.
 
 
 

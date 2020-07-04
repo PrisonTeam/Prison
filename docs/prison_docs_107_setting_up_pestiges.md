@@ -63,7 +63,7 @@ To show all the ladders that are available, use the following command.  This can
 In order to add prestige ranks, you add them just like you add ranks, but you specify the prestige ladder within the command.  
 
 
-You can name them anything you want, but in our example below we are using p1, p2, etc, with the prestige tag values of `+` for the first prestige rank, then the following would be `+2`, `+3`, etc... 
+You can name them anything you want, but in our example below we are using p1, p2, etc, with the prestige tag values of `+` for the first prestige rank, then the following would be `+2`, `+3`, etc., wrapped in square brackets and colored.   
 
 
 Here is an example of adding the first two prestige ranks.  These are the commands:
