@@ -60,11 +60,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         LadderManager lm = rankPlugin.getLadderManager();
 
         for ( RankLadder ladderData : lm.getLadders() ) {
-            Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
+//            Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
             Rank rank = ladderData.getLowestRank().orElse( null );
 
             while ( rank != null ) {
-                boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
+//                boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
 
                 rank = rank.rankNext;
             }

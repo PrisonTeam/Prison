@@ -24,7 +24,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     public void open(){
 
         // Init the ItemStack
-        ItemStack itemines;
+//        ItemStack itemines;
 
         // Get the mines
         PrisonMines pMines = PrisonMines.getInstance();

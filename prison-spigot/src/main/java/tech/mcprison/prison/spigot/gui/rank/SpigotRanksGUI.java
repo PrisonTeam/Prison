@@ -35,7 +35,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     public void open() {
 
         // Init the ItemStack
-        ItemStack itemrank;
+//        ItemStack itemrank;
 
         int dimension = 27;
 

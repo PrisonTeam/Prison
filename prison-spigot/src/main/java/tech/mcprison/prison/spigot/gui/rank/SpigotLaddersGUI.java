@@ -29,7 +29,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
     public void open(){
 
         // Init the ItemStack
-        ItemStack itemladder;
+//        ItemStack itemladder;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){

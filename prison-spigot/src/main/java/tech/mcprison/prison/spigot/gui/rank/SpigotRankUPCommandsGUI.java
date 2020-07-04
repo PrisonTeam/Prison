@@ -29,7 +29,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     public void open() {
 
         // Init the ItemStack
-        ItemStack itemcommand;
+//        ItemStack itemcommand;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
