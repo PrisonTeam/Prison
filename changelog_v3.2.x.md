@@ -11,6 +11,10 @@ that you need.
 ## tag v3.2.1-alpha.16 - 2020-07-04
 
 
+* **Enhanced the handling of unloaded modules.**  
+They were not behaving correctly and causing issues.  Also better log the warnings that the module was not loaded.
+
+
 * **Add documentation for Mine Commands**
 Added documents for mine commands.  Document how to setup a Parent Mine with Child Mines.
 

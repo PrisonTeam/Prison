@@ -348,18 +348,23 @@ public class SpigotPrison extends JavaPlugin {
     private void initModules() {
         YamlConfiguration modulesConf = loadConfig("modules.yml");
 
+        // TODO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
             Prison.get().getModuleManager()
                     .registerModule(new PrisonMines(getDescription().getVersion()));
         } else {
-            Output.get().logInfo("Not loading mines because it's disabled in modules.yml.");
+            Output.get().logInfo("&7Modules: &cPrison Mines are disabled and were not Loaded. ");
+            Output.get().logInfo("&7  Prison Mines have been disabled in &2plugins/Prison/modules.yml&7.");
+            Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
         }
 
         if (modulesConf.getBoolean("ranks")) {
             Prison.get().getModuleManager()
                     .registerModule(new PrisonRanks(getDescription().getVersion()));
         } else {
-            Output.get().logInfo("Not loading ranks because it's disabled in modules.yml");
+        	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
+        	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
+        	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
     }
 

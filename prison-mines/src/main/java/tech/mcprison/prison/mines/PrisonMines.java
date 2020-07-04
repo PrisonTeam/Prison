@@ -67,7 +67,7 @@ public class PrisonMines extends Module {
 
     @Override
     public String getBaseCommands() {
-    	return "&2/mines";
+    	return "&7/&2mines";
     }
     
     public void enable() {

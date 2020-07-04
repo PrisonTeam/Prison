@@ -67,7 +67,7 @@ public class MVdWPlaceholderIntegration
     @Override
 	public void deferredInitialization()
 	{
-    	if ( PrisonRanks.getInstance() != null ) {
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		if ( pm != null ) {
     			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
@@ -85,7 +85,7 @@ public class MVdWPlaceholderIntegration
     	}
     	
 
-    	if ( PrisonMines.getInstance() != null ) {
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
     		MineManager mm = PrisonMines.getInstance().getMineManager();
     		if ( mm != null ) {
     			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();

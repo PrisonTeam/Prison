@@ -36,10 +36,13 @@ import java.util.Optional;
 public class ModuleManager {
 
     private List<Module> modules;
+    private List<String> disabledModules;
     private File moduleRoot;
 
     public ModuleManager() {
         modules = new ArrayList<>();
+        disabledModules = new ArrayList<>();
+        
         moduleRoot = new File(PrisonAPI.getPluginDirectory(), "module_conf");
         if (!moduleRoot.exists()) {
             moduleRoot.mkdir();
@@ -125,6 +128,8 @@ public class ModuleManager {
     public void unregisterAll() {
         modules.forEach(this::disableModule);
         modules.clear();
+        
+        disabledModules.clear();
     }
 
     /**
@@ -150,7 +155,11 @@ public class ModuleManager {
         return modules;
     }
 
-    public File getModuleRoot() {
+    public List<String> getDisabledModules() {
+		return disabledModules;
+	}
+
+	public File getModuleRoot() {
         return moduleRoot;
     }
 

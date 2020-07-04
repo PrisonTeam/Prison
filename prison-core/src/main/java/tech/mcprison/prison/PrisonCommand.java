@@ -219,14 +219,21 @@ public class PrisonCommand {
         
         for ( Module module : Prison.get().getModuleManager().getModules() ) {
         	
-        	display.text( "&7Module: &3%s&3 : %s  %s", module.getName(), 
-        			(module.getStatus().getStatus() == ModuleStatus.Status.ENABLED ? 
-        					String.format( "&2Enabled  &7Commands: &2%s", module.getBaseCommands()) : 
-        				(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? "&cFailed" :
-        						"&9&m-Disabled-" )),
+        	display.text( "&7Module: &3%s&3 : %s %s", module.getName(), 
+        			module.getStatus().getStatusText(),
         			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
         						"&d[" + module.getStatus().getMessage() + "&d]" : "")
         			);
+        	display.text( "    &7Base Commands: %s", module.getBaseCommands() );
+        }
+        
+        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+        if ( disabledModules.size() > 0 ) {
+        	display.text( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+        		display.text( "&a    &cDisabled Module: &7%s&a. Related commands and placeholders are non-functional. ",
+        				disabledModule );
+        	}
         }
          
         
@@ -557,6 +564,11 @@ public class PrisonCommand {
     	display.text( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
     	display.text( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
     	display.text( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
+    	
+    	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+    		display.text( "&a    &cDisabled Module: &7%s&a. Related placeholders maybe listed but are non-functional. ",
+    				disabledModule );
+    	}
     	
     	List<DisplayComponent> placeholders = new ArrayList<>();
         Prison.get().getIntegrationManager().getPlaceholderTemplateList( placeholders );

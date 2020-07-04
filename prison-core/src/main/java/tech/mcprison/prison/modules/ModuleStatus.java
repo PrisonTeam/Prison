@@ -74,6 +74,21 @@ public class ModuleStatus {
         return status;
     }
 
+    /**
+     * <p>Displays the associated test based upon the three combinations
+     * of status codes.
+     * </p>
+     * 
+     * @return
+     */
+    public String getStatusText() {
+    	return (getStatus() == ModuleStatus.Status.ENABLED ? 
+				"&2Enabled" : 
+			(getStatus() == ModuleStatus.Status.FAILED ? 
+					"&cFailed" : "&9&m-Disabled-" ));
+    }
+
+
     /*
      * Getters & Setters
      */

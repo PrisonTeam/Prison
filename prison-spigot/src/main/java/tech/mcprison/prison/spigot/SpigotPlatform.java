@@ -515,12 +515,21 @@ class SpigotPlatform implements Platform {
      * to access both the PlayerManager (ranks) and the MineManager (mines).
      * </p>
      *  
+     * <p>This function is used with: 
+     * tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegrationWrapper.onRequest()
+     * </p>
+     * 
+     * <p>Note: MVdWPlaceholder integration is using something else.  Probably should be
+     * converted over to use this to standardize and simplify the code.
+     * </p>
+     * 
      */
     @Override
     public String placeholderTranslate(UUID playerUuid, String identifier) {
 		String results = null;
 
-		if ( playerUuid != null ) {
+		if (  PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
+					playerUuid != null ) {
 			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 			if ( pm != null ) {
 				results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
@@ -528,7 +537,8 @@ class SpigotPlatform implements Platform {
 		}
 		
 		// If it did not match on a player placeholder, then try mines:
-		if ( results == null ) {
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() && 
+					results == null ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			results = mm.getTranslateMinesPlaceHolder( identifier );
 		}
@@ -536,21 +546,29 @@ class SpigotPlatform implements Platform {
 		return results;
 	}
     
+    /**
+     * <p>This function is used in this class's placeholderTranslateText() and
+     * also in tech.mcprison.prison.mines.MinesChatHandler.onPlayerChat().
+     * </p>
+     * 
+     */
     @Override
     public String placeholderTranslateText( String text) {
 		String results = text;
 
-		MineManager mm = PrisonMines.getInstance().getMineManager();
-    	
-		List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
-    	
-    	for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-    		String key = "{" + placeHolderKey.getKey() + "}";
-    		if ( results.contains( key )) {
-    			results = results.replace(key, 
-    							mm.getTranslateMinesPlaceHolder( placeHolderKey ) );
-    		}
-    	}
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			
+			List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
+			
+			for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+				String key = "{" + placeHolderKey.getKey() + "}";
+				if ( results.contains( key )) {
+					results = results.replace(key, 
+							mm.getTranslateMinesPlaceHolder( placeHolderKey ) );
+				}
+			}
+		}
 		
 		return results;
 	}
@@ -559,6 +577,9 @@ class SpigotPlatform implements Platform {
      * <p>Since a player UUID is provided, first translate for any possible 
      * player specific placeholder, then try to translate for any mine
      * related placeholder.
+     * </p>
+     * 
+     * <p>This function is used with the command: /prison placeholders test
      * </p>
      * 
      * @param playerUuid
@@ -570,7 +591,8 @@ class SpigotPlatform implements Platform {
     	String results = text;
     	
     	// First the player specific placeholder, which must have a UUID:
-    	if ( playerUuid != null ) {
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
+    			playerUuid != null ) {
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		
     		List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
@@ -595,17 +617,21 @@ class SpigotPlatform implements Platform {
 	{
 		List<String> results = new ArrayList<>();
 		
-//		TreeMap<String, PlaceHolderKey> placeholders = new TreeMap<>();
-		
-		MineManager mm = PrisonMines.getInstance().getMineManager();
-		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    	
 		TreeMap<String, PlaceHolderKey> placeholderKeys = new TreeMap<>();
-		addAllPlaceHolderKeys( placeholderKeys, mm.getTranslatedPlaceHolderKeys() );
-		addAllPlaceHolderKeys( placeholderKeys, pm.getTranslatedPlaceHolderKeys() );
-//		placeholderKeys.addAll( mm.getTranslatedPlaceHolderKeys() );
-//		placeholderKeys.addAll( pm.getTranslatedPlaceHolderKeys() );
 		
+		MineManager mm = null;
+		PlayerManager pm = null;
+		
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			pm = PrisonRanks.getInstance().getPlayerManager();
+			addAllPlaceHolderKeys( placeholderKeys, pm.getTranslatedPlaceHolderKeys() );
+		}
+		
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			mm = PrisonMines.getInstance().getMineManager();
+			addAllPlaceHolderKeys( placeholderKeys, mm.getTranslatedPlaceHolderKeys() );
+		}
+    	
 		Set<String> keys = placeholderKeys.keySet();
 		for ( String key : keys) {
 			PlaceHolderKey placeHolderKey = placeholderKeys.get( key );
@@ -614,10 +640,10 @@ class SpigotPlatform implements Platform {
 				String placeholder = "{" + placeHolderKey.getKey() + "}";
 				String value = null;
 				
-				if ( placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ) {
+				if ( mm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ) {
 					value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
 				}
-				else {
+				else if ( pm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER )) {
 					value = pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() );
 				}
 				
