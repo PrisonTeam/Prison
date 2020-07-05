@@ -29,10 +29,9 @@ public class PrestigesCommands implements CommandExecutor {
             }
 
             if (p != null) {
-                SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
-                gui.open();
+                Bukkit.dispatchCommand(p, "prisonmanager prestiges");
             } else {
-                Bukkit.dispatchCommand(p, "ranks list prestiges");
+                Bukkit.dispatchCommand(sender, "ranks list prestiges");
             }
 
             return true;
