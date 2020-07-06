@@ -58,7 +58,17 @@ public class LadderCommands {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
+        
+        if (ladder.get().name.equalsIgnoreCase( "default" )) {
+        	Output.get().sendError(sender, "You cannot delete the default ladder. It's needed." );
+        	return;
+        }
 
+        if (ladder.get().name.equalsIgnoreCase( "prestiges" )) {
+        	Output.get().sendError(sender, "You cannot delete the prestiges ladder. It's needed." );
+        	return;
+        }
+        
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get()) ) {
             Output.get().sendInfo(sender, "The ladder '%s' has been deleted.", ladderName);
 
