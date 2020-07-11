@@ -120,7 +120,7 @@ For the following commands, we can use the console, which is also easier to see 
 
 Some of the highlights of these commands are as follows:
 * `/mines create` : Create the mine based upon the wand selection.
-* `/mines command` : Not yet active. This is a future feature.  Commands have been hooked hooked up and can run, but have been disabled since there are other Features that are needed to support more complex resets.  Will be able to run commands during mine resets, similar to running commands during /rankup. The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
+* `/mines command` : **Now active!**  **Take your mines to the next level!** See the document on [Mine Commands](prison_docs_111_mine_commands.md) for more information. Every time a mine resets, you can now control what commands run right before a reset, and what runs right after a reset. These commands are similar to the Rank Commands, since they can be any command that you can run from the console.  The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
 * `/mines delete` : Deletes a mine. You can always undelete a mine by going in to the server file system and rename the deleted mine, then restart the server.
 * `/mines info` : Very useful in viewing all information related to the mine.
 * `/mines list` : Displays all mines on your server.
@@ -213,22 +213,35 @@ Example of a mine reset including a sealantern.  Notice that there is still 19.5
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Next Steps
+# Next Steps - Skipping Resets, Notifications, and Zero Blocks
 
 
 The mine is now usable as-is, but there are still a lot of options that we can add to enhance the mine's behavior to better suit our needs.  For example, we can set a spawn point so we can control where players are teleported to when the mine resets, or if they tp to the mine.  
 
 For our example, let's use the console to set the notification, resetTime, skipRest, and the zeroBlockResetDelay.  We must be in game to set the spawn point since it uses where your player is standing and where you are looking.
 
+
+
 <h3>Customizing the Mine</h3>
 
 Issuing all these commands through the console, such as the following.  Note that the spawn point has been set in game, and the reset time has not be changed.
 
-<img src="images/prison_docs_101_setting_up_mines_13.png" alt="Mine customizing within console" title="Mine customizing within console" width="600" />  
+<img src="images/prison_docs_101_setting_up_mines_13.png" alt="Mine customizing within console" title="Mine customizing within console" width="700" />  
 
 Mine info showing all changes.  Observe the spawn location now shows an actual location, but yet it does not show the pitch or yaw. The information also shows that the mine has reset 30 times since there server started, and that you must be standing within the mine to receive reset notifications.
 
 <img src="images/prison_docs_101_setting_up_mines_14.png" alt="Mine info with all details" title="Mine info with all details" width="600" />  
+
+
+
+<h3>Notifications Explained</h3>
+
+In the example above, the notifications for that mine was set to only provide them to the players that are within the mine.  The other options are disabled and radius from the center of the mine.
+
+```
+/mines set notification test1 within
+```
+
 
 
 <h3>Skip Reset Explained</h3>
@@ -256,7 +269,45 @@ The bottom line is that this feature can force an earlier reset of the mine when
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# A Single Block Mine Grinder
+# Notifications - Config File & Settings
+
+
+The global `resetMessages`, `resetTime` and `resetWarningTimes`, as found in the configuration file `plugins/Prison/module_conf/mines/config.json` needs a little explanation in what they do.
+
+The `resetMessages` is used only upon the server startup, and if it is disabled, then it will not use the `resetWarningTimes` and will skip all notifications pertaining to mine resets.  The `resetWarningTimes` are global and cannot be customized per mine.  If an individual mine's reset time is less than a warning time, then the reset warning will be skipped for that mine.
+
+The `resetTime` in this configuration file is only used during the creation of a mine and is used to set the initial value for the mine's reset time.  If the configuration file's value is changed, it will never effect any preexisting mines, but only ones created after it has been changed.  
+
+All mines use their internal reset time and can be customized on a per mine basis using the following command.  The command's time value is expressed in seconds.
+
+```
+/mines set resetTime <mineName> <timeInSeconds>
+```
+
+There are a number of options available for mine notifications, and they are on a per mine basis to allow better control over how to configure everything.  The command is as follows. The value for **mode** can be **disabled**, **within**, or **radius**.  When radius mode is specified then the radius value must be supplied, and it is expressed as whole blocks (integer).
+
+```
+/prison set notification <mineName> <mode> <radius>
+```
+
+The **disabled** option is pretty much self explanatory; messaging for that mine is disabled.
+
+The **within** the mine notification only provides notifications to the players that are within the boundaries of the mine, including players standing upon the top of the mine.  One of the behaviors to this mode, is that all players within the mine will be notified that the mine will be reset, but once they are teleported out of the mine to the spawn point they cannot be notified that the mine has been reset (because they are no longer within the mine).  But then again, the fact they were teleported to the spawn point should be a big clue the mine reset.
+
+The **radius** setting notifies players that are within the specified distance from the center of the mine, ignoring the Y axis.  So if the distance is set to 30 blocks, and they are within that radius, but 200 blocks above the mine, they will be notified.  Since the center point of the mine is calculated to be the, um, center, it is possible to make the radius smaller than some points of the mine and still be outside of the mine in other places.  So this can provide some nice controls at far distances away from the mine, but could produce some odd behaviors (if you don't understand how it works) if the radius is much smaller in size.
+
+
+Perhaps the last point pertaining to resets has to do with the actual timers. Once a mine is reset, either by automatic resets, zero block resets, or a manual reset, the timer will always reset and start over.  This means if there is 30 seconds left on the timer and you do a manual reset, the automatic reset will not happen 30 seconds later.  
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+
+
+# Example: A Single Block Mine Grinder
 
 
 To provide a slightly different perspective as to what you can do with your Prison mines, let's build a one block mine and demonstrate the power of what we can down with a few of these settings.  We're also going to tie this in to HolographicDisplays and use of the placeholders.

@@ -11,11 +11,20 @@ This document covers different aspects of placeholders within Prison.  It explai
 
 # Overview
 
-Placeholders allow sharing sharing data from one plugin, with another plugin, and without either plugin knowing anything about each other.
+Placeholders allow the sharing of data from one plugin with another plugin, and without either plugin knowing anything about each other.
 
 On the surface they appear to be simple, but there are a lot of moving parts below the surface, and with Prison Mines, there are even more things going on.
 
 Add in to the mix, that different plugins deal with placeholders in slightly different ways, and you can wind up with a challenge to get them to work under different circumstances.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Requirements
+
+There is always more than one way to do things, and the same goes for having more than one way to use placeholders.  This documentation, and our test servers, primarily rely on the use of PlaceholderAPI as the core component to making placeholders work.  Depending upon other plugins that you may use, they may have other dependencies too.
+
+**PlaceholderAPI** - [Setting up PlaceholderAPI](prison_docs_0xx_setting_up_PlaceholderAPI.md) - Strongly Suggested if using placeholders. 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 

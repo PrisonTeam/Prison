@@ -6,13 +6,23 @@
 
 This document provides a quick overview on how to install PlaceholderAPI.
 
+Additional documentation on placeholders:
+
+* [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) 
+	How to use placeholders. Includes HolographicDisplays.
+
+* [Setting up Mines](prison_docs_101_setting_up_mines.md)
+	This has a placeholder example using a One-block mine example with HolographicDisplays.
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
-# Dependencies optionals
+# Optional Dependencies
 
 * If you want to use placeholders with plugins without placeholderAPI support you should also install the right version of [Protocollib](https://www.spigotmc.org/resources/protocollib.1997/) for you server and the [PlaceholderAPI ChatInjector](https://www.spigotmc.org/resources/chatinjector.38327/)
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -28,12 +38,23 @@ Setting up PlaceholderAPI just need couple of steps:
 
 * Copy to your server's plugin directory
 
-* Restart your server. Do not use **/reload** (or you'll break Prison Placeholders).
+* Restart your server. Do not use **/reload** or you'll break Prison Placeholders. Prison registers all of the placeholders upon server startup so the registrations will be lost.
 
-# See the placeholders
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-See the available Prison placeholder's easy, just use this command:
-* **/prison version**, and you'll get a list of placeholders
+
+
+# Placeholders Commands
+
+Use the command **/prison placeholders** for a listing the placeholder commands.  These include:
+
+* **/prison placeholders list**
+* **/prison placeholders search <playerName> <pageNumber> <searchPatterns>**
+* **/prison placeholders test <text>**
+
+* **/prison version**
+
+The listing of all the placeholders is available within the Prison startup information, and through `/prison version`.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
