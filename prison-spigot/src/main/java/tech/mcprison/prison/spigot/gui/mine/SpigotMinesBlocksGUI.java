@@ -75,13 +75,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 blockmaterialdisplay = blockmaterial;
             }
 
-            try {
-                buttonsSetup(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay);
-            } catch (NullPointerException ex){
-                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                ex.printStackTrace();
-                return;
-            }
+            if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
 
 
         }
@@ -89,6 +83,17 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+        try {
+            buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {

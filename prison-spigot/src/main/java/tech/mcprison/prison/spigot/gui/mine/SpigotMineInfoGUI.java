@@ -36,17 +36,22 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
-        try {
-            buttonsSetup(inv,GuiConfig);
-        } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return;
-        }
+        if (guiBuilder(inv, GuiConfig)) return;
 
         // Opens the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+        try {
+            buttonsSetup(inv, guiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {

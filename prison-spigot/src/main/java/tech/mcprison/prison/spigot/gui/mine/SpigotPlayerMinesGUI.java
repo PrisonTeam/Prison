@@ -62,19 +62,24 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             List<String> mineslore = createLore(
                    );
 
-            try {
-                buttonsSetup(GuiConfig, inv, m, mineslore);
-            } catch (NullPointerException ex){
-                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                ex.printStackTrace();
-                return;
-            }
+            if (guiBuilder(GuiConfig, inv, m, mineslore)) return;
 
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
+        try {
+            buttonsSetup(guiConfig, inv, m, mineslore);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {

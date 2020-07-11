@@ -64,19 +64,24 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Make the buttons for every Mine with info
         for (Mine m : pMines.getMines()) {
 
-            try {
-                buttonsSetup(GuiConfig, inv, m);
-            } catch (NullPointerException ex){
-                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                ex.printStackTrace();
-                return;
-            }
+            if (guiBuilder(GuiConfig, inv, m)) return;
 
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m) {
+        try {
+            buttonsSetup(guiConfig, inv, m);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m) {

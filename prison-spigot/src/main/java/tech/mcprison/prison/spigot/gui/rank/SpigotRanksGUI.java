@@ -82,19 +82,24 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                     continue; // Skip it
                 }
 
-                try {
-                    buttonsSetup(GuiConfig, inv, rankOptional);
-                } catch (NullPointerException ex){
-                    p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                    ex.printStackTrace();
-                    return;
-                }
+                if (guiBuilder(GuiConfig, inv, rankOptional)) return;
 
             }
         }
 
         // Open the inventory
         this.p.openInventory(inv);
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Optional<Rank> rankOptional) {
+        try {
+            buttonsSetup(guiConfig, inv, rankOptional);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Optional<Rank> rankOptional) {

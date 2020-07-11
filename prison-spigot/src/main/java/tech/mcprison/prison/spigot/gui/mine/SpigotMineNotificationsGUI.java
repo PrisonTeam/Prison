@@ -41,17 +41,22 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(minename);
         String enabledOrDisabled = m.getNotificationMode().name();
 
-        try {
-            buttonsSetup(inv,GuiConfig, enabledOrDisabled);
-        } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return;
-        }
+        if (guiBuilder(inv, GuiConfig, enabledOrDisabled)) return;
 
         // Opens the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {
+        try {
+            buttonsSetup(inv, guiConfig, enabledOrDisabled);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {

@@ -37,16 +37,21 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
-        try {
-            buttonsSetup(inv,GuiConfig,afConfig);
-        } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return;
-        }
+        if (guiBuilder(inv, GuiConfig, afConfig)) return;
 
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+        try {
+            buttonsSetup(inv, guiConfig, afConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {

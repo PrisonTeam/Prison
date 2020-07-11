@@ -65,19 +65,24 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // For every command make a button
         for (String command : rank.rankUpCommands) {
 
-            try {
-                buttonsSetup(GuiConfig, inv, command);
-            } catch (NullPointerException ex){
-                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                ex.printStackTrace();
-                return;
-            }
+            if (guiBuilder(GuiConfig, inv, command)) return;
 
         }
 
         // Open the inventory
         this.p.openInventory(inv);
 
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, String command) {
+        try {
+            buttonsSetup(guiConfig, inv, command);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {

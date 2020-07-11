@@ -45,6 +45,82 @@ public class PrisonSpigotCommands implements CommandExecutor {
             return true;
         }
 
+        if (prisonmanagerGUI(sender, args, p)) return true;
+
+        if (args[0].equalsIgnoreCase("ranks")){
+            return prisonmanagerRanks(sender, p, GuiConfig);
+        } else if (args[0].equalsIgnoreCase("mines")){
+            return prisonmanagerMines(sender, p, GuiConfig);
+        } else if (args[0].equalsIgnoreCase("prestiges")) {
+            return prisonmanagerPrestiges(sender, p, GuiConfig);
+        }
+
+        return true;
+    }
+
+    private boolean prisonmanagerPrestiges(CommandSender sender, Player p, Configuration guiConfig) {
+        if (!(SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true"))) {
+            sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
+            return true;
+        }
+        if (!(guiConfig.getString("Options.Prestiges.GUI_Enabled").equalsIgnoreCase("true"))) {
+            sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
+            return true;
+        }
+        if (guiConfig.getString("Options.Prestiges.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
+            if (!(sender.hasPermission(guiConfig.getString("Options.Prestiges.Permission_GUI")))){
+                sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Prestiges.Permission_GUI") + "]"));
+                return true;
+            }
+            SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
+            gui.open();
+        } else {
+            SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
+            gui.open();
+        }
+        return true;
+    }
+
+    private boolean prisonmanagerMines(CommandSender sender, Player p, Configuration guiConfig) {
+        if (!(guiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true"))){
+            sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
+            return true;
+        }
+        if (guiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(guiConfig.getString("Options.Mines.Permission_GUI")))){
+                sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Mines.Permission_GUI") + "]"));
+                return true;
+            }
+            SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+            gui.open();
+        } else {
+            SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
+            gui.open();
+        }
+        return true;
+    }
+
+    private boolean prisonmanagerRanks(CommandSender sender, Player p, Configuration guiConfig) {
+        if (!(guiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true"))) {
+            sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
+            return true;
+        }
+        if (guiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
+            if (!(sender.hasPermission(guiConfig.getString("Options.Ranks.Permission_GUI")))) {
+                sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Ranks.Permission_GUI") + "]"));
+                return true;
+            }
+            SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+            gui.open();
+            return true;
+        } else {
+            SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
+            gui.open();
+        }
+        return true;
+    }
+
+    private boolean prisonmanagerGUI(CommandSender sender, String[] args, Player p) {
         if ((sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) && args[0].equalsIgnoreCase("gui")){
             if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
                 sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
@@ -54,46 +130,6 @@ public class PrisonSpigotCommands implements CommandExecutor {
             gui.open();
             return true;
         }
-
-        if (args[0].equalsIgnoreCase("ranks")){
-            if (GuiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true")) {
-                if (GuiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
-                    if (sender.hasPermission(GuiConfig.getString("Options.Ranks.Permission_GUI"))) {
-                        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
-                        gui.open();
-                        return true;
-                    }
-                    return true;
-                }
-                SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
-                gui.open();
-                return true;
-            }
-        } else if (args[0].equalsIgnoreCase("mines")){
-            if (GuiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true")){
-                if (GuiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true") && sender.hasPermission(GuiConfig.getString("Options.Mines.Permission_GUI"))){
-                    SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                    gui.open();
-                    return true;
-                }
-                SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI(p);
-                gui.open();
-                return true;
-            }
-        } else if (args[0].equalsIgnoreCase("prestiges")){
-            if (GuiConfig.getString("Options.Prestiges.GUI_Enabled").equalsIgnoreCase("true")){
-                if (GuiConfig.getString("Options.Prestiges.Permission_GUI_Enabled").equalsIgnoreCase("true") && sender.hasPermission(GuiConfig.getString("Options.Prestiges.Permission_GUI"))){
-                    SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
-                    gui.open();
-                    return true;
-                }
-                SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI(p);
-                gui.open();
-                return true;
-            }
-        }
-
-        return true;
-
+        return false;
     }
 }

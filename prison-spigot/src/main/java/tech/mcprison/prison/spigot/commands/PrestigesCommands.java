@@ -17,7 +17,10 @@ public class PrestigesCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true")) {
+        if (!(SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true"))) {
+            sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
+            return true;
+        }
 
             if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
@@ -34,8 +37,6 @@ public class PrestigesCommands implements CommandExecutor {
                 Bukkit.dispatchCommand(sender, "ranks list prestiges");
             }
 
-            return true;
-        }
         return true;
     }
 }

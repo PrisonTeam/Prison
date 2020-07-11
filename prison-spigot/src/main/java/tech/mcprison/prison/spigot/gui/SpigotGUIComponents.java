@@ -49,4 +49,6 @@ public abstract class SpigotGUIComponents {
         }
         return module instanceof PrisonRanks;
     }
+
+
 }

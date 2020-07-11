@@ -68,18 +68,23 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
 
-            try {
-                buttonsSetup(GuiConfig, inv, ladder);
-            } catch (NullPointerException ex){
-                p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-                ex.printStackTrace();
-                return;
-            }
+            if (guiBuilder(GuiConfig, inv, ladder)) return;
 
         }
 
         // Open the inventory
         this.p.openInventory(inv);
+    }
+
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+        try {
+            buttonsSetup(guiConfig, inv, ladder);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, RankLadder ladder) {
