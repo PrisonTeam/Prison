@@ -50,6 +50,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+
         // Declare buttons
         ItemStack autoPickup;
         ItemStack autoSmelt;
