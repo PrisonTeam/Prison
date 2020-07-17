@@ -27,8 +27,7 @@ public class PrestigesPrestigeCommand implements CommandExecutor, Listener {
     int id;
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(AsyncPlayerChatEvent e)
-    {
+    public void onChat(AsyncPlayerChatEvent e) {
         if (isChatEventActive){
             Player p = e.getPlayer();
             String message = e.getMessage();
@@ -59,10 +58,8 @@ public class PrestigesPrestigeCommand implements CommandExecutor, Listener {
             if (!(sender instanceof Player || sender instanceof tech.mcprison.prison.internal.Player)) {
                 sender.sendMessage(SpigotPrison.format("&cFor some reasons, it looks like you aren't a player"));
                 return true;
-            } else {
-                if (sender instanceof Player) {
-                    p = (Player) sender;
-                }
+            } else if (sender instanceof Player){
+                p = (Player) sender;
             }
 
             PrisonRanks rankPlugin;
@@ -95,13 +92,13 @@ public class PrestigesPrestigeCommand implements CommandExecutor, Listener {
                 SpigotConfirmPrestigeGUI gui = new SpigotConfirmPrestigeGUI(p);
                 gui.open();
             } catch (Exception ex){
-                    isChatEventActive = true;
-                    sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
-                    sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
-                    Player finalP = p;
-                    id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                        isChatEventActive = false;
-                        finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
+                isChatEventActive = true;
+                sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
+                sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
+                Player finalP = p;
+                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+                    isChatEventActive = false;
+                    finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
                     }, 20L * 15);
             }
 

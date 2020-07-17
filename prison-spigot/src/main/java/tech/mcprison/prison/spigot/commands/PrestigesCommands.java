@@ -22,20 +22,20 @@ public class PrestigesCommands implements CommandExecutor {
             return true;
         }
 
-            if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
-            }
+        if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
+        }
 
-            Player p = null;
-            if (sender instanceof Player){
-                p = (Player) sender;
-            }
+        Player p = null;
+        if (sender instanceof Player){
+            p = (Player) sender;
+        }
 
-            if (p != null) {
-                Bukkit.dispatchCommand(p, "prisonmanager prestiges");
-            } else {
-                Bukkit.dispatchCommand(sender, "ranks list prestiges");
-            }
+        if (p != null) {
+            Bukkit.dispatchCommand(p, "prisonmanager prestiges");
+        } else {
+            Bukkit.dispatchCommand(sender, "ranks list prestiges");
+        }
 
         return true;
     }
