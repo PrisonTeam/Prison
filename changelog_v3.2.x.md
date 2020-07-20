@@ -10,6 +10,10 @@ that you need.
 
 ## tag v3.2.1-alpha.16 - 2020-07-06
 
+* **Fixing some block types so they are not hard coded.**
+Initial setup.  This will help transition to 1.13.x which will better position to supporting 1.15.x and 1.16.x block types.
+Not all issues have been addressed yet, like the GUI.  Want to confirm this is working before expanding.
+
 
 * **Prevent the default ladders from being deleted**
 The default ladder was actually deleted by a user. Could prevent a ton of issues by preventing these from being removed in error.

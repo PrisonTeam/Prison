@@ -25,12 +25,14 @@ public class SlimeBlockFunEventListener
 
 	private final TreeMap<Long, SlimeBlockFunEventData> playerSlimeJumpCache;
 
+	
 	public SlimeBlockFunEventListener() {
 		super();
 		
 		this.playerSlimeJumpCache = new TreeMap<>();
 		
 		this.enabled = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
+		
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
@@ -140,35 +142,61 @@ public class SlimeBlockFunEventListener
 	{
 		double boost = 1.27d;
 		
-		switch ( itemInHand.getType() )
-		{
-			case DIAMOND_PICKAXE:
-				boost *= 2.0;
-				break;
-				
-			case GOLD_PICKAXE:
-			case IRON_PICKAXE:
-			case STONE_PICKAXE:
-			case WOOD_PICKAXE:
-				boost *= 2.85;
-				break;
-
-			case DIAMOND_BLOCK:
-				boost *= 1.65;
-				break;
-				
-			case GOLD_BLOCK:
-				boost *= 1.45;
-				break;
-				
-			case IRON_BLOCK:
-				boost *= 1.20;
-				break;
-				
-
-			default:
-				break;
+		
+		// Due to variations with gold and wood PickAxe need to use a dynamic 
+		// Material name selection which will fit for the version of MC that is
+		// being ran.
+		Material holding = itemInHand.getType();
+		
+		if ( holding == Material.DIAMOND_PICKAXE ) {
+			boost *= 3.0;
 		}
+		else if ( holding == Material.matchMaterial( "GOLD_PICKAXE" ) ||
+				  holding == Material.IRON_PICKAXE ||
+				  holding == Material.STONE_PICKAXE ||
+				  holding == Material.matchMaterial( "WOOD_PICKAXE" ) ) {
+			boost *= 2.85;
+		}
+		else if ( holding == Material.DIAMOND_BLOCK ) {
+			boost *= 1.65;
+		}
+		else if ( holding == Material.GOLD_BLOCK ) {
+			boost *= 1.45;
+		}
+		else if ( holding == Material.IRON_BLOCK ) {
+			boost *= 1.20;
+		}
+		
+		
+//		switch ( itemInHand.getType() )
+//		{
+//			case DIAMOND_PICKAXE:
+//				boost *= 2.0;
+//				break;
+//				
+//			case GOLD_PICKAXE:
+//			case IRON_PICKAXE:
+//			case STONE_PICKAXE:
+//			case WOOD_PICKAXE:
+//				boost *= 2.85;
+//				break;
+//
+//			case DIAMOND_BLOCK:
+//				boost *= 1.65;
+//				break;
+//				
+//			case GOLD_BLOCK:
+//				boost *= 1.45;
+//				break;
+//				
+//			case IRON_BLOCK:
+//				boost *= 1.20;
+//				break;
+//				
+//
+//			default:
+//				break;
+//		}
 		return boost;
 	}
 

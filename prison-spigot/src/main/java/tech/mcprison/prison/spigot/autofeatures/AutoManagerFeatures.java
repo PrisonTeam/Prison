@@ -1007,147 +1007,223 @@ public class AutoManagerFeatures
 		
 		int multiplier = 1;
 		
-		switch ( blocks.getType() ){
+		
+		// Due to variations with gold and wood PickAxe need to use a dynamic 
+		// Material name selection which will fit for the version of MC that is
+		// being ran.
+		Material block = blocks.getType();
+		
+		if ( block == Material.COAL ||
+			 block == Material.DIAMOND ||
+			 block == Material.EMERALD ||
+			 block == Material.LAPIS_BLOCK ||
+			 block == Material.GOLD_BLOCK ||
+			 block == Material.QUARTZ_BLOCK || 
+			 block == Material.COAL_ORE ||
+			 block == Material.DIAMOND_ORE ||
+			 block == Material.EMERALD_ORE || 
+			 block == Material.LAPIS_ORE || 
+			 block == Material.GOLD_ORE ||
+			 block == Material.matchMaterial( "QUARTZ_ORE" ) ) {
 			
-			case COAL:
-			case DIAMOND:
-			case EMERALD:
-			case LAPIS_BLOCK:
-			case GOLD_BLOCK:
-			case QUARTZ_BLOCK:
-			case COAL_ORE:
-			case DIAMOND_ORE:
-			case EMERALD_ORE:
-			case LAPIS_ORE:
-			case GOLD_ORE:
-			case QUARTZ_ORE:
-				
-				int rnd = getRandom().nextInt( 100 );
-
-				switch ( fortuneLevel )
-				{
-					case 0:
-						break;
-					case 1:
-						if ( rnd <= 33 ) {
-							multiplier = 2;
-						}
-						break;
-						
-					case 2:
-						if ( rnd <= 25 ) {
-							multiplier = 2;
-						}
-						else if ( rnd <= 50 ) {
-							multiplier = 3;
-						}
-						break;
-						
-					case 3: 
-						if ( rnd <= 20 ) {
-							multiplier = 2;
-						}
-						else if ( rnd <= 40 ) {
-							multiplier = 3;
-						}
-						else if ( rnd <= 60 ) {
-							multiplier = 4;
-						}
-						break;
-						
-						
-					case 4: 
-						if ( rnd <= 16 ) {
-							multiplier = 2;
-						}
-						else if ( rnd <= 32 ) {
-							multiplier = 3;
-						}
-						else if ( rnd <= 48 ) {
-							multiplier = 4;
-						}
-						else if ( rnd <= 64 ) {
-							multiplier = 5;
-						}
-						break;
-						
-					default:
-						// values of 5 or higher
-						if ( rnd <= 16 ) {
-							multiplier = 2;
-						}
-						else if ( rnd <= 32 ) {
-							multiplier = 3;
-						}
-						else if ( rnd <= 48 ) {
-							multiplier = 4;
-						}
-						else if ( rnd <= 64 ) {
-							multiplier = 5;
-						}
-						else if ( rnd <= 74 ) {
-							// Only 8% not 16% chance
-							multiplier = 6;
-						}
-						break;
-				}
-				
-				// multiply the multiplier:
-				count *= multiplier;
-				break;
-
-			case GLOWSTONE:
-			case GLOWSTONE_DUST:
-			case REDSTONE:
-			case SEA_LANTERN:
-			case GLOWING_REDSTONE_ORE:
-			case PRISMARINE:
-
-			case BEETROOT_SEEDS:
-			case CARROT:
-			case MELON:
-			case MELON_SEEDS:
-			case NETHER_WARTS:
-			case POTATO:
-			case GRASS:
-			case WHEAT:
+			multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
 			
-				multiplier = getRandom().nextInt( fortuneLevel );
-				
-				switch ( blocks.getType() )
-				{
-					// limits slightly greater than standard:
-					case GLOWSTONE:
-						// standard: 4
-						if ( multiplier > 5 ) {
-							multiplier = 5;
-						}
-						break;
-					case SEA_LANTERN:
-						// standard: 5
-						if ( multiplier > 6 ) {
-							multiplier = 6;
-						}
-						break;
-					case MELON:
-						// standard: 9
-						if ( multiplier > 11 ) {
-							multiplier = 11;
-						}
-
-					default:
-						break;
-				}
-				
-				// add the multiplier to the count:
-				count += multiplier;
-				
-			default:
-				break;
+			// multiply the multiplier:
+			count *= multiplier;
 		}
+		else if ( block == Material.GLOWSTONE ||
+				  block == Material.GLOWSTONE_DUST ||
+				  block == Material.REDSTONE ||
+				  block == Material.SEA_LANTERN ||
+				  block == Material.matchMaterial( "GLOWING_REDSTONE_ORE" ) ||
+				  block == Material.PRISMARINE ||
+
+				  block == Material.BEETROOT_SEEDS ||
+				  block == Material.CARROT ||
+				  block == Material.MELON ||
+				  block == Material.MELON_SEEDS ||
+				  block == Material.matchMaterial( "NETHER_WARTS" ) ||
+				  block == Material.POTATO ||
+				  block == Material.GRASS ||
+				  block == Material.WHEAT ) {
+			multiplier = getRandom().nextInt( fortuneLevel );
+			
+			// limits slightly greater than standard:
+			if ( block == Material.GLOWSTONE ) {
+				// standard: 4
+				if ( multiplier > 5 ) {
+					multiplier = 5;
+				}
+			}
+			else if ( block == Material.SEA_LANTERN ) {
+				// standard: 5
+				if ( multiplier > 6 ) {
+					multiplier = 6;
+				}
+			}
+			else if ( block == Material.MELON ) {
+				// standard: 9
+				if ( multiplier > 11 ) {
+					multiplier = 11;
+				}
+			}
+
+			// add the multiplier to the count:
+			count += multiplier;
+
+		}
+		
+		
+		
+		// cannot use switches with dynamic Material types:
+//		switch ( blocks.getType() ){
+//			
+//			case COAL:
+//			case DIAMOND:
+//			case EMERALD:
+//			case LAPIS_BLOCK:
+//			case GOLD_BLOCK:
+//			case QUARTZ_BLOCK:
+//			case COAL_ORE:
+//			case DIAMOND_ORE:
+//			case EMERALD_ORE:
+//			case LAPIS_ORE:
+//			case GOLD_ORE:
+//			case QUARTZ_ORE:
+//				
+//				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
+//				
+//				// multiply the multiplier:
+//				count *= multiplier;
+//				break;
+//
+//			case GLOWSTONE:
+//			case GLOWSTONE_DUST:
+//			case REDSTONE:
+//			case SEA_LANTERN:
+//			case GLOWING_REDSTONE_ORE:
+//			case PRISMARINE:
+//
+//			case BEETROOT_SEEDS:
+//			case CARROT:
+//			case MELON:
+//			case MELON_SEEDS:
+//			case NETHER_WARTS:
+//			case POTATO:
+//			case GRASS:
+//			case WHEAT:
+//			
+//				multiplier = getRandom().nextInt( fortuneLevel );
+//				
+//				switch ( blocks.getType() )
+//				{
+//					// limits slightly greater than standard:
+//					case GLOWSTONE:
+//						// standard: 4
+//						if ( multiplier > 5 ) {
+//							multiplier = 5;
+//						}
+//						break;
+//					case SEA_LANTERN:
+//						// standard: 5
+//						if ( multiplier > 6 ) {
+//							multiplier = 6;
+//						}
+//						break;
+//					case MELON:
+//						// standard: 9
+//						if ( multiplier > 11 ) {
+//							multiplier = 11;
+//						}
+//
+//					default:
+//						break;
+//				}
+//				
+//				// add the multiplier to the count:
+//				count += multiplier;
+//				
+//			default:
+//				break;
+//		}
 		
 		// The count has the final value so set it as the amount:
 		blocks.setAmount( count );
+	}
+
+
+	private int calculateFortuneMultiplier( short fortuneLevel, int multiplier )
+	{
+		int rnd = getRandom().nextInt( 100 );
+
+		switch ( fortuneLevel )
+		{
+			case 0:
+				break;
+			case 1:
+				if ( rnd <= 33 ) {
+					multiplier = 2;
+				}
+				break;
+				
+			case 2:
+				if ( rnd <= 25 ) {
+					multiplier = 2;
+				}
+				else if ( rnd <= 50 ) {
+					multiplier = 3;
+				}
+				break;
+				
+			case 3: 
+				if ( rnd <= 20 ) {
+					multiplier = 2;
+				}
+				else if ( rnd <= 40 ) {
+					multiplier = 3;
+				}
+				else if ( rnd <= 60 ) {
+					multiplier = 4;
+				}
+				break;
+				
+				
+			case 4: 
+				if ( rnd <= 16 ) {
+					multiplier = 2;
+				}
+				else if ( rnd <= 32 ) {
+					multiplier = 3;
+				}
+				else if ( rnd <= 48 ) {
+					multiplier = 4;
+				}
+				else if ( rnd <= 64 ) {
+					multiplier = 5;
+				}
+				break;
+				
+			default:
+				// values of 5 or higher
+				if ( rnd <= 16 ) {
+					multiplier = 2;
+				}
+				else if ( rnd <= 32 ) {
+					multiplier = 3;
+				}
+				else if ( rnd <= 48 ) {
+					multiplier = 4;
+				}
+				else if ( rnd <= 64 ) {
+					multiplier = 5;
+				}
+				else if ( rnd <= 74 ) {
+					// Only 8% not 16% chance
+					multiplier = 6;
+				}
+				break;
+		}
+		return multiplier;
 	}
 	
 	

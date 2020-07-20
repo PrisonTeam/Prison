@@ -415,10 +415,24 @@ class SpigotPlatform implements Platform {
     }
 
     private boolean isDoor(Material block) {
-        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR
-            || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR_BLOCK
-            || block == Material.JUNGLE_DOOR || block == Material.WOODEN_DOOR
-            || block == Material.SPRUCE_DOOR;
+    	
+    	Material acaciaDoor = Material.matchMaterial( "ACACIA_DOOR" );
+    	Material birchDoor = Material.matchMaterial( "BIRCH_DOOR" );
+    	Material darkOakDoor = Material.matchMaterial( "DARK_OAK_DOOR" );
+    	Material ironDoor = Material.matchMaterial( "IRON_DOOR_BLOCK" );
+    	Material jungleDoor = Material.matchMaterial( "JUNGLE_DOOR" );
+    	Material woodenDoor = Material.matchMaterial( "WOODEN_DOOR" );
+    	Material spruceDoor = Material.matchMaterial( "SPRUCE_DOOR" );    	
+    	
+//        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR
+//            || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR_BLOCK
+//            || block == Material.JUNGLE_DOOR || block == Material.WOODEN_DOOR
+//            || block == Material.SPRUCE_DOOR;
+    	
+    	return block == acaciaDoor || block == birchDoor || 
+    		   block == darkOakDoor || block == ironDoor ||
+    		   block == jungleDoor || block == woodenDoor ||
+    		   block == spruceDoor;
     }
 
     @Override public Map<Capability, Boolean> getCapabilities() {
