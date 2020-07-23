@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.1-alpha.16 - 2020-07-06
 
+
+* **Worked on enhancements for the auto features.**
+Enhancements and hooking up fortune, silk (does nothing... yet), durability, and additonal drops.
+Enhancements to improve stability and quality
+Eliminate the switch statements when dealing with Materials since there are a few that cannot be hard coded and instead must use the Material.matchMaterial() function since the type may not exist in all versions.  It's also preparing to transition to another way of dealing with materials, but cannot use them until after prison is migrated to 1.13.x.
+
+
 * **Fixing some block types so they are not hard coded.**
 Initial setup.  This will help transition to 1.13.x which will better position to supporting 1.15.x and 1.16.x block types.
 Not all issues have been addressed yet, like the GUI.  Want to confirm this is working before expanding.

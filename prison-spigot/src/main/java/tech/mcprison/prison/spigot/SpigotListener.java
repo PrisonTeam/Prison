@@ -57,7 +57,6 @@ import tech.mcprison.prison.util.Location;
  * 
  * @author Faizaan A. Datoo
  */
-//@SuppressWarnings( "deprecation" )
 @SuppressWarnings( "deprecation" )
 public class SpigotListener implements Listener {
 
@@ -89,7 +88,6 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
-    // @SuppressWarnings( "deprecation" ) // deprecated with v1.9.4
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
@@ -101,7 +99,6 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    // @SuppressWarnings( "deprecation" ) // deprecated with v1.9.4
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
@@ -167,9 +164,6 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    // deprecated with v1.9.4
-    // spigot 1.12.4 deprecates PlayerPickupItemEvent
-    //@SuppressWarnings( "deprecation" ) 
 	@EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         PlayerPickUpItemEvent event = new PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
             SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
