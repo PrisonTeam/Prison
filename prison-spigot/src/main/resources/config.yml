@@ -14,6 +14,9 @@ prestiges: false
 # Enable or disable all the GUIs, for more options please check inside the GuiConfig.yml
 prison-gui-enabled: true
 
+# Enable or disable the SellAll command and sub-commands
+sellall: false
+
 default-language: en_US
 
 # The storage engine that Prison should use to store data.

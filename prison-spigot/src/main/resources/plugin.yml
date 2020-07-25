@@ -14,6 +14,9 @@ commands:
   prestige:
     description: Prestige
     usage: /<command>
+  sellall:
+    description: SellAll Command and SubCommands
+    usage: /<command> <args>
   # ======================================================
   # New commands compatible only with spigot
   # ======================================================

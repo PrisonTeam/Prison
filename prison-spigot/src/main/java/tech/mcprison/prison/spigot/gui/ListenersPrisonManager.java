@@ -43,6 +43,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 
 
 /**
@@ -90,7 +91,7 @@ public class ListenersPrisonManager implements Listener {
         Player p = (Player) e.getPlayer();
 
         // Array with all the Prison titles of Inventories
-        String[] titleNames = new String[21];
+        String[] titleNames = new String[22];
         titleNames[0] = "AutoFeatures -> AutoBlock";
         titleNames[1] = "PrisonManager -> AutoFeatures";
         titleNames[2] = "AutoFeatures -> AutoPickup";
@@ -112,6 +113,7 @@ public class ListenersPrisonManager implements Listener {
         titleNames[18] = "Ladders -> Ranks";
         titleNames[19] = "RankManager -> RankUPCommands";
         titleNames[20] = "PrisonManager";
+        titleNames[21] = "PrisonManager -> SellAll-Admin";
 
         // For every title check if equals, the if true add it to the GuiBlocker
         for (String title : titleNames){
@@ -145,6 +147,7 @@ public class ListenersPrisonManager implements Listener {
     // Cancel the events of the active GUI opened from the player
     private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
         if(activeGui.contains(p.getName())) {
+
             e.setCancelled(true);
         }
     }
@@ -171,17 +174,17 @@ public class ListenersPrisonManager implements Listener {
         // Get action of the Inventory from the event
         InventoryAction action = e.getAction();
 
-        // If an action equals one of these, and the inventory is open from the player equals 
+        // If an action equals one of these, and the inventory is open from the player equals
         // one of the Prison Title, it'll cancel the event
-        if (action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) || action.equals(InventoryAction.HOTBAR_SWAP) || 
-        	action.equals(InventoryAction.HOTBAR_MOVE_AND_READD) || action.equals(InventoryAction.NOTHING) || 
-        	action.equals(InventoryAction.CLONE_STACK) || action.equals(InventoryAction.COLLECT_TO_CURSOR) || 
-        	action.equals(InventoryAction.DROP_ONE_SLOT) || action.equals(InventoryAction.DROP_ONE_CURSOR) || 
-        	action.equals(InventoryAction.DROP_ALL_SLOT) || action.equals(InventoryAction.DROP_ALL_CURSOR) || 
-        	action.equals(InventoryAction.PICKUP_ALL) || action.equals(InventoryAction.PICKUP_HALF) || 
-        	action.equals(InventoryAction.PICKUP_ONE) || action.equals(InventoryAction.PICKUP_SOME) || 
-        	action.equals(InventoryAction.PLACE_ALL) || action.equals(InventoryAction.PLACE_ONE) || 
-        	action.equals(InventoryAction.PLACE_SOME) || action.equals(InventoryAction.SWAP_WITH_CURSOR) || 
+        if (action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) || action.equals(InventoryAction.HOTBAR_SWAP) ||
+        	action.equals(InventoryAction.HOTBAR_MOVE_AND_READD) || action.equals(InventoryAction.NOTHING) ||
+        	action.equals(InventoryAction.CLONE_STACK) || action.equals(InventoryAction.COLLECT_TO_CURSOR) ||
+        	action.equals(InventoryAction.DROP_ONE_SLOT) || action.equals(InventoryAction.DROP_ONE_CURSOR) ||
+        	action.equals(InventoryAction.DROP_ALL_SLOT) || action.equals(InventoryAction.DROP_ALL_CURSOR) ||
+        	action.equals(InventoryAction.PICKUP_ALL) || action.equals(InventoryAction.PICKUP_HALF) ||
+        	action.equals(InventoryAction.PICKUP_ONE) || action.equals(InventoryAction.PICKUP_SOME) ||
+        	action.equals(InventoryAction.PLACE_ALL) || action.equals(InventoryAction.PLACE_ONE) ||
+        	action.equals(InventoryAction.PLACE_SOME) || action.equals(InventoryAction.SWAP_WITH_CURSOR) ||
         	action.equals(InventoryAction.UNKNOWN)) {
             activeGuiEventCanceller(p, e);
         }
@@ -384,7 +387,24 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
+
+            // Check the title and do the actions
+            case "PrisonManager -> SellAll-Admin":{
+
+                SellAllAdminGUI(e, p, buttonNameMain);
+
+                break;
+            }
         }
+    }
+
+    private void SellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+        if (e.isRightClick()){
+            Bukkit.dispatchCommand(p, "sellall delete " + buttonNameMain);
+            p.closeInventory();
+        }
+
+        e.setCancelled(true);
     }
 
     private void PrisonManagerGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
@@ -407,6 +427,13 @@ public class ListenersPrisonManager implements Listener {
             // Check the Item display name and do open the right GUI
             case "Mines": {
                 SpigotMinesGUI gui = new SpigotMinesGUI(p);
+                gui.open();
+                break;
+            }
+
+            // Check the Item display name and do open the right GUI
+            case "SellAll": {
+                SellAllAdminGUI gui = new SellAllAdminGUI(p);
                 gui.open();
                 break;
             }

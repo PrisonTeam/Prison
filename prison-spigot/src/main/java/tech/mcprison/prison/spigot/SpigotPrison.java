@@ -67,6 +67,8 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
+import tech.mcprison.prison.spigot.sellall.SellAllCommands;
+import tech.mcprison.prison.spigot.sellall.SellAllConfig;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
@@ -138,6 +140,7 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         new GuiConfig();
+        new SellAllConfig();
 
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
@@ -149,6 +152,7 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prestige").setExecutor(new PrestigesPrestigeCommand());
         getCommand("prestiges").setExecutor(new PrestigesCommands());
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
+        getCommand("sellall").setExecutor(new SellAllCommands());
         
         new SpigotListener(this).init();
 
@@ -200,7 +204,10 @@ public class SpigotPrison extends JavaPlugin {
         return messages.getFileGuiConfig();
     }
 
-    
+    public static FileConfiguration getSellAllConfig(){
+        SellAllConfig string = new SellAllConfig();
+        return string.getFileSellAllConfig();
+    }
     
     public AutoManagerFeatures getAutoFeatures() {
 		return autoFeatures;

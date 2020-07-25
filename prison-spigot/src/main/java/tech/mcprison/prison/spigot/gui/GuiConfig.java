@@ -16,6 +16,10 @@ public class GuiConfig {
 
     public GuiConfig() {
 
+        if (!SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equals("true")){
+            return;
+        }
+
         // Get array class with Path and Objects strings
         String[] path = getPath();
         String[] object = getObject();
