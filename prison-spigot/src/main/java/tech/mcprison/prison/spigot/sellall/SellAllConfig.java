@@ -7,6 +7,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllConfig {
 
     private FileConfiguration conf;
@@ -81,7 +84,10 @@ public class SellAllConfig {
                 "true",
                 "prison.admin",
                 "true",
-                "prison.admin"
+                "prison.admin",
+                "true",
+                "false",
+                "prison.sellall.playergui"
         };
     }
 
@@ -95,7 +101,10 @@ public class SellAllConfig {
                 "Options.Add_Permission_Enabled",
                 "Options.Add_Permission",
                 "Options.Delete_Permission_Enabled",
-                "Options.Delete_Permission"
+                "Options.Delete_Permission",
+                "Options.Player_GUI_Enabled",
+                "Options.Player_GUI_Permission_Enabled",
+                "Options.Player_GUI_Permission"
         };
     }
 

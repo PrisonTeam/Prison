@@ -14,11 +14,15 @@ import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllCommands implements CommandExecutor {
 
     @Override
@@ -67,6 +71,7 @@ public class SellAllCommands implements CommandExecutor {
     }
 
     private boolean sellallCommandEdit(CommandSender sender, String[] args, File file, FileConfiguration conf, String s) {
+
         if (conf.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
             if (!sender.hasPermission("Options.Add_Permission")) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.Add_Permission") + "]"));
@@ -193,6 +198,7 @@ public class SellAllCommands implements CommandExecutor {
     }
 
     private boolean sellallCommandGUI(CommandSender sender, FileConfiguration conf) {
+
         if (!(sender instanceof Player)){
             sender.sendMessage(SpigotPrison.format("&c[PRISON ERROR] You aren't a player"));
             return true;
@@ -200,17 +206,31 @@ public class SellAllCommands implements CommandExecutor {
 
         Player p = (Player) sender;
 
-        if (conf.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission(conf.getString("Options.GUI_Permission"))){
-                p.sendMessage(SpigotPrison.format("&c[PRISON WARN] Sorry, but you're missing the permission [" + conf.getString("Options.GUI_Permission") + "]"));
+        if (!conf.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+            if (p.isOp() || p.hasPermission("prison.admin")) {
+                sender.sendMessage(SpigotPrison.format("&c[PRISON ERROR] Sorry but the GUI's disabled in the SellAllConfig.yml"));
                 return true;
             }
         }
 
-        if (!conf.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
-            sender.sendMessage(SpigotPrison.format("&c[PRISON ERROR] Sorry but the GUI's disabled in the SellAllConfig.yml"));
-            return true;
+        if (conf.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
+            if (!p.hasPermission(conf.getString("Options.GUI_Permission"))){
+                p.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.GUI_Permission") + "]"));
+                return true;
+            } else if (conf.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
+                if (conf.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
+                    if (!p.hasPermission(conf.getString("Options.Player_GUI_Permission"))){
+                        p.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.Player_GUI_Permission") + "]"));
+                        return true;
+                    }
+                }
+                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                gui.open();
+                return true;
+            }
         }
+
+
 
         SellAllAdminGUI gui = new SellAllAdminGUI(p);
         gui.open();

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,8 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,6 +47,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
 
 /**
@@ -91,7 +95,7 @@ public class ListenersPrisonManager implements Listener {
         Player p = (Player) e.getPlayer();
 
         // Array with all the Prison titles of Inventories
-        String[] titleNames = new String[22];
+        String[] titleNames = new String[24];
         titleNames[0] = "AutoFeatures -> AutoBlock";
         titleNames[1] = "PrisonManager -> AutoFeatures";
         titleNames[2] = "AutoFeatures -> AutoPickup";
@@ -114,6 +118,8 @@ public class ListenersPrisonManager implements Listener {
         titleNames[19] = "RankManager -> RankUPCommands";
         titleNames[20] = "PrisonManager";
         titleNames[21] = "PrisonManager -> SellAll-Admin";
+        titleNames[22] = "SellAll -> ItemValue";
+        titleNames[23] = "PrisonManager -> SellAll-Player";
 
         // For every title check if equals, the if true add it to the GuiBlocker
         for (String title : titleNames){
@@ -395,13 +401,145 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
+
+            // Check the title and do the actions
+            case "SellAll -> ItemValue":{
+
+                SellAllItemValue(e, p, parts);
+
+                break;
+            }
+
+            // Check the title and do the actions
+            case "PrisonManager -> SellAll-Player":{
+
+                p.closeInventory();
+                e.setCancelled(true);
+
+                break;
+            }
+        }
+    }
+
+    private void SellAllItemValue(InventoryClickEvent e, Player p, String[] parts) {
+
+        // Rename the parts
+        String part1 = parts[0];
+        String part2 = parts[1];
+        String part3 = parts[2];
+
+        // Initialize the variable
+        int decreaseOrIncreaseValue = 0;
+
+        // If there're enough parts init another variable
+        if (parts.length == 4){
+            decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
+        }
+
+        // Check the button name and do the actions
+        if (part1.equalsIgnoreCase("Confirm:")) {
+
+            // Check the click type and do the actions
+            if (e.isLeftClick()){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p,"sellall edit " + part2 + " " + part3);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+
+                // Check the click type and do the actions
+            } else if (e.isRightClick()){
+
+                // Send a message to the player
+                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            } else {
+
+                // Cancel the event
+                e.setCancelled(true);
+                return;
+            }
+        }
+
+        // Give to val a value
+        double val = Double.parseDouble(part2);
+
+        // Check the calculator symbol
+        if (part3.equals("-")){
+
+            // Check if the value's already too low
+            if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                // If it isn't too low then decrease it
+                val = val - decreaseOrIncreaseValue;
+
+                // If it is too low
+            } else {
+
+                // Tell to the player that the value's too low
+                p.sendMessage(SpigotPrison.format("&cToo low value."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+                return;
+            }
+
+            // Open an updated GUI after the value changed
+            SellAllPriceGUI gui = new SellAllPriceGUI(p, val, part1);
+            gui.open();
+
+            // Check the calculator symbol
+        } else if (part3.equals("+")){
+
+            // Check if the value isn't too high
+            if (!((val + decreaseOrIncreaseValue) > 2147483646)) {
+
+                // Increase the value
+                val = val + decreaseOrIncreaseValue;
+
+                // If the value's too high then do the action
+            } else {
+
+                // Close the GUI and tell it to the player
+                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                e.setCancelled(true);
+                p.closeInventory();
+                return;
+            }
+
+            // Open a new updated GUI with new values
+            SellAllPriceGUI gui = new SellAllPriceGUI(p, val, part1);
+            gui.open();
+
         }
     }
 
     private void SellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+
         if (e.isRightClick()){
+
             Bukkit.dispatchCommand(p, "sellall delete " + buttonNameMain);
             p.closeInventory();
+
+        } else if (e.isLeftClick()){
+
+            File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
+
+            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE")), buttonNameMain);
+            gui.open();
+
         }
 
         e.setCancelled(true);

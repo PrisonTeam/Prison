@@ -12,15 +12,14 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * @author GABRYCA
  */
-public class SellAllAdminGUI extends SpigotGUIComponents {
+public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     private final Player p;
 
-    public SellAllAdminGUI(Player p){
+    public SellAllPlayerGUI(Player p){
         this.p = p;
     }
 
@@ -50,12 +49,10 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             return;
         }
 
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Admin"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Player"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    "&cRight-Click to delete",
-                    "&aLeft-Click to edit value",
                     "&3value: &a$" + conf.getString("Items." + key + ".ITEM_VALUE")
             );
             ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
