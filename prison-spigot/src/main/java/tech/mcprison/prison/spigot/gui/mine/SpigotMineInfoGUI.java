@@ -109,13 +109,23 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, SpigotPrison.format("&3" + "Mine_notifications: " + minename));
 
         // Create the button
-        ItemStack MinesTP = createButton(Material.BED, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + minename));
+        Material bed = Material.matchMaterial( "bed" );
+        if ( bed == null ) {
+        	bed = Material.matchMaterial( "Red_Bed" );
+        }
+        ItemStack MinesTP = createButton(bed, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + minename));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + minename));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack mineResetTime = createButton(Material.WATCH, 1, mineResetTimeLore, SpigotPrison.format("&3" + "Reset_Time: " + minename));
+        Material watch = Material.matchMaterial( "watch" );
+        if ( watch == null ) {
+        	watch = Material.matchMaterial( "legacy_watch" );
+        } if ( watch == null ) {
+        	watch = Material.matchMaterial( "clock" );
+        }
+        ItemStack mineResetTime = createButton(watch, 1, mineResetTimeLore, SpigotPrison.format("&3" + "Reset_Time: " + minename));
 
         // Position of the button
         inv.setItem(10, resetmine);

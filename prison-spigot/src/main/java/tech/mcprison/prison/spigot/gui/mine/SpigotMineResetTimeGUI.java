@@ -93,7 +93,13 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
 
 
         // Create a button and set the position
-        ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val));
+        Material watch = Material.matchMaterial( "watch" );
+        if ( watch == null ) {
+        	watch = Material.matchMaterial( "legacy_watch" );
+        } if ( watch == null ) {
+        	watch = Material.matchMaterial( "clock" );
+        }
+        ItemStack confirmButton = createButton(watch, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val));
         inv.setItem(22, confirmButton);
 
 

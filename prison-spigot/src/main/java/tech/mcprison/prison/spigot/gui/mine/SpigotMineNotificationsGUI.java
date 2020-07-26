@@ -97,7 +97,11 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         ItemStack modeWithin = createButton(Material.IRON_DOOR, 1, modeWithinLore, SpigotPrison.format("&3Within_Mode: " + minename));
 
         // Create a button
-        ItemStack radiusMode = createButton(Material.FENCE, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + minename));
+        Material fence = Material.matchMaterial( "fence" );
+        if ( fence == null ) {
+        	fence = Material.matchMaterial( "oak_fence" );
+        }
+        ItemStack radiusMode = createButton(fence, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + minename));
 
         // Create a button
         ItemStack disabledMode = createButton(Material.REDSTONE_BLOCK, 1, disabledModeLore, SpigotPrison.format("&3Disabled_Mode: " + minename));

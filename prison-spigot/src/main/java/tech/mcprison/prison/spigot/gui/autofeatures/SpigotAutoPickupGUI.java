@@ -136,11 +136,15 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
+        Material quartzOre = Material.matchMaterial( "quartz_ore" );
+        if ( quartzOre == null ) {
+        	quartzOre = Material.matchMaterial( "nether_quartz_ore" );
+        }
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupQuartzOre ) ) {
-            ItemStack Enabled = createButton(Material.QUARTZ_ORE, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Ore Enabled"));
+            ItemStack Enabled = createButton(quartzOre, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.QUARTZ_ORE, 1, disabledLore, SpigotPrison.format("&c" + "Quartz_Ore Disabled"));
+            ItemStack Disabled = createButton(quartzOre, 1, disabledLore, SpigotPrison.format("&c" + "Quartz_Ore Disabled"));
             inv.addItem(Disabled);
         }
 
@@ -152,11 +156,15 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
+        Material snowBall = Material.matchMaterial( "snow_ball" );
+        if ( snowBall == null ) {
+        	snowBall = Material.matchMaterial( "snowball" );
+        }
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupSnowBall ) ) {
-            ItemStack Enabled = createButton(Material.SNOW_BALL, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled"));
+            ItemStack Enabled = createButton(snowBall, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.SNOW_BALL, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Ball Disabled"));
+            ItemStack Disabled = createButton(snowBall, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Ball Disabled"));
             inv.addItem(Disabled);
         }
 

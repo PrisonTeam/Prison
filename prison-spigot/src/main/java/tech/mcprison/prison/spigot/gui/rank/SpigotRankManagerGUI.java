@@ -84,7 +84,12 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         );
 
         // Create the button
-        ItemStack rankupCommands = createButton(Material.COMMAND_MINECART, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
+        Material commandMinecart = Material.matchMaterial( "command_minecart" );
+        if ( commandMinecart == null ) {
+        	commandMinecart = Material.matchMaterial( "command_block_minecart" );
+        }
+
+        ItemStack rankupCommands = createButton(commandMinecart, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
 
         // Create the button
         ItemStack rankPrice = createButton(Material.GOLD_NUGGET, 1, editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.name));

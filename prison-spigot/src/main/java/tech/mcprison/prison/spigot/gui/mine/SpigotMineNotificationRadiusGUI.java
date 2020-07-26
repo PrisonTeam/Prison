@@ -94,7 +94,13 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
 
 
         // Create a button and set the position of it
-        ItemStack confirmButton = createButton(Material.WATCH, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val + " " + typeNotification));
+        Material watch = Material.matchMaterial( "watch" );
+        if ( watch == null ) {
+        	watch = Material.matchMaterial( "legacy_watch" );
+        } if ( watch == null ) {
+        	watch = Material.matchMaterial( "clock" );
+        }
+        ItemStack confirmButton = createButton(watch, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + minename + " " + val + " " + typeNotification));
         inv.setItem(22, confirmButton);
 
 
