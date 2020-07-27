@@ -230,8 +230,6 @@ public class SellAllCommands implements CommandExecutor {
             }
         }
 
-
-
         SellAllAdminGUI gui = new SellAllAdminGUI(p);
         gui.open();
 

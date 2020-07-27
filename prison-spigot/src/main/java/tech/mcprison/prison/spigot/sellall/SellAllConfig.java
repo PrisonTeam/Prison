@@ -20,92 +20,62 @@ public class SellAllConfig {
             return;
         }
 
-        // Get array class with Path and Objects strings
-        String[] path = getPath();
-        String[] object = getObject();
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
 
-        // Call a method, this makes a new file or update the old one
-        fileChecker(path, object, file);
+        // Everything's here
+        values();
 
         // Get the final config
         conf = YamlConfiguration.loadConfiguration(file);
     }
 
-    // Check the config and makes a new one or update it
-    private void fileChecker(String[] path, String[] object, File file) {
+    private void dataConfig(String path, String string){
+
+        // Filepath
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+
         // Check if the config exists
         if(!file.exists()){
-            // Call method
-            newFile(path, object, file);
+            try {
+                file.createNewFile();
+                conf = YamlConfiguration.loadConfiguration(file);
+                conf.set(path, SpigotPrison.format(string));
+                conf.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
-            // Call method
-            fileUpdater(path, object, file);
-        }
-    }
-
-    // Check if something's missing and update the config
-    private void fileUpdater(String[] path, String[] object, File file) {
-        try {
-            conf = YamlConfiguration.loadConfiguration(file);
-            for (int i = 0; path.length > i; i++) {
-                if (getFileSellAllConfig().getString(path[i]) == null){
-                    conf.set(path[i], SpigotPrison.format(object[i]));
-                }
+            try {
+                conf = YamlConfiguration.loadConfiguration(file);
+                    if (getFileSellAllConfig().getString(path) == null){
+                        conf.set(path, SpigotPrison.format(string));
+                    }
+                conf.save(file);
+            } catch (IOException e2){
+                e2.printStackTrace();
             }
-            conf.save(file);
-        } catch (IOException e2){
-            e2.printStackTrace();
         }
+
+        // Get the final config
+        conf = YamlConfiguration.loadConfiguration(file);
+
+
     }
 
-    // Make a new config if missing
-    private void newFile(String[] path, String[] object, File file) {
-        try {
-            file.createNewFile();
-            conf = YamlConfiguration.loadConfiguration(file);
-            for(int i = 0; path.length>i; i++){
-                conf.set(path[i], SpigotPrison.format(object[i]));
-            }
-            conf.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String[] getObject() {
-        return new String[]{
-                "true",
-                "true",
-                "prison.admin",
-                "false",
-                "prison.admin",
-                "true",
-                "prison.admin",
-                "true",
-                "prison.admin",
-                "true",
-                "false",
-                "prison.sellall.playergui"
-        };
-    }
-
-    private String[] getPath() {
-        return new String[]{
-                "Options.GUI_Enabled",
-                "Options.GUI_Permission_Enabled",
-                "Options.GUI_Permission",
-                "Options.Sell_Permission_Enabled",
-                "Options.Sell_Permission",
-                "Options.Add_Permission_Enabled",
-                "Options.Add_Permission",
-                "Options.Delete_Permission_Enabled",
-                "Options.Delete_Permission",
-                "Options.Player_GUI_Enabled",
-                "Options.Player_GUI_Permission_Enabled",
-                "Options.Player_GUI_Permission"
-        };
+    private void values(){
+        dataConfig("Options.GUI_Enabled", "true");
+        dataConfig("Options.GUI_Permission_Enabled", "true");
+        dataConfig("Options.GUI_Permission","prison.admin");
+        dataConfig("Options.Sell_Permission_Enabled","false");
+        dataConfig("Options.Sell_Permission","prison.admin");
+        dataConfig("Options.Add_Permission_Enabled","true");
+        dataConfig("Options.Add_Permission","prison.admin");
+        dataConfig("Options.Delete_Permission_Enabled","true");
+        dataConfig("Options.Delete_Permission","prison.admin");
+        dataConfig("Options.Player_GUI_Enabled","true");
+        dataConfig("Options.Player_GUI_Permission_Enabled","false");
+        dataConfig("Options.Player_GUI_Permission","prison.sellall.playergui");
     }
 
     public FileConfiguration getFileSellAllConfig(){
