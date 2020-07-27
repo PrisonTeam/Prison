@@ -205,8 +205,8 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public static FileConfiguration getSellAllConfig(){
-        SellAllConfig string = new SellAllConfig();
-        return string.getFileSellAllConfig();
+        SellAllConfig configs = new SellAllConfig();
+        return configs.getFileSellAllConfig();
     }
     
     public AutoManagerFeatures getAutoFeatures() {
