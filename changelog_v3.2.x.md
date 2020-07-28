@@ -8,7 +8,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.16 - 2020-07-06
+## tag v3.2.1-alpha.17 - 2020-07-28
+
+
+* **Alpha.17 - 2020-07-28**
+
+* **Major New Feature: Work In Progress!  New handling of Blocks and Materials!!**
+Starting major changes to how the block types and materials are processed.  
+This is a Work In Progress! Use with caution until stabilized.
+Upgrade the spigot API to 1.13.2!!!
+This should make Prison more 1.13+ compatible and support more block types, and transition to supporting all block types that exist for a given version.
+Add in the cryptomorin's XSeries to better deal with newer block types.  Trying to get rid of deprecated function usage, except for within spigot 1.8 specific code sets.
+Finally got lapis lazuli working!  So this is heading in the right direction. 
+
+
+* **New Feature: Sellall has been added**
 
 
 * **Worked on enhancements for the auto features.**
