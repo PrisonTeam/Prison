@@ -18,19 +18,17 @@
 
 package tech.mcprison.prison.spigot.block;
 
-import org.bukkit.material.MaterialData;
+import java.util.ArrayList;
+import java.util.List;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.MaterialVersion;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
@@ -52,7 +50,8 @@ public class SpigotBlock implements Block {
     }
 
     @Override public BlockType getType() {
-        return SpigotUtil.materialToBlockType(bBlock.getType());
+    	return SpigotPrison.getInstance().getCompatibility().getBlockType( bBlock );
+//        return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
     /**
@@ -61,24 +60,60 @@ public class SpigotBlock implements Block {
      * that could fall (sand) or flow is placed.
      * </p>
      */
-    @SuppressWarnings( "deprecation" )
-	@Override public void setType(BlockType type) {
+	@Override 
+	public void setType(BlockType blockType) {
     	
-    	if ( type != null && type != BlockType.IGNORE ) {
-    		try {
-				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-				bBlock.setType(materialData.getItemType(), false);
-				if ( type.getMaterialVersion() == MaterialVersion.v1_8) {
-					
-					bBlock.setData(materialData.getData(), false);
-				}
-			}
-			catch ( Exception e ) {
-				Output.get().logError( 
-						String.format( "BlockType could not be set: %s %s ", 
-						(type == null ? "(null)" : type.name()), e.getMessage()) );
-			}
-    	}
+		SpigotPrison.getInstance().getCompatibility()
+						.updateSpigotBlock( blockType, bBlock );
+		
+//    	if ( type != null && type != BlockType.IGNORE ) {
+//    		
+//    		Material mat = SpigotUtil.getMaterial( type );
+//    		if ( mat != null ) {
+//    			bBlock.setType( mat, false );
+//    		}
+//    		
+////    		Optional<XMaterial> xMatO = XMaterial.matchXMaterial( type.name() );
+////    		
+////    		if ( xMatO.isPresent() ) {
+////    			XMaterial xMat = xMatO.get();
+////    			Optional<Material> matO = xMat.parseMaterial();
+////    			
+////    			if ( matO.isPresent() ) {
+////    				Material mat = matO.get();
+////    				
+////    				bBlock.setType( mat, false );
+////
+////    			}
+////    		}
+//    		else {
+//    			// spigot 1.8.8 support for XMaterial: 
+//    			//   MOSS_STONE  LAPIS_LAZULI_ORE  LAPIS_LAZULI_BLOCK  PILLAR_QUARTZ_BLOCK
+//    			// 
+//    			
+//    			Output.get().logWarn( "SpigotBlock.setType: could not match BlockType " + 
+//    						type.name() + " defaulting to AIR instead.");
+//    			
+//    			mat = SpigotUtil.getMaterial( BlockType.AIR );
+//        		if ( mat != null ) {
+//        			bBlock.setType( mat, false );
+//        		}
+//    		}
+//    		
+////    		try {
+////				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+////				bBlock.setType(materialData.getItemType(), false);
+////				if ( type.getMaterialVersion() == MaterialVersion.v1_8) {
+////					
+////					bBlock.setData(materialData.getData(), false);
+////				}
+////			}
+////			catch ( Exception e ) {
+////				Output.get().logError( 
+////						String.format( "BlockType could not be set: %s %s ", 
+////						(type == null ? "(null)" : type.name()), e.getMessage()) );
+////			}
+//    	}
     }
 
     @Override public BlockState getState() {

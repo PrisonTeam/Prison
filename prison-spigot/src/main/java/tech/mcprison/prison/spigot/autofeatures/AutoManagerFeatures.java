@@ -20,6 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
@@ -28,6 +30,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
+import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Text;
@@ -419,8 +422,11 @@ public class AutoManagerFeatures
 		
 		if ( count >= 9 ) {
 			int mult = count / 9;
-					
-			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
+			
+			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
+			removeLapisItemStack.setAmount( mult * 9 );
+			
+//			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
 			player.getInventory().removeItem(removeLapisItemStack);
 			
 			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
@@ -433,11 +439,15 @@ public class AutoManagerFeatures
 		
 		if ( count >= 9 ) {
 			int mult = count / 9;
-					
-			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
+			
+			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
+			removeLapisItemStack.setAmount( mult * 9 );
+
+//			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
 			player.getInventory().removeItem(removeLapisItemStack);
 			
-			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
+			dropExtra( player.getInventory().addItem(
+					new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
 		}
 	}
 	
@@ -457,11 +467,8 @@ public class AutoManagerFeatures
 				
 		for (ItemStack is : inv.getContents()) {
 			
-			if ( is.getData() != null && is.getData().getItemType() != null ) {
-				
-				if (is != null && is.getData().getItemType().compareTo( source ) == 0 ) {
-					count += is.getAmount();
-				}
+			if ( is != null && is.getType() != null && is.getType().compareTo( source ) == 0 ) {
+				count += is.getAmount();
 			}
 		}
 		return count;
@@ -999,17 +1006,20 @@ public class AutoManagerFeatures
 		}
 		
 		if ( damage > 0 ) {
-			short maxDurability = itemInHand.getType().getMaxDurability();
-			short durability = itemInHand.getDurability();
+			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			
+			int maxDurability = compat.getDurabilityMax( itemInHand );
+			
+			int durability = compat.getDurability( itemInHand );;
 			
 			int newDurability = durability + damage;
 			
 			if ( newDurability > maxDurability ) {
 				// Item breaks! ;(
-				SpigotPrison.getInstance().getCompatibility().breakItemInMainHand( player );
+				compat.breakItemInMainHand( player );
 	        } 
 			else {
-				itemInHand.setDurability( (short) newDurability );
+				compat.setDurability( itemInHand, newDurability );
 			}
 			
 			player.updateInventory();
@@ -1292,6 +1302,7 @@ public class AutoManagerFeatures
 	 * @param itemInHand
 	 * @param drops
 	 */
+	@SuppressWarnings( "unused" )
 	private void calculateSilkTouch( ItemStack itemInHand, Collection<ItemStack> drops ) {
 		
 		for ( ItemStack itemStack : drops ) {

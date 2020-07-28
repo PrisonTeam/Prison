@@ -28,8 +28,12 @@ import org.bukkit.inventory.ItemStack;
 /**
  * @author Faizaan A. Datoo
  */
-public class Spigot18 implements Compatibility {
+public class Spigot18 
+	extends Spigot18Blocks 
+	implements Compatibility {
 
+	
+	
     @Override 
     public EquipmentSlot getHand(PlayerInteractEvent e) {
         return EquipmentSlot.HAND; // Spigot 1.8 only has one hand

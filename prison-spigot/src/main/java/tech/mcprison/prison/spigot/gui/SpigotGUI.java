@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.gui.Button;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
 import java.util.HashMap;
@@ -67,10 +68,9 @@ public class SpigotGUI implements GUI {
         return this;
     }
 
-    @SuppressWarnings( "deprecation" )
 	private ItemStack buttonToItemStack(Button button) {
-        ItemStack stack =
-            new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
+        ItemStack stack = SpigotUtil.getItemStack( button.getItem(), 1 );
+//            new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + button.getName()));
         meta.setLore(button.getLore());

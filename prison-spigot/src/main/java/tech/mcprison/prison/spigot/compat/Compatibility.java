@@ -19,9 +19,14 @@
 package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.util.BlockType;
 
 /**
  * Different Spigot versions have different methods.
@@ -30,7 +35,20 @@ import org.bukkit.inventory.ItemStack;
  * @author Faizaan A. Datoo
  */
 public interface Compatibility {
+	
+	public BlockType getBlockType(Block spigotBlock);
+	
+	public XMaterial getXMaterial( Block spigotBlock );
+	
+	public XMaterial getXMaterial( BlockType blockType );
 
+	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
+	
+	public BlockType getBlockType( ItemStack spigotStack );
+	
+	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock );
+	
+	
     public EquipmentSlot getHand(PlayerInteractEvent e);
 
     public ItemStack getItemInMainHand(PlayerInteractEvent e);
@@ -45,5 +63,10 @@ public interface Compatibility {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
     }
 
-
+    public int getDurabilityMax( ItemStack itemInHand );
+	
+	public int getDurability( ItemStack itemInHand );
+	
+	public void setDurability( ItemStack itemInHand, int newDurability );
+	
 }

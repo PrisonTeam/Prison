@@ -4,6 +4,10 @@ version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://mc-prison.tech
 softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, GemsEconomy]
+
+# Older versions than 1.13 will ignore this, but this will allow 1.13 and up to use newer block types?
+api-version: 1.13
+
 commands:
   prisonmanager:
     description: Call a fancy GUI where manage the ranks and mines

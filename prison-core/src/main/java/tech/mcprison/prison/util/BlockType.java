@@ -18,7 +18,9 @@
 
 package tech.mcprison.prison.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +29,19 @@ import tech.mcprison.prison.Prison;
 
 
 /**
- * All of the blocks in the game.
+ * <p>All of the blocks in the game.
+ * </p>
+ * 
+ * <p>The new field altNames contains a list of String values that will help
+ * XMaterial map these types to valid Material types.  These are spigot version
+ * Dependent, so some blocks may have different altNames for different spigot 
+ * versions.
+ * </p>
+ * 
+ * <p>XMaterial support for spigot 1.8.8:
+ * 		MOSS_STONE = mossy_cobblestone,  LAPIS_LAZULI_ORE = "lapis_ore",  
+ * 		LAPIS_LAZULI_BLOCK = "lapis_block",  PILLAR_QUARTZ_BLOCK = "quartz_pillar"
+ *  </p>
  *
  * @author Faizaan A. Datoo
  * @author Camouflage100
@@ -45,6 +59,8 @@ public enum BlockType {
 	 */
 	
 	IGNORE( MaterialType.BLOCK ),
+	NULL_BLOCK( MaterialType.INVALID ),
+	
 	
     // This was auto-generated from WorldEdit's blocks.json
     // @formatter:off
@@ -97,8 +113,10 @@ public enum BlockType {
 	SPONGE( 19, "minecraft:sponge", 0, MaterialType.BLOCK ),
 	WET_SPONGE( 19, "minecraft:sponge", 1, MaterialType.BLOCK ),
 	GLASS( 20, "minecraft:glass", 0, MaterialType.BLOCK ),
+	
 	LAPIS_LAZULI_ORE( 21, "minecraft:lapis_ore", 0, MaterialType.BLOCK ),
 	LAPIS_LAZULI_BLOCK( 22, "minecraft:lapis_block", 0, MaterialType.BLOCK ),
+	
 	DISPENSER( 23, "minecraft:dispenser", 0, MaterialType.BLOCK ),
 	SANDSTONE( 24, "minecraft:sandstone", 0, MaterialType.BLOCK ),
 	CHISELED_SANDSTONE( 24, "minecraft:sandstone", 1, MaterialType.BLOCK ),
@@ -312,7 +330,9 @@ public enum BlockType {
 	HOPPER( 154, "minecraft:hopper", 0, MaterialType.BLOCK ),
 	QUARTZ_BLOCK( 155, "minecraft:quartz_block", 0, MaterialType.BLOCK ),
 	CHISELED_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 1, MaterialType.BLOCK ),
-	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK ),
+	
+	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK, "quartz_pillar" ),
+	
 	QUARTZ_STAIRS( 156, "minecraft:quartz_stairs", 0, MaterialType.BLOCK ),
 	ACTIVATOR_RAIL( 157, "minecraft:activator_rail", 0, MaterialType.BLOCK ),
 	DROPPER( 158, "minecraft:dropper", 0, MaterialType.BLOCK ),
@@ -528,11 +548,15 @@ public enum BlockType {
 	PUFFERFISH( 349, "minecraft:fish", 3 ),
 	COOKED_FISH( 350, "minecraft:cooked_fish", 0 ),
 	COOKED_SALMON( 350, "minecraft:cooked_fish", 1 ),
+	
 	INK_SACK( 351, "minecraft:dye", 0 ),
 	ROSE_RED( 351, "minecraft:dye", 1 ),
 	CACTUS_GREEN( 351, "minecraft:dye", 2 ),
 	COCO_BEANS( 351, "minecraft:dye", 3 ),
+	
+	// NOTE: May actually be minecraft:ink_sack which is what XMaterial uses?
 	LAPIS_LAZULI( 351, "minecraft:dye", 4 ),
+	
 	PURPLE_DYE( 351, "minecraft:dye", 5 ),
 	CYAN_DYE( 351, "minecraft:dye", 6 ),
 	LIGHT_GRAY_DYE( 351, "minecraft:dye", 7 ),
@@ -544,6 +568,8 @@ public enum BlockType {
 	MAGENTA_DYE( 351, "minecraft:dye", 13 ),
 	ORANGE_DYE( 351, "minecraft:dye", 14 ),
 	BONE_MEAL( 351, "minecraft:dye", 15 ),
+	
+	
 	BONE( 352, "minecraft:bone", 0 ),
 	SUGAR( 353, "minecraft:sugar", 0 ),
 	CAKE( 354, "minecraft:cake", 0 ),
@@ -719,6 +745,8 @@ public enum BlockType {
     private final short data;
     private final MaterialType materialType;
     private final MaterialVersion materialVersion;
+    
+    private final List<String> altNames;
 
     BlockType(int legacyId, String id, int data, MaterialType materialType) {
     	this.legacyId = legacyId;
@@ -726,7 +754,20 @@ public enum BlockType {
     	this.data = (short) data;
     	this.materialType = materialType;
     	this.materialVersion = MaterialVersion.v1_8;
+    	
+    	this.altNames = new ArrayList<>();
     }
+    
+    
+    BlockType(int legacyId, String id, int data, MaterialType materialType, String... altNames) {
+    	this( legacyId, id, data, materialType );
+    	
+    	for ( String altName : altNames ) {
+			this.altNames.add( altName );
+		}
+    }
+    
+    
     
     BlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
     	this.legacyId = -1;
@@ -734,6 +775,8 @@ public enum BlockType {
     	this.data = 0;
     	this.materialType = materialType;
     	this.materialVersion = materialVersion;
+
+    	this.altNames = new ArrayList<>();
     }
     
     BlockType(MaterialType materialType) {
@@ -748,6 +791,41 @@ public enum BlockType {
     	this(legacyId, id, data, MaterialType.NOT_SET);
     }
 
+    /**
+     * <p>This function is for legacy versions of spigot that
+     * uses the data value.  This function will returns a 
+     * string value of a material name that
+     * XMaterial will be able to use to look up the correct 
+     * bukkit material type.
+     * </p>
+     * 
+     * <p>The way it needs to be constructed, is by taking the id, 
+     * dropping the "minecraft:" prefix, then if data is non-zero, 
+     * add a colon and the value of data.
+     * </p>
+     * 
+     * 
+     * @return
+     */
+    public String getXMaterialNameLegacy() {
+    	String xMatName = getId().replace( "minecraft:", "" ) +
+    			( getData() > 0 ? ":" + getData() : "" );
+    	return xMatName;
+    }
+    
+    /**
+     * <p>This function will return the lower case name of the BlockType.
+     * This should match  
+     * @return
+     */
+    public String getXMaterialName() {
+    	return name().toLowerCase();
+    }
+    
+    public List<String> getXMaterialAltNames() {
+    	return getAltNames();
+    }
+    
     public static BlockType getBlock(int legacyId) {
         return getBlock(legacyId, (short) 0);
     }
@@ -865,6 +943,10 @@ public enum BlockType {
 
 	public MaterialVersion getMaterialVersion() {
 		return materialVersion;
+	}
+	
+	public List<String> getAltNames() {
+		return altNames;
 	}
 
 	@Override public String toString() {

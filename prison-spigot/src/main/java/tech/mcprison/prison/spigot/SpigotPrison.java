@@ -50,8 +50,12 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.*;
+import tech.mcprison.prison.spigot.commands.PrestigesCommands;
+import tech.mcprison.prison.spigot.commands.PrestigesPrestigeCommand;
+import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
@@ -194,6 +198,9 @@ public class SpigotPrison extends JavaPlugin {
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );
 		
+		// Temp: Remove before finalizing version:
+		SpigotUtil.testAllPrisonBlockTypes();
+		
 		Output.get().logInfo( "Prison - Finished loading." );
 		
     }
@@ -324,9 +331,13 @@ public class SpigotPrison extends JavaPlugin {
     	
     	if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
             compatibility = new Spigot18();
-        } else {
+        } 
+    	else if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") < 0 ) {
             compatibility = new Spigot19();
         }
+    	else {
+    		compatibility = new Spigot113();
+    	}
 
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }

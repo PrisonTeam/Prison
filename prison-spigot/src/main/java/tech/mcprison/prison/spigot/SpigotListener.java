@@ -90,9 +90,11 @@ public class SpigotListener implements Listener {
 
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
+        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
-                BlockType.getBlock(e.getBlock().getTypeId()),
+            		blockType,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
         Prison.get().getEventBus().post(event);
@@ -101,9 +103,11 @@ public class SpigotListener implements Listener {
 
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
+        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(
-                BlockType.getBlock(e.getBlock().getTypeId()),
+            		blockType,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);

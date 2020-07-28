@@ -37,14 +37,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Openable;
 import org.bukkit.plugin.Plugin;
+
+import com.cryptomorin.xseries.XBlock;
+import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
@@ -327,7 +327,8 @@ class SpigotPlatform implements Platform {
         return new SpigotGUI(title, numRows);
     }
 
-    public void toggleDoor(Location doorLocation) {
+//    @SuppressWarnings( "deprecation" )
+	public void toggleDoor(Location doorLocation) {
         org.bukkit.Location bLoc =
             new org.bukkit.Location(Bukkit.getWorld(doorLocation.getWorld().getName()),
                 doorLocation.getX(), doorLocation.getY(), doorLocation.getZ());
@@ -336,12 +337,17 @@ class SpigotPlatform implements Platform {
             return;
         }
 
-        BlockState state = block.getState();
-        Openable openable = (Openable) state.getData();
-        openable.setOpen(!openable.isOpen());
-        state.setData((MaterialData) openable);
-        state.update();
-        plugin.compatibility.playIronDoorSound(block.getLocation());
+        boolean isOpen = XBlock.isOpen( block );
+        XBlock.setOpened( block, !isOpen );
+        
+//        BlockState state = block.getState();
+//        Openable openable = (Openable) state.getData();
+//        openable.setOpen(!openable.isOpen());
+//        state.setData((MaterialData) openable);
+//        state.update();
+        
+        SpigotPrison.getInstance().getCompatibility()
+        					.playIronDoorSound(block.getLocation());
     }
 
     @Override public void log(String message, Object... format) {
@@ -390,10 +396,12 @@ class SpigotPlatform implements Platform {
         return builder.build().text();
     }
 
-    @SuppressWarnings( "deprecation" )
+//    @SuppressWarnings( "deprecation" )
 	@Override public void showTitle(Player player, String title, String subtitle, int fade) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
-        play.sendTitle(title, subtitle);
+//        play.sendTitle(title, subtitle);
+        
+        Titles.sendTitle( play, title, subtitle );
     }
 
     @Override public void showActionBar(Player player, String text, int duration) {

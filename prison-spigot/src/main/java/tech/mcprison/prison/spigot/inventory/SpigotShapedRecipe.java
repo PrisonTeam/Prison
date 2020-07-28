@@ -18,13 +18,15 @@
 
 package tech.mcprison.prison.spigot.inventory;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Material;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.inventory.ShapedRecipe;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by DMP9 on 04/02/2017.
@@ -48,8 +50,10 @@ public class SpigotShapedRecipe extends SpigotRecipe implements ShapedRecipe {
     }
 
     @Override public ShapedRecipe setIngredient(char key, BlockType ingredient) {
+    	Material mat = SpigotUtil.getMaterial( ingredient );
+    	
         ((org.bukkit.inventory.ShapedRecipe) getWrapper())
-            .setIngredient(key, SpigotUtil.blockTypeToMaterial(ingredient));
+            .setIngredient(key, mat);
         return this;
     }
 

@@ -29,9 +29,13 @@ repositories {
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+    
+    maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
   //  maven { url = 'https://maven.enginehub.org/repo/' }
     jcenter()
 }
+
+
 
 dependencies {
     implementation project(':prison-core')
@@ -44,13 +48,17 @@ dependencies {
     
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
+    
+    
+	implementation 'com.github.cryptomorin:XSeries:6.3.2.1'
+
 
 	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
 //    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
 	// 1.12.2-R0.1-SNAPSHOT works well:
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 	// 1.13.2 fails since deprecated functions have been removed.
-//    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
     
     
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
@@ -88,6 +96,7 @@ shadowJar {
         include(dependency('org.bstats:bstats-bukkit:1.5'))
         include(dependency('me.clip:placeholderapi:2.9.1'))
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
+        include(dependency('com.github.cryptomorin:XSeries:6.3.2.1'))
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
