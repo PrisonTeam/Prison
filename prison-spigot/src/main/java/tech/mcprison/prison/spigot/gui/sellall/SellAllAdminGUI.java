@@ -32,10 +32,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         if (conf.getConfigurationSection("Items") == null){
             p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
-            if (p.getOpenInventory() != null){
-                p.closeInventory();
-                return;
-            }
+            p.closeInventory();
             return;
         }
 
@@ -45,8 +42,8 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
-        if (dimension < 9){
-            p.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThere aren't items! An empty GUI's useless."));
+        if (dimension > 54){
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManySellAllItems")));
             return;
         }
 

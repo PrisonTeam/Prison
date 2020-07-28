@@ -16,7 +16,7 @@ public class SellAllConfig {
 
     public SellAllConfig(){
 
-        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equals("true")){
+        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
             return;
         }
 

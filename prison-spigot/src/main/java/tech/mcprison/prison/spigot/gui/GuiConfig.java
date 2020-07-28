@@ -20,265 +20,151 @@ public class GuiConfig {
             return;
         }
 
-        // Get array class with Path and Objects strings
-        String[] path = getPath();
-        String[] object = getObject();
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
-        // Call a method, this makes a new file or update the old one
-        fileChecker(path, object, file);
+        // Everything's here
+        values();
 
         // Get the final config
         conf = YamlConfiguration.loadConfiguration(file);
     }
 
-    // Check the config and makes a new one or update it
-    private void fileChecker(String[] path, String[] object, File file) {
+    private void dataConfig(String path, String string){
+
+        // Filepath
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+
         // Check if the config exists
         if(!file.exists()){
-            // Call method
-            newFile(path, object, file);
+            try {
+                file.createNewFile();
+                conf = YamlConfiguration.loadConfiguration(file);
+                conf.set(path, SpigotPrison.format(string));
+                conf.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
-            // Call method
-            fileUpdater(path, object, file);
-        }
-    }
-
-    // Check if something's missing and update the config
-    private void fileUpdater(String[] path, String[] object, File file) {
-        try {
-            conf = YamlConfiguration.loadConfiguration(file);
-            for (int i = 0; path.length > i; i++) {
-                if (getFileGuiConfig().getString(path[i]) == null){
-                    conf.set(path[i], SpigotPrison.format(object[i]));
+            try {
+                conf = YamlConfiguration.loadConfiguration(file);
+                if (getFileGuiConfig().getString(path) == null){
+                    conf.set(path, SpigotPrison.format(string));
                 }
+                conf.save(file);
+            } catch (IOException e2){
+                e2.printStackTrace();
             }
-            conf.save(file);
-        } catch (IOException e2){
-            e2.printStackTrace();
         }
+
+        // Get the final config
+        conf = YamlConfiguration.loadConfiguration(file);
+
+
     }
 
-    // Make a new config if missing
-    private void newFile(String[] path, String[] object, File file) {
-        try {
-            file.createNewFile();
-            conf = YamlConfiguration.loadConfiguration(file);
-            for(int i = 0; path.length>i; i++){
-                conf.set(path[i], SpigotPrison.format(object[i]));
-            }
-            conf.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String[] getObject() {
-        return new String[]{
-                "true",
-                "false",
-                "prison.gui.ranks",
-                "true",
-                "false",
-                "prison.gui.mines",
-                "true",
-                "false",
-                "prison.gui.prestiges",
-                "default",
-                "TRIPWIRE_HOOK",
-                "REDSTONE_BLOCK",
-                "true",
-                "mines.tp.",
-                "mines tp",
-                "&8Activate Within mode.",
-                "&8Activate Radius mode.",
-                "&8AutoPickup Manager.",
-                "&8AutoSmelt Manager.",
-                "&8AutoBlock Manager.",
-                "&3BlockType: ",
-                "&3Blocks:",
-                "&8Manage blocks of the Mine.",
-                "&8Click to choose.",
-                "&8Click to confirm.",
-                "&8Click to cancel.",
-                "&8Click to decrease.",
-                "&8Click to increase.",
-                "&8Manage this rank.",
-                "&8Manage RankUPCommands.",
-                "&8Click to open.",
-                "&8Click to teleport.",
-                "&8Click to use.",
-                "&8Click to rankup",
-                "&3Chance: ",
-                "&3Command: &7",
-                "&3The Rank ",
-                " contains no commands.",
-                "&8Disable notifications.",
-                "&aAll features ON",
-                "&aAll features OFF",
-                "&aFull Inv., notify with sound ON",
-                "&cFull Inv., notify with sound OFF",
-                "&aFull Inv., notify with hologram ON",
-                "&cFull Inv., notify with hologram OFF",
-                "&3Rank id: &7",
-                "&8&l|&3Info&8|",
-                "&8If you have enough money",
-                "&8There're &3",
-                " &3Commands at ladder:",
-                "&aLeft-Click to confirm.",
-                "&8Left Click to open.",
-                "&aLeft Click to reset",
-                "&8Manage the reset time of Mine.",
-                "&8Mines GUI manager.",
-                "&3Rank Name: &7",
-                "&8Edit Mines notifications.",
-                "&3Players at rank: &7",
-                "&3Price: &a$",
-                "&8Price: &a$",
-                "&3Rank Price: &a$",
-                "&8Prison Tasks Manager.",
-                "&3Reset time(s): &7",
-                "&8Radius: ",
-                "&8&l|&3RankUPCommands&8| &8&l- &3",
-                "&aRankup",
-                "&8Ranks GUI manager.",
-                "&8Resets the mine.",
-                "&cRight-Click to cancel.",
-                "&aRight click to enable",
-                "&cRight click to toggle",
-                "&3Spawnpoint: &7",
-                "&8Status: &cLocked",
-                "&8Status: &aUnlocked",
-                "&8Set the mine spawn point.",
-                "&3Size of Mine: &7",
-                "&3Selected",
-                "&cShift + Right click to delete.",
-                "&cShift + Right click to disable",
-                "&cShift + Right click to toggle",
-                "&8Enabled",
-                "&8Disabled",
-                "&8Skip the reset if ",
-                "&8not enough blocks ",
-                "&8have been mined.",
-                "&8Tp to the mine.",
-                "&3Tag: &8",
-                "&3Rank Tag: &7",
-                "&8Time: ",
-                "&3Volume: &7",
-                "&3World: &7",
-                "&cSorry, the GUI looks empty.",
-                "&cSorry, but there're too many Blocks and the max's 54 for the GUI",
-                "&cSorry, but there're too many ladders and the max's 54 for the GUI",
-                "&cSorry, but there're too many mines and the max's 54 for the GUI",
-                "&cSorry, but there're too many RankupCommands and the max's 54 for the GUI",
-                "&8Set a mine's delay ",
-                "&8before reset when it ",
-                "&8reaches zero blocks."};
-    }
-
-    private String[] getPath() {
-        return new String[]{
-                "Options.Ranks.GUI_Enabled",
-                "Options.Ranks.Permission_GUI_Enabled",
-                "Options.Ranks.Permission_GUI",
-                "Options.Mines.GUI_Enabled",
-                "Options.Mines.Permission_GUI_Enabled",
-                "Options.Mines.Permission_GUI",
-                "Options.Prestiges.GUI_Enabled",
-                "Options.Prestiges.Permission_GUI_Enabled",
-                "Options.Prestiges.Permission_GUI",
-                "Options.Ranks.Ladder",
-                "Options.Ranks.Item_gotten_rank",
-                "Options.Ranks.Item_not_gotten_rank",
-                "Options.Ranks.Enchantment_effect_current_rank",
-                "Options.Mines.PermissionWarpPlugin",
-                "Options.Mines.CommandWarpPlugin",
-                "Gui.Lore.ActivateWithinMode",
-                "Gui.Lore.ActivateRadiusMode",
-                "Gui.Lore.AutoPickupGuiManager",
-                "Gui.Lore.AutoSmeltGuiManager",
-                "Gui.Lore.AutoBlockGuiManager",
-                "Gui.Lore.BlockType",
-                "Gui.Lore.Blocks",
-                "Gui.Lore.Blocks2",
-                "Gui.Lore.ClickToChoose",
-                "Gui.Lore.ClickToConfirm",
-                "Gui.Lore.ClickToCancel",
-                "Gui.Lore.ClickToDecrease",
-                "Gui.Lore.ClickToIncrease",
-                "Gui.Lore.ClickToManageRank",
-                "Gui.Lore.ClickToManageCommands",
-                "Gui.Lore.ClickToOpen",
-                "Gui.Lore.ClickToTeleport",
-                "Gui.Lore.ClickToUse",
-                "Gui.Lore.ClickToRankup",
-                "Gui.Lore.Chance",
-                "Gui.Lore.Command",
-                "Gui.Lore.ContainsTheRank",
-                "Gui.Lore.ContainsNoCommands",
-                "Gui.Lore.DisableNotifications",
-                "Gui.Lore.EnabledAll",
-                "Gui.Lore.DisabledAll",
-                "Gui.Lore.FullSoundEnabled",
-                "Gui.Lore.FullSoundDisabled",
-                "Gui.Lore.FullHologramEnabled",
-                "Gui.Lore.FullHologramDisabled",
-                "Gui.Lore.Id",
-                "Gui.Lore.Info",
-                "Gui.Lore.IfYouHaveEnoughMoney",
-                "Gui.Lore.LadderThereAre",
-                "Gui.Lore.LadderCommands",
-                "Gui.Lore.LeftClickToConfirm",
-                "Gui.Lore.LeftClickToOpen",
-                "Gui.Lore.LeftClickToReset",
-                "Gui.Lore.ManageResetTime",
-                "Gui.Lore.MinesButton",
-                "Gui.Lore.Name",
-                "Gui.Lore.Notifications",
-                "Gui.Lore.PlayersWithTheRank",
-                "Gui.Lore.Price",
-                "Gui.Lore.Price2",
-                "Gui.Lore.Price3",
-                "Gui.Lore.PrisonTasksButton",
-                "Gui.Lore.ResetTime",
-                "Gui.Lore.Radius",
-                "Gui.Lore.RankupCommands",
-                "Gui.Lore.Rankup",
-                "Gui.Lore.RanksButton",
-                "Gui.Lore.ResetButton",
-                "Gui.Lore.RightClickToCancel",
-                "Gui.Lore.RightClickToEnable",
-                "Gui.Lore.RightClickToToggle",
-                "Gui.Lore.SpawnPoint",
-                "Gui.Lore.StatusLockedMine",
-                "Gui.Lore.StatusUnlockedMine",
-                "Gui.Lore.SpawnPoint2",
-                "Gui.Lore.SizeOfMine",
-                "Gui.Lore.Selected",
-                "Gui.Lore.ShiftAndRightClickToDelete",
-                "Gui.Lore.ShiftAndRightClickToDisable",
-                "Gui.Lore.ShiftAndRightClickToToggle",
-                "Gui.Lore.StatusEnabled",
-                "Gui.Lore.StatusDisabled",
-                "Gui.Lore.SkipReset1",
-                "Gui.Lore.SkipReset2",
-                "Gui.Lore.SkipReset3",
-                "Gui.Lore.Tp",
-                "Gui.Lore.Tag",
-                "Gui.Lore.Tag2",
-                "Gui.Lore.Time",
-                "Gui.Lore.Volume",
-                "Gui.Lore.World",
-                "Gui.Message.EmptyGui",
-                "Gui.Message.TooManyBlocks",
-                "Gui.Message.TooManyLadders",
-                "Gui.Message.TooManyMines",
-                "Gui.Message.TooManyRankupCommands",
-                "Gui.Message.ZeroBlocksReset1",
-                "Gui.Message.ZeroBlocksReset2",
-                "Gui.Message.ZeroBlocksReset3",
-        };
+    private void values(){
+        dataConfig("Options.Ranks.GUI_Enabled","true");
+        dataConfig("Options.Ranks.Permission_GUI_Enabled","false");
+        dataConfig("Options.Ranks.Permission_GUI","prison.gui.ranks");
+        dataConfig("Options.Mines.GUI_Enabled","true");
+        dataConfig("Options.Mines.Permission_GUI_Enabled","false");
+        dataConfig("Options.Mines.Permission_GUI","prison.gui.mines");
+        dataConfig("Options.Prestiges.GUI_Enabled","true");
+        dataConfig("Options.Prestiges.Permission_GUI_Enabled","false");
+        dataConfig("Options.Prestiges.Permission_GUI","prison.gui.prestiges");
+        dataConfig("Options.Ranks.Ladder","default");
+        dataConfig("Options.Ranks.Item_gotten_rank","TRIPWIRE_HOOK");
+        dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
+        dataConfig("Options.Ranks.Enchantment_effect_current_rank","true");
+        dataConfig("Options.Mines.PermissionWarpPlugin","mines.tp.");
+        dataConfig("Options.Mines.CommandWarpPlugin","mines tp");
+        dataConfig("Gui.Lore.ActivateWithinMode","&8Activate Within mode.");
+        dataConfig("Gui.Lore.ActivateRadiusMode","&8Activate Radius mode.");
+        dataConfig("Gui.Lore.AutoPickupGuiManager","&8AutoPickup Manager.");
+        dataConfig("Gui.Lore.AutoSmeltGuiManager","&8AutoSmelt Manager.");
+        dataConfig("Gui.Lore.AutoBlockGuiManager","&8AutoBlock Manager.");
+        dataConfig("Gui.Lore.BlockType","&3BlockType: ");
+        dataConfig("Gui.Lore.Blocks","&3Blocks:");
+        dataConfig("Gui.Lore.Blocks2","&8Manage blocks of the Mine.");
+        dataConfig("Gui.Lore.ClickToChoose","&8Click to choose.");
+        dataConfig("Gui.Lore.ClickToConfirm","&8Click to confirm.");
+        dataConfig("Gui.Lore.ClickToCancel","&8Click to cancel.");
+        dataConfig("Gui.Lore.ClickToDecrease","&8Click to decrease.");
+        dataConfig("Gui.Lore.ClickToIncrease","&8Click to increase.");
+        dataConfig("Gui.Lore.ClickToManageRank","&8Manage this rank.");
+        dataConfig("Gui.Lore.ClickToManageCommands","&8Manage RankUPCommands.");
+        dataConfig("Gui.Lore.ClickToOpen","&8Click to open.");
+        dataConfig("Gui.Lore.ClickToTeleport","&8Click to teleport.");
+        dataConfig("Gui.Lore.ClickToUse","&8Click to use.");
+        dataConfig("Gui.Lore.ClickToRankup","&8Click to rankup");
+        dataConfig("Gui.Lore.Chance","&3Chance: ");
+        dataConfig("Gui.Lore.Command","&3Command: &7");
+        dataConfig("Gui.Lore.ContainsTheRank","&3The Rank ");
+        dataConfig("Gui.Lore.ContainsNoCommands"," &3contains no commands.");
+        dataConfig("Gui.Lore.DisableNotifications","&8Disable notifications.");
+        dataConfig("Gui.Lore.EnabledAll","&aAll features ON");
+        dataConfig("Gui.Lore.DisabledAll","&aAll features OFF");
+        dataConfig("Gui.Lore.FullSoundEnabled","&aFull Inv., notify with sound ON");
+        dataConfig("Gui.Lore.FullSoundDisabled","&cFull Inv., notify with sound OFF");
+        dataConfig("Gui.Lore.FullHologramEnabled","&aFull Inv., notify with hologram ON");
+        dataConfig("Gui.Lore.FullHologramDisabled","&cFull Inv., notify with hologram OFF");
+        dataConfig("Gui.Lore.Id","&3Rank id: &7");
+        dataConfig("Gui.Lore.Info","&8&l|&3Info&8|");
+        dataConfig("Gui.Lore.IfYouHaveEnoughMoney","&8If you have enough money");
+        dataConfig("Gui.Lore.LadderThereAre","&8There're &3");
+        dataConfig("Gui.Lore.LadderCommands"," &3Commands at ladder:");
+        dataConfig("Gui.Lore.LeftClickToConfirm","&aLeft-Click to confirm.");
+        dataConfig("Gui.Lore.LeftClickToOpen","&8Left Click to open.");
+        dataConfig("Gui.Lore.LeftClickToReset","&aLeft Click to reset");
+        dataConfig("Gui.Lore.ManageResetTime","&8Manage the reset time of Mine.");
+        dataConfig("Gui.Lore.MinesButton","&8Mines GUI manager.");
+        dataConfig("Gui.Lore.Name","&3Rank Name: &7");
+        dataConfig("Gui.Lore.Notifications","&8Edit Mines notifications.");
+        dataConfig("Gui.Lore.PlayersWithTheRank","&3Players at rank: &7");
+        dataConfig("Gui.Lore.Price","&3Price: &a$");
+        dataConfig("Gui.Lore.Price2","&8Price: &a$");
+        dataConfig("Gui.Lore.Price3","&3Rank Price: &a$");
+        dataConfig("Gui.Lore.PrisonTasksButton","&8Prison Tasks Manager.");
+        dataConfig("Gui.Lore.ResetTime","&3Reset time(s): &7");
+        dataConfig("Gui.Lore.Radius","&8Radius: ");
+        dataConfig("Gui.Lore.RankupCommands","&8&l|&3RankUPCommands&8| &8&l- &3");
+        dataConfig("Gui.Lore.Rankup","&aRankup");
+        dataConfig("Gui.Lore.RanksButton","&8Ranks GUI manager.");
+        dataConfig("Gui.Lore.ResetButton","&8Resets the mine.");
+        dataConfig("Gui.Lore.RightClickToCancel","&cRight-Click to cancel.");
+        dataConfig("Gui.Lore.RightClickToEnable","&aRight click to enable");
+        dataConfig("Gui.Lore.RightClickToToggle","&cRight click to toggle");
+        dataConfig("Gui.Lore.SpawnPoint","&3Spawnpoint: &7");
+        dataConfig("Gui.Lore.StatusLockedMine","&8Status: &cLocked");
+        dataConfig("Gui.Lore.StatusUnlockedMine","&8Status: &aUnlocked");
+        dataConfig("Gui.Lore.SpawnPoint2","&8Set the mine spawn point.");
+        dataConfig("Gui.Lore.SizeOfMine","&3Size of Mine: &7");
+        dataConfig("Gui.Lore.Selected","&3Selected");
+        dataConfig("Gui.Lore.ShiftAndRightClickToDelete","&cShift + Right click to delete.");
+        dataConfig("Gui.Lore.ShiftAndRightClickToDisable","&cShift + Right click to disable");
+        dataConfig("Gui.Lore.ShiftAndRightClickToToggle","&cShift + Right click to toggle");
+        dataConfig("Gui.Lore.StatusEnabled","&8Enabled");
+        dataConfig("Gui.Lore.StatusDisabled","&8Disabled");
+        dataConfig("Gui.Lore.SkipReset1","&8Skip the reset if ");
+        dataConfig("Gui.Lore.SkipReset2","&8not enough blocks ");
+        dataConfig("Gui.Lore.SkipReset3","&8have been mined.");
+        dataConfig("Gui.Lore.Tp","&8Tp to the mine.");
+        dataConfig("Gui.Lore.Tag","&3Tag: &8");
+        dataConfig("Gui.Lore.Tag2","&3Rank Tag: &7");
+        dataConfig("Gui.Lore.Time","&8Time: ");
+        dataConfig("Gui.Lore.Volume","&3Volume: &7");
+        dataConfig("Gui.Lore.Value", "&3Value: &a$");
+        dataConfig("Gui.Lore.World","&3World: &7");
+        dataConfig("Gui.Message.EmptyGui","&cSorry, the GUI looks empty.");
+        dataConfig("Gui.Message.TooManyBlocks","&cSorry, but there're too many Blocks and the max's 54 for the GUI");
+        dataConfig("Gui.Message.TooManyLadders","&cSorry, but there're too many ladders and the max's 54 for the GUI");
+        dataConfig("Gui.Message.TooManyMines","&cSorry, but there're too many mines and the max's 54 for the GUI");
+        dataConfig("Gui.Message.TooManyRankupCommands","&cSorry, but there're too many RankupCommands and the max's 54 for the GUI");
+        dataConfig("Gui.Message.TooManySellAllItems", "&3[PRISON WARN] &cThere are too many items and the MAX for the GUI's 54!");
+        dataConfig("Gui.Message.ZeroBlocksReset1","&8Set a mine's delay ");
+        dataConfig("Gui.Message.ZeroBlocksReset2","&8before reset when it ");
+        dataConfig("Gui.Message.ZeroBlocksReset3","&8reaches zero blocks.");
     }
 
     public FileConfiguration getFileGuiConfig(){

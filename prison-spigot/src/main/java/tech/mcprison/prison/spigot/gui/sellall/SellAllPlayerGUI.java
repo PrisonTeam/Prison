@@ -31,10 +31,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
         if (conf.getConfigurationSection("Items") == null){
             p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
-            if (p.getOpenInventory() != null){
-                p.closeInventory();
-                return;
-            }
+            p.closeInventory();
             return;
         }
 
@@ -44,8 +41,8 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
-        if (dimension < 9){
-            p.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThere aren't items! An empty GUI's useless."));
+        if (dimension > 54){
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManySellAllItems")));
             return;
         }
 
@@ -53,7 +50,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    "&3value: &a$" + conf.getString("Items." + key + ".ITEM_VALUE")
+                    GuiConfig.getString("Gui.Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
             ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
