@@ -47,12 +47,15 @@ public class GuiConfig {
             }
         } else {
             try {
+                boolean newValue = false;
                 conf = YamlConfiguration.loadConfiguration(file);
                 if (getFileGuiConfig().getString(path) == null){
                     conf.set(path, SpigotPrison.format(string));
+                    newValue = true;
                 }
-                conf.save(file);
-            } catch (IOException e2){
+                if (newValue) {
+                    conf.save(file);
+                }            } catch (IOException e2){
                 e2.printStackTrace();
             }
         }

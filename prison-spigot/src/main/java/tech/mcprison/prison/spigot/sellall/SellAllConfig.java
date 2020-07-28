@@ -47,11 +47,15 @@ public class SellAllConfig {
             }
         } else {
             try {
+                boolean newValue = false;
                 conf = YamlConfiguration.loadConfiguration(file);
                     if (getFileSellAllConfig().getString(path) == null){
                         conf.set(path, SpigotPrison.format(string));
+                        newValue = true;
                     }
-                conf.save(file);
+                    if (newValue) {
+                        conf.save(file);
+                    }
             } catch (IOException e2){
                 e2.printStackTrace();
             }
@@ -59,7 +63,6 @@ public class SellAllConfig {
 
         // Get the final config
         conf = YamlConfiguration.loadConfiguration(file);
-
 
     }
 
