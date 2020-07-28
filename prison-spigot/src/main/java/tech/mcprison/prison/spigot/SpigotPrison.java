@@ -139,8 +139,8 @@ public class SpigotPrison extends JavaPlugin {
         
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+        
         new GuiConfig();
-        new SellAllConfig();
 
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
@@ -152,7 +152,14 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prestige").setExecutor(new PrestigesPrestigeCommand());
         getCommand("prestiges").setExecutor(new PrestigesCommands());
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
-        getCommand("sellall").setExecutor(new SellAllCommands());
+        
+        // Only register the command if not enabled so it will not conflict with other sellall plugins:
+        if ( SellAllCommands.isEnabled() ) {
+        	new SellAllConfig();
+        	
+        	getCommand("sellall").setExecutor(new SellAllCommands());
+        }
+        
         
         new SpigotListener(this).init();
 

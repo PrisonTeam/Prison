@@ -25,17 +25,21 @@ import java.util.Set;
  */
 public class SellAllCommands implements CommandExecutor {
 
+	public static boolean isEnabled() {
+		return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+	}
+	
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-        FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
-
-        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
+    	if (!isEnabled()){
             sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR]&c Sorry but the SellAll Feature's disabled in the config.yml"));
             return true;
         }
 
+    	File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+    	FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
+    	
         if (args.length == 0){
             if (sender.hasPermission("prison.admin") || sender.isOp()) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete"));
