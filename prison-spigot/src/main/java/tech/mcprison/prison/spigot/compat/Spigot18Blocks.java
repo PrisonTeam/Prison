@@ -111,6 +111,22 @@ public abstract class Spigot18Blocks
 				
 				results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
 				
+				if ( results == null ) {
+					results =  XMaterial.matchXMaterial( blockType.name() ).orElse( null );
+					
+					if ( results == null ) {
+						for ( String altName : blockType.getXMaterialAltNames() ) {
+							
+							results =  XMaterial.matchXMaterial( altName ).orElse( null );
+							
+							if ( results != null ) {
+								break;
+							}
+						}
+					}
+					
+				}
+				
 				putCachedXMaterial( blockType, (byte) data, results );
 			}
 
@@ -118,7 +134,44 @@ public abstract class Spigot18Blocks
 		
 		return results == NULL_TOKEN ? null : results;
 	}
+	
+//	public Material getMaterial( BlockType blockType ) {
+//		Material results = null;
+//		
+//		if ( blockType != null && blockType != BlockType.IGNORE ) {
+//			short data = blockType.getData();
+//			
+////			Material.bush
+////			
+////			Material.matchMaterial( name, legacyName )
+////			
+////			results = getCachedXMaterial( blockType, (byte) data );
+////			if ( results == null ) {
+////				
+////				results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
+////				
+////				if ( results == null ) {
+////					for ( String altName : blockType.getXMaterialAltNames() ) {
+////						
+////						results =  XMaterial.matchXMaterial( altName ).orElse( null );
+////						
+////						if ( results != null ) {
+////							break;
+////						}
+////					}
+////				}
+////				
+////				putCachedXMaterial( blockType, (byte) data, results );
+////			}
+//
+//		}
+//		
+//		return results == NULL_TOKEN ? null : results;
+//	}
 
+
+	
+	
 	
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
     	

@@ -150,7 +150,11 @@ public class SpigotUtil {
 					if ( sbNoMap.length() > 0 ) {
 						sbNoMap.append( " " );
 					}
-					sbNoMap.append( block.name() );
+					
+					Material mat = getMaterial( block );
+					
+					String bName = block.name() + (mat == null ? "" : "(" + mat.name() + ")");
+					sbNoMap.append( bName );
 				}
 				else if ( !xMat.isSupported() ) {
 					if ( sbNotSupported.length() > 0 ) {
@@ -168,9 +172,10 @@ public class SpigotUtil {
 			if ( xMat.isSupported() ) {
 				
 				Material mat = xMat.parseMaterial().orElse( null );
-				if ( mat != null && mat.isBlock() ) {
-					
-					supportedBlockCountXMaterial++;
+				if ( mat != null ) {
+					if ( mat.isBlock() ) {
+						supportedBlockCountXMaterial++;
+					}
 				}
 				else {
 					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: FAIL: XMaterial " + xMat.name() +
@@ -183,10 +188,30 @@ public class SpigotUtil {
 				"  Supported Prison Blocks: " + supportedBlockCountPrison +
 				"  Supported XMaterial Blocks: " + supportedBlockCountXMaterial );
 		
-		Output.get().logWarn( "###   Prison Blocks that cannot be Mapped to XMaterial: " + sbNoMap.toString() );
-		Output.get().logWarn( "###   Prison Blocks that are not supported with this version: " + sbNotSupported.toString() );
+		logTestBlocks( sbNoMap, "###   Prison Blocks no maps to XMaterial: " );
+		logTestBlocks( sbNotSupported, "###   Prison Blocks not supported with version: " );
+//		Output.get().logWarn( "###   Prison Blocks no maps to XMaterial: " + sbNoMap.toString() );
+//		Output.get().logWarn( "###   Prison Blocks not supported with version: " + sbNotSupported.toString() );
 	}
     
+	
+	private static void logTestBlocks( StringBuilder sb, String message ) {
+		
+		int start = 0;
+		int end = 150;
+		
+		while ( sb.length() > end ) {
+			end = sb.indexOf( " ", end );
+			Output.get().logWarn( message + 
+					(end < 0 ? sb.substring( start ) : sb.substring( start, end )));
+
+			start = end;
+			end += 150;
+		}
+		
+		Output.get().logWarn( message + sb.substring( start ));
+	}
+	
 //    @SuppressWarnings( "deprecation" )
 //	public static BlockType materialToBlockType(Material material) {
 //        return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
