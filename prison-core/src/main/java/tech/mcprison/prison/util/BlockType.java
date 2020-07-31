@@ -58,8 +58,8 @@ public enum BlockType {
 	 * of the Material.
 	 */
 	
-	IGNORE( MaterialType.BLOCK ),
-	NULL_BLOCK( MaterialType.INVALID ),
+	IGNORE( -1, "prison:ignore", -1, MaterialType.BLOCK ),
+	NULL_BLOCK( -2, "prison:null_block", -1, MaterialType.INVALID ),
 	
 	
     // This was auto-generated from WorldEdit's blocks.json
@@ -133,13 +133,15 @@ public enum BlockType {
 	SAND( 12, "minecraft:sand", 0, MaterialType.BLOCK ),
 	RED_SAND( 12, "minecraft:sand", 1, MaterialType.BLOCK ),
 	GRAVEL( 13, "minecraft:gravel", 0, MaterialType.BLOCK ),
-	GOLD_ORE( 14, "minecraft:gold_ore", 0, MaterialType.BLOCK  ),
-	IRON_ORE( 15, "minecraft:iron_ore", 0, MaterialType.BLOCK  ),
-	COAL_ORE( 16, "minecraft:coal_ore", 0, MaterialType.BLOCK  ),
+	GOLD_ORE( 14, "minecraft:gold_ore", 0, MaterialType.BLOCK ),
+	IRON_ORE( 15, "minecraft:iron_ore", 0, MaterialType.BLOCK ),
+	COAL_ORE( 16, "minecraft:coal_ore", 0, MaterialType.BLOCK ),
+
 	OAK_WOOD( 17, "minecraft:log", 0, MaterialType.BLOCK ),
 	SPRUCE_WOOD( 17, "minecraft:log", 1, MaterialType.BLOCK ),
 	BIRCH_WOOD( 17, "minecraft:log", 2, MaterialType.BLOCK ),
 	JUNGLE_WOOD( 17, "minecraft:log", 3, MaterialType.BLOCK ),
+	
 	OAK_LEAVES( 18, "minecraft:leaves", 0, MaterialType.BLOCK ),
 	SPRUCE_LEAVES( 18, "minecraft:leaves", 1, MaterialType.BLOCK ),
 	BIRCH_LEAVES( 18, "minecraft:leaves", 2, MaterialType.BLOCK ),
@@ -300,8 +302,12 @@ public enum BlockType {
 	MOSSY_STONE_BRICKS( 98, "minecraft:stonebrick", 1, MaterialType.BLOCK, "MOSSY_STONE_BRICKS" ),
 	CRACKED_STONE_BRICKS( 98, "minecraft:stonebrick", 2, MaterialType.BLOCK, "CRACKED_STONE_BRICKS" ),
 	CHISELED_STONE_BRICKS( 98, "minecraft:stonebrick", 3, MaterialType.BLOCK, "CHISELED_STONE_BRICKS" ),
+	
 	BROWN_MUSHROOM_BLOCK( 99, "minecraft:brown_mushroom_block", 0, MaterialType.BLOCK ),
+	HUGE_MUSHROOM_1( 99, "minecraft:brown_mushroom_block", 14, MaterialType.BLOCK ),
 	RED_MUSHROOM_BLOCK( 100, "minecraft:red_mushroom_block", 0, MaterialType.BLOCK ),
+	HUGE_MUSHROOM_2( 100, "minecraft:red_mushroom_block", 14, MaterialType.BLOCK ),
+	
 	IRON_BARS( 101, "minecraft:iron_bars", 0, MaterialType.BLOCK ),
 	GLASS_PANE( 102, "minecraft:glass_pane", 0, MaterialType.BLOCK ),
 	MELON_BLOCK( 103, "minecraft:melon_block", 0, MaterialType.BLOCK ),

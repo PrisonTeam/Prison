@@ -868,6 +868,16 @@ public abstract class MineReset
 							"Ensure world exists. mine= %s ", 
 							getName()  ));
 		}
+		else if ( getBlocks().size() == 1 && 
+				getBlocks().get( 0 ).getType() == BlockType.IGNORE && 
+				getBlocks().get( 0 ).getChance() == 100.0 ) {
+		
+			// This mine is set to ignore all blocks when trying to do a reset, 
+			// so for now ignore the types and just set air count to zero.
+			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
+			// not registered and tracked within prison, and hence will report incorrect errors.
+			setAirCount( 0 );
+		}
 		else {
 			long start = System.currentTimeMillis();
 			Optional<World> worldOptional = getWorld();

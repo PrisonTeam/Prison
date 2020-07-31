@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot18Blocks 
@@ -48,6 +49,15 @@ public abstract class Spigot18Blocks
 //						spigotBlock.getType().getKey().getNamespace() );
 
 				results = BlockType.getBlock(id, data);
+				
+				if ( results == null ) {
+					Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
+							"Spigot block cannot be mapped to a prison BlockType : " +
+							spigotBlock.getType().name() + 
+							" id = " + id + " data = " + data +
+							"  BlockType = " + ( results == null ? "null" : results.name()));
+					
+				}
 				
 				putCachedBlockType( spigotBlock, (byte) data, results );
 			}
