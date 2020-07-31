@@ -29,6 +29,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -343,15 +344,27 @@ public class AutoManagerFeatures
 
 	protected void autoSmelt( boolean autoSmelt, String sourceStr, String destinationStr, Player p, Block block  ) {
 		
-		Material source = Material.matchMaterial( sourceStr );
-		Material destination = Material.matchMaterial( destinationStr );
-		
-		if (autoSmelt && p.getInventory().contains(source)) {
-			int count = itemCount(source, p);
-			if ( count > 0 ) {
-				p.getInventory().removeItem(new ItemStack(source, count));
-				dropExtra( p.getInventory().addItem(new ItemStack(destination, count)), p, block );
+		if ( autoSmelt ) {
+			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
+			XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
+			
+			ItemStack sourceStack = source.parseItem();
+			ItemStack destStack = destination.parseItem();
+			
+			if ( sourceStack != null && destStack != null &&
+					 p.getInventory().containsAtLeast( sourceStack, 1 ) ) {
+				
+				int count = itemCount(source, p);
+				if ( count > 0 ) {
+					sourceStack.setAmount( count );
+					destStack.setAmount( count );
+					
+					p.getInventory().removeItem(sourceStack);
+					
+					dropExtra( p.getInventory().addItem(destStack), p, block );
+				}
 			}
+			
 		}
 	}
 	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr, Player p, Block block  ) {
@@ -360,119 +373,127 @@ public class AutoManagerFeatures
 	
 	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr, int targetCount, Player p, Block block  ) {
 		
-		Material source = Material.matchMaterial( sourceStr );
-		Material destination = Material.matchMaterial( destinationStr );
+		XMaterial source = SpigotUtil.getXMaterial( sourceStr );
+		XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
 		
 		if ( autoBlock ) {
 			int count = itemCount(source, p);
 			if ( count >= targetCount ) {
 				int mult = count / targetCount;
 				
-				p.getInventory().removeItem(new ItemStack(source, mult * targetCount));
-				dropExtra( p.getInventory().addItem(new ItemStack(destination, mult)), p, block);
+				p.getInventory().removeItem(SpigotUtil.getItemStack(source, mult * targetCount));
+				dropExtra( p.getInventory().addItem(SpigotUtil.getItemStack(destination, mult)), p, block);
 			}
 		}
 	}
 
-	/**
-	 * <p>Lapis is really dyed ink sacks, so need to have special processing to ensure we process the 
-	 * correct material, and not just any ink sack.
-	 * </p>
-	 * 
-	 * <p><b>Warning:</b> this will not work with minecraft 1.15.x since magic numbers have been
-	 * 						eliminated.
-	 * </p>
-	 * 
-	 * @param autoBlock
-	 * @param player
-	 */
-	protected void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
-		if ( autoBlock ) {
-			// ink_sack = 351:4 
-			
-			Material mat = Material.matchMaterial( "INK_SACK" );
-			short typeId = 4;
+//	/**
+//	 * <p>Lapis is really dyed ink sacks, so need to have special processing to ensure we process the 
+//	 * correct material, and not just any ink sack.
+//	 * </p>
+//	 * 
+//	 * <p><b>Warning:</b> this will not work with minecraft 1.15.x since magic numbers have been
+//	 * 						eliminated.
+//	 * </p>
+//	 * 
+//	 * @param autoBlock
+//	 * @param player
+//	 */
+//	protected void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
+//		if ( autoBlock ) {
+//			// ink_sack = 351:4 
+//			
+//			Material mat = Material.matchMaterial( "INK_SACK" );
+//			short typeId = 4;
+//
+//			// try both methods to get lapis:
+//			
+//			try {
+//				convertLapisBlock( player, block, mat, typeId );
+//			}
+//			catch ( Exception e ) {
+//				// Ignore exception.
+//			}
+//			
+//			mat = Material.matchMaterial( "lapis_lazuli" );
+//			if ( mat != null ) {
+//
+//				try {
+//					convertLapisBlock( player, block, mat );
+//				}
+//				catch ( Exception e ) {
+//					// Ignore exception.
+//				}
+//			}
+//
+//		}
+//	}
 
-			// try both methods to get lapis:
-			
-			try {
-				convertLapisBlock( player, block, mat, typeId );
-			}
-			catch ( Exception e ) {
-				// Ignore exception.
-			}
-			
-			mat = Material.matchMaterial( "lapis_lazuli" );
-			if ( mat != null ) {
 
-				try {
-					convertLapisBlock( player, block, mat );
+//	private void convertLapisBlock( Player player, Block block, Material mat, int typeId ) {
+//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
+//		int count = itemCount(xMat, typeId, player);
+//		
+//		if ( count >= 9 ) {
+//			int mult = count / 9;
+//			
+//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
+//			removeLapisItemStack.setAmount( mult * 9 );
+//			
+////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
+//			player.getInventory().removeItem(removeLapisItemStack);
+//			
+//			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
+//			
+//		}
+//	}
+
+//	private void convertLapisBlock( Player player, Block block, Material mat ) {
+//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
+//		int count = itemCount(xMat, player);
+//		
+//		if ( count >= 9 ) {
+//			int mult = count / 9;
+//			
+//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
+//			removeLapisItemStack.setAmount( mult * 9 );
+//
+////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
+//			player.getInventory().removeItem(removeLapisItemStack);
+//			
+//			dropExtra( player.getInventory().addItem(
+//					new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
+//		}
+//	}
+	
+	private int itemCount(XMaterial source, Player player) {
+		int count = 0;
+		if ( source != null ) {
+			ItemStack testStack = source.parseItem();
+			
+			PlayerInventory inv = player.getInventory();
+			for (ItemStack is : inv.getContents() ) {
+				if ( is != null && is.isSimilar( testStack ) ) {
+					count += is.getAmount();
 				}
-				catch ( Exception e ) {
-					// Ignore exception.
-				}
 			}
-
 		}
-	}
-
-
-	private void convertLapisBlock( Player player, Block block, Material mat, int typeId ) {
-		int count = itemCount(mat, typeId, player);
-		
-		if ( count >= 9 ) {
-			int mult = count / 9;
-			
-			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-			removeLapisItemStack.setAmount( mult * 9 );
-			
-//			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
-			player.getInventory().removeItem(removeLapisItemStack);
-			
-			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-			
-		}
-	}
-
-	private void convertLapisBlock( Player player, Block block, Material mat ) {
-		int count = itemCount(mat, player);
-		
-		if ( count >= 9 ) {
-			int mult = count / 9;
-			
-			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-			removeLapisItemStack.setAmount( mult * 9 );
-
-//			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
-			player.getInventory().removeItem(removeLapisItemStack);
-			
-			dropExtra( player.getInventory().addItem(
-					new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-		}
+		return count;
 	}
 	
-	private int itemCount(Material source, Player player) {
-		int count = 0;
-		PlayerInventory inv = player.getInventory();
-		for (ItemStack is : inv.all(source).values()) {
-			if (is != null && is.getType() == source) {
-				count += is.getAmount();
-			}
-		}
-		return count;
-	}
-	private int itemCount(Material source, int typeId, Player player) {
-		int count = 0;
-		PlayerInventory inv = player.getInventory();
-				
-		for (ItemStack is : inv.getContents()) {
-			
-			if ( is != null && is.getType() != null && is.getType().compareTo( source ) == 0 ) {
-				count += is.getAmount();
-			}
-		}
-		return count;
-	}
+	
+//	private int itemCount(Material source, int typeId, Player player) {
+//		int count = 0;
+//		PlayerInventory inv = player.getInventory();
+//				
+//		for (ItemStack is : inv.getContents()) {
+//			
+//			if ( is != null && is.getType() != null && is.getType().compareTo( source ) == 0 ) {
+//				count += is.getAmount();
+//			}
+//		}
+//		return count;
+//	}
 	
 	/**
 	 * <p>If the player does not have any more inventory room for the current items, then
@@ -772,9 +793,9 @@ public class AutoManagerFeatures
 				isBoolean( AutoFeatures.autoBlockGlowstone ), 
 				"GLOWSTONE_DUST", "GLOWSTONE", 4, p, block );
 		
-		autoBlockLapis( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
+		autoBlock( isBoolean( AutoFeatures.autoBlockAllBlocks ) ||
 				isBoolean( AutoFeatures.autoBlockLapisBlock ), 
-				p, block );
+				"LAPIS_LAZULI", "LAPIS_BLOCK", p, block );
 	}
 
 

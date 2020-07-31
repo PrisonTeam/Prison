@@ -85,6 +85,8 @@ public class SpigotUtil {
     	return xMat == null ? null : xMat.parseMaterial().orElse( null );
     }
     
+
+    
 	public static BlockType blockToBlockType( Block spigotBlock ) {
 		BlockType results = SpigotPrison.getInstance().getCompatibility()
 				.getBlockType( spigotBlock );
@@ -132,6 +134,16 @@ public class SpigotUtil {
 		return bukkitStack;
 	}
     
+	
+	public static ItemStack getItemStack( XMaterial xMaterial, int amount ) {
+		ItemStack bukkitStack = xMaterial.parseItem();
+		bukkitStack.setAmount( amount );
+		return bukkitStack;
+	}
+	
+	
+	
+	
 	public static void testAllPrisonBlockTypes() {
 		double version = XMaterial.getVersion();
 		
