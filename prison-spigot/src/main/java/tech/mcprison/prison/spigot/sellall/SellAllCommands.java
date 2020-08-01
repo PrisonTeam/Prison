@@ -8,9 +8,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -26,6 +30,7 @@ import java.util.Set;
  */
 public class SellAllCommands implements CommandExecutor {
 
+    // Check if the SellAll's enabled
 	public static boolean isEnabled() {
 		return Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true");
 	}
@@ -43,7 +48,7 @@ public class SellAllCommands implements CommandExecutor {
     	
         if (args.length == 0){
             if (sender.hasPermission("prison.admin") || sender.isOp()) {
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete"));
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete-multiplier"));
             } else {
                 return sellallCommandSell(sender, conf);
             }
@@ -69,6 +74,78 @@ public class SellAllCommands implements CommandExecutor {
         } else if (args[0].equalsIgnoreCase("edit")){
 
             return sellallCommandEdit(sender, args, file, conf, "] edited with success!");
+
+        } else if (args[0].equalsIgnoreCase("multiplier")){
+
+            if (!(Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cMultipliers are disabled in the SellAll config"));
+                return true;
+            }
+
+            if (args.length != 3){
+                sender.sendMessage(SpigotPrison.format("&c[PRISON WARN] &cWrong format, please use /sellall multiplier <Prestige> <Multiplier>"));
+                return true;
+            }
+
+            if (Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission_Enabled")).equalsIgnoreCase("true")){
+                if (!(sender.hasPermission(Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission"))))){
+                    sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cSorry, but you don't have the permission [" + conf.getString("Options.Multiplier_Command_Permission") + "]"));
+                    return true;
+                }
+            }
+
+            // Add check if the Prestige is present
+            // Add to the SellAllCommandSell the check for Player prestige, if prestiges are enabled and if player have a prestige or use default, also if there're multipliers for that prestige or use default
+
+            ModuleManager modMan = Prison.get().getModuleManager();
+            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+            if (rankPlugin == null){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR] &cThe Ranks module's disabled or not found!"));
+                return true;
+            }
+
+            boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
+
+            if (!isPrestigeLadder){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find a -prestiges- ladder, they might be disabled in the config.yml."));
+                return true;
+            }
+
+            boolean isARank = rankPlugin.getRankManager().getRank(args[1]).isPresent();
+
+            if (!isARank){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Prestige/Rank: " + args[1]));
+                return true;
+            }
+
+            boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(args[1]).get().id);
+
+            if (!isInPrestigeLadder){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe -prestiges- ladder doesn't contains the Rank: " + args[1]));
+                return true;
+            }
+
+            double multiplier;
+            try {
+                multiplier = Double.parseDouble(args[2]);
+            } catch (NumberFormatException ex) {
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry but the multiplier isn't a number [/sellall multiplier " + args[1] + " Here-> " + args[2] + " <-"));
+                return true;
+            }
+
+            conf.set("Multiplier." + args[1] + ".PRESTIGE_NAME", args[1]);
+            conf.set("Multiplier." + args[1] + ".MULTIPLIER", multiplier);
+            try {
+                conf.save(file);
+            } catch (IOException e) {
+                sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR] &cSorry, the config didn't save with success!"));
+            }
+
+            sender.sendMessage(SpigotPrison.format("&3[PRISON] &aMultiplier got added or edited with success!"));
+
+            return true;
 
         }
 
@@ -185,11 +262,36 @@ public class SellAllCommands implements CommandExecutor {
                 moneyToGive = moneyToGive + (Double.parseDouble(Objects.requireNonNull(conf.getString("Items." + key + ".ITEM_VALUE"))) * amount);
             }
 
+            // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
 
-            if (Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true")){
+            ModuleManager modMan = Prison.get().getModuleManager();
+            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+
+            if (Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true")) {
+
+                boolean hasPlayerPrestige = false;
                 double multiplier = Double.parseDouble(Objects.requireNonNull(conf.getString("Options.Multiplier_Default")));
-                moneyToGive = moneyToGive * multiplier;
+
+                if (rankPlugin != null) {
+                    if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID()).isPresent()) {
+
+                        String playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID()).get().getRank("prestiges").name;
+
+                        if (playerRankName != null) {
+                            hasPlayerPrestige = true;
+                            sender.sendMessage("Playername: " + playerRankName);
+                            multiplier = Double.parseDouble(Objects.requireNonNull(conf.getString("Multiplier." + playerRankName + ".MULTIPLIER")));
+                            moneyToGive = moneyToGive * multiplier;
+                        }
+                    }
+                }
+
+                if (!hasPlayerPrestige) {
+                    moneyToGive = moneyToGive * multiplier;
+                }
             }
 
             // Get economy
@@ -202,7 +304,6 @@ public class SellAllCommands implements CommandExecutor {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON]&a You got $" + moneyToGive));
             }
         }
-
 
         return true;
     }

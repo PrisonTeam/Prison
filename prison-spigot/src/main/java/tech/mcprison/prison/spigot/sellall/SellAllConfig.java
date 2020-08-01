@@ -70,6 +70,8 @@ public class SellAllConfig {
     private void values(){
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
+        dataConfig("Options.Multiplier_Command_Permission_Enabled", "true");
+        dataConfig("Options.Multiplier_Command_Permission", "prison.admin");
         dataConfig("Options.GUI_Enabled", "true");
         dataConfig("Options.GUI_Permission_Enabled", "true");
         dataConfig("Options.GUI_Permission","prison.admin");
