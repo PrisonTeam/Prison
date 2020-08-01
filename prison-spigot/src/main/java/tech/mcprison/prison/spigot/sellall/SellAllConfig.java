@@ -6,6 +6,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author GABRYCA
@@ -16,7 +17,7 @@ public class SellAllConfig {
 
     public SellAllConfig(){
 
-        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
+        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true")){
             return;
         }
 
@@ -67,6 +68,8 @@ public class SellAllConfig {
     }
 
     private void values(){
+        dataConfig("Options.Multiplier_Enabled", "false");
+        dataConfig("Options.Multiplier_Default", "1");
         dataConfig("Options.GUI_Enabled", "true");
         dataConfig("Options.GUI_Permission_Enabled", "true");
         dataConfig("Options.GUI_Permission","prison.admin");

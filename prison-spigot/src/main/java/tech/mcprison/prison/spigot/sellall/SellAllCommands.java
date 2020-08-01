@@ -18,6 +18,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Set;
 public class SellAllCommands implements CommandExecutor {
 
 	public static boolean isEnabled() {
-		return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+		return Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true");
 	}
 	
     @Override
@@ -76,7 +77,7 @@ public class SellAllCommands implements CommandExecutor {
 
     private boolean sellallCommandEdit(CommandSender sender, String[] args, File file, FileConfiguration conf, String s) {
 
-        if (conf.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
+        if (Objects.requireNonNull(conf.getString("Options.Add_Permission_Enabled")).equalsIgnoreCase("true")) {
             if (!sender.hasPermission("Options.Add_Permission")) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.Add_Permission") + "]"));
                 return true;
@@ -119,7 +120,7 @@ public class SellAllCommands implements CommandExecutor {
     }
 
     private boolean sellallCommandDelete(CommandSender sender, String[] args, File file, FileConfiguration conf) {
-        if (conf.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")){
+        if (Objects.requireNonNull(conf.getString("Options.Delete_Permission_Enabled")).equalsIgnoreCase("true")){
             if (!sender.hasPermission("Options.Delete_Permission")){
                 return true;
             }
@@ -162,7 +163,7 @@ public class SellAllCommands implements CommandExecutor {
 
         Player p = (Player) sender;
 
-        if (conf.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
+        if (Objects.requireNonNull(conf.getString("Options.Sell_Permission_Enabled")).equalsIgnoreCase("true")){
             if (!p.hasPermission("Options.Sell_Permission")){
                 p.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.Sell_Permission") + "]"));
                 return true;
@@ -172,7 +173,7 @@ public class SellAllCommands implements CommandExecutor {
         if (!(conf.getConfigurationSection("Items.") == null)){
 
             // Get the Items config section
-            Set<String> items = conf.getConfigurationSection("Items").getKeys(false);
+            Set<String> items = Objects.requireNonNull(conf.getConfigurationSection("Items")).getKeys(false);
 
             double moneyToGive = 0;
             for (String key : items) {
@@ -181,10 +182,15 @@ public class SellAllCommands implements CommandExecutor {
                     p.getInventory().removeItem(new ItemStack(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")),1));
                     amount++;
                 }
-                moneyToGive = moneyToGive + (Double.parseDouble(conf.getString("Items." + key + ".ITEM_VALUE")) * amount);
+                moneyToGive = moneyToGive + (Double.parseDouble(Objects.requireNonNull(conf.getString("Items." + key + ".ITEM_VALUE"))) * amount);
             }
 
             SpigotPlayer sPlayer = new SpigotPlayer(p);
+
+            if (Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true")){
+                double multiplier = Double.parseDouble(Objects.requireNonNull(conf.getString("Options.Multiplier_Default")));
+                moneyToGive = moneyToGive * multiplier;
+            }
 
             // Get economy
             EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
@@ -210,20 +216,20 @@ public class SellAllCommands implements CommandExecutor {
 
         Player p = (Player) sender;
 
-        if (!conf.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+        if (!Objects.requireNonNull(conf.getString("Options.GUI_Enabled")).equalsIgnoreCase("true")){
             if (p.isOp() || p.hasPermission("prison.admin")) {
                 sender.sendMessage(SpigotPrison.format("&c[PRISON ERROR] Sorry but the GUI's disabled in the SellAllConfig.yml"));
                 return true;
             }
         }
 
-        if (conf.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission(conf.getString("Options.GUI_Permission"))){
+        if (Objects.requireNonNull(conf.getString("Options.GUI_Permission_Enabled")).equalsIgnoreCase("true")){
+            if (!p.hasPermission(Objects.requireNonNull(conf.getString("Options.GUI_Permission")))){
                 p.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.GUI_Permission") + "]"));
                 return true;
-            } else if (conf.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
-                if (conf.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
-                    if (!p.hasPermission(conf.getString("Options.Player_GUI_Permission"))){
+            } else if (Objects.requireNonNull(conf.getString("Options.Player_GUI_Enabled")).equalsIgnoreCase("true")){
+                if (Objects.requireNonNull(conf.getString("Options.Player_GUI_Permission_Enabled")).equalsIgnoreCase("true")) {
+                    if (!p.hasPermission(Objects.requireNonNull(conf.getString("Options.Player_GUI_Permission")))){
                         p.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry, but you're missing the permission [" + conf.getString("Options.Player_GUI_Permission") + "]"));
                         return true;
                     }

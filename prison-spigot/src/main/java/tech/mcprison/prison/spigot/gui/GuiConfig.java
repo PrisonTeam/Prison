@@ -55,7 +55,8 @@ public class GuiConfig {
                 }
                 if (newValue) {
                     conf.save(file);
-                }            } catch (IOException e2){
+                }
+            } catch (IOException e2){
                 e2.printStackTrace();
             }
         }
