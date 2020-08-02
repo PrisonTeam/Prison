@@ -49,6 +49,9 @@ public interface Compatibility {
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock );
 	
 	
+	public BlockTestStats testCountAllBlockTypes();
+	
+	
     public EquipmentSlot getHand(PlayerInteractEvent e);
 
     public ItemStack getItemInMainHand(PlayerInteractEvent e);

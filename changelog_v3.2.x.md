@@ -11,7 +11,21 @@ that you need.
 ## tag v3.2.1-alpha.17 - 2020-07-28
 
 
-* **Alpha.17 - 2020-07-28**
+* **Added v1.16.1 now officially supported and added to the test environments**
+Working fine. No issues found.  Now have a working v1.16.1 environment to test from to ensure issues are addressed.
+
+
+* **Reporting for supported block types**
+Added a raw spigot/bukkit test to round out the test to see how many blocks are available to prison.
+Running this test on any version should give a fairly accurate idea of how many more blocks are gained with the newer versions of spigot.
+Pre 1.13 versions of spigot cannot be fully tested to identify all possible block types due to lack of ensuring individual Material types with different data values within the ItemStack cannot be identified as being invalid since that is left for the client software to decide.
+This test adds no new functionality, but provides a reporting on how the newer infrastructure will work.
+
+
+* **More work on new block type support**
+Got a lot of the questionable code working better so 1.8.x and 1.16.x will not have problems with class or method not found exceptions.  Pushed a lot of version specifics to the compatibility classes.
+This does not add new blocks to prison, but lays the foundation and support for new block types.
+
 
 * **Major New Feature: Work In Progress!  New handling of Blocks and Materials!!**
 Starting major changes to how the block types and materials are processed.  
@@ -20,6 +34,9 @@ Upgrade the spigot API to 1.13.2!!!
 This should make Prison more 1.13+ compatible and support more block types, and transition to supporting all block types that exist for a given version.
 Add in the cryptomorin's XSeries to better deal with newer block types.  Trying to get rid of deprecated function usage, except for within spigot 1.8 specific code sets.
 Finally got lapis lazuli working!  So this is heading in the right direction. 
+
+
+* **Alpha.17 - 2020-07-28**
 
 
 * **New Feature: Sellall has been added**

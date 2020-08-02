@@ -121,6 +121,45 @@ public abstract class Spigot113Blocks
 		}
 	}
 
+	/**
+	 * <p>This function is supposed to find all possible blocks available
+	 * on the server.  The number of available items, and blocks, will vary based
+	 * upon different version the server is running.
+	 * </p>
+	 * 
+	 * <p>This function is not simple for 1.8 mode of block types.  The primary
+	 * reason for this is that there is a list of materials that is available, 
+	 * but depending upon what magic numbers (data) you set on the ItemStacks, 
+	 * you will be different blocks or items.  Like the difference between oak
+	 * logs and birch logs.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public BlockTestStats testCountAllBlockTypes() {
+		BlockTestStats stats = new BlockTestStats();
+		
+		stats.setMaterialSize( Material.values().length );
+		
+		// go through all available materials:
+		for ( Material mat : Material.values() ) {
+			
+			// Must create an item stack:
+			ItemStack iStack = new ItemStack( mat, 1 );
+			
+			if ( iStack != null ) {
+				
+				if ( mat.isBlock() ) {
+					stats.addCountBlocks();
+				}
+				else if ( mat.isItem() ) {
+					stats.addCountItems();
+				}
+			} 
+		}
+		
+		return stats;
+	}
 	
 	
 	public int getDurabilityMax( ItemStack itemInHand ) {

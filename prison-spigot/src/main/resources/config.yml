@@ -8,14 +8,25 @@ debug: false
 check-updates: true
 send-metrics: true
 show-alerts: true
-slime-fun: false
 prestiges: false
+
+# This enables new physics to be applied when jumpping on slime blocks.
+# When holding different items, like some blocks or some picks, the player can
+# jump to heights of 40 to 60+ blocks high.
+slime-fun: false
 
 # Enable or disable all the GUIs, for more options please check inside the GuiConfig.yml
 prison-gui-enabled: true
 
 # Enable or disable the SellAll command and sub-commands
 sellall: false
+
+# Startup testing of available blocks within prison. Tests three kinds of
+# sources: Prison's BlockType, XMaterial's blocks (should mirror what's avaiable
+# within spigot/bukkit, and the raw spigot/bukkit source.
+# This should only be used to see what's available. This will not provide any 
+# extra blocks to any prison environment.
+prison-block-compatibility-report: false
 
 default-language: en_US
 
@@ -26,12 +37,13 @@ storageType: "json"
 #storageType: "mongo"
 #storageType: "sql"
 
+# NOTE: The following is not used since SQL and MongoDB are not valid options.
 # Login credentials for either SQL or MongoDB
-database:
-  enabled: false
-  type: sql # sql or mongo
-  host: localhost
-  database: prison
-  username: root
-  password: root
-  port: 3306
+#database:
+#  enabled: false
+#  type: sql # sql or mongo
+#  host: localhost
+#  database: prison
+#  username: root
+#  password: root
+#  port: 3306

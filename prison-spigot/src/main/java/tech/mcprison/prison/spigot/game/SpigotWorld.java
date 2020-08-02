@@ -53,7 +53,8 @@ public class SpigotWorld implements World {
     }
 
     @Override public Block getBlockAt(Location location) {
-        return new SpigotBlock(bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+        return new SpigotBlock(
+        		bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
     }
 
     public org.bukkit.World getWrapper() {

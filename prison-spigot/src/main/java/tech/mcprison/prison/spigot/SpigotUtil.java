@@ -34,6 +34,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
@@ -190,20 +191,29 @@ public class SpigotUtil {
 					}
 				}
 				else {
-					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: FAIL: XMaterial " + xMat.name() +
-							" is supported for this version, but cannot be mapped to a Material?");
+					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
+							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
+							" is supported for this version, but the XMaterial cannot " +
+							"be mapped to an actual Material.");
 				}
 			}
 		}
 		
-		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Bukkit version: " + version + 
-				"  Supported Prison Blocks: " + supportedBlockCountPrison +
-				"  Supported XMaterial Blocks: " + supportedBlockCountXMaterial );
+		// Next test all of the spigot/bukkit Materials:
+		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
+										.testCountAllBlockTypes();
 		
-		logTestBlocks( sbNoMap, "###   Prison Blocks no maps to XMaterial: " );
-		logTestBlocks( sbNotSupported, "###   Prison Blocks not supported with version: " );
-//		Output.get().logWarn( "###   Prison Blocks no maps to XMaterial: " + sbNoMap.toString() );
-//		Output.get().logWarn( "###   Prison Blocks not supported with version: " + sbNotSupported.toString() );
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Bukkit version: " + version + 
+									"  Supported Prison Blocks: " + supportedBlockCountPrison +
+									"  Supported XMaterial Blocks: " + supportedBlockCountXMaterial );
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Raw Bukkit/Spigot " + stats.toString() );
+		
+		logTestBlocks( sbNoMap, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+										"Prison Blocks no maps to XMaterial: " );
+		logTestBlocks( sbNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+										"Prison Blocks not supported with version: " );
 	}
     
 	

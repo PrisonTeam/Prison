@@ -211,6 +211,71 @@ public abstract class Spigot18Blocks
 	}
 
 	
+
+	/**
+	 * <p>This function is supposed to find all possible blocks available
+	 * on the server.  The number of available items, and blocks, will vary based
+	 * upon different version the server is running.
+	 * </p>
+	 * 
+	 * <p>This function is not simple for 1.8 mode of block types.  The primary
+	 * reason for this is that there is a list of materials that is available, 
+	 * but depending upon what magic numbers (data) you set on the ItemStacks, 
+	 * you will be different blocks or items.  Like the difference between oak
+	 * logs and birch logs.
+	 * </p>
+	 * 
+	 * <p>One problem is that the data can be set to any value and it 
+	 * will be valid. It may not render in game, but we cannot test for that.
+	 * So in turn, we cannot use the magic numbers to check to see if they
+	 * are actually valid.  As a result, all we can do is use the Materials
+	 * directly, and as a result, we will miss out of the variations that
+	 * may otherwise exist.  For example with minecraft:log and minecraft:log2
+	 * where we can only count two for those two materials, but they actually
+	 * have about 6 to 8 declared types, or more (I've seen naturally spawned
+	 * log with a value of 7 and 8 which does not exist in the documentation).
+	 * </p>
+	 * 
+	 * <p>As a result of preventing arbitrarily high false reporting of 
+	 * block types, all magic number related code is commented out.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public BlockTestStats testCountAllBlockTypes() {
+		BlockTestStats stats = new BlockTestStats();
+		
+		stats.setMaterialSize( Material.values().length );
+		
+		// go through all available materials:
+		for ( Material mat : Material.values() ) {
+			
+			// Need to try all data values from 0 through 20:
+//			for ( short data = 0; data < (short) 20; data++ ) {
+				
+				// Must create an item stack:
+				ItemStack iStack = new ItemStack( mat, 1 );
+//				ItemStack iStack = new ItemStack( mat, 1, data );
+				
+				if ( iStack != null ) {
+					
+//					stats.addMaxData( data );
+					
+					if ( mat.isBlock() ) {
+						stats.addCountBlocks();
+					}
+//					if ( mat.isItem() ) // isItem() is not a function in v1.8.8
+					else {
+						stats.addCountItems();
+					}
+				} 
+//			}
+		}
+		
+		return stats;
+	}
+	
+	
 	
 	public int getDurabilityMax( ItemStack itemInHand ) {
 		return itemInHand.getType().getMaxDurability();

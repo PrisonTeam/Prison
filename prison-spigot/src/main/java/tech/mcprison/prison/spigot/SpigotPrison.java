@@ -198,8 +198,10 @@ public class SpigotPrison extends JavaPlugin {
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );
 		
-		// Temp: Remove before finalizing version:
-		SpigotUtil.testAllPrisonBlockTypes();
+		// Provides a startup test of blocks available for the version of spigot that being used:
+		if ( getConfig().getBoolean("prison-block-compatibility-report") ) {
+			SpigotUtil.testAllPrisonBlockTypes();
+		}
 		
 		Output.get().logInfo( "Prison - Finished loading." );
 		
