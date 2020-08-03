@@ -92,7 +92,7 @@ It will default to 100% air.  So then follow up creating the new mine with a res
 
 <h3>Reset the New Mine to Test it Exists</h3>
 
-Go ahead and reset the mine.  All of the sealanters that were used to mark the mine are now gone, and so are the two layers of dirt.  That confirms success with our first mine.
+Go ahead and reset the mine.  All of the sealanterns that were used to mark the mine are now gone, and so are the two layers of dirt.  That confirms success with our first mine since the only default block that exists in the mines when created is air.
 
 ```
 /mines reset test1
@@ -108,7 +108,7 @@ Go ahead and reset the mine.  All of the sealanters that were used to mark the m
 
 # Mine Commands Overview
 
-Now that we've created a mine, let's take a moment and review some of the available commands.  There are a lot of options available, and many of those options have numerous features, so this will just be an overview so you have a better idea of what you could possibly do with your new mines. This listing is generated within the console so it's easier to see.  This includes the main grouping of commands, which is displayed with `/mines` (remember, when using commands within the console drop the leading slash).  Then two sub-groups: `/mines block` and also `/mines set`.
+Now that we've created a mine, let's take a moment and review some of the available commands.  There are a lot of options available, and many of those options have numerous features, so this will just be an overview so you have a better idea of what you could possibly do with your new mines. This listing is generated within the console so it's easier to see.  This includes the main grouping of commands, which is displayed with `/mines`.  Remember, when using commands within the console drop the leading slash.  Then two sub-groups: `/mines block` and also `/mines set`.
 
 
 For the following commands, we can use the console, which is also easier to see for this documentation.  But these commands can just as easily be ran within game.
@@ -213,6 +213,7 @@ Example of a mine reset including a sealantern.  Notice that there is still 19.5
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+
 # Next Steps - Skipping Resets, Notifications, and Zero Blocks
 
 
@@ -303,8 +304,73 @@ Perhaps the last point pertaining to resets has to do with the actual timers. On
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# Listing All Mines
 
 
+As you start to build your mines, you may find it useful to list them all, or use the listing to search for a specific mine.  
+
+
+Here are some basic usages of the command.  First let's review the help for the `/mines list` command to see what perms are needed and what parameters are available.  If you are in game, clicking on `TP` will teleport you to the mine.  Clicking on the name will show you the info on the mine, which is the same as using the `/mines info` command.  Of course, clicking on these items only works in game, and not from the console.
+
+
+```
+/mines list help
+
+/mines list
+
+/mines list 4
+```
+
+
+As we can see in the screen print of the help, the command takes optional parameters for the page number.  It also has the option of `ALL` which will display the list of all mines, which could be helpful in the console.
+
+
+<img src="images/prison_docs_101_setting_up_mines_21.png" alt="Listing Mines" title="Listing Mines" width="600" />  
+
+
+
+
+There is some useful information in the listing too. This listing shows how soon a mine will **Reset**, and what the reset frequency is.  It will show you how many times it has been reset since the server started (**RCnt**).  It even shows the percent blocks remaining too (**Rem**).  If you've added any **mine commands**, those will indicated in a red **Cmds** entry; see the mine named **trees**.  Also if a mine is disabled, it will be listed here too.
+
+<img src="images/prison_docs_101_setting_up_mines_22.png" alt="Listing Mines" title="Listing Mines" width="600" />  
+
+
+This listing also shows more details if you have `/mines stats` enabled.  Remember that mine stats is a toggled setting.  Run it once to enable it.  Run it a second time to disable it.
+
+
+With it enabled, it shows stats on mine resets in mine list, mine info, and when mines reset in general.  The following screen print within the console shows how these may look, with the addition of the stats.
+
+
+<img src="images/prison_docs_101_setting_up_mines_23.png" alt="Listing Mines" title="Listing Mines" width="800" />  
+
+
+.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Deleting Mines
+
+Mines can be deleted with the `/mines delete` command. 
+
+It will prompt you for confirmation.  If you are in game you can click on the link then it will fill out the command for you with the parameter `cancel` and you need to rename it to `confirm`.  You have one minute to confirm a delete.
+
+When you successfully delete a mine, it will remove it from memory and from loading.  The mine is only virtually deleted, since it will still exist in the server's directory. To undelete it, just rename the file back to a normal mine file name, and it will be loaded the next time the server starts.
+
+  
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Advanced Topics
+
+
+
+### Changing the Size of a Mine
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Example: A Single Block Mine Grinder
