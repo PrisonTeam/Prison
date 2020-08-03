@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.sellall;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,7 +49,7 @@ public class SellAllCommands implements CommandExecutor {
     	
         if (args.length == 0){
             if (sender.hasPermission("prison.admin") || sender.isOp()) {
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete-multiplier"));
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete-multiplier-setdefault"));
             } else {
                 return sellallCommandSell(sender, conf);
             }
@@ -77,78 +78,144 @@ public class SellAllCommands implements CommandExecutor {
 
         } else if (args[0].equalsIgnoreCase("multiplier")){
 
-            if (!(Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cMultipliers are disabled in the SellAll config"));
+            return sellAllMultipliers(sender, args, file, conf);
+
+        } else if (args[0].equalsIgnoreCase("setdefault")){
+
+            values(sender);
+
+            return true;
+
+        }
+
+        sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] The first argument's not found, please try /sellall for a list of them!"));
+
+        return true;
+    }
+
+    private void valueSaver(String material, int value, CommandSender sender){
+	    if (Material.matchMaterial(material) == null){
+	        return;
+        }
+	    Bukkit.dispatchCommand(sender, "sellall add " + material + " " + value);
+    }
+
+    private void values(CommandSender sender) {
+	    valueSaver("COBBLESTONE", 50, sender);
+	    valueSaver("STONE", 50, sender);
+        valueSaver("COAL",50, sender);
+        valueSaver("COAL_BLOCK", 300, sender);
+        valueSaver("IRON_INGOT",75, sender);
+        valueSaver("IRON_BLOCK",600, sender);
+        valueSaver("REDSTONE", 101, sender);
+        valueSaver("REDSTONE_BLOCK", 492, sender);
+        valueSaver("GOLD_INGOT", 122, sender);
+        valueSaver("GOLD_BLOCK", 1100, sender);
+        valueSaver("DIAMOND", 200, sender);
+        valueSaver("DIAMOND_BLOCK", 1800, sender);
+        valueSaver("EMERALD", 300, sender);
+        valueSaver("EMERALD_BLOCK", 2700, sender);
+        valueSaver("LAPIS_LAZULI", 70, sender);
+        valueSaver("LAPIS_BLOCK", 630, sender);
+    }
+
+        private boolean sellAllMultipliers(CommandSender sender, String[] args, File file, FileConfiguration conf) {
+        if (!(Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
+            sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cMultipliers are disabled in the SellAll config"));
+            return true;
+        }
+
+        if (args.length < 3){
+            sender.sendMessage(SpigotPrison.format("&c[PRISON WARN] &cWrong format, please use /sellall multiplier add/delete <Prestige> <Multiplier>"));
+            return true;
+        }
+
+        if (Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission_Enabled")).equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission"))))){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cSorry, but you don't have the permission [" + conf.getString("Options.Multiplier_Command_Permission") + "]"));
                 return true;
             }
+        }
 
-            if (args.length != 3){
-                sender.sendMessage(SpigotPrison.format("&c[PRISON WARN] &cWrong format, please use /sellall multiplier <Prestige> <Multiplier>"));
-                return true;
-            }
-
-            if (Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission_Enabled")).equalsIgnoreCase("true")){
-                if (!(sender.hasPermission(Objects.requireNonNull(conf.getString("Options.Multiplier_Command_Permission"))))){
-                    sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cSorry, but you don't have the permission [" + conf.getString("Options.Multiplier_Command_Permission") + "]"));
-                    return true;
-                }
-            }
-
+        if (args[1].equalsIgnoreCase("add")) {
             // Add check if the Prestige is present
             // Add to the SellAllCommandSell the check for Player prestige, if prestiges are enabled and if player have a prestige or use default, also if there're multipliers for that prestige or use default
 
             ModuleManager modMan = Prison.get().getModuleManager();
-            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+            Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
 
             PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin == null){
+            if (rankPlugin == null) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR] &cThe Ranks module's disabled or not found!"));
                 return true;
             }
 
             boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
 
-            if (!isPrestigeLadder){
+            if (!isPrestigeLadder) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find a -prestiges- ladder, they might be disabled in the config.yml."));
                 return true;
             }
 
             boolean isARank = rankPlugin.getRankManager().getRank(args[1]).isPresent();
 
-            if (!isARank){
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Prestige/Rank: " + args[1]));
+            if (!isARank) {
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Prestige/Rank: " + args[2]));
                 return true;
             }
 
             boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(args[1]).get().id);
 
-            if (!isInPrestigeLadder){
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe -prestiges- ladder doesn't contains the Rank: " + args[1]));
+            if (!isInPrestigeLadder) {
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe -prestiges- ladder doesn't contains the Rank: " + args[2]));
                 return true;
             }
 
             double multiplier;
             try {
-                multiplier = Double.parseDouble(args[2]);
+                multiplier = Double.parseDouble(args[3]);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry but the multiplier isn't a number [/sellall multiplier " + args[1] + " Here-> " + args[2] + " <-"));
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Sorry but the multiplier isn't a number [/sellall multiplier add " + args[2] + " Here-> " + args[2] + " <-"));
                 return true;
             }
 
-            conf.set("Multiplier." + args[1] + ".PRESTIGE_NAME", args[1]);
-            conf.set("Multiplier." + args[1] + ".MULTIPLIER", multiplier);
+            conf.set("Multiplier." + args[2] + ".PRESTIGE_NAME", args[2]);
+            conf.set("Multiplier." + args[2] + ".MULTIPLIER", multiplier);
             try {
                 conf.save(file);
             } catch (IOException e) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR] &cSorry, the config didn't save with success!"));
+                return true;
             }
 
             sender.sendMessage(SpigotPrison.format("&3[PRISON] &aMultiplier got added or edited with success!"));
 
             return true;
+        } else if (args[1].equalsIgnoreCase("delete")){
 
+            if (args.length != 3){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cPlease use a format like /sellall multiplier delete <Prestige>"));
+                return true;
+            }
+
+            if (conf.getConfigurationSection("Multiplier." + args[2]) == null){
+                sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Multiplier of the prestige " + args[2] + " in the sellallconfig.yml"));
+                return true;
+            }
+
+            conf.set("Multiplier." + args[2], null);
+            try {
+                conf.save(file);
+            } catch (IOException e) {
+                sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR] &cSorry, the config didn't save with success!"));
+                return true;
+            }
+            sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &aMultiplier deleted with success!"));
+
+            return true;
         }
 
+        sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe format's wrong, try again /sellall for info."));
         return true;
     }
 
