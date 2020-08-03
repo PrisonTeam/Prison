@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
@@ -149,8 +150,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        Material materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
+        Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
 
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
@@ -171,7 +172,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (guiConfig2.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                    if (Objects.requireNonNull(guiConfig2.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
                         itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }

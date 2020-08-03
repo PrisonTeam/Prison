@@ -22,6 +22,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -38,7 +39,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         this.player = player;
 
         // If you need to get a SpigotPlayer:
-//        SpigotPlayer sPlayer = new SpigotPlayer(p);
+        // SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Server server = SpigotPrison.getInstance().getServer();
 
@@ -49,6 +50,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
         rankPlugin = (PrisonRanks) module;
+
+        if (rankPlugin == null){
+            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cLooks like the Ranks module's disabled"));
+            return;
+        }
 
         if (rankPlugin.getPlayerManager() == null) {
             return;
@@ -141,15 +147,26 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
+
+        if (!ladder.isPresent()){
+            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cLadder -prestiges- not found!"));
+            return;
+        }
+
         RankLadder ladderData = ladder.get();
+
+        if (!ladderData.getLowestRank().isPresent()){
+            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThere aren't ranks in the -prestiges- ladder!"));
+            return;
+        }
 
         Rank rank = ladderData.getLowestRank().get();
 
         Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
 
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        Material materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
+        Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
 
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
@@ -170,7 +187,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                    if (Objects.requireNonNull(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
                         itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }

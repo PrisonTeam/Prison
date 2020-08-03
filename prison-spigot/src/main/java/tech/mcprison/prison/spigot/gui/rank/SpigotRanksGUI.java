@@ -108,6 +108,11 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                 "",
                 guiConfig.getString("Gui.Lore.Info"));
 
+        if (!rankOptional.isPresent()){
+            p.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled."));
+            return;
+        }
+
         // Get the specific rank
         Rank rank = rankOptional.get();
 

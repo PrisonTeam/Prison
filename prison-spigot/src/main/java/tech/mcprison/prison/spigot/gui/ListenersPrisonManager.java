@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.gui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
@@ -164,7 +165,7 @@ public class ListenersPrisonManager implements Listener {
     public void onClick(InventoryClickEvent e){
 
         // Check if GUIs are enabled
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
             return;
         }
 
@@ -537,7 +538,7 @@ public class ListenersPrisonManager implements Listener {
             File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
 
-            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE")), buttonNameMain);
+            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(Objects.requireNonNull(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE"))), buttonNameMain);
             gui.open();
 
         }
@@ -759,7 +760,7 @@ public class ListenersPrisonManager implements Listener {
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // Check the buttonName and do the actions
-        if (buttonNameMain.equals(SpigotPrison.format(GuiConfig.getString("Gui.Lore.Rankup").substring(2)))){
+        if (buttonNameMain.equals(SpigotPrison.format(Objects.requireNonNull(GuiConfig.getString("Gui.Lore.Rankup")).substring(2)))){
             Bukkit.dispatchCommand(p, "rankup " + GuiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }

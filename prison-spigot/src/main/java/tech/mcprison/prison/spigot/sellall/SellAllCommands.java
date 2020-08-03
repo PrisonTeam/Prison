@@ -39,14 +39,18 @@ public class SellAllCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+	    // Check if the sellall feature's enabled once again
     	if (!isEnabled()){
             sender.sendMessage(SpigotPrison.format("&3[PRISON ERROR]&c Sorry but the SellAll Feature's disabled in the config.yml"));
             return true;
         }
 
+    	// Get the config and file
     	File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     	FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
-    	
+
+
+    	// If the args are 0, if the player's a prison admin or OP he'll get an help message, else will be like a shortcut of the /sellall sell command
         if (args.length == 0){
             if (sender.hasPermission("prison.admin") || sender.isOp()) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete-multiplier-setdefault"));
@@ -56,30 +60,37 @@ public class SellAllCommands implements CommandExecutor {
             return true;
         }
 
+        // Open the GUI
         if (args[0].equalsIgnoreCase("gui")){
 
             return sellallCommandGUI(sender, conf);
 
+        // sellall sell
         } else if (args[0].equalsIgnoreCase("sell")){
 
             return sellallCommandSell(sender, conf);
 
+        // sellall add <ITEM_ID> <VALUE>
         } else if (args[0].equalsIgnoreCase("add")){
 
             return sellallCommandAdd(sender, args, file, conf);
 
+        // sellall delete <ITEM_ID>
         } else if (args[0].equalsIgnoreCase("delete")){
 
             return sellallCommandDelete(sender, args, file, conf);
 
+        // sellall edit <ITEM_ID> <VALUE>
         } else if (args[0].equalsIgnoreCase("edit")){
 
             return sellallCommandEdit(sender, args, file, conf, "] edited with success!");
 
+        // sellall multiplier add/delete <Prestige> <Multiplier>
         } else if (args[0].equalsIgnoreCase("multiplier")){
 
             return sellAllMultipliers(sender, args, file, conf);
 
+        // sellall setdefault will set default values for some default Prison servers blocks
         } else if (args[0].equalsIgnoreCase("setdefault")){
 
             values(sender);
@@ -88,14 +99,18 @@ public class SellAllCommands implements CommandExecutor {
 
         }
 
+        // sellall <not found> will give this error message
         sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] The first argument's not found, please try /sellall for a list of them!"));
 
         return true;
     }
 
     private void valueSaver(String material, int value, CommandSender sender){
-	    if (Material.matchMaterial(material) == null){
-	        return;
+        Material materialM = Material.matchMaterial(material);
+        if (materialM == null){
+            return;
+        } else {
+            material = materialM.name();
         }
 	    Bukkit.dispatchCommand(sender, "sellall add " + material + " " + value);
     }
@@ -119,9 +134,11 @@ public class SellAllCommands implements CommandExecutor {
         valueSaver("LAPIS_BLOCK", 630, sender);
     }
 
-        private boolean sellAllMultipliers(CommandSender sender, String[] args, File file, FileConfiguration conf) {
-        if (!(Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
-            sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cMultipliers are disabled in the SellAll config"));
+
+
+    private boolean sellAllMultipliers(CommandSender sender, String[] args, File file, FileConfiguration conf) {
+	    if (!(Objects.requireNonNull(conf.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
+	        sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cMultipliers are disabled in the SellAll config!"));
             return true;
         }
 
@@ -219,6 +236,8 @@ public class SellAllCommands implements CommandExecutor {
         return true;
     }
 
+
+
     private boolean sellallCommandEdit(CommandSender sender, String[] args, File file, FileConfiguration conf, String s) {
 
         if (Objects.requireNonNull(conf.getString("Options.Add_Permission_Enabled")).equalsIgnoreCase("true")) {
@@ -263,6 +282,8 @@ public class SellAllCommands implements CommandExecutor {
         return true;
     }
 
+
+
     private boolean sellallCommandDelete(CommandSender sender, String[] args, File file, FileConfiguration conf) {
         if (Objects.requireNonNull(conf.getString("Options.Delete_Permission_Enabled")).equalsIgnoreCase("true")){
             if (!sender.hasPermission("Options.Delete_Permission")){
@@ -294,9 +315,14 @@ public class SellAllCommands implements CommandExecutor {
         return true;
     }
 
+
+
+    // Essentially an edited shortcut
     private boolean sellallCommandAdd(CommandSender sender, String[] args, File file, FileConfiguration conf) {
         return sellallCommandEdit(sender, args, file, conf, "] added with success!");
     }
+
+
 
     private boolean sellallCommandSell(CommandSender sender, FileConfiguration conf) {
 
@@ -374,6 +400,8 @@ public class SellAllCommands implements CommandExecutor {
 
         return true;
     }
+
+
 
     private boolean sellallCommandGUI(CommandSender sender, FileConfiguration conf) {
 

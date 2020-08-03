@@ -10,6 +10,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -37,7 +38,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         }
 
         // Get the Items config section
-        Set<String> items = conf.getConfigurationSection("Items").getKeys(false);
+        Set<String> items = Objects.requireNonNull(conf.getConfigurationSection("Items")).getKeys(false);
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;

@@ -6,6 +6,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author GABRYCA
@@ -16,7 +17,7 @@ public class GuiConfig {
 
     public GuiConfig() {
 
-        if (!SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equals("true")){
+        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
             return;
         }
 

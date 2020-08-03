@@ -38,10 +38,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         // If the inventory is empty
         if (dimension == 0){
             p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
-            if (p.getOpenInventory() != null){
-                p.closeInventory();
-                return;
-            }
+            p.closeInventory();
             return;
         }
 
