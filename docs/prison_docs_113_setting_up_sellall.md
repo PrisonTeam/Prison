@@ -1,0 +1,116 @@
+### Prison Documentation 
+[Prison Documents - Table of Contents](prison_docs_000_toc.md)
+
+## Prison - Mine Commands
+
+This document provides info about how to use the SellAll feature and set it up
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+# Overview
+
+SellAll's a feature with the goal of sell and clear the player inventories from ores or blocks for money.
+Essentially, while mining you'll fill your inventory and once full you need to sell what you've mined
+to get money and rankup or buy stuff, SellAll will do all the job and give you the money. 
+
+There's also a Multiplier feature which will modify the sellall values of all blocks depending on your prestige but before 
+using it you should enable ```prestiges: true``` in your ```config.yml```
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+# Getting started
+
+First of all, if you want to use this feature, you'll need to enable it in your ```config.yml``` by editing ```sellall: false``` to ```sellall: true``` (by default's on false) and restart the server.
+Also if you want give a look to the ```sellallconfig.yml``` and customize it.
+
+*THE CONFIG SHOULD LOOKS LIKE THIS:*
+_It might even be slightly different but it doesn't matter_
+
+```
+Options:
+  GUI_Enabled: 'true'
+  GUI_Permission_Enabled: 'true'
+  GUI_Permission: prison.admin
+  Sell_Permission_Enabled: 'false'
+  Sell_Permission: prison.admin
+  Add_Permission_Enabled: 'true'
+  Add_Permission: prison.admin
+  Delete_Permission_Enabled: 'true'
+  Delete_Permission: prison.admin
+  Player_GUI_Enabled: 'true'
+  Player_GUI_Permission_Enabled: 'false'
+  Player_GUI_Permission: prison.sellall.playergui
+  Multiplier_Enabled: 'true'
+  Multiplier_Default: '1'
+  Multiplier_Command_Permission_Enabled: 'true'
+  Multiplier_Command_Permission: prison.admin
+```
+
+###Then, you can do two things:
+* If you're lazy or just don't want to do a ton of math like me, there's a default setup command which will add all the blocks
+you should need for a Prison server with preset values, the command's ```/sellall setdefault```.
+Then you could also edit these values if you don't like them with the command ```/sellall edit <ITEM_ID> <VALUE>```, for example ```/sellall edit COAL_ORE 75``` ; or 
+remove blocks with the command ```/sellall delete <ITEM_ID>```.
+
+* You can edit values or remove blocks even from the GUI ```/sellall gui```, there's a _similar GUI_ with the _same command_ for 
+players **without** special permissions with just the blocks and their values as an info.
+
+**OR**
+
+* Add all the blocks by yourself with your values with the command ```/sellall add <ITEM_ID> <VALUE>```, for example ```/sellall add COAL_ORE 75```.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#ADVANCED FEATURES
+
+**Multipliers:**
+
+To use this feature, you'll need to enable prestiges in your ```config.yml``` by editing ```prestiges: false``` to ```prestiges: true```, add some Prestiges and enable
+multipliers in your sellallconfig.yml by editing ```Multiplier_Enabled: false``` to ```Multiplier_Enabled: true```.
+
+The command ```/sellall multiplier``` will show all the sub-commands of this feature, right now there're only 2 commands:
+```
+/sellall multiplier add <Prestige> <Multiplier>
+/sellall multiplier delete <Prestige>
+```
+
+
+The first one will add a Multiplier to a Prestige and the second will remove it.
+
+How Multipliers work -> they'll just multiply the value of what you sold, for example: Your items worth ```$1000``` and you have a multiplier of ```1```,
+so ```1000 * 1 = 1000``` is what you'll get (by default this's the value in the sellallconfig.yml), but if you've a Prestige with a multiplier of maybe ```1.5```, then
+you'll get ```1000 * 1.5 = 1500```, this isn't even hard math but could make you some confusion. 
+
+#LIST OF COMMANDS
+```
+/sellall
+Will show a list of commands to admin and sell items to those who aren't admins or players with special permissions.
+
+/sellall sell
+Will sell the items of your inventory.
+
+/sellall add <ITEM_ID> <VALUE>
+Add an ITEM/BLOCK to the sellall config.
+
+/sellall delete <ITEM_ID>
+Delete an ITEM/BLOCK from the sellall config.
+
+/sellall edit <ITEM_ID> <VALUE>
+Edit an ITEM/BLOCK of the sellall config.
+
+/sellall GUI
+Open an ADMIN GUI to admins where you can edit blocks values or remove them or open a PLAYERS GUI to player where they can see values of blocks.
+
+/sellall multiplier
+Will show a list of multiplier sub-commands.
+
+/sellall multiplier add <Prestige> <Multiplier>
+Will setup a multiplier to that prestige.
+
+/sellall multiplier delete <Prestige>
+Will remove a multiplier from the prestige.
+```
+
+And this's all, I hope this will help you all and also hope I didn't miss something, feel free to report your issues in our discord server or here on github!

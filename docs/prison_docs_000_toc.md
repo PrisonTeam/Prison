@@ -86,6 +86,11 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 
+* [Setting up SellAll](prison_docs_113_setting_up_sellall.md)	
+    What's SellAll, how to use it and set up (Including sellall **multipliers**).
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
