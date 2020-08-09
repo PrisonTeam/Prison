@@ -9,6 +9,8 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 
+import java.util.Objects;
+
 /**
  * @author GABRYCA
  */
@@ -17,7 +19,7 @@ public class PrestigesCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true"))) {
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestiges")).equalsIgnoreCase("true"))) {
             sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
             return true;
         }

@@ -8,7 +8,7 @@ debug: false
 check-updates: true
 send-metrics: true
 show-alerts: true
-prestiges: false
+prestiges: true
 
 # This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some blocks or some picks, the player can
@@ -19,7 +19,7 @@ slime-fun: false
 prison-gui-enabled: true
 
 # Enable or disable the SellAll command and sub-commands
-sellall: false
+sellall: true
 
 # Startup testing of available blocks within prison. Tests three kinds of
 # sources: Prison's BlockType, XMaterial's blocks (should mirror what's avaiable

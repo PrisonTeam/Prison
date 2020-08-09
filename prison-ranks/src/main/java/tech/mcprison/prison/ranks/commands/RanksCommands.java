@@ -41,7 +41,13 @@ public class RanksCommands {
         	description = "If player has no permission to /ranks then /ranks list will be ran instead.") 
     			String ladderName) {
         if (!sender.hasPermission("ranks.admin")) {
-            sender.dispatchCommand("ranks list " + ladderName);
+            if (ladderName.equalsIgnoreCase("default")){
+                sender.dispatchCommand("prisonmanager ranks");
+            } else if (ladderName.equalsIgnoreCase("prestiges")){
+                sender.dispatchCommand("prisonmanager prestiges");
+            } else {
+                sender.dispatchCommand("ranks list " + ladderName);
+            }
         } else {
             sender.dispatchCommand("ranks help");
         }

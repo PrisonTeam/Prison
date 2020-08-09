@@ -119,11 +119,11 @@ public class SellAllCommands implements CommandExecutor {
 	    valueSaver("COBBLESTONE", 50, sender);
 	    valueSaver("STONE", 50, sender);
         valueSaver("COAL",50, sender);
-        valueSaver("COAL_BLOCK", 300, sender);
+        valueSaver("COAL_BLOCK", 450, sender);
         valueSaver("IRON_INGOT",75, sender);
         valueSaver("IRON_BLOCK",600, sender);
         valueSaver("REDSTONE", 101, sender);
-        valueSaver("REDSTONE_BLOCK", 492, sender);
+        valueSaver("REDSTONE_BLOCK", 909, sender);
         valueSaver("GOLD_INGOT", 122, sender);
         valueSaver("GOLD_BLOCK", 1100, sender);
         valueSaver("DIAMOND", 200, sender);
