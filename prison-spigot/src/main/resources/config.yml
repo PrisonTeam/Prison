@@ -17,6 +17,18 @@ slime-fun: false
 
 # Enable or disable all the GUIs, for more options please check inside the GuiConfig.yml
 prison-gui-enabled: true
+# Enable or disable /mines to open the GUI to players (This won't works with OPs or
+# admins who have the permission mines.admin or prison.admin)
+# This command's only a shortcut of /prisonmanager mines
+mines-gui-enabled: true
+# Enable or disable /ranks to open the GUI to players (This won't works with OPs or
+# admins who have the permission ranks.admin or prison.admin)
+# This command's only a shortcut of /prisonmanager ranks
+ranks-gui-enabled: true
+# Enable or disable /ranks prestiges
+# /ranks prestiges's a shortcut of /prisonmanager prestiges and the same of the /prestiges shortcut
+ranks-gui-prestiges-enabled: true
+# For /prestiges and more options for the GUIs edit the GuiConfig.yml
 
 # Enable or disable the SellAll command and sub-commands
 sellall: true

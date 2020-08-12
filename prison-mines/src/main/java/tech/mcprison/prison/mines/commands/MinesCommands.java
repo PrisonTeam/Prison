@@ -74,16 +74,6 @@ public class MinesCommands {
         return true;
     }
 
-	@Command(identifier = "mines", onlyPlayers = false,
-			altPermissions = {"-none-", "mines.admin"})
-	public void minesGuiCommand(CommandSender sender) {
-		if (!sender.hasPermission("mines.admin")) {
-			sender.dispatchCommand("prisonmanager mines");
-		} else {
-			sender.dispatchCommand("mines help");
-		}
-	}
-
     @Command(identifier = "mines create", description = "Creates a new mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,

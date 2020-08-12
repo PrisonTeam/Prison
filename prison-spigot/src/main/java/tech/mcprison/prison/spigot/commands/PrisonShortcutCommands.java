@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.commands;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -44,5 +45,34 @@ public class PrisonShortcutCommands {
 		}
     	String formatted = "prisonmanager gui";
 		Prison.get().getPlatform().dispatchCommand(sender, formatted);
+	}
+
+	@Command(identifier = "mines", onlyPlayers = false,
+			altPermissions = {"-none-", "mines.admin"})
+	public void minesGuiCommand(CommandSender sender) {
+		if (!sender.hasPermission("mines.admin") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("mines-gui-enabled")).equalsIgnoreCase("true")) {
+			sender.dispatchCommand("prisonmanager mines");
+		} else {
+			sender.dispatchCommand("mines help");
+		}
+	}
+
+	@Command(identifier = "ranks", onlyPlayers = false,
+			altPermissions = {"-none-", "ranks.admin"})
+	public void baseCommand(CommandSender sender,
+							@Arg(name = "ladder", def = "default",
+									description = "If player has no permission to /ranks then /ranks list will be ran instead.")
+									String ladderName) {
+		if (!sender.hasPermission("ranks.admin")) {
+			if (ladderName.equalsIgnoreCase("default") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("ranks-gui-enabled")).equalsIgnoreCase("true")){
+				sender.dispatchCommand("prisonmanager ranks");
+			} else if (ladderName.equalsIgnoreCase("prestiges") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("ranks-gui-prestiges-enabled")).equalsIgnoreCase("true")){
+				sender.dispatchCommand("prisonmanager prestiges");
+			} else {
+				sender.dispatchCommand("ranks list " + ladderName);
+			}
+		} else {
+			sender.dispatchCommand("ranks help");
+		}
 	}
 }

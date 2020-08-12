@@ -34,25 +34,6 @@ import tech.mcprison.prison.util.Text;
  */
 public class RanksCommands {
 
-    @Command(identifier = "ranks", onlyPlayers = false, 
-    		altPermissions = {"-none-", "ranks.admin"})
-    public void baseCommand(CommandSender sender,
-        @Arg(name = "ladder", def = "default", 
-        	description = "If player has no permission to /ranks then /ranks list will be ran instead.") 
-    			String ladderName) {
-        if (!sender.hasPermission("ranks.admin")) {
-            if (ladderName.equalsIgnoreCase("default")){
-                sender.dispatchCommand("prisonmanager ranks");
-            } else if (ladderName.equalsIgnoreCase("prestiges")){
-                sender.dispatchCommand("prisonmanager prestiges");
-            } else {
-                sender.dispatchCommand("ranks list " + ladderName);
-            }
-        } else {
-            sender.dispatchCommand("ranks help");
-        }
-    }
-
     @Command(identifier = "ranks create", description = "Creates a new rank", 
     											onlyPlayers = false, permissions = "ranks.create")
     public void createRank(CommandSender sender,
