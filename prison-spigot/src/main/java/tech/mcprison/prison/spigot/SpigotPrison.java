@@ -50,8 +50,6 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrestigesCommands;
-import tech.mcprison.prison.spigot.commands.PrestigesPrestigeCommand;
 import tech.mcprison.prison.spigot.commands.PrisonShortcutCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -152,9 +150,6 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
 
-
-        getCommand("prestige").setExecutor(new PrestigesPrestigeCommand());
-        getCommand("prestiges").setExecutor(new PrestigesCommands());
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
         
         // Only register the command if not enabled so it will not conflict with other sellall plugins:

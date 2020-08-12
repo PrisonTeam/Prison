@@ -54,7 +54,11 @@ ranks-gui-enabled: true
 
 # NEW: /ranks prestiges's a shortcut of /prisonmanager prestiges and the same as the /prestiges shortcut
 ranks-gui-prestiges-enabled: true
-# For /prestiges and more options for the GUIs edit the GuiConfig.yml
+
+# NEW: /prestiges command which opens the Prestiges GUI, this's basically a shortcut of the /prisonmanager prestiges
+prestiges-gui-enabled: true
+# There're more options for the GUIs, please edit the GuiConfig.yml
+
 
 # NEW: Enable or disable the SellAll command and sub-commands
 sellall: false

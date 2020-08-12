@@ -1,10 +1,23 @@
 package tech.mcprison.prison.spigot.commands;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 import java.util.Objects;
@@ -13,10 +26,10 @@ import java.util.Objects;
  * @author RoyalBlueRanger
  * @author GABRYCA
  */
-public class PrisonShortcutCommands {
+public class PrisonShortcutCommands implements Listener {
 
 	/**
-	 * <p>This command, <b>/Prison gui</b> is more of convenience command which
+	 * <p>This command, <b>/Prison gui</b> and many others are more of convenience commands which
 	 * allows access to the gui from the base /prison commands. This will allow
 	 * the players to find it easier, and it will also be easier to recall.
 	 * </p>
@@ -29,6 +42,27 @@ public class PrisonShortcutCommands {
 	 * 
 	 * @param sender
 	 */
+
+	boolean isChatEventActive;
+	int id;
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onChat(AsyncPlayerChatEvent e) {
+		if (isChatEventActive){
+			Player p = e.getPlayer();
+			String message = e.getMessage();
+			Bukkit.getScheduler().cancelTask(id);
+			if (message.equalsIgnoreCase("cancel")){
+				isChatEventActive = false;
+				p.sendMessage(SpigotPrison.format("&cPrestige cancelled"));
+				e.setCancelled(true);
+			} else if (message.equalsIgnoreCase("confirm")){
+				Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
+				e.setCancelled(true);
+				isChatEventActive = false;
+			}
+		}
+	}
 
     @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.", 
 			permissions = "prison.gui", onlyPlayers = true)
@@ -49,7 +83,7 @@ public class PrisonShortcutCommands {
 
 	@Command(identifier = "mines", onlyPlayers = false,
 			altPermissions = {"-none-", "mines.admin"})
-	public void minesGuiCommand(CommandSender sender) {
+	public void minesGUICommand(CommandSender sender) {
 		if (!sender.hasPermission("mines.admin") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("mines-gui-enabled")).equalsIgnoreCase("true")) {
 			sender.dispatchCommand("prisonmanager mines");
 		} else {
@@ -59,12 +93,12 @@ public class PrisonShortcutCommands {
 
 	@Command(identifier = "ranks", onlyPlayers = false,
 			altPermissions = {"-none-", "ranks.admin"})
-	public void baseCommand(CommandSender sender,
+	public void ranksGUICommand(CommandSender sender,
 							@Arg(name = "ladder", def = "default",
 									description = "If player has no permission to /ranks then /ranks list will be ran instead.")
 									String ladderName) {
 		if (!sender.hasPermission("ranks.admin")) {
-			if (ladderName.equalsIgnoreCase("default") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("ranks-gui-enabled")).equalsIgnoreCase("true")){
+			if ((ladderName.equalsIgnoreCase("default") || ladderName.equalsIgnoreCase("ranks")) && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("ranks-gui-enabled")).equalsIgnoreCase("true")){
 				sender.dispatchCommand("prisonmanager ranks");
 			} else if (ladderName.equalsIgnoreCase("prestiges") && Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("ranks-gui-prestiges-enabled")).equalsIgnoreCase("true")){
 				sender.dispatchCommand("prisonmanager prestiges");
@@ -73,6 +107,28 @@ public class PrisonShortcutCommands {
 			}
 		} else {
 			sender.dispatchCommand("ranks help");
+		}
+	}
+
+	@Command(identifier = "prestiges", onlyPlayers = true, altPermissions = {"-none-", "prison.admin"})
+	public void prestigesGUICommand(CommandSender sender){
+
+		if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestiges")).equalsIgnoreCase("true"))) {
+			sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
+			return;
+		}
+
+		if (Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestiges-gui-enabled")).equalsIgnoreCase("true")) {
+			sender.dispatchCommand( "prisonmanager prestiges");
+		} else {
+			sender.dispatchCommand( "ranks list prestiges");
+		}
+	}
+
+	@Command(identifier = "prestige", onlyPlayers = true, altPermissions = "-none-")
+	public void prestigesPrestigeCommand(CommandSender sender) {
+		if (Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestiges")).equalsIgnoreCase("true")) {
+			sender.dispatchCommand("prisonmanager prestige");
 		}
 	}
 }

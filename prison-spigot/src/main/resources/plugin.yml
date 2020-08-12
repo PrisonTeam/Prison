@@ -12,12 +12,6 @@ commands:
   prisonmanager:
     description: Call a fancy GUI where manage the ranks and mines
     usage: /<command> gui
-  prestiges:
-    description: Prestiges command list
-    usage: /<command>
-  prestige:
-    description: Prestige
-    usage: /<command>
   sellall:
     description: SellAll Command and SubCommands
     usage: /<command> <args>
