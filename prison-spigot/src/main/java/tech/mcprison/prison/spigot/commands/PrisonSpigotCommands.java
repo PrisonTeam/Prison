@@ -13,6 +13,8 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
+import java.util.Objects;
+
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger
@@ -59,16 +61,16 @@ public class PrisonSpigotCommands implements CommandExecutor {
     }
 
     private boolean prisonmanagerPrestiges(CommandSender sender, Player p, Configuration guiConfig) {
-        if (!(SpigotPrison.getInstance().getConfig().getString("prestiges").equalsIgnoreCase("true"))) {
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestiges")).equalsIgnoreCase("true"))) {
             sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
             return true;
         }
-        if (!(guiConfig.getString("Options.Prestiges.GUI_Enabled").equalsIgnoreCase("true"))) {
+        if (!(Objects.requireNonNull(guiConfig.getString("Options.Prestiges.GUI_Enabled")).equalsIgnoreCase("true"))) {
             sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
             return true;
         }
-        if (guiConfig.getString("Options.Prestiges.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
-            if (!(sender.hasPermission(guiConfig.getString("Options.Prestiges.Permission_GUI")))){
+        if (Objects.requireNonNull(guiConfig.getString("Options.Prestiges.Permission_GUI_Enabled")).equalsIgnoreCase("true")) {
+            if (!(sender.hasPermission(Objects.requireNonNull(guiConfig.getString("Options.Prestiges.Permission_GUI"))))){
                 sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Prestiges.Permission_GUI") + "]"));
                 return true;
             }
@@ -82,12 +84,12 @@ public class PrisonSpigotCommands implements CommandExecutor {
     }
 
     private boolean prisonmanagerMines(CommandSender sender, Player p, Configuration guiConfig) {
-        if (!(guiConfig.getString("Options.Mines.GUI_Enabled").equalsIgnoreCase("true"))){
+        if (!(Objects.requireNonNull(guiConfig.getString("Options.Mines.GUI_Enabled")).equalsIgnoreCase("true"))){
             sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
             return true;
         }
-        if (guiConfig.getString("Options.Mines.Permission_GUI_Enabled").equalsIgnoreCase("true")){
-            if (!(sender.hasPermission(guiConfig.getString("Options.Mines.Permission_GUI")))){
+        if (Objects.requireNonNull(guiConfig.getString("Options.Mines.Permission_GUI_Enabled")).equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(Objects.requireNonNull(guiConfig.getString("Options.Mines.Permission_GUI"))))){
                 sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Mines.Permission_GUI") + "]"));
                 return true;
             }
@@ -101,12 +103,12 @@ public class PrisonSpigotCommands implements CommandExecutor {
     }
 
     private boolean prisonmanagerRanks(CommandSender sender, Player p, Configuration guiConfig) {
-        if (!(guiConfig.getString("Options.Ranks.GUI_Enabled").equalsIgnoreCase("true"))) {
+        if (!(Objects.requireNonNull(guiConfig.getString("Options.Ranks.GUI_Enabled")).equalsIgnoreCase("true"))) {
             sender.sendMessage(SpigotPrison.format("&cSorry, but this GUI's disabled in your GuiConfig.yml"));
             return true;
         }
-        if (guiConfig.getString("Options.Ranks.Permission_GUI_Enabled").equalsIgnoreCase("true")) {
-            if (!(sender.hasPermission(guiConfig.getString("Options.Ranks.Permission_GUI")))) {
+        if (Objects.requireNonNull(guiConfig.getString("Options.Ranks.Permission_GUI_Enabled")).equalsIgnoreCase("true")) {
+            if (!(sender.hasPermission(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Permission_GUI"))))) {
                 sender.sendMessage(SpigotPrison.format("&cSorry, but you're missing the permission to open this GUI [" + guiConfig.getString("Options.Ranks.Permission_GUI") + "]"));
                 return true;
             }

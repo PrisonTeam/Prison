@@ -49,7 +49,6 @@ public class SellAllCommands implements CommandExecutor {
     	File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     	FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
 
-
     	// If the args are 0, if the player's a prison admin or OP he'll get an help message, else will be like a shortcut of the /sellall sell command
         if (args.length == 0){
             if (sender.hasPermission("prison.admin") || sender.isOp()) {

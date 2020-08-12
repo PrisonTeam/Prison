@@ -52,7 +52,7 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrestigesCommands;
 import tech.mcprison.prison.spigot.commands.PrestigesPrestigeCommand;
-import tech.mcprison.prison.spigot.commands.PrisonGuiCommands;
+import tech.mcprison.prison.spigot.commands.PrisonShortcutCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
@@ -167,7 +167,7 @@ public class SpigotPrison extends JavaPlugin {
         
         new SpigotListener(this).init();
 
-        Prison.get().getCommandHandler().registerCommands(new PrisonGuiCommands());
+        Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
         
         initIntegrations();
         initModules();

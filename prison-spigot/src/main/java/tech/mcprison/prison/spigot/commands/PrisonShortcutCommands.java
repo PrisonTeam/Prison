@@ -6,11 +6,13 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
+import java.util.Objects;
+
 /**
  * @author RoyalBlueRanger
  * @author GABRYCA
  */
-public class PrisonGuiCommands {
+public class PrisonShortcutCommands {
 
 	/**
 	 * <p>This command, <b>/Prison gui</b> is more of convenience command which
@@ -31,7 +33,7 @@ public class PrisonGuiCommands {
 			permissions = "prison.gui", onlyPlayers = true)
 	public void prisonGui(CommandSender sender) {
 
-    	if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+    	if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
 			sender.sendMessage(SpigotPrison.format("&cThe GUI's disabled, if you want to use it, edit the config.yml!"));
 			return;
 		}
