@@ -72,7 +72,7 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 * [Setting up Ranks & Ladders](prison_docs_102_setting_up_ranks.md)
-	**-+= Coming Soon! =+-** Configuring and using Ranks and Ladders.
+	**-+= New! Work In Progress! =+-** Configuring and using Ranks and Ladders.
 
 
 

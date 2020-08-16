@@ -6,12 +6,330 @@
 
 This document provides information how to setup and use ranks and ladders.
 
+Information on how to use Prestiges is provided in a separate document: [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
+
+
+The use of Ranks, Ladders, and Prestiges are all optional.  You can either use these Prison based items, or you can use some other plugin to provide these functionalities.  The choice is yours.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
 # Overview
 
-Coming soon!
+
+Prison is more than just mines. Mines provides the physical content of your server.  It's the ranks and the ladders that ties everything together.  It's the Ranks that provides the hooks in to all of your server's other plugins through the use of Rank Commands.  And it's the ladders that provides a logical progression from one rank to the next.
+
+
+Prison Ranks can be very simple in that they don't have to do much. They don't even need to have any Rank Commands, but its through the Rank Commands that provides the power to customize your server in almost any way you can dream.  
+
+
+Ladders are a way to logically organize your ranks.  The concept is a just like a ladder where you start at the bottom, and to progress up the ladder, one rank (rung) at a time.  You cannot skip ranks, but you can also go back down the ladder too.  Only admins can demote players, since that's not part of the normal Prison game play.
+
+
+Prison also provides a number of Admin based commands to manage ranks and ladders.  Obviously the standards on how to create and edit the Ranks and Ladders, but also Prison provides the tools to manage players within the various ranks and ladders too.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Ranks
+
+There are many different ways you can setup your Prison server and ranks is just one small part of how you can customize everything.
+
+
+One way to do ranks is to have a few prison ranks, with working to a "free" rank and beyond.  Example would be ranks in the following order:  D (default), C, B, A, Free, Citizen, Elite, Rules, Emperor.  Where ranks D through A are restricted to the mines within the prison, but then Free and higher have access to the free worlds to gather resources, build bases, and other things such as even factions.  A few examples provides screen prints with this design since it's generally fewer overall ranks.
+
+
+Another type of prison game mode is more along the lines of an OP based Prison server where ranks run from A through Z with prestiges and even rebirths.  Where the costs of ranking up becomes significantly higher with each rank, but yet the ores and blocks you can mine have much greater worth.  The tools are generally very OP and beyond the normal safe enchantments.
+
+
+This documentation uses setups that are fairly simple.  The mine names also matches the rank names, but they don't have to.  Matter of fact, the rank name and mine names can be almost anything to allow the most flexibility for your setup.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Adding Ranks
+
+
+Adding Ranks is pretty simple.
+
+
+The command to add a rank is as follows, along with the help generated for it:
+
+```
+/ranks create [rankName] [cost] [ladder] [tag]
+
+/ranks create help
+```
+
+The first rank you add will become the default rank on the ladder in which you add the rank.  As you add more ranks, they will be added to the ladder in the order in which they were added.
+
+
+If you need to change the order of a rank, or even move it to another ladder, you can use the command: `/ranks ladder addrank`. Ranks do not have to be associated with a ladder and with this command, you can actually remove the ladder from the rank, or move it around.  See that command under ladders for more information.
+
+
+The `cost` for the default rank, or the first rank on a ladder, should have a value of zero if you expect new players to gain this rank when they join the server.  It doesn't have to have a zero cost, but it depends upon what your needs are.  If the ladder is not the **default** ladder, then the odds are that the rank is not going to be zero.
+
+
+The `ladder` field for this command is the ladder name to which the new rank will be assigned.  If it is a rank that is based upon prison mining and advancement, then the **default** ladder should be used.  The **default** ladder name is simply **default** and it does not have to be provided if there are no other parameters that follows.  If you want to provide a `tag` name then just use a value of `default` for that parameter.
+
+
+The `tag` parameter is the fancy display name for this given rank. You do not have to specify it on this create command, since you can always add it, or change it later with the `/ranks set tag` command.  The tag generally contains additional formatting characters such as color codes and even brackets or other characters.  It does not have to contain the rank's name.  The tag is what is generally used in placeholders for its special formatting.
+
+For example a default prestige rank may simply be something like this with the emphasis on the plus sign: `&d[&6+&d]`
+
+
+
+<img src="images/prison_docs_102_setting_up_ranks_1.png" alt="Creating Ranks" title="Creating Ranks" width="600" /> 
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Rank Information
+
+Information on a rank can be viewed by using the following command:
+
+```
+/ranks info [rankName]
+
+/ranks info help
+```
+
+This example of rank information includes a rank that has a custom currency.  *See more information below on custom currencies.*  If a rank does not have a custom currency, then it will not show the currency information.
+
+
+<img src="images/prison_docs_102_setting_up_ranks_4.png" alt="Rank Info" title="Rank Info" width="600" /> 
+
+
+
+#Rank Listings
+
+To list all ranks for a given ladder use the following command:
+
+```
+/ranks list [ladderName]
+
+/ranks list help
+```
+
+The `ladderName` parameter is optional and will default to a value of **default**.  To view ranks on another ladder, then you must use that ladder's name.  But please notice, that at the bottom of the listing, it shows what other ladders are available to be used with this command. If you use this command in game, then you can click on those displayed commands to show those listings.
+
+<img src="images/prison_docs_102_setting_up_ranks_5.png" alt="Listing Ranks" title="Listing Ranks" width="600" /> 
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+#Deleting Ranks
+
+Ranks can be deleted, but when they are, they are simply just removed from Prison and no longer loaded.  Deleted Ranks can be undeleted.
+
+To delete a rank, use the following command:
+```
+/ranks delete [rankName]
+```
+
+Ranks are stored within the server's file system in the following path starting from the server's main directory:
+
+```
+/plugins/Prison/data_storage/ranksDb/ranks/
+```
+
+Internally, all ranks are assigned a serial number which is used to identify the rank.  The number starts with a 0 and is incremented as more ranks are added.  Ranks that are deleted, may have new ranks reuse the same number.
+
+
+This internal serial number is what Mojang would consider a magic number.  In a future version of prison, these magic numbers will probably be eliminated.  Their elimination will not impact preexisting prison configurations moving forward, but could impact the ability to down grade prison to an older release.
+
+When a rank is deleted, it is removed from memory, and the file that is saved in the above directory path is renamed and ignored the next time prison is started.  For example, if a rank's file name is **rank_2.json** then when it is deleted it will be renamed **.deleted_rank_2.json_<timestamp>.del**.  Such that it may look like this: **.deleted_rank_2.json_2020-08-16_13-49-27.del**
+
+To undelete a deleted rank, first shut down the server.  Then go in to the server's directory above and rename the deleted file back to it's original name.  If that name is taken by another rank, then you must rename it to have a magic number that is not being used by another rank, plus you must also change the internal value of the field "id" in that json file to match the new number that you assigned to it.
+
+For example, with the file name originally being **rank_2.json** and it was deleted and assigned the new name of **.deleted_rank_2.json_2020-08-16_13-49-27.del**. Plus if numbers 0 through 36 are taken, and you must rename it with the serial number of 37: **rank_37.json** then change the internal value of "id" to match:
+
+```
+{
+  "cost": 3500000.0,
+  "name": "guardian_of_zool",
+  "currency": "zoolian_hearts",
+  "id": 37,
+  "tag": "&4[&b&ka&bGuardian of &eZool&b&ka&4]",
+  "commands": []
+}
+```
+
+The above shows how "id" has been updated to a value of `37`.  It also shows that this rank uses a custom currency named **zoolian_hearts**.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Changing a Rank's Cost
+
+The Rank's cost is initially set when creating a rank, but it can be changed at any time. The command to change the cost is:
+
+```
+/ranks set cost [rankName] [cost]
+
+/ranks set cost help
+```
+
+The cost of the rank can be any value, up to the max value allowed by a Java double.  The limitations of what can be stored in a double is also constrained by Java too.  
+
+As an example, you can be able to use a really large value for a cost, but you may not be able to set the one's digit of that value.  For example if you assign a cost of 214748364952382342, note that the last three digits are 342.  But when you view the cost that is actually assigned to the rank, it will show the last three digits as 336.  This is not an error, but a limitation with how floating numbers, such as doubles, work within computers in general.  This is related to the fact the number is stored in more than one part, of which the mantissa and exponent are most significant for costs.  If you're going to use really huge values for a cost, you must understand you cannot control some of the digits of a double.
+
+
+<img src="images/prison_docs_102_setting_up_ranks_2.png" alt="Creating Ranks" title="Creating Ranks" width="600" /> 
+
+
+
+
+If you are going to assign the rank a custom currency, then you can set the currency at any time, before or after changing the cost.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Changing a Rank's Currency
+
+
+Prison supports custom currencies, instead of the default currency that is used with most plugins such as Vault or Essentials.
+
+
+In order to use any default currency, you first must have a plugin that prison recognizes that supports multiple currencies and that must be a valid currency within that plugin prior to its use.
+
+
+Currently the only plugin that Prison supports for custom currencies is GemsEconomy.  GemsEconomy can be used in addition to the default currency as accessed through Vault.  At this time, Vault does not support custom currencies, so Prison must be have an integration that supports it.
+
+
+All custom currencies will be validated when they are assigned, changed, or loaded upon server startup.  If a custom currency has been added to a Rank, but then removed from the server (removal of the plugin or deletion within the plugin) then Prison will prevent usage of that Rank by the players, even if they had sufficient amounts of that currency since there is no way to perform any of the transactions against it.  Upon server startup, if Prison detects that a currency is no long supported, it will display a warning with related details.
+
+
+When Prison is looking for support of a custom currency, it checks all registered economy plugins that have support for custom currencies, and then checks each of those economy plugins to see if any of them supports the custom currency.  This actually allows a server environment to use many different economy plugins, even multiple custom currency plugins.
+
+
+To add a currency to a Rank, first create the rank and give it a cost.  You cannot assign a custom currency initially, but that's alright and that's expected.
+
+
+Then associate a custom currency with the rank:
+
+```
+/ranks set currency [rankName] [currency]
+
+/ranks set currency help
+```
+
+The currency must exist in one of your economies.  How to add it is beyond the scope of Prison's support and this documentation.
+
+
+To currency can be changed to any other custom currency by using this command again. 
+
+
+The currency can also be removed, and set back to the default, by leaving the currency name blank.  For example this removes a custom currency and returns it to a standard currency.
+
+
+```
+/ranks set currency [rankName]
+```
+
+
+The following is an example of a custom currency, named "puurr" that no long exists with in the server since the GemsEconomy plugin is not currently active.
+
+
+<img src="images/prison_docs_102_setting_up_ranks_3.png" alt="Custom Currency Failure" title="Custom Currency Failure" width="600" /> 
+
+
+Even though in the above example the custom currency "puurr" does not exist, players cannot rank up to the **Free** rank since Prison cannot confirm that it is a valid currency.  But admins can use `/ranks promote`, `/ranks demote`, and even `/ranks set rank` to force a player to have those ranks.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+#Changing a Rank's Tag
+
+
+A Rank's tag is a formatted String value that is intended to be used with placeholders when special formatting is needed, or desired, for a given Rank. The tag value can be set when the Rank is initially created, or at any other time.  If a tag is not defined, then any access of the tag through placeholders will only return the Rank's name.
+
+
+To change a tag use the following command:
+
+```
+/ranks set tag [rankName] [tag]
+
+/ranks set tag help
+```
+
+All valid color and formatting codes that are based upon the `&` symbol can be used.
+
+
+For example: &0 - &9, &a - &f, &k (magic), &l (bold), &m (strike through), &n (underline), &o (italic), and &r (reset).  Google Image search "minecraft color codes" for graphic represtations for what those codes represent.  Note that the magic value is controlled by the character that follows it.  So if you have `&kaaaa` it will cycle through four magic values and they will all be in sync. But if you have `&kabca` then only the first and fourth digits will be sync'd and `b` and `c` will be viewed as different values.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Showing a Player's Ranks
+
+A player may only have zero or one active rank per ladder.  But since a player can have active ranks in more than one ladder, this command will show all ranks within all ladders that are available for the given player.
+
+```
+/ranks player [playerName]
+
+/ranks player help
+```
+
+This command will show the Player's name, the given ladder and the rank name.  If the player is not at the highest rank, then it will also show what the next rank's name is, along with the cost to achieve that rank.  If the rank has a custom currency, that too will be displayed.
+
+
+The following screen print shows the status of two different players. The **default** ladder is the main ladder for doing the prison ranking.  The mobs ladder is a non-related ladder that could represent anything, such as side quests.  The Donor ladder represents a ladder used for donors, of which it could have donor specific mines for the players to use.  And this also shows that one player has prestiged once but the other player has not.
+
+
+<img src="images/prison_docs_102_setting_up_ranks_6.png" alt="Player Ranks" title="Player Ranks" width="600" /> 
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+#Promote, Demote, and Set Rank Commands
+
+Perhaps the most important thing to understand about these three commands is that it is strongly suggested that you should **never** use the `ranks set rank` command.  This will be explained later, and is related to the rank commands that are associated with your ranks.
+
+
+(more to be provided later)
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Rank Commands
+
+(more to be provided later)
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Ladder Commands
+
+(more to be provided later)
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+#This is a work in progress!
+
+More coming soon!
 
 
 Please visit our discord server to ask for help if you need it.
