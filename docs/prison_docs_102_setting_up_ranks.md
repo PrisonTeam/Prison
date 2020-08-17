@@ -301,14 +301,205 @@ The following screen print shows the status of two different players. The **defa
 
 #Promote, Demote, and Set Rank Commands
 
+
 Perhaps the most important thing to understand about these three commands is that it is strongly suggested that you should **never** use the `ranks set rank` command.  This will be explained later, and is related to the rank commands that are associated with your ranks.
 
 
-(more to be provided later)
+The following commands are intended for the use of admins only.  They are to be used for setting up test accounts to see how their server is working, and to help address rank issues that players may be experiencing. 
+
+
+```
+/ranks promote [playerName] [ladder] [chargePlayers]
+/ranks demote [playerName] [ladder] [chargePlayers]
+/ranks set rank [playerName] [rankName] [ladder]
+
+/ranks promote help
+/ranks demote help
+/ranks set rank help
+```
+
+
+**Warning: Risk of corruption of player ranks:**
+Promote and demote changes the player's rank by just one rank.  This is important because if you need to promote a player 3 ranks, and you run this command three times, then all rankup commands are properly ran for the player and when you promote then to the final rank, they will have the correct permissons.  If you were to just use `/ranks set rank` and skip the other two ranks, then you risk the player missing important permissions and as such, may require more interventions to correct their ranks.  The `/ranks set rank` command is there in case it needs to be used, but as owner/admin, you need to understand it may corrupt the players rank.
+
+
+Demote is just as important as promote.  Especially since it has been strongly suggested that when you create a rank command, that you include the commands to take away permissions that a player may have gotten in the next higher rank.  If a given rankup command set includes all the commands required for that rank, and all the commands to remove the permissions from the next higher rank, then using `promote` and `demote` will never corrupt any player's rank and will lead to less problems.
+
+
+For the commands's parameter **playerName** is obviously the player's name.
+
+
+The parameter **ladder** is optional, and if not specified will default to the `default` ladder.  If you need to use any other ladder you need to supply the ladder name.
+
+The parameter **rankName** is required and identifies what rank to set the player to.  If there is more than one level of promotion or demotion, then there is a risk of corruption of the player's rank and missing permissions with promotions, or permissions the player should not have access to with demotions.
+
+
+The parameter **chargePlayers** will require that the player has enough of the specific currency for promotions, and will subtract that amount from their bank balance.  If they do not have enough funds, then they will not be ranked up, just as if they ran the command.  If the player is being demoted and this parameter is used, then the player will be issued a refund for the prior rank.  
+
+
+The parameter **chargePlayers** when dealing with custom currency: If this parameter is enabled and the currency for the rank is not valid (removed from the economy, or the economy plugin was removed) then the promotion, or demotion, cannot be ran.  If this parameter is **NOT** used and the custom currency does not exist on the server any longer, then the promote, or demote, commands will be ran ignoring the currency.  The lack of this command can force a player to a rank where there is a custom currency error.
 
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Ladder Overview
+
+
+By default, Prison automatically creates two default ladders so you do not have to create them, you just use them.  These two ladders are called **default** and **prestiges**.  The **default** ladder contains all of the ranks that are associated with the normal Prison play and ranking.  The **prestiges** ladder is strictly for the prestige behavior within prison.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+#Create Ladder Command
+
+This command will create new ladders.  Ladders do not need to have any ranks associated with them.  
+
+```
+/ranks ladder create [ladderName]
+
+/ranks ladder create help
+```
+
+The parameter **ladderName** is the name of the new ladder.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Add Rank to a Ladder
+
+This command will add a rank to the specified ladder.  If the rank was on a different ladder, it will be removed and added to the specified ladder.  The added rank will be added to the end of the ladder if **position** is not specified.  If **position** is specified then this command can be used to move a rank to another position within the ladder.
+
+```
+/ranks ladder addrank [ladderName] [rankName] [position]
+
+/ranks ladder addrank help
+```
+
+The parameter **ladderName** and **rankName** are as expected and described above in the prior commands that have these same parameters.
+
+
+The parameter **position** is optional.  If not specified the specified rank will be added at the end of the ladder.  If specified, it will insert the rank at the specified position, or if it does not exist, then at the end of the ladder. 
+
+
+If the rank already exists within the specified ladder, then this command will move the rank to the specified **position**.  If **position** is not specified, then it will move the rank to the end of the ladder.
+
+
+If the rank already exists in another ladder, it will be moved to the specified ladder to the specified position.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+#Ladder Delete Command
+
+This command will delete the specified ladder.  The ranks that are within the ladder will be unassociated with the removed ladder and all of the ranks will then be ladderless.  Any player that has that rank will be unable to be promoted or demoted until the ranks are added to another ladder, or the ranks are deleted.
+
+```
+/ranks ladder delete [ladderName]
+
+/ranks ladder delete help
+```
+
+*Note: Ladders are treated similar to ranks as far as how they are saved on the server's file system.  The following information is identicial to the ranks.**
+
+
+
+Ladders are stored within the server's file system in the following path starting from the server's main directory:
+
+```
+/plugins/Prison/data_storage/ranksDb/ladders/
+```
+
+Internally, all ladders are assigned a serial number which is used to identify the ladder.  The number starts with a 0 and is incremented as more ranks are added.  Ladders that are deleted, may have new ladders reuse the same number.
+
+
+This internal serial number is what Mojang would consider a magic number.  In a future version of prison, these magic numbers will probably be eliminated.  Their elimination will not impact preexisting prison configurations moving forward, but could impact the ability to down grade prison to an older release.
+
+
+When a ladder is deleted, it is removed from memory, and the file that is saved in the above directory path is renamed and ignored the next time prison is started.  For example, if a ladder's file name is **ladder_3.json** then when it is deleted it will be renamed **.deleted_ladder_3.json_<timestamp>.del**.  Such that it may look like this: **.deleted_ladder_3.json_2020-08-16_13-49-27.del**
+
+To undelete a deleted ladder, first shut down the server.  Then go in to the server's directory above and rename the deleted file back to it's original name.  If that name is taken by another ladder, then you must rename it to have a magic number that is not being used by another ladder, plus you must also change the internal value of the field "id" in that json file to match the new number that you assigned to it.
+
+For example, with the file name originally being **ladder_3.json** and it was deleted and assigned the new name of **.deleted_ladder_3.json_2020-08-16_13-49-27.del**. Plus if numbers 0 through 4 are taken, and you must rename it with the new serial number of 5: **ladder_5.json** then change the internal value of "id" to match:
+
+```
+{
+  "ranks": [
+    { "position": 0, "rankId": 7 },
+    { "position": 1, "rankId": 8 },
+    { "position": 2, "rankId": 11 },
+    { "position": 3, "rankId": 13 },
+    { "position": 4, "rankId": 6 },
+    { "position": 5, "rankId": 15 }
+  ],
+  "maxPrestige": 0,
+  "name": "mobs",
+  "id": 5
+}
+```
+
+The above shows how "id" has been updated to a value of `5`. 
+
+
+As a warning, you must ensure that no other active ladders have the same name, and that none of the specified ranks that are contained in this deleted ladder, are being used within any other ladders.  If either one of these fields are used in another ladder, then you can corrupt your server's list of ranks and ladders and it is unknown how the corruption will impact your server, or what data loss will be permanent and unrecoverable. In other words, the full extent of the corruption is unknown.
+
+
+If you have any doubts on possible conflicts or corruption, then its safer to just create a new ladder and manually move all ranks back in to it.a
+
+Please note that the ladder's use of magic numbers can cause a great deal of problems when undeleting a ladder since it is not obvious which rank is which, or if it they are even used elsewhere without a lot of manual checking of each rank within the file system.  Deleted ranks may be virtually deleted, but if any amount of time has passed such that ranks can be reassigned or deleted and new ones added, then it could be dangerous to undelete a ladder.  Undeleting a ladder is best done before any other changes have happened on the server.  Undeleting a ladder servers as a fail-safe way of undoing an accidental deletion that you may have second thoughts on a few minutes later.
+
+
+
+#Ladder Remove a Rank
+
+This command will remove a rank from a ladder.  In removing the rank, it will not delete the rank, and the given rank will not be associated with any ladder.  Any players that are active on that Rank will be removed fro that rank, such as they would be if the Rank was deleted.
+
+```
+/ranks ladder delrank [ladderName] [rankName]
+
+/ranks ladder delrank help
+```
+
+
+
+#Ladder List
+
+The ladder list command will list all active ladders on the server.  
+
+
+```
+/ranks ladder list
+
+/ranks ladder list help
+```
+
+No other information is provided for the ladders listed.  For more information on a ladder use `/ranks list [ladderName]` or `/ranks ladder listranks [ladderName]` but this last one has less information provided.
+
+
+#Ladder Ranks Listings
+
+This command provides a simple list of ranks associated with the given ladder.  
+
+It is suggested that you use `/ranks list [ladder]` instead of this command since it provides a lot more information than this command.
+
+```
+/ranks ladder listranks [ladderName]
+
+/ranks ladder listranks help
+```
+
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 
 
 #Rank Commands
@@ -316,15 +507,11 @@ Perhaps the most important thing to understand about these three commands is tha
 (more to be provided later)
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-#Ladder Commands
-
-(more to be provided later)
-
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 #This is a work in progress!
