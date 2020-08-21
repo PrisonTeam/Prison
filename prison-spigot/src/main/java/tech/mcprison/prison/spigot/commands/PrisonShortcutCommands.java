@@ -1,23 +1,11 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleManager;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 import java.util.Objects;
@@ -33,38 +21,17 @@ public class PrisonShortcutCommands implements Listener {
 	 * allows access to the gui from the base /prison commands. This will allow
 	 * the players to find it easier, and it will also be easier to recall.
 	 * </p>
-	 * 
+	 *
 	 * <p>The actual gui command, which is <b>/prisonmanager gui</b> is not able to
-	 * be integrated in to the main prison command sets due to the requirement of 
-	 * the gui being native spigot. Cannot mix the two.  But can have /prison gui 
+	 * be integrated in to the main prison command sets due to the requirement of
+	 * the gui being native spigot. Cannot mix the two.  But can have /prison gui
 	 * internally call /prisonmanger gui to give the illusion they are connected.
 	 * </p>
-	 * 
+	 *
 	 * @param sender
 	 */
 
-	boolean isChatEventActive;
-	int id;
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onChat(AsyncPlayerChatEvent e) {
-		if (isChatEventActive){
-			Player p = e.getPlayer();
-			String message = e.getMessage();
-			Bukkit.getScheduler().cancelTask(id);
-			if (message.equalsIgnoreCase("cancel")){
-				isChatEventActive = false;
-				p.sendMessage(SpigotPrison.format("&cPrestige cancelled"));
-				e.setCancelled(true);
-			} else if (message.equalsIgnoreCase("confirm")){
-				Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-				e.setCancelled(true);
-				isChatEventActive = false;
-			}
-		}
-	}
-
-    @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.", 
+    @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.",
 			permissions = "prison.gui", onlyPlayers = true)
 	public void prisonGui(CommandSender sender) {
 
@@ -131,4 +98,5 @@ public class PrisonShortcutCommands implements Listener {
 			sender.dispatchCommand("prisonmanager prestige");
 		}
 	}
+
 }
