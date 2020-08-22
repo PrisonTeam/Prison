@@ -29,6 +29,12 @@
     Commands. Getting help for issues. Upgrading Prison.
 
 
+* [Prison - Prison Configuration Files](prison_docs_014_Prison_Configs.md) **Important**
+    Customizing how Prison works by changing the Config files.
+
+
+
+
 * **Setting up Vault** - (coming soon)
     Including Vault is Strongly Suggested.
     Hint: Download from spigotmc.org and copy jar to plugin folder. Zero setup.

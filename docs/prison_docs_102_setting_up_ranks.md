@@ -504,12 +504,23 @@ It is suggested that you use `/ranks list [ladder]` instead of this command sinc
 
 #Rank Commands
 
-(more to be provided later)
+The use of Rank Commands is what hooks everything together within Prison.  It ties Ranks to mines and even hooks it up to other plugins and custom behaviors. 
 
+A good example of how to use it with LuckPerms can be found in the documentation for [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md).  LuckPerms and WorldGuard is just one use case, but the information provided in that documentation can be applied to any other plugin or another permission plugin.
+
+
+(more information to be added later, for for now, the WorldGuard and LuckPerms document covers a lot of the key features)
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+#Example of using Ranks
+
+(coming soon an example on how to use ranks)
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
