@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.1-alpha.17 - 2020-07-28
 
 
+* **Bug fix: Correctly using magic values with XMaterials** 
+This fixes the usage of the magic value with bukkit/spigot versions prior to 1.13.  The issue was that the only way to set the data value was through the BlockState and I did not force the update.  Now the block type and rawData are being set only within the BlockState and then the update is forced.  This resolves the issue and should work for all block types that rely on using the magic values.
+The way the mapping to the XMaterial was changed to try use the name matching first since they have a high correlation.  Also the the legacy matching is the last resort now.
+
+
 * **Added v1.16.1 now officially supported and added to the test environments**
 Working fine. No issues found.  Now have a working v1.16.1 environment to test from to ensure issues are addressed.
 
