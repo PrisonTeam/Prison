@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -119,25 +120,33 @@ public abstract class Spigot18Blocks
 			results = getCachedXMaterial( blockType, (byte) data );
 			if ( results == null ) {
 				
-				results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
+				// First match by BlockType name:
+				results =  XMaterial.matchXMaterial( blockType.getXMaterialName() ).orElse( null );
 				
+				// do not use... redundant with blockType.getXMaterialName():
+//				results =  XMaterial.matchXMaterial( blockType.name() ).orElse( null );
+
 				if ( results == null ) {
-					results =  XMaterial.matchXMaterial( blockType.name() ).orElse( null );
 					
-					if ( results == null ) {
-						for ( String altName : blockType.getXMaterialAltNames() ) {
-							
-							results =  XMaterial.matchXMaterial( altName ).orElse( null );
-							
-							if ( results != null ) {
-								break;
-							}
+					// Try to match on altNames if they exist:
+					for ( String altName : blockType.getXMaterialAltNames() ) {
+						
+						results =  XMaterial.matchXMaterial( altName ).orElse( null );
+						
+						if ( results != null ) {
+							break;
 						}
 					}
 					
+					if ( results == null ) {
+						
+						// Finally, Try to match on legacy name and magic number:
+						results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
+					}
+					
+					putCachedXMaterial( blockType, (byte) data, results );
 				}
-				
-				putCachedXMaterial( blockType, (byte) data, results );
+
 			}
 
 		}
@@ -181,15 +190,16 @@ public abstract class Spigot18Blocks
 
 
 	
-	
-	
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
     	
     	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
     		
     		XMaterial xMat = getXMaterial( blockType );
     		
-    		updateSpigotBlock( xMat, spigotBlock );
+    		if ( xMat != null ) {
+    			
+    			updateSpigotBlock( xMat, spigotBlock );
+    		}
     	}
     }
 	
@@ -199,13 +209,16 @@ public abstract class Spigot18Blocks
 		if ( xMat != null ) {
 			Material newType = xMat.parseMaterial().orElse( null );
 			if ( newType != null ) {
-				// No physics update:
-				spigotBlock.setType( newType, false );
 				
-				if ( xMat.getData() != spigotBlock.getState().getRawData() ) {
-					spigotBlock.getState().setRawData( xMat.getData() );
-					
-				}
+				BlockState bState = spigotBlock.getState();
+				
+				// Set the block state with the new type and rawData:
+				bState.setType( newType );;
+				bState.setRawData( xMat.getData() );
+				
+				// Force the update but don't apply the physics:
+				bState.update( true, false );
+				
 			}
 		}
 	}
