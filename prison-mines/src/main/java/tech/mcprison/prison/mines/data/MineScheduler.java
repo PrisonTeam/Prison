@@ -68,7 +68,7 @@ public abstract class MineScheduler
 		
 		RESET_BUILD_BLOCKS_ASYNC( JobType.ASYNC ),
 		RESET_ASYNC( JobType.SYNC ),
-		RESET( JobType.SYNC );
+		RESET_SYNC( JobType.SYNC );
 		
 		private final JobType jobType;
 		private MineJobAction(JobType jobType) {
@@ -217,18 +217,18 @@ public abstract class MineScheduler
 					// if reset time is less than warning time, then skip warning:
 					double elapsed = time - total;
 					workflow.add( 
-							new MineJob( workflow.size() == 0 ? MineJobAction.RESET : MineJobAction.MESSAGE, 
+							new MineJob( workflow.size() == 0 ? MineJobAction.RESET_SYNC : MineJobAction.MESSAGE, 
 									elapsed, total) );
 					total += elapsed;
 				}
 			}
 			workflow.add( 
-					new MineJob( workflow.size() == 0 ? MineJobAction.RESET : MineJobAction.MESSAGE, 
+					new MineJob( workflow.size() == 0 ? MineJobAction.RESET_SYNC : MineJobAction.MESSAGE, 
 							(resetTime - total), total) );
 			
 		} else {
 			// Exclude all messages. Only reset mine:
-			workflow.add( new MineJob( MineJobAction.RESET, resetTime, 0) );
+			workflow.add( new MineJob( MineJobAction.RESET_SYNC, resetTime, 0) );
 		}
 		
 		return workflow;
@@ -304,14 +304,14 @@ public abstract class MineScheduler
 
 			case RESET_ASYNC:
 				if ( !skip ) {
-					// Not yet implemented:
+					resetAsynchonously();
 				} else {
 					incrementSkipResetBypassCount();
 				}
 				
 				break;
 				
-			case RESET:
+			case RESET_SYNC:
 				// synchronous reset.  Will be phased out in the future?
 				if ( !skip ) {
 					resetSynchonously();
@@ -471,8 +471,8 @@ public abstract class MineScheduler
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
 		
-		MineJob mineJob = new MineJob( MineJobAction.RESET, delayActionSec, 0);
-		mineJob.setResetType( resetType );;
+		MineJob mineJob = new MineJob( MineJobAction.RESET_SYNC, delayActionSec, 0);
+		mineJob.setResetType( resetType );
 		setCurrentJob( mineJob );
     	
 		// Force reset even if skip is enabled:

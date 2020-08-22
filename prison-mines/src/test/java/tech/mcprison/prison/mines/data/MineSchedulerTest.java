@@ -70,7 +70,7 @@ public class MineSchedulerTest
 			
 			assertEquals( 0, jobStack.size() );
 			
-			assertTrue( job3.getAction() == MineJobAction.RESET );
+			assertTrue( job3.getAction() == MineJobAction.RESET_SYNC );
 			assertEquals( 45.0d, job3.getDelayActionSec(), 0.1d );
 			assertEquals( 0.0d, job3.getResetInSec(), 0.1d );
 			totalTime += job3.getDelayActionSec();
@@ -112,7 +112,7 @@ public class MineSchedulerTest
 		assertEquals( 0L, jobStack.size() );
 		
 		// Tests that the first job that is popped off the stack is a message and not the reset:
-		assertTrue( job.getAction() == MineJobAction.RESET );
+		assertTrue( job.getAction() == MineJobAction.RESET_SYNC );
 		assertEquals( resetTime, job.getDelayActionSec(), 0.1d );
 		
 	}
