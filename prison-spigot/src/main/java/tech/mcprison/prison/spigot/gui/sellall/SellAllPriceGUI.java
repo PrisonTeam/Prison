@@ -28,11 +28,6 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Check if Ranks are enabled
-        if (!(checkRanks(p))){
-            return;
-        }
-
         // Create a new inventory
         int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> ItemValue"));

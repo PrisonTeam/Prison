@@ -30,10 +30,24 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         Configuration conf = SpigotPrison.getSellAllConfig();
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
+        Inventory inv;
+
+        if (guiBuilder(conf, GuiConfig)) return;
+
+        inv = buttonsSetup(conf, GuiConfig);
+        if (inv == null) return;
+
+        this.p.openInventory(inv);
+
+    }
+
+    private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
+
+        Inventory inv;
         if (conf.getConfigurationSection("Items") == null){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
+            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.EmptyGui")));
             p.closeInventory();
-            return;
+            return null;
         }
 
         // Get the Items config section
@@ -43,22 +57,31 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManySellAllItems")));
-            return;
+            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.TooManySellAllItems")));
+            return null;
         }
 
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Player"));
+        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Player"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    GuiConfig.getString("Gui.Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
+                    guiConfig.getString("Gui.Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
             ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
         }
+        return inv;
+    }
 
-        this.p.openInventory(inv);
-
+    private boolean guiBuilder(Configuration conf, Configuration guiConfig) {
+        try {
+            buttonsSetup(conf, guiConfig);
+        } catch (NullPointerException ex){
+            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            ex.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
 }
