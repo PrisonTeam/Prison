@@ -79,8 +79,15 @@ public class MinesCommands {
     public void createCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the new mine.") String mineName) {
 
+    	Player player = getPlayer( sender );
+    	
+    	if (player == null || !player.isOnline()) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+
     	PrisonMines pMines = PrisonMines.getInstance();
-        Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
+        Selection selection = Prison.get().getSelectionManager().getSelection(player);
         if (!selection.isComplete()) {
         	pMines.getMinesMessages().getLocalizable("select_bounds")
                 .sendTo(sender, Localizable.Level.ERROR);
@@ -116,6 +123,13 @@ public class MinesCommands {
     public void spawnpointCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
 
+    	Player player = getPlayer( sender );
+    	
+    	if (player == null || !player.isOnline()) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+    	
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
@@ -1315,6 +1329,13 @@ public class MinesCommands {
     public void mineTp(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName) {
     	
+    	Player player = getPlayer( sender );
+    	
+    	if (player == null || !player.isOnline()) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+
     	// Load mine information first to confirm the mine exists and the parameter is correct:
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
@@ -1437,6 +1458,14 @@ public class MinesCommands {
     
     @Command(identifier = "mines wand", permissions = "mines.wand", description = "Receive a wand to select a mine area.")
     public void wandCommand(Player sender) {
+    	
+    	Player player = getPlayer( sender );
+    	
+    	if (player == null || !player.isOnline()) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		return;
+    	}
+
         Prison.get().getSelectionManager().bestowSelectionTool(sender);
         sender.sendMessage(
             "&3Here you go! &7Left click to select the first corner, and right click to select the other.");
