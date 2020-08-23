@@ -30,7 +30,15 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         // Load configs
         Configuration conf = SpigotPrison.getSellAllConfig();
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
+        
+        if ( conf == null || GuiConfig == null ) {
+        	p.sendMessage("No " + (conf == null ? "sellall" : 
+        								GuiConfig == null ? "gui" : "sellall or gui") + 
+        			" config can be found. Sellall is being shutdown.");
+        	p.closeInventory();
+        	return;
+        }
+        
         if (conf.getConfigurationSection("Items") == null){
             p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
             p.closeInventory();
