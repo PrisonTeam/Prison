@@ -45,8 +45,11 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.isPresent()) {
+        if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
+        } else {
+            p.sendMessage("&cSorry, but before using this GUI you should create a Rank in this ladder!");
+            return;
         }
 
         // Load config
@@ -70,18 +73,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
         // For every rank make a button
-        if (ladder.isPresent()) {
-            for (RankLadder.PositionRank pos : ladder.get().ranks) {
-                Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
+        for (RankLadder.PositionRank pos : ladder.get().ranks) {
+            Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
 
-                // Well... check if the rank is null probably
-                if (!rankOptional.isPresent()) {
-                    continue; // Skip it
-                }
-
-                if (guiBuilder(GuiConfig, inv, rankOptional)) return;
-
+            // Well... check if the rank is null probably
+            if (!rankOptional.isPresent()) {
+                continue; // Skip it
             }
+
+            if (guiBuilder(GuiConfig, inv, rankOptional)) return;
+
         }
 
         // Open the inventory

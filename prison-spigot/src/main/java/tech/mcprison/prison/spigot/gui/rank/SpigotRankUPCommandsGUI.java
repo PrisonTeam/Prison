@@ -36,6 +36,11 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
             return;
         }
 
+        if (rank.rankUpCommands.size() == 0){
+            p.sendMessage("&cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!");
+            return;
+        }
+
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D) * 9;
 

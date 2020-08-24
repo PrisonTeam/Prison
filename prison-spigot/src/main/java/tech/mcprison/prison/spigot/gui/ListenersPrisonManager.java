@@ -71,7 +71,7 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onGuiClosing(InventoryCloseEvent e){
 
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
             return;
         }
 
@@ -88,7 +88,7 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onOpenInventory(InventoryOpenEvent e) {
 
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
             return;
         }
 
@@ -197,8 +197,10 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // ensure the item has itemMeta and a display name
-        if (!e.getCurrentItem().hasItemMeta() || e.getCurrentItem().getItemMeta().getDisplayName() == null){
+        if (!e.getCurrentItem().hasItemMeta()){
             return;
+        } else {
+            Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName();
         }
 
         // Get the button name
