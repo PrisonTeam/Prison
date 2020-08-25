@@ -1,7 +1,7 @@
 ### Prison Documentation 
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-## Prison - Mine Commands
+## Prison - SellAll info
 
 This document provides info about how to use the SellAll feature and set it up
 
@@ -46,7 +46,7 @@ Options:
   Multiplier_Command_Permission: prison.admin
 ```
 
-###Then, you can do two things:
+### Then, you can do two things:
 * If you're lazy or just don't want to do a ton of math like me, there's a default setup command which will add all the blocks
 you should need for a Prison server with preset values, the command's ```/sellall setdefault```.
 Then you could also edit these values if you don't like them with the command ```/sellall edit <ITEM_ID> <VALUE>```, for example ```/sellall edit COAL_ORE 75``` ; or 
@@ -63,7 +63,7 @@ players **without** special permissions with just the blocks and their values as
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#ADVANCED FEATURES
+# ADVANCED FEATURES
 
 **Multipliers:**
 
@@ -83,7 +83,7 @@ How Multipliers work -> they'll just multiply the value of what you sold, for ex
 so ```1000 * 1 = 1000``` is what you'll get (by default this's the value in the sellallconfig.yml), but if you've a Prestige with a multiplier of maybe ```1.5```, then
 you'll get ```1000 * 1.5 = 1500```, this isn't even hard math but could make you some confusion. 
 
-#LIST OF COMMANDS
+# LIST OF COMMANDS
 ```
 /sellall
 Will show a list of commands to admin and sell items to those who aren't admins or players with special permissions.
