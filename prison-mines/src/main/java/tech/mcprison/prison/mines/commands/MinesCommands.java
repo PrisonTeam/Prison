@@ -615,6 +615,9 @@ public class MinesCommands {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
         				dFmt.format(m.getResetCount()) );
+        		
+        		row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+        		
         		chatDisplay.addComponent( row );
         	}
         	
@@ -877,6 +880,14 @@ public class MinesCommands {
             	row.addFancy( 
             			new FancyMessage("&eTP ").command("/mines tp " + m.getName())
             			.tooltip("&7Click to TP to the mine"));
+            	
+            	
+            	if ( m.isUsePagingOnReset() ) {
+            		row.addFancy( 
+            				new FancyMessage("&5Pgd ")
+            				.tooltip("&7Paging Used during Mine Reset"));
+            	}
+
             	
             	row.addTextComponent( "  &3Reset: &7" );
             	
@@ -1320,6 +1331,46 @@ public class MinesCommands {
         // Delete the selection:
         Prison.get().getSelectionManager().clearSelection((Player) sender);
         //pMines.getMineManager().clearCache();
+    }
+
+
+    @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
+    		description = "Enable paging during a mine reset.")
+    public void setMineResetPagingCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "paging", def="disabled", 
+        		description = "Enable or disable paging [disable, enable]") 
+    					String paging
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+        	
+            if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
+            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
+            	return;
+            }
+            
+            if ( "disable".equalsIgnoreCase( paging ) && m.isUsePagingOnReset() ) {
+            	m.setUsePagingOnReset( false );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Reset Paging has been disabled for mine %s.", m.getName()) );
+            }
+            else if ( "enable".equalsIgnoreCase( paging ) && !m.isUsePagingOnReset() ) {
+            	m.setUsePagingOnReset( true );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getName()) );
+            }
+        	
+        } 
     }
 
     

@@ -89,6 +89,7 @@ public abstract class MineReset
 	private long statsTeleport1TimeMS = 0;
 	private long statsTeleport2TimeMS = 0;
 	private long statsMessageBroadcastTimeMS = 0;
+	private int statsResetPages = 0;
 	
 	
 	public MineReset() {
@@ -221,6 +222,9 @@ public abstract class MineReset
 					}
 				}
 			}
+			
+			setStatsResetPages( getStatsResetPages() + 1 );
+			
 			time2 = System.currentTimeMillis() - time2;
 			setStatsBlockUpdateTimeMS( time2 );
 			
@@ -268,6 +272,7 @@ public abstract class MineReset
     public String statsMessage() {
     	StringBuilder sb = new StringBuilder();
     	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
     	
     	sb.append( "&3 Reset: &7" );
     	sb.append( dFmt.format(getStatsResetTimeMS() / 1000.0d ));
@@ -284,8 +289,11 @@ public abstract class MineReset
     	sb.append( "&3 TP2: &7" );
     	sb.append( dFmt.format(getStatsTeleport2TimeMS() / 1000.0d ));
     	
-    	sb.append( "&3 MsgBroadcast: &7" );
+    	sb.append( "&3 Msg: &7" );
     	sb.append( dFmt.format(getStatsMessageBroadcastTimeMS() / 1000.0d ));
+    	
+    	sb.append( "&3 ResetPages: &7" );
+    	sb.append( iFmt.format(getStatsResetPages() ));
     	
     	return sb.toString();
     }
@@ -312,6 +320,7 @@ public abstract class MineReset
     	setStatsTeleport1TimeMS( 0 );
     	setStatsTeleport2TimeMS( 0 );
     	setStatsMessageBroadcastTimeMS( 0 );
+    	setStatsResetPages( 0 );
     }
 	
     /**
@@ -779,7 +788,9 @@ public abstract class MineReset
 			}
 			setResetPosition( i );
 			
-			setResetPage( getResetPage() + 1 ); 
+			setResetPage( getResetPage() + 1 );
+			
+			setStatsResetPages( getStatsResetPages() + 1 );
 			
 			long time = System.currentTimeMillis() - start;
 			setStatsBlockUpdateTimeMS( time + getStatsBlockUpdateTimeMS() );
@@ -1271,6 +1282,13 @@ public abstract class MineReset
 	public void setStatsMessageBroadcastTimeMS( long statsMessageBroadcastTimeMS )
 	{
 		this.statsMessageBroadcastTimeMS = statsMessageBroadcastTimeMS;
+	}
+
+	public int getStatsResetPages() {
+		return statsResetPages;
+	}
+	public void setStatsResetPages( int statsResetPages ) {
+		this.statsResetPages = statsResetPages;
 	}
     
 }

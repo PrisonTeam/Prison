@@ -232,6 +232,11 @@ public class Mine
         
         List<String> commands = (List<String>) document.get("commands");
         setResetCommands( commands == null ? new ArrayList<>() : commands );
+        
+        
+        Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
+        setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
+
 	}
 
     
@@ -274,6 +279,9 @@ public class Mine
         ret.put("blocks", blockStrings);
 
         ret.put("commands", getResetCommands());
+        
+        
+        ret.put( "usePagingOnReset", isUsePagingOnReset() );
         
         return ret;
     }

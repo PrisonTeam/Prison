@@ -205,30 +205,32 @@ public abstract class MineScheduler
 	{
 		List<MineJob> workflow = new ArrayList<>();
 		
+		// Determine if the sync or async reset action should be used for this workflow.
+		MineJobAction resetAction = isUsePagingOnReset() ? MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
 //			ArrayList<Integer> rwTimes = PrisonMines.getInstance().getConfig().resetWarningTimes;
 			Collections.sort( rwTimes );
 			
 			double total = 0;
-			for ( Integer time : rwTimes )
-			{
+			for ( Integer time : rwTimes ) {
 				if ( time < resetTime ) {
 					// if reset time is less than warning time, then skip warning:
 					double elapsed = time - total;
 					workflow.add( 
-							new MineJob( workflow.size() == 0 ? MineJobAction.RESET_SYNC : MineJobAction.MESSAGE, 
+							new MineJob( workflow.size() == 0 ? resetAction : MineJobAction.MESSAGE, 
 									elapsed, total) );
 					total += elapsed;
 				}
 			}
 			workflow.add( 
-					new MineJob( workflow.size() == 0 ? MineJobAction.RESET_SYNC : MineJobAction.MESSAGE, 
+					new MineJob( workflow.size() == 0 ? resetAction : MineJobAction.MESSAGE, 
 							(resetTime - total), total) );
 			
 		} else {
 			// Exclude all messages. Only reset mine:
-			workflow.add( new MineJob( MineJobAction.RESET_SYNC, resetTime, 0) );
+			workflow.add( new MineJob( resetAction, resetTime, 0) );
 		}
 		
 		return workflow;

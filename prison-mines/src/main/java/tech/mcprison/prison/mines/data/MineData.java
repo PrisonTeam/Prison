@@ -46,6 +46,8 @@ public abstract class MineData {
     
     private List<String> resetCommands;
     
+    private boolean usePagingOnReset = false;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -93,6 +95,8 @@ public abstract class MineData {
         this.skipResetBypassCount = 0;
         
         this.resetCommands = new ArrayList<>();
+        
+        this.usePagingOnReset = false;
     }
 
     /**
@@ -402,6 +406,14 @@ public abstract class MineData {
 	}
 	public void setResetCommands( List<String> resetCommands ) {
 		this.resetCommands = resetCommands;
+	}
+
+	public boolean isUsePagingOnReset() {
+		return usePagingOnReset;
+	}
+
+	public void setUsePagingOnReset( boolean usePagingOnReset ) {
+		this.usePagingOnReset = usePagingOnReset;
 	}
 	
 }
