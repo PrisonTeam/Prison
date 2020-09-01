@@ -207,7 +207,7 @@ public abstract class Spigot18Blocks
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {
 		
 		if ( xMat != null ) {
-			Material newType = xMat.parseMaterial().orElse( null );
+			Material newType = xMat.parseMaterial();
 			if ( newType != null ) {
 				
 				BlockState bState = spigotBlock.getState();

@@ -83,7 +83,7 @@ public class SpigotUtil {
     public static Material getMaterial( BlockType prisonBlockType ) {
     	XMaterial xMat = getXMaterial( prisonBlockType );
     	
-    	return xMat == null ? null : xMat.parseMaterial().orElse( null );
+    	return xMat == null ? null : xMat.parseMaterial();
     }
     
 
@@ -184,7 +184,7 @@ public class SpigotUtil {
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
-				Material mat = xMat.parseMaterial().orElse( null );
+				Material mat = xMat.parseMaterial();
 				if ( mat != null ) {
 					if ( mat.isBlock() ) {
 						supportedBlockCountXMaterial++;

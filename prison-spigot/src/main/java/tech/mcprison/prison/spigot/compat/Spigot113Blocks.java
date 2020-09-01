@@ -112,7 +112,7 @@ public abstract class Spigot113Blocks
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {
 		
 		if ( xMat != null ) {
-			Material newType = xMat.parseMaterial().orElse( null );
+			Material newType = xMat.parseMaterial();
 			if ( newType != null ) {
 				// No physics update:
 				spigotBlock.setType( newType, false );
