@@ -454,6 +454,16 @@ If you have any doubts on possible conflicts or corruption, then its safer to ju
 Please note that the ladder's use of magic numbers can cause a great deal of problems when undeleting a ladder since it is not obvious which rank is which, or if it they are even used elsewhere without a lot of manual checking of each rank within the file system.  Deleted ranks may be virtually deleted, but if any amount of time has passed such that ranks can be reassigned or deleted and new ones added, then it could be dangerous to undelete a ladder.  Undeleting a ladder is best done before any other changes have happened on the server.  Undeleting a ladder servers as a fail-safe way of undoing an accidental deletion that you may have second thoughts on a few minutes later.
 
 
+# The Ladders and Ranks Data Files
+
+The ladders and ranks data files (and also the mines) are stored on the server's file system as a way to store each mine's configurations. These files are intended for internal use only and should never be manually modified.  When undeleting ladders or ranks, you may have to rename the files so they are used the next time the server is started, but you should not change the contents with the exception for their IDs. 
+
+Even changing the IDs is a highly risky operation, since if you use an id that is already in existence, then it could corrupt your server.  Also the same goes for specifying the wrong ID, or a non existant id on a ladder.
+
+There are many commands that have interdependancies to multiple settings, and those settings are validated only through the use of the commands.  Making changes directly to the files bypasses the validation of the commands and may lead to server corruption and failures.  
+
+You are solely responsible for any problems you create by making changes directly to these files.  We cannot help undo any problems, issues, failures, or undefined behaviors that may be caused with such tampering.
+
 
 #Ladder Remove a Rank
 

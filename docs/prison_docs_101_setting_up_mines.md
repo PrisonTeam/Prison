@@ -34,6 +34,7 @@ To follow along with this documentation, you may want to crate your first mine a
 
 Please note that all command provide in this document will be written as if they were entered within the game.  If you use some of them from the console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.
 
+It should also be strongly noted that you should never modify the save files for the mines, ranks, or ladders, since that could easily lead to corruption and undefined failures and problems.  We cannot support misuse of the files.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -361,6 +362,17 @@ When you successfully delete a mine, it will remove it from memory and from load
   
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+# The Mine Data Files
+
+The mine data files (and also the ranks and ladders) are stored on the server's file system as a way to store each mine's configurations. These files are intended for internal use only and should never be manually modified.  When undeleting mines, you may have to rename the files so they are used the next time the server is started, but you should not change the contents.
+
+There are many commands that have interdependancies to multiple settings, and those settings are validated only through the use of the commands.  Making changes directly to the files bypasses the validation of the commands and may lead to server corruption and failures.  
+
+You are solely responsible for any problems you create by making changes directly to these files.  We cannot help undo any problems, issues, failures, or undefined behaviors that may be caused with such tampering.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Advanced Topics

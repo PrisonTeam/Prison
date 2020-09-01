@@ -55,6 +55,11 @@ Must change the cancel button lore.  It's grammatically incorrect with a double 
 
 
 
+* **Possible Issue with delete Mine**
+Delete a mine and try to add a new one right away with the same name.  A user said it would not allow them, that the mine already exists.
+* Tested on a few versions and could not reproduce. Keeping this entry here to retest in the near future.
+
+
 <h2>To consider - Lower priority</h2>
 
 
