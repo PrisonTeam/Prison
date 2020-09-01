@@ -473,7 +473,10 @@ public abstract class MineScheduler
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
 		
-		MineJob mineJob = new MineJob( MineJobAction.RESET_SYNC, delayActionSec, 0);
+		MineJobAction action = isUsePagingOnReset() ? 
+				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		
+		MineJob mineJob = new MineJob( action, delayActionSec, 0);
 		mineJob.setResetType( resetType );
 		setCurrentJob( mineJob );
     	

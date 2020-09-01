@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.17 - 2020-07-28
+## tag v3.2.1-alpha.17 - 2020-09-01
+
+* **New Feature: Mine Reset Paging**
+Finished hooking up the paged mine reset code.  And it works too!  Tweaked some of the timing settings such as milliseconds and block thresholds which will better tune this to be more responsive to paging.
+Had to add comparable to the MineTargetBlockKey for the map to work correctly.
+To enable use `/mines set resetpaging help`.
 
 
 * **Bug fix: Correctly using magic values with XMaterials** 

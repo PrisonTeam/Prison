@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
@@ -39,7 +40,7 @@ public abstract class MineReset
 	 * more accurate responses.
 	 * </p>
 	 */
-	public static final long MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS = 100;
+	public static final long MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS = 75;
 	
 	/**
 	 * <p>When placing blocks, this is the block count that is used to check for
@@ -56,7 +57,7 @@ public abstract class MineReset
 	 * more accurate responses.
 	 * </p>
 	 */
-	public static final long MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT = 500;
+	public static final long MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT = 250;
 	
 	
 	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY = 30000L; // 30 seconds
@@ -89,7 +90,10 @@ public abstract class MineReset
 	private long statsTeleport1TimeMS = 0;
 	private long statsTeleport2TimeMS = 0;
 	private long statsMessageBroadcastTimeMS = 0;
+	
 	private int statsResetPages = 0;
+	private long statsResetPageBlocks = 0;
+	private long statsResetPageMs = 0;
 	
 	
 	public MineReset() {
@@ -223,10 +227,12 @@ public abstract class MineReset
 				}
 			}
 			
-			setStatsResetPages( getStatsResetPages() + 1 );
-			
 			time2 = System.currentTimeMillis() - time2;
 			setStatsBlockUpdateTimeMS( time2 );
+			
+			setStatsResetPages( getStatsResetPages() + 1 );
+			setStatsResetPageBlocks( i );
+			setStatsResetPageMs( time2 );
 			
 			incrementResetCount();
 			
@@ -295,6 +301,15 @@ public abstract class MineReset
     	sb.append( "&3 ResetPages: &7" );
     	sb.append( iFmt.format(getStatsResetPages() ));
     	
+    	double avgBlocks = getStatsResetPageBlocks() / getStatsResetPages();
+    	double avgMs = getStatsResetPageMs() / getStatsResetPages();
+    	
+    	sb.append( "&3 avgBlocks: &7" );
+    	sb.append( dFmt.format(avgBlocks));
+    	
+    	sb.append( "&3 avgMs: &7" );
+    	sb.append( dFmt.format(avgMs));
+    	
     	return sb.toString();
     }
 
@@ -320,7 +335,10 @@ public abstract class MineReset
     	setStatsTeleport1TimeMS( 0 );
     	setStatsTeleport2TimeMS( 0 );
     	setStatsMessageBroadcastTimeMS( 0 );
+    	
     	setStatsResetPages( 0 );
+    	setStatsResetPageBlocks( 0 );
+		setStatsResetPageMs( 0 );
     }
 	
     /**
@@ -540,7 +558,7 @@ public abstract class MineReset
      * async workflow.
      * </p>
      * 
-     * <p>Before this part is ran, the resetSynchonously() function must be ran
+     * <p>Before this part is ran, the generateBlockListAsync() function must be ran
      * to regenerate the new block list.
      * </p>
      *  
@@ -552,6 +570,8 @@ public abstract class MineReset
 
     	
     	if ( getResetPage() == 0 ) {
+    		generateBlockListAsync();   		
+    		
     		canceled = resetAsynchonouslyInitiate();
     	}
     	
@@ -559,6 +579,7 @@ public abstract class MineReset
     		
     		// First time through... reset the block break count and run the before reset commands:
     		if ( getResetPosition() == 0 ) {
+    			
     			// Reset the block break count before resetting the blocks:
     			// Set it to the original air count, if subtracted from total block count
     			// in the mine, then the result will be blocks remaining.
@@ -581,18 +602,19 @@ public abstract class MineReset
          		
     		}
 
-    		 
     		resetAsynchonouslyUpdate();
     		
     		if ( getResetPosition() == getMineTargetBlocks().size() ) {
     			// Done resetting the mine... wrap up:
     			
-           		
         		// If a player falls back in to the mine before it is fully done being reset, 
         		// such as could happen if there is lag or a lot going on within the server, 
         		// this will TP anyone out who would otherwise suffocate.  I hope! lol
         		setStatsTeleport2TimeMS(
         				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+        		
+        		// Reset the paging for the next reset:
+        		setResetPage( 0 );
         		
         		incrementResetCount();
         		
@@ -624,11 +646,12 @@ public abstract class MineReset
                 			statsMessage() );
                 }
     		} else {
-    			//TODO resubmit... 
     			
-    			
-//    			submitSyncTask( callbackSync );
-    			
+    			// Need to continue to reset the mine. Resubmit it to run again.
+    			MineResetAsyncResubmitTask mrAsyncRT = new MineResetAsyncResubmitTask( this, null );
+    	    	
+    	    	// Must run synchronously!!
+    	    	submitSyncTask( mrAsyncRT );
     		}
     	}
     	
@@ -759,6 +782,9 @@ public abstract class MineReset
 			
 			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
 			
+			int blocksPlaced = 0;
+			long elapsed = 0;
+			
 			int i = getResetPosition();
 			for ( ; i < getMineTargetBlocks().size(); i++ )
 			{
@@ -773,31 +799,45 @@ public abstract class MineReset
 				} 
 				
 				/**
-				 * About every 500 blocks, check to see if the current wall time spent is greater than
+				 * About every 250 blocks, or so, check to see if the current wall time 
+				 * spent is greater than
 				 * the threshold.  If it is greater, then end the update and let it resubmit.  
 				 * It does not matter how many blocks were actually updated during this "page", 
 				 * but what it is more important is the actual elapsed time.  This is to allow other
 				 * processes to get processing time and to eliminate possible lagging.
 				 */
 				if ( i % MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT == 0 ) {
-					long elapsed = System.currentTimeMillis() - start;
+					elapsed = System.currentTimeMillis() - start;
 					if ( elapsed > MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS ) {
+
 						break;
 					}
 				}
 			}
+			
+			blocksPlaced = i - getResetPosition();
+			
+			if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+				
+				// Only print these details if stats is enabled:
+				Output.get().logInfo( "MineReset.resetAsynchonouslyUpdate() :" +
+						" page " + getResetPage() + 
+						"  blocks = " + blocksPlaced + "  elapsed = " + elapsed );
+			}
+
 			setResetPosition( i );
 			
 			setResetPage( getResetPage() + 1 );
-			
-			setStatsResetPages( getStatsResetPages() + 1 );
 			
 			long time = System.currentTimeMillis() - start;
 			setStatsBlockUpdateTimeMS( time + getStatsBlockUpdateTimeMS() );
 			setStatsResetTimeMS( time + getStatsResetTimeMS() );
 			
+			
+			setStatsResetPages( getStatsResetPages() + 1 );
+			setStatsResetPageBlocks( getStatsResetPageBlocks() + blocksPlaced );
+			setStatsResetPageMs( getStatsResetPageMs() + time  );
 		}
-    	
 
     }
     
@@ -1004,9 +1044,18 @@ public abstract class MineReset
 		
 		// Mine reset here:
 		// Async if possible...
+		
+		resetAsynchonously();
 	}
 	
-    
+	public void refreshMineAsyncResubmitTask() {
+		
+		// Mine reset here:
+		
+		resetAsynchonously();
+	}
+	
+	
     /**
      * Generates blocks for the specified mine and caches the result.
      * 
@@ -1289,6 +1338,20 @@ public abstract class MineReset
 	}
 	public void setStatsResetPages( int statsResetPages ) {
 		this.statsResetPages = statsResetPages;
+	}
+
+	public long getStatsResetPageBlocks() {
+		return statsResetPageBlocks;
+	}
+	public void setStatsResetPageBlocks( long statsResetPageBlocks ) {
+		this.statsResetPageBlocks = statsResetPageBlocks;
+	}
+
+	public long getStatsResetPageMs() {
+		return statsResetPageMs;
+	}
+	public void setStatsResetPageMs( long statsResetPageMs ) {
+		this.statsResetPageMs = statsResetPageMs;
 	}
     
 }
