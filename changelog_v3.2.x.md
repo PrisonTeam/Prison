@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.1-alpha.18 - 2020-09-01
 
 
+* **New Feature: Broadcast Rankups and Demotions**
+There is a now a new feature that will broadcast to the whole server when someone gets a Rankup Or a Demotion.
+This can be disabled within the config.yml file.  If the entry is not there, it is the same as if it has a true value.  Any other value is considered false.
+
+
 * **Alpha.18 - 2020-09-01**
 Final alpha version prior to beta!
 

@@ -256,4 +256,6 @@ public interface Platform {
 	public YamlFileIO getYamlFileIO( File yamlFile );
 	
 	
+	public String getConfigString( String key );
+	
 }

@@ -201,4 +201,9 @@ public class TestPlatform implements Platform {
 	public YamlFileIO getYamlFileIO( File yamlFile ) {
 		return null;
 	}
+
+	@Override
+	public String getConfigString( String key ) {
+		return null;
+	}
 }

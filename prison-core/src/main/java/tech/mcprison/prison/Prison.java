@@ -49,7 +49,8 @@ import tech.mcprison.prison.util.ItemManager;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class Prison implements PluginEntity {
+public class Prison 
+	implements PluginEntity {
 
 	public static final int SPIGOTMC_ORG_PROJECT_ID = 1223; //72740;
 	

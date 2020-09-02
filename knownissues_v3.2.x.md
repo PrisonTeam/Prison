@@ -14,28 +14,10 @@ Work to be considered.
 
 <h2> Higher Priority TO DO Items </h2>
 
-* **Complete the new Mines Reset Paging**
-  Holding up release v3.2.1.
-
-
-* **Enhance AutoManager**
-Make auto manager more like vanilla on the drops and support silking.  Try to make more consistent between versions.
-** Inprogress **
-
-
-* **Add permissions to the AutoManger***
-Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
-** DONE? **
-
-
 * **Refactor GUI?**
  
  
-* **Add Prestige and Rebirth**
-  **In progress.**
-
-
-* **Broadcast all rankups**
+* **DONE: Broadcast all rankups**
 Option to disable it in config settings.
 
 
@@ -252,6 +234,22 @@ Currently 15 forks.  Activity unknown.
 
 
 # Features recently added:
+
+
+* **DONE! Complete the new Mines Reset Paging**
+  Holding up release v3.2.1.
+
+
+* **DONE: Enhance AutoManager**
+Make auto manager more like vanilla on the drops and support silking.  Try to make more consistent between versions. 
+This is a lot closer to the vanilla. May need to revisit in the future to enhance even more.
+
+
+* **DONE: Add permissions to the AutoManger***
+Add permission checking to AutoManager to allow a per-mine selection of which mines to enable it in or to tie it to some rank or donor rank.  Could also put lore checking in place so tools could be enchanted to perform these functions too.  Could have it so there is a percent chance related to the permission or lore.
+
+
+* **DONE: Prestige and Rebirth**
 
 
 * **DONE: Add support for player use of /mines tp**

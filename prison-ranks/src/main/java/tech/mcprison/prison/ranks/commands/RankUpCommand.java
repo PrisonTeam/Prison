@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.commands;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -349,6 +350,11 @@ public class RankUpCommand {
             				(results.getMessage() != null ? results.getMessage() : "") );
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
+            		
+            		String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
+            				(player == null ? "Someone" : player.getName()),
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            		broadcastToWholeServer( sender, messageGlobal );
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
@@ -356,6 +362,11 @@ public class RankUpCommand {
             				(results.getMessage() != null ? results.getMessage() : ""));
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
+            		
+            		String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
+            				(player == null ? "Someone" : player.getName()),
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            		broadcastToWholeServer( sender, messageGlobal );
 				}
                 break;
             case RANKUP_CANT_AFFORD:
@@ -400,8 +411,7 @@ public class RankUpCommand {
         }
 	}
 
-
-    /**
+	/**
      * <p>Gets a player by name.  If the player is not online, then try to get them from 
      * the offline player list. If not one is found, then return a null.
      * </p>
@@ -428,4 +438,24 @@ public class RankUpCommand {
 		}
 		return result;
 	}
+	
+	
+	
+	private void broadcastToWholeServer( CommandSender sender, String message ) {
+    	
+		String broadcastRankups = Prison.get().getPlatform().getConfigString( "broadcast-rankups" );
+		
+		if ( broadcastRankups == null || broadcastRankups.equalsIgnoreCase( "true" ) ) {
+			
+			Player player = getPlayer( sender, sender.getName() );
+			List<Player> players = Prison.get().getPlatform().getOnlinePlayers();
+			
+			for ( Player p : players ) {
+				if ( !p.equals( player ) ) {
+					p.sendMessage( message );
+				}
+			}
+		}
+    }
+    
 }

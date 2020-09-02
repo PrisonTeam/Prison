@@ -728,4 +728,9 @@ class SpigotPlatform implements Platform {
 		return new SpigotYamlFileIO( yamlFile );
 	}
 	
+	@Override
+	public String getConfigString( String key ) {
+		return SpigotPrison.getInstance().getConfig().getString( key );
+	}
+	
 }

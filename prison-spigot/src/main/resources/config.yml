@@ -64,6 +64,14 @@ prestiges-gui-enabled: true
 sellall: false
 
 
+
+# Broadcast rankups and demotions to the whole server, in all worlds.
+# If this value does not exist, or has a true value, it will be broadcasted.
+# Any other value besides true, or non-existant, will be treated as false.
+broadcast-rankups: true
+
+
+
 # Startup testing of available blocks within prison. Tests three kinds of
 # sources: Prison's BlockType, XMaterial's blocks (should mirror what's avaiable
 # within spigot/bukkit, and the raw spigot/bukkit source.
