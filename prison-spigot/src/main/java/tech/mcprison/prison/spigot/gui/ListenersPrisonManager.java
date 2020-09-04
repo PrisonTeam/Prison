@@ -172,8 +172,11 @@ public class ListenersPrisonManager implements Listener {
         // Get the player
         Player p = (Player) e.getWhoClicked();
 
-        // If you click an empty slot, this should avoid the error
-        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) {
+        // If you click an empty slot, this should avoid the error.
+        // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
+        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR || 
+        		e.getCurrentItem().getItemMeta() ==  null || 
+        		e.getCurrentItem().getItemMeta().getDisplayName() == null ) {
             activeGuiEventCanceller(p, e);
             return;
         }
