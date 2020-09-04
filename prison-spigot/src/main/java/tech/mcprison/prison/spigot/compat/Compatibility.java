@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.BlockType;
 
 /**
@@ -37,12 +38,16 @@ import tech.mcprison.prison.util.BlockType;
 public interface Compatibility {
 	
 	public BlockType getBlockType(Block spigotBlock);
+
+	public PrisonBlock getPrisonBlock(Block spigotBlock);
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	
 	public XMaterial getXMaterial( BlockType blockType );
 
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
+
+	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
 	
 	public BlockType getBlockType( ItemStack spigotStack );
 	

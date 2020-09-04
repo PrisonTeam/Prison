@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -7,14 +10,14 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
-
-import java.text.DecimalFormat;
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -112,14 +115,32 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Init some variables and do the actions
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
-        for (Block block : m.getBlocks()) {
-            double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
-            totalChance += chance;
+        
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
-            String blockName =
-                    StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-            mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
+        if ( useNewBlockModel ) {
+        	
+        	for (PrisonBlock block : m.getPrisonBlocks()) {
+        		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
+        		totalChance += chance;
+        		
+        		String blockName =
+        				StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
+        		mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")"));
+        	}
         }
+        else {
+        	
+        	for (Block block : m.getBlocks()) {
+        		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
+        		totalChance += chance;
+         		
+        		String blockName =
+        				StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
+        		mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
+        	}
+        }
+        
 
         if (totalChance < 100.0d) {
             mineslore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));

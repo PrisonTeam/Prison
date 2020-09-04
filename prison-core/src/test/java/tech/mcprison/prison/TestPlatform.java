@@ -35,6 +35,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -204,6 +205,27 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public String getConfigString( String key ) {
+		return null;
+	}
+	
+	@Override
+	public boolean getConfigBooleanFalse( String key ) {
+		return false;
+	}
+	
+	@Override
+	public boolean getConfigBooleanTrue( String key ) {
+		return false;
+	}
+	
+	@Override
+	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+		
+	}
+	
+	
+	@Override
+	public PrisonBlock getPrisonBlock( String blockName ) {
 		return null;
 	}
 }

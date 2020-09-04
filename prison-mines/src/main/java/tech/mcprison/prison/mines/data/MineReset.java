@@ -11,6 +11,8 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
@@ -169,13 +171,15 @@ public abstract class MineReset
 				return;
 			}
 			
+			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 			Optional<World> worldOptional = getWorld();
 			World world = worldOptional.get();
 			
 			// Generate new set of randomized blocks each time:  This is the ONLY thing that can be async!! ;(
-			generateBlockList();
+			//generateBlockList();
 			
 			setStatsTeleport1TimeMS(
 					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
@@ -206,6 +210,7 @@ public abstract class MineReset
 				
 			// Reset the block break count before resetting the blocks:
 			setBlockBreakCount( 0 );
+			Random random = new Random();
 			
 			int i = 0;
 			for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
@@ -213,14 +218,39 @@ public abstract class MineReset
 				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
 					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
 						Location targetBlock = new Location(world, x, y, z);
-						if (!isFillMode || 
-								isFillMode && targetBlock.getBlockAt().isEmpty() ||
-								isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
-							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
-						}
 						
-						if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
-							incrementBlockBreakCount();
+						if ( useNewBlockModel ) {
+							
+							if (!isFillMode || 
+									isFillMode && targetBlock.getBlockAt().isEmpty() ||
+									isFillMode && targetBlock.equals(altTp) && 
+										altTp.getBlockAt().getPrisonBlock().getBlockName().equalsIgnoreCase( "GLASS" ) ) {
+								
+								
+								targetBlock.getBlockAt().setPrisonBlock( randomlySelectPrisonBlock( random ));
+								i++;
+//							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
+							}
+							
+							if ( targetBlock.getBlockAt().getPrisonBlock().getBlockName().equalsIgnoreCase( "AIR" ) ) {
+								incrementBlockBreakCount();
+							}
+						}
+						else {
+							
+							if (!isFillMode || 
+									isFillMode && targetBlock.getBlockAt().isEmpty() ||
+									isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
+								
+								
+								targetBlock.getBlockAt().setType(randomlySelectBlock( random ));
+								i++;
+//							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
+							}
+							
+							if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+								incrementBlockBreakCount();
+							}
 						}
 					}
 				}
@@ -911,6 +941,7 @@ public abstract class MineReset
      */
 	protected void refreshAirCountAsyncTask()
 	{
+    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
     	
     	if ( !isEnabled() ) {
 			Output.get().logError(
@@ -918,10 +949,22 @@ public abstract class MineReset
 							"Ensure world exists. mine= %s ", 
 							getName()  ));
 		}
-		else if ( getBlocks().size() == 1 && 
+		else if ( useNewBlockModel &&
+				getPrisonBlocks().size() == 1 && 
+				getPrisonBlocks().get( 0 ).getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				getPrisonBlocks().get( 0 ).getChance() == 100.0 ) {
+		
+			// This mine is set to ignore all blocks when trying to do a reset, 
+			// so for now ignore the types and just set air count to zero.
+			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
+			// not registered and tracked within prison, and hence will report incorrect errors.
+			setAirCount( 0 );
+		}
+		else if ( !useNewBlockModel &&
+				getBlocks().size() == 1 && 
 				getBlocks().get( 0 ).getType() == BlockType.IGNORE && 
 				getBlocks().get( 0 ).getChance() == 100.0 ) {
-		
+			
 			// This mine is set to ignore all blocks when trying to do a reset, 
 			// so for now ignore the types and just set air count to zero.
 			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
@@ -944,8 +987,18 @@ public abstract class MineReset
 						
 						try {
 							Location targetBlock = new Location(world, x, y, z);
-							if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
-								airCount++;
+							
+							if ( useNewBlockModel ) {
+								
+								if ( targetBlock.getBlockAt().getPrisonBlock().getBlockName().equalsIgnoreCase( "AIR" ) ) {
+									airCount++;
+								}
+							}
+							else {
+								
+								if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+									airCount++;
+								}
 							}
 						}
 						catch ( Exception e ) {
@@ -1067,6 +1120,7 @@ public abstract class MineReset
     	
         Random random = new Random();
         
+        
         getRandomizedBlocks().clear();
         
         for (int i = 0; i < getBounds().getTotalBlockCount(); i++) {
@@ -1082,18 +1136,34 @@ public abstract class MineReset
     }
 
 
+	private PrisonBlock randomlySelectPrisonBlock( Random random )
+	{
+		double chance = random.nextDouble() * 100.0d;
+		
+		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
+		for (PrisonBlock block : getPrisonBlocks()) {
+		    if (chance <= block.getChance()) {
+		    	prisonBlock = block;
+		        break;
+		    } else {
+		        chance -= block.getChance();
+		    }
+		}
+		return prisonBlock;
+	}
+	
 	private BlockType randomlySelectBlock( Random random )
 	{
 		double chance = random.nextDouble() * 100.0d;
 		
 		BlockType value = BlockType.AIR;
 		for (Block block : getBlocks()) {
-		    if (chance <= block.getChance()) {
-		        value = block.getType();
-		        break;
-		    } else {
-		        chance -= block.getChance();
-		    }
+			if (chance <= block.getChance()) {
+				value = block.getType();
+				break;
+			} else {
+				chance -= block.getChance();
+			}
 		}
 		return value;
 	}

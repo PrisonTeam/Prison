@@ -25,6 +25,7 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
@@ -54,6 +55,17 @@ public class SpigotBlock implements Block {
 //        return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
+    @Override
+    public PrisonBlock getPrisonBlock() {
+    	return SpigotPrison.getInstance().getCompatibility().getPrisonBlock( bBlock );
+    	
+    }
+    
+    public void setPrisonBlock( PrisonBlock prisonBlock ) {
+    	SpigotPrison.getInstance().getCompatibility().
+				updateSpigotBlock( prisonBlock, bBlock );
+    }
+    
     /**
      * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
      * by about 1/3.  Really do not need to apply physics in the mines especially if no air blocks and nothing

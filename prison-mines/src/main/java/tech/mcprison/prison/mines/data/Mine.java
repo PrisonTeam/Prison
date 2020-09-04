@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -159,6 +160,9 @@ public class Mine
 	@SuppressWarnings( "unchecked" )
 	private void loadFromDocument( Document document )
 			throws MineException {
+		
+		boolean dirty = false;
+		
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
         setName((String) document.get("name")); // Mine name:
@@ -219,8 +223,9 @@ public class Mine
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
-		List<String> docBlocks = (List<String>) document.get("blocks");
-        for (String docBlock : docBlocks) {
+
+        List<String> docBlocks = (List<String>) document.get("blocks");
+		for (String docBlock : docBlocks) {
             String[] split = docBlock.split("-");
             String blockTypeName = split[0];
             double chance = Double.parseDouble(split[1]);
@@ -230,6 +235,46 @@ public class Mine
             getBlocks().add(block);
         }
         
+        
+		List<String> docPrisonBlocks = (List<String>) document.get("prisonBlocks");
+		if ( docPrisonBlocks != null ) {
+			
+			for (String docBlock : docPrisonBlocks) {
+				String[] split = docBlock.split("-");
+				String blockTypeName = split[0];
+				double chance = Double.parseDouble(split[1]);
+				
+				// The new way to get the PrisonBlocks:
+				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+				if ( prisonBlock != null ) {
+					
+					prisonBlock.setChance( chance );
+					if ( prisonBlock.isLegacyBlock() ) {
+						dirty = true;
+					}
+					getPrisonBlocks().add( prisonBlock );
+				}
+			}
+		}
+
+        
+        if ( getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
+        	// Need to perform the initial conversion: 
+        	
+        	for ( Block block : getBlocks() ) {
+        		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block.getType().name() );
+            	if ( prisonBlock != null ) {
+            		
+            		prisonBlock.setChance( block.getChance() );
+            		getPrisonBlocks().add( prisonBlock );
+
+            		dirty = true;
+            	}
+        		
+			}
+        }
+        
+        
         List<String> commands = (List<String>) document.get("commands");
         setResetCommands( commands == null ? new ArrayList<>() : commands );
         
@@ -237,6 +282,17 @@ public class Mine
         Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
         setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
 
+        if ( dirty && 
+        		Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+			
+        	// Resave the mine data but using the PrisonBlocks instead:
+        	
+        	// This is enabled since the original is not modified.
+        	toDocument();
+        	
+        	Output.get().logInfo( "Notice: Existing prison block model has been converted to the " +
+        			"new model and has been saved." );
+        }
 	}
 
     
@@ -276,7 +332,15 @@ public class Mine
             blockStrings.add(block.getType().name() + "-" + block.getChance());
 //            blockStrings.add(block.getType().getId() + "-" + block.getChance());
         }
+        
         ret.put("blocks", blockStrings);
+
+        List<String> prisonBlockStrings = new ArrayList<>();
+        for (PrisonBlock pBlock : getPrisonBlocks() ) {
+        	blockStrings.add(pBlock.getBlockName() + "-" + pBlock.getChance());
+        }
+        
+        ret.put("prisonBlocks", prisonBlockStrings);
 
         ret.put("commands", getResetCommands());
         

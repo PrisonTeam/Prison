@@ -7,6 +7,8 @@ import org.bukkit.inventory.meta.Damageable;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
@@ -27,6 +29,18 @@ public abstract class Spigot113Blocks
 		
         return results == BlockType.NULL_BLOCK ? null : results;
     }
+	
+	public PrisonBlock getPrisonBlock(Block spigotBlock) {
+		PrisonBlock pBlock = null;
+		
+		XMaterial xMat = getXMaterial( spigotBlock );
+		
+		if ( xMat != null ) {
+			pBlock = new PrisonBlock( xMat.name() );
+		}
+		
+		return pBlock;
+	}
 	
 	public BlockType getBlockType(ItemStack spigotStack) {
 		BlockType results = getCachedBlockType( spigotStack, NO_DATA_VALUE );
@@ -56,6 +70,28 @@ public abstract class Spigot113Blocks
 		
 		return results == NULL_TOKEN ? null : results;
 	}
+	
+	
+	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
+		XMaterial results = null;
+		
+		if ( prisonBlock != null ) {
+			
+			results = getCachedXMaterial( prisonBlock );
+			if ( results == null ) {
+				
+				String blockName =  prisonBlock.getBlockName();
+				
+				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				
+				putCachedXMaterial( prisonBlock, results );
+			}
+			
+		}
+		
+		return results == NULL_TOKEN ? null : results;
+	}
+	
 	
 	/**
 	 * <p>This function tries to use up to three different sources to get a match
@@ -108,6 +144,23 @@ public abstract class Spigot113Blocks
     		updateSpigotBlock( xMat, spigotBlock );
     	}
     }
+	
+	
+	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
+		
+		if ( prisonBlock != null && 
+				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( prisonBlock );
+			
+			if ( xMat != null ) {
+				
+				updateSpigotBlock( xMat, spigotBlock );
+			}
+		}
+	}
+	
 	
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {
 		

@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.BlockType;
 
 /**
@@ -35,6 +36,9 @@ public class CompatibilityCache {
 		this.xMaterialCache = new TreeMap<>();
 	}
 
+
+
+	
 	public BlockType getCachedBlockType( Block spigotBlock, byte data ) {
 		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
 		
@@ -73,6 +77,29 @@ public class CompatibilityCache {
 	}
 	
 	
+	
+	
+	public XMaterial getCachedXMaterial( PrisonBlock prisonBlock )
+	{
+		String key = prisonBlock.getBlockName();
+		
+		XMaterial xMat = xMaterialCache.get( key );
+		
+		// Using VOID_AIR as temp placeholder for null values:
+//		return xMat == XMaterial.VOID_AIR ? null : xMat;
+		return xMat;
+	}
+	
+	public void putCachedXMaterial( PrisonBlock prisonBlock, XMaterial xMat )
+	{
+		String key = prisonBlock.getBlockName();
+		
+		if ( !xMaterialCache.containsKey( key ) ) {
+			// Using VOID_AIR as temp placeholder for null values:
+			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
+		}
+	}
+
 	public XMaterial getCachedXMaterial( Block spigotBlock, byte data ) {
 		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
 		

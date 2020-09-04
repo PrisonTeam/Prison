@@ -31,6 +31,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
@@ -142,7 +143,66 @@ public class SpigotUtil {
 		return bukkitStack;
 	}
 	
+	public static void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+		
+		for ( XMaterial xMat : XMaterial.values() ) {
+			if ( xMat.isSupported() ) {
+				
+				Material mat = xMat.parseMaterial();
+				if ( mat != null ) {
+					if ( mat.isBlock() ) {
+						PrisonBlock block = new PrisonBlock( mat.name() );
+						
+						blockTypes.add( block );
+					}
+				}
+				else {
+					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
+							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
+							" is supported for this version, but the XMaterial cannot " +
+							"be mapped to an actual Material.");
+				}
+			}
+		}
+	}
 	
+	/**
+	 * <p>This will take a string name of a block, and convert it to the
+	 * String name of a XMaterial.  If it cannot directly perform the
+	 * conversion, then it will fall back to using the old prison's
+	 * BlockType to perform the conversion.
+	 * </p>
+	 * 
+	 * @param blockName
+	 * @return
+	 */
+	public static PrisonBlock getPrisonBlock( String blockName ) {
+		
+		PrisonBlock results = null;
+		BlockType bTypeObsolete = null;
+		
+		XMaterial xMat = getXMaterial( blockName );
+		
+		if ( xMat == null ) {
+			// Try to get the material through the old prison blocks:
+			bTypeObsolete = BlockType.getBlock( blockName );
+			
+			xMat = getXMaterial( bTypeObsolete );
+		}
+		
+		if ( xMat != null ) {
+			results = new PrisonBlock( xMat.name() );
+			
+			if ( bTypeObsolete != null ) {
+				results.setLegacyBlock( true );
+			}
+		}
+		else {
+			results = new PrisonBlock( blockName );
+			results.setValid( false );
+		}
+		return results;
+	}
 	
 	
 	public static void testAllPrisonBlockTypes() {

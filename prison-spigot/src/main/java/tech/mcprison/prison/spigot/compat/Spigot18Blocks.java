@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 
@@ -67,6 +69,20 @@ public abstract class Spigot18Blocks
         return results == BlockType.NULL_BLOCK ? null : results;
     }
 	
+	
+	public PrisonBlock getPrisonBlock(Block spigotBlock) {
+		PrisonBlock pBlock = null;
+		
+		XMaterial xMat = getXMaterial( spigotBlock );
+		
+		if ( xMat != null ) {
+			pBlock = new PrisonBlock( xMat.name() );
+		}
+		
+		return pBlock;
+	}
+	
+	
 	@SuppressWarnings( "deprecation" )
 	public BlockType getBlockType( ItemStack spigotStack ) {
 		BlockType results = null;
@@ -111,6 +127,28 @@ public abstract class Spigot18Blocks
 		return results == NULL_TOKEN ? null : results;
 	}
 	
+	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
+		XMaterial results = null;
+		
+		if ( prisonBlock != null ) {
+			
+			results = getCachedXMaterial( prisonBlock );
+			if ( results == null ) {
+				
+				String blockName =  prisonBlock.getBlockName();
+				
+				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				
+				putCachedXMaterial( prisonBlock, results );
+			}
+			
+		}
+		
+		return results == NULL_TOKEN ? null : results;
+	}
+	
+
+
 	public XMaterial getXMaterial( BlockType blockType ) {
 		XMaterial results = null;
 		
@@ -153,6 +191,7 @@ public abstract class Spigot18Blocks
 		
 		return results == NULL_TOKEN ? null : results;
 	}
+	
 	
 //	public Material getMaterial( BlockType blockType ) {
 //		Material results = null;
@@ -202,6 +241,22 @@ public abstract class Spigot18Blocks
     		}
     	}
     }
+	
+	
+	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
+		
+		if ( prisonBlock != null && 
+				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( prisonBlock );
+			
+			if ( xMat != null ) {
+				
+				updateSpigotBlock( xMat, spigotBlock );
+			}
+		}
+	}
 	
 	@SuppressWarnings( "deprecation" )
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {

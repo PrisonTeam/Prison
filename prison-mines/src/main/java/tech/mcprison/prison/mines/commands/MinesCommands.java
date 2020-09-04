@@ -36,6 +36,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
@@ -77,6 +78,7 @@ public class MinesCommands {
     @Command(identifier = "mines create", description = "Creates a new mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
+    		@Wildcard(join=true)
         @Arg(name = "mineName", description = "The name of the new mine.") String mineName) {
 
     	Player player = getPlayer( sender );
@@ -105,6 +107,11 @@ public class MinesCommands {
         	pMines.getMinesMessages().getLocalizable("mine_exists")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
+        }
+        
+        if ( mineName.contains( " " ) ) {
+        	sender.sendMessage( "&3Names cannot contain spaces. &b[&d" + mineName + "&b]" );
+    		return;
         }
 
         setLastMineReferenced(mineName);
@@ -187,34 +194,71 @@ public class MinesCommands {
         	return;
         }
         
-
-        BlockType blockType = BlockType.getBlock(block);
-        if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
-        	pMines.getMinesMessages().getLocalizable("not_a_block")
-                .withReplacements(block).sendTo(sender);
-            return;
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	
+        	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block );
+        	if ( prisonBlock != null ) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block").
+        					withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
+        	
+        	if (m.isInMine(prisonBlock)) {
+        		pMines.getMinesMessages().getLocalizable("block_already_added").
+        					sendTo(sender);
+        		return;
+        	}
+        	
+        	if ( chance <= 0 ) {
+        		sender.sendMessage( "The percent chance must have a value greater than zero." );
+        		return;
+        	}
+        	
+        	final double[] totalComp = {chance};
+        	
+        	m.getPrisonBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
+        	if (totalComp[0] > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full").
+        					sendTo(sender, Localizable.Level.ERROR);
+        		return;
+        	}
+        	
+        	prisonBlock.setChance( chance );
+        	m.getPrisonBlocks().add( prisonBlock );
+        }
+        else {
+        	
+        	BlockType blockType = BlockType.getBlock(block);
+        	if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block")
+        		.withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
+        	if (m.isInMine(blockType)) {
+        		pMines.getMinesMessages().getLocalizable("block_already_added")
+        		.sendTo(sender);
+        		return;
+        	}
+        	
+        	if ( chance <= 0 ) {
+        		sender.sendMessage( "The percent chance must have a value greater than zero." );
+        		return;
+        	}
+        	
+        	final double[] totalComp = {chance};
+        	
+        	m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
+        	if (totalComp[0] > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full")
+        		.sendTo(sender, Localizable.Level.ERROR);
+        		return;
+        	}
+        	
+        	m.getBlocks().add(new Block(blockType, chance));
         }
 
-        if (m.isInMine(blockType)) {
-        	pMines.getMinesMessages().getLocalizable("block_already_added")
-                .sendTo(sender);
-            return;
-        }
-
-        if ( chance <= 0 ) {
-        	sender.sendMessage( "The percent chance must have a value greater than zero." );
-        	return;
-        }
-        
-        final double[] totalComp = {chance};
-        m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
-        if (totalComp[0] > 100.0d) {
-        	pMines.getMinesMessages().getLocalizable("mine_full")
-                .sendTo(sender, Localizable.Level.ERROR);
-            return;
-        }
-
-        m.getBlocks().add(new Block(blockType, chance));
         pMines.getMineManager().saveMine( m );
         
         pMines.getMinesMessages().getLocalizable("block_added")
@@ -248,47 +292,96 @@ public class MinesCommands {
         	return;
         }
         
-        BlockType blockType = BlockType.getBlock(block);
-        if (blockType == null) {
-        	pMines.getMinesMessages().getLocalizable("not_a_block")
-                .withReplacements(block).sendTo(sender);
-            return;
-        }
-
-        // Change behavior: If trying to change a block that is not in the mine, then instead add it:
-        if (!m.isInMine(blockType)) {
-        	addBlockCommand( sender, mineName, block, chance );
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        
+        
+        	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block );
+        	if ( prisonBlock != null ) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block").
+        					withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
+        	
+        	// Change behavior: If trying to change a block that is not in the mine, then instead add it:
+        	if (!m.isInMine(prisonBlock)) {
+        		addBlockCommand( sender, mineName, block, chance );
 //        	pMines.getMinesMessages().getLocalizable("block_not_removed")
 //                .sendTo(sender);
-            return;
-        }
-
-        // If it's 0, just delete it!
-        if (chance <= 0.0d) {
-        	deleteBlock( sender, pMines, m, blockType );
+        		return;
+        	}
+        	
+        	// If it's 0, just delete it!
+        	if (chance <= 0.0d) {
+        		deleteBlock( sender, pMines, m, prisonBlock );
 //            delBlockCommand(sender, mine, block);
-            return;
-        }
+        		return;
+        	}
+        	
+        	final double[] totalComp = {chance};
+        	m.getPrisonBlocks().forEach(block1 -> {
+        		totalComp[0] -= block1.getChance();
+        	});
 
-        final double[] totalComp = {chance};
-        m.getBlocks().forEach(block1 -> {
-            if (block1.getType() == blockType) {
-                totalComp[0] -= block1.getChance();
-            } else {
-                totalComp[0] += block1.getChance();
-            }
-        });
-        if (totalComp[0] > 100.0d) {
-        	pMines.getMinesMessages().getLocalizable("mine_full")
-                .sendTo(sender, Localizable.Level.ERROR);
-            return;
+        	if (totalComp[0] > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full")
+        		.sendTo(sender, Localizable.Level.ERROR);
+        		return;
+        	}
+        	
+        	for (PrisonBlock blockObject : m.getPrisonBlocks()) {
+        		if (blockObject.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() )) {
+        			blockObject.setChance(chance);
+        		}
+        	}
+        
         }
-
-        for (Block blockObject : m.getBlocks()) {
-            if (blockObject.getType() == blockType) {
-                blockObject.setChance(chance);
-            }
+        else {
+        	
+        	BlockType blockType = BlockType.getBlock(block);
+        	if (blockType == null) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block")
+        		.withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
+        	// Change behavior: If trying to change a block that is not in the mine, then instead add it:
+        	if (!m.isInMine(blockType)) {
+        		addBlockCommand( sender, mineName, block, chance );
+//        	pMines.getMinesMessages().getLocalizable("block_not_removed")
+//                .sendTo(sender);
+        		return;
+        	}
+        	
+        	// If it's 0, just delete it!
+        	if (chance <= 0.0d) {
+        		deleteBlock( sender, pMines, m, blockType );
+//            delBlockCommand(sender, mine, block);
+        		return;
+        	}
+        	
+        	final double[] totalComp = {chance};
+        	m.getBlocks().forEach(block1 -> {
+        		if (block1.getType() == blockType) {
+        			totalComp[0] -= block1.getChance();
+        		} else {
+        			totalComp[0] += block1.getChance();
+        		}
+        	});
+        	if (totalComp[0] > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full")
+        		.sendTo(sender, Localizable.Level.ERROR);
+        		return;
+        	}
+        	
+        	for (Block blockObject : m.getBlocks()) {
+        		if (blockObject.getType() == blockType) {
+        			blockObject.setChance(chance);
+        		}
+        	}
         }
+        
+        
 
         pMines.getMineManager().saveMine( m );
         
@@ -341,8 +434,33 @@ public class MinesCommands {
      * @param sender
      * @param pMines
      * @param m
-     * @param blockType
+     * @param prisonBlock
      */
+	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, PrisonBlock prisonBlock )
+	{
+		PrisonBlock rBlock = null;
+		for ( PrisonBlock block : m.getPrisonBlocks() ) {
+			if (block.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() )) {
+				rBlock = block;
+				break;
+    		}
+		}
+		if ( m.getPrisonBlocks().remove( rBlock )) {
+			pMines.getMineManager().saveMine( m );
+			
+			pMines.getMinesMessages().getLocalizable("block_deleted").
+						withReplacements(prisonBlock.getBlockName(), m.getName()).sendTo(sender);
+			getBlocksList(m, null).send(sender);
+		}
+	}
+	/**
+	 * Delete only the first occurrence of a block with the given BlockType.
+	 * 
+	 * @param sender
+	 * @param pMines
+	 * @param m
+	 * @param blockType
+	 */
 	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, BlockType blockType )
 	{
 		Block rBlock = null;
@@ -539,9 +657,21 @@ public class MinesCommands {
         Mine m = pMines.getMine(mineName);
         
         
-        CommandPagedData cmdPageData = new CommandPagedData(
-        		"/mines info " + m.getName(), m.getBlocks().size(),
-        		1, page );
+        CommandPagedData cmdPageData = null;
+        
+        
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        
+        	cmdPageData = new CommandPagedData(
+        			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
+        			1, page );
+        }
+        else {
+        	
+        	cmdPageData = new CommandPagedData(
+        			"/mines info " + m.getName(), m.getBlocks().size(),
+        			1, page );
+        }
         
 //        // Same page logic as in mines block search:
 //    	int curPage = 1;
@@ -727,7 +857,16 @@ public class MinesCommands {
         	chatDisplay.addComponent(list);
         }
         
-        String message = m.getBlocks().size() != 0 ? null : " &cNo Blocks Defined";
+        int blockSize = 0;
+        
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	blockSize = m.getPrisonBlocks().size();
+        }
+        else {
+        	blockSize = m.getBlocks().size();
+        }
+        
+        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
         cmdPageData.generatePagedCommandFooter( chatDisplay, message );
 
         chatDisplay.send(sender);
@@ -739,22 +878,46 @@ public class MinesCommands {
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
         int count = 0;
-        for (Block block : m.getBlocks()) {
-            double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
-            totalChance += chance;
- 
-            if ( cmdPageData == null ||
-            		count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
-            	String blockName =
-            			StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-            	String percent = dFmt.format(chance) + "%";
-            	FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
-            			percent, block.getType().name(), blockName))
-            			.suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
-            			.tooltip("&7Click to edit the block's chance.");
-            	builder.add(msg);
-            	
-            }
+        
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+
+        	for (PrisonBlock block : m.getPrisonBlocks()) {
+        		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
+        		totalChance += chance;
+        		
+        		if ( cmdPageData == null ||
+        				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+        			String blockName =
+        					StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
+        			String percent = dFmt.format(chance) + "%";
+        			FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
+        					percent, block.getBlockName(), blockName))
+        					.suggest("/mines block set " + m.getName() + " " + block.getBlockName() + " %")
+        					.tooltip("&7Click to edit the block's chance.");
+        			builder.add(msg);
+        			
+        		}
+        	}
+        }
+        else {
+        	
+        	for (Block block : m.getBlocks()) {
+        		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
+        		totalChance += chance;
+        		
+        		if ( cmdPageData == null ||
+        				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+        			String blockName =
+        					StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
+        			String percent = dFmt.format(chance) + "%";
+        			FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
+        					percent, block.getType().name(), blockName))
+        					.suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
+        					.tooltip("&7Click to edit the block's chance.");
+        			builder.add(msg);
+        			
+        		}
+        	}
         }
 
         if (totalChance < 100.0d) {

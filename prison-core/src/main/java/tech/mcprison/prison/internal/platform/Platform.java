@@ -31,6 +31,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
@@ -257,5 +258,17 @@ public interface Platform {
 	
 	
 	public String getConfigString( String key );
+	
+	
+	public boolean getConfigBooleanFalse( String key );
+	
+
+	public boolean getConfigBooleanTrue( String key );
+	
+	
+	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes );
+	
+	
+	public PrisonBlock getPrisonBlock( String blockName );
 	
 }

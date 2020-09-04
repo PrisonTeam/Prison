@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
@@ -34,6 +36,7 @@ public abstract class MineData {
 	private int resetCount = 0;
 	
     private List<Block> blocks;
+    private List<PrisonBlock> prisonBlocks;
     
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
@@ -77,6 +80,7 @@ public abstract class MineData {
     
     public MineData() {
     	this.blocks = new ArrayList<>();
+    	this.prisonBlocks = new ArrayList<>();
     	
     	this.enabled = false;
     	
@@ -219,16 +223,34 @@ public abstract class MineData {
         return blocks;
     }
     
-    /**
+
+    public List<PrisonBlock> getPrisonBlocks() {
+		return prisonBlocks;
+	}
+
+
+	/**
+	 * This is only used in an obsolete conversion utility.
+	 * 
+	 * Adding the newer PrisonBlocks for compatibility.
+	 * 
      * Sets the blocks for this mine
      *
      * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
      * block appearing as the value.
      */
     public void setBlocks(HashMap<BlockType, Integer> blockMap) {
-        blocks = new ArrayList<>();
+        this.blocks.clear();
+        this.prisonBlocks.clear();
+        
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
             blocks.add(new Block(entry.getKey(), entry.getValue()));
+            
+            PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
+            if ( prisonBlock != null ) {
+            	prisonBlock.setChance( entry.getValue() );
+            	prisonBlocks.add( prisonBlock );
+            }
         }
     }
 
@@ -243,6 +265,15 @@ public abstract class MineData {
             }
         }
         return false;
+    }
+    
+    public boolean isInMine(PrisonBlock blockType) {
+    	for (PrisonBlock block : getPrisonBlocks()) {
+    		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     public double area() {
@@ -312,7 +343,7 @@ public abstract class MineData {
 	 * System.currentTimeMillis().
 	 * </p>
 	 * 
-	 * <p>The actual remaining time can vargy greatly and is highly
+	 * <p>The actual remaining time can vary greatly and is highly
 	 * dependent upon the server load.  Since many jobs within the whole
 	 * mine reset process are scheduled to run in the future, their run
 	 * time is just a request and it can vary if there are demanding jobs

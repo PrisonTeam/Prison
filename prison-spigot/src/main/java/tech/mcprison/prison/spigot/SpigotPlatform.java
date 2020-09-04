@@ -60,6 +60,7 @@ import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -733,4 +734,55 @@ class SpigotPlatform implements Platform {
 		return SpigotPrison.getInstance().getConfig().getString( key );
 	}
 	
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value.  If the key does
+	 * not exist, then it returns a value of false.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@Override
+	public boolean getConfigBooleanFalse( String key ) {
+		
+		String val = SpigotPrison.getInstance().getConfig().getString( key );
+		
+		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
+	}
+	
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value.  If the key does
+	 * not exist, then it returns a value of true.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@Override
+	public boolean getConfigBooleanTrue( String key ) {
+		
+		String val = SpigotPrison.getInstance().getConfig().getString( key );
+		
+		return ( val == null || val.trim().equalsIgnoreCase( "true" ) );
+	}
+	
+	/**
+	 * This listing that is returned, should be the XMaterial enum name
+	 * for the blocks that are valid on the server.
+	 * 
+	 * @return
+	 */
+	@Override
+	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+		
+		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
+	}
+	
+	@Override
+	public PrisonBlock getPrisonBlock( String blockName ) {
+		
+		return SpigotUtil.getPrisonBlock( blockName );
+	}
 }

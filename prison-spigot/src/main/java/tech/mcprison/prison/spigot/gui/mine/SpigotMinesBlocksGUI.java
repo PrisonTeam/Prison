@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
@@ -35,7 +37,16 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(minename);
 
         // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(m.getBlocks().size() / 9D) * 9;
+        int dimension = 0;
+        
+		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+
+		if ( useNewBlockModel ) {
+			dimension = (int) Math.ceil(m.getPrisonBlocks().size() / 9D) * 9;
+		}
+		else {
+			dimension = (int) Math.ceil(m.getBlocks().size() / 9D) * 9;
+		}
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
@@ -57,32 +68,57 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
-        // For every block makes a button
-        for (Block block : m.getBlocks()) {
-
-            // Get the block material as a string
-            String blockmaterial = block.getType().name();
-
-            // Display title of the item
-            String blockmaterialdisplay = blockmaterial;
-
-            // Check if a block's air and changed the item of it to BARRIER
-            if (blockmaterial.equalsIgnoreCase("air")){
-                blockmaterial = "BARRIER";
-                blockmaterialdisplay = blockmaterial;
-            }
-
-            if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
-
-
+        if ( useNewBlockModel ) {
+        	
+        	
+        	// For every block makes a button
+        	for (PrisonBlock block : m.getPrisonBlocks()) {
+        		
+        		// Get the block material as a string
+        		String blockmaterial = block.getBlockName();
+        		
+        		// Display title of the item
+        		String blockmaterialdisplay = blockmaterial;
+        		
+        		// Check if a block's air and changed the item of it to BARRIER
+        		if (blockmaterial.equalsIgnoreCase("air")){
+        			blockmaterial = "BARRIER";
+        			blockmaterialdisplay = blockmaterial;
+        		}
+        		
+        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
+        		
+        	}
         }
+        else {
+        	
+        	// For every block makes a button
+        	for (Block block : m.getBlocks()) {
+        		
+        		// Get the block material as a string
+        		String blockmaterial = block.getType().name();
+        		
+        		// Display title of the item
+        		String blockmaterialdisplay = blockmaterial;
+        		
+        		// Check if a block's air and changed the item of it to BARRIER
+        		if (blockmaterial.equalsIgnoreCase("air")){
+        			blockmaterial = "BARRIER";
+        			blockmaterialdisplay = blockmaterial;
+        		}
+        		
+        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
+        		
+        	}
+        }
+        
 
         // Open the inventory
         this.p.openInventory(inv);
 
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
         try {
             buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
@@ -92,8 +128,19 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         }
         return false;
     }
+    
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    	try {
+    		buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+    	} catch (NullPointerException ex){
+    		p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+    		ex.printStackTrace();
+    		return true;
+    	}
+    	return false;
+    }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
         // Create the lore
         List<String> blockslore = createLore(
                 guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
@@ -123,6 +170,38 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Add the item to the inventory
         inv.addItem(block1);
+    }
+    
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    	// Create the lore
+    	List<String> blockslore = createLore(
+    			guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+    			"",
+    			guiConfig.getString("Gui.Lore.Info"));
+    	
+    	
+    	boolean isEnum = true;
+    	try {
+    		Material.valueOf(blockmaterial);
+    	} catch (Exception e) {
+    		isEnum = false;
+    	}
+    	
+    	if (!(isEnum)) {
+    		blockmaterial = "BARRIER";
+    	}
+    	
+    	// Add a lore
+    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
+    	
+    	// Add a lore
+    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+    	
+    	// Make the item
+    	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + ": " + minename));
+    	
+    	// Add the item to the inventory
+    	inv.addItem(block1);
     }
 
 }
