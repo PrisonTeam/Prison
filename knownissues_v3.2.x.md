@@ -14,6 +14,10 @@ Work to be considered.
 
 <h2> Higher Priority TO DO Items </h2>
 
+* **Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
+They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
+
+
 * **Refactor GUI?**
  
  
@@ -74,10 +78,6 @@ This is put on hold for the v3.2.2 release.
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
 
-* **Update the Prison command handlers to support help context**
-This would show the parameter details for the commands. Right now the annotations that defines the command parameters has descriptions for the command and the parameters, but they are not displayed anywhere useful.
-
-
 
 * **Add to the Command annotations an option of *async* to run that command asynchronously**
 Check to see if the commands are being ran sync or async.  Add a parameter support so 
@@ -125,34 +125,6 @@ NOTE: this may not be needed. Disabling the Prison Ranks module solved the probl
 
 
 
-
-
-* **New block handling system - put on hold**
-
-Current system is based upon enumerations which are static and may not reflect the actual run time environment.  Prison is compiled with 1.9.4, but yet the list may not include all blocks for all versions of bukkit/spigot/minecraft
-
-
-If the new block handling system gets all blocks from org.bukkit.Material.values(), then it should reflect what's available on the server version that is running.  If the server owner decides to upgrade, or down grade, their server version, then they will be responsible for "correcting" any block name that is no longer supported.  This would be the negative for such a system
-
-
-The benefits would be less to manage within prison; attitude of do what you want to do, instead of micro managing the list of blocks.  Dynamic to support newest blocks available on minecraft/bukkit/spigot, or another platform.  Ability to pickup custom blocks if they have been injected in to the Material enumeration
-
-
-Currently there is a HUGE problem.  Upon testing, I have determined that although a block exists within the server's org.bukkit.Material enum, Prison cannot select it.  I do not know why. It could be related to the fact that prison is built with Gradle using spigot v1.9.4 and that imposes restrictions upon what enumerations can be accessed at runtime?  That makes no sense since no artifacts of org.bukkit.Material should be carried over outside of the compile time instance.  Until this issue can be addressed, there will be no work around or implmentation.
-
-
-* **Block Types for Specific Versions of Minecraft**
-
-Add in support for the loss of magic values, and also provide for newer bloc
-
-types too.  Basically have a minecraft version selector that can
-
-tailor the list of available block types that can be used, based upon th
-
-minecraft version that is running
-
-
-
 * **Possible new feature: Track how many blocks a player mines, including types***
 Stats could be interesting over time, and could also be used for in game
 bonuses and rewards and incentives.
@@ -166,9 +138,6 @@ to improve efficiencies in loading and saving, not to mention greatly reduce
 the complexities within the actual prison code, which in turn will help 
 eliminate possible bugs too and give tighter code.
 
-
-* **Improve the prestige laddering system***
-A plugin named EZprestige has been attempted to be used with prison. Not sure if successful?
 
 
 * **Notification that inventory is full***
@@ -252,6 +221,13 @@ Add permission checking to AutoManager to allow a per-mine selection of which mi
 * **DONE: Prestige and Rebirth**
 
 
+
+* **Already Exists: Update the Prison command handlers to support help context**
+-= Note I was unaware if you use the command `help` as the only parameter it shows the help =-
+This would show the parameter details for the commands. Right now the annotations that defines the command parameters has descriptions for the command and the parameters, but they are not displayed anywhere useful.
+
+
+
 * **DONE: Add support for player use of /mines tp**
 
 Could be done through other perms and then checking to see if they have access t
@@ -265,6 +241,11 @@ Create a command, like under **/prison** that can be used to test placeholders.
 Have one where the user can enter any free text and then translate it.
 Also have a page(s) that goes through all of them printing the place holder name and the current values.
 
+
+
+* **Improve the prestige laddering system***
+A plugin named EZprestige has been attempted to be used with prison. Not sure if successful?
+-= Prison now has its own prestige system =-
 
 
 
@@ -305,6 +286,29 @@ Do not have to precheck if the block was air before, since air cannot trigger a 
       * skipResetBypassThreshold - int - number of *skips* before a forced reset.
       * skipResetBypassCount - transient - int - counts the number of times a reset is skipped. This is transient value and is never saved.
 
+
+
+
+
+* **Obsolete: New block handling system - put on hold**
+-= Using XMaterial so this is covered, except for possibility of custom blocks =-
+
+Current system is based upon enumerations which are static and may not reflect the actual run time environment.  Prison is compiled with 1.9.4, but yet the list may not include all blocks for all versions of bukkit/spigot/minecraft
+
+
+If the new block handling system gets all blocks from org.bukkit.Material.values(), then it should reflect what's available on the server version that is running.  If the server owner decides to upgrade, or down grade, their server version, then they will be responsible for "correcting" any block name that is no longer supported.  This would be the negative for such a system
+
+
+The benefits would be less to manage within prison; attitude of do what you want to do, instead of micro managing the list of blocks.  Dynamic to support newest blocks available on minecraft/bukkit/spigot, or another platform.  Ability to pickup custom blocks if they have been injected in to the Material enumeration
+
+
+Currently there is a HUGE problem.  Upon testing, I have determined that although a block exists within the server's org.bukkit.Material enum, Prison cannot select it.  I do not know why. It could be related to the fact that prison is built with Gradle using spigot v1.9.4 and that imposes restrictions upon what enumerations can be accessed at runtime?  That makes no sense since no artifacts of org.bukkit.Material should be carried over outside of the compile time instance.  Until this issue can be addressed, there will be no work around or implmentation.
+
+
+
+* **Obsolete: Block Types for Specific Versions of Minecraft**
+-= Using XMaterial going forward =-
+Add in support for the loss of magic values, and also provide for newer block types too.  Basically have a minecraft version selector that can tailor the list of available block types that can be used, based upon the minecraft version that is running
 
 
 
