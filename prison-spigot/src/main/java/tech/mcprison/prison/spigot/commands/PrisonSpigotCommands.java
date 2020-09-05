@@ -56,7 +56,7 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
             sender.sendMessage(SpigotPrison.format("&cThe GUI's disabled, if you want to use it, edit the config.yml!"));
             return true;
         }
@@ -127,10 +127,21 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
                 return true;
             }
 
-            try {
-                SpigotConfirmPrestigeGUI gui = new SpigotConfirmPrestigeGUI(p);
-                gui.open();
-            } catch (Exception ex){
+            if (SpigotPrison.getInstance().getConfig().getString("prestige-confirm-gui").equalsIgnoreCase("true")) {
+                try {
+                    SpigotConfirmPrestigeGUI gui = new SpigotConfirmPrestigeGUI(p);
+                    gui.open();
+                } catch (Exception ex) {
+                    isChatEventActive = true;
+                    sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
+                    sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
+                    Player finalP = p;
+                    id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+                        isChatEventActive = false;
+                        finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
+                    }, 20L * 15);
+                }
+            } else {
                 isChatEventActive = true;
                 sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
                 sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));

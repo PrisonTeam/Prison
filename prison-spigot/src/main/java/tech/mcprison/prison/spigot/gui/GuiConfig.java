@@ -161,6 +161,7 @@ public class GuiConfig {
         dataConfig("Gui.Lore.Volume","&3Volume: &7");
         dataConfig("Gui.Lore.Value", "&3Value: &a$");
         dataConfig("Gui.Lore.World","&3World: &7");
+        dataConfig("Gui.Message.NoSellAllItems", "&cSorry but there aren't SellAll Items to show.");
         dataConfig("Gui.Message.EmptyGui","&cSorry, the GUI looks empty.");
         dataConfig("Gui.Message.TooManyBlocks","&cSorry, but there're too many Blocks and the max's 54 for the GUI");
         dataConfig("Gui.Message.TooManyLadders","&cSorry, but there're too many ladders and the max's 54 for the GUI");

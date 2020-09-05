@@ -44,8 +44,14 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
         Inventory inv;
-        if (conf.getConfigurationSection("Items") == null){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.EmptyGui")));
+        try {
+            if (conf.getConfigurationSection("Items") == null) {
+                p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoSellAllItems")));
+                p.closeInventory();
+                return null;
+            }
+        } catch (NullPointerException e){
+            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoSellAllItems")));
             p.closeInventory();
             return null;
         }

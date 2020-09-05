@@ -26,6 +26,8 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
         this.rankName = rankname;
     }
 
+
+
     public void open() {
 
         // Check if Ranks are enabled
@@ -74,7 +76,6 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
         List<String> changeIncreaseValueLore = createLore(
                 guiConfig.getString("Gui.Lore.ClickToIncrease")
         );
-
 
         // Decrease button
         ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + rankName + " " + val + " - 1" ));

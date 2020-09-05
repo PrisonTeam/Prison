@@ -37,7 +37,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(minename);
 
         // Get the dimensions and if needed increases them
-        int dimension = 0;
+        int dimension;
         
 		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 

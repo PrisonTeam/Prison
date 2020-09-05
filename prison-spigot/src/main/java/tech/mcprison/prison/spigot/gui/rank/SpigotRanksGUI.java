@@ -48,7 +48,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
         } else {
-            p.sendMessage("&cSorry, but before using this GUI you should create a Rank in this ladder!");
+            p.sendMessage(SpigotPrison.format("&cSorry, but before using this GUI you should create a Rank in this ladder!"));
             return;
         }
 

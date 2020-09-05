@@ -37,7 +37,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         if (rank.rankUpCommands.size() == 0){
-            p.sendMessage("&cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!");
+            p.sendMessage(SpigotPrison.format("&cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!"));
             return;
         }
 

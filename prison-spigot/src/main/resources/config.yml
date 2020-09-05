@@ -57,6 +57,10 @@ ranks-gui-prestiges-enabled: true
 
 # NEW: /prestiges command which opens the Prestiges GUI, this's basically a shortcut of the /prisonmanager prestiges
 prestiges-gui-enabled: true
+
+# NEW: /prestige will open a confirmation GUI if this's on true, if on false will use a chat confirmation instead.
+prestige-confirm-gui: true
+
 # There're more options for the GUIs, please edit the GuiConfig.yml
 
 

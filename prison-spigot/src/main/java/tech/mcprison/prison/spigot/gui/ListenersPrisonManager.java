@@ -104,7 +104,7 @@ public class ListenersPrisonManager implements Listener {
         titleNames[4] = "Mines -> MineInfo";
         titleNames[5] = "MineNotifications -> Radius";
         titleNames[6] = "MineInfo -> MineNotifications";
-        titleNames[7] = "MinesInfo -> ResetTime";
+        titleNames[7] = "MineInfo -> ResetTime";
         titleNames[8] = "MineInfo -> Blocks";
         titleNames[9] = "Mines -> Delete";
         titleNames[10] = "MinesManager -> Mines";
@@ -174,11 +174,12 @@ public class ListenersPrisonManager implements Listener {
 
         // If you click an empty slot, this should avoid the error.
         // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
-        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR || 
-        		e.getCurrentItem().getItemMeta() ==  null || 
-        		e.getCurrentItem().getItemMeta().getDisplayName() == null ) {
+        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR ||
+                e.getCurrentItem().getItemMeta() == null) {
             activeGuiEventCanceller(p, e);
             return;
+        } else {
+            e.getCurrentItem().getItemMeta().getDisplayName();
         }
 
         // Get action of the Inventory from the event
@@ -339,7 +340,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the inventory name and do the actions
-            case "MinesInfo -> ResetTime": {
+            case "MineInfo -> ResetTime": {
 
                 // Call the method
                 ResetTimeGUI(e, p, parts);

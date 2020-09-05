@@ -63,6 +63,9 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
+import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -146,6 +149,9 @@ public class SpigotPrison extends JavaPlugin {
 
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
+        Bukkit.getPluginManager().registerEvents(new PrisonSpigotCommands(), this);
+        Bukkit.getPluginManager().registerEvents(new SpigotPrisonGUI(), this);
+
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);

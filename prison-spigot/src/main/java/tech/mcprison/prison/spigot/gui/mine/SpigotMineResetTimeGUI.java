@@ -30,7 +30,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
 
         // Create a new inventory
         int dimension = 45;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesInfo -> ResetTime"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> ResetTime"));
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
