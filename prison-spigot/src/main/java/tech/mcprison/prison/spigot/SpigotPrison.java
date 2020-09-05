@@ -63,9 +63,6 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
-import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -80,6 +77,7 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
  * The plugin class for the Spigot implementation.
  *
  * @author Faizaan A. Datoo
+ * @author GABRYCA
  */
 public class SpigotPrison extends JavaPlugin {
 
@@ -150,7 +148,6 @@ public class SpigotPrison extends JavaPlugin {
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
         Bukkit.getPluginManager().registerEvents(new PrisonSpigotCommands(), this);
-        Bukkit.getPluginManager().registerEvents(new SpigotPrisonGUI(), this);
 
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
@@ -263,9 +260,9 @@ public class SpigotPrison extends JavaPlugin {
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
         
-        int mineCount = !prisonMinesOpt.isPresent() ? 0 : ((PrisonMines) prisonMinesOpt.get()).getMineManager().getMines().size();
-        int rankCount = !prisonRanksOpt.isPresent() ? 0 : ((PrisonRanks) prisonRanksOpt.get()).getRankCount();
-        int ladderCount = !prisonRanksOpt.isPresent() ? 0 : ((PrisonRanks) prisonRanksOpt.get()).getladderCount();
+        int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
+        int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
+        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
         
         metrics.addCustomChart(new Metrics.MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
