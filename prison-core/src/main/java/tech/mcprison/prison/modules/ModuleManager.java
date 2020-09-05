@@ -80,7 +80,7 @@ public class ModuleManager {
      */
     public boolean enableModule(Module module) {
         long startTime = System.currentTimeMillis();
-        Output.get().logInfo("%s enable start...", module.getName());
+        Output.get().logInfo("%s Module enablement starting...", module.getName());
 
         module.setEnabled(true);
         module.enable();
@@ -89,12 +89,12 @@ public class ModuleManager {
         if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
             // Anything else and we assume that the enable failed.
         	
-            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds. &d[%s&d]", module.getName(),
+            Output.get().logInfo("%s Module enablement &cfailed&f in %d milliseconds. &d[%s&d]", module.getName(),
                 (System.currentTimeMillis() - startTime), module.getStatus().getMessage() );
             return false;
         }
 
-        Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
+        Output.get().logInfo("%s Module enabled successfully in %d milliseconds.", module.getName(),
             (System.currentTimeMillis() - startTime));
         return true;
     }
