@@ -42,6 +42,8 @@ public class LadderManager {
 
     private Collection collection;
     private List<RankLadder> loadedLadders;
+    
+    private PrisonRanks prisonRanks;
 
     /*
      * Constructor
@@ -49,10 +51,13 @@ public class LadderManager {
 
     /**
      * Instantiate this {@link LadderManager}.
+     * @param prisonRanks 
      */
-    public LadderManager(Collection collection) {
+    public LadderManager(Collection collection, PrisonRanks prisonRanks) {
         this.collection = collection;
         this.loadedLadders = new ArrayList<>();
+        
+        this.prisonRanks = prisonRanks;
     }
 
     /*
@@ -68,8 +73,13 @@ public class LadderManager {
      */
     public void loadLadder(String fileKey) throws IOException {
         Document doc = collection.get(fileKey).orElseThrow(IOException::new);
-        RankLadder ladder = new RankLadder(doc);
+        RankLadder ladder = new RankLadder(doc, prisonRanks);
         loadedLadders.add(ladder);
+        
+        // Will be dirty if load a ladder and the rank name does not exist and it adds them:
+        if ( ladder.isDirty() ) {
+        	saveLadder(ladder);
+        }
     }
 
     /**
@@ -79,7 +89,14 @@ public class LadderManager {
      */
     public void loadLadders() throws IOException {
         List<Document> documents = collection.getAll();
-        documents.forEach(document -> loadedLadders.add(new RankLadder(document)));
+        documents.forEach(document -> loadedLadders.add(new RankLadder(document, prisonRanks)));
+        
+        for ( RankLadder ladder : loadedLadders ) {
+        	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
+        	if ( ladder.isDirty() ) {
+        		saveLadder(ladder);
+        	}
+		}
     }
 
     /**

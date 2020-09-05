@@ -111,7 +111,7 @@ public class PrisonRanks extends Module {
         // Load up the ladders
 
 
-        ladderManager = new LadderManager(initCollection("ladders"));
+        ladderManager = new LadderManager(initCollection("ladders"), this);
         try {
             ladderManager.loadLadders();
         } catch (IOException e) {

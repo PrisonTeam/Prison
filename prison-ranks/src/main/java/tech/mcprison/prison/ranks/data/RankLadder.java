@@ -27,6 +27,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.store.Document;
 
 /**
@@ -45,6 +46,8 @@ public class RankLadder {
     public String name;
     public List<PositionRank> ranks;
     public int maxPrestige;
+    
+    private boolean dirty = false;
 
     /*
      * Document-related
@@ -54,7 +57,10 @@ public class RankLadder {
     }
 
     @SuppressWarnings( "unchecked" )
-	public RankLadder(Document document) {
+	public RankLadder(Document document, PrisonRanks prisonRanks) {
+    	
+    	RankManager rankManager = prisonRanks.getRankManager();
+    	
         this.id = RankUtil.doubleToInt(document.get("id"));
         this.name = (String) document.get("name");
         List<LinkedTreeMap<String, Object>> ranksLocal =
@@ -62,8 +68,25 @@ public class RankLadder {
 
         this.ranks = new ArrayList<>();
         for (LinkedTreeMap<String, Object> rank : ranksLocal) {
-            ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
-                    RankUtil.doubleToInt((rank.get("rankId")))));
+        	
+        	int rPos = RankUtil.doubleToInt(rank.get("position"));
+        	int rRankId = RankUtil.doubleToInt((rank.get("rankId")));
+        	String rRankName = (String) rank.get( "rankName" );
+        	Rank rankPrison = null;
+        	
+        	if ( rankManager != null &&  
+    				rankManager.getRank( rRankId ).isPresent() ) {
+
+        		rankPrison = rankManager.getRank( rRankId ).get();
+        		
+        		// if null look it up from loaded ranks:
+        		if ( rRankName == null  ) {
+        			rRankName = rankPrison.name;
+        			dirty = true;
+        		}
+        	}
+        	
+            ranks.add(new PositionRank( rPos, rRankId, rRankName, rankPrison ));
         }
         
         this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
@@ -79,10 +102,7 @@ public class RankLadder {
         return ret;
     }
 
-    /*
-     * Methods
-     */
-
+    
 
     /**
      * Add a rank to this ladder.
@@ -98,7 +118,7 @@ public class RankLadder {
         ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
                 .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
-        ranks.add(new PositionRank(position, rank.id));
+        ranks.add(new PositionRank(position, rank.id, rank.name, rank));
         
         // Ranks will be reordered within connectRanks() so don't sort here:
         
@@ -115,7 +135,7 @@ public class RankLadder {
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id));
+        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id, rank.name, rank));
         
         // Reset the rank relationships:
         PrisonRanks.getInstance().getRankManager().connectRanks();
@@ -312,10 +332,24 @@ public class RankLadder {
 
         private int position;
         private int rankId;
+        private String rankName;
+        
+        /** 
+         * Adds a link to the actual Rank. This will save a lot of busy 
+         * work and can reduce the complexity of a lot of code.
+         */
+        private transient Rank rank;
 
-        public PositionRank(int position, int rankId) {
+        /**
+         * 
+         * @param position
+         * @param rankId
+         * @param rankName rankName is never used but makes it easier to read the saved files
+         */
+        public PositionRank(int position, int rankId, String rankName, Rank rank ) {
             this.position = position;
             this.rankId = rankId;
+            this.rankName = rankName;
         }
 
         public int getPosition() {
@@ -333,6 +367,33 @@ public class RankLadder {
         public void setRankId(int rankId) {
             this.rankId = rankId;
         }
+
+		public String getRankName()
+		{
+			return rankName;
+		}
+
+		public void setRankName( String rankName )
+		{
+			this.rankName = rankName;
+		}
+
+		public Rank getRank()
+		{
+			return rank;
+		}
+
+		public void setRank( Rank rank )
+		{
+			this.rank = rank;
+		}
     }
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty( boolean dirty ) {
+		this.dirty = dirty;
+	}
 
 }
