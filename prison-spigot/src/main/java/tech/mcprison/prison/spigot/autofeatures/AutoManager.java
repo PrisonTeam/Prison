@@ -115,10 +115,6 @@ public class AutoManager
 		}
 	}
 
-	boolean isOnePointFourPointFour(){
-		return new BluesSpigetSemVerComparator().compareMCVersionTo("1.14.4") < 0;
-	}
-
 	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
 		
 		if ( isBoolean( AutoFeatures.isAutoManagerEnabled ) && !e.isCancelled() ) {

@@ -132,28 +132,26 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
                     SpigotConfirmPrestigeGUI gui = new SpigotConfirmPrestigeGUI(p);
                     gui.open();
                 } catch (Exception ex) {
-                    isChatEventActive = true;
-                    sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
-                    sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
-                    Player finalP = p;
-                    id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                        isChatEventActive = false;
-                        finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
-                    }, 20L * 15);
+                    prestigeByChat(sender, p);
                 }
             } else {
-                isChatEventActive = true;
-                sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
-                sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
-                Player finalP = p;
-                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                    isChatEventActive = false;
-                    finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
-                }, 20L * 15);
+                prestigeByChat(sender, p);
             }
 
         }
         return true;
+    }
+
+    private void prestigeByChat(CommandSender sender, Player p) {
+        isChatEventActive = true;
+        sender.sendMessage(SpigotPrison.format(SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning") + SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning2") + SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning3")));
+        sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
+        sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
+        Player finalP = p;
+        id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+            isChatEventActive = false;
+            finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
+        }, 20L * 15);
     }
 
     private boolean prisonmanagerPrestiges(CommandSender sender, Player p, Configuration guiConfig) {

@@ -49,7 +49,11 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Blocks of the mine
         List<String> confirmlore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToConfirm"));
+                guiConfig.getString("Gui.Lore.ClickToConfirm"),
+                guiConfig.getString("Gui.Lore.PrestigeWarning"),
+                guiConfig.getString("Gui.Lore.PrestigeWarning2"),
+                guiConfig.getString("Gui.Lore.PrestigeWarning3")
+        );
 
         // Blocks of the mine
         List<String> cancelore = createLore(

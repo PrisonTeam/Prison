@@ -127,6 +127,9 @@ public class GuiConfig {
         dataConfig("Gui.Lore.Name","&3Rank Name: &7");
         dataConfig("Gui.Lore.Notifications","&8Edit Mines notifications.");
         dataConfig("Gui.Lore.PlayersWithTheRank","&3Players at rank: &7");
+        dataConfig("Gui.Lore.PrestigeWarning", "&3Prestige will reset: ");
+        dataConfig("Gui.Lore.PrestigeWarning2", "&3 - &bRank");
+        dataConfig("Gui.Lore.PrestigeWarning3", "&3 - &bBalance");
         dataConfig("Gui.Lore.Price","&3Price: &a$");
         dataConfig("Gui.Lore.Price2","&8Price: &a$");
         dataConfig("Gui.Lore.Price3","&3Rank Price: &a$");
