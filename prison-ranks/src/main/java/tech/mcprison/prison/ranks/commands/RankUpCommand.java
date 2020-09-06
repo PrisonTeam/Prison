@@ -56,11 +56,11 @@ public class RankUpCommand {
      */
 	
     @Command(identifier = "rankupMax", description = "Ranks up to the max rank that the player can afford.", 
-    			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
+    			permissions = "ranks.user", altPermissions = "ranks.rankupmax.[ladderName]", onlyPlayers = true) 
     public void rankUpMax(Player sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
-    	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS );
+    	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax." );
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
@@ -68,19 +68,19 @@ public class RankUpCommand {
     public void rankUp(Player sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
-    	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK );
+    	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
 
-    private void rankUpPrivate(Player sender, String ladder, RankupModes mode ) {
+    private void rankUpPrivate(Player sender, String ladder, RankupModes mode, String permission ) {
 
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
         if (!ladder.equalsIgnoreCase("default") && !sender
-            .hasPermission("ranks.rankup." + ladder.toLowerCase())) {
+            .hasPermission(permission + ladder.toLowerCase())) {
             Output.get()
                 .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
-                    "ranks.rankup." + ladder.toLowerCase());
+                		permission + ladder.toLowerCase());
             return;
         }
 
@@ -141,7 +141,7 @@ public class RankUpCommand {
         	processResults( sender, null, results, true, null, ladder, currency );
 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && !ladder.equals("prestiges")) {
-        		rankUpPrivate( sender, ladder, mode );
+        		rankUpPrivate( sender, ladder, mode, permission );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;
