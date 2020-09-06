@@ -35,13 +35,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -357,6 +351,13 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
+            case "MineInfo -> BlockPercentage":{
+
+                mineBlockPercentage(e, p, parts);
+
+                break;
+            }
+
             // Check the inventory title and do the actions
             case "MineNotifications -> Radius": {
 
@@ -425,6 +426,124 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
+        }
+    }
+
+    private void mineBlockPercentage(InventoryClickEvent e, Player p, String[] parts) {
+
+        // Rename the parts
+        String part1 = parts[0];
+        String part2 = parts[1];
+        String part3 = parts[2];
+        String part4 = parts[3];
+
+        // Initialize the variable
+        double decreaseOrIncreaseValue = 0;
+
+        // If there're enough parts init another variable
+        if (parts.length == 5){
+            decreaseOrIncreaseValue = Double.parseDouble(parts[4]);
+        }
+
+        // Check the button name and do the actions
+        if (part1.equalsIgnoreCase("Confirm:")) {
+
+            // Check the click type and do the actions
+            if (e.isLeftClick()){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p,"mines block set " + part2 + " " + part3 + " " + part4);
+
+                // Cancel the event
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+
+                // Check the click type and do the actions
+            } else if (e.isRightClick()){
+
+                // Send a message to the player
+                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                // Cancel the event
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            } else {
+
+                // Cancel the event
+                e.setCancelled(true);
+                return;
+            }
+        }
+
+        // Give to val a value
+        double val = Double.parseDouble(part3);
+
+        // Check the calculator symbol
+        if (part4.equals("-")){
+
+            // Check if the value's already too low
+            if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                // If it isn't too low then decrease it
+                val = val - decreaseOrIncreaseValue;
+
+                // If it is too low
+            } else {
+
+                // Tell to the player that the value's too low
+                p.sendMessage(SpigotPrison.format("&cToo low, under 0%!"));
+
+                // Cancel the event
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            }
+
+            // Open an updated GUI after the value changed
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2);
+            gui.open();
+
+            // Check the calculator symbol
+        } else if (part4.equals("+")) {
+
+            // Check if the value isn't too high
+            if (!((val + decreaseOrIncreaseValue) > 100)) {
+
+                // Increase the value
+                val = val + decreaseOrIncreaseValue;
+
+                // If the value's too high then do the action
+            } else {
+
+                // Close the GUI and tell it to the player
+                p.sendMessage(SpigotPrison.format("&cToo high, exceed 100%!"));
+
+                // Cancel the event
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            }
+
+            // Open a new updated GUI with new values
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2);
+            gui.open();
+
+            // Cancel the event
+            e.setCancelled(true);
         }
     }
 
@@ -1050,6 +1169,7 @@ public class ListenersPrisonManager implements Listener {
         // Output finally the buttonname and the minename explicit out of the array
         String buttonname = parts[0];
         String mineName = parts[1];
+        double percentage = Double.parseDouble(parts[2]);
 
         // Check the click Type and do the actions
         if (e.isShiftClick() && e.isRightClick()) {
@@ -1066,11 +1186,12 @@ public class ListenersPrisonManager implements Listener {
             // Open the GUI
             SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
             gui.open();
-            return;
-        }
+        } else {
 
-        // Cancel the event
-        e.setCancelled(true);
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, percentage, mineName, buttonname);
+            gui.open();
+
+        }
     }
 
     private void ResetTimeGUI(InventoryClickEvent e, Player p, String[] parts) {

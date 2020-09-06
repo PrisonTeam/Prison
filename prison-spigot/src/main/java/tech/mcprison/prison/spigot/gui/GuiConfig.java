@@ -103,6 +103,7 @@ public class GuiConfig {
         dataConfig("Gui.Lore.ClickToTeleport","&8Click to teleport.");
         dataConfig("Gui.Lore.ClickToUse","&8Click to use.");
         dataConfig("Gui.Lore.ClickToRankup","&8Click to rankup");
+        dataConfig("Gui.Lore.ClickToEditBlock", "&8Click to edit percentage.");
         dataConfig("Gui.Lore.Chance","&3Chance: ");
         dataConfig("Gui.Lore.Command","&3Command: &7");
         dataConfig("Gui.Lore.ContainsTheRank","&3The Rank ");
@@ -133,6 +134,7 @@ public class GuiConfig {
         dataConfig("Gui.Lore.Price","&3Price: &a$");
         dataConfig("Gui.Lore.Price2","&8Price: &a$");
         dataConfig("Gui.Lore.Price3","&3Rank Price: &a$");
+        dataConfig("Gui.Lore.Percentage", "&8Percentage: ");
         dataConfig("Gui.Lore.PrisonTasksButton","&8Prison Tasks Manager.");
         dataConfig("Gui.Lore.ResetTime","&3Reset time(s): &7");
         dataConfig("Gui.Lore.Radius","&8Radius: ");
@@ -166,6 +168,8 @@ public class GuiConfig {
         dataConfig("Gui.Lore.World","&3World: &7");
         dataConfig("Gui.Message.NoSellAllItems", "&cSorry but there aren't SellAll Items to show.");
         dataConfig("Gui.Message.EmptyGui","&cSorry, the GUI looks empty.");
+        dataConfig("Gui.Message.NoBlocksMine","&cSorry but there aren't blocks inside this Mine.");
+        dataConfig("Gui.Message.NoMines", "&cSorry but there aren't Mines to show.");
         dataConfig("Gui.Message.TooManyBlocks","&cSorry, but there're too many Blocks and the max's 54 for the GUI");
         dataConfig("Gui.Message.TooManyLadders","&cSorry, but there're too many ladders and the max's 54 for the GUI");
         dataConfig("Gui.Message.TooManyMines","&cSorry, but there're too many mines and the max's 54 for the GUI");
