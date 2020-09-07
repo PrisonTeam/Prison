@@ -90,7 +90,7 @@ public class ListenersPrisonManager implements Listener {
         Player p = (Player) e.getPlayer();
 
         // Array with all the Prison titles of Inventories
-        String[] titleNames = new String[24];
+        String[] titleNames = new String[25];
         titleNames[0] = "AutoFeatures -> AutoBlock";
         titleNames[1] = "PrisonManager -> AutoFeatures";
         titleNames[2] = "AutoFeatures -> AutoPickup";
@@ -115,6 +115,7 @@ public class ListenersPrisonManager implements Listener {
         titleNames[21] = "PrisonManager -> SellAll-Admin";
         titleNames[22] = "SellAll -> ItemValue";
         titleNames[23] = "PrisonManager -> SellAll-Player";
+        titleNames[24] = "MineInfo -> BlockPercentage";
 
         // For every title check if equals, the if true add it to the GuiBlocker
         for (String title : titleNames){
