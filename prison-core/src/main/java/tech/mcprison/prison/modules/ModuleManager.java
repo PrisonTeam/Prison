@@ -35,6 +35,8 @@ import java.util.Optional;
  */
 public class ModuleManager {
 
+	public static final String MODULE_MANAGER_DIRECTORY = "module_conf";
+	
     private List<Module> modules;
     private List<String> disabledModules;
     private File moduleRoot;
@@ -43,12 +45,18 @@ public class ModuleManager {
         modules = new ArrayList<>();
         disabledModules = new ArrayList<>();
         
-        moduleRoot = new File(PrisonAPI.getPluginDirectory(), "module_conf");
-        if (!moduleRoot.exists()) {
-            moduleRoot.mkdir();
-        }
+        moduleRoot = getModuleRootDefault();
     }
 
+    public static File getModuleRootDefault() {
+    	 File moduleRoot = new File(PrisonAPI.getPluginDirectory(), MODULE_MANAGER_DIRECTORY);
+         if (!moduleRoot.exists()) {
+             moduleRoot.mkdir();
+         }
+         
+         return moduleRoot;
+    }
+    
     /**
      * Register a new module.
      */

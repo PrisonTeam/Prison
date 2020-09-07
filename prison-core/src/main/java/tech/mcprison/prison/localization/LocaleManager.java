@@ -29,11 +29,15 @@
 
 package tech.mcprison.prison.localization;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.CodeSource;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,7 +47,11 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.modules.PluginEntity;
 
 /**
@@ -106,7 +114,11 @@ public class LocaleManager {
     public LocaleManager(PluginEntity module, String internalPath) {
         this.module = module;
         this.internalPath = internalPath;
+        
+        // Load the shipped locales first first from the prison jar file:
         loadShippedLocales();
+        
+        // Then any custom locales will overried and replace the internal locales:
         loadCustomLocales(); // custom locales will override
     }
 
@@ -116,6 +128,9 @@ public class LocaleManager {
 
     private void loadCustomLocales() {
         File dataFolder = getOwningPlugin().getDataFolder();
+        
+    	dataFolder = fixPrisonCoreLanguagePath( dataFolder );
+    	        
         if (dataFolder.isDirectory()) {
             File localeFolder = new File(dataFolder, LOCALE_FOLDER);
             if (localeFolder.exists()) {
@@ -150,9 +165,97 @@ public class LocaleManager {
                             + " is not a directory - not loading custom locales");
                 }
             }
+            else {
+            	// The local custom lang directory doesn't exist so create it:
+            	localeFolder.mkdirs();
+            	
+            	// Now copy all of the default language files that are in the prison jar to this new directory.
+            	// This will make it a lot easier for admins to modify the language files.
+            	extractShippedLocales( localeFolder );
+            	
+            }
         }
     }
 
+    /**
+     * <p>The Prison core is not truly a Prison module, so the targetPath that is passed to this function
+     *    is not correctly setup to place the core/lang directory in the correct place.  It will try
+     *    to put it in /plugins/Prison/lang which is wrong.  This function detects this error and 
+     *    will regenerate the targetPath to be /plugins/Prison/module_conf/core/lang.
+     * </p>
+     * 
+     * <p>Note: There is a unit test that is ran by the gradle build process that hits this 
+     * function.  At the time, the value of PrisonAPI.getModuleManager() is null due to the unit test,
+     * therefore the following function is using static functions to ensure there is not a 
+     * null pointer exception thrown.  The unit test does not do anything with the content of 
+     * these directories, but it still hits these functions, so allowing it to proceed, even if the
+     * paths are incorrect, will have no impact on anything.
+     * </p>
+     * 
+     * @param targetPath
+     * @return The corrected targetPath for the core plugin
+     */
+	private File fixPrisonCoreLanguagePath( File targetPath ) {
+		if ( !targetPath.getAbsolutePath().startsWith( 
+				ModuleManager.getModuleRootDefault().getAbsolutePath() ) ) {
+			targetPath = Module.setupDataFolder( Prison.PSEDUO_MODLE_NAME );
+    	}
+		return targetPath;
+	}
+
+    private void extractShippedLocales( File targetPath ) {
+    	
+    	targetPath = fixPrisonCoreLanguagePath( targetPath );
+    	
+        CodeSource cs = getOwningPlugin().getClass().getProtectionDomain().getCodeSource();
+        if (cs != null) {
+            try {
+                URL jar = cs.getLocation();
+                ZipInputStream zip = new ZipInputStream(jar.openStream());
+                ZipEntry entry;
+                while ((entry = zip.getNextEntry()) != null) {
+                    String entryName = entry.getName();
+                    
+                    if (entryName.startsWith(internalPath) && entryName.endsWith(".properties")) {
+                    	
+                    	String[] arr = entryName.split("/");
+                    	String localeName = arr[arr.length - 1];
+
+                    	File newLocal = new File( targetPath, localeName );
+                    	
+                    	BufferedInputStream inStream = new BufferedInputStream( zip );
+                    	try (
+                    			OutputStream outStream = Files.newOutputStream( newLocal.toPath(), 
+                    					StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE );
+                    			) {
+                    		copyStreams( inStream, outStream) ;
+                    	}
+                    }
+                    
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(
+                    "Failed to initialize LocaleManager for plugin " + getOwningPlugin()
+                        + " - Prison cannot continue to load.", ex);
+            }
+        } else {
+            throw new RuntimeException("LocalManager.extractShippedLocales(): " +
+            		"Failed to load code source for plugin " + getOwningPlugin()
+                + " - Prison cannot continue to load.");
+        }
+    	
+    }
+    
+    private void copyStreams(InputStream inStream, OutputStream outStream) 
+    		throws IOException {
+	    byte[] buf = new byte[8192];
+	    int length;
+	    while ((length = inStream.read(buf)) > 0) {
+	        outStream.write(buf, 0, length);
+	    }
+	}
+    
+    
     private void loadShippedLocales() {
         CodeSource cs = getOwningPlugin().getClass().getProtectionDomain().getCodeSource();
         if (cs != null) {
@@ -181,6 +284,7 @@ public class LocaleManager {
     }
 
     private void loadLocale(String name, InputStream is, boolean printStackTrace) {
+    	
         try {
             Properties temp = new Properties();
             temp.load(is);

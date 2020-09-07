@@ -11,6 +11,24 @@ that you need.
 ## tag v3.2.1-alpha.18 - 2020-09-01
 
 
+* **New Feature: Language files are written to the prison's plugin directory by defaul**
+If the language files do not exist at startup, then they will be written to the proper lang directories. This helps admins find the files and edit them without having to try to pull them from the jar file.
+The core module, which is not a true Prison module is now correctly being remapped to the /plugins/Prison/module_conf/core/ directory for all language file uses.  This keeps things consistent and clean.
+The normal use case is that the jar file language files will be loaded first, then the external files will be loaded and replace any key value pairs that may have been loaded previously.
+Warning... the language files ignore the package names and goes strictly by the key value in the files. Therefore if the same key exists in more than one language file, then the last one loaded will replace any other previously loaded values.
+This has been tested and it works great.  No new mapping have been added.
+
+
+* **Added a unique permission for /rankupmax so it can be disabled.**
+Its `ranks.rankupmax.[ladderName]` but the player must also have `ranks.user`.
+
+
+* **Added more details to Ladder save files**
+Added Rank names to the ladder's save file. This will help figure out what is what and could help eliminate possible errors.  If a ladder is loaded and a name is added, then it will flag the ladder file to be resaved after being fully loaded to ensure the contents of the file is up to date.
+No one should ever make manual changes to these files, but this at least give more information due to the use of the magic numbers with the rankIds.
+Added a link to the actual Rank object to simplify the use of the objects.
+
+
 * **New Feature: Broadcast Rankups and Demotions**
 There is a now a new feature that will broadcast to the whole server when someone gets a Rankup Or a Demotion.
 This can be disabled within the config.yml file.  If the entry is not there, it is the same as if it has a true value.  Any other value is considered false.

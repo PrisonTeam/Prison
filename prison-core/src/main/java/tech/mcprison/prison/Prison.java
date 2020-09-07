@@ -52,6 +52,17 @@ import tech.mcprison.prison.util.ItemManager;
 public class Prison 
 	implements PluginEntity {
 
+	/**
+	 * <p>This is not exactly a Prison module, but it's name is used within
+	 * the LocaleManager to correct the generation of an incorrect directory
+	 * path for the locale language files for this "core" module. Basically
+	 * this provides consistency in the location of all language files that
+	 * the admins can easily edit and know where to find them.
+	 * </p>
+	 * 
+	 */
+	public static final String PSEDUO_MODLE_NAME = "core";
+	
 	public static final int SPIGOTMC_ORG_PROJECT_ID = 1223; //72740;
 	
     // Singleton
