@@ -11,6 +11,12 @@ that you need.
 ## tag v3.2.1-alpha.18 - 2020-09-01
 
 
+* **New Features: Show all ranks and player counts upon startup and on demand**
+For each ladder, all ranks with the number of players at each rank is now displayed at startup of the plugin.
+Also a new command was created to be able to display this information at any time. The command has the option to change the parameters to fine tune the results.  The command is /ranks players.
+When the rank of a player is viewed, it is now displayed to the log. An admin reported that all ranks were changed on their server, but no transactions appeared in the logs. It was shown in the logs when players checked their ranks, but it is unknown what thoes ranks were. SO this tries to record that.
+
+
 * **New Feature: Language files are written to the prison's plugin directory by defaul**
 If the language files do not exist at startup, then they will be written to the proper lang directories. This helps admins find the files and edit them without having to try to pull them from the jar file.
 The core module, which is not a true Prison module is now correctly being remapped to the /plugins/Prison/module_conf/core/ directory for all language file uses.  This keeps things consistent and clean.

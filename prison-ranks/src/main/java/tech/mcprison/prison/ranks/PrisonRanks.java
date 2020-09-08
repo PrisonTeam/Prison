@@ -160,6 +160,12 @@ public class PrisonRanks extends Module {
         Output.get().logInfo("Loaded " + getladderCount() + " ladders.");
         Output.get().logInfo("Loaded " + getPlayersCount() + " players.");
         
+        
+
+        // Display all Ranks in each ladder:
+    	boolean includeAll = true;
+    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+        
     }
 
     private Collection initCollection(String collName) {

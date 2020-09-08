@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -102,7 +103,30 @@ public class RankLadder {
         return ret;
     }
 
-    
+    public List<Rank> getRanks() {
+    	
+    	List<Rank> rankz = new ArrayList<>();
+
+    	RankManager rankManager = PrisonRanks.getInstance().getRankManager();
+    	
+    	for ( PositionRank rank : ranks ) {
+    		
+    		if ( rank.rank == null ) {
+    			
+    			Rank rnk = rankManager.getRank( rank.rankId ).get();
+    			if ( rnk != null ) {
+    				rank.rank = rnk;
+    			}
+    			else {
+    				Output.get().logWarn( "RankLadder.listAllRanks(): " +
+    						"Could not get Rank from rankId: " + rank.rankId );
+    			}
+    		}
+    		rankz.add( rank.rank );
+    	}
+    	
+    	return rankz;
+    }
 
     /**
      * Add a rank to this ladder.

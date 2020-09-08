@@ -613,8 +613,9 @@ public class RankUtil {
     			"originalRank=(%s%s%s) targetRank=(%s%s%s) " +
     			"runtime=%s ms message=[%s] ", 
     			
-    			results.getCommand().name(), results.getPlayer(), 
-    			results.getExecutor() == null ? "" : results.getExecutor(), 
+    			results.getCommand().name(), 
+    			results.getPlayer(), 
+    			(results.getExecutor() == null ? "(see player)" : results.getExecutor()), 
     			(results.getStatus() == null ? "" : results.getStatus().name()),
     			
     			(results.getLadderName() == null ? "" : results.getLadderName() ),

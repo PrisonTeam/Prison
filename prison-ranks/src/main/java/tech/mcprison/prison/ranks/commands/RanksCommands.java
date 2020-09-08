@@ -440,6 +440,10 @@ public class RanksCommands {
 				}
 				
 				sender.sendMessage( messageRank );
+				
+				// log the rank. There was one issue with the ranks suddenly being changed so this
+				// will help document what ranks were.
+				Output.get().logInfo( messageRank );
 			}
 			
 //			String nextRank = pm.getPlayerNextRankName( rankPlayer );
@@ -460,7 +464,46 @@ public class RanksCommands {
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
+ 
     
+    @Command(identifier = "ranks players", description = "Shows all ranks with player counts", onlyPlayers = false)
+    public void rankPlayers(CommandSender sender,
+    			@Arg(name = "ladderName", def = "all", description = "Ladder Name [all, none, LadderName]") String ladderName,
+    			@Arg(name = "action", def = "players", description = "List type [players, all]") String action){
+
+    	
+    	if ( !ladderName.equalsIgnoreCase( "all" ) && 
+    			!PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ).isPresent() ) {
+    		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not ALL.", ladderName);
+    		return;
+    	}
+    	
+    	
+    	if ( !action.equalsIgnoreCase( "players" ) && !action.equalsIgnoreCase( "all" ) ) {
+    		Output.get().sendError(sender, "The action '%s' is invalid. [players, all]", action);
+    		
+    		return;
+    	}
+    	
+    	boolean includeAll = action.equalsIgnoreCase( "all" );
+    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, includeAll );
+    	
+//    	Output.get().logInfo( "Ranks by ladders:" );
+//    	
+//    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+//    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+//    			
+//    			boolean includeAll = action.equalsIgnoreCase( "all" );
+//    			String ladderRanks = ladder.listAllRanks( includeAll );
+//    			
+//    			sender.sendMessage( ladderRanks );
+//    		}
+//			
+//		}
+    	
+    }
+    
+
     
 //    /**
 //     * This function is just an arbitrary test to access the various components.

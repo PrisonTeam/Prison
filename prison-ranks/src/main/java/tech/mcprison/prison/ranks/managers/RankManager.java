@@ -22,13 +22,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
@@ -343,4 +346,104 @@ public class RankManager {
 		}
     	
     }
+    
+    
+    
+    public String listAllRanks( String ladderName, List<Rank> ranks, boolean includeAll ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
+    	
+    	for (Rank rank : ranks ) {
+    		
+    		// Get the players per rank!!
+			List<RankPlayer> playersList =
+                    playerManager.getPlayers().stream()
+                        .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+                        .collect(Collectors.toList());
+    		int players = playersList.size();
+    		
+    		if ( includeAll || !includeAll && players > 0 ) {
+    			if ( sb.length() > 0 ) {
+    				sb.append( "&2, " );
+    			}
+    			
+    			
+    			sb.append( " &3" );
+    			sb.append( rank.name );
+    			
+    			if ( players > 0 ) {
+    				
+    				sb.append( " &7" );
+    				sb.append( players );
+    			}
+    		}
+		}
+    	
+    	sb.insert( 0, "&b: " );
+    	sb.insert( 0, ladderName );
+    	sb.insert( 0, "  &7" );
+    	
+    	return sb.toString();
+    }
+    
+    
+    /**
+     * <p>Sends the output of ranksByLadders to the prison Output (console and logs).
+     * </p>
+     * 
+     * @param includeAll If true then includes all ranks, otherwise just ranks within one more players
+     */
+    public void ranksByLadders(  boolean includeAll ) {
+    	ranksByLadders( null, "all", includeAll );
+    }
+    
+    public void ranksByLadders( CommandSender sender, boolean includeAll ) {
+    	ranksByLadders( sender, "all", includeAll );
+    }
+    
+    public void ranksByLadders( CommandSender sender, String ladderName, boolean includeAll ) {
+    	
+    	rankByLadderOutput( sender, "&7Ranks by ladders:" );
+    	
+    	// Track which ranks were included in the ladders listed:
+    	List<Rank> ranksIncluded = new ArrayList<>();
+    	
+    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+    			
+    			List<Rank> ladderRanks = ladder.getRanks();
+    			ranksIncluded.addAll( ladderRanks );
+    			
+    			String ranksByLadder = listAllRanks( ladder.name, ladderRanks, includeAll );
+    			
+    			rankByLadderOutput( sender, ranksByLadder );
+    		}
+    	}
+    	
+    	if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( "none" ) ) {
+
+    		// Next we need to get a list of all ranks that were not included. Use set 
+    		List<Rank> ranksExcluded = new ArrayList<>( loadedRanks );
+    		ranksExcluded.removeAll( ranksIncluded );
+    		
+    		// Next generate a list of ranks that are not associated with any ladder:
+    		// NOTE: No players should be associated with ranks that are not tied to a ladder,
+    		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
+    		//       since player count will always be zero.
+    		String ranksByLadder = listAllRanks( "none", ranksExcluded, true );
+    		
+    		rankByLadderOutput( sender, ranksByLadder );
+    	}
+    }
+
+	private void rankByLadderOutput( CommandSender sender, String ranksByLadder ) {
+		if ( sender == null ) {
+			Output.get().logInfo( ranksByLadder );
+		}
+		else {
+			sender.sendMessage( ranksByLadder );
+		}
+	}
+    
 }
