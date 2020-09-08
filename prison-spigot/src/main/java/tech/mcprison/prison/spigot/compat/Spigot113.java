@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class Spigot113
-	extends Spigot113Blocks
+	extends Spigot113GUI
 	implements Compatibility {
 
     @Override 

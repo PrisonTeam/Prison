@@ -13,7 +13,7 @@ import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
 	extends CompatibilityCache 
-	implements Compatibility {
+	implements CompatibilityBlocks {
 
 	public BlockType getBlockType(Block spigotBlock) {
 		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );

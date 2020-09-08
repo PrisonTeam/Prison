@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.1-alpha.19 - 2020-09-08
 
 
+* **Added GUI Compatibility interfaces and support classes**
+Restructure the compatibility classes to separate the blocks from non-blocks and added in GUI support. 
+It maybe a little odd how the interfaces extend from other interfaces, but the chaining allows separation of functionalities to keep the code cleaner at the interface and implementation layers.
+
+
 * **Alpha.19 - 2020-09-08**
 Final alpha version prior to beta!  Yeah I know I said that before, but I did not expect so much awesome stuff to be added!  Need to have a clean transition to beta, so this has to happen first. 
 

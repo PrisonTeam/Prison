@@ -14,7 +14,7 @@ import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot18Blocks 
 	extends CompatibilityCache
-	implements Compatibility {
+	implements CompatibilityBlocks {
 
 
 	/**

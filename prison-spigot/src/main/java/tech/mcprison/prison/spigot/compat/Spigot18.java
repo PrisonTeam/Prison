@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Faizaan A. Datoo
  */
 public class Spigot18 
-	extends Spigot18Blocks 
+	extends Spigot18GUI 
 	implements Compatibility {
 
 	
