@@ -8,7 +8,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.18 - 2020-09-01
+## tag v3.2.1-alpha.19 - 2020-09-08
+
+
+* **Alpha.19 - 2020-09-08**
+Final alpha version prior to beta!  Yeah I know I said that before, but I did not expect so much awesome stuff to be added!  Need to have a clean transition to beta, so this has to happen first. 
 
 
 * **New Features: Show all ranks and player counts upon startup and on demand**
