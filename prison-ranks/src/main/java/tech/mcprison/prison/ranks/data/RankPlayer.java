@@ -17,15 +17,18 @@
 
 package tech.mcprison.prison.ranks.data;
 
-import com.google.gson.internal.LinkedTreeMap;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.store.Document;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.google.gson.internal.LinkedTreeMap;
+
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.store.Document;
 
 /**
  * Represents a player with ranks.
@@ -44,6 +47,8 @@ public class RankPlayer {
     
     public List<RankPlayerName> names;
     
+    // Block name, count
+    public HashMap<String, Integer> blocksMined;
 
     /*
      * Document-related
@@ -62,6 +67,9 @@ public class RankPlayer {
         LinkedTreeMap<String, Object> prestigeLocal =
             (LinkedTreeMap<String, Object>) document.get("prestige");
         
+        LinkedTreeMap<String, Object> blocksMinedLocal =
+        		(LinkedTreeMap<String, Object>) document.get("blocksMined");
+        
         Object namesListObject = document.get( "names" );
         
 
@@ -73,6 +81,13 @@ public class RankPlayer {
         this.prestige = new HashMap<>();
         for (String key : prestigeLocal.keySet()) {
             prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
+        }
+        
+        this.blocksMined = new HashMap<>();
+        if ( blocksMinedLocal != null ) {
+        	for (String key : blocksMinedLocal.keySet()) {
+        		blocksMined.put(key, RankUtil.doubleToInt(blocksMinedLocal.get(key)));
+        	}
         }
         
         if ( namesListObject != null ) {
@@ -101,6 +116,8 @@ public class RankPlayer {
         ret.put("prestige", this.prestige);
         
         ret.put("names", this.names);
+
+        ret.put("blocksMined", this.blocksMined);
         return ret;
     }
 
@@ -135,6 +152,13 @@ public class RankPlayer {
 	}
 	public void setNames( List<RankPlayerName> names ) {
 		this.names = names;
+	}
+
+	public HashMap<String, Integer> getBlocksMined() {
+		return blocksMined;
+	}
+	public void setBlocksMined( HashMap<String, Integer> blocksMined ) {
+		this.blocksMined = blocksMined;
 	}
 
 	/**
