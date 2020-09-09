@@ -25,6 +25,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
 
@@ -444,12 +445,22 @@ public class RanksCommands {
 					}
 				}
 				
-				sender.sendMessage( messageRank );
-				
-				// log the rank. There was one issue with the ranks suddenly being changed so this
-				// will help document what ranks were.
-				Output.get().logInfo( messageRank );
+				sendToPlayerAndConsole( sender, messageRank );
 			}
+			
+			if (sender.hasPermission("ranks.admin") && rankPlayer.names.size() > 1) {
+	            // This is admin-exclusive content
+
+				sendToPlayerAndConsole( sender, "&8[Admin Only]" );
+				sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
+				
+				for ( RankPlayerName rpn : rankPlayer.names ) {
+					
+					sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
+				}
+
+
+	        }
 			
 //			String nextRank = pm.getPlayerNextRankName( rankPlayer );
 //			String nextRankCost = pm.getPlayerNextRankCost( rankPlayer );
@@ -469,6 +480,19 @@ public class RanksCommands {
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
+
+	private void sendToPlayerAndConsole( CommandSender sender, String messageRank )
+	{
+		// If not a console user then send the message to the sender, other wise if a console
+		// user then they will see duplicate messages:
+		if ( sender.getName() != null && !sender.getName().equalsIgnoreCase( "console" ) ) {
+			sender.sendMessage( messageRank );
+		}
+		
+		// log the rank. There was one issue with the ranks suddenly being changed so this
+		// will help document what ranks were.
+		Output.get().logInfo( messageRank );
+	}
  
     
     @Command(identifier = "ranks players", description = "Shows all ranks with player counts", onlyPlayers = false)
