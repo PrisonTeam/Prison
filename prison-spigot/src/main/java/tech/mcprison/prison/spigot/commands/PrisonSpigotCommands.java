@@ -22,7 +22,6 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 import java.util.Objects;
 
@@ -79,7 +78,6 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
             return true;
         }
 
-        if (prisonmanagerGUI(sender, args, p)) return true;
 
         if (args[0].equalsIgnoreCase("ranks")){
             return prisonmanagerRanks(sender, p, GuiConfig);
@@ -89,6 +87,9 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
             return prisonmanagerPrestiges(sender, p, GuiConfig);
         } else if (args[0].equalsIgnoreCase("prestige")){
             return prisonmanagerPrestige(sender, p);
+        } else if (args[0].equalsIgnoreCase("gui")){
+            return prisonmanagerGUI(sender, p);
+
         }
 
         return true;
@@ -127,7 +128,7 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
                 return true;
             }
 
-            if (SpigotPrison.getInstance().getConfig().getString("prestige-confirm-gui").equalsIgnoreCase("true")) {
+            if (Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prestige-confirm-gui")).equalsIgnoreCase("true")) {
                 try {
                     SpigotConfirmPrestigeGUI gui = new SpigotConfirmPrestigeGUI(p);
                     gui.open();
@@ -208,7 +209,6 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
             }
             SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
             gui.open();
-            return true;
         } else {
             SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI(p);
             gui.open();
@@ -216,12 +216,8 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
         return true;
     }
 
-    private boolean prisonmanagerGUI(CommandSender sender, String[] args, Player p) {
-        if ((sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui")) && args[0].equalsIgnoreCase("gui")){
-            if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
-                sender.sendMessage(SpigotPrison.format("&cSorry, but GUIs don't work with versions prior to 1.9.0 due to issues"));
-                return true;
-            }
+    private boolean prisonmanagerGUI(CommandSender sender, Player p) {
+        if ((sender.hasPermission("prison.admin") || sender.hasPermission("prison.prisonmanagergui"))){
             SpigotPrisonGUI gui = new SpigotPrisonGUI(p);
             gui.open();
             return true;

@@ -43,6 +43,8 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 
 /**
@@ -117,12 +119,21 @@ public class ListenersPrisonManager implements Listener {
         titleNames[23] = "PrisonManager -> SellAll-Player";
         titleNames[24] = "MineInfo -> BlockPercentage";
 
-        // For every title check if equals, the if true add it to the GuiBlocker
+        String version = Bukkit.getVersion();
+        // For every title check if equals, the if true add it to the GuiBlocker (1.9 and up)
         for (String title : titleNames){
-            if (e.getView().getTitle().substring(2).equalsIgnoreCase(title)) {
+            if (BluesSpigetSemVerComparator.EQUAL.isNewer(version, "1.9")){
+                if (e.getView().getTitle().substring(2).equalsIgnoreCase(title)) {
 
                 // Add the player to the list of those who can't move items in the inventory
                 addToGUIBlocker(p);
+                }
+            } else {
+                if (e.getInventory().getTitle().substring(2).equalsIgnoreCase(title)) {
+
+                    // Add the player to the list of those who can't move items in the inventory
+                    addToGUIBlocker(p);
+                }
             }
         }
     }
@@ -216,8 +227,16 @@ public class ListenersPrisonManager implements Listener {
         // Get ranks module
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
-        // Check if the GUI have the right title and do the actions
-        switch (e.getView().getTitle().substring(2)) {
+        String version = Bukkit.getVersion();
+        String title;
+
+        if (BluesSpigetSemVerComparator.EQUAL.isNewer(version, "1.9")){
+            title = e.getView().getTitle().substring(2);
+        } else {
+            title = e.getInventory().getTitle().substring(2);
+        }
+            // Check if the GUI have the right title and do the actions
+        switch (title) {
 
             // Check the title and do the actions
             case "PrisonManager":
@@ -453,6 +472,7 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
+                Bukkit.dispatchCommand(p, "mines block remove " + part2 + " " + part3);
                 Bukkit.dispatchCommand(p,"mines block set " + part2 + " " + part3 + " " + part4);
 
                 // Cancel the event
@@ -1176,7 +1196,7 @@ public class ListenersPrisonManager implements Listener {
         if (e.isShiftClick() && e.isRightClick()) {
 
             // Execute the command
-            Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname.substring(0, buttonname.length() - 1));
+            Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname);
 
             // Cancel the event
             e.setCancelled(true);

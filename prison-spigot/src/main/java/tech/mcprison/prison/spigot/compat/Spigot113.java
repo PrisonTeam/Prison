@@ -42,6 +42,4 @@ public class Spigot113
 		
 		player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F); 
 	}
-
-
 }
