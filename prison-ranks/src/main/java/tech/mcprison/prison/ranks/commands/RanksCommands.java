@@ -268,6 +268,10 @@ public class RanksCommands {
             PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.id);
 
         ChatDisplay display = new ChatDisplay("Rank " + rank.tag);
+
+        display.text("&3Rank Name: &7%s", rank.name);
+        display.text("&3Rank Tag:  &7%s", rank.tag);
+        
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
@@ -276,19 +280,20 @@ public class RanksCommands {
         display.text("&3Cost: &7%s", Text.numberToDollars(rank.cost));
         
         display.text("&3Currency: &7<&a%s&7>", (rank.currency == null ? "&cnone" : rank.currency) );
+        
+        List<RankPlayer> players =
+        		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+        		.filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+        		.collect(Collectors.toList());
+        display.text("&7There %s &3%s players &7with this rank.", 
+        				(players.size() == 1 ? "is": "are"), 
+        				players.size() + "");
 
         if (sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
             display.text("&8[Admin Only]");
             display.text("&6Rank ID: &7%s", rank.id);
-            display.text("&6Rank Name: &7%s", rank.name);
-
-            List<RankPlayer> players =
-                PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                    .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
-                    .collect(Collectors.toList());
-            display.text("&7There are &6%s &7with this rank.", players.size() + " players");
 
             FancyMessage del =
                 new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.name)
