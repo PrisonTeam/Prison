@@ -7,12 +7,81 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items
+# To Do Items - During Beta v3.2.1
 
-Work to be considered.
+
+* **New Block Model - Implement in parallel**
+Implement and have a fully functional new block handling mechanism that operate in complete parallel to the old method.  This way admins can turn it on when they want to use it, otherwise their server will continue to use the old code.
+
+ 1. Done: Create core classes for new block types.  String based so 100% flexible.  Names based upon XMaterial enums so easy mapping to XMaterial then to system version dependency.
+ 
+ 2. Done: Available blocks based upon XMateral and spigot version they are running. Create the initial list to be used for block searches.
+ 
+ 3. Done: Needs Review: Disable MineData.getBlocks() and use that to write all the main parallel code.  Reenable.
+ 
+ 4. Disable BlockType and write parallel code. Reenable.
+ 
+ 5. Hookup block search. 
+ 
+ 
+
+* **Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
+ Blue should work on this.
+
+
+ 
+ * **Add player names to the player file**
+ Have no idea who is who in the player files.
+ Make it an array of a new object, player name that has name and timestamp.
+ When the file is loaded and the player is online, check name, and if not recorded, then add it. 
+ 
+
+ 
+ * **Problem with rank removal from Ladders**
+Create a new rank to the default ladder.  Add a player to it. Then remove the rank from the ladder.
+ 
+The ladder no longer contains the rank. But the player is still associated with the rank, but yet ranks cannot contain players if they are not on a ladder.  The commands expect a valid ladder name.  Also there does not appear to be any checks and balances when ranks are moved from one ladder to the other since ranks have no idea what ladder they are in.
+
+This could cause major corruption if moving ranks between ladders, removing ranks from a ladder, and players being associated with those ranks. 
+
+ 
+ 
+ * **Add GUI support for v1.8.x**
+ Might be able to add GUI support for 1.8.x with a few simple lines of code?
+ 
+ 
+ * ** **
+ 
+
+
+# To Do Items - Post v3.2.1
+
+
+<h2> Major tasks</h2>
+
+
+```
+  Note: May be spread out over multiple releases.
+  1. New Block handling if not fully apart of v3.2.1.
+  2. New Multi-language support.
+  3. New Wizard Configuration support.
+     A. Basic Prison functions. 
+     B. Basic Mine behaviors
+     C. Basic Rank and Ladder behaviors
+     D. Basic prestige behaviors
+  4.Creation of new scripting language for automation tied to wizards
+     A. When creating a mine perform scripted actions to configure each one
+     B. When creating a rank perform scripted actions to configure each rank
+     C. Create the permission group within the permission plugin selected
+     D. Add perms for that permission group, including warp support (prison/warps)
+     E. Auto generate rank commands to add and remove group perms from each rank
+```
+
+.
 
 
 <h2> Higher Priority TO DO Items </h2>
+
 
 * **Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
 They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
@@ -205,6 +274,13 @@ Currently 15 forks.  Activity unknown.
 # Features recently added:
 
 
+ 
+ * **Not an issue: Prison Wand breaks blocks**
+ Should probably monitor block break events and cancel breakage with wand.
+ This was caused by a conflict with a scoreboard plugin that advertised as supporting 1.16.2, but broke a few different plugins.
+ 
+ 
+ 
 * **DONE! Complete the new Mines Reset Paging**
   Holding up release v3.2.1.
 

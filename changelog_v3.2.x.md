@@ -8,7 +8,30 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-08
+## tag v3.2.1-alpha.19 - 2020-09-09
+
+* **Admins and console are able to view player's past names with /ranks player**
+When admins and console use `/ranks player` command it will show past names for all players that have more than one name recorded.  
+
+
+* **This implements the tracking of the player's name**
+This now tracks and detects when player names are changed so it can record the change.
+This is passive in that it does not try to actively detect name changes unless the player is active within the prison and using features that require the use of the player ranks and associated details. 
+Offline players will never have their names updated if they are changed and they never return to prison.  It is possible that a player could change their names a few times and if they do not log in to prison, then it will not be able to track all the interim name changes, only the current name they just logged in with.
+
+
+* **Setup the internals for tracking the blocks mined for each player**
+Established the core internals on tracking blocks mined per player.  Nothing uses this yet.
+
+
+* **Add support for recording player names within the RankPlayer.**
+This will help admins manage their data especially if they have to work with the raw data.
+Multiple names can be tracked, with the last name in the list being the current name. Players can change their name numerous times and always go back to the same name multiple times and this will record them.
+This only establishes support for names, but this commit does not get the actual names.  This update is able to save and read the data from the saved file.
+
+
+* **Enhanced the /ranks info details**
+Changed around the /ranks info to show the actual rank name and tag so it's obvious.  Also moved the player count outside of the admin block so all players can see it.
 
 
 * **Added GUI Compatibility interfaces and support classes**
