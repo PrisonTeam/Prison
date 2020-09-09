@@ -65,7 +65,7 @@ public class PlaceHolderAPIIntegrationWrapper
 		
 		UUID playerUuid = player.getUniqueId();
 		String results = Prison.get().getPlatform()
-									.placeholderTranslate( playerUuid, identifier );
+									.placeholderTranslate( playerUuid, player.getName(), identifier );
 		
 //		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 //		if ( pm != null ) {

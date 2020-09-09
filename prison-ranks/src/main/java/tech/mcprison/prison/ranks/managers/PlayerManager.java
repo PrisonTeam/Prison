@@ -153,12 +153,26 @@ public class PlayerManager
      * @param uid
      * @return
      */
-    public Optional<RankPlayer> getPlayer(UUID uid) {
+    public Optional<RankPlayer> getPlayer(UUID uid, String playerName) {
     	Optional<RankPlayer> results = players.stream().filter(player -> player.uid.equals(uid)).findFirst();
     	
     	if ( !results.isPresent() ) {
-    		results = Optional.ofNullable( addPlayer(uid, null) );
+    		results = Optional.ofNullable( addPlayer(uid, playerName) );
     	}
+    	
+    	// check to see if the name has changed, if so, then save because the new name was added:
+    	if ( playerName != null && playerName.trim().length() > 0 && 
+    				results.get().checkName( playerName ) ) {
+    		try {
+				savePlayer( results.get() );
+			}
+			catch ( IOException e ) {
+				Output.get().logWarn( 
+					String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
+									playerName, e.getMessage()) );
+			}
+    	}
+    	
     	
     	return results;
     }
@@ -204,8 +218,11 @@ public class PlayerManager
      */
 
     @Subscribe public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!getPlayer(event.getPlayer().getUUID()).isPresent()) {
-        	addPlayer( event.getPlayer().getUUID(), event.getPlayer().getName() );
+    	
+    	Player player = event.getPlayer();
+    	
+        if (!getPlayer(player.getUUID(), player.getName()).isPresent()) {
+        	addPlayer( player.getUUID(), player.getName() );
         }
     }
 
@@ -418,7 +435,7 @@ public class PlayerManager
     	return sb.toString();
     }
     
-    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String identifier ) {
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
     	String results = null;
 
     	if ( playerUuid != null ) {
@@ -427,7 +444,7 @@ public class PlayerManager
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
     			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
-    				results = getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey );
+    				results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey );
     				break;
     			}
     		}
@@ -436,7 +453,7 @@ public class PlayerManager
     	return results;
     }
     
-    public String getTranslatePlayerPlaceHolder( UUID playerUuid, PlaceHolderKey placeHolderKey ) {
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, PlaceHolderKey placeHolderKey ) {
 		String results = null;
 
 		if ( playerUuid != null ) {
@@ -445,7 +462,7 @@ public class PlayerManager
 			
 			String ladderName = placeHolderKey.getData();
 			
-			Optional<RankPlayer> oPlayer = getPlayer(playerUuid);
+			Optional<RankPlayer> oPlayer = getPlayer(playerUuid, playerName);
 			
 			if ( oPlayer.isPresent() ) {
 				RankPlayer rankPlayer = oPlayer.get();

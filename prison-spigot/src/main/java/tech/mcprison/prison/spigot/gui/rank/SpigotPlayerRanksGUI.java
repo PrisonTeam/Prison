@@ -69,12 +69,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
  	    PlayerManager playerManager = rankPlugin.getPlayerManager();
 
-    	rPlayer = playerManager.getPlayer( player.getUniqueId() ).orElse( null );
+    	rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() ).orElse( null );
 
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
         if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
-            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().getPlayer( getPlayer().getUniqueId() );
+            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().
+            								getPlayer( getPlayer().getUniqueId(), getPlayer().getName() );
             if ( oPlayer.isPresent() ) {
                 rPlayer = oPlayer.get();
             }

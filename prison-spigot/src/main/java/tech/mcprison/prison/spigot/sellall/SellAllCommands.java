@@ -368,9 +368,9 @@ public class SellAllCommands implements CommandExecutor {
                 double multiplier = Double.parseDouble(Objects.requireNonNull(conf.getString("Options.Multiplier_Default")));
 
                 if (rankPlugin != null) {
-                    if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID()).isPresent()) {
+                    if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
 
-                        String playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID()).get().getRank("prestiges").name;
+                        String playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
 
                         if (playerRankName != null) {
                             hasPlayerPrestige = true;

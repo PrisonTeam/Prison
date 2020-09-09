@@ -77,7 +77,7 @@ public class MVdWPlaceholderIntegration
     					registerPlaceholder(placeHolderKey.getKey(),
     							player -> Text.translateAmpColorCodes(
     									pm.getTranslatePlayerPlaceHolder( 
-    											player.getUUID(), placeHolderKey )
+    											player.getUUID(), player.getName(), placeHolderKey )
     									));
     				}
     			}

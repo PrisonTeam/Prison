@@ -413,7 +413,7 @@ public class RanksCommands {
     	}
 
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID());
+		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID(), player.getName());
 		
 		if ( oPlayer.isPresent() ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");

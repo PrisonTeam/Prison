@@ -62,7 +62,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         PlayerManager playerManager = rankPlugin.getPlayerManager();
 
-        rPlayer = playerManager.getPlayer( player.getUniqueId() ).orElse( null );
+        rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() ).orElse( null );
         LadderManager lm = rankPlugin.getLadderManager();
 
         for ( RankLadder ladderData : lm.getLadders() ) {
@@ -79,7 +79,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
         if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
-            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().getPlayer( getPlayer().getUniqueId() );
+            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().
+            									getPlayer( getPlayer().getUniqueId(), getPlayer().getName() );
             if ( oPlayer.isPresent() ) {
                 rPlayer = oPlayer.get();
             }

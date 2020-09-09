@@ -239,16 +239,16 @@ public interface Platform {
     public void identifyRegisteredPlugins();
 
 
-	public String placeholderTranslate( UUID playerUuid, String identifier );
+	public String placeholderTranslate( UUID playerUuid, String playerName, String identifier );
 
 
 	public String placeholderTranslateText( String text );
 
 
-	public String placeholderTranslateText( UUID playerUuid, String text );
+	public String placeholderTranslateText( UUID playerUuid, String playerName, String text );
 
 
-	public List<String> placeholderSearch( UUID playerUuid, String[] pattern );
+	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] pattern );
 
 
 //	public List<String> placeholderSearch( String[] patterns );

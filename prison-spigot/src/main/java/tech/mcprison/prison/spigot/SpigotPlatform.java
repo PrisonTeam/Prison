@@ -548,14 +548,14 @@ class SpigotPlatform implements Platform {
      * 
      */
     @Override
-    public String placeholderTranslate(UUID playerUuid, String identifier) {
+    public String placeholderTranslate(UUID playerUuid, String playerName, String identifier) {
 		String results = null;
 
 		if (  PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
 					playerUuid != null ) {
 			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 			if ( pm != null ) {
-				results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
+				results = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier );
 			}
 		}
 		
@@ -610,7 +610,7 @@ class SpigotPlatform implements Platform {
      * @return
      */
     @Override
-    public String placeholderTranslateText( UUID playerUuid, String text) {
+    public String placeholderTranslateText( UUID playerUuid, String playerName, String text) {
     	String results = text;
     	
     	// First the player specific placeholder, which must have a UUID:
@@ -624,7 +624,7 @@ class SpigotPlatform implements Platform {
     			String key = "{" + placeHolderKey.getKey() + "}";
     			if ( results.contains( key )) {
     				results = results.replace(key, 
-    						pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() ) );
+    						pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey.getKey() ) );
     			}
     		}
     	}
@@ -636,7 +636,7 @@ class SpigotPlatform implements Platform {
     }
 
 	@Override
-	public List<String> placeholderSearch( UUID playerUuid, String[] patterns )
+	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] patterns )
 	{
 		List<String> results = new ArrayList<>();
 		
@@ -667,7 +667,7 @@ class SpigotPlatform implements Platform {
 					value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
 				}
 				else if ( pm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER )) {
-					value = pm.getTranslatePlayerPlaceHolder( playerUuid, placeHolderKey.getKey() );
+					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey.getKey() );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 

@@ -179,7 +179,7 @@ public class TestPlatform implements Platform {
     }
 
 	@Override
-	public String placeholderTranslate( UUID playerUuid, String identifier ) {
+	public String placeholderTranslate( UUID playerUuid, String playerName, String identifier ) {
 		return null;
 	}
 
@@ -189,12 +189,12 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
-	public String placeholderTranslateText( UUID playerUuid, String text ) {
+	public String placeholderTranslateText( UUID playerUuid, String playerName, String text ) {
 		return null;
 	}
 
 	@Override
-	public List<String> placeholderSearch( UUID playerUuid, String[] pattern ) {
+	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] pattern ) {
 		return null;
 	}
 	

@@ -97,7 +97,7 @@ public class RankUpCommand {
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        RankPlayer rankPlayer = getPlayer( sender, playerUuid, sender.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
 		Rank pRankSecond = rankPlayer.getRank("default");
 		Rank pRankAfter = null;
@@ -207,7 +207,7 @@ public class RankUpCommand {
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -253,7 +253,7 @@ public class RankUpCommand {
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -293,7 +293,7 @@ public class RankUpCommand {
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid );
+        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -322,9 +322,9 @@ public class RankUpCommand {
 	}
 
 
-	public RankPlayer getPlayer( CommandSender sender, UUID playerUuid ) {
+	public RankPlayer getPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
 		Optional<RankPlayer> playerOptional =
-            PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid);
+            PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {

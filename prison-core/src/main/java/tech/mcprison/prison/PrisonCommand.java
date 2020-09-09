@@ -399,7 +399,7 @@ public class PrisonCommand {
         
     	Player player = getPlayer( sender );
     	UUID playerUuid = (player == null ? null : player.getUUID());
-    	String translated = Prison.get().getPlatform().placeholderTranslateText( playerUuid, text );
+    	String translated = Prison.get().getPlatform().placeholderTranslateText( playerUuid, sender.getName(), text );
     	
     	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
     	builder.add( String.format( "&a    Use { } to escape the placeholders."));
@@ -516,7 +516,7 @@ public class PrisonCommand {
         UUID playerUuid = (player == null ? null : player.getUUID());
         
         List<String> placeholders = Prison.get().getPlatform()
-        					.placeholderSearch( playerUuid, patterns.trim().split( " " ) );
+        					.placeholderSearch( playerUuid, null, patterns.trim().split( " " ) );
         
         builder.add( String.format( "&a    Include one or more patterns to search for placeholders. If more"));
         builder.add( String.format( "&a    than one is provided, the returned placeholder will hit on all."));
