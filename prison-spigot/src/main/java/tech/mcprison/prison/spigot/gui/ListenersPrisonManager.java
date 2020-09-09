@@ -178,10 +178,12 @@ public class ListenersPrisonManager implements Listener {
         // Get the player
         Player p = (Player) e.getWhoClicked();
 
+        
         // If you click an empty slot, this should avoid the error.
         // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
         if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR ||
-                e.getCurrentItem().getItemMeta() == null) {
+                e.getCurrentItem().getItemMeta() == null || !e.getCurrentItem().hasItemMeta() || 
+                e.getCurrentItem().getItemMeta().getDisplayName() == null) {
             activeGuiEventCanceller(p, e);
             return;
         } else {
@@ -209,9 +211,13 @@ public class ListenersPrisonManager implements Listener {
         // ensure the item has itemMeta and a display name
         if (!e.getCurrentItem().hasItemMeta()){
             return;
-        } else {
-            Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName();
         }
+// WARNING DO NOT USE Objects.requireNonNull() since it will throw a NullPointerException!!
+// NEVER should we want that to happen.  If displayName is null then this is not our event 
+// and we should not be screwing with it!
+//        else {
+//            Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName();
+//        }
 
         // Get the button name
         String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
