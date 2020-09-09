@@ -41,30 +41,57 @@ public class RankPlayer {
     public UUID uid;
     public HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
     public HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    
+    public List<RankPlayerName> names;
+    
 
     /*
      * Document-related
      */
 
     public RankPlayer() {
+    	super();
     }
 
     @SuppressWarnings( "unchecked" )
 	public RankPlayer(Document document) {
+    	
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
         LinkedTreeMap<String, Object> prestigeLocal =
             (LinkedTreeMap<String, Object>) document.get("prestige");
+        
+        Object namesListObject = document.get( "names" );
+        
 
         this.ranks = new HashMap<>();
         for (String key : ranksLocal.keySet()) {
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
+        
         this.prestige = new HashMap<>();
         for (String key : prestigeLocal.keySet()) {
             prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
         }
+        
+        if ( namesListObject != null ) {
+        	
+        	for ( Object rankPlayerNameMap : (ArrayList<Object>) namesListObject ) {
+        		LinkedTreeMap<String, Object> rpnMap = (LinkedTreeMap<String, Object>) rankPlayerNameMap;
+        		
+        		if ( rpnMap.size() > 0 ) {
+        			String name = (String) rpnMap.get( "name" );
+        			long date = RankUtil.doubleToLong( rpnMap.get( "date" ) );
+        			
+        			RankPlayerName rankPlayerName = new RankPlayerName( name, date );
+        			getNames().add( rankPlayerName );
+//        			Output.get().logInfo( "RankPlayer: uuid: " + uid + " RankPlayerName: " + rankPlayerName.toString() );
+        		}
+        		
+        	}
+        }
+        
     }
 
     public Document toDocument() {
@@ -72,14 +99,45 @@ public class RankPlayer {
         ret.put("uid", this.uid);
         ret.put("ranks", this.ranks);
         ret.put("prestige", this.prestige);
+        
+        ret.put("names", this.names);
         return ret;
     }
 
     /*
      * Methods
      */
+    
+    
+    
+    public boolean checkName( String playerName ) {
+    	boolean added = false;
+    	
+    	// Check if the last name in the list is not the same as the name passed:
+    	if ( getNames().size() == 0 ||
+    			!getNames().get( getNames().size() - 1 ).getName().equalsIgnoreCase( playerName ) ) {
+    		
+    		RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
+    		getNames().add( rpn );
+    		
+    		added = true;
+    	}
+    	
+    	return added;
+    }
+    
 
-    /**
+    public List<RankPlayerName> getNames() {
+    	if ( names == null ) {
+    		names = new ArrayList<>();
+    	}
+		return names;
+	}
+	public void setNames( List<RankPlayerName> names ) {
+		this.names = names;
+	}
+
+	/**
      * <p>This is a helper function to ensure that the given file name is 
      * always generated correctly and consistently.
      * </p>
