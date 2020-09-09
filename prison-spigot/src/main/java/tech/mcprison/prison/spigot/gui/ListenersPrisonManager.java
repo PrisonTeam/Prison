@@ -31,6 +31,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
@@ -233,15 +234,13 @@ public class ListenersPrisonManager implements Listener {
         // Get ranks module
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
-        String version = Bukkit.getVersion();
-        String title;
+        // Get compat
+        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
-        if (BluesSpigetSemVerComparator.EQUAL.isNewer(version, "1.9")){
-            title = e.getView().getTitle().substring(2);
-        } else {
-            title = e.getInventory().getTitle().substring(2);
-        }
-            // Check if the GUI have the right title and do the actions
+        // Get title
+        String title = compat.getTitle(e).substring(2);
+
+        // Check if the GUI have the right title and do the actions
         switch (title) {
 
             // Check the title and do the actions
