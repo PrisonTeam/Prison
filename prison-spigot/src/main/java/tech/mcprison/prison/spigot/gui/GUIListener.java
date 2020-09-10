@@ -54,7 +54,10 @@ public class GUIListener implements Listener {
 
     @EventHandler public void closeInventory(InventoryCloseEvent e) {
         // Remove it if found
-        inventories.removeIf(gui -> gui.getTitle().equals(e.getInventory().getTitle()));
+        inventories.removeIf(gui -> gui.getTitle().equals(
+        				SpigotPrison.getInstance().getCompatibility().getGUITitle( e )
+        		));
+//        inventories.removeIf(gui -> gui.getTitle().equals(e.getInventory().getTitle()));
     }
 
 }

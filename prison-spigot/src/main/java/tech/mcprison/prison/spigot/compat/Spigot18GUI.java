@@ -1,6 +1,6 @@
 package tech.mcprison.prison.spigot.compat;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 
 public abstract class Spigot18GUI 
 		extends Spigot18Blocks 
@@ -8,7 +8,7 @@ public abstract class Spigot18GUI
 
     @SuppressWarnings( "deprecation" )
     @Override
-    public String getTitle(InventoryClickEvent e){
+    public String getGUITitle(InventoryEvent e){
         return e.getInventory().getTitle();
     }
 

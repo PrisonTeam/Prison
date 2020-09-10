@@ -1,8 +1,8 @@
 package tech.mcprison.prison.spigot.compat;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 
 public interface CompatibilityGUI extends CompatibilityBlocks {
 
-    public String getTitle(InventoryClickEvent e);
+    public String getGUITitle(InventoryEvent e);
 }

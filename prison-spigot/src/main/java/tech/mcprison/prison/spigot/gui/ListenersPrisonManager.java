@@ -36,7 +36,14 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.*;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -44,7 +51,6 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 
@@ -120,21 +126,13 @@ public class ListenersPrisonManager implements Listener {
         titleNames[23] = "PrisonManager -> SellAll-Player";
         titleNames[24] = "MineInfo -> BlockPercentage";
 
-        String version = Bukkit.getVersion();
-        // For every title check if equals, the if true add it to the GuiBlocker (1.9 and up)
         for (String title : titleNames){
-            if (BluesSpigetSemVerComparator.EQUAL.isNewer(version, "1.9")){
-                if (e.getView().getTitle().substring(2).equalsIgnoreCase(title)) {
 
-                // Add the player to the list of those who can't move items in the inventory
-                addToGUIBlocker(p);
-                }
-            } else {
-                if (e.getInventory().getTitle().substring(2).equalsIgnoreCase(title)) {
-
-                    // Add the player to the list of those who can't move items in the inventory
-                    addToGUIBlocker(p);
-                }
+            if ( SpigotPrison.getInstance().getCompatibility().getGUITitle( e ).
+            		substring(2).equalsIgnoreCase(title)) {
+            	
+            	// Add the player to the list of those who can't move items in the inventory
+            	addToGUIBlocker(p);
             }
         }
     }
@@ -238,7 +236,7 @@ public class ListenersPrisonManager implements Listener {
         Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
         // Get title
-        String title = compat.getTitle(e).substring(2);
+        String title = compat.getGUITitle(e).substring(2);
 
         // Check if the GUI have the right title and do the actions
         switch (title) {
