@@ -31,7 +31,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Faizaan A. Datoo
  */
 public class Spigot19 
-	extends Spigot113GUI
+	extends Spigot18GUI
 	implements Compatibility {
 
     @Override 

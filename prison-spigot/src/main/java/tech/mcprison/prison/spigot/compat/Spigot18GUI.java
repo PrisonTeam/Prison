@@ -2,7 +2,9 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public abstract class Spigot18GUI extends Spigot18Blocks implements CompatibilityGUI {
+public abstract class Spigot18GUI 
+		extends Spigot18Blocks 
+		implements CompatibilityGUI {
 
     @SuppressWarnings( "deprecation" )
     @Override

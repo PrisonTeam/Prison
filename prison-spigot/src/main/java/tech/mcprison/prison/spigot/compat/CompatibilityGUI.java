@@ -4,5 +4,5 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public interface CompatibilityGUI extends CompatibilityBlocks {
 
-    String getTitle(InventoryClickEvent e);
+    public String getTitle(InventoryClickEvent e);
 }
