@@ -13,7 +13,6 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 
 /**
