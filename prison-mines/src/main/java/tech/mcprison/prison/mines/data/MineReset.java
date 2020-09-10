@@ -1186,11 +1186,17 @@ public abstract class MineReset
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					
-    					PrisonMines.getInstance().getMinesMessages()
-    					.getLocalizable("reset_message").withReplacements( getName() )
-    					.sendTo(player);
-    					
-//    				player.sendMessage( "The mine " + getName() + " has just reset." );
+    					if ( !isUseNotificationPermission() ||
+    						  isUseNotificationPermission() && 
+    						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
+    						
+    						
+    						PrisonMines.getInstance().getMinesMessages()
+    									.getLocalizable("reset_message").withReplacements( getName() )
+    									.sendTo(player);
+    						
+//    						player.sendMessage( "The mine " + getName() + " has just reset." );
+    					}
     				}
     			}
     			
@@ -1217,14 +1223,20 @@ public abstract class MineReset
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					
-    					PrisonMines.getInstance().getMinesMessages()
-    					.getLocalizable("reset_warning")
-    					.withReplacements( getName(), 
-    							Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
-    					.sendTo(player);
+    					if ( !isUseNotificationPermission() ||
+      						  isUseNotificationPermission() && 
+      						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
+    						
+    						PrisonMines.getInstance().getMinesMessages()
+    										.getLocalizable("reset_warning")
+    										.withReplacements( getName(), 
+    												Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
+    										.sendTo(player);
+    						
+//    						player.sendMessage( "The mine " + getName() + " will reset in " + 
+//    							Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
+    					}
     					
-//    				player.sendMessage( "The mine " + getName() + " will reset in " + 
-//    						Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
     					
     				}
     			}

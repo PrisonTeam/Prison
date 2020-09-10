@@ -18,6 +18,8 @@ public abstract class MineData {
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
 	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
+	
+	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
 		
 	private String name;
 	private boolean enabled = false;
@@ -31,6 +33,7 @@ public abstract class MineData {
     private int resetTime;
     private MineNotificationMode notificationMode;
 	private long notificationRadius;
+	private boolean useNotificationPermission = false;
     
 	private long targetResetTime;
 	private int resetCount = 0;
@@ -87,6 +90,7 @@ public abstract class MineData {
     	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    	this.useNotificationPermission = false;
     	
     	this.targetResetTime = 0;
     	this.resetCount = 0;
@@ -335,6 +339,17 @@ public abstract class MineData {
 	}
 	public void setTargetResetTime( long targetResetTime ) {
 		this.targetResetTime = targetResetTime;
+	}
+	
+	public boolean isUseNotificationPermission() {
+		return useNotificationPermission;
+	}
+	public void setUseNotificationPermission( boolean useNotificationPermission ) {
+		this.useNotificationPermission = useNotificationPermission;
+	}
+
+	public String getMineNotificationPermissionName() {
+		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName();
 	}
 	
 	/**

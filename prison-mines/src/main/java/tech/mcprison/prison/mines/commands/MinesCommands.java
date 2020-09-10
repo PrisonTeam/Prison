@@ -773,6 +773,22 @@ public class MinesCommands {
         		chatDisplay.addComponent( row );
         	}
         	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
+        				( m.isUseNotificationPermission() ? "&2Enabled" : "&dDisabled" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notification Permission: &7%s", 
+        				m.getMineNotificationPermissionName() );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	
         	
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
@@ -1447,6 +1463,54 @@ public class MinesCommands {
         	}
         } 
     }
+
+
+    @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 
+    		description = "Enable or disable a mine's notification permission. If enabled, then players " +
+    					"must have the mine's permission to get messages for reset. This filter " +
+    					"can be combined with the other notification settings.")
+    public void setNotificationPermissionCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "action", def="enable", description = "Enable or disable the permission filtering: [enable, disable]") 
+    					String action
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+            
+            if ( !action.equalsIgnoreCase( "enable" ) && !action.equalsIgnoreCase( "disable" )) {
+            	sender.sendMessage( "&7Invalid value for action: [enable, disable]" );
+            	return;
+            }
+            
+            if ( action.equalsIgnoreCase( "enable" ) && !m.isUseNotificationPermission() ) {
+            	sender.sendMessage( "&7Notification Permission filter has been enabled." );
+            	m.setUseNotificationPermission( true );
+            	pMines.getMineManager().saveMine( m );
+            }
+            else if ( action.equalsIgnoreCase( "disable" ) && m.isUseNotificationPermission() ) {
+            	sender.sendMessage( "&7Notification Permission filter has been disabled." );
+            	m.setUseNotificationPermission( false );
+            	pMines.getMineManager().saveMine( m );
+            }
+            else {
+            	
+            	sender.sendMessage( "&7Notification Permission filter was not changed. Canceling." );
+            }
+            
+            
+        } 
+    }
+
 
 
     @Command(identifier = "mines set area", permissions = "mines.set", 
