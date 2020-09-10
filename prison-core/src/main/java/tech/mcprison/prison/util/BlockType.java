@@ -376,7 +376,7 @@ public enum BlockType {
 	QUARTZ_BLOCK( 155, "minecraft:quartz_block", 0, MaterialType.BLOCK ),
 	CHISELED_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 1, MaterialType.BLOCK ),
 	
-	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK, "quartz_pillar" ),
+	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK, "QUARTZ_PILLAR" ),
 	
 	QUARTZ_STAIRS( 156, "minecraft:quartz_stairs", 0, MaterialType.BLOCK ),
 	ACTIVATOR_RAIL( 157, "minecraft:activator_rail", 0, MaterialType.BLOCK ),
@@ -903,6 +903,9 @@ public enum BlockType {
     	if ( blockType == null ) {
     		blockType = getBlockById( key );
     	}
+    	if ( blockType == null ) {
+    		blockType = getBlockByXMaterialName(key);
+    	}
 
         return blockType;
     }
@@ -949,6 +952,21 @@ public enum BlockType {
             }
         }
         return null;
+    }
+    
+    private static BlockType getBlockByXMaterialName(String name) {
+    	for (BlockType block : values()) {
+    		if (block.getXMaterialAltNames().size() > 0 ) {
+    			for ( String altName : block.getXMaterialAltNames() ) {
+					
+    				if ( altName.equalsIgnoreCase(name)) {
+    					return block;
+    				}
+				}
+    		}
+    			
+    	}
+    	return null;
     }
 
     public static BlockType getBlockWithData(int id, short data) {

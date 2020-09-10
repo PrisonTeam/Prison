@@ -230,9 +230,21 @@ public class Mine
             String blockTypeName = split[0];
             double chance = Double.parseDouble(split[1]);
 
-            // Use the BlockType.name() load the block type:
-            Block block = new Block(BlockType.getBlock(blockTypeName), chance);
-            getBlocks().add(block);
+            if ( blockTypeName != null ) {
+            	// Use the BlockType.name() load the block type:
+            	BlockType blockType = BlockType.getBlock(blockTypeName);
+            	if ( blockType != null ) {
+            		Block block = new Block(blockType, chance);
+            		getBlocks().add(block);
+            	}
+            	else {
+            		String message = String.format( "Failure in loading block type from %s mine's " +
+            				"save file. Block type %s has no mapping.", getName(),
+            				blockTypeName );
+            		Output.get().logError( message );
+            	}
+            	
+            }
         }
         
         
