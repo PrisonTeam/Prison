@@ -5,12 +5,14 @@ import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
@@ -48,6 +50,14 @@ public class MVdWPlaceholderIntegration
 					placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(getProviderName());
 					
 					PrisonAPI.getIntegrationManager().addDeferredInitialization( this );
+					
+					
+		    		Output.get().logInfo( "Total placeholders generated: %d", 
+		    				Prison.get().getPlatform().getPlaceholderCount() );
+		    		
+		    		Output.get().logInfo( "Total placeholders Registered with %s: %d" + 
+		    				getKeyName(),
+		    				Prison.get().getPlatform().getPlaceholderRegistrationCount() );
 				}
 			}
 			catch ( NoClassDefFoundError | IllegalStateException e ) {
@@ -101,8 +111,15 @@ public class MVdWPlaceholderIntegration
     		}
     	}
 
+    	Output.get().logInfo( "Total placeholders generated: %d", 
+    			Prison.get().getPlatform().getPlaceholderCount() );
+    	
+    	Output.get().logInfo( "Total placeholders Registered with %s: %d",
+    			getKeyName(),
+    			Prison.get().getPlatform().getPlaceholderRegistrationCount() );
 	}
 
+    
 	@Override
     public void registerPlaceholder(String placeholder, Function<Player, String> action) {
         if (placeholderWrapper != null) {

@@ -41,6 +41,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -180,6 +181,20 @@ public class SpigotPrison extends JavaPlugin {
             Alerts.getInstance().sendAlert(
                     "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
         }
+        
+        
+		Output.get().logInfo( "Total placeholders generated: %d", 
+				Prison.get().getPlatform().getPlaceholderCount() );
+		
+		Map<PlaceHolderFlags, Integer> phDetails = Prison.get().getPlatform().getPlaceholderDetailCounts();
+		for ( PlaceHolderFlags key : phDetails.keySet() ) {
+			Output.get().logInfo( "  %s: %d", 
+					key.name(), phDetails.get( key ) );
+			
+		}
+		
+		Output.get().logInfo( "Total placeholders available to be Registered: %d",
+				Prison.get().getPlatform().getPlaceholderRegistrationCount() );
         
         
         // Finally print the version after loading the prison plugin:

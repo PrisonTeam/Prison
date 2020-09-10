@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
@@ -31,6 +32,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -178,6 +180,24 @@ public class TestPlatform implements Platform {
 		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "justice", new ArrayList<>() );
     }
 
+    
+    
+    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts() {
+    	Map<PlaceHolderFlags, Integer> placeholderDetails = new TreeMap<>();
+    	
+    	return placeholderDetails;
+    }
+    
+    public int getPlaceholderCount() {
+    	return 0;
+    }
+    
+    
+    public int getPlaceholderRegistrationCount() {
+    	return 0;
+    }
+ 
+    
 	@Override
 	public String placeholderTranslate( UUID playerUuid, String playerName, String identifier ) {
 		return null;

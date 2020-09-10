@@ -10,6 +10,16 @@ that you need.
 
 ## tag v3.2.1-alpha.19 - 2020-09-09
 
+
+* **New Feature: Add the internal placeholder counts on startup.**
+These counts are the total generated placeholders and some placeholders have more than one key.
+
+
+* **New Feature: Added reset notification permissions**
+Now only players with the mine's permission can be notified if the feature is enabled.
+This setting is on a per mine basis, and the permission used is displayed in the /mines info listing.
+
+
 * **Admins and console are able to view player's past names with /ranks player**
 When admins and console use `/ranks player` command it will show past names for all players that have more than one name recorded.  
 

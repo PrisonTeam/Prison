@@ -528,6 +528,107 @@ class SpigotPlatform implements Platform {
         
 	}
     
+    
+    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts() {
+    	Map<PlaceHolderFlags, Integer> placeholderDetails = new TreeMap<>();
+    	
+    	List<PlaceHolderKey> placeholders = new ArrayList<>();
+    	
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			placeholders.addAll( pm.getTranslatedPlaceHolderKeys() );
+    		}
+    	}
+
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			placeholders.addAll( mm.getTranslatedPlaceHolderKeys() );
+    		}
+    	}
+    	
+    	for ( PlaceHolderKey phKey : placeholders ) {
+			for ( PlaceHolderFlags flag : phKey.getPlaceholder().getFlags() ) {
+
+				int count = 0;
+				
+				if ( placeholderDetails.containsKey( flag ) ) {
+					count = placeholderDetails.get( flag );
+				}
+				
+				placeholderDetails.put( flag, new Integer(count + 1) );
+			}
+		}
+
+    	return placeholderDetails;
+    }
+
+    
+    
+    public int getPlaceholderCount() {
+    	int placeholdersRawCount = 0;
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    			placeholdersRawCount += placeholderPlayerKeys.size();
+    			
+    		}
+    	}
+    	
+
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    			placeholdersRawCount += placeholderMinesKeys.size();
+    			
+    		}
+    		
+    	}
+
+    	return placeholdersRawCount;
+    }
+    
+    
+    public int getPlaceholderRegistrationCount() {
+    	int placeholdersRegistered = 0;
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					placeholdersRegistered++;
+    				}
+    			}
+    		}
+    	}
+    	
+
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					placeholdersRegistered++;
+    				}
+    			}
+    		}
+    		
+    	}
+
+    	return placeholdersRegistered;
+    }
+
+    
     /**
      * <p>Provides placeholder translation for any placeholder identifier
      * that is provided.  This not the full text with one or more placeholders,
