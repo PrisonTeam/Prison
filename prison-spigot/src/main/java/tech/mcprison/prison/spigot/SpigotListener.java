@@ -60,14 +60,11 @@ import tech.mcprison.prison.util.Location;
 @SuppressWarnings( "deprecation" )
 public class SpigotListener implements Listener {
 
-    private SpigotPrison spigotPrison;
-
-    public SpigotListener(SpigotPrison spigotPrison) {
-        this.spigotPrison = spigotPrison;
+    public SpigotListener() {
     }
 
     public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, this.spigotPrison);
+        Bukkit.getServer().getPluginManager().registerEvents(this, SpigotPrison.getInstance());
     }
 
     @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
@@ -142,7 +139,8 @@ public class SpigotListener implements Listener {
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if (spigotPrison.compatibility.getHand(e) != Compatibility.EquipmentSlot.HAND) {
+        if ( SpigotPrison.getInstance().getCompatibility().getHand(e) != 
+        								Compatibility.EquipmentSlot.HAND) {
             return;
         }
 
@@ -150,7 +148,8 @@ public class SpigotListener implements Listener {
         tech.mcprison.prison.internal.events.player.PlayerInteractEvent event =
             new tech.mcprison.prison.internal.events.player.PlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
-                SpigotUtil.bukkitItemStackToPrison(spigotPrison.compatibility.getItemInMainHand(e)),
+                		SpigotUtil.bukkitItemStackToPrison(
+                				SpigotPrison.getInstance().getCompatibility().getItemInMainHand(e)),
                 tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
@@ -168,6 +167,10 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
+    // TODO major potential problems with this function and newer releases.  
+    //      PlayerPickupItemEvent was deprecated and may not exist in newer releases.
+    //      Need to research this and find an alternative and push this back in to 
+    //      the compatibility classes.
 	@EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         PlayerPickUpItemEvent event = new PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
             SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
