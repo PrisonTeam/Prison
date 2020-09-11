@@ -88,7 +88,7 @@ public class SpigotPrison extends JavaPlugin {
     boolean debug = false;
 
     private File dataDirectory;
-    private boolean doAlertAboutConvert = false;
+//    private boolean doAlertAboutConvert = false;
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
@@ -106,6 +106,12 @@ public class SpigotPrison extends JavaPlugin {
 //    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onLoad() {
+    	
+    	/**
+    	 * Old versions of prison MUST be upgraded with v3.0.x or even v3.1.1.
+    	 * Upgrading from old versions of prison to v3.2.x is not supported.  
+    	 * Please upgrade to an earlier release of v3.0.x then to v3.2.1.
+    	
         // The meta file is used to see if the folder needs converting.
         // If the folder doesn't contain it, it's probably not a Prison 3 thing.
         File metaFile = new File(getDataFolder(), ".meta");
@@ -125,6 +131,7 @@ public class SpigotPrison extends JavaPlugin {
                         "Could not create .meta file, this will cause problems with the converter!");
             }
         }
+    	 */
         
     }
 
@@ -176,10 +183,10 @@ public class SpigotPrison extends JavaPlugin {
         
         initMetrics();
 
-        if (doAlertAboutConvert) {
-            Alerts.getInstance().sendAlert(
-                    "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
-        }
+//        if (doAlertAboutConvert) {
+//            Alerts.getInstance().sendAlert(
+//                    "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
+//        }
         
         
         Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
