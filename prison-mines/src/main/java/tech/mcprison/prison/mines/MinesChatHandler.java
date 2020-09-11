@@ -17,7 +17,8 @@ public class MinesChatHandler {
     	String newFormat = e.getFormat();
 
     	// Now translates 
-    	String translated = Prison.get().getPlatform().placeholderTranslateText( newFormat );
+    	String translated = Prison.get().getPlatform().getPlaceholders()
+    							.placeholderTranslateText( newFormat );
     	
     	e.setFormat( translated );
     	

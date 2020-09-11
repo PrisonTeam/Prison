@@ -64,7 +64,7 @@ public class PlaceHolderAPIIntegrationWrapper
 	public String onRequest(OfflinePlayer player, String identifier) {
 		
 		UUID playerUuid = player.getUniqueId();
-		String results = Prison.get().getPlatform()
+		String results = Prison.get().getPlatform().getPlaceholders()
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
 		
 //		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();

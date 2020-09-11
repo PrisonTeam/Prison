@@ -33,6 +33,7 @@ import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -198,25 +199,11 @@ public class TestPlatform implements Platform {
     }
  
     
-	@Override
-	public String placeholderTranslate( UUID playerUuid, String playerName, String identifier ) {
-		return null;
-	}
-
-	@Override
-	public String placeholderTranslateText( String text ) {
-		return null;
-	}
-
-	@Override
-	public String placeholderTranslateText( UUID playerUuid, String playerName, String text ) {
-		return null;
-	}
-
-	@Override
-	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] pattern ) {
-		return null;
-	}
+    @Override
+    public Placeholders getPlaceholders() {
+    	return null;
+    }
+    
 	
 	@Override
 	public YamlFileIO getYamlFileIO( File yamlFile ) {

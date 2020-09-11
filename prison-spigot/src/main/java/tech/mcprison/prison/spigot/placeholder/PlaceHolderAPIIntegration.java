@@ -4,10 +4,8 @@ import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.output.Output;
 
 public class PlaceHolderAPIIntegration 
 	extends PlaceholderIntegration {
@@ -50,14 +48,6 @@ public class PlaceHolderAPIIntegration
     
 	@Override
 	public void deferredInitialization() {
-		
-		Output.get().logInfo( "Total placeholders generated: %d", 
-				Prison.get().getPlatform().getPlaceholderCount() );
-		
-		Output.get().logInfo( "Total placeholders Registered with %s: %d",
-				getKeyName(),
-				Prison.get().getPlatform().getPlaceholderRegistrationCount() );
-		
 	}
 	
 	@Override

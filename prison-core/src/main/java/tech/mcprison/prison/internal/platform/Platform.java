@@ -27,7 +27,7 @@ import java.util.UUID;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -240,28 +240,9 @@ public interface Platform {
     public void identifyRegisteredPlugins();
 
     
-    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts();
     
+    public Placeholders getPlaceholders();
     
-    public int getPlaceholderCount();
-    
-    
-    public int getPlaceholderRegistrationCount();
-    
-
-	public String placeholderTranslate( UUID playerUuid, String playerName, String identifier );
-
-
-	public String placeholderTranslateText( String text );
-
-
-	public String placeholderTranslateText( UUID playerUuid, String playerName, String text );
-
-
-	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] pattern );
-
-
-//	public List<String> placeholderSearch( String[] patterns );
     
 	
 	public YamlFileIO getYamlFileIO( File yamlFile );

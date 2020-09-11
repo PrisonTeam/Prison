@@ -184,9 +184,10 @@ public class SpigotPrison extends JavaPlugin {
         
         
 		Output.get().logInfo( "Total placeholders generated: %d", 
-				Prison.get().getPlatform().getPlaceholderCount() );
+				Prison.get().getPlatform().getPlaceholders().getPlaceholderCount() );
 		
-		Map<PlaceHolderFlags, Integer> phDetails = Prison.get().getPlatform().getPlaceholderDetailCounts();
+		Map<PlaceHolderFlags, Integer> phDetails = Prison.get().getPlatform()
+						.getPlaceholders().getPlaceholderDetailCounts();
 		for ( PlaceHolderFlags key : phDetails.keySet() ) {
 			Output.get().logInfo( "  %s: %d", 
 					key.name(), phDetails.get( key ) );
@@ -194,7 +195,7 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		Output.get().logInfo( "Total placeholders available to be Registered: %d",
-				Prison.get().getPlatform().getPlaceholderRegistrationCount() );
+				Prison.get().getPlatform().getPlaceholders().getPlaceholderRegistrationCount() );
         
         
         // Finally print the version after loading the prison plugin:

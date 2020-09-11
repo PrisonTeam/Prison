@@ -8,7 +8,24 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-09
+## tag v3.2.1-alpha.19 - 2020-09-10
+
+
+* **Realigning source for Spigot Placeholder code.**
+Moved a ton of placeholder code to the tech.mcprison.prison.spigot package to get it out of the SpigotPlatform class.  
+There was way too much business knowledge being exposed within SpigotPlatform and wanted to group it all under a placeholder's package.
+The real meat of placeholders has to come together within spigot because core has no knowledge or access to the mines module, or the rank module.
+This required creating a new interface and pulling the majority of the functions out of the Platform interface.
+
+
+* **Change in SpigotListener to use the singleton that already exists**
+Changed to use the singleton instead of the passed object. Cleaner.  
+
+
+* **Bug Fix: Fixed a mine's block type loading issue.**
+The blocks are now checked against a greater range of possible values to improve match rates when reloading mines.
+If a block cannot be mapped, then an error message is now printed to the console so it can be addressed.
+There was an issue with QUARTZ_PILLAR not being able to be mapped back to the correct block type.  
 
 
 * **New Feature: Add the internal placeholder counts on startup.**
