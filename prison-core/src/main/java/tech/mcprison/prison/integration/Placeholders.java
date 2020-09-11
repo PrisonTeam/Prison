@@ -27,5 +27,8 @@ public interface Placeholders {
 	
 	
 	public List<String> placeholderSearch( UUID playerUuid, String playerName, String[] patterns );
+
+
+	public void reloadPlaceholders();
 	
 }

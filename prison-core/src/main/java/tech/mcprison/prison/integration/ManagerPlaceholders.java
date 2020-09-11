@@ -6,4 +6,5 @@ public interface ManagerPlaceholders {
 	
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys();
 
+	public void reloadPlaceholders();
 }

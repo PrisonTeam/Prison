@@ -532,5 +532,16 @@ public class MineManager
     public void resetTranslatedPlaceHolderKeys() {
     	translatedPlaceHolderKeys = null;
     }
+    
+    
+    @Override
+    public void reloadPlaceholders() {
+    	
+    	// clear the class variable so they will regenerate:
+    	translatedPlaceHolderKeys = null;
+    	
+    	// Regenerate the translated placeholders:
+    	getTranslatedPlaceHolderKeys();
+    }
 
 }

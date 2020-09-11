@@ -41,7 +41,6 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -183,19 +182,8 @@ public class SpigotPrison extends JavaPlugin {
         }
         
         
-		Output.get().logInfo( "Total placeholders generated: %d", 
-				Prison.get().getPlatform().getPlaceholders().getPlaceholderCount() );
-		
-		Map<PlaceHolderFlags, Integer> phDetails = Prison.get().getPlatform()
-						.getPlaceholders().getPlaceholderDetailCounts();
-		for ( PlaceHolderFlags key : phDetails.keySet() ) {
-			Output.get().logInfo( "  %s: %d", 
-					key.name(), phDetails.get( key ) );
-			
-		}
-		
-		Output.get().logInfo( "Total placeholders available to be Registered: %d",
-				Prison.get().getPlatform().getPlaceholders().getPlaceholderRegistrationCount() );
+        Prison.get().getPlatform().getPlaceholders().getPlaceholderRegistrationCount();
+                
         
         
         // Finally print the version after loading the prison plugin:
@@ -376,6 +364,25 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard6Integration());
 //        registerIntegration(new WorldGuard7Integration());
     }
+	
+	/**
+	 * <p>This "tries" to reload the placeholder integrations, which may not
+	 * always work, and can fail.  It's here to try to do something, but
+	 * it may not work.  At least we tried.
+	 * </p>
+	 * 
+	 */
+	public void reloadIntegrationsPlaceholders() {
+		
+		MVdWPlaceholderIntegration ph1 = new MVdWPlaceholderIntegration();
+		PlaceHolderAPIIntegration ph2 = new PlaceHolderAPIIntegration();
+		
+		registerIntegration( ph1 );
+		registerIntegration( ph2 );
+		
+		ph1.deferredInitialization();
+		ph2.deferredInitialization();
+	}
     
     private void registerIntegration(Integration integration) {
     	integration.setRegistered( 

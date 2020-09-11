@@ -583,6 +583,27 @@ public class PrisonCommand {
     }
     
     
+    @Command(identifier = "prison reload placeholders", 
+    		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersReloadCommandAlias(CommandSender sender ) {
+    	placeholdersReloadCommand( sender );
+    }
+    
+    @Command(identifier = "prison placeholders reload", 
+    		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersReloadCommand(CommandSender sender ) {
+    	
+    	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+    	
+    	String message = "Placeholder reload was attempted. " +
+    			"No guarentees that it worked 100%. Restart server if any doubts.";
+
+    	sender.sendMessage( message );
+    }
+    
+    
     /**
      * <p>This command does not do anything, except to provide a command placeholder to
      * make owners aware that there is auto features enabled within prison. 

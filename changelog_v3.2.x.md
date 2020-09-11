@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-10
+## tag v3.2.1-alpha.19 - 2020-09-11
+
+
+* **Few Feature!  Reload Placeholders**
+Provided a reset function for placeholders.  The new command is registered twice to provide the most flexibility.
+**/prison placeholders reload** and **/prison reload placeholders**
 
 
 * **Realigning source for Spigot Placeholder code.**

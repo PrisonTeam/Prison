@@ -7,14 +7,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class SpigotPlaceholders
 	implements Placeholders {
@@ -315,5 +318,53 @@ public class SpigotPlaceholders
 		return results;
 	}
 	
-    
+	/**
+	 * This forces the PlayerManager to reload the internal mapped placeholder listing. 
+	 * This forces the MineManager to reload the internal mapped placeholder listing. 
+	 * 
+	 */
+	public void reloadPlaceholders() {
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			 pm.reloadPlaceholders();
+    		}
+    	}
+
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			mm.reloadPlaceholders();
+    		}
+    	}
+
+    	// Force the re-registration of the placeholder integrations:
+    	SpigotPrison.getInstance().reloadIntegrationsPlaceholders();
+    	
+        
+    	// Finally, print the placeholder stats:
+    	printPlaceholderStats();
+
+	}
+	
+	
+	
+	public void printPlaceholderStats() {
+        
+		Output.get().logInfo( "Total placeholders generated: %d", 
+				getPlaceholderCount() );
+		
+		Map<PlaceHolderFlags, Integer> phDetails = getPlaceholderDetailCounts();
+		for ( PlaceHolderFlags key : phDetails.keySet() ) {
+			Output.get().logInfo( "  %s: %d", 
+					key.name(), phDetails.get( key ) );
+			
+		}
+		
+		Output.get().logInfo( "Total placeholders available to be Registered: %d",
+				getPlaceholderRegistrationCount() );
+        
+
+	}
 }

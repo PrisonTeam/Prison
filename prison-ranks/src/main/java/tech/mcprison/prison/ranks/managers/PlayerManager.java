@@ -573,4 +573,14 @@ public class PlayerManager
     	
     	return translatedPlaceHolderKeys;
     }
+    
+    @Override
+    public void reloadPlaceholders() {
+    	
+    	// clear the class variable so they will regenerate:
+    	translatedPlaceHolderKeys = null;
+    	
+    	// Regenerate the translated placeholders:
+    	getTranslatedPlaceHolderKeys();
+    }
 }
