@@ -10,6 +10,11 @@ that you need.
 
 ## tag v3.2.1-alpha.19 - 2020-09-11
 
+* **New Features! Added 4 new placeholders - Cost Remaining**
+These pertain to cost remaining for rankup.
+prison_rankup_cost_remaining, prison_rcr, prison_rankup_cost_remaining_laddername, prison_rcr_laddername
+Now you can count down the amount of money needed for players to rank up!  Remaining value is never negative, but it shows zero instead.
+
 
 * **Few Feature!  Reload Placeholders**
 Provided a reset function for placeholders.  The new command is registered twice to provide the most flexibility.

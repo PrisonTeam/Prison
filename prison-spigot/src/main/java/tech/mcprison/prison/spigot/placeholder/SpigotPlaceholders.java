@@ -7,11 +7,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.PlaceHolderKey;
-import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
+import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;

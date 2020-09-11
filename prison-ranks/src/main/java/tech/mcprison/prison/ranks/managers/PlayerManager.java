@@ -360,6 +360,47 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
+    	if( prisonPlayer == null ) {
+    		Output.get().logError( String.format( "getPlayerNextRankCostRemaining: " +
+    				"Could not load player: %s", rankPlayer.uid) );
+    		return "0";
+    	}
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if ( ladderName == null ||
+    					ladderName != null && key.name.equalsIgnoreCase( ladderName )) {
+    				
+    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    					if ( sb.length() > 0 ) {
+    						sb.append(",  ");
+    					}
+    					
+    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    					double cost = rank.cost;
+    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					
+    					double remaining = cost - balance;
+    					
+    					if ( remaining < 0 ) {
+    						remaining = 0;
+    					}
+    					
+    					sb.append( dFmt.format( remaining ));
+    				}
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
     private double getPlayerBalance(Player player, Rank rank) {
     	double playerBalance = 0;
         	
@@ -494,6 +535,13 @@ public class PlayerManager
 					case prison_rcp_laddername:
 					case prison_rankup_cost_percent_laddername:
 						results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
+						break;
+						
+					case prison_rcr:
+					case prison_rankup_cost_remaining:
+					case prison_rcr_laddername:
+					case prison_rankup_cost_remaining_laddername:
+						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName );
 						break;
 						
 					case prison_rr:
