@@ -96,7 +96,7 @@ import tech.mcprison.prison.modules.Module;
 public class OnBlockBreakEventListener 
 	implements Listener {
 
-	private final TreeMap<Long, Mine> playerCache;
+//	private final TreeMap<Long, Mine> playerCache;
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
@@ -107,7 +107,7 @@ public class OnBlockBreakEventListener
 	public OnBlockBreakEventListener() {
 		super();
 		
-		this.playerCache = new TreeMap<>();
+//		this.playerCache = new TreeMap<>();
 		this.prisonMineManager = null;
 	}
 	
@@ -305,27 +305,31 @@ public class OnBlockBreakEventListener
 		mine.checkZeroBlockReset();
 	}
 	
-    /**
-     * <p>Search all mines to find if the given block is located within any
-     * of the mines. If not, then return a null.
-     * </p>
-     * 
-     * @param block
-     * @return
-     */
 	private Mine findMineLocation( SpigotBlock block ) {
-		Mine mine = null;
-		for ( Mine m : getPrisonMineManager().getMines() ) {
-			if ( m.isInMine( block.getLocation() ) ) {
-				mine = m;
-				break;
-			}
-		}
-		return mine;
+		return getPrisonMineManager().findMineLocation( block.getLocation() );
 	}
+	
+//    /**
+//     * <p>Search all mines to find if the given block is located within any
+//     * of the mines. If not, then return a null.
+//     * </p>
+//     * 
+//     * @param block
+//     * @return
+//     */
+//	private Mine findMineLocation( SpigotBlock block ) {
+//		Mine mine = null;
+//		for ( Mine m : getPrisonMineManager().getMines() ) {
+//			if ( m.isInMine( block.getLocation() ) ) {
+//				mine = m;
+//				break;
+//			}
+//		}
+//		return mine;
+//	}
 
 	private TreeMap<Long, Mine> getPlayerCache() {
-		return playerCache;
+		return getPrisonMineManager().getPlayerCache();
 	}
 
 	private PrisonMines getPrisonMineManager() {

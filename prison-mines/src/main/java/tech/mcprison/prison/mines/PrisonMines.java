@@ -21,6 +21,7 @@ package tech.mcprison.prison.mines;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -36,6 +37,7 @@ import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
+import tech.mcprison.prison.util.Location;
 
 /**
  * The Prison 3 Mines Module
@@ -57,8 +59,24 @@ public class PrisonMines extends Module {
     private MineManager mineManager;
     private PlayerManager player;
 
+
+    /**
+     * <p>playerCache tries to provide a faster way to identify which mine a player is
+     * in. The theory is that there is a very high chance it will be the last mine 
+     * they were in.  So this records the last mine they were in, and if that is not
+     * where they are, then, and only then, do we check all mines to see if it may
+     * be something else.
+     * </p>
+     * 
+     */
+	private final TreeMap<Long, Mine> playerCache;
+	
+	
+    
     public PrisonMines(String version) {
         super(MODULE_NAME, version, 3);
+
+    	this.playerCache = new TreeMap<>();
     }
 
     public static PrisonMines getInstance() {
@@ -129,6 +147,31 @@ public class PrisonMines extends Module {
         
     }
 
+    
+    
+    
+    /**
+     * <p>Search all mines to find if the given block is located within any
+     * of the mines. If not, then return a null.
+     * </p>
+     * 
+     * @param block
+     * @return
+     */
+	public Mine findMineLocation( Location locationToCheck ) {
+		Mine mine = null;
+		for ( Mine m : getMines() ) {
+			if ( m.isInMine( locationToCheck ) ) {
+				mine = m;
+				break;
+			}
+		}
+		return mine;
+	}
+
+	public TreeMap<Long, Mine> getPlayerCache() {
+		return playerCache;
+	}
 
 //    private void initMines() {
 ////        mines = MineManager.fromDb();
