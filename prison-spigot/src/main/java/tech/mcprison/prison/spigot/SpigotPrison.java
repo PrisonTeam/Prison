@@ -164,7 +164,7 @@ public class SpigotPrison extends JavaPlugin {
         }
         
         
-        new SpigotListener(this).init();
+        new SpigotListener().init();
 
         Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
         
