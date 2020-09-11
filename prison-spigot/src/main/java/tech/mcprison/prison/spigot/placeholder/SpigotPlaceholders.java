@@ -348,7 +348,7 @@ public class SpigotPlaceholders
 	}
 	
 	
-	
+	@Override
 	public void printPlaceholderStats() {
         
 		Output.get().logInfo( "Total placeholders generated: %d", 

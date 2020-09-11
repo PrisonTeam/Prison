@@ -30,5 +30,8 @@ public interface Placeholders {
 
 
 	public void reloadPlaceholders();
+
+
+	public void printPlaceholderStats();
 	
 }

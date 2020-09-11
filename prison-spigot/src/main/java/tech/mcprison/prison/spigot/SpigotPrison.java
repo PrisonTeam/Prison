@@ -182,7 +182,7 @@ public class SpigotPrison extends JavaPlugin {
         }
         
         
-        Prison.get().getPlatform().getPlaceholders().getPlaceholderRegistrationCount();
+        Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
                 
         
         

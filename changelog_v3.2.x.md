@@ -10,6 +10,11 @@ that you need.
 
 ## tag v3.2.1-alpha.19 - 2020-09-11
 
+
+* **Enhancement: Optimize the generation of placeholders**
+OPtimizing placeholders by eliminating the generated placeholder that lacks the prison_ prefix.  Instead, adding the prison_ prefix to all identifiers that are lacking it so it can get a hit on the real entry.  Fix the display of the stats... was calling wrong function.
+
+
 * **New Features! Added 4 new placeholders - Cost Remaining**
 These pertain to cost remaining for rankup.
 prison_rankup_cost_remaining, prison_rcr, prison_rankup_cost_remaining_laddername, prison_rcr_laddername

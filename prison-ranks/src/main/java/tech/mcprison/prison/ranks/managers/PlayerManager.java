@@ -483,6 +483,10 @@ public class PlayerManager
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     		
+    		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+    		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
     			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
     				results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey );
@@ -583,11 +587,13 @@ public class PlayerManager
     			
     			translatedPlaceHolderKeys.add( placeholder );
     			
-    			// Now generate a new key based upon the first key, but without the prison_ prefix:
-    			String key2 = ph.name().replace( 
-    					IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-    			PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, false );
-    			translatedPlaceHolderKeys.add( placeholder2 );
+    			// Getting too many placeholders... add back the extended prefix when looking up:
+    			
+//    			// Now generate a new key based upon the first key, but without the prison_ prefix:
+//    			String key2 = ph.name().replace( 
+//    					IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED, "" );
+//    			PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, false );
+//    			translatedPlaceHolderKeys.add( placeholder2 );
     		}
     		
     		
@@ -608,11 +614,13 @@ public class PlayerManager
     				}
     				translatedPlaceHolderKeys.add( placeholder );
     				
-    				// Now generate a new key based upon the first key, but without the prison_ prefix:
-    				String key2 = key.replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, ladder.name, false );
-    				translatedPlaceHolderKeys.add( placeholder2 );
+    				// Getting too many placeholders... add back the extended prefix when looking up:
+
+//    				// Now generate a new key based upon the first key, but without the prison_ prefix:
+//    				String key2 = key.replace( 
+//    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED, "" );
+//    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, ladder.name, false );
+//    				translatedPlaceHolderKeys.add( placeholder2 );
     				
     			}
     			

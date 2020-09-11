@@ -359,6 +359,10 @@ public class MineManager
     	String results = null;
     	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     	
+		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+		}
+    	
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
 			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
 				results = getTranslateMinesPlaceHolder( placeHolderKey );
@@ -510,11 +514,13 @@ public class MineManager
     				}
     				translatedPlaceHolderKeys.add( placeholder );
     				
-    				// Now generate a new key based upon the first key, but without the prison_ prefix:
-    				String key2 = key.replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName(), false );
-    				translatedPlaceHolderKeys.add( placeholder2 );
+    				// Getting too many placeholders... add back the extended prefix when looking up:
+
+//    				// Now generate a new key based upon the first key, but without the prison_ prefix:
+//    				String key2 = key.replace( 
+//    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
+//    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName(), false );
+//    				translatedPlaceHolderKeys.add( placeholder2 );
     				
     			}
     		}

@@ -32,6 +32,8 @@ public class IntegrationManager {
     }
 
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
+    public static final String PRISON_PLACEHOLDER_PREFIX_EXTENDED = PRISON_PLACEHOLDER_PREFIX + "_";
+    
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
     
