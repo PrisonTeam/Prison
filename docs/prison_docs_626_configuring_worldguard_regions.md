@@ -75,11 +75,14 @@ Then **in game**, give yourself a WorldEdit wand:
 **Purpose:** This prevents players from breaking any blocks in the world. It also prevents mobs from spawning.
 
 
-As op, protect the whole world with a passthrough flag set to deny. This will prevent building, PVP, and everything else.  Basically, any action that “passthrough” all over defined regions, will be denied.  
+As op, protect the whole world with a passthrough flag set to deny. This will prevent building, PVP, and everything else.  Basically, any action that “passthrough” all over defined regions, will be denied.  The command with the **-w world** parameter has been added to the following list too.  Use that version from console, the other without **-w world** in game.  And where the name **world** is the actual name of your world.
 
 
     /rg flag __global__ passthrough deny
+    /rg flag -w world __global__ passthrough deny
+
     /region flag __global__ mob-spawning deny
+    /region flag -w world __global__ mob-spawning deny
     
     /gamerule doMobSpawning false
 
@@ -87,6 +90,55 @@ Note that the **/gamerule doMobSpawning false** may also help prevent mobs from 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+
+# Create LuckPerm Groups for Templates and Mines
+
+The WorldGuard region templates are covered below, but first you need to setup the groups within LuckPerm or permission on the child groups will not be tied back to the parent groups within LuckPerms.
+
+
+LuckPerms commands to create a group, and how to have a group inherit permissions from a parent.
+
+	/lp creategroup <group>
+	/lp group <group> parent add <parent-group>
+
+
+We must create the groups that we need to use.  There are two parent groups, one each for the two templates that we will be defining within WorldGuard regions. For prison, we will use  the prefix of `prison.mines` so we know what these groups and permissions are related to. 
+	
+	/lp creategroup prison.mines.<groupsuffix>
+
+	/lp creategroup prison.mines.area.template
+	/lp creategroup prison.mines.template
+
+
+Next we **must** create a group for every mine.  Only mine `a` and `b` are shown here, but create one for each mine.
+	
+	/lp creategroup prison.mines.a
+	/lp creategroup prison.mines.b
+	
+	
+Finally we must take the child groups, and inherit from the parent groups.  The first two examples show what needs to be added for each mine.  Followed by our examples for mines `a` and `b`.
+
+	/lp group prison.mines.<mine-name> parent add prison.mines.area.template
+	/lp group prison.mines.<mine-name> parent add prison.mines.template
+
+	/lp group prison.mines.a parent add prison.mines.area.template
+	/lp group prison.mines.a parent add prison.mines.template
+
+	/lp group prison.mines.b parent add prison.mines.area.template
+	/lp group prison.mines.b parent add prison.mines.template
+
+
+To check to see if these groups are setup properly, you can inspect them with the following commands.
+
+    /lp listgroup
+    /lp group prison.mines.a info
+
+
+    
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+   
 
 
 # Create a Mine Template as a Parent for all Mines
@@ -170,6 +222,10 @@ First, we need to define a **mine_area_template** so we don't have to keep repea
     
     /region addowner mine_area_template g:owner
     /region addmember mine_area_template g:admin
+    
+    
+    /region addmember mine_area_template g:prison.mines.area.template
+    
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -188,6 +244,7 @@ Select the an area around the mine with the WorldEdit **wand**.  Only select a r
     /region setparent mine_area_<mine-name> mine_area_template
     /region addmember mine_area_<mine-name> g:prison.mines.<mine-name>
 
+   
 
 The command **//expand vert** will take your selection and extend the **y** to cover the whole vertical range in your region.  This is why you don't have to be concerned with the *y* axis when defining your mine area regions.
 
@@ -285,6 +342,7 @@ One of the primary focuses for this document has been protecting the area around
     /region redefine mine_<mine-name>
     /region removeowner mine_template <owner-name>
     /region removemember <mine-name> <player-name>
+    
 
 Set’s the WorldEdit selection to the dimensions of the given mine:
 
@@ -294,8 +352,22 @@ Set’s the WorldEdit selection to the dimensions of the given mine:
     /region info mine_<mine-name>
     /region info mine_area_<mine-name>
     
-    /region list
+    /region list 
+    /region list -w world
     /region list -p <player-name>
+    
+    
+Some LuckPerm commands that may be useful.
+
+    /lp group prison.mines.<mine-name> listmembers
+    /lp user <user-name> group add <group-name>
+    
+    /lp listgroup
+    
+    /lp user <user-name> parent set <group-name>
+    
+    /lp group <groupname> parent add <parentgroup>
+    
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
