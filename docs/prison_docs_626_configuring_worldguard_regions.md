@@ -131,9 +131,18 @@ Finally we must take the child groups, and inherit from the parent groups.  The 
 
 To check to see if these groups are setup properly, you can inspect them with the following commands.
 
-    /lp listgroup
+    /lp listgroups
     /lp group prison.mines.a info
 
+
+To grant permission to the players, you need to use the following:
+
+    /lp user <user-name> parent set <group-name>
+    /lp user <user-name> parent set prison.mines.a
+    
+And you do that with adding a rank command (more on this later):
+
+    /ranks command add a lp user {player} parent set prison.mines.a
 
     
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -362,7 +371,7 @@ Some LuckPerm commands that may be useful.
     /lp group prison.mines.<mine-name> listmembers
     /lp user <user-name> group add <group-name>
     
-    /lp listgroup
+    /lp listgroups
     
     /lp user <user-name> parent set <group-name>
     
