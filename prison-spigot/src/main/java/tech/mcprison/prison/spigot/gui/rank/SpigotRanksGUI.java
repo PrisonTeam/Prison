@@ -17,6 +17,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -45,16 +46,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             return;
         }
 
+        // Load config
+        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+
         // Get the dimensions and if needed increases them
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
         } else {
-            p.sendMessage(SpigotPrison.format("&cSorry, but before using this GUI you should create a Rank in this ladder!"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFoundAdmin")));
             return;
         }
-
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         // If the inventory is empty
         if (dimension == 0){
@@ -65,7 +66,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format("&cSorry, but there're too many ranks and the max's 54 for the GUI"));
+            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyRanks")));
             p.closeInventory();
             return;
         }
@@ -112,7 +113,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                 guiConfig.getString("Gui.Lore.Info"));
 
         if (!rankOptional.isPresent()){
-            p.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled."));
+            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.CantGetRanksAdmin")));
             return;
         }
 

@@ -152,14 +152,14 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
     private void buttonsSetup(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
 
         if (!ladder.isPresent()){
-            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cLadder -prestiges- not found!"));
+            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.LadderPrestigesNotFound")));
             return;
         }
 
         RankLadder ladderData = ladder.get();
 
         if (!ladderData.getLowestRank().isPresent()){
-            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThere aren't ranks in the -prestiges- ladder!"));
+            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoRanksPrestigesLadder")));
             return;
         }
 

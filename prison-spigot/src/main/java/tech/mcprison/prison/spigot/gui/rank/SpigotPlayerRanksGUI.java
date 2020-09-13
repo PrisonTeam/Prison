@@ -115,14 +115,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Ensure ladder is present and that it has a rank:
         if ( !ladder.isPresent() || !ladder.get().getLowestRank().isPresent() ){
-            getPlayer().sendMessage(SpigotPrison.format("&cSorry, but there aren't Ranks in the default or selected ladder or the ladder &3[" + GuiConfig.getString("Options.Ranks.Ladder") + "]&c isn't found!"));
+            getPlayer().sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFoundHelp1") + GuiConfig.getString("Options.Ranks.Ladder") + GuiConfig.getString("Gui.Message.NoRanksFoundHelp2")));
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.get().ranks.size() == 0) {
-            getPlayer().sendMessage(SpigotPrison.format("&cSorry, but there aren't Ranks in the default or selected ladder!"));
+            getPlayer().sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFound")));
             return;
         }
 
