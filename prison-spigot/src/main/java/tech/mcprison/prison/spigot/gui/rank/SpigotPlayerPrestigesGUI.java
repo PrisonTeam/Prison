@@ -19,6 +19,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -134,6 +135,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         // Open the inventory
         getPlayer().openInventory(inv);
+        ListenersPrisonManager.get().addToGUIBlocker(getPlayer());
     }
 
     private boolean guiBuilder(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {

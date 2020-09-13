@@ -24,6 +24,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -59,15 +60,20 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
  */
 public class ListenersPrisonManager implements Listener {
 
-    SpigotPrison plugin;
-    public List <String> activeGui = new ArrayList<>();
+    private static ListenersPrisonManager instance;
+    public static List<String> activeGui = new ArrayList<>();
     public boolean isChatEventActive = false;
     public int id;
     public String rankNameOfChat;
 
     public ListenersPrisonManager(){}
-    public ListenersPrisonManager(SpigotPrison instance){
-        plugin = instance;
+
+
+    public static ListenersPrisonManager get() {
+        if (instance == null) {
+            instance = new ListenersPrisonManager();
+        }
+        return instance;
     }
 
     @EventHandler
@@ -85,55 +91,6 @@ public class ListenersPrisonManager implements Listener {
     public void addToGUIBlocker(Player p){
         if(!activeGui.contains(p.getName()))
             activeGui.add(p.getName());
-    }
-
-    @EventHandler
-    public void onOpenInventory(InventoryOpenEvent e) {
-
-        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
-            return;
-        }
-
-        // Get the player
-        Player p = (Player) e.getPlayer();
-
-        // Array with all the Prison titles of Inventories
-        String[] titleNames = new String[25];
-        titleNames[0] = "AutoFeatures -> AutoBlock";
-        titleNames[1] = "PrisonManager -> AutoFeatures";
-        titleNames[2] = "AutoFeatures -> AutoPickup";
-        titleNames[3] = "AutoFeatures -> AutoSmelt";
-        titleNames[4] = "Mines -> MineInfo";
-        titleNames[5] = "MineNotifications -> Radius";
-        titleNames[6] = "MineInfo -> MineNotifications";
-        titleNames[7] = "MineInfo -> ResetTime";
-        titleNames[8] = "MineInfo -> Blocks";
-        titleNames[9] = "Mines -> Delete";
-        titleNames[10] = "MinesManager -> Mines";
-        titleNames[11] = "Mines -> PlayerMines";
-        titleNames[12] = "Prestige -> Confirmation";
-        titleNames[13] = "RanksManager -> Ladders";
-        titleNames[14] = "Prestiges -> PlayerPrestiges";
-        titleNames[15] = "Ranks -> PlayerRanks";
-        titleNames[16] = "Ranks -> RankManager";
-        titleNames[17] = "RankManager -> RankPrice";
-        titleNames[18] = "Ladders -> Ranks";
-        titleNames[19] = "RankManager -> RankUPCommands";
-        titleNames[20] = "PrisonManager";
-        titleNames[21] = "PrisonManager -> SellAll-Admin";
-        titleNames[22] = "SellAll -> ItemValue";
-        titleNames[23] = "PrisonManager -> SellAll-Player";
-        titleNames[24] = "MineInfo -> BlockPercentage";
-
-        for (String title : titleNames){
-
-            if ( SpigotPrison.getInstance().getCompatibility().getGUITitle( e ).
-            		substring(2).equalsIgnoreCase(title)) {
-            	
-            	// Add the player to the list of those who can't move items in the inventory
-            	addToGUIBlocker(p);
-            }
-        }
     }
 
     // On chat event to rename the a Rank Tag
@@ -158,7 +115,6 @@ public class ListenersPrisonManager implements Listener {
     // Cancel the events of the active GUI opened from the player
     private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
         if(activeGui.contains(p.getName())) {
-
             e.setCancelled(true);
         }
     }

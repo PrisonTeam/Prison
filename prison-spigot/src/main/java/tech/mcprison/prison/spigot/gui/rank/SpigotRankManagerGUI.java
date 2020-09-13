@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         // Open the inventory
         this.p.openInventory(inv);
-
+        ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
     private boolean guiBuilder(Inventory inv, Configuration guiConfig) {

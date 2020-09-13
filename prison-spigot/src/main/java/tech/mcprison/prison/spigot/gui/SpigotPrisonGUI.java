@@ -34,6 +34,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
         // Open the inventory
         this.p.openInventory(inv);
+        ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
     private boolean guiBuilder(Inventory inv, Configuration guiConfig) {

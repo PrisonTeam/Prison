@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         if (guiBuilder(inv, GuiConfig, afConfig)) return;
 
         this.p.openInventory(inv);
-
+        ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
     private boolean guiBuilder(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
