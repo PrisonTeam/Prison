@@ -604,12 +604,14 @@ public class PlayerManager
     		for ( RankLadder ladder : ladders ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name );
+    						IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
+    							toLowerCase();
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, ladder.name );
     				if ( ph.getAlias() != null ) {
     					String aliasName = ph.getAlias().name().replace( 
-    							IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name );
+    							IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
+    								toLowerCase();
     					placeholder.setAliasName( aliasName );
     				}
     				translatedPlaceHolderKeys.add( placeholder );

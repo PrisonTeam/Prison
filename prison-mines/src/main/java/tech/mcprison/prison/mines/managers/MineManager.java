@@ -478,7 +478,7 @@ public class MineManager
     	
     	double secs = (double)(time / TIME_SECOND);
     	time -= (secs * TIME_SECOND);
-    	DecimalFormat dFmt = new DecimalFormat("#0.00");
+    	DecimalFormat dFmt = new DecimalFormat("#0.0");
     	sb.append( dFmt.format( secs ));
     	sb.append( "s " );
     	
@@ -499,17 +499,22 @@ public class MineManager
     	if ( translatedPlaceHolderKeys == null ) {
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
-    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES );
+    		List<PrisonPlaceHolders> placeHolders = 
+    				PrisonPlaceHolders.excludeTypes( 
+    					PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES ),
+    						PlaceHolderFlags.PLAYERMINES);
     		
     		for ( Mine mine : getMines() ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() );
+    						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    						toLowerCase();
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
     				if ( ph.getAlias() != null ) {
     					String aliasName = ph.getAlias().name().replace( 
-    							IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() );
+    							IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    							toLowerCase();
     					placeholder.setAliasName( aliasName );
     				}
     				translatedPlaceHolderKeys.add( placeholder );

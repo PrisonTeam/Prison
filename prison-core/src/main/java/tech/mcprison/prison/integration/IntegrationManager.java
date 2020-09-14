@@ -239,6 +239,21 @@ public class IntegrationManager {
 			return results;
 		}
 		
+		public static List<PrisonPlaceHolders> excludeTypes(
+							List<PrisonPlaceHolders> list, PlaceHolderFlags flag) {
+			List<PrisonPlaceHolders> results = new ArrayList<>();
+			
+			if ( flag != null ) {
+				for ( PrisonPlaceHolders ph : list ) {
+					if ( !ph.getFlags().contains( flag )) {
+						results.add( ph );
+					}
+				}
+			}
+			
+			return results;
+		}
+		
 		public String getChatText() {
 			return "&a" + name() + 
 					(hasAlias() ? "&7(&b" + getAlias().name() + "&7)" : "") +
