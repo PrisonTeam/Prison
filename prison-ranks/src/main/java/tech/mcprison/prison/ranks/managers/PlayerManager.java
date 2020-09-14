@@ -372,8 +372,6 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
     		
-    		Output.get().logInfo( "PlayerManager.getPlayerNextRankCostBar(): ladderName = " + ladderName );
-    		
 //    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
