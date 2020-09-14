@@ -42,6 +42,7 @@ public class IntegrationManager {
     	PLAYER,
     	LADDERS,
     	MINES,
+    	PLAYERMINES,
     	
     	SUPRESS,
     	ALIAS

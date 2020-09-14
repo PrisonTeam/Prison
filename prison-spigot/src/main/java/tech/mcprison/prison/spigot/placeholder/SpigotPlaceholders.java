@@ -257,11 +257,13 @@ public class SpigotPlaceholders
 				String placeholder = "{" + placeHolderKey.getKey() + "}";
 				String value = null;
 				
-				if ( mm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ) {
+				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
+							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ))) {
 					value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
 				}
-				else if ( pm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER )) {
-					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey.getKey() );
+				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER ) || 
+							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {
+					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 
