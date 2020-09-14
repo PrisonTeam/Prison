@@ -8,7 +8,34 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-11
+## tag v3.2.1-alpha.19 - 2020-09-13
+
+
+* **New Feature!  Placeholder progress bars!**
+prison_rankup_cost_bar, prison_rankup_cost_bar_laddername, prison_mines_timeleft_bar_minename, prison_mines_remaining_bar_minename, plus their aliases.
+This adds a configurable progress bar to the list of placeholders.  The /plugins/Prison/config.yml file can be reset to load the parameters to customize the progress bars.  For now, if the configs do not exist, they will fall back on to the default values.
+
+
+* **Minor fix: Found that some placeholder key values were not being generate with all lower case characters.**
+This could have resulted in problems if the users were trying to use all lower case.
+Also provided a placeholder flags exclusion filter to remove the wrong compound types within mines.
+
+
+* **Minor improvement to placeholder search when using Players**
+Added player information when it's supplied with the placeholder search.  This provides important feedback to the user that the supplied player is valid.
+
+
+* **Bug fix: For the PlayerManager was not allowing PlaceHolderFlags types of LADDERS to be processed.**
+So ladder based placeholders were not being translated correctly (sometimes they were). This was fixed.
+
+
+* **Eliminate the obsolete message and .meta checks.**
+This version of prison cannot perform any updates on the old obsolete versions of data.  That functionality was removed prior to the v3.1.1 release.  To upgrade from v2.x they will first have to upgrade to v3.0.0 and then to the current release.
+
+
+
+* **Move the player mine cache to the PrisonMines object**
+This will allow it to be accessible from other areas within the prison plugin.  This will need to be used with more advanced placeholders that will be added shortly.
 
 
 * **Enhancement: Optimize the generation of placeholders**

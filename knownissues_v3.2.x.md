@@ -29,6 +29,21 @@ Implement and have a fully functional new block handling mechanism that operate 
  Blue should work on this.
 
 
+* **DONE: Placeholders - Reregister**
+Add a new command `/prison placeholders reload` that will reregister all placeholders.  I don't think there is a clean way to unload the registrations, but just going through registration may be good enough. Deleted, or obsolete, placeholders may still be registered, but at least the new ones will get registered too.
+
+
+* **DONE: Placeholders - Add placeholder counts to startup**
+Counts on how many placeholders are generate and registered.
+
+
+* **Placeholders - Add new placeholders**
+prison_rankup_cost_remaining 
+Such that `prison_mines_*_minename` will also be mapped to `prison_mines_*_player` and will only report the values when a player is in a mine.  
+I think that will be super cool, since you could put some current mine stats in your placeholder such as `prison_mines_timeleft_formatted_player`  `prison_mines_remaining_player` and even `prison_mines_player_count_player`.
+
+
+
  
  * **Add player names to the player file**
  Have no idea who is who in the player files.
@@ -44,13 +59,17 @@ The ladder no longer contains the rank. But the player is still associated with 
 
 This could cause major corruption if moving ranks between ladders, removing ranks from a ladder, and players being associated with those ranks. 
 
+Create a "void" ladder and prevent ladders from being named: default, void, and prestige.  When a rank is removed from a ladder, place it in to none and update all players that use that rank so the rank is still valid.  Do not include void ladders in placeholders.
+
  
  
  * **Add GUI support for v1.8.x**
  Might be able to add GUI support for 1.8.x with a few simple lines of code?
  
  
- * ** **
+ * **DONE: Add permissions on notifications for mine resets **
+Only send a message to the player if they have the permission set, and follow the other notification settings too.
+Add permission `mines.notification.[mineName]` and have each mine have a boolean field to indicate that it should check for permissions on the players prior to sending the message.
  
 
 
