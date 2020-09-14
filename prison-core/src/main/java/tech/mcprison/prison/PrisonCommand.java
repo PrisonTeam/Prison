@@ -517,12 +517,19 @@ public class PrisonCommand {
         UUID playerUuid = (player == null ? null : player.getUUID());
         
         List<String> placeholders = Prison.get().getPlatform().getPlaceholders()
-        					.placeholderSearch( playerUuid, null, patterns.trim().split( " " ) );
+        					.placeholderSearch( playerUuid, (player == null ? null : player.getName()), 
+        								patterns.trim().split( " " ) );
         
         builder.add( String.format( "&a    Include one or more patterns to search for placeholders. If more"));
         builder.add( String.format( "&a    than one is provided, the returned placeholder will hit on all."));
         builder.add( String.format( "&a    Player based placeholders will return nulls for values if ran from console,"));
         builder.add( String.format( "&a    unless player name is specified. Can view placeholders for any player."));
+        
+        if ( player != null ) {
+        	builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
+        			(playerUuid == null ? "null" : playerUuid.toString())));
+        	
+        }
         
         
         DecimalFormat dFmt = new DecimalFormat("#,##0");
