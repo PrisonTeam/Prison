@@ -1028,8 +1028,9 @@ public class ListenersPrisonManager implements Listener {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        String permission = SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
-        if (p.hasPermission(SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin") + buttonNameMain))){
+        if (p.hasPermission(permission + buttonNameMain) || p.hasPermission(permission.substring(0, permission.length() - 1))){
             Bukkit.dispatchCommand(p, SpigotPrison.format(GuiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + buttonNameMain));
         }
     }

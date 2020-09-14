@@ -83,8 +83,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
         ItemStack itemines;
         Material material;
+        String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
-        if (p.hasPermission(guiConfig.getString("Options.Mines.PermissionWarpPlugin") + m.getName())){
+        if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
             material = Material.COAL_ORE;
             mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.StatusUnlockedMine")));
             mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ClickToTeleport")));
