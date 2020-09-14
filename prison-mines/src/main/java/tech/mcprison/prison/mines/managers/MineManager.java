@@ -401,6 +401,13 @@ public class MineManager
 						results = dFmt.format( mine.getRemainingTimeSec() );
 						break;
 						
+					case prison_mtlb_minename:
+					case prison_mines_timeleft_bar_minename:
+						// NOTE: timeleft can vary based upon server loads:
+						
+						results = getRemainingTimeBar( mine );
+						break;
+						
 					case prison_mtlf_minename:
 					case prison_mines_timeleft_formatted_minename:
 						// NOTE: timeleft can vary based upon server loads:
@@ -417,6 +424,15 @@ public class MineManager
 					case prison_mines_remaining_minename:
 						int remainingBlocks = mine.getRemainingBlockCount();
 						results = iFmt.format( remainingBlocks );
+						break;
+						
+					case prison_mrb_minename:
+					case prison_mines_remaining_bar_minename:
+						int totalBlocks = mine.getBounds().getTotalBlockCount();
+						int blocksRemaining = mine.getRemainingBlockCount();
+						
+						results = Prison.get().getIntegrationManager().
+									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), false );
 						break;
 						
 					case prison_mp_minename:
@@ -452,7 +468,17 @@ public class MineManager
     }
     
 
-    private String formattedTime( double time ) {
+    private String getRemainingTimeBar( Mine mine ) {
+
+    	double timeRemaining = mine.getRemainingTimeSec();
+    	int time = mine.getResetTime();
+    	
+    	return Prison.get().getIntegrationManager().
+    					getProgressBar( timeRemaining, ((double) time), true );
+	}
+
+
+	private String formattedTime( double time ) {
     	StringBuilder sb = new StringBuilder();
     	
     	long days = (long)(time / TIME_DAY);

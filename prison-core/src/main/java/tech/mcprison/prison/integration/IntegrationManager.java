@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.TextComponent;
 
 /**
@@ -36,6 +38,8 @@ public class IntegrationManager {
     
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
+    
+    private PlaceholderProgressBarConfig progressBarConfig;
     
     public enum PlaceHolderFlags {
     	
@@ -93,6 +97,7 @@ public class IntegrationManager {
 		prison_rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
@@ -102,6 +107,7 @@ public class IntegrationManager {
 		prison_rank_tag(prison_rt, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost(prison_rc, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_bar(prison_rcb, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_remaining(prison_rcr, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
@@ -112,6 +118,7 @@ public class IntegrationManager {
 		prison_rt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rc_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rrt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
@@ -121,6 +128,7 @@ public class IntegrationManager {
 		prison_rank_tag_laddername(prison_rt_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_laddername(prison_rc_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_bar_laddername(prison_rcb_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_remaining_laddername(prison_rcr_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_laddername(prison_rr_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceHolderFlags.LADDERS),
@@ -130,9 +138,11 @@ public class IntegrationManager {
 		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mif_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mtlb_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mtlf_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mrb_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mbm_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
@@ -145,9 +155,11 @@ public class IntegrationManager {
 		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
 		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceHolderFlags.MINES),
 		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
+		prison_mines_timeleft_bar_minename(prison_mtlb_minename, PlaceHolderFlags.MINES),
 		prison_mines_timeleft_formatted_minename(prison_mtlf_minename, PlaceHolderFlags.MINES),
 		prison_mines_size_minename(prison_ms_minename, PlaceHolderFlags.MINES),
 		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
+		prison_mines_remaining_bar_minename(prison_mrb_minename, PlaceHolderFlags.MINES),
 		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
 		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
 		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceHolderFlags.MINES),
@@ -225,7 +237,7 @@ public class IntegrationManager {
 			return result;
 		}
 		
-		public static List<PrisonPlaceHolders> getTypes(PlaceHolderFlags flag ) {
+		public static List<PrisonPlaceHolders> getTypes(PlaceHolderFlags flag) {
 			List<PrisonPlaceHolders> results = new ArrayList<>();
 			
 			if ( flag != null ) {
@@ -305,7 +317,152 @@ public class IntegrationManager {
 		
 	}
 	
-    /**
+	
+	public void reloadPlaceholderBarConfig() {
+		setProgressBarConfig( loadPlaceholderBarConfig() );
+	}
+	
+	public PlaceholderProgressBarConfig loadPlaceholderBarConfig() {
+		PlaceholderProgressBarConfig config = null;
+		
+		String barSegmentsStr = Prison.get().getPlatform().getConfigString( 
+							"prison-placeholder-configs.progress-bar.bar-segments" );
+		String barPositiveColor = Prison.get().getPlatform().getConfigString( 
+							"prison-placeholder-configs.progress-bar.bar-positive-color" );
+		String barPositiveSegment = Prison.get().getPlatform().getConfigString( 
+							"prison-placeholder-configs.progress-bar.bar-positive-segments" );
+		String barNegativeColor = Prison.get().getPlatform().getConfigString( 
+							"prison-placeholder-configs.progress-bar.bar-negative-color" );
+		String barNegativeSegment = Prison.get().getPlatform().getConfigString( 
+							"prison-placeholder-configs.progress-bar.bar-negative-segments" );
+		
+		// All 5 must not be null:
+		if ( barSegmentsStr != null && barPositiveColor != null && barPositiveSegment != null &&
+				barNegativeColor != null && barNegativeSegment != null ) {
+			
+			int barSegments = 20;
+			
+			try {
+				barSegments = Integer.parseInt( barSegmentsStr );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logWarn( 
+						"IntegrationManager.loadPlaceholderBarConfigs(): Failure to convert the" +
+						"/plugins/Prison/config.yml  prison-placeholder-configs.progress-bar.bar-segments " +
+						"to a valid integer. Defaulting to a value of 20 " +
+						"[" + barSegmentsStr + "] " + e.getMessage() );
+				
+			}
+			
+			config = new PlaceholderProgressBarConfig( barSegments, 
+							barPositiveColor, barPositiveSegment,
+							barNegativeColor, barNegativeSegment );
+		}
+		
+		if ( config == null ) {
+			// go with default values because the config.yml is not up to date with
+			// the default values
+			
+			config = new PlaceholderProgressBarConfig( 
+					20, "&2", "#", "&4", "=" 
+//					20, "&2", "▊", "&4", "▒" 
+					);
+			
+			Output.get().logWarn( "The /plugins/Prison/config.yml does not contain the " +
+					"default values for the Placeholder Progress Bar. Default values are " +
+					"being used. To customize the bar, rename the config.yml and it will be" +
+					"regenerated and then edit to restore prior values.");
+			
+		}
+
+		return config;
+	}
+	
+    public PlaceholderProgressBarConfig getProgressBarConfig() {
+    	if ( progressBarConfig == null ) {
+    		progressBarConfig = loadPlaceholderBarConfig();
+    	}
+		return progressBarConfig;
+	}
+	public void setProgressBarConfig( PlaceholderProgressBarConfig progressBarConfig ) {
+		this.progressBarConfig = progressBarConfig;
+	}
+
+	/**
+	 * <p>This function uses the settings within the config.yml to construct a progress
+	 * bar.  It takes two numeric values and constructs it upon those parameters.
+	 * The parameter <pre>value</pre> is the value that changes, and is the value that 
+	 * sets where the bar changes.  The parameter <pre>valueTotal</pre> is the max value
+	 * of where the <pre>value</pre> is increasing to.
+	 * </p>
+	 * 
+	 * <p>The lowest range is always zero and <pre>value</pre> will be set to zero if 
+	 * it is negative.   If <pre>value</pre> is greater than <pre>valueTotal</pre>
+	 * then it will be set to that value.  The valid range for this function is only 0 percent 
+	 * to 100 percent.
+	 * </p>
+	 * 
+	 * <p>If the progress bar is moving in the wrong direction, then set the parameter
+	 * <pre>reverse</pre> to true and then the <pre>value</pre> will be inverted by subtracting
+	 * its value from <pre>valueTotal</pre>.
+	 * </p>
+	 * 
+	 * @param value A value that is changing. Will be set to zero if negative. Will be 
+	 * 				set to valueTotal if greater than that amount. 
+	 * @param valueTotal The target value that is non-changing.
+	 * @param reverse Changes the growth direction of the progress bar.
+	 * @return
+	 */
+	public String getProgressBar( double value, double valueTotal, boolean reverse ) {
+		StringBuilder sb = new StringBuilder();
+		
+		// value cannot be greater than valueTotal:
+		if ( value > valueTotal ) {
+			value = valueTotal;
+		}
+		else if ( value < 0 ) {
+			value = 0;
+		}
+		
+		// If reverse, then the new value is subtracted from valueTotal:
+		if ( reverse ) {
+			value = valueTotal - value;
+		}
+		
+    	double percent = value / valueTotal * 100.0;
+    	
+    	PlaceholderProgressBarConfig barConfig = 
+				Prison.get().getIntegrationManager().getProgressBarConfig();
+
+		String lastColorCode = null;
+		for ( int i = 0; i < barConfig.getSegments(); i++ ) {
+			double pct = i / ((double)barConfig.getSegments()) * 100.0;
+			
+			if ( pct < percent ) {
+				if ( lastColorCode == null || 
+						!barConfig.getPositiveColor().equalsIgnoreCase( lastColorCode )) { 
+					sb.append( barConfig.getPositiveColor() );
+					lastColorCode = barConfig.getPositiveColor();
+				}
+				sb.append( barConfig.getPositiveSegment() );
+			}
+			else {
+				if ( lastColorCode == null || 
+						!barConfig.getNegativeColor().equalsIgnoreCase( lastColorCode )) { 
+					sb.append( barConfig.getNegativeColor() );
+					lastColorCode = barConfig.getNegativeColor();
+				}
+				sb.append( barConfig.getNegativeSegment() );
+				
+			}
+		}
+
+    	
+    	return sb.toString();
+	}
+	
+	
+	/**
      * Returns a list of all of the {@link Integration}s that are registered under a certain {@link IntegrationType}, if any.
      * This includes integrations that have not successfully integrated.
      * If there are none, an empty list will be returned.

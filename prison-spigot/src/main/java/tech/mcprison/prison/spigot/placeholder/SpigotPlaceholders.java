@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
@@ -325,6 +326,8 @@ public class SpigotPlaceholders
 	 * 
 	 */
 	public void reloadPlaceholders() {
+		
+		Prison.get().getIntegrationManager().reloadPlaceholderBarConfig();
     	
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();

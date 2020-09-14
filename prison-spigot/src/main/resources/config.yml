@@ -86,6 +86,27 @@ prison-block-compatibility-report: false
 
 
 
+# Some configs for the placeholders.
+prison-placeholder-configs:
+
+# Placeholder progress bar.  
+# Can control how many segments are generated.  The more segments that
+# are displayed the better reactive it will appear to the players.
+# Also what is used for the postive and negative parts of the status bar,
+# including color code and the text character to use. The color code will
+# only apply once, not for each segment.
+# Default values used: 20 &2 # &4 = 
+# Other color codes will work too. 
+# Other characters to consider:  X = - : # *  
+# Or even unicode blocks may work (or won't?):  ▏  ▎ ▌  ▋  ▊  ▉  █  ▓ ▒ ░ 
+  progress-bar:
+    bar-segments: 20
+    bar-positive-color: &2
+    bar-positive-segment: #
+    bar-negative-color: &4
+    bar-negative-segment: =
+
+
 # This is strictly a work in progress right now, and does not work yet.
 # This uses a new prison block model for providing the internal block lists
 # and for generating the blocks.  This allows usage from mc 1.8.x through 

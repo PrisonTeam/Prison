@@ -360,6 +360,47 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    public String getPlayerNextRankCostBar( RankPlayer rankPlayer, String ladderName ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
+    	if( prisonPlayer == null ) {
+    		Output.get().logError( String.format( "getPlayerNextRankCostBar: " +
+    				"Could not load player: %s", rankPlayer.uid) );
+    		return "0";
+    	}
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		
+    		Output.get().logInfo( "PlayerManager.getPlayerNextRankCostBar(): ladderName = " + ladderName );
+    		
+//    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if ( ladderName == null ||
+    					ladderName != null && key.name.equalsIgnoreCase( ladderName )) {
+    				
+    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    					if ( sb.length() > 0 ) {
+    						sb.append(",  ");
+    					}
+    					
+    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    					double cost = rank.cost;
+    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					
+    				   	
+    			    	sb.append( Prison.get().getIntegrationManager().
+    			    					getProgressBar( balance, cost, false ));
+
+    				}
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
@@ -539,6 +580,13 @@ public class PlayerManager
 					case prison_rcp_laddername:
 					case prison_rankup_cost_percent_laddername:
 						results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
+						break;
+						
+					case prison_rcb:
+					case prison_rankup_cost_bar:
+					case prison_rcb_laddername:
+					case prison_rankup_cost_bar_laddername:
+						results = getPlayerNextRankCostBar( rankPlayer, ladderName );
 						break;
 						
 					case prison_rcr:
