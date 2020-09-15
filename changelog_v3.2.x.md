@@ -8,7 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-13
+## tag v3.2.1-alpha.19 - 2020-09-14
+
+
+* **Bug fix: Placeholder progress bar configs in config.yml not working**
+This addresses some issues with being able to load the placeholder progress bar configs from the config.yml file.  
+Ran in to issues with symbols not being quoted. Strings normally do not have to be quoted, but yaml was interpreting them incorrectly and was trying to treat them as special values.  So quoting prevents that.
+Also had unicode characters in the comments which also may have be causing issues indirectly, so removed them.
 
 
 * **New Feature!  Placeholder progress bars!**

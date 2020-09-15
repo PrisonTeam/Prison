@@ -4,28 +4,34 @@
 #      This must be valid yml.      #
 # == == == == == === == == == == == #
 #
-#  New features have been recently added to prison.  These new features can add a lot
-#  of value to your server, but they may also be in the process of growing and evolving.
-#  If you experiance any issues, have questions, or you have ideas on how to improve
-#  upon these items, then please visit our discord server.  These new features are 
+#  New features have been recently added to prison.  These new features 
+#  can add a lot of value to your server, but they may also be in the 
+#  process of growing and evolving. If you experiance any issues, have
+#  questions, or you have ideas on how to improve upon these items, 
+#  then please visit our discord server.  These new features are 
 #  marked with the "NEW" tag below.
-#  
+#
 #
 
-# Note: This actually doesn't do anything. May have done something with v3.1.1 or earlier.
-debug: false
+# Note: This actually doesn't do anything. 
+#       May have done something with v3.1.1 or earlier.
+#debug: false
 
 # Upon server startup prison will check to see if a newer version has been released.
 check-updates: true
 
-# Provides unidentifiable metrics so we can better understand what versions of minecraft,
-# spigot, server OS, and the Prison plugin version that is being used. This is used to 
-# understand what versions of spigot should be supported, and which versions of prison 
-# is actually being used and can greatly impact future development efforts. Enabling the 
+# Provides unidentifiable metrics so we can better understand what versions
+# of minecraft, spigot, server OS, and the Prison plugin version that is 
+# being used. This is used to understand what versions of spigot should be
+# supported, and which versions of prison is actually being used and can
+# greatly impact future development efforts. Enabling the 
 # send-metrics would be greatly appreciatd since it will help us greatly.
-# You can view the stats here: https://bstats.org/plugin/bukkit/Prison  
+# You can view the stats here: https://bstats.org/plugin/bukkit/Prison
 send-metrics: true
 
+
+# This will show prison based alerts, such as new versions of the plugin are available.
+# If an alert is being shown, it can be disabled online by acknowledging it.
 show-alerts: true
 
 # NEW: Prison now has prestiges! 
@@ -37,46 +43,50 @@ prestiges: true
 # jump even higher to heights of 40 to 60+ blocks.
 slime-fun: false
 
-# NEW: Prison now has GUIs for most features and actions. For more options please check
-# the GuiConfig.yml. 
+# NEW: Prison now has GUIs for most features and actions. For more options
+# please check the GuiConfig.yml. 
 # Access with /gui
 prison-gui-enabled: true
 
-# NEW: Enable or disable /mines to open the GUI to players (This won't works with OPs or
-# admins who have the permission mines.admin or prison.admin)
+# NEW: Enable or disable /mines to open the GUI to players (This won't works
+# with OPs or admins who have the permission mines.admin or prison.admin)
 # This command's only a shortcut of /prisonmanager mines
 mines-gui-enabled: true
 
-# NEW: Enable or disable /ranks to open the GUI to players (This won't works with OPs or
-# admins who have the permission ranks.admin or prison.admin)
+# NEW: Enable or disable /ranks to open the GUI to players (This won't
+# works with OPs or admins who have the permission ranks.admin or prison.admin)
 # This command's only a shortcut of /prisonmanager ranks
 ranks-gui-enabled: true
 
-# NEW: /ranks prestiges's a shortcut of /prisonmanager prestiges and the same as the /prestiges shortcut
+# NEW: /ranks prestiges's a shortcut of /prisonmanager prestiges and the same 
+# as the /prestiges shortcut
 ranks-gui-prestiges-enabled: true
 
-# NEW: /prestiges command which opens the Prestiges GUI, this's basically a shortcut of the /prisonmanager prestiges
+# NEW: /prestiges command which opens the Prestiges GUI, this's basically a 
+# shortcut of the /prisonmanager prestiges
 prestiges-gui-enabled: true
 
-# NEW: /prestige will open a confirmation GUI if this's on true, if on false will use a chat confirmation instead.
+# NEW: /prestige will open a confirmation GUI if this's on true, if on false 
+# will use a chat confirmation instead.
 prestige-confirm-gui: true
 
 # There're more options for the GUIs, please edit the GuiConfig.yml
 
 
 # NEW: Enable or disable the SellAll command and sub-commands
+# New feature so setting to false sice it will override other shop plugins.
 sellall: false
 
 
 
-# Broadcast rankups and demotions to the whole server, in all worlds.
+# NEW: Broadcast rankups and demotions to the whole server, in all worlds.
 # If this value does not exist, or has a true value, it will be broadcasted.
 # Any other value besides true, or non-existant, will be treated as false.
 broadcast-rankups: true
 
 
 
-# Startup testing of available blocks within prison. Tests three kinds of
+# NEW: Startup testing of available blocks within prison. Tests three kinds of
 # sources: Prison's BlockType, XMaterial's blocks (should mirror what's avaiable
 # within spigot/bukkit, and the raw spigot/bukkit source.
 # This should only be used to see what's available for the current version of 
@@ -86,38 +96,38 @@ prison-block-compatibility-report: false
 
 
 
-# Some configs for the placeholders.
-prison-placeholder-configs:
-
-# Placeholder progress bar.  
+# NEW: Placeholder progress bar.  
 # Can control how many segments are generated.  The more segments that
 # are displayed the better reactive it will appear to the players.
 # Also what is used for the postive and negative parts of the status bar,
 # including color code and the text character to use. The color code will
 # only apply once, not for each segment.
-# Default values used: 20 &2 # &4 = 
-# Other color codes will work too. 
-# Other characters to consider:  X = - : # *  
-# Or even unicode blocks may work (or won't?):  ▏  ▎ ▌  ▋  ▊  ▉  █  ▓ ▒ ░ 
-  progress-bar:
-    bar-segments: 20
-    bar-positive-color: &2
-    bar-positive-segment: #
-    bar-negative-color: &4
-    bar-negative-segment: =
+# You must quote the colors and segments or the yaml file can be fail to load.
+placeholder:
+  bar-segments: 20
+  bar-positive-color: "&2"
+  bar-positive-segment: "#"
+  bar-negative-color: "&4"
+  bar-negative-segment: "="
 
 
+
+
+# NEW: Non-Functional at this time. Coming soon!
 # This is strictly a work in progress right now, and does not work yet.
 # This uses a new prison block model for providing the internal block lists
 # and for generating the blocks.  This allows usage from mc 1.8.x through 
 # v1.16.x and enables all new blocks for the version the server is running.
 # This new model currently does not support custom blocks.
-#use-new-prison-block-model: true
+#use-new-prison-block-model: false
 
 
 
-
+# Default language that is used as the primary language.
+# See the lang directories under /plugins/Prison/module_conf/ for the 
+# language files that can be edited.
 default-language: en_US
+
 
 # The storage engine that Prison should use to store data.
 # Ensure that only one is left uncommented out. Also, ensure
@@ -136,3 +146,9 @@ storageType: "json"
 #  username: root
 #  password: root
 #  port: 3306
+
+
+
+# NEW: Non-functional. Coming soon!
+#prison-mines-reset-gap: 5000
+

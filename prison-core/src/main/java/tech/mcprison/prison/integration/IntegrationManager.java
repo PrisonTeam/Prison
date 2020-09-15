@@ -326,15 +326,23 @@ public class IntegrationManager {
 		PlaceholderProgressBarConfig config = null;
 		
 		String barSegmentsStr = Prison.get().getPlatform().getConfigString( 
-							"prison-placeholder-configs.progress-bar.bar-segments" );
+							"placeholder.bar-segments" );
 		String barPositiveColor = Prison.get().getPlatform().getConfigString( 
-							"prison-placeholder-configs.progress-bar.bar-positive-color" );
+							"placeholder.bar-positive-color" );
 		String barPositiveSegment = Prison.get().getPlatform().getConfigString( 
-							"prison-placeholder-configs.progress-bar.bar-positive-segments" );
+							"placeholder.bar-positive-segment" );
 		String barNegativeColor = Prison.get().getPlatform().getConfigString( 
-							"prison-placeholder-configs.progress-bar.bar-negative-color" );
+							"placeholder.bar-negative-color" );
 		String barNegativeSegment = Prison.get().getPlatform().getConfigString( 
-							"prison-placeholder-configs.progress-bar.bar-negative-segments" );
+							"placeholder.bar-negative-segment" );
+		
+		Output.get().logInfo( "IntegrationManager.loadPlaceholderBarConfig() - ##### " +
+				" Segments: %s posColor: %s posSeg: %s negColor: %s negSeg: %s", barSegmentsStr, 
+				(barPositiveColor == null ? "null" : barPositiveColor.replace( "&", "(amp)" )), 
+				barPositiveSegment,
+				(barNegativeColor == null ? "null" : barNegativeColor.replace( "&", "(amp)" )), 
+				barNegativeSegment);
+		
 		
 		// All 5 must not be null:
 		if ( barSegmentsStr != null && barPositiveColor != null && barPositiveSegment != null &&
@@ -351,7 +359,7 @@ public class IntegrationManager {
 						"/plugins/Prison/config.yml  prison-placeholder-configs.progress-bar.bar-segments " +
 						"to a valid integer. Defaulting to a value of 20 " +
 						"[" + barSegmentsStr + "] " + e.getMessage() );
-				
+			
 			}
 			
 			config = new PlaceholderProgressBarConfig( barSegments, 
@@ -368,9 +376,10 @@ public class IntegrationManager {
 //					20, "&2", "▊", "&4", "▒" 
 					);
 			
-			Output.get().logWarn( "The /plugins/Prison/config.yml does not contain the " +
-					"default values for the Placeholder Progress Bar. Default values are " +
-					"being used. To customize the bar, rename the config.yml and it will be" +
+			Output.get().logInfo( "The /plugins/Prison/config.yml does not contain the " +
+					"default values for the Placeholder Progress Bar." );
+			Output.get().logInfo( "Default values are " +
+					"being used. To customize the bar, rename the config.yml and it will be " +
 					"regenerated and then edit to restore prior values.");
 			
 		}
