@@ -43,6 +43,8 @@ public abstract class MineData {
     
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
+
+    private double resetThresholdPercent = 0;
     
     
     private boolean skipResetEnabled = false;
@@ -96,6 +98,7 @@ public abstract class MineData {
     	this.resetCount = 0;
     	this.totalBlocksMined = 0;
     	this.zeroBlockResetDelaySec = 0;
+    	this.resetThresholdPercent = 0;
     
     	this.skipResetEnabled = false;
         this.skipResetPercent = 80.0D;
@@ -414,6 +417,13 @@ public abstract class MineData {
 	}
 	public void setZeroBlockResetDelaySec( double zeroBlockResetDelaySec ) {
 		this.zeroBlockResetDelaySec = zeroBlockResetDelaySec;
+	}
+
+	public double getResetThresholdPercent() {
+		return resetThresholdPercent;
+	}
+	public void setResetThresholdPercent( double resetThresholdPercent ) {
+		this.resetThresholdPercent = resetThresholdPercent;
 	}
 
 	public boolean isSkipResetEnabled() {

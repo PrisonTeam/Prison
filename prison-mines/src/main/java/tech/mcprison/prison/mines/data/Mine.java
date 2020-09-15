@@ -220,6 +220,10 @@ public class Mine
         setSkipResetPercent( skipResetPercent == null ? 80.0D : skipResetPercent.doubleValue() );
         Double skipResetBypassLimit = (Double) document.get( "skipResetBypassLimit" );
         setSkipResetBypassLimit( skipResetBypassLimit == null ? 50 : skipResetBypassLimit.intValue() );
+
+        Double resetThresholdPercent = (Double) document.get( "resetThresholdPercent" );
+        setResetThresholdPercent( resetThresholdPercent == null ? 0 : resetThresholdPercent.doubleValue() );
+ 
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
@@ -329,6 +333,8 @@ public class Mine
         ret.put( "skipResetEnabled", isSkipResetEnabled() );
         ret.put( "skipResetPercent", getSkipResetPercent() );
         ret.put( "skipResetBypassLimit", getSkipResetBypassLimit() );
+        
+        ret.put( "resetThresholdPercent", getResetThresholdPercent() );
         
         if (isHasSpawn()) {
             ret.put("spawnX", getSpawn().getX());

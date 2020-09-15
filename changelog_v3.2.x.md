@@ -10,6 +10,14 @@ that you need.
 
 ## tag v3.2.1-alpha.19 - 2020-09-14
 
+* **New Feature!! A Reset Threshold Percentage has been added.**
+Before the reset threshold was set to zero blocks.  Now, if enabled, it will reset the mine at another predetermined percentage of blocks remaining.
+A value of zero disables this feature since that is the same as a zero block reset.
+
+
+* **Changed mines placeholder for time remaining formatted**
+Dropped the decimals since it does not look good when updating every second or less.
+
 
 * **New Features! PLAYERMINES placeholders!! Added 24 new placeholders including aliases!!**
 These placeholders are a hybrid between player and mine placeholders.  These placeholders can only return results when a player is actually within a mine, and these are the mine's stats.  In other words, whichever a mine a player is in, it can show all of that mine's stats.

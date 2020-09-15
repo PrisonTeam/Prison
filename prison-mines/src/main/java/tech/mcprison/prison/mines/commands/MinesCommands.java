@@ -746,7 +746,12 @@ public class MinesCommands {
         		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
         				dFmt.format(m.getResetCount()) );
         		
-        		row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+        		if ( m.isUsePagingOnReset() ) {
+        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+        		}
+        		else {
+        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
+        		}
         		
         		chatDisplay.addComponent( row );
         	}
@@ -818,8 +823,31 @@ public class MinesCommands {
         		if ( m.isZeroBlockResetDisabled() ) {
         			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
         		} else {
-        			row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
-        					fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			if ( m.getResetThresholdPercent() == 0 ) {
+        				row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        			else {
+        				row.addTextComponent( "&7Threshold &3Reset Delay: &7%s &3Seconds",
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        		}
+        		
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		if ( m.getResetThresholdPercent() == 0 ) {
+        			row.addTextComponent( "&3Reset Threshold: &cDISABLED");
+        		} else {
+        			
+        			double blocks =  m.getBounds().getTotalBlockCount() * 
+        					m.getResetThresholdPercent() / 100.0d;
+        			row.addTextComponent( "&3Reset Threshold: &7%s &3Percent (&7%s &3blocks)",
+        					fFmt.format( m.getResetThresholdPercent() ),
+        					dFmt.format( blocks ) );
         		}
         		
         		chatDisplay.addComponent( row );
@@ -1389,6 +1417,86 @@ public class MinesCommands {
     	} 
     }
     
+    
+
+	/**
+     * <p>The following command will change the mine's time between resets. But it will
+     * not be applied until after the next reset.
+     * </p>
+     * 
+     * @param sender
+     * @param mineName
+     * @param time
+     */
+    @Command(identifier = "mines set resetThreshold", permissions = "mines.resetThreshold", 
+    		description = "Triggers a mine reset once this threshold is crossed and the remaining " +
+    				"block percentage is less than or equal to this value")
+    public void resetThresholdPercentCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "percent", description = "Threshold percent to trigger a reset.(0 is disabled)", 
+        					def = "0" ) String percent
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+        	
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+            
+        	double thresholdPercent = 0.0d;
+        	
+        	try {
+        		thresholdPercent = Double.parseDouble( percent );
+				if ( thresholdPercent < 0.0d ) {
+					thresholdPercent = 0.0d;
+				} else if ( thresholdPercent > 100.0d ) {
+					thresholdPercent = 100.0d;
+				}
+			}
+			catch ( NumberFormatException e1 ) {
+				Output.get().sendWarn( sender,"&7Invalid percentage. Not a number. " +
+						"Was &b%s&7.", (percent == null ? "&c-blank-" : percent) );
+				return;
+			}
+        	
+        	
+        	if ( thresholdPercent == m.getResetThresholdPercent() ) {
+        		String msg = "The Reset Threshold Percent was not changed.";
+        		Output.get().sendInfo( sender, msg );
+        		return;
+        	}
+        	
+        	m.setResetThresholdPercent( thresholdPercent );
+        	
+        	pMines.getMineManager().saveMine( m );
+        	
+        	double blocks =  m.getBounds().getTotalBlockCount() * 
+								m.getResetThresholdPercent() / 100.0d;
+        	
+            DecimalFormat dFmt = new DecimalFormat("#,##0");
+            DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+            
+        	// User's message:
+        	String message = String.format( "&7The Reset Threshold Percent for mine &b%s&7 was set to &b%s&7, " +
+					        			"which is about &b%s &7blocks.", 
+					        			m.getName(), 
+					        			fFmt.format( m.getResetThresholdPercent() ),
+					        			dFmt.format( blocks ) );
+        	Output.get().sendInfo( sender, message );
+        	
+        	// Server Log message:
+        	Player player = getPlayer( sender );
+        	Output.get().logInfo( "%s :: Changed by: %s", message,
+        								(player == null ? "console" : player.getDisplayName()) );
+        } 
+    }
+
+
 
     @Command(identifier = "mines set notification", permissions = "mines.notification", 
     		description = "Set a mine's notification mode.")
