@@ -165,6 +165,38 @@ public class IntegrationManager {
 		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceHolderFlags.MINES),
 		prison_mines_reset_count_minename(prison_mrc_minename, PlaceHolderFlags.MINES),
 
+		
+		
+		// PlayerMine aliases:
+		prison_mi_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mif_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mtl_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mtlb_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mtlf_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_ms_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mr_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mrb_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mp_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mpc_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mbm_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mrc_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+
+		
+		prison_mines_interval_playermines(prison_mi_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_interval_formatted_playermines(prison_mif_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_timeleft_playermines(prison_mtl_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_timeleft_bar_playermines(prison_mtlb_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_timeleft_formatted_playermines(prison_mtlf_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_size_playermines(prison_ms_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_remaining_playermines(prison_mr_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_remaining_bar_playermines(prison_mrb_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_percent_playermines(prison_mp_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_player_count_playermines(prison_mpc_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_mined_playermines(prison_mbm_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_reset_count_playermines(prison_mrc_pm, PlaceHolderFlags.PLAYERMINES),
+
+		
+	
 		;
 		
 		
@@ -335,14 +367,7 @@ public class IntegrationManager {
 							"placeholder.bar-negative-color" );
 		String barNegativeSegment = Prison.get().getPlatform().getConfigString( 
 							"placeholder.bar-negative-segment" );
-		
-		Output.get().logInfo( "IntegrationManager.loadPlaceholderBarConfig() - ##### " +
-				" Segments: %s posColor: %s posSeg: %s negColor: %s negSeg: %s", barSegmentsStr, 
-				(barPositiveColor == null ? "null" : barPositiveColor.replace( "&", "(amp)" )), 
-				barPositiveSegment,
-				(barNegativeColor == null ? "null" : barNegativeColor.replace( "&", "(amp)" )), 
-				barNegativeSegment);
-		
+				
 		
 		// All 5 must not be null:
 		if ( barSegmentsStr != null && barPositiveColor != null && barPositiveSegment != null &&

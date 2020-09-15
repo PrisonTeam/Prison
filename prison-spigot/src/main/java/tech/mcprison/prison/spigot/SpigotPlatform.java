@@ -168,10 +168,11 @@ class SpigotPlatform implements Platform {
         return Optional.ofNullable(
             players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
                 .orElseGet(() -> {
-                    if (Bukkit.getPlayer(name) == null) {
+                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+                    if (playerBukkit == null) {
                         return null;
                     }
-                    SpigotPlayer player = new SpigotPlayer(Bukkit.getPlayer(name));
+                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
                     players.add(player);
                     return player;
                 }));
@@ -181,10 +182,11 @@ class SpigotPlatform implements Platform {
         return Optional.ofNullable(
             players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
                 .orElseGet(() -> {
-                    if (Bukkit.getPlayer(uuid) == null) {
+                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+                    if (playerBukkit == null) {
                         return null;
                     }
-                    SpigotPlayer player = new SpigotPlayer(Bukkit.getPlayer(uuid));
+                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
                     players.add(player);
                     return player;
                 }));

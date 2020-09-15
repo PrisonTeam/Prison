@@ -11,6 +11,12 @@ that you need.
 ## tag v3.2.1-alpha.19 - 2020-09-14
 
 
+* **New Features! PLAYERMINES placeholders!! Added 24 new placeholders including aliases!!**
+These placeholders are a hybrid between player and mine placeholders.  These placeholders can only return results when a player is actually within a mine, and these are the mine's stats.  In other words, whichever a mine a player is in, it can show all of that mine's stats.
+This will not work in holographic displays since they are not associated with any players.  It will work with chat prefixes, but these are stats you generally don't want as chat prefixes (maybe just the mine's name?).
+But where these really can be awesome is used in the player's scoreboard.  So when they hop in a mine, they can pull up in their scoreboard stats on the mine itself.  
+
+
 * **Bug fix: Placeholder progress bar configs in config.yml not working**
 This addresses some issues with being able to load the placeholder progress bar configs from the config.yml file.  
 Ran in to issues with symbols not being quoted. Strings normally do not have to be quoted, but yaml was interpreting them incorrectly and was trying to treat them as special values.  So quoting prevents that.

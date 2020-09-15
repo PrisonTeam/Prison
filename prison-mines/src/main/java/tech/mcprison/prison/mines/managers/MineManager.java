@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.integration.IntegrationManager;
@@ -30,6 +31,7 @@ import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -365,7 +367,10 @@ public class MineManager
     	
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
 			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
-				results = getTranslateMinesPlaceHolder( placeHolderKey );
+				
+				Mine mine = getMine( placeHolderKey.getData() );
+				
+				results = getTranslateMinesPlaceHolder( placeHolderKey, mine );
 				break;
 			}
 		}
@@ -373,11 +378,20 @@ public class MineManager
     	return results;
     }
     
-    public String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey ) {
+	public String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey ) {
+		Mine mine = getMine( placeHolderKey.getData() );
+		return getTranslateMinesPlaceHolder( placeHolderKey, mine );
+	}
+	
+    private String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey, Mine mine ) {
 		String results = null;
 
 		if ( placeHolderKey != null && placeHolderKey.getData() != null ) {
-			Mine mine = getMine( placeHolderKey.getData() );
+
+			// If the mine is not provided, try to get it from the placeholder data: 
+			if ( mine == null ) {
+				mine = getMine( placeHolderKey.getData() );
+			}
 
 			if ( mine != null ) {
 				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
@@ -386,23 +400,31 @@ public class MineManager
 				switch ( placeHolderKey.getPlaceholder() ) {
 					case prison_mi_minename:
 					case prison_mines_interval_minename:
+					case prison_mi_pm:
+					case prison_mines_interval_playermines:
 						results = iFmt.format( mine.getResetTime() );
 						break;
 						
 					case prison_mif_minename:
 					case prison_mines_interval_formatted_minename:
+					case prison_mif_pm:
+					case prison_mines_interval_formatted_playermines:
 						double timeMif = mine.getResetTime();
 						results = formattedTime( timeMif );
 						break;
 						
 					case prison_mtl_minename:
 					case prison_mines_timeleft_minename:
+					case prison_mtl_pm:
+					case prison_mines_timeleft_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						results = dFmt.format( mine.getRemainingTimeSec() );
 						break;
 						
 					case prison_mtlb_minename:
 					case prison_mines_timeleft_bar_minename:
+					case prison_mtlb_pm:
+					case prison_mines_timeleft_bar_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
 						results = getRemainingTimeBar( mine );
@@ -410,6 +432,8 @@ public class MineManager
 						
 					case prison_mtlf_minename:
 					case prison_mines_timeleft_formatted_minename:
+					case prison_mtlf_pm:
+					case prison_mines_timeleft_formatted_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						double timeMtlf = mine.getRemainingTimeSec();
 						results = formattedTime( timeMtlf );
@@ -417,17 +441,23 @@ public class MineManager
 						
 					case prison_ms_minename:
 					case prison_mines_size_minename:
+					case prison_ms_pm:
+					case prison_mines_size_playermines:
 						results = iFmt.format( mine.getBounds().getTotalBlockCount() );
 						break;
 						
 					case prison_mr_minename:
 					case prison_mines_remaining_minename:
+					case prison_mr_pm:
+					case prison_mines_remaining_playermines:
 						int remainingBlocks = mine.getRemainingBlockCount();
 						results = iFmt.format( remainingBlocks );
 						break;
 						
 					case prison_mrb_minename:
 					case prison_mines_remaining_bar_minename:
+					case prison_mrb_pm:
+					case prison_mines_remaining_bar_playermines:
 						int totalBlocks = mine.getBounds().getTotalBlockCount();
 						int blocksRemaining = mine.getRemainingBlockCount();
 						
@@ -437,6 +467,8 @@ public class MineManager
 						
 					case prison_mp_minename:
 					case prison_mines_percent_minename:
+					case prison_mp_pm:
+					case prison_mines_percent_playermines:
 						// mine.refreshAirCount(); // async & delayed : Very high cost
 						double percentRemaining = mine.getPercentRemainingBlockCount();
 						results = dFmt.format( percentRemaining );
@@ -444,16 +476,22 @@ public class MineManager
 						
 					case prison_mpc_minename:
 					case prison_mines_player_count_minename:
+					case prison_mpc_pm:
+					case prison_mines_player_count_playermines:
 						results = iFmt.format( mine.getPlayerCount() );
 						break;
 						
 					case prison_mbm_minename:
 					case prison_mines_blocks_mined_minename:
+					case prison_mbm_pm:
+					case prison_mines_blocks_mined_playermines:
 						results = iFmt.format( mine.getTotalBlocksMined() );
 						break;
 						
 					case prison_mrc_minename:
 					case prison_mines_reset_count_minename:
+					case prison_mrc_pm:
+					case prison_mines_reset_count_playermines:
 						results = iFmt.format( mine.getResetCount() );
 						break;
 						
@@ -467,8 +505,91 @@ public class MineManager
 		return results;
     }
     
+    public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
+    	String results = null;
 
-    private String getRemainingTimeBar( Mine mine ) {
+    	if ( playerUuid != null ) {
+    		
+    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    			if ( placeHolderKey.getKey().equalsIgnoreCase( identifier )) {
+    				results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey );
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    /**
+     * We must have a player to process these placeholders.
+     * 
+     * @param playerUuid
+     * @param playerName
+     * @param placeHolderKey
+     * @return
+     */
+    public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, PlaceHolderKey placeHolderKey ) {
+		String results = null;
+
+		if ( playerUuid != null ) {
+			
+			// there is no data stored for PLAYERMINES:
+//			String data = placeHolderKey.getData();
+			
+			Player player = getPlayer(playerUuid, playerName);
+			
+			if ( player != null ) {
+				Mine mine = PrisonMines.getInstance().findMineLocation( player );
+				
+				if ( mine != null ) {
+					results = getTranslateMinesPlaceHolder( placeHolderKey, mine );
+				}
+			}
+		}
+		
+		return results;
+    }
+    
+
+    /**
+     * Get the Player based first on UUID, then on name. 
+     * 
+     * @param playerUuid
+     * @param playerName
+     * @return
+     */
+    private Player getPlayer( UUID playerUuid, String playerName ) {
+    	Player player = null;
+    	Player playerAlt = null;
+    	
+    	// First try to match on UUID
+		for ( Player p : Prison.get().getPlatform().getOnlinePlayers() ) {
+			if ( p.getUUID().compareTo( playerUuid ) == 0 ) {
+				player = p;
+				break;
+			} 
+			else if ( p.getName().equalsIgnoreCase( playerName ) ) {
+				// If we get a hit on the name, save it as an alt...
+				playerAlt = p;
+			}
+		}
+		
+		// if player is null, and we have a playerAlt, then use it:
+		if ( player == null && playerAlt != null ) {
+			player = playerAlt;
+		}
+		return player;
+	}
+
+
+	private String getRemainingTimeBar( Mine mine ) {
 
     	double timeRemaining = mine.getRemainingTimeSec();
     	int time = mine.getResetTime();
@@ -526,9 +647,10 @@ public class MineManager
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
     		List<PrisonPlaceHolders> placeHolders = 
-    				PrisonPlaceHolders.excludeTypes( 
-    					PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES ),
-    						PlaceHolderFlags.PLAYERMINES);
+    				PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES );
+//    				PrisonPlaceHolders.excludeTypes( 
+//    					PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES ),
+//    						PlaceHolderFlags.PLAYERMINES);
     		
     		for ( Mine mine : getMines() ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
@@ -556,6 +678,22 @@ public class MineManager
     			}
     		}
     		
+    		
+    		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
+    		// the player is in.  So this is just a simple registration.
+    		placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYERMINES );
+    		
+			for ( PrisonPlaceHolders ph : placeHolders ) {
+				String key = ph.name();
+				
+				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
+				if ( ph.getAlias() != null ) {
+					String aliasName = ph.getAlias().name();
+					placeholder.setAliasName( aliasName );
+				}
+				translatedPlaceHolderKeys.add( placeholder );
+			}
+
     	}
     	return translatedPlaceHolderKeys;
     }
