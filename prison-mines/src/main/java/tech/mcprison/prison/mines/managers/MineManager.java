@@ -625,7 +625,7 @@ public class MineManager
     	
     	double secs = (double)(time / TIME_SECOND);
     	time -= (secs * TIME_SECOND);
-    	DecimalFormat dFmt = new DecimalFormat("#0.0");
+    	DecimalFormat dFmt = new DecimalFormat("#0");
     	sb.append( dFmt.format( secs ));
     	sb.append( "s " );
     	
