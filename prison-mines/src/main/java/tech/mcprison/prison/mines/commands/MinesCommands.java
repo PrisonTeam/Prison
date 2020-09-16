@@ -296,7 +296,7 @@ public class MinesCommands {
         
         
         	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block );
-        	if ( prisonBlock != null ) {
+        	if ( prisonBlock == null ) {
         		pMines.getMinesMessages().getLocalizable("not_a_block").
         					withReplacements(block).sendTo(sender);
         		return;
@@ -318,30 +318,53 @@ public class MinesCommands {
         		return;
         	}
         	
-        	final double[] totalComp = {chance};
-        	m.getPrisonBlocks().forEach(block1 -> {
-        		totalComp[0] -= block1.getChance();
-        	});
-
-        	if (totalComp[0] > 100.0d) {
-        		pMines.getMinesMessages().getLocalizable("mine_full")
-        		.sendTo(sender, Localizable.Level.ERROR);
+        	
+        	double totalChance = chance;
+        	PrisonBlock blockToUpdate = null;
+        	for ( PrisonBlock blk : m.getPrisonBlocks() ) {
+				if ( blk.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() ) ) {
+					totalChance -= blk.getChance();
+					blockToUpdate = blk;
+				}
+				else {
+					totalChance += blk.getChance();
+				}
+			}
+        	
+        	if (totalChance > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full").
+        					sendTo(sender, Localizable.Level.ERROR);
         		return;
         	}
         	
-        	for (PrisonBlock blockObject : m.getPrisonBlocks()) {
-        		if (blockObject.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() )) {
-        			blockObject.setChance(chance);
-        		}
-        	}
+        	blockToUpdate.setChance( chance );
+        	
+//        	// total chance is not being calculated correctly...
+//        	
+//        	final double[] totalComp = {chance};
+//        	m.getPrisonBlocks().forEach(block1 -> {
+//        		totalComp[0] -= block1.getChance();
+//        	});
+//
+//        	if (totalComp[0] > 100.0d) {
+//        		pMines.getMinesMessages().getLocalizable("mine_full")
+//        		.sendTo(sender, Localizable.Level.ERROR);
+//        		return;
+//        	}
+//        	
+//        	for (PrisonBlock blockObject : m.getPrisonBlocks()) {
+//        		if (blockObject.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() )) {
+//        			blockObject.setChance(chance);
+//        		}
+//        	}
         
         }
         else {
         	
         	BlockType blockType = BlockType.getBlock(block);
         	if (blockType == null) {
-        		pMines.getMinesMessages().getLocalizable("not_a_block")
-        		.withReplacements(block).sendTo(sender);
+        		pMines.getMinesMessages().getLocalizable("not_a_block").
+        								withReplacements(block).sendTo(sender);
         		return;
         	}
         	
@@ -360,25 +383,27 @@ public class MinesCommands {
         		return;
         	}
         	
-        	final double[] totalComp = {chance};
-        	m.getBlocks().forEach(block1 -> {
-        		if (block1.getType() == blockType) {
-        			totalComp[0] -= block1.getChance();
-        		} else {
-        			totalComp[0] += block1.getChance();
-        		}
-        	});
-        	if (totalComp[0] > 100.0d) {
-        		pMines.getMinesMessages().getLocalizable("mine_full")
-        		.sendTo(sender, Localizable.Level.ERROR);
+        	
+        	double totalChance = chance;
+        	Block blockToUpdate = null;
+        	for ( Block blk : m.getBlocks() ) {
+				if ( blk.getType() == blockType ) {
+					totalChance -= blk.getChance();
+					blockToUpdate = blk;
+				}
+				else {
+					totalChance += blk.getChance();
+				}
+			}
+        	
+        	if (totalChance > 100.0d) {
+        		pMines.getMinesMessages().getLocalizable("mine_full").
+        					sendTo(sender, Localizable.Level.ERROR);
         		return;
         	}
         	
-        	for (Block blockObject : m.getBlocks()) {
-        		if (blockObject.getType() == blockType) {
-        			blockObject.setChance(chance);
-        		}
-        	}
+        	blockToUpdate.setChance( chance );
+        	
         }
         
         

@@ -19,8 +19,10 @@
 package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
@@ -162,6 +164,7 @@ public class Mine
 			throws MineException {
 		
 		boolean dirty = false;
+		boolean inconsistancy = false;
 		
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
@@ -227,6 +230,10 @@ public class Mine
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
+        // This is a validation set to ensure only one block type is loaded file system.
+        // Must keep the first one loaded.
+        Set<String> validateBlockNames = new HashSet<>();
+        getBlocks().clear();
 
         List<String> docBlocks = (List<String>) document.get("blocks");
 		for (String docBlock : docBlocks) {
@@ -234,7 +241,7 @@ public class Mine
             String blockTypeName = split[0];
             double chance = Double.parseDouble(split[1]);
 
-            if ( blockTypeName != null ) {
+            if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
             	// Use the BlockType.name() load the block type:
             	BlockType blockType = BlockType.getBlock(blockTypeName);
             	if ( blockType != null ) {
@@ -248,10 +255,20 @@ public class Mine
             		Output.get().logError( message );
             	}
             	
+            	validateBlockNames.add( blockTypeName );
+            }
+            else if (validateBlockNames.contains( blockTypeName ) ) {
+            	// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+            	dirty = true;
+            	inconsistancy = true;
             }
         }
         
         
+		// Reset validation checks:
+		validateBlockNames.clear();
+		getPrisonBlocks().clear();
+		
 		List<String> docPrisonBlocks = (List<String>) document.get("prisonBlocks");
 		if ( docPrisonBlocks != null ) {
 			
@@ -260,21 +277,32 @@ public class Mine
 				String blockTypeName = split[0];
 				double chance = Double.parseDouble(split[1]);
 				
-				// The new way to get the PrisonBlocks:
-				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
-				if ( prisonBlock != null ) {
+				if ( blockTypeName != null ) {
+					// The new way to get the PrisonBlocks:
+					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
 					
-					prisonBlock.setChance( chance );
-					if ( prisonBlock.isLegacyBlock() ) {
-						dirty = true;
+					if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
+						prisonBlock.setChance( chance );
+						if ( prisonBlock.isLegacyBlock() ) {
+							dirty = true;
+						}
+						getPrisonBlocks().add( prisonBlock );
+						
+						validateBlockNames.add( blockTypeName );
 					}
-					getPrisonBlocks().add( prisonBlock );
+		            else if (validateBlockNames.contains( blockTypeName ) ) {
+		            	// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+		            	dirty = true;
+		            	inconsistancy = true;
+		            }
+
 				}
 			}
 		}
 
         
-        if ( getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) && 
+        		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
         	for ( Block block : getBlocks() ) {
@@ -288,6 +316,8 @@ public class Mine
             	}
         		
 			}
+        	Output.get().logInfo( "Notice: Mine: " + getName() + ": Existing prison block model has " +
+        			"been converted to the new block model and will be saved." );
         }
         
         
@@ -298,16 +328,25 @@ public class Mine
         Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
         setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
 
-        if ( dirty && 
-        		Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( dirty ) {
 			
-        	// Resave the mine data but using the PrisonBlocks instead:
+        	// Resave the mine data since an update to the mine format was detected and
+        	// needs to be saved. Otherwise the bad data will always need to be converted
+        	// every time the mine is loaded which may lead to other issues.
         	
         	// This is enabled since the original is not modified.
-        	toDocument();
+
+        	PrisonMines.getInstance().getMineManager().saveMine( this );
         	
-        	Output.get().logInfo( "Notice: Existing prison block model has been converted to the " +
-        			"new model and has been saved." );
+        	if ( inconsistancy ) {
+        		
+        		Output.get().logInfo( "Notice: Mine: " + getName() + ": During the loading of this mine an " +
+        				"inconsistancy was detected and was fixed then saved." );
+        	}
+        	else {
+        		Output.get().logInfo( "Notice: Mine: " + getName() + ": Updated mine data was successfully saved." );
+        		
+        	}
         }
 	}
 
@@ -344,18 +383,30 @@ public class Mine
             ret.put("spawnYaw", getSpawn().getYaw());
         }
 
+        // This is a validation set to ensure only one block is written to file system:
+        Set<String> validateBlockNames = new HashSet<>();
+
         List<String> blockStrings = new ArrayList<>();
         for (Block block : getBlocks()) {
-        	// Use the BlockType.name() to save the block type to the file:
-            blockStrings.add(block.getType().name() + "-" + block.getChance());
+        	if ( !validateBlockNames.contains( block.getType().name() )) {
+        		// Use the BlockType.name() to save the block type to the file:
+        		blockStrings.add(block.getType().name() + "-" + block.getChance());
 //            blockStrings.add(block.getType().getId() + "-" + block.getChance());
+        		validateBlockNames.add( block.getType().name() );
+        	}
         }
         
         ret.put("blocks", blockStrings);
 
+        // reset validation for next block list:
+        validateBlockNames.clear();
+        
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
-        	blockStrings.add(pBlock.getBlockName() + "-" + pBlock.getChance());
+        	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
+        		prisonBlockStrings.add(pBlock.getBlockName() + "-" + pBlock.getChance());
+        		validateBlockNames.add( pBlock.getBlockName() );
+        	}
         }
         
         ret.put("prisonBlocks", prisonBlockStrings);
