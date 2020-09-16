@@ -542,6 +542,18 @@ class SpigotPlatform implements Platform {
 		return new SpigotYamlFileIO( yamlFile );
 	}
 	
+	
+	/**
+	 * Forces the plugin config to reload.
+	 * 
+	 * @return
+	 */
+	@Override
+	public void reloadConfig() {
+		
+		SpigotPrison.getInstance().reloadConfig();
+	}
+	
 	@Override
 	public String getConfigString( String key ) {
 		return SpigotPrison.getInstance().getConfig().getString( key );

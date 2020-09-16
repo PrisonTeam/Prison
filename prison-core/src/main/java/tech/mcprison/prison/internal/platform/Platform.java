@@ -247,6 +247,9 @@ public interface Platform {
 	
 	public YamlFileIO getYamlFileIO( File yamlFile );
 	
+
+	public void reloadConfig();
+	
 	
 	public String getConfigString( String key );
 	
@@ -261,5 +264,7 @@ public interface Platform {
 	
 	
 	public PrisonBlock getPrisonBlock( String blockName );
+
+
 	
 }

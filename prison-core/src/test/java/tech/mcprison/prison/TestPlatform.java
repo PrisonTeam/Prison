@@ -211,6 +211,10 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
+	public void reloadConfig() {
+	}
+	
+	@Override
 	public String getConfigString( String key ) {
 		return null;
 	}

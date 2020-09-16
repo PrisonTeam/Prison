@@ -327,6 +327,10 @@ public class SpigotPlaceholders
 	 */
 	public void reloadPlaceholders() {
 		
+		// Must force Prison to reload the config.yml file:
+		Prison.get().getPlatform().reloadConfig();
+		
+		
 		Prison.get().getIntegrationManager().reloadPlaceholderBarConfig();
     	
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
