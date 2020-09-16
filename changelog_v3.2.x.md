@@ -8,7 +8,26 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-14
+## tag v3.2.1-alpha.19 - 2020-09-16
+
+
+* **Tweaks to auto manager**
+Found duplication on durability processing.  Eliminated the duplication, but now it will only be applied when auto pickup is enabled.  Not 100% sure if that is the best logic, but figuring if prison does not handle the block break event, then do not apply the durability.
+May have to revisit and tweak how smelt and blocking is working too.
+Changed the ALL pickup to be the first processed since that is probably going to be the most common situation so bypass the many block checks to save some CPU time.
+
+
+* **Attempts to force the plugin's config.yml file to be reloaded** 
+It "should" work, but it does not. 
+Keeping this code since I will expand upon it and get it working, even if I have to go outside the bukkit handling of that file.
+
+
+* **Bug fix: Duplication of mine blocks. Only impacts more recent Alpha.19 releases.**
+Duplicate blocks are now "fixed" when loading a mine.  If a duplication fix is applied, the fixed mine data will be saved and a message will be shown that an inconsistency was detected and fixed.
+Overall this did not cause any crashes or corruptions of mines, but it did duplicate internal data for the blocks associated with a given mine.
+Symptoms were loss of air blocks (if you had an air percentage) or if enough blocks were duplicated, the GUI would give you an error message indicating there were too many blocks and it could not display them all.
+The issue was initially thought to be related to a lambda function, but that was rewritten and confirmed that it wasn't there.  The issue was ultimately tracked back to a typo on the new block handling.  So this would have only impacted the more recent alpha.19 releases (not all).
+
 
 * **New Feature!! A Reset Threshold Percentage has been added.**
 Before the reset threshold was set to zero blocks.  Now, if enabled, it will reset the mine at another predetermined percentage of blocks remaining.

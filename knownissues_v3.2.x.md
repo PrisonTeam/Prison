@@ -10,6 +10,11 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.1
 
 
+* **BUG? Able to add more than 100% in one mine?**
+User reported having three copies of everything which totaled more than 300%.
+Used the /mines block add function?  
+
+
 * **New Block Model - Implement in parallel**
 Implement and have a fully functional new block handling mechanism that operate in complete parallel to the old method.  This way admins can turn it on when they want to use it, otherwise their server will continue to use the old code.
 
@@ -29,23 +34,8 @@ Implement and have a fully functional new block handling mechanism that operate 
  Blue should work on this.
 
 
-* **DONE: Placeholders - Reregister**
-Add a new command `/prison placeholders reload` that will reregister all placeholders.  I don't think there is a clean way to unload the registrations, but just going through registration may be good enough. Deleted, or obsolete, placeholders may still be registered, but at least the new ones will get registered too.
-
-
-* **DONE: Placeholders - Add placeholder counts to startup**
-Counts on how many placeholders are generate and registered.
-
-
-* **Placeholders - Add new placeholders**
-prison_rankup_cost_remaining 
-Such that `prison_mines_*_minename` will also be mapped to `prison_mines_*_player` and will only report the values when a player is in a mine.  
-I think that will be super cool, since you could put some current mine stats in your placeholder such as `prison_mines_timeleft_formatted_player`  `prison_mines_remaining_player` and even `prison_mines_player_count_player`.
-
-
-
  
- * **Add player names to the player file**
+ * **DONE: Add player names to the player file**
  Have no idea who is who in the player files.
  Make it an array of a new object, player name that has name and timestamp.
  When the file is loaded and the player is online, check name, and if not recorded, then add it. 
@@ -65,18 +55,31 @@ Create a "void" ladder and prevent ladders from being named: default, void, and 
  
  * **Add GUI support for v1.8.x**
  Might be able to add GUI support for 1.8.x with a few simple lines of code?
- 
- 
- * **DONE: Add permissions on notifications for mine resets **
-Only send a message to the player if they have the permission set, and follow the other notification settings too.
-Add permission `mines.notification.[mineName]` and have each mine have a boolean field to indicate that it should check for permissions on the players prior to sending the message.
- 
+
+
+
+* **Autosell feature**
+Be able to allow the players to toggle it on or off. Will not sell what is in inventory, but only the blocks that they are mining.  Use /autosell .
+What would be nice is if you could look up all permissions that start with prison.sellall.1.05 where the number at the end is the multiplier.  So you setup the multiplier based upon permissions and no other configs.  Then take all the multipliers and multiply them together.  So if they have a 1.05 (donor), 1.03 (special limited time), 0.97 (prestige penalty... more difficult the higher you go) would have a total of 1.049.  So basically different ranks, or even different tools could increase or decrease payout.
 
 
 # To Do Items - Post v3.2.1
 
 
 <h2> Major tasks</h2>
+
+
+
+* **Integration in to WordEdit & WorldGuard**
+Largest problem with providing a solution is that prison supports 1.8 through 1.17!!
+WE and WG has a strict policy that they only support the current version of spigot/mc. They do not support older versions, but their older versions that worked with older versions still exists to be used.
+The major problem is that you cannot run scripts from console since WG and WE require to know what world the actions are in, and they get that from the active player.
+There is an API that can be used, but they warn that there are changes to the API from version to version, so it may not be possible to provide the same API calls from 1.8 through 1.17.  Will not know until we try to use them?
+
+Just had this idea... What if for these main commands, for configuration purposes, the player would have to be in game.  When they run these commands we TP the admin to the mines' spawn point, then run them through the console on behalf of that player?  That way WE and WG could get the world from the on line player.  But this will not work for mine resets... :(
+
+
+
 
 
 ```
@@ -107,10 +110,6 @@ They are inconsistent and non-standard to prison. They do not support the `help`
 
 
 * **Refactor GUI?**
- 
- 
-* **DONE: Broadcast all rankups**
-Option to disable it in config settings.
 
 
 * **Prestige references**
@@ -141,7 +140,7 @@ Delete a mine and try to add a new one right away with the same name.  A user sa
 * **When creating a new mine, register that mine with the placeholders**
 Might be easier to just reregister all mines?  Not sure if that will work?
 Right now, if a mine is added, in order for it to show up in the placeholders, you would have to restart the server so all the placeholders are reregistered.
-
+ * * maybe just automatically run reset when vital elements change? * *
 
 
 * **Add WorldGuard Support**
@@ -291,6 +290,35 @@ Currently 15 forks.  Activity unknown.
 
 
 # Features recently added:
+
+
+ 
+ 
+* **DONE: Add permissions on notifications for mine resets **
+Only send a message to the player if they have the permission set, and follow the other notification settings too.
+Add permission `mines.notification.[mineName]` and have each mine have a boolean field to indicate that it should check for permissions on the players prior to sending the message.
+
+ 
+* **DONE: Broadcast all rankups**
+Option to disable it in config settings.
+
+
+
+* **DONE: Placeholders - Reregister**
+Add a new command `/prison placeholders reload` that will reregister all placeholders.  I don't think there is a clean way to unload the registrations, but just going through registration may be good enough. Deleted, or obsolete, placeholders may still be registered, but at least the new ones will get registered too.
+
+
+* **DONE: Placeholders - Add placeholder counts to startup**
+Counts on how many placeholders are generate and registered.
+
+
+* **DONE: Placeholders - Add new placeholders**
+prison_rankup_cost_remaining 
+Such that `prison_mines_*_minename` will also be mapped to `prison_mines_*_player` and will only report the values when a player is in a mine.  
+I think that will be super cool, since you could put some current mine stats in your placeholder such as `prison_mines_timeleft_formatted_player`  `prison_mines_remaining_player` and even `prison_mines_player_count_player`.
+
+NOTE this was added: the new ones are playermines and there are a total of 24 new ones.  Will work great with scoreboards.
+
 
 
  
