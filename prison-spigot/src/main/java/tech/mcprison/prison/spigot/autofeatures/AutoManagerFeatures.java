@@ -290,13 +290,13 @@ public class AutoManagerFeatures
 		int count = 0;
 		if (autoPickup) {
 
-			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune(itemInHand);
-			
-			
 			// The following is not the correct drops:
 			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
 			if (drops != null && drops.size() > 0 ) {
+				
+				// Need better drop calculation that is not using the getDrops function.
+				short fortuneLevel = getFortune(itemInHand);
+				
 				
 				// Adds in additional drop items:
 				calculateDropAdditions( itemInHand, drops );
@@ -332,8 +332,13 @@ public class AutoManagerFeatures
 					// calculate durability impact: Include item durability resistance.
 					if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
 						
-						String itemLore = getMessage( AutoFeatures.loreDurabiltyResistanceName );
-						int durabilityResistance = getDurabilityResistance( itemInHand, itemLore );
+						// value of 0 = normal durability. Value 100 = never calculate durability.
+						int durabilityResistance = 0;
+						if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+							durabilityResistance = getDurabilityResistance( itemInHand, 
+									getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+						}
+						
 						calculateDurability( player, itemInHand, durabilityResistance );
 					}
 				}
@@ -645,82 +650,90 @@ public class AutoManagerFeatures
 		
 		int count = 0;
 
-		switch (blockName) {
-			case "cobblestone":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+		if ( isBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
+			count += autoPickup( true, p, itemInHand, e );
+			
+		}
+		else {
+			
+			switch (blockName) {
+				case "cobblestone":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
 							isBoolean( AutoFeatures.autoPickupCobbleStone ), 
-						p, itemInHand, e );
-				break;
-				
-			case "stone":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							p, itemInHand, e );
+					break;
+					
+				case "stone":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
 							isBoolean( AutoFeatures.autoPickupStone ), 
-						p, itemInHand, e );
-				break;
-				
-			case "gold_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupGoldOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "iron_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupIronOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "coal_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupCoalOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "diamond_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupDiamondOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "redstone_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupRedStoneOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "emerald_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupEmeraldOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "quartz_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupQuartzOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "lapis_ore":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupLapisOre ), 
-						p, itemInHand, e );
-				break;
-				
-			case "snow_ball":
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupSnowBall ), 
-						p, itemInHand, e );
-				break;
-				
-			case "glowstone_dust": // works 1.15.2
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
-						isBoolean( AutoFeatures.autoPickupGlowstoneDust ), 
-						p, itemInHand, e );
-				break;
-				
-			default:
-				count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ), p, itemInHand, e );
-				break;
+							p, itemInHand, e );
+					break;
+					
+				case "gold_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupGoldOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "iron_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupIronOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "coal_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupCoalOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "diamond_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupDiamondOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "redstone_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupRedStoneOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "emerald_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupEmeraldOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "quartz_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupQuartzOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "lapis_ore":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupLapisOre ), 
+							p, itemInHand, e );
+					break;
+					
+				case "snow_ball":
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupSnowBall ), 
+							p, itemInHand, e );
+					break;
+					
+				case "glowstone_dust": // works 1.15.2
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ) || 
+							isBoolean( AutoFeatures.autoPickupGlowstoneDust ), 
+							p, itemInHand, e );
+					break;
+					
+				default:
+					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ), p, itemInHand, e );
+					break;
+		}
+		
 					
 		}
 		

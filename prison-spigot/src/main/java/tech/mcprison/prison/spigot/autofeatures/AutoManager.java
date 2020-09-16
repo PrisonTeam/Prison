@@ -159,24 +159,24 @@ public class AutoManager
 				autoFeatureBlock( e, player );
 			}
 			
-			
+			// NOTE: This may be in duplication... durability is calculated in auto pickup:
 			// Calculate durability if enabled:
 			// isCalculateDurabilityEnabled must be enabled before loreDurabiltyResistance will
 			// even be checked. 
-			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) && 
-					e.isCancelled()) {
-				
-				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-
-				// value of 0 = normal durability. Value 100 = never calculate durability.
-				int durabilityResistance = 0;
-				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-					durabilityResistance = getDurabilityResistance( itemInHand, 
-							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-				}
-				
-				calculateDurability( player, itemInHand, durabilityResistance );
-			}
+//			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) && 
+//					e.isCancelled()) {
+//				
+//				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+//
+//				// value of 0 = normal durability. Value 100 = never calculate durability.
+//				int durabilityResistance = 0;
+//				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+//					durabilityResistance = getDurabilityResistance( itemInHand, 
+//							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+//				}
+//				
+//				calculateDurability( player, itemInHand, durabilityResistance );
+//			}
 			
 			
 			// A block was broke... so record that event on the tool:	
