@@ -159,7 +159,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
+        Material materialHas;
+        materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
         Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
 
         boolean playerHasThisRank = true;
@@ -168,13 +169,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         int amount = 1;
         while ( rank != null ) {
 
-            List<String> rankslore = createLore(
+            List<String> ranksLore = createLore(
                     guiConfig2.getString("Gui.Lore.Info"),
                     guiConfig2.getString("Gui.Lore.Price3") + rank.cost
             );
-            ItemStack itemrank = createButton(
+            ItemStack itemRank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, rankslore, SpigotPrison.format(rank.tag));
+                    amount++, ranksLore, SpigotPrison.format(rank.tag));
             if (playerRank != null && playerRank.equals(rank)){
                 playerHasThisRank = false;
             }
@@ -182,11 +183,11 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
                     if (Objects.requireNonNull(guiConfig2.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
-                        itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                        itemRank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }
             }
-            inv.addItem(itemrank);
+            inv.addItem(itemRank);
 
             rank = rank.rankNext;
         }

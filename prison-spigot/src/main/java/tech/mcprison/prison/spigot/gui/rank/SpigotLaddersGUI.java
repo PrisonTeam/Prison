@@ -30,7 +30,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
     public void open(){
 
         // Init the ItemStack
-//        ItemStack itemladder;
+        // ItemStack itemLadder;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
@@ -87,17 +87,17 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, RankLadder ladder) {
-        ItemStack itemladder;
+        ItemStack itemLadder;
         // Init the lore array with default values for ladders
-        List<String> ladderslore = createLore(
+        List<String> laddersLore = createLore(
                 guiConfig.getString("Gui.Lore.ClickToOpen"),
                 guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
-        itemladder = createButton(Material.LADDER, 1, ladderslore, SpigotPrison.format("&3" + ladder.name));
+        itemLadder = createButton(Material.LADDER, 1, laddersLore, SpigotPrison.format("&3" + ladder.name));
 
         // Add the button to the inventory
-        inv.addItem(itemladder);
+        inv.addItem(itemLadder);
     }
 
 }

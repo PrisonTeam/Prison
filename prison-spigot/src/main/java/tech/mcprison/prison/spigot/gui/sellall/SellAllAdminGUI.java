@@ -45,8 +45,6 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
 
-        Inventory inv;
-
         boolean emptyInv = false;
 
         try {
@@ -74,7 +72,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             return null;
         }
 
-        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Admin"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Admin"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(

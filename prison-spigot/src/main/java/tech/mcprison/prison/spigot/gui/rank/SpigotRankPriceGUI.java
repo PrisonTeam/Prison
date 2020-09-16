@@ -68,7 +68,8 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
         );
 
         // Create a new lore
-        List<String> confirmButtonLore = createLore(
+        List<String> confirmButtonLore;
+        confirmButtonLore = createLore(
                 guiConfig.getString("Gui.Lore.LeftClickToConfirm"),
                 guiConfig.getString("Gui.Lore.Price2") + val,
                 guiConfig.getString("Gui.Lore.RightClickToCancel")
@@ -106,8 +107,8 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
 
 
         // Increase button
-        ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + rankName + " " + val + " + 1" ));
-        inv.setItem(7, increseOf1);
+        ItemStack increaseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + rankName + " " + val + " + 1" ));
+        inv.setItem(7, increaseOf1);
 
         // Increase button
         ItemStack increaseOf5 = createButton(Material.EMERALD_BLOCK, 10, changeIncreaseValueLore, SpigotPrison.format("&3" + rankName + " " + val + " + 10"));

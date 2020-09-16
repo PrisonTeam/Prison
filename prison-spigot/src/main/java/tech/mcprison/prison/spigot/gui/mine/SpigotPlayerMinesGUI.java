@@ -25,7 +25,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     public void open(){
 
         // Init the ItemStack
-//        ItemStack itemines;
+        // ItemStack itemMines;
 
         // Get the mines
         PrisonMines pMines = PrisonMines.getInstance();
@@ -57,10 +57,10 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         for (Mine m : pMines.getMines()) {
 
             // Init the lore array with default values for ladders
-            List<String> mineslore = createLore(
+            List<String> minesLore = createLore(
                    );
 
-            if (guiBuilder(GuiConfig, inv, m, mineslore)) return;
+            if (guiBuilder(GuiConfig, inv, m, minesLore)) return;
 
         }
 
@@ -81,7 +81,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
-        ItemStack itemines;
+        ItemStack itemMines;
         Material material;
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
@@ -95,10 +95,10 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         }
 
         // Create the button
-        itemines = createButton(material, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
+        itemMines = createButton(material, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
 
         // Add the button to the inventory
-        inv.addItem(itemines);
+        inv.addItem(itemMines);
     }
 
 }

@@ -30,7 +30,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     public void open() {
 
         // Init the ItemStack
-//        ItemStack itemcommand;
+        // ItemStack itemCommand;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
@@ -91,20 +91,20 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {
-        ItemStack itemcommand;
+        ItemStack itemCommand;
         // Init the lore array with default values for ladders
-        List<String> commandslore = createLore(
+        List<String> commandsLore = createLore(
                 guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                 "",
                 guiConfig.getString("Gui.Lore.Info"));
 
         // Adding a lore
-        commandslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Command") + command));
+        commandsLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
-        itemcommand = createButton(Material.TRIPWIRE_HOOK, 1, commandslore, SpigotPrison.format("&3" + rank.name + " " + command));
+        itemCommand = createButton(Material.TRIPWIRE_HOOK, 1, commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));
 
         // Add the button to the inventory
-        inv.addItem(itemcommand);
+        inv.addItem(itemCommand);
     }
 }

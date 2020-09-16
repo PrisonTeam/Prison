@@ -21,11 +21,11 @@ import java.util.List;
 public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final String minename;
+    private final String mineName;
 
-    public SpigotMineNotificationsGUI(Player p, String minename){
+    public SpigotMineNotificationsGUI(Player p, String mineName){
         this.p = p;
-        this.minename = minename;
+        this.mineName = mineName;
     }
 
     public void open() {
@@ -39,7 +39,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
         // Init variables
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMine(minename);
+        Mine m = pMines.getMine(mineName);
         String enabledOrDisabled = m.getNotificationMode().name();
 
         if (guiBuilder(inv, GuiConfig, enabledOrDisabled)) return;
@@ -95,17 +95,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         }
 
         // Create a button
-        ItemStack modeWithin = createButton(Material.IRON_DOOR, 1, modeWithinLore, SpigotPrison.format("&3Within_Mode: " + minename));
+        ItemStack modeWithin = createButton(Material.IRON_DOOR, 1, modeWithinLore, SpigotPrison.format("&3Within_Mode: " + mineName));
 
         // Create a button
         Material fence = Material.matchMaterial( "fence" );
         if ( fence == null ) {
         	fence = Material.matchMaterial( "oak_fence" );
         }
-        ItemStack radiusMode = createButton(fence, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + minename));
+        ItemStack radiusMode = createButton(fence, 1, modeRadiusLore, SpigotPrison.format("&3Radius_Mode: " + mineName));
 
         // Create a button
-        ItemStack disabledMode = createButton(Material.REDSTONE_BLOCK, 1, disabledModeLore, SpigotPrison.format("&3Disabled_Mode: " + minename));
+        ItemStack disabledMode = createButton(Material.REDSTONE_BLOCK, 1, disabledModeLore, SpigotPrison.format("&3Disabled_Mode: " + mineName));
 
         // Check which buttons should be added, based on the mode already in use of the Mine Notifications
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){

@@ -177,13 +177,13 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int amount = 1;
         while ( rank != null ) {
 
-            List<String> rankslore = createLore(
+            List<String> ranksLore = createLore(
                     guiConfig.getString("Gui.Lore.Info"),
                     guiConfig.getString("Gui.Lore.Price3") + rank.cost
             );
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, rankslore, SpigotPrison.format(rank.tag));
+                    amount++, ranksLore, SpigotPrison.format(rank.tag));
             if (playerRank != null && playerRank.equals( rank )){
                 playerHasThisRank = false;
             }

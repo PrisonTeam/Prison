@@ -24,18 +24,18 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final String minename;
+    private final String mineName;
 
-    public SpigotMinesBlocksGUI(Player p, String minename){
+    public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
-        this.minename = minename;
+        this.mineName = mineName;
     }
 
     public void open(){
 
         // Get the variables
         PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMine(minename);
+        Mine m = pMines.getMine(mineName);
 
         // Get the dimensions and if needed increases them
         int dimension;
@@ -168,7 +168,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
 
         // Make the item
-        ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + minename + " " + block.getChance()));
+        ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
 
         // Add the item to the inventory
         inv.addItem(block1);
@@ -201,7 +201,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
 
     	// Make the item
-    	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + minename + " " + block.getChance()));
+    	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
 
     	// Add the item to the inventory
     	inv.addItem(block1);

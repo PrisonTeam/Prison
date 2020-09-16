@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui;
 
+import org.bukkit.Color;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -49,13 +50,16 @@ public class GuiConfig {
         } else {
             try {
                 boolean newValue = false;
+                int editedItems = 0;
                 conf = YamlConfiguration.loadConfiguration(file);
                 if (getFileGuiConfig().getString(path) == null){
                     conf.set(path, SpigotPrison.format(string));
+                    editedItems++;
                     newValue = true;
                 }
                 if (newValue) {
                     conf.save(file);
+                    System.out.println(Color.AQUA + "[Prison - GuiConfig.yml]" + Color.GREEN + " Added " + editedItems + " new values to the GuiConfig.yml");
                 }
             } catch (IOException e2){
                 e2.printStackTrace();

@@ -56,7 +56,8 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
         // Create a new lore
-        List<String> changeDecreaseValueLore = createLore(
+        List<String> changeDecreaseValueLore;
+        changeDecreaseValueLore = createLore(
                 guiConfig.getString("Gui.Lore.ClickToDecrease")
         );
 

@@ -20,9 +20,9 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
     private final Player p;
     private final String mineName;
 
-    public SpigotMinesConfirmGUI(Player p, String minename) {
+    public SpigotMinesConfirmGUI(Player p, String mineName) {
         this.p = p;
-        this.mineName = minename;
+        this.mineName = mineName;
     }
 
     public void open(){

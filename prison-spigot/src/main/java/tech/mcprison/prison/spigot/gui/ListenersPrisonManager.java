@@ -430,7 +430,6 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p, "mines block remove " + part2 + " " + part3);
                 Bukkit.dispatchCommand(p,"mines block set " + part2 + " " + part3 + " " + part4);
 
                 // Cancel the event

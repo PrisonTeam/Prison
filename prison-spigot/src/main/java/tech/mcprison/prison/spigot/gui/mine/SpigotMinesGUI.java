@@ -34,7 +34,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
     public void open(){
 
         // Init the ItemStack
-//        ItemStack itemines;
+        // ItemStack itemMines;
 
         // Get the mines
         PrisonMines pMines = PrisonMines.getInstance();
@@ -86,32 +86,32 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m) {
-        ItemStack itemines;
+        ItemStack itemMines;
         // Init the lore array with default values for ladders
-        List<String> mineslore = createLore(
+        List<String> minesLore = createLore(
                 guiConfig.getString("Gui.Lore.LeftClickToOpen"),
                 guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                 "",
                 guiConfig.getString("Gui.Lore.Info"));
 
         // Add a lore
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.World") +  m.getWorldName()));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.World") +  m.getWorldName()));
 
         // Init a variable and add it to the lore
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SpawnPoint") + spawnPoint));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SpawnPoint") + spawnPoint));
 
         // Add a lore
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ResetTime") + m.getResetTime()));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ResetTime") + m.getResetTime()));
 
         // Add a lore
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
 
         // Add a lore
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
 
         // Add a lore
-        mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Blocks")));
+        minesLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Blocks")));
 
         // Init some variables and do the actions
         DecimalFormat dFmt = new DecimalFormat("##0.00");
@@ -127,7 +127,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         		
         		String blockName =
         				StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
-        		mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")"));
+        		minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")"));
         	}
         }
         else {
@@ -138,20 +138,20 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
          		
         		String blockName =
         				StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-        		mineslore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
+        		minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
         	}
         }
         
 
         if (totalChance < 100.0d) {
-            mineslore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
+            minesLore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
         }
 
         // Create the button
-        itemines = createButton(Material.COAL_ORE, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
+        itemMines = createButton(Material.COAL_ORE, 1, minesLore, SpigotPrison.format("&3" + m.getName()));
 
         // Add the button to the inventory
-        inv.addItem(itemines);
+        inv.addItem(itemMines);
     }
 
 }
