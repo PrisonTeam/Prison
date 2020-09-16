@@ -8,7 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.19 - 2020-09-16
+## tag v3.2.1-alpha.20 - 2020-09-16
+
+
+* **Alpha 20 - 2020-09-16**
+Yeah.  I know. Alpha 20 and not beta! 
+But many releases have happened under Alpha 19 including some bug fixes.  This is incrementing to help ensure when someone grabs the most recent, they know if they have the most recent.
+Beta will follow shortly, but there are still a few more additions and adjustments.
 
 
 * **Tweaks to auto manager**
