@@ -369,12 +369,16 @@ public class SellAllCommands implements CommandExecutor {
 
                 if (rankPlugin != null) {
                     if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
+                        String playerRankName;
 
-                        String playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                        try {
+                            playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                        } catch (NullPointerException ex){
+                            playerRankName = null;
+                        }
 
                         if (playerRankName != null) {
                             hasPlayerPrestige = true;
-                            sender.sendMessage("Playername: " + playerRankName);
                             multiplier = Double.parseDouble(Objects.requireNonNull(conf.getString("Multiplier." + playerRankName + ".MULTIPLIER")));
                             moneyToGive = moneyToGive * multiplier;
                         }
