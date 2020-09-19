@@ -1738,13 +1738,36 @@ public class MinesCommands {
     @Command(identifier = "mines tp", description = "TP to the mine.", 
     		altPermissions = {"mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName,
+        
+		@Arg(name = "player", def = "", description = "Player name to TP - " +
+				"Only console or rank command can include this parameter") String playerName
+
+    		) {
     	
     	Player player = getPlayer( sender );
+
+    	Player playerAlt = getOnlinePlayer( playerName );
     	
     	if (player == null || !player.isOnline()) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command." );
-    		return;
+
+    		if ( playerName != null && playerName.trim().length() > 0 && playerAlt == null) {
+    			sender.sendMessage( "&3Specified player is not in the game so they cannot be teleported." );
+    		}
+    		
+    		// If the sender is console or its being ran as a rank command, and the playerName is 
+    		// a valid online player, then use that player as the active player issuing the command:
+    		if ( playerAlt != null && playerAlt.isOnline() ) {
+    			player = playerAlt;
+    		}
+    		else {
+    			sender.sendMessage( "&3You must be a player in the game to run this command." );
+    			return;
+    		}
+    		
+    	}
+    	else if ( playerAlt != null ) {
+    		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
     	}
 
     	// Load mine information first to confirm the mine exists and the parameter is correct:
@@ -1865,6 +1888,15 @@ public class MinesCommands {
 		return player.isPresent() ? player.get() : null;
 	}
     
+	private Player getOnlinePlayer( String playerName ) {
+		Player player = null;
+		if ( playerName != null ) {
+			Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( playerName );
+			player = oPlayer.isPresent() ? oPlayer.get() : null;
+		}
+		return player;
+	}
+	
 
     
     @Command(identifier = "mines wand", permissions = "mines.wand", description = "Receive a wand to select a mine area.")
