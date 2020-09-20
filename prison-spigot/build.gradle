@@ -104,6 +104,7 @@ shadowJar {
     }
 
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
+    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
     classifier ''
