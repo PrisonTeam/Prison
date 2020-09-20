@@ -55,8 +55,13 @@ public class RankUpCommand {
      * /rankup command
      */
 	
-    @Command(identifier = "rankupMax", description = "Ranks up to the max rank that the player can afford.", 
-    			permissions = "ranks.user", altPermissions = "ranks.rankupmax.[ladderName]", onlyPlayers = true) 
+    @Command(identifier = "rankupMax", 
+    			description = "Ranks up to the max rank that the player can afford. If the player has the " +
+    					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
+    					"on the default ladder.", 
+    			permissions = "ranks.user", 
+    			altPermissions = "ranks.rankupmax.[ladderName] ranks.rankupmax.prestige", 
+    			onlyPlayers = true) 
     public void rankUpMax(Player sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
@@ -139,40 +144,71 @@ public class RankUpCommand {
         	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
-
-        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && !ladder.equals("prestiges")) {
-        		rankUpPrivate( sender, ladder, mode, permission );
-        	}
+        	
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;
-			}
+        	}
+
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && 
+        			mode == RankupModes.MAX_RANKS && !ladder.equals("prestiges")) {
+        		rankUpPrivate( sender, ladder, mode, permission );
+        	}
+        	else if ( mode == RankupModes.MAX_RANKS && ladder.equalsIgnoreCase( "default" ) &&
+        			results.getStatus() == RankupStatus.RANKUP_HIGHEST && 
+        			sender.hasPermission("ranks.rankupmax.prestige") ) {
+        		
+        		prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+        	}
+        		
 
         	// Get the player rank after
         	pRankAfter = rankPlayer.getRank(ladder);
 
         }
 
-        // Prestige method
-		prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+        if ( mode == RankupModes.ONE_RANK ) {
+        	prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+        }
+        
 	}
 
-	private void prestigePlayer(Player sender, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+	private void prestigePlayer(Player sender, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, 
+							LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
 		// Get the player rank after, just to check if it has success
     	Rank pRankSecond;
     	// Conditions
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
+			
 			// Set the player rank to the first one of the default ladder
-			PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
+			PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + 
+								lm.getLadder("default").get().getLowestRank().get().name + " default");
+			
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
+			
 			// Check if the ranks match
 			if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
-				// Get economy
-				EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-				// Set the player balance to 0 (reset)
-				economy.setBalance(sender, 0);
-				// Send a message to the player because he did prestige!
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
+				
+				// Get economy - Should not throw an exception... Error message allows better handling
+				EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
+									.getForType(IntegrationType.ECONOMY).orElse( null );
+				
+				if ( economy != null ) {
+					
+					// Set the player balance to 0 (reset)
+					economy.setBalance(sender, 0);
+					
+					// Send a message to the player because he did prestige!
+					sender.sendMessage( "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!");
+				}
+				else {
+					
+					String message = "RankUpCommand: Failure to get a valid and active economy. It was there when prison started.";
+					
+					sender.sendMessage( message );
+					Output.get().logError( message );
+				}
+				
 			}
 		}
 	}
