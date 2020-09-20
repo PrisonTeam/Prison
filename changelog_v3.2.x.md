@@ -8,7 +8,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.20 - 2020-09-16
+## tag v3.2.1-alpha.20 - 2020-09-20
+
+* **Moved the spiget project in to the prison project's class path**
+Move the spiget in to the project's directory with shadowJar since there has been a few issues with the build.
+
+
+* **New Feature: /mines tp Can Now teleport players within a rank command**
+Allow only admins or console commands or rank commands to teleport someone by name.
+This allows rank commands to use this to teleport a player when they rank up.
+
 
 
 * **Alpha 20 - 2020-09-16**
