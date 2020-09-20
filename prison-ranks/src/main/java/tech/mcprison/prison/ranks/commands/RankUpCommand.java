@@ -55,8 +55,13 @@ public class RankUpCommand {
      * /rankup command
      */
 	
-    @Command(identifier = "rankupMax", description = "Ranks up to the max rank that the player can afford.", 
-    			permissions = "ranks.user", altPermissions = "ranks.rankupmax.[ladderName]", onlyPlayers = true) 
+    @Command(identifier = "rankupMax", 
+    			description = "Ranks up to the max rank that the player can afford. If the player has the " +
+    					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
+    					"on the default ladder.", 
+    			permissions = "ranks.user", 
+    			altPermissions = "ranks.rankupmax.[ladderName] ranks.rankupmax.prestige", 
+    			onlyPlayers = false) 
     public void rankUpMax(Player sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
@@ -64,7 +69,7 @@ public class RankUpCommand {
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
+			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
     public void rankUp(Player sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
@@ -179,7 +184,7 @@ public class RankUpCommand {
 
 
 	@Command(identifier = "ranks promote", description = "Promotes a player to the next rank.",
-    			permissions = "ranks.promote", onlyPlayers = true) 
+    			permissions = "ranks.promote", onlyPlayers = false) 
     public void promotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
         @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder,
@@ -225,7 +230,7 @@ public class RankUpCommand {
 
 
     @Command(identifier = "ranks demote", description = "Demotes a player to the next lower rank.", 
-    			permissions = "ranks.demote", onlyPlayers = true) 
+    			permissions = "ranks.demote", onlyPlayers = false) 
     public void demotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder,
@@ -269,7 +274,7 @@ public class RankUpCommand {
 
 
     @Command(identifier = "ranks set rank", description = "Sets a play to a specified rank.", 
-    			permissions = "ranks.setrank", onlyPlayers = true) 
+    			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
     	@Arg(name = "rankName", description = "The rank to assign to the player") String rank,
