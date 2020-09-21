@@ -36,7 +36,8 @@ public class CommandHandler {
 
     private Prison plugin;
     private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
-        new HashMap<Class<?>, ArgumentHandler<?>>();
+    					new HashMap<Class<?>, ArgumentHandler<?>>();
+    
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
     private PermissionHandler permissionHandler = (sender, permissions) -> {
@@ -69,7 +70,8 @@ public class CommandHandler {
                 + ChatColor.DARK_AQUA + argument.getDescription();
         }
 
-        @Override public String[] getHelpMessage(RegisteredCommand command) {
+        @Override 
+        public String[] getHelpMessage(RegisteredCommand command) {
             ArrayList<String> message = new ArrayList<String>();
 
             if (command.isSet()) {
@@ -146,10 +148,32 @@ public class CommandHandler {
                 			ChatColor.DARK_AQUA + " (" + subCmdSubCnt + 
                 			" Subcommands)"));
                 }
+                
                 for (String subCmd : subCommandSet) {
                 	message.add(subCmd);
                 }
             }
+            
+            if ( command.getLabel().equalsIgnoreCase( "prison" ) && rootCommands.size() > 1 ) {
+                message.add(ChatColor.DARK_AQUA + "Prison Root Commands:");
+                // Force a sorting by use of a TreeSet. Collections.sort() would not work.
+                TreeSet<String> rootCommandSet = new TreeSet<>();
+
+            	// Try adding in all other root commands:
+            	Set<PluginCommand> rootKeys = rootCommands.keySet();
+            	
+            	for ( PluginCommand rootKey : rootKeys ) {
+            		String rootCmd = rootKey.getUsage();
+            		
+            		rootCommandSet.add( rootCmd );
+            		
+            	}
+            	
+            	for (String rootCmd : rootCommandSet) {
+            		message.add(rootCmd);
+            	}
+            }
+            
 
             return message.toArray(new String[0]);
         }

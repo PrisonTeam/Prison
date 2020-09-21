@@ -342,8 +342,8 @@ public class PrisonCommand {
         display.send(sender);
     }
 
-    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", 
-    					onlyPlayers = false, permissions = "prison.troubleshoot")
+//    @Command(identifier = "prison troubleshoot", description = "Runs a troubleshooter.", 
+//    					onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootCommand(CommandSender sender,
         @Arg(name = "name", def = "list", description = "The name of the troubleshooter.") String name) {
         // They just want to list stuff
@@ -367,8 +367,8 @@ public class PrisonCommand {
 
     }
 
-    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", 
-    						onlyPlayers = false, permissions = "prison.troubleshoot")
+//    @Command(identifier = "prison troubleshoot list", description = "Lists the troubleshooters.", 
+//    						onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootListCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Troubleshooters");
         display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
