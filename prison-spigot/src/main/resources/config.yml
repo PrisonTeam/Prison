@@ -74,7 +74,7 @@ prestige-confirm-gui: true
 
 
 # NEW: Enable or disable the SellAll command and sub-commands
-# New feature so setting to false sice it will override other shop plugins.
+# New feature so setting to false since it will override other shop plugins.
 sellall: false
 
 

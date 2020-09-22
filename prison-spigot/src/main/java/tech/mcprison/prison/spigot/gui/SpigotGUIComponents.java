@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.Prison;
@@ -24,7 +25,9 @@ public abstract class SpigotGUIComponents {
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(display);
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+        try {
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        } catch (NoClassDefFoundError ignored){}
         meta.setLore(lore);
         item.setItemMeta(meta);
 
