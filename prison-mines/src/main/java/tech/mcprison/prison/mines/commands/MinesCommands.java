@@ -79,7 +79,13 @@ public class MinesCommands {
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
     		@Wildcard(join=true)
-        @Arg(name = "mineName", description = "The name of the new mine.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName) {
+
+        if ( mineName == null || mineName.contains( " " ) || mineName.trim().length() == 0 ) {
+        	sender.sendMessage( "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
+    		return;
+        }
+        mineName = mineName.trim();
 
     	Player player = getPlayer( sender );
     	
@@ -107,11 +113,6 @@ public class MinesCommands {
         	pMines.getMinesMessages().getLocalizable("mine_exists")
                 .sendTo(sender, Localizable.Level.ERROR);
             return;
-        }
-        
-        if ( mineName.contains( " " ) ) {
-        	sender.sendMessage( "&3Names cannot contain spaces. &b[&d" + mineName + "&b]" );
-    		return;
         }
 
         setLastMineReferenced(mineName);
