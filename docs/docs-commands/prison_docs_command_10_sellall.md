@@ -2,9 +2,11 @@
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ##Description:
+
 Show a list of subcommands for the sellall feature.
 
 ##SubCommands:
+
 - `/sellall sell`
 - `/sellall gui`
 - `/sellall add`
@@ -18,6 +20,7 @@ Execute the command with the argument you want following the instruction, on the
 Example: `/sellall`
 
 ### Command Format
+
 `/sellall <Arguments>`
 
 **END of the command INFO**

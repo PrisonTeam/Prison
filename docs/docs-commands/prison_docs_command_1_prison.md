@@ -2,14 +2,17 @@
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ##Description:
+
 /Prison's the Main core command, by executing it you'll get a list of all the subcommands.
 
 **NOTE:** You can get some info about ALL subcommands or commands by adding the argument `help` at the end of it, for example `/prison help`.
 
 ##Permission:
+
 - `prison.admin`
 
 ##SubCommands:
+
 - [/prison alerts](prison_docs_command_2_prison_alerts.md)
 - [/prison autofeatures](prison_docs_command_3_prison_autofeatures.md)
 - [/prison gui](prison_docs_command_4_prison_gui.md)
@@ -26,6 +29,7 @@ Execute:
 and all the subcommands will show up
 
 ### Command Format
+
 `/prison [Arguments]`
 
 **END of the command INFO**
