@@ -188,7 +188,7 @@ public class RankUpCommand {
     public void promotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
         @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder,
-        @Arg(name = "chargePlayers", description = "Force the player to pay for the rankup", 
+        @Arg(name = "chargePlayers", description = "Force the player to pay for the rankup (no_charge, charge_player)", 
         					def = "no_charge") String chargePlayer
     		) {
 
@@ -234,7 +234,7 @@ public class RankUpCommand {
     public void demotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder,
-        @Arg(name = "chargePlayers", description = "Force the player to pay for the rankup", 
+        @Arg(name = "chargePlayers", description = "Refund the player for the demotion (no_charge, refund_player)", 
         				def = "no_charge") String refundPlayer
         ) {
 
