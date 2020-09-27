@@ -1,5 +1,5 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
@@ -16,7 +16,7 @@ Show a list of subcommands for the sellall feature.
 
 ## How to use the command
 
-Execute the command with the argument you want following the instruction, on the [main doc](../docs/prison_docs_000_toc.md) page there's a whole guidebook for [this](../docs/prison_docs_113_setting_up_sellall.md)!
+Execute the command with the argument you want following the instruction, on the [main doc](../prison_docs_000_toc.md) page there's a whole guidebook for [this](../prison_docs_113_setting_up_sellall.md)!
 Example: `/sellall`
 
 ### Command Format
