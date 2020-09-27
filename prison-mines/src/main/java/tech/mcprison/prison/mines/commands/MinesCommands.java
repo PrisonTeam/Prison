@@ -1030,12 +1030,40 @@ public class MinesCommands {
 
     @Command(identifier = "mines list", permissions = "mines.list", onlyPlayers = false)
     public void listCommand(CommandSender sender, 
+    		@Arg(name = "sort", def = "alpha",
+    			description = "Sort the list by either alpha or active [alpha, active]. " +
+    					" Most active mines are based upon blocks mined since server restart.") 
+    				String sort,
             @Arg(name = "page", def = "1", 
             	description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
         ChatDisplay display = new ChatDisplay("Mines");
         display.text("&8Click a mine's name to see more information.");
     	Player player = getPlayer( sender );
+    	
+    	if ( sort != null && !sort.equalsIgnoreCase( "alpha" ) && 
+    			!sort.equalsIgnoreCase( "active" )) { 
+    		if ( "ALL".equalsIgnoreCase( sort )) {
+    			// The user did not specify a sort order, but instead this is the page number
+    			// so fix it for them:
+    			sort = "alpha";
+    			page = "ALL";
+    		}
+    		else {
+    			try {
+    				int test = Integer.parseInt( sort );
+    				
+    				// This is actually the page number so default to alpha sort:
+    				sort = "alpha";
+    				page = Integer.toString( test );
+    			}
+    			catch ( NumberFormatException e ) {
+    				// Oof... this isn't a page number, so report an error.
+    				sender.sendMessage( "Invalid sort order.  Use either alpha, " +
+    						"active, or a page number such as [1-n, ALL]" );
+    			}
+    		}
+    	}
     	
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
@@ -1047,12 +1075,16 @@ public class MinesCommands {
     	// Sort first by name, then blocks mined so final sort order will be:
     	//   Most blocks mined, then alphabetical
     	mineList.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
-    	mineList.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+
+    	// for now hold off on sorting by total blocks mined.
+    	if ( "active".equalsIgnoreCase( sort )) {
+    		mineList.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    	}
     	
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/mines list", pMines.getMines().size(),
-        		0, page, 6 );
+        		"/mines list " + sort, pMines.getMines().size(),
+        		0, page, 7 );
         
         BulletedListComponent list = 
         		getMinesLineItemList(pMines.getMines(), player, cmdPageData, mMan.isMineStats());
