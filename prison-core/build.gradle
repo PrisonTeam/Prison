@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,14 @@
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	implementation 'org.apache.commons:commons-lang3:3.9'
+}
+
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'items.csv'
@@ -27,7 +35,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.9'))
+        include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
     }
     classifier 'API'

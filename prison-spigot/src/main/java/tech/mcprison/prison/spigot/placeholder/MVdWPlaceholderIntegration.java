@@ -1,35 +1,129 @@
 package tech.mcprison.prison.spigot.placeholder;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import tech.mcprison.prison.integration.PlaceholderIntegration;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
-
+import java.util.List;
 import java.util.function.Function;
 
-public class MVdWPlaceholderIntegration implements PlaceholderIntegration {
+import org.bukkit.Bukkit;
 
-    private boolean pluginInstalled;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.integration.PlaceholderIntegration;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.util.Text;
 
+/**
+ * <p>This hooks up the registration when the Prison plugin starts to run.
+ * The MVdWPlaceholderIntegrationWrapper sets up the registrations. It should
+ * be noted that the registrations used to occur within the ChatHandler, but
+ * that did not make sense since these should be self-contained with the 
+ * registration process if these plugins are active.
+ * </p>
+ * 
+ * <p>LuckPerms v5 documentation notes on MVdWPlaceholderAPI:
+ * 
+ * To use the LuckPerms placeholders in plugins which support Maximvdw's MVdWPlaceholderAPI, 
+ * you need to install the LuckPerms placeholder hook plugin.
+ * https://github.com/lucko/LuckPerms/wiki/Placeholders
+ * </p>
+ *
+ */
+public class MVdWPlaceholderIntegration 
+	extends PlaceholderIntegration {
+
+    private MVdWPlaceholderIntegrationWrapper placeholderWrapper;
+	
     public MVdWPlaceholderIntegration() {
-        pluginInstalled = Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI");
+    	super( "MVdWPlaceholderAPI", "MVdWPlaceholderAPI" );
     }
-
+	
+	@Override
+	public void integrate() {
+		if ( isRegistered()) {
+			try {
+				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName())) {
+					placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(getProviderName());
+					
+					PrisonAPI.getIntegrationManager().addDeferredInitialization( this );
+				}
+			}
+			catch ( NoClassDefFoundError | IllegalStateException e ) {
+				// ignore this exception since it means the plugin was not loaded
+			}
+			catch ( Exception e ) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	/**
+	 * <p>Register both the player and mines placeholders with the MVdW plugin.
+	 * </p>
+	 */
     @Override
+	public void deferredInitialization()
+	{
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( pm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					registerPlaceholder(placeHolderKey.getKey(),
+    							player -> Text.translateAmpColorCodes(
+    									pm.getTranslatePlayerPlaceHolder( 
+    											player.getUUID(), player.getName(), placeHolderKey )
+    									));
+    				}
+    			}
+    		}
+    	}
+    	
+
+    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+    		if ( mm != null ) {
+    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					registerPlaceholder(placeHolderKey.getKey(),
+    							player -> Text.translateAmpColorCodes(
+    									mm.getTranslateMinesPlaceHolder( placeHolderKey )
+    									));
+    				}
+    			}
+    		}
+    	}
+	}
+
+    
+	@Override
     public void registerPlaceholder(String placeholder, Function<Player, String> action) {
-        if (!hasIntegrated()) return;
-        PlaceholderAPI.registerPlaceholder(Bukkit.getPluginManager().getPlugin("Prison"), placeholder, e -> action.apply(new SpigotPlayer(e.getPlayer())));
+        if (placeholderWrapper != null) {
+        	placeholderWrapper.registerPlaceholder( placeholder, action );
+        }
     }
-
-    @Override
-    public String getProviderName() {
-        return "MVdWPlaceholderAPI";
-    }
-
+	
     @Override
     public boolean hasIntegrated() {
-        return pluginInstalled;
+        return (placeholderWrapper != null);
     }
+    
+    @Override
+    public String getAlternativeInformation() {
+    	return null;
+    }
+    
 
+	@Override
+	public String getPluginSourceURL() {
+		return "https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/";
+	}
+    
 }

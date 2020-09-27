@@ -19,17 +19,17 @@
 package tech.mcprison.prison.mines.events;
 
 import tech.mcprison.prison.internal.events.Cancelable;
-import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineReset;
 
 /**
  * Represents an event called when a mine is being reset
  */
 public class MineResetEvent implements Cancelable {
 
-    private Mine mine;
+    private MineReset mine;
     private boolean canceled = false; // false by default
 
-    public MineResetEvent(Mine mine) {
+    public MineResetEvent(MineReset mine) {
         this.mine = mine;
     }
 
@@ -38,7 +38,7 @@ public class MineResetEvent implements Cancelable {
      *
      * @return the mine associated with this event
      */
-    public Mine getMine() {
+    public MineReset getMine() {
         return mine;
     }
 

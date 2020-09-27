@@ -72,7 +72,25 @@ public class SpongePlatform implements Platform {
             .collect(Collectors.toList());
     }
 
-    @Override public String getPluginVersion() {
+//    /**
+//     * Not yet implemented...
+//     */
+//    @Override
+//	public Optional<Player> getOfflinePlayer( String name )
+//	{
+//		return null;
+//	}
+//
+//    /**
+//     * Not yet implemented...
+//     */
+//	@Override
+//	public Optional<Player> getOfflinePlayer( UUID uuid )
+//	{
+//		return null;
+//	}
+
+	@Override public String getPluginVersion() {
         return Sponge.getPluginManager().getPlugin("prison-sponge")
             .orElseThrow(IllegalStateException::new).getVersion().orElse("null");
     }

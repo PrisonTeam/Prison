@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
+
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
 
 /**
  * Represents a world on the Minecraft server.
@@ -36,7 +36,7 @@ public interface World {
      */
     String getName();
 
-    /**
+    /**O
      * Returns a list of all the players in this world.
      */
     List<Player> getPlayers();
@@ -46,6 +46,6 @@ public interface World {
      *
      * @param location The {@link Location} of the block.
      */
-    Block getBlockAt(Location location);
+    public Block getBlockAt(Location location);
 
 }

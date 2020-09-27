@@ -18,7 +18,8 @@ import java.util.Optional;
  */
 public class LadderCommands {
 
-    @Command(identifier = "ranks ladder create", description = "Creates a new rank ladder.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder create", description = "Creates a new rank ladder.", 
+    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderAdd(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
         Optional<RankLadder> ladderOptional =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
@@ -47,7 +48,8 @@ public class LadderCommands {
         }
     }
 
-    @Command(identifier = "ranks ladder delete", description = "Deletes a rank ladder.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder delete", description = "Deletes a rank ladder.", 
+    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderRemove(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
         Optional<RankLadder> ladder =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
@@ -56,7 +58,17 @@ public class LadderCommands {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
+        
+        if (ladder.get().name.equalsIgnoreCase( "default" )) {
+        	Output.get().sendError(sender, "You cannot delete the default ladder. It's needed." );
+        	return;
+        }
 
+        if (ladder.get().name.equalsIgnoreCase( "prestiges" )) {
+        	Output.get().sendError(sender, "You cannot delete the prestiges ladder. It's needed." );
+        	return;
+        }
+        
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get()) ) {
             Output.get().sendInfo(sender, "The ladder '%s' has been deleted.", ladderName);
 
@@ -66,7 +78,8 @@ public class LadderCommands {
         }
     }
 
-    @Command(identifier = "ranks ladder list", description = "Lists all rank ladders.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder list", description = "Lists all rank ladders.", 
+    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderList(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Ladders");
         BulletedListComponent.BulletedListBuilder list =
@@ -79,7 +92,8 @@ public class LadderCommands {
         display.send(sender);
     }
 
-    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
+    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderInfo(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
         Optional<RankLadder> ladder =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
@@ -94,23 +108,33 @@ public class LadderCommands {
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
+        
+        boolean first = true;
         for (RankLadder.PositionRank rank : ladder.get().ranks) {
             Optional<Rank> rankOptional =
                 PrisonRanks.getInstance().getRankManager().getRank(rank.getRankId());
             if(!rankOptional.isPresent()) {
                 continue; // Skip it
             }
+            
+            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
 
-            builder.add("&3#%d &8- &3%s", rank.getPosition(),
-                rankOptional.get().name);
+            builder.add("&3#%d &8- &3%s %s", rank.getPosition(),
+                rankOptional.get().name, 
+                (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
+            	);
+            first = false;
         }
 
+        builder.add( "&3See &f/ranks list &b[ladderName] &3for more details on ranks." );
+        
         display.addComponent(builder.build());
-
+        
         display.send(sender);
     }
 
-    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder.", 
+    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderAddRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
         @Arg(name = "rankName") String rankName,
         @Arg(name = "position", def = "0", verifiers = "min[0]") int position) {
@@ -152,7 +176,8 @@ public class LadderCommands {
         }
     }
 
-    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", onlyPlayers = false, permissions = "ranks.ladder")
+    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
+    											onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderRemoveRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
         @Arg(name = "rankName") String rankName) {
         Optional<RankLadder> ladder =

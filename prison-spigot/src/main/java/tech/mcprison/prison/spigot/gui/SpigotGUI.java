@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.gui.Button;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Map;
 /**
  * @author Faizaan A. Datoo
  */
+// From GABRYCA, I don't know if this's still needed, I won't remove it for now, but might be in the future
 public class SpigotGUI implements GUI {
 
     private Map<Integer, Button> buttons;
@@ -66,10 +68,9 @@ public class SpigotGUI implements GUI {
         return this;
     }
 
-    @SuppressWarnings( "deprecation" )
 	private ItemStack buttonToItemStack(Button button) {
-        ItemStack stack =
-            new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
+        ItemStack stack = SpigotUtil.getItemStack( button.getItem(), 1 );
+//            new ItemStack(button.getItem().getLegacyId(), 1, button.getItem().getData());
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + button.getName()));
         meta.setLore(button.getLore());

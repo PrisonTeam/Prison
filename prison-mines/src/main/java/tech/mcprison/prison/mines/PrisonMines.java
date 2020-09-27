@@ -19,16 +19,16 @@
 package tech.mcprison.prison.mines;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
@@ -38,6 +38,7 @@ import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
+import tech.mcprison.prison.util.Location;
 
 /**
  * The Prison 3 Mines Module
@@ -45,43 +46,67 @@ import tech.mcprison.prison.store.Database;
  * @author The MC-Prison Team
  */
 public class PrisonMines extends Module {
-
-    /*
-     * Fields & Constants
-     */
+	public static final String MODULE_NAME = "Mines";
 
     private static PrisonMines i = null;
     private MinesConfig config;
-    private List<String> worlds;
+//    private List<String> worlds;
     private LocaleManager localeManager;
     private Database db;
     private ErrorManager errorManager;
     
     private JsonFileIO jsonFileIO;
 
-    private MineManager mines;
+    private MineManager mineManager;
     private PlayerManager player;
 
+
+    /**
+     * <p>playerCache tries to provide a faster way to identify which mine a player is
+     * in. The theory is that there is a very high chance it will be the last mine 
+     * they were in.  So this records the last mine they were in, and if that is not
+     * where they are, then, and only then, do we check all mines to see if it may
+     * be something else.
+     * </p>
+     * 
+     */
+	private final TreeMap<Long, Mine> playerCache;
+	
+	
+    
     public PrisonMines(String version) {
-        super("Mines", version, 3);
+        super(MODULE_NAME, version, 3);
+
+    	this.playerCache = new TreeMap<>();
     }
 
     public static PrisonMines getInstance() {
         return i;
     }
 
+    @Override
+    public String getBaseCommands() {
+    	return "&7/&2mines";
+    }
+    
     public void enable() {
         i = this;
 
-        errorManager = new ErrorManager(this);
+        this.errorManager = new ErrorManager(this);
         this.jsonFileIO = new JsonFileIO( errorManager, getStatus() );
         
         initDb();
         initConfig();
-        localeManager = new LocaleManager(this, "lang/mines");
+        this.localeManager = new LocaleManager(this, "lang/mines");
 
-        initWorlds();
-        initMines();
+//        initWorlds();
+        
+        this.mineManager = new MineManager();
+        getMineManager().loadFromDbCollection(this);
+        
+        player = new PlayerManager();
+        
+//        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
         Prison.get().getCommandHandler().registerCommands(new MinesCommands());
@@ -90,9 +115,6 @@ public class PrisonMines extends Module {
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }
 
-//    private void initGson() {
-//        gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-//    }
 
     private void initDb() {
         Optional<Database> dbOptional =
@@ -124,42 +146,61 @@ public class PrisonMines extends Module {
         	config = (MinesConfig) getJsonFileIO().readJsonFile( configFile, config );
         }
         
-//
-//        if (!configFile.exists()) {
-//            try {
-//                configFile.createNewFile();
-//                String json = gson.toJson(config);
-//                Files.write(configFile.toPath(), json.getBytes());
-//            } catch (IOException e) {
-//                errorManager.throwError(
-//                    new Error("Failed to create config").appendStackTrace("while creating", e));
-//                getStatus().toFailed("Failed to create config");
-//            }
-//        } else {
-//            try {
-//                String json = new String(Files.readAllBytes(configFile.toPath()));
-//                config = gson.fromJson(json, MinesConfig.class);
-//            } catch (IOException e) {
-//                errorManager.throwError(
-//                    new Error("Failed to load config").appendStackTrace("while loading", e));
-//                getStatus().toFailed("Failed to load config");
-//            }
-//        }
     }
 
-    private void initWorlds() {
-        ListIterator<String> iterator = config.worlds.listIterator();
-        worlds = new ArrayList<>();
-        while (iterator.hasNext()) {
-            worlds.add(iterator.next().toLowerCase());
-        }
-    }
+    
+    
+    
+    /**
+     * <p>Search all mines to find if the given block is located within any
+     * of the mines. If not, then return a null.
+     * </p>
+     * 
+     * @param block
+     * @return
+     */
+	public Mine findMineLocation( Location locationToCheck ) {
+		Mine mine = null;
+		for ( Mine m : getMines() ) {
+			if ( m.isInMine( locationToCheck ) ) {
+				mine = m;
+				break;
+			}
+		}
+		return mine;
+	}
 
-    private void initMines() {
-        mines = MineManager.fromDb();
-        player = new PlayerManager();
-        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
-    }
+	public TreeMap<Long, Mine> getPlayerCache() {
+		return playerCache;
+	}
+	
+	public Mine findMineLocation( Player player ) {
+		Mine result = null;
+		
+		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
+		
+		// Get the cached mine, if it exists:
+		Mine mine = getPlayerCache().get( playerUUIDLSB );
+		
+		if ( mine == null || !mine.isInMine( player.getLocation() ) ) {
+			// Look for the correct mine to use. 
+			// Set mine to null so if cannot find the right one it will return a null:
+			mine = findMineLocation( player.getLocation() );
+			
+			// Store the mine in the player cache if not null:
+			if ( mine != null ) {
+				getPlayerCache().put( playerUUIDLSB, mine );
+			}
+		}
+
+		return result;
+	}
+
+//    private void initMines() {
+////        mines = MineManager.fromDb();
+////        player = new PlayerManager();
+////        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
+//    }
 
     public JsonFileIO getJsonFileIO()
 	{
@@ -173,8 +214,7 @@ public class PrisonMines extends Module {
      * 
      */
 	public void disable() {
-		
-//        mines.saveMines();
+		// Nothing to do...
     }
 
     public MinesConfig getConfig() {
@@ -186,20 +226,24 @@ public class PrisonMines extends Module {
     }
 
     public MineManager getMineManager() {
-        return mines;
+        return mineManager;
     }
 
     public List<Mine> getMines() {
-        return mines.getMines();
+        return getMineManager().getMines();
     }
 
+    public Mine getMine(String mineName) {
+    	return getMineManager().getMine(mineName);
+    }
+    
     public LocaleManager getMinesMessages() {
         return localeManager;
     }
 
-    public List<String> getWorlds() {
-        return worlds;
-    }
+//    public List<String> getWorlds() {
+//        return worlds;
+//    }
 
     public PlayerManager getPlayerManager() {
         return player;

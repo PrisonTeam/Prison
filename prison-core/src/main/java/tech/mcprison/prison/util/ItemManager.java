@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,24 +43,38 @@ public class ItemManager {
         items = ArrayListMultimap.create();
 
         if (!file.exists()) {
-            InputStream inputStream = getClass().getResourceAsStream("/items.csv");
-            Files.copy(inputStream, Paths.get(file.getPath()));
-        }
-        BufferedReader in = new BufferedReader(new FileReader(file));
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null) {
-            try {
-                if (!inputLine.startsWith("#")) {
-                    String[] array = inputLine.split(",");
-                    String itemName = array[0];
-                    int id = Integer.parseInt(array[1]);
-                    short data = Short.parseShort(array[2]);
-                    items.put(BlockType.getBlockWithData(id, data), itemName.toLowerCase());
-                }
-            } catch (Exception e) {
-                throw new IOException("Error while reading items.csv -- it's probably invalid", e);
+        	try (
+        			// make sure the InputStream is properly closed. May not be 100% needed here:
+        			InputStream inputStream = getClass().getResourceAsStream("/items.csv");
+        			)
+        	{
+        		Files.copy(inputStream, Paths.get(file.getPath()));
+        	}
+            catch (Exception e) {
+            	throw new IOException("Error while copying items.csv from the jar resource to a " +
+            			"file within the plugins directory:", e);
             }
+        }
+        try (
+        		// Was a memory leak... always must be closed, so the try with resource ensures that it is:
+        		BufferedReader in = new BufferedReader(new FileReader(file));
+        		)
+        {
+        	String inputLine;
+        	
+        	while ((inputLine = in.readLine()) != null) {
+    			if (!inputLine.startsWith("#")) {
+    				String[] array = inputLine.split(",");
+    				String itemName = array[0];
+    				int id = Integer.parseInt(array[1]);
+    				short data = Short.parseShort(array[2]);
+    				items.put(BlockType.getBlockWithData(id, data), itemName.toLowerCase());
+    			}
+        	}
+        	
+        }
+        catch (Exception e) {
+        	throw new IOException("Error while reading items.csv -- it's probably invalid", e);
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,11 @@
 
 package tech.mcprison.prison;
 
+import java.io.File;
+import java.util.Optional;
+
 import com.google.common.eventbus.EventBus;
+
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.Error;
@@ -37,9 +41,6 @@ import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.ItemManager;
 
-import java.io.File;
-import java.util.Optional;
-
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
  * {@link Prison#get()} method, however in order to use the core libraries, you must call
@@ -48,19 +49,34 @@ import java.util.Optional;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class Prison implements PluginEntity {
+public class Prison 
+	implements PluginEntity {
 
+	/**
+	 * <p>This is not exactly a Prison module, but it's name is used within
+	 * the LocaleManager to correct the generation of an incorrect directory
+	 * path for the locale language files for this "core" module. Basically
+	 * this provides consistency in the location of all language files that
+	 * the admins can easily edit and know where to find them.
+	 * </p>
+	 * 
+	 */
+	public static final String PSEDUO_MODLE_NAME = "core";
+	
 	public static final int SPIGOTMC_ORG_PROJECT_ID = 1223; //72740;
 	
     // Singleton
 
     public static final int API_LEVEL = 3;
     private static Prison instance = null;
+    
+    private String minecraftVersion;
 
     // Fields
     private Platform platform;
     private File dataFolder;
     private ModuleManager moduleManager;
+    private PrisonCommand prisonCommands;
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
     private EventBus eventBus;
@@ -92,50 +108,69 @@ public class Prison implements PluginEntity {
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public boolean init(Platform platform) {
+    public boolean init(Platform platform, String minecraftVersion) {
         long startTime = System.currentTimeMillis();
 
         this.platform = platform;
+        this.minecraftVersion = minecraftVersion;
+        
         sendBanner();
-        Output.get().logInfo("Enable start...");
+        Output.get().logInfo("Enabling and starting...");
 
         // Initialize various parts of the API. The magic happens here :)
         if (!initDataFolder()) {
+        	Output.get().logInfo("&cFailure: &eInitializing the Prison Data Folders!" );
+        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
             return false;
         }
         initManagers();
         if (!initMetaDatabase()) {
+        	Output.get().logInfo("&cFailure: &eInitializing the Prison Database!" );
+        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
             return false;
         }
         Alerts.getInstance(); // init alerts
 
-        this.commandHandler.registerCommands(new PrisonCommand());
+        this.prisonCommands = new PrisonCommand();
+        this.commandHandler.registerCommands(prisonCommands);
 
+        long stopTime = System.currentTimeMillis();
+        
         Output.get()
                 .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
-                        (System.currentTimeMillis() - startTime));
+                        (stopTime - startTime));
 
         registerInbuiltTroubleshooters();
 
         if (getPlatform().shouldShowAlerts())
             scheduleAlertNagger();
+        
+        
+        // Disabled for now. The integrations cannot properly support this yet.
+//        List<String> integrations = Prison.get().getIntegrationManager().toStrings();
+//        for ( String intgration : integrations ) {
+//        	Output.get().logInfo( intgration );
+//		}
 
+        
         return true;
     }
 
     // Initialization steps
 
     private void sendBanner() {
-        PrisonAPI.log("");
-        PrisonAPI.log("&6 _____      _                 ");
-        PrisonAPI.log("&6|  __ \\    (_)                ");
-        PrisonAPI.log("&6| |__) | __ _ ___  ___  _ __  ");
-        PrisonAPI.log("&6|  ___/ '__| / __|/ _ \\| '_ \\");
-        PrisonAPI.log("&6| |   | |  | \\__ \\ (_) | | | |");
-        PrisonAPI.log("&6|_|   |_|  |_|___/\\___/|_| |_|");
-        PrisonAPI.log("");
-        PrisonAPI.log("Loading version %s on platform %s...", PrisonAPI.getPluginVersion(),
-                platform.getClass().getSimpleName());
+    	Output.get().logInfo("");
+    	Output.get().logInfo("&6 _____      _                 ");
+    	Output.get().logInfo("&6|  __ \\    (_)                ");
+    	Output.get().logInfo("&6| |__) | __ _ ___  ___  _ __  ");
+    	Output.get().logInfo("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+    	Output.get().logInfo("&6| |   | |  | \\__ \\ (_) | | | |");
+    	Output.get().logInfo("&6|_|   |_|  |_|___/\\___/|_| |_|");
+    	Output.get().logInfo("");
+    	Output.get().logInfo("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
+    	Output.get().logInfo("&7Running on platform: &3%s", platform.getClass().getSimpleName());
+    	Output.get().logInfo("&7Minecraft version: &3%s", getMinecraftVersion());
+    	Output.get().logInfo("");
     }
 
     private boolean initDataFolder() {
@@ -206,7 +241,12 @@ public class Prison implements PluginEntity {
 
     // Getters
 
-    @Override
+    public String getMinecraftVersion()
+	{
+		return minecraftVersion;
+	}
+
+	@Override
     public String getName() {
         return "PrisonCore";
     }
@@ -269,8 +309,13 @@ public class Prison implements PluginEntity {
     public ModuleManager getModuleManager() {
         return moduleManager;
     }
+    
 
-    /**
+    public PrisonCommand getPrisonCommands() {
+		return prisonCommands;
+	}
+
+	/**
      * Returns the command handler, where command methods can be registered using the {@link
      * CommandHandler#registerCommands(Object)} method.
      *

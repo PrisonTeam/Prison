@@ -1,11 +1,12 @@
 package tech.mcprison.prison.spigot.economies;
 
+import java.math.BigDecimal;
+
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
-import tech.mcprison.prison.internal.Player;
 
-import java.math.BigDecimal;
+import tech.mcprison.prison.internal.Player;
 
 /**
  * A non-static wrapper of Essentials' annoyingly static {@link net.ess3.api.Economy} API.

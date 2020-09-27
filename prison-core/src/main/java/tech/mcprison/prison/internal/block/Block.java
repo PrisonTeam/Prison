@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,10 @@ public interface Block {
      * @return The {@link BlockType}.
      */
     BlockType getType();
+    
+    
+    public PrisonBlock getPrisonBlock();
+    
 
     /**
      * Sets the block to a different type.
@@ -60,7 +64,11 @@ public interface Block {
      * @param type The new {@link BlockType}.
      */
     void setType(BlockType type);
+    
+    
+    public void setPrisonBlock( PrisonBlock prisonBlock );
 
+    
     /**
      * Returns a snapshot of the state of this block, which you can edit to your liking.
      *

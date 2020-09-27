@@ -68,6 +68,11 @@ public class SpigotCommandSender implements CommandSender {
         }
     }
 
+    @Override
+    public boolean isOp() {
+    	return bukkitSender.isOp();
+    }
+    
     public org.bukkit.command.CommandSender getWrapper() {
         return bukkitSender;
     }

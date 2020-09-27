@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ public class CommandHandler {
 
     private Prison plugin;
     private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
-        new HashMap<Class<?>, ArgumentHandler<?>>();
+    					new HashMap<Class<?>, ArgumentHandler<?>>();
+    
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
     private PermissionHandler permissionHandler = (sender, permissions) -> {
@@ -69,7 +70,8 @@ public class CommandHandler {
                 + ChatColor.DARK_AQUA + argument.getDescription();
         }
 
-        @Override public String[] getHelpMessage(RegisteredCommand command) {
+        @Override 
+        public String[] getHelpMessage(RegisteredCommand command) {
             ArrayList<String> message = new ArrayList<String>();
 
             if (command.isSet()) {
@@ -99,15 +101,79 @@ public class CommandHandler {
                         }
                     }
                 }
+                if ( command.getPermissions() != null && command.getPermissions().length > 0 ||
+                	 command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
+                	
+                	StringBuilder sb = new StringBuilder();
+                	
+                	if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
+                		for ( String perm : command.getPermissions() ) {
+                			if ( sb.length() > 0 ) {
+                				sb.append( " " );
+                			}
+                			sb.append( perm );
+                		}
+                	}
+            		if ( command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
+            			for ( String altPerm : command.getAltPermissions() ) {
+            				if ( sb.length() > 0 ) {
+            					sb.append( " " );
+            				}
+            				sb.append( altPerm );
+            			}
+            		}
+            		
+            		if ( sb.length() > 0 ) {
+            			message.add(ChatColor.DARK_AQUA + "Permissions:");
+            			
+            			sb.insert( 0, ChatColor.AQUA );
+            			sb.insert( 0, "   " );
+            			message.add( sb.toString() );
+            		}
+                	
+                }
             }
 
             List<RegisteredCommand> subcommands = command.getSuffixes();
             if (subcommands.size() > 0) {
                 message.add(ChatColor.DARK_AQUA + "Subcommands:");
+                // Force a sorting by use of a TreeSet. Collections.sort() would not work.
+                TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
-                    message.add(scommand.getUsage());
+                	String subCmd = scommand.getUsage();
+
+                	int subCmdSubCnt = scommand.getSuffixes().size();
+                	
+                	subCommandSet.add(subCmd + (subCmdSubCnt <= 1 ? "" : 
+                			ChatColor.DARK_AQUA + " (" + subCmdSubCnt + 
+                			" Subcommands)"));
+                }
+                
+                for (String subCmd : subCommandSet) {
+                	message.add(subCmd);
                 }
             }
+            
+            if ( command.getLabel().equalsIgnoreCase( "prison" ) && rootCommands.size() > 1 ) {
+                message.add(ChatColor.DARK_AQUA + "Prison Root Commands:");
+                // Force a sorting by use of a TreeSet. Collections.sort() would not work.
+                TreeSet<String> rootCommandSet = new TreeSet<>();
+
+            	// Try adding in all other root commands:
+            	Set<PluginCommand> rootKeys = rootCommands.keySet();
+            	
+            	for ( PluginCommand rootKey : rootKeys ) {
+            		String rootCmd = rootKey.getUsage();
+            		
+            		rootCommandSet.add( rootCmd );
+            		
+            	}
+            	
+            	for (String rootCmd : rootCommandSet) {
+            		message.add(rootCmd);
+            	}
+            }
+            
 
             return message.toArray(new String[0]);
         }
@@ -264,4 +330,30 @@ public class CommandHandler {
 
         return true;
     }
+
+/*
+ * ###Tab-Complete###
+ * 
+ * Disabled for now until a full solution can be implemented for tab complete.
+ * 
+    public List<String> getRootCommandKeys() {
+    	List<String> results = new ArrayList<>();
+    	
+    	Set<PluginCommand> keys = rootCommands.keySet();
+    	for ( PluginCommand pluginCommand : keys ) {
+    		// These are the core command sets:
+			results.add( pluginCommand.getLabel() );
+			
+			// Then expand them to all the sub commands that are assoicated with the cores:
+			RootCommand cmd = rootCommands.get( pluginCommand );
+			List<RegisteredCommand> regCmds = cmd.getSuffixes();
+			for ( RegisteredCommand regCmd : regCmds ) {
+				results.add( pluginCommand.getLabel() + " " + regCmd.getLabel() );
+			}
+			
+		}
+    	
+    	return results;
+    }
+ */
 }

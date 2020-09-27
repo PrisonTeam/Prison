@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,22 +18,28 @@
 
 package tech.mcprison.prison.spigot;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Utilities for converting Prison-Core types to Spigot types.
@@ -43,22 +49,339 @@ import java.util.List;
 public class SpigotUtil {
 
     private SpigotUtil() {
+    	super();
     }
 
   /*
    * BlockType and Material
    */
 
-    @SuppressWarnings( "deprecation" )
-	public static BlockType materialToBlockType(Material material) {
-        return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
+    public static XMaterial getXMaterial( Material material) {
+    	return XMaterial.matchXMaterial(material);
+    }
+    
+    public static XMaterial getXMaterial( String materialName ) {
+    	return XMaterial.matchXMaterial( materialName ).orElse( null );
+    }
+    
+    /**
+     * <p>Gets the XMaterial based upon the BlockType name, and if it fails to hit
+     * anything, then it falls back on to the id, of which XMaterial strips the 
+     * prefix of "minecraft:".
+     * </p>
+     * 
+     * @param prisonBlockType
+     * @return
+     */
+    public static XMaterial getXMaterial( BlockType prisonBlockType ) {
+    	
+    	XMaterial xMat = SpigotPrison.getInstance().getCompatibility()
+    						.getXMaterial( prisonBlockType );
+    	
+    	return xMat;
+    }
+    
+    public static Material getMaterial( BlockType prisonBlockType ) {
+    	XMaterial xMat = getXMaterial( prisonBlockType );
+    	
+    	return xMat == null ? null : xMat.parseMaterial();
+    }
+    
+
+    
+	public static BlockType blockToBlockType( Block spigotBlock ) {
+		BlockType results = SpigotPrison.getInstance().getCompatibility()
+				.getBlockType( spigotBlock );
+		
+//		
+//		XMaterial xMatMatch = XMaterial.matchXMaterial( material );
+//		
+//		for ( BlockType blockType : BlockType.values() ) {
+//			XMaterial xMat = getXMaterial( blockType );
+//			if ( xMat != null ) {
+//				results = blockType;
+//				break;
+//			}
+//		}
+		
+        return results;
     }
 
-    @SuppressWarnings( "deprecation" )
-	public static MaterialData blockTypeToMaterial(BlockType type) {
-        Material material = Material.getMaterial(type.getLegacyId());
-        return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
-    }
+	/**
+	 * <p>Returns a stack of BlockType or a stack of air.
+	 * </p>
+	 * 
+	 * @param prisonBlockType
+	 * @param amount
+	 * @return
+	 */
+	public static ItemStack getItemStack( BlockType prisonBlockType, int amount ) {
+		ItemStack bukkitStack = null;
+        XMaterial xMat = getXMaterial( prisonBlockType );
+        if ( xMat != null ) {
+        	bukkitStack = xMat.parseItem();
+        	bukkitStack.setAmount( amount );
+        }
+        else {
+        	bukkitStack = getXMaterial( "air" ).parseItem();
+        	bukkitStack.setAmount( 1 );
+        }
+        return bukkitStack;
+	}
+	
+	public static ItemStack getItemStack( Material material, int amount ) {
+		XMaterial xMat = getXMaterial( material );
+		ItemStack bukkitStack = xMat.parseItem();
+		bukkitStack.setAmount( amount );
+		return bukkitStack;
+	}
+    
+	
+	public static ItemStack getItemStack( XMaterial xMaterial, int amount ) {
+		ItemStack bukkitStack = xMaterial.parseItem();
+		bukkitStack.setAmount( amount );
+		return bukkitStack;
+	}
+	
+	public static void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+		
+		for ( XMaterial xMat : XMaterial.values() ) {
+			if ( xMat.isSupported() ) {
+				
+				Material mat = xMat.parseMaterial();
+				if ( mat != null ) {
+					if ( mat.isBlock() ) {
+						PrisonBlock block = new PrisonBlock( mat.name() );
+						
+						blockTypes.add( block );
+					}
+				}
+				else {
+					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
+							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
+							" is supported for this version, but the XMaterial cannot " +
+							"be mapped to an actual Material.");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * <p>This will take a string name of a block, and convert it to the
+	 * String name of a XMaterial.  If it cannot directly perform the
+	 * conversion, then it will fall back to using the old prison's
+	 * BlockType to perform the conversion.
+	 * </p>
+	 * 
+	 * @param blockName
+	 * @return
+	 */
+	public static PrisonBlock getPrisonBlock( String blockName ) {
+		
+		PrisonBlock results = null;
+		BlockType bTypeObsolete = null;
+		
+		XMaterial xMat = getXMaterial( blockName );
+		
+		if ( xMat == null ) {
+			// Try to get the material through the old prison blocks:
+			bTypeObsolete = BlockType.getBlock( blockName );
+			
+			xMat = getXMaterial( bTypeObsolete );
+		}
+		
+		if ( xMat != null ) {
+			results = new PrisonBlock( xMat.name() );
+			
+			if ( bTypeObsolete != null ) {
+				results.setLegacyBlock( true );
+			}
+		}
+		else {
+			results = new PrisonBlock( blockName );
+			results.setValid( false );
+		}
+		return results;
+	}
+	
+	
+	public static void testAllPrisonBlockTypes() {
+		double version = XMaterial.getVersion();
+		
+		StringBuilder sbNoMap = new StringBuilder();
+		StringBuilder sbNotSupported = new StringBuilder();
+		
+		int supportedBlockCountPrison = 0;
+		int supportedBlockCountXMaterial = 0;
+		
+		for ( BlockType block : BlockType.values() ) {
+			
+			if ( block.isBlock() ) {
+				XMaterial xMat = getXMaterial( block );
+				
+				if ( xMat == null ) {
+					if ( sbNoMap.length() > 0 ) {
+						sbNoMap.append( " " );
+					}
+					
+					Material mat = getMaterial( block );
+					
+					String bName = block.name() + (mat == null ? "" : "(" + mat.name() + ")");
+					sbNoMap.append( bName );
+				}
+				else if ( !xMat.isSupported() ) {
+					if ( sbNotSupported.length() > 0 ) {
+						sbNotSupported.append( " " );
+					}
+					sbNotSupported.append( block.name() );
+				}
+				else {
+					supportedBlockCountPrison++;
+				}
+			}
+		}
+		
+		for ( XMaterial xMat : XMaterial.values() ) {
+			if ( xMat.isSupported() ) {
+				
+				Material mat = xMat.parseMaterial();
+				if ( mat != null ) {
+					if ( mat.isBlock() ) {
+						supportedBlockCountXMaterial++;
+					}
+				}
+				else {
+					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
+							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
+							" is supported for this version, but the XMaterial cannot " +
+							"be mapped to an actual Material.");
+				}
+			}
+		}
+		
+		// Next test all of the spigot/bukkit Materials:
+		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
+										.testCountAllBlockTypes();
+		
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Bukkit version: " + version + 
+									"  Supported Prison Blocks: " + supportedBlockCountPrison +
+									"  Supported XMaterial Blocks: " + supportedBlockCountXMaterial );
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Raw Bukkit/Spigot " + stats.toString() );
+		
+		logTestBlocks( sbNoMap, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+										"Prison Blocks no maps to XMaterial: " );
+		logTestBlocks( sbNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+										"Prison Blocks not supported with version: " );
+	}
+    
+	
+	private static void logTestBlocks( StringBuilder sb, String message ) {
+		
+		int start = 0;
+		int end = 150;
+		
+		while ( sb.length() > end ) {
+			end = sb.indexOf( " ", end );
+			Output.get().logWarn( message + 
+					(end < 0 ? sb.substring( start ) : sb.substring( start, end )));
+
+			start = end;
+			end += 150;
+		}
+		
+		Output.get().logWarn( message + sb.substring( start ));
+	}
+	
+//    @SuppressWarnings( "deprecation" )
+//	public static BlockType materialToBlockType(Material material) {
+//        return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
+//    }
+
+//    @SuppressWarnings( "deprecation" )
+//	public static MaterialData blockTypeToMaterial(BlockType type) {
+//        Material material = Material.getMaterial(type.getLegacyId());
+//        if ( material == null ) {
+//        	material = Material.STONE;
+//        }
+//        return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+////		Material material = Material.getMaterial(type.getLegacyId());
+////		if ( material == null ) {
+////			material = Material.STONE;
+////		}
+////		
+////		return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+////
+////    	
+////    	
+////    	MaterialData results = null;
+////    	
+////    	if ( type.getMaterialVersion() == MaterialVersion.v1_13 ) {
+////    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_13 : %s ",
+////    				type.getId()) );
+////    		
+////    		// Material type for 1.13 and higher have a legacyID == 0:
+////    		Material material = null;
+////    		material = getMaterial( type.getId() );
+////    		
+////    		if ( material == null ) {
+////    			String materialName = type.getId().toUpperCase();
+////    			material = getMaterial( materialName );
+////    			
+////    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
+////    					type.name(), materialName, (material == null ? "null" : "NOT null")) );
+////    			
+//////    			if ( material == null ) {
+//////    				material = Material.
+//////    				Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
+//////    						type.name(), materialName, (material == null ? "null" : "NOT null")) );
+//////    				
+//////    			}
+////    		}
+////    		else {
+////    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: %s [%s]", 
+////    					type.name(), (material == null ? "null" : "NOT null")) );
+////    			
+////    		}
+////    		
+////    		if ( material == null ) {
+////    			material = Material.STONE;
+////    		}
+////    		results = new MaterialData(material);
+////    	} 
+////    	else {
+//////    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_8 : %s  %s  data=%s", 
+//////    				type.getId(), Integer.toString( type.getLegacyId()), 
+//////    				Integer.toString( type.getData())) );
+//////    		// type.getMaterialVersion() == MaterialVersion.v1_8
+////    		
+////    		// Material types for 1.12 and lower:
+////    		Material material = Material.getMaterial(type.getLegacyId());
+////    		if ( material == null ) {
+////    			material = Material.STONE;
+////    		}
+////    		
+////    		results = new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
+////    		
+////    	}
+////    	return results;
+//    }
+    
+//    private static Material getMaterial( String materialName ) {
+//    	Material results = null;
+//    	
+//    	try {
+//    		results = Material.matchMaterial( materialName );
+//    	}
+//    	catch ( Exception e ) {
+//    		// Do nothing for now... 
+//    		// Will try other combination later and will report failure if needed;
+//    		Output.get().logInfo( "&cSpigotUtil.getMaterial() Failure : &7" + e.getMessage() );
+//    	}
+//    	
+//    	return results;
+//    }
 
   /*
    * Location
@@ -81,7 +404,8 @@ public class SpigotUtil {
    */
 
     public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
-        ItemStack bukkitStack) {
+    				ItemStack bukkitStack) {
+    	
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
             return new tech.mcprison.prison.internal.ItemStack(0, BlockType.AIR);
         }
@@ -100,8 +424,10 @@ public class SpigotUtil {
         }
 
         int amount = bukkitStack.getAmount();
-
-        BlockType type = materialToBlockType(bukkitStack.getType());
+        
+        BlockType type = SpigotPrison.getInstance().getCompatibility()
+        					.getBlockType( bukkitStack );
+//        BlockType type = materialToBlockType(bukkitStack.getType());
 
         List<String> lore = meta.hasLore() ? meta.getLore() : Collections.emptyList();
         String[] lore_arr = lore.toArray(new String[lore.size()]);
@@ -110,33 +436,36 @@ public class SpigotUtil {
     }
 
     public static ItemStack prisonItemStackToBukkit(
-        tech.mcprison.prison.internal.ItemStack prisonStack) {
+    				tech.mcprison.prison.internal.ItemStack prisonStack) {
         int amount = prisonStack.getAmount();
-        MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
-
-        ItemStack bukkitStack = new ItemStack(materialData.getItemType(), amount);
-        bukkitStack.setData(materialData);
-
+        
+        ItemStack bukkitStack = getItemStack( prisonStack.getMaterial(), amount );
+        
+//        MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
+//
+//        ItemStack bukkitStack = new ItemStack(materialData.getItemType(), amount);
+//        bukkitStack.setData(materialData);
+        
         ItemMeta meta;
         if (bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta()) {
-            meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        	meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
         } else {
-            meta = bukkitStack.getItemMeta();
+        	meta = bukkitStack.getItemMeta();
         }
-
+        
         if (meta != null) {
-            if (prisonStack.getDisplayName() != null) {
-                meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
-            }
-            if (prisonStack.getLore() != null) {
-                List<String> colored = new ArrayList<>();
-                for (String uncolor : prisonStack.getLore()) {
-                    colored.add(Text.translateAmpColorCodes(uncolor));
-                }
-                meta.setLore(colored);
-            }
-            bukkitStack.setItemMeta(meta);
-        }
+        	if (prisonStack.getDisplayName() != null) {
+        		meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
+        	}
+        	if (prisonStack.getLore() != null) {
+        		List<String> colored = new ArrayList<>();
+        		for (String uncolor : prisonStack.getLore()) {
+        			colored.add(Text.translateAmpColorCodes(uncolor));
+        		}
+        		meta.setLore(colored);
+        	}
+        	bukkitStack.setItemMeta(meta);
+        }        
 
         return bukkitStack;
     }

@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,20 +18,25 @@
 
 package tech.mcprison.prison.internal.platform;
 
-import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.gui.GUI;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.Scheduler;
-import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
-import tech.mcprison.prison.store.Storage;
-import tech.mcprison.prison.util.Location;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import tech.mcprison.prison.commands.PluginCommand;
+import tech.mcprison.prison.file.YamlFileIO;
+import tech.mcprison.prison.gui.GUI;
+import tech.mcprison.prison.integration.Placeholders;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.store.Storage;
+import tech.mcprison.prison.util.Location;
 
 /**
  * Represents an internal platform that Prison has been implemented for.
@@ -48,6 +53,18 @@ public interface Platform {
      */
     Optional<World> getWorld(String name);
 
+    
+    /**
+     * <p>This function allows the PrisonCommand to get a list of any possible world
+     * load failures.
+     * </p>
+     * 
+     * @param display
+     * @return
+     */
+    public void getWorldLoadErrors( ChatDisplay display );
+    
+    
     /**
      * Returns the player with the specified name.
      */
@@ -63,6 +80,12 @@ public interface Platform {
      */
     List<Player> getOnlinePlayers();
 
+// NOTE: Disabling for now.  There is an internal failure within the Prison code base when trying 
+//       to use this, so will revisit in the future.
+    public Optional<Player> getOfflinePlayer(String name);
+    
+    public Optional<Player> getOfflinePlayer(UUID uuid);
+    
     /**
      * Returns the plugin's version.
      */
@@ -101,6 +124,14 @@ public interface Platform {
      */
     void dispatchCommand(String cmd);
 
+    /**
+     * Runs a command as the sender and with only the sender's privileges.
+     * 
+     * @param sender
+     * @param cmd
+     */
+    public void dispatchCommand(CommandSender sender, String cmd);
+    
     /**
      * Returns the {@link Scheduler}, which can be used to schedule tasks.
      */
@@ -203,4 +234,37 @@ public interface Platform {
      * This is a configuration option.kkjksdf;erljnkx.jcsmka.f.fdlwe;s.x. frrer5
      */
     boolean shouldShowAlerts();
+
+
+    
+    public void identifyRegisteredPlugins();
+
+    
+    
+    public Placeholders getPlaceholders();
+    
+    
+	
+	public YamlFileIO getYamlFileIO( File yamlFile );
+	
+
+	public void reloadConfig();
+	
+	
+	public String getConfigString( String key );
+	
+	
+	public boolean getConfigBooleanFalse( String key );
+	
+
+	public boolean getConfigBooleanTrue( String key );
+	
+	
+	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes );
+	
+	
+	public PrisonBlock getPrisonBlock( String blockName );
+
+
+	
 }

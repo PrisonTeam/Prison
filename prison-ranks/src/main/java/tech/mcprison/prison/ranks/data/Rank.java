@@ -17,7 +17,9 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 
 import java.util.List;
@@ -27,7 +29,8 @@ import java.util.List;
  *
  * @author Faizaan A. Datoo
  */
-public class Rank {
+public class Rank
+		implements PrisonSortable {
 
     /*
      * Fields & Constants
@@ -45,23 +48,64 @@ public class Rank {
     // The general cost of this rank, unit-independent. This value holds true for both XP and cost.
     public double cost;
 
+    /** 
+     * <p>Special currency to use. If null, then will use the standard currencies. 
+     * If currency is not null, then it must exist in a an economy that is
+     * supported in the EconomyCurrencyIntegration.
+     * </p>
+     * 
+     */
+    public String currency;
+    
     // The commands that are run when this rank is attained.
     public List<String> rankUpCommands;
 
+    
+    public transient Rank rankPrior;
+    public transient Rank rankNext;
+    
     /*
      * Document-related
      */
 
     public Rank() {
     }
+    
+    /**
+     * <p>This is strictly used for testing only!
+     * Never use this function outside of a jUnit test case!
+     * </p>
+     * 
+     * @param id
+     * @param name
+     */
+    protected Rank( String name ) {
+    	this.id = 0;
+    	this.name = name;
+    }
 
     @SuppressWarnings( "unchecked" )
 	public Rank(Document document) {
-        this.id = RankUtil.doubleToInt(document.get("id"));
-        this.name = (String) document.get("name");
-        this.tag = (String) document.get("tag");
-        this.cost = (double) document.get("cost");
-        this.rankUpCommands = (List<String>) document.get("commands");
+        try
+		{
+			this.id = RankUtil.doubleToInt(document.get("id"));
+			this.name = (String) document.get("name");
+			this.tag = (String) document.get("tag");
+			this.cost = (double) document.get("cost");
+			String currency = (String) document.get("currency");
+			this.currency = (currency == null || 
+					"null".equalsIgnoreCase( currency ) ? null : currency);
+			this.rankUpCommands = (List<String>) document.get("commands");
+		}
+		catch ( Exception e )
+		{
+			Output.get().logError( 
+					String.format( "&aFailure: Loading Ranks! &7Exception parsing rank documents. " +
+					"Rank id= %s name= %s  [%s]", 
+					Integer.toString( this.id ), (this.name == null ? "null" : this.name ),
+					e.getMessage())
+					);
+		}
     }
 
     public Document toDocument() {
@@ -70,10 +114,16 @@ public class Rank {
         ret.put("name", this.name);
         ret.put("tag", this.tag);
         ret.put("cost", this.cost);
+        ret.put("currency", this.currency);
         ret.put("commands", this.rankUpCommands);
         return ret;
     }
     
+    
+    @Override
+    public String toString() {
+    	return "Rank: " + id + " " + name;
+    }
     
     public String filename() {
     	return "rank_" + id;
@@ -100,6 +150,13 @@ public class Rank {
         if (Double.compare(rank.cost, cost) != 0) {
             return false;
         }
+        
+        if ( currency != null && rank.currency == null || 
+        		currency != null && rank.currency != null && 
+        				!currency.equals( rank.currency ) ) {
+        	return false;
+        }
+        	
         if (!name.equals(rank.name)) {
             return false;
         }
@@ -114,6 +171,7 @@ public class Rank {
         result = 31 * result + (tag != null ? tag.hashCode() : 0);
         temp = Double.doubleToLongBits(cost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + currency.hashCode();
         return result;
     }
 

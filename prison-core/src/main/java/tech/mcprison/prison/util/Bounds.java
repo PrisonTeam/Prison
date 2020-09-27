@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  */
 
 package tech.mcprison.prison.util;
+
+import tech.mcprison.prison.internal.World;
 
 /**
  * Represents the area between two {@link Location}s.
@@ -68,6 +70,21 @@ public class Bounds {
         			(getzBlockMax() - getzBlockMin() + 1);
     }
     
+    public void setWorld( World world ) {
+    	if ( world != null ) {
+    		
+    		if ( getMin().getWorld() == null ) {
+    			getMin().setWorld( world );
+    		}
+    		if ( getMax().getWorld() == null ) {
+    			getMax().setWorld( world );
+    		}
+    		if ( getCenter().getWorld() == null ) {
+    			getCenter().setWorld( world );
+    		}
+    	}
+    }
+    
     /**
      * Returns the width of the area.
      * This will always be positive.
@@ -109,6 +126,14 @@ public class Bounds {
             + getHeight() * getWidth());
     }
 
+    public boolean within(Location location) {
+    	return within( location, false );
+    }
+    
+    public boolean withinIncludeTopOfMine(Location location) {
+    	return within( location, true );
+    }
+    
     /**
      * Returns whether or not a single point is within these boundaries.  Ensure the same worlds
      * are being compared too.
@@ -120,30 +145,90 @@ public class Bounds {
      * @param location The {@link Location} to check.
      * @return true if the location is within the bounds, false otherwise.
      */
-    public boolean within(Location location) {
+    private boolean within(Location location, boolean includeTopOfMine ) {
     	boolean results = false;
     	
-    	// TODO fix Bounds.within() get working with junit tests (currently it won't run) until then cannot test changes:
-    	// If the worlds don't match, then don't waste time calculating if the passed 
-    	// location is within the Bounds. Some unit tests pass in nulls.
-//    	if ( min.getWorld() == null && max.getWorld() == null && location.getWorld() == null ||
-//    		 min.getWorld() != null && max.getWorld() != null && location.getWorld() != null &&
-//    		 min.getWorld().getName().equalsIgnoreCase( max.getWorld().getName()) &&
-//    		 min.getWorld().getName().equalsIgnoreCase( location.getWorld().getName() )) {
-    		
+    	if ( withinSameWorld( location )) {
 
     		double ourX = Math.floor(location.getX());
     		double ourY = Math.floor(location.getY());
     		double ourZ = Math.floor(location.getZ());
     		
     		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= (getyMin() - 1) && ourY <= getyMax() // Within Y
+    				&& ourY >= (getyMin() - 1) && ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
     				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
-//    	}
+    	}
 
         return results;
     }
+    
+    public boolean withinSameWorld(Location location) {
+    	return getCenter().getWorld() != null && location.getWorld() != null &&
+    			getCenter().getWorld().getName().equalsIgnoreCase( 
+    						location.getWorld().getName() );
+    	}	
+    
+    /**
+     * <p>This function will determine if the given location is within a radius of the Bounds' 
+     * center. This will return a true or false value.
+     * </p>
+     * 
+     * <p>To keep the calculations simple, if the worlds are the same, then it will create a new
+     * Bounds object and then utilize the computed values for width and length by feeding it in 
+     * to a Pythagorean theorem to compute the hypotenuse (distance) between these two points.
+     * There maybe other unused values calculated, but going for the simplicity of reusing existing code.
+     * </p>
+     * 
+     * @param location
+     * @param radius
+     * @return
+     */
+    public boolean within(Location location, long radius) {
+    	boolean results = false;
+    	
+    	if ( withinSameWorld( location ) ) {
+    		
+    		// Ignore y since this is radius from the center axis of the mine:
+    		double distance = getDistance(location);
+    		
+    		results = distance <= radius;
+    	}
+    	
+    	return results;
+    }
 
+    /**
+     * <p>Ignore Y since this is the radius from the center axis of the mine.
+     * </p>
+     * @return
+     */
+    public double getDistance() {
+    	double deltaX = getMin().getX() - getMax().getX();
+    	double deltaZ = getMin().getZ() - getMax().getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+    	return Math.round( distance );
+    }
+  
+    public double getDistance(Location location) {
+    	double deltaX = getCenter().getX() - location.getX();
+    	double deltaZ = getCenter().getZ() - location.getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+		return Math.round( distance );
+    }    	
+    
+    public double getDistance3d(Location location) {
+    	double deltaX = getCenter().getX() - location.getX();
+    	double deltaY = getCenter().getY() - location.getY();
+    	double deltaZ = getCenter().getZ() - location.getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+    	return distance;
+    }    	
+
+    public String getDimensions() {
+    	return "&7" + Math.round(getWidth()) + "&8x&7" +
+                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
+    }
+    
     public Location getMin() {
         return min;
     }

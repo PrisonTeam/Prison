@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
 
 package tech.mcprison.prison.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +29,19 @@ import tech.mcprison.prison.Prison;
 
 
 /**
- * All of the blocks in the game.
+ * <p>All of the blocks in the game.
+ * </p>
+ * 
+ * <p>The new field altNames contains a list of String values that will help
+ * XMaterial map these types to valid Material types.  These are spigot version
+ * Dependent, so some blocks may have different altNames for different spigot 
+ * versions.
+ * </p>
+ * 
+ * <p>XMaterial support for spigot 1.8.8:
+ * 		MOSS_STONE = mossy_cobblestone,  LAPIS_LAZULI_ORE = "lapis_ore",  
+ * 		LAPIS_LAZULI_BLOCK = "lapis_block",  PILLAR_QUARTZ_BLOCK = "quartz_pillar"
+ *  </p>
  *
  * @author Faizaan A. Datoo
  * @author Camouflage100
@@ -44,8 +58,43 @@ public enum BlockType {
 	 * of the Material.
 	 */
 	
+	IGNORE( -1, "prison:ignore", -1, MaterialType.BLOCK ),
+	NULL_BLOCK( -2, "prison:null_block", -1, MaterialType.INVALID ),
+	
+	
     // This was auto-generated from WorldEdit's blocks.json
     // @formatter:off
+	
+	
+	// NOTE: Double slabs are ones that players cannot naturally place, and they are
+	//       similar to the main block type.  It appears like they have been replaced,
+	//       but not sure with what.  I suspect no one will use them anyway, and if they
+	//       do, then mapping them to their counter part block.  There are a few doubles
+	//       that have been mapped to "smooth" in the later versions, so they are used when 
+	//       possible.
+	
+	
+	DOUBLE_STONE_SLAB( 43, "minecraft:double_stone_slab", 0, MaterialType.BLOCK, "smooth_stone" ),
+	DOUBLE_SANDSTONE_SLAB( 43, "minecraft:double_stone_slab", 1, MaterialType.BLOCK, "smooth_sandstone_slab" ),
+	DOUBLE_WOODEN_SLAB( 43, "minecraft:double_stone_slab", 2, MaterialType.BLOCK, "OAK_PLANKS" ),
+	DOUBLE_COBBLESTONE_SLAB( 43, "minecraft:double_stone_slab", 3, MaterialType.BLOCK, "COBBLESTONE" ),
+	DOUBLE_BRICK_SLAB( 43, "minecraft:double_stone_slab", 4, MaterialType.BLOCK, "BRICKS" ),
+	DOUBLE_STONE_BRICK_SLAB( 43, "minecraft:double_stone_slab", 5, MaterialType.BLOCK, "STONE_BRICKS" ),
+	DOUBLE_NETHER_BRICK_SLAB( 43, "minecraft:double_stone_slab", 6, MaterialType.BLOCK, "NETHER_BRICKS" ),
+	DOUBLE_QUARTZ_SLAB( 43, "minecraft:double_stone_slab", 7, MaterialType.BLOCK, "SMOOTH_QUARTZ" ),
+
+	DOUBLE_OAK_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 0, MaterialType.BLOCK, "OAK_PLANKS" ),
+	DOUBLE_SPRUCE_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 1, MaterialType.BLOCK, "SPRUCE_PLANKS" ),
+	DOUBLE_BIRCH_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 2, MaterialType.BLOCK, "BIRCH_PLANKS" ),
+	DOUBLE_JUNGLE_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 3, MaterialType.BLOCK, "JUNGLE_PLANKS" ),
+	DOUBLE_ACACIA_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 4, MaterialType.BLOCK, "ACACIA_PLANKS" ),
+	DOUBLE_DARK_OAK_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 5, MaterialType.BLOCK, "DARK_OAK_PLANKS" ),
+
+	DOUBLE_RED_SANDSTONE_SLAB( 181, "minecraft:double_stone_slab2", 0, MaterialType.BLOCK, "RED_SANDSTONE" ),
+	PURPUR_DOUBLE_SLAB( 204, "minecraft:purpur_double_slab", 0, MaterialType.BLOCK, "PURPUR_BLOCK" ),
+
+	
+	
 	AIR( 0, "minecraft:air", 0, MaterialType.BLOCK ),
 	STONE( 1, "minecraft:stone", 0, MaterialType.BLOCK ),
 	GRANITE( 1, "minecraft:stone", 1, MaterialType.BLOCK ),
@@ -59,44 +108,52 @@ public enum BlockType {
 	COARSE_DIRT( 3, "minecraft:dirt", 1, MaterialType.BLOCK ),
 	PODZOL( 3, "minecraft:dirt", 2, MaterialType.BLOCK ),
 	COBBLESTONE( 4, "minecraft:cobblestone", 0, MaterialType.BLOCK ),
-	OAK_WOOD_PLANK( 5, "minecraft:planks", 0, MaterialType.BLOCK ),
-	SPRUCE_WOOD_PLANK( 5, "minecraft:planks", 1, MaterialType.BLOCK ),
-	BIRCH_WOOD_PLANK( 5, "minecraft:planks", 2, MaterialType.BLOCK ),
-	JUNGLE_WOOD_PLANK( 5, "minecraft:planks", 3, MaterialType.BLOCK ),
-	ACACIA_WOOD_PLANK( 5, "minecraft:planks", 4, MaterialType.BLOCK ),
-	DARK_OAK_WOOD_PLANK( 5, "minecraft:planks", 5, MaterialType.BLOCK ),
+	
+	OAK_WOOD_PLANK( 5, "minecraft:planks", 0, MaterialType.BLOCK, "OAK_PLANKS" ),
+	SPRUCE_WOOD_PLANK( 5, "minecraft:planks", 1, MaterialType.BLOCK, "SPRUCE_PLANKS" ),
+	BIRCH_WOOD_PLANK( 5, "minecraft:planks", 2, MaterialType.BLOCK, "BIRCH_PLANKS" ),
+	JUNGLE_WOOD_PLANK( 5, "minecraft:planks", 3, MaterialType.BLOCK, "JUNGLE_PLANKS" ),
+	ACACIA_WOOD_PLANK( 5, "minecraft:planks", 4, MaterialType.BLOCK, "ACACIA_PLANKS" ),
+	DARK_OAK_WOOD_PLANK( 5, "minecraft:planks", 5, MaterialType.BLOCK, "DARK_OAK_PLANKS" ),
+	
 	OAK_SAPLING( 6, "minecraft:sapling", 0, MaterialType.BLOCK ),
 	SPRUCE_SAPLING( 6, "minecraft:sapling", 1, MaterialType.BLOCK ),
 	BIRCH_SAPLING( 6, "minecraft:sapling", 2, MaterialType.BLOCK ),
 	JUNGLE_SAPLING( 6, "minecraft:sapling", 3, MaterialType.BLOCK ),
 	ACACIA_SAPLING( 6, "minecraft:sapling", 4, MaterialType.BLOCK ),
 	DARK_OAK_SAPLING( 6, "minecraft:sapling", 5, MaterialType.BLOCK ),
-	BEDROCK( 7, "minecraft:bedrock", 0, MaterialType.BLOCK  ),
-	FLOWING_WATER( 8, "minecraft:flowing_water", 0, MaterialType.BLOCK ),
+	BEDROCK( 7, "minecraft:bedrock", 0, MaterialType.BLOCK ),
+	
+	FLOWING_WATER( 8, "minecraft:flowing_water", 0, MaterialType.BLOCK, "WATER" ),
+	
 	STILL_WATER( 9, "minecraft:water", 0, MaterialType.BLOCK ),
-	FLOWING_LAVA( 10, "minecraft:flowing_lava", 0, MaterialType.BLOCK ),
+	FLOWING_LAVA( 10, "minecraft:flowing_lava", 0, MaterialType.BLOCK, "LAVA" ),
 	STILL_LAVA( 11, "minecraft:lava", 0, MaterialType.BLOCK ),
+	
 	SAND( 12, "minecraft:sand", 0, MaterialType.BLOCK ),
 	RED_SAND( 12, "minecraft:sand", 1, MaterialType.BLOCK ),
 	GRAVEL( 13, "minecraft:gravel", 0, MaterialType.BLOCK ),
-	GOLD_ORE( 14, "minecraft:gold_ore", 0, MaterialType.BLOCK  ),
-	IRON_ORE( 15, "minecraft:iron_ore", 0, MaterialType.BLOCK  ),
-	COAL_ORE( 16, "minecraft:coal_ore", 0, MaterialType.BLOCK  ),
+	GOLD_ORE( 14, "minecraft:gold_ore", 0, MaterialType.BLOCK ),
+	IRON_ORE( 15, "minecraft:iron_ore", 0, MaterialType.BLOCK ),
+	COAL_ORE( 16, "minecraft:coal_ore", 0, MaterialType.BLOCK ),
+
 	OAK_WOOD( 17, "minecraft:log", 0, MaterialType.BLOCK ),
 	SPRUCE_WOOD( 17, "minecraft:log", 1, MaterialType.BLOCK ),
 	BIRCH_WOOD( 17, "minecraft:log", 2, MaterialType.BLOCK ),
 	JUNGLE_WOOD( 17, "minecraft:log", 3, MaterialType.BLOCK ),
+	
 	OAK_LEAVES( 18, "minecraft:leaves", 0, MaterialType.BLOCK ),
 	SPRUCE_LEAVES( 18, "minecraft:leaves", 1, MaterialType.BLOCK ),
 	BIRCH_LEAVES( 18, "minecraft:leaves", 2, MaterialType.BLOCK ),
-	UNGL_LEAVES( 18, "minecraft:leaves", 3, MaterialType.BLOCK ), /// ??? Should this be  JUNGLE_LEAVES ???
 	JUNGLE_LEAVES( 18, "minecraft:leaves", 3, MaterialType.BLOCK ),
 
 	SPONGE( 19, "minecraft:sponge", 0, MaterialType.BLOCK ),
 	WET_SPONGE( 19, "minecraft:sponge", 1, MaterialType.BLOCK ),
 	GLASS( 20, "minecraft:glass", 0, MaterialType.BLOCK ),
+	
 	LAPIS_LAZULI_ORE( 21, "minecraft:lapis_ore", 0, MaterialType.BLOCK ),
 	LAPIS_LAZULI_BLOCK( 22, "minecraft:lapis_block", 0, MaterialType.BLOCK ),
+	
 	DISPENSER( 23, "minecraft:dispenser", 0, MaterialType.BLOCK ),
 	SANDSTONE( 24, "minecraft:sandstone", 0, MaterialType.BLOCK ),
 	CHISELED_SANDSTONE( 24, "minecraft:sandstone", 1, MaterialType.BLOCK ),
@@ -107,10 +164,10 @@ public enum BlockType {
 	DETECTOR_RAIL( 28, "minecraft:detector_rail", 0, MaterialType.BLOCK ),
 	STICKY_PISTON( 29, "minecraft:sticky_piston", 0, MaterialType.BLOCK ),
 	COBWEB( 30, "minecraft:web", 0, MaterialType.BLOCK ),
-	DEAD_SHRUB( 31, "minecraft:tallgrass", 0, MaterialType.BLOCK ),
+	DEAD_SHRUB( 31, "minecraft:tallgrass", 0, MaterialType.BLOCK, "DEAD_BUSH" ),
 	TALL_GRASS( 31, "minecraft:tallgrass", 1, MaterialType.BLOCK ),
 	FERN( 31, "minecraft:tallgrass", 2, MaterialType.BLOCK ),
-	DEAD_BUSH( 32, "minecraft:deadbush", 0, MaterialType.BLOCK ),
+	DEAD_BUSH( 32, "minecraft:deadbush", 0, MaterialType.BLOCK, "DEAD_BUSH" ),
 	PISTON( 33, "minecraft:piston", 0, MaterialType.BLOCK ),
 	PISTON_HEAD( 34, "minecraft:piston_head", 0, MaterialType.BLOCK ),
 	WHITE_WOOL( 35, "minecraft:wool", 0, MaterialType.BLOCK ),
@@ -129,11 +186,12 @@ public enum BlockType {
 	GREEN_WOOL( 35, "minecraft:wool", 13, MaterialType.BLOCK ),
 	RED_WOOL( 35, "minecraft:wool", 14, MaterialType.BLOCK ),
 	BLACK_WOOL( 35, "minecraft:wool", 15, MaterialType.BLOCK ),
+	
 	DANDELION( 37, "minecraft:yellow_flower", 0, MaterialType.BLOCK ),
-	POPPY( 38, "minecraft:red_flower", 0, MaterialType.BLOCK ),
+	POPPY( 38, "minecraft:red_flower", 0, MaterialType.BLOCK, "RED_ROSE" ),
 	BLUE_ORCHID( 38, "minecraft:red_flower", 1, MaterialType.BLOCK ),
 	ALLIUM( 38, "minecraft:red_flower", 2, MaterialType.BLOCK ),
-	AZURE_BLUET( 38, "minecraft:red_flower", 3, MaterialType.BLOCK ),
+	AZURE_BLUET( 38, "minecraft:red_flower", 3, MaterialType.BLOCK, "AZURE_BLUET" ),
 	RED_TULIP( 38, "minecraft:red_flower", 4, MaterialType.BLOCK ),
 	ORANGE_TULIP( 38, "minecraft:red_flower", 5, MaterialType.BLOCK ),
 	WHITE_TULIP( 38, "minecraft:red_flower", 6, MaterialType.BLOCK ),
@@ -143,26 +201,21 @@ public enum BlockType {
 	RED_MUSHROOM( 40, "minecraft:red_mushroom", 0, MaterialType.BLOCK ),
 	GOLD_BLOCK( 41, "minecraft:gold_block", 0, MaterialType.BLOCK ),
 	IRON_BLOCK( 42, "minecraft:iron_block", 0, MaterialType.BLOCK ),
-	DOUBLE_STONE_SLAB( 43, "minecraft:double_stone_slab", 0, MaterialType.BLOCK ),
-	DOUBLE_SANDSTONE_SLAB( 43, "minecraft:double_stone_slab", 1, MaterialType.BLOCK ),
-	DOUBLE_WOODEN_SLAB( 43, "minecraft:double_stone_slab", 2, MaterialType.BLOCK ),
-	DOUBLE_COBBLESTONE_SLAB( 43, "minecraft:double_stone_slab", 3, MaterialType.BLOCK ),
-	DOUBLE_BRICK_SLAB( 43, "minecraft:double_stone_slab", 4, MaterialType.BLOCK ),
-	DOUBLE_STONE_BRICK_SLAB( 43, "minecraft:double_stone_slab", 5, MaterialType.BLOCK ),
-	DOUBLE_NETHER_BRICK_SLAB( 43, "minecraft:double_stone_slab", 6, MaterialType.BLOCK ),
-	DOUBLE_QUARTZ_SLAB( 43, "minecraft:double_stone_slab", 7, MaterialType.BLOCK ),
+
+	
 	STONE_SLAB( 44, "minecraft:stone_slab", 0, MaterialType.BLOCK ),
 	SANDSTONE_SLAB( 44, "minecraft:stone_slab", 1, MaterialType.BLOCK ),
 	WOODEN_SLAB( 44, "minecraft:stone_slab", 2, MaterialType.BLOCK ),
 	COBBLESTONE_SLAB( 44, "minecraft:stone_slab", 3, MaterialType.BLOCK ),
-	BRICK_SLAB( 44, "minecraft:stone_slab", 4, MaterialType.BLOCK ),
+	BRICK_SLAB( 44, "minecraft:stone_slab", 4, MaterialType.BLOCK, "STONE_BRICK_SLAB" ),
 	STONE_BRICK_SLAB( 44, "minecraft:stone_slab", 5, MaterialType.BLOCK ),
 	NETHER_BRICK_SLAB( 44, "minecraft:stone_slab", 6, MaterialType.BLOCK ),
 	QUARTZ_SLAB( 44, "minecraft:stone_slab", 7, MaterialType.BLOCK ),
 	BRICKS( 45, "minecraft:brick_block", 0, MaterialType.BLOCK ),
 	TNT( 46, "minecraft:tnt", 0, MaterialType.BLOCK ),
 	BOOKSHELF( 47, "minecraft:bookshelf", 0, MaterialType.BLOCK ),
-	MOSS_STONE( 48, "minecraft:mossy_cobblestone", 0, MaterialType.BLOCK ),
+	MOSS_STONE( 48, "minecraft:mossy_cobblestone", 0, MaterialType.BLOCK, "MOSSY_COBBLESTONE" ),
+	
 	OBSIDIAN( 49, "minecraft:obsidian", 0, MaterialType.BLOCK ),
 	TORCH( 50, "minecraft:torch", 0, MaterialType.BLOCK ),
 	FIRE( 51, "minecraft:fire", 0, MaterialType.BLOCK ),
@@ -177,7 +230,7 @@ public enum BlockType {
 	FARMLAND( 60, "minecraft:farmland", 0, MaterialType.BLOCK ),
 	FURNACE( 61, "minecraft:furnace", 0, MaterialType.BLOCK ),
 	BURNING_FURNACE( 62, "minecraft:lit_furnace", 0, MaterialType.BLOCK ),
-	STANDING_SIGN_BLOCK( 63, "minecraft:standing_sign", 0, MaterialType.BLOCK ),
+	STANDING_SIGN_BLOCK( 63, "minecraft:standing_sign", 0, MaterialType.BLOCK, "OAK_SIGN" ),
 	OAK_DOOR_BLOCK( 64, "minecraft:wooden_door", 0, MaterialType.BLOCK ),
 	LADDER( 65, "minecraft:ladder", 0, MaterialType.BLOCK ),
 	RAIL( 66, "minecraft:rail", 0, MaterialType.BLOCK ),
@@ -186,7 +239,9 @@ public enum BlockType {
 	LEVER( 69, "minecraft:lever", 0, MaterialType.BLOCK ),
 	STONE_PRESSURE_PLATE( 70, "minecraft:stone_pressure_plate", 0, MaterialType.BLOCK ),
 	IRON_DOOR_BLOCK( 71, "minecraft:iron_door", 0, MaterialType.BLOCK ),
-	WOODEN_PRESSURE_PLATE( 72, "minecraft:wooden_pressure_plate", 0, MaterialType.BLOCK ),
+	
+	WOODEN_PRESSURE_PLATE( 72, "minecraft:wooden_pressure_plate", 0, MaterialType.BLOCK, 
+										"OAK_PRESSURE_PLATE", "WOOD_PLATE" ),
 	REDSTONE_ORE( 73, "minecraft:redstone_ore", 0, MaterialType.BLOCK ),
 
 	GLOWING_REDSTONE_ORE( 74, "minecraft:lit_redstone_ore", 0, MaterialType.BLOCK ),
@@ -201,7 +256,7 @@ public enum BlockType {
 	CACTUS( 81, "minecraft:cactus", 0, MaterialType.BLOCK ),
 
 	CLAY( 82, "minecraft:clay", 0, MaterialType.BLOCK ),
-	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK ),
+	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE" ),
 	JUKEBOX( 84, "minecraft:jukebox", 0, MaterialType.BLOCK ),
 	OAK_FENCE( 85, "minecraft:fence", 0, MaterialType.BLOCK ),
 	PUMPKIN( 86, "minecraft:pumpkin", 0, MaterialType.BLOCK ),
@@ -210,10 +265,14 @@ public enum BlockType {
 	SOUL_SAND( 88, "minecraft:soul_sand", 0, MaterialType.BLOCK ),
 	GLOWSTONE( 89, "minecraft:glowstone", 0, MaterialType.BLOCK ),
 	NETHER_PORTAL( 90, "minecraft:portal", 0, MaterialType.BLOCK ),
-	JACK_OLANTERN( 91, "minecraft:lit_pumpkin", 0, MaterialType.BLOCK ),
+	
+	JACK_OLANTERN( 91, "minecraft:lit_pumpkin", 0, MaterialType.BLOCK, "jack_o_lantern" ),
+	
 	CAKE_BLOCK( 92, "minecraft:cake", 0, MaterialType.BLOCK ),
-	REDSTONE_REPEATER_BLOCK_OFF( 93, "minecraft:unpowered_repeater", 0, MaterialType.BLOCK ),
-	REDSTONE_REPEATER_BLOCK_ON( 94, "minecraft:powered_repeater", 0, MaterialType.BLOCK ),
+	
+	REDSTONE_REPEATER_BLOCK_OFF( 93, "minecraft:unpowered_repeater", 0, MaterialType.BLOCK, "REPEATER" ),
+	REDSTONE_REPEATER_BLOCK_ON( 94, "minecraft:powered_repeater", 0, MaterialType.BLOCK, "REPEATER" ),
+	
 	WHITE_STAINED_GLASS( 95, "minecraft:stained_glass", 0, MaterialType.BLOCK ),
 	ORANGE_STAINED_GLASS( 95, "minecraft:stained_glass", 1, MaterialType.BLOCK ),
 	MAGENTA_STAINED_GLASS( 95, "minecraft:stained_glass", 2, MaterialType.BLOCK ),
@@ -230,19 +289,25 @@ public enum BlockType {
 	GREEN_STAINED_GLASS( 95, "minecraft:stained_glass", 13, MaterialType.BLOCK ),
 	RED_STAINED_GLASS( 95, "minecraft:stained_glass", 14, MaterialType.BLOCK ),
 	BLACK_STAINED_GLASS( 95, "minecraft:stained_glass", 15, MaterialType.BLOCK ),
-	WOODEN_TRAPDOOR( 96, "minecraft:trapdoor", 0, MaterialType.BLOCK ),
-	STONE_MONSTER_EGG( 97, "minecraft:monster_egg", 0, MaterialType.BLOCK ),
-	COBBLESTONE_MONSTER_EGG( 97, "minecraft:monster_egg", 1, MaterialType.BLOCK ),
-	STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 2, MaterialType.BLOCK ),
-	MOSSY_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 3, MaterialType.BLOCK ),
-	CRACKED_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 4, MaterialType.BLOCK ),
-	CHISELED_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 5, MaterialType.BLOCK ),
-	STONE_BRICKS( 98, "minecraft:stonebrick", 0, MaterialType.BLOCK ),
-	MOSSY_STONE_BRICKS( 98, "minecraft:stonebrick", 1, MaterialType.BLOCK ),
-	CRACKED_STONE_BRICKS( 98, "minecraft:stonebrick", 2, MaterialType.BLOCK ),
-	CHISELED_STONE_BRICKS( 98, "minecraft:stonebrick", 3, MaterialType.BLOCK ),
+	WOODEN_TRAPDOOR( 96, "minecraft:trapdoor", 0, MaterialType.BLOCK, "oak_trapdoor" ),
+	
+	STONE_MONSTER_EGG( 97, "minecraft:monster_egg", 0, MaterialType.BLOCK, "INFESTED_STONE" ),
+	COBBLESTONE_MONSTER_EGG( 97, "minecraft:monster_egg", 1, MaterialType.BLOCK, "INFESTED_COBBLESTONE" ),
+	STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 2, MaterialType.BLOCK, "INFESTED_STONE_BRICKS" ),
+	MOSSY_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 3, MaterialType.BLOCK, "INFESTED_MOSSY_STONE_BRICKS" ),
+	CRACKED_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 4, MaterialType.BLOCK, "INFESTED_CRACKED_STONE_BRICKS" ),
+	CHISELED_STONE_BRICK_MONSTER_EGG( 97, "minecraft:monster_egg", 5, MaterialType.BLOCK, "INFESTED_CHISELED_STONE_BRICKS" ),
+	
+	STONE_BRICKS( 98, "minecraft:stonebrick", 0, MaterialType.BLOCK, "STONE_BRICKS" ),
+	MOSSY_STONE_BRICKS( 98, "minecraft:stonebrick", 1, MaterialType.BLOCK, "MOSSY_STONE_BRICKS" ),
+	CRACKED_STONE_BRICKS( 98, "minecraft:stonebrick", 2, MaterialType.BLOCK, "CRACKED_STONE_BRICKS" ),
+	CHISELED_STONE_BRICKS( 98, "minecraft:stonebrick", 3, MaterialType.BLOCK, "CHISELED_STONE_BRICKS" ),
+	
 	BROWN_MUSHROOM_BLOCK( 99, "minecraft:brown_mushroom_block", 0, MaterialType.BLOCK ),
+	HUGE_MUSHROOM_1( 99, "minecraft:brown_mushroom_block", 14, MaterialType.BLOCK ),
 	RED_MUSHROOM_BLOCK( 100, "minecraft:red_mushroom_block", 0, MaterialType.BLOCK ),
+	HUGE_MUSHROOM_2( 100, "minecraft:red_mushroom_block", 14, MaterialType.BLOCK ),
+	
 	IRON_BARS( 101, "minecraft:iron_bars", 0, MaterialType.BLOCK ),
 	GLASS_PANE( 102, "minecraft:glass_pane", 0, MaterialType.BLOCK ),
 	MELON_BLOCK( 103, "minecraft:melon_block", 0, MaterialType.BLOCK ),
@@ -254,6 +319,7 @@ public enum BlockType {
 	STONE_BRICK_STAIRS( 109, "minecraft:stone_brick_stairs", 0, MaterialType.BLOCK ),
 	MYCELIUM( 110, "minecraft:mycelium", 0, MaterialType.BLOCK ),
 	LILY_PAD( 111, "minecraft:waterlily", 0, MaterialType.BLOCK ),
+	
 	NETHER_BRICK( 112, "minecraft:nether_brick", 0, MaterialType.BLOCK ),
 	NETHER_BRICK_FENCE( 113, "minecraft:nether_brick_fence", 0, MaterialType.BLOCK ),
 	NETHER_BRICK_STAIRS( 114, "minecraft:nether_brick_stairs", 0, MaterialType.BLOCK ),
@@ -265,14 +331,11 @@ public enum BlockType {
 	END_PORTAL_FRAME( 120, "minecraft:end_portal_frame", 0, MaterialType.BLOCK ),
 	END_STONE( 121, "minecraft:end_stone", 0, MaterialType.BLOCK ),
 	DRAGON_EGG( 122, "minecraft:dragon_egg", 0, MaterialType.BLOCK ),
-	REDSTONE_LAMP_INACTIVE( 123, "minecraft:redstone_lamp", 0, MaterialType.BLOCK ),
-	REDSTONE_LAMP_ACTIVE( 124, "minecraft:lit_redstone_lamp", 0, MaterialType.BLOCK ),
-	DOUBLE_OAK_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 0, MaterialType.BLOCK ),
-	DOUBLE_SPRUCE_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 1, MaterialType.BLOCK ),
-	DOUBLE_BIRCH_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 2, MaterialType.BLOCK ),
-	DOUBLE_JUNGLE_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 3, MaterialType.BLOCK ),
-	DOUBLE_ACACIA_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 4, MaterialType.BLOCK ),
-	DOUBLE_DARK_OAK_WOOD_SLAB( 125, "minecraft:double_wooden_slab", 5, MaterialType.BLOCK ),
+	
+	REDSTONE_LAMP_INACTIVE( 123, "minecraft:redstone_lamp", 0, MaterialType.BLOCK, "REDSTONE_LAMP_OFF" ),
+	REDSTONE_LAMP_ACTIVE( 124, "minecraft:lit_redstone_lamp", 0, MaterialType.BLOCK, "REDSTONE_LAMP", "REDSTONE_LAMP_ON" ),
+	
+
 	OAK_WOOD_SLAB( 126, "minecraft:wooden_slab", 0, MaterialType.BLOCK ),
 	SPRUCE_WOOD_SLAB( 126, "minecraft:wooden_slab", 1, MaterialType.BLOCK ),
 	BIRCH_WOOD_SLAB( 126, "minecraft:wooden_slab", 2, MaterialType.BLOCK ),
@@ -296,40 +359,46 @@ public enum BlockType {
 	FLOWER_POT( 140, "minecraft:flower_pot", 0, MaterialType.BLOCK ),
 	CARROTS( 141, "minecraft:carrots", 0, MaterialType.BLOCK ),
 	POTATOES( 142, "minecraft:potatoes", 0, MaterialType.BLOCK ),
-	WOODEN_BUTTON( 143, "minecraft:wooden_button", 0, MaterialType.BLOCK ),
+	WOODEN_BUTTON( 143, "minecraft:wooden_button", 0, MaterialType.BLOCK, "OAK_BUTTON", "wood_button" ),
 	MOB_HEAD( 144, "minecraft:skull", 0, MaterialType.BLOCK ),
 	ANVIL( 145, "minecraft:anvil", 0, MaterialType.BLOCK ),
 	TRAPPED_CHEST( 146, "minecraft:trapped_chest", 0, MaterialType.BLOCK ),
 	WEIGHTED_PRESSURE_PLATE_LIGHT( 147, "minecraft:light_weighted_pressure_plate", 0, MaterialType.BLOCK ),
 	WEIGHTED_PRESSURE_PLATE_HEAVY( 148, "minecraft:heavy_weighted_pressure_plate", 0, MaterialType.BLOCK ),
-	REDSTONE_COMPARATOR_INACTIVE( 149, "minecraft:unpowered_comparator", 0, MaterialType.BLOCK ),
-	REDSTONE_COMPARATOR_ACTIVE( 150, "minecraft:powered_comparator", 0, MaterialType.BLOCK ),
+	
+	REDSTONE_COMPARATOR_INACTIVE( 149, "minecraft:unpowered_comparator", 0, MaterialType.BLOCK, "COMPARATOR" ),
+	REDSTONE_COMPARATOR_ACTIVE( 150, "minecraft:powered_comparator", 0, MaterialType.BLOCK, "COMPARATOR" ),
+	
 	DAYLIGHT_SENSOR( 151, "minecraft:daylight_detector", 0, MaterialType.BLOCK ),
 	REDSTONE_BLOCK( 152, "minecraft:redstone_block", 0, MaterialType.BLOCK ),
 	NETHER_QUARTZ_ORE( 153, "minecraft:quartz_ore", 0, MaterialType.BLOCK ),
 	HOPPER( 154, "minecraft:hopper", 0, MaterialType.BLOCK ),
 	QUARTZ_BLOCK( 155, "minecraft:quartz_block", 0, MaterialType.BLOCK ),
 	CHISELED_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 1, MaterialType.BLOCK ),
-	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK ),
+	
+	PILLAR_QUARTZ_BLOCK( 155, "minecraft:quartz_block", 2, MaterialType.BLOCK, "QUARTZ_PILLAR" ),
+	
 	QUARTZ_STAIRS( 156, "minecraft:quartz_stairs", 0, MaterialType.BLOCK ),
 	ACTIVATOR_RAIL( 157, "minecraft:activator_rail", 0, MaterialType.BLOCK ),
 	DROPPER( 158, "minecraft:dropper", 0, MaterialType.BLOCK ),
-	WHITE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 0, MaterialType.BLOCK ),
-	ORANGE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 1, MaterialType.BLOCK ),
-	MAGENTA_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 2, MaterialType.BLOCK ),
-	LIGHT_BLUE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 3, MaterialType.BLOCK ),
-	YELLOW_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 4, MaterialType.BLOCK ),
-	LIME_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 5, MaterialType.BLOCK ),
-	PINK_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 6, MaterialType.BLOCK ),
-	GRAY_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 7, MaterialType.BLOCK ),
-	LIGHT_GRAY_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 8, MaterialType.BLOCK ),
-	CYAN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 9, MaterialType.BLOCK ),
-	PURPLE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 10, MaterialType.BLOCK ),
-	BLUE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 11, MaterialType.BLOCK ),
-	BROWN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 12, MaterialType.BLOCK ),
-	GREEN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 13, MaterialType.BLOCK ),
-	RED_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 14, MaterialType.BLOCK ),
-	BLACK_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 15, MaterialType.BLOCK ),
+	
+	WHITE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 0, MaterialType.BLOCK, "WHITE_TERRACOTTA" ),
+	ORANGE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 1, MaterialType.BLOCK, "ORANGE_TERRACOTTA" ),
+	MAGENTA_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 2, MaterialType.BLOCK, "MAGENTA_TERRACOTTA" ),
+	LIGHT_BLUE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 3, MaterialType.BLOCK, "LIGHT_BLUE_TERRACOTTA" ),
+	YELLOW_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 4, MaterialType.BLOCK, "YELLOW_TERRACOTTA" ),
+	LIME_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 5, MaterialType.BLOCK, "LIME_TERRACOTTA" ),
+	PINK_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 6, MaterialType.BLOCK, "PINK_TERRACOTTA" ),
+	GRAY_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 7, MaterialType.BLOCK, "GRAY_TERRACOTTA" ),
+	LIGHT_GRAY_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 8, MaterialType.BLOCK, "LIGHT_GRAY_TERRACOTTA" ),
+	CYAN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 9, MaterialType.BLOCK, "CYAN_TERRACOTTA" ),
+	PURPLE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 10, MaterialType.BLOCK, "PURPLE_TERRACOTTA" ),
+	BLUE_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 11, MaterialType.BLOCK, "BLUE_TERRACOTTA" ),
+	BROWN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 12, MaterialType.BLOCK, "BROWN_TERRACOTTA" ),
+	GREEN_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 13, MaterialType.BLOCK, "GREEN_TERRACOTTA" ),
+	RED_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 14, MaterialType.BLOCK, "RED_TERRACOTTA" ),
+	BLACK_STAINED_CLAY( 159, "minecraft:stained_hardened_clay", 15, MaterialType.BLOCK, "BLACK_TERRACOTTA" ),
+	
 	WHITE_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 0, MaterialType.BLOCK ),
 	ORANGE_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 1, MaterialType.BLOCK ),
 	MAGENTA_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 2, MaterialType.BLOCK ),
@@ -346,7 +415,8 @@ public enum BlockType {
 	GREEN_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 13, MaterialType.BLOCK ),
 	RED_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 14, MaterialType.BLOCK ),
 	BLACK_STAINED_GLASS_PANE( 160, "minecraft:stained_glass_pane", 15, MaterialType.BLOCK ),
-	ACACIA_LEAVES( 161, "minecraft:leaves2", 0, MaterialType.BLOCK ),
+	
+	ACACIA_LEAVES( 161, "minecraft:leaves2", 0, MaterialType.BLOCK, "ACACIA_LEAVES" ),
 	DARK_OAK_LEAVES( 161, "minecraft:leaves2", 1, MaterialType.BLOCK ),
 	ACACIA_WOOD( 162, "minecraft:log2", 0, MaterialType.BLOCK ),
 	DARK_OAK_WOOD( 162, "minecraft:log2", 1, MaterialType.BLOCK ),
@@ -376,7 +446,7 @@ public enum BlockType {
 	GREEN_CARPET( 171, "minecraft:carpet", 13, MaterialType.BLOCK ),
 	RED_CARPET( 171, "minecraft:carpet", 14, MaterialType.BLOCK ),
 	BLACK_CARPET( 171, "minecraft:carpet", 15, MaterialType.BLOCK ),
-	HARDENED_CLAY( 172, "minecraft:hardened_clay", 0, MaterialType.BLOCK ),
+	HARDENED_CLAY( 172, "minecraft:hardened_clay", 0, MaterialType.BLOCK, "TERRACOTTA", "HARD_CLAY" ),
 	BLOCK_OF_COAL( 173, "minecraft:coal_block", 0, MaterialType.BLOCK ),
 	PACKED_ICE( 174, "minecraft:packed_ice", 0, MaterialType.BLOCK ),
 	SUNFLOWER( 175, "minecraft:double_plant", 0, MaterialType.BLOCK ),
@@ -392,8 +462,9 @@ public enum BlockType {
 	CHISELED_RED_SANDSTONE( 179, "minecraft:red_sandstone", 1, MaterialType.BLOCK ),
 	SMOOTH_RED_SANDSTONE( 179, "minecraft:red_sandstone", 2, MaterialType.BLOCK ),
 	RED_SANDSTONE_STAIRS( 180, "minecraft:red_sandstone_stairs", 0, MaterialType.BLOCK ),
-	DOUBLE_RED_SANDSTONE_SLAB( 181, "minecraft:double_stone_slab2", 0, MaterialType.BLOCK ),
+	
 	RED_SANDSTONE_SLAB( 182, "minecraft:stone_slab2", 0, MaterialType.BLOCK ),
+	
 	SPRUCE_FENCE_GATE( 183, "minecraft:spruce_fence_gate", 0, MaterialType.BLOCK ),
 	BIRCH_FENCE_GATE( 184, "minecraft:birch_fence_gate", 0, MaterialType.BLOCK ),
 	JUNGLE_FENCE_GATE( 185, "minecraft:jungle_fence_gate", 0, MaterialType.BLOCK ),
@@ -415,7 +486,7 @@ public enum BlockType {
 	PURPUR_BLOCK( 201, "minecraft:purpur_block", 0, MaterialType.BLOCK ),
 	PURPUR_PILLAR( 202, "minecraft:purpur_pillar", 0, MaterialType.BLOCK ),
 	PURPUR_STAIRS( 203, "minecraft:purpur_stairs", 0, MaterialType.BLOCK ),
-	PURPUR_DOUBLE_SLAB( 204, "minecraft:purpur_double_slab", 0, MaterialType.BLOCK ),
+	
 	PURPUR_SLAB( 205, "minecraft:purpur_slab", 0, MaterialType.BLOCK ),
 	END_STONE_BRICKS( 206, "minecraft:end_bricks", 0, MaterialType.BLOCK ),
 	BEETROOT_BLOCK( 207, "minecraft:beetroots", 0, MaterialType.BLOCK ),
@@ -509,7 +580,7 @@ public enum BlockType {
 	MILK_BUCKET( 335, "minecraft:milk_bucket", 0 ),
 	BRICK( 336, "minecraft:brick", 0, MaterialType.BLOCK ),
 	CLAY_BALL( 337, "minecraft:clay_ball", 0 ),
-	SUGAR_CANES_ITEM( 338, "minecraft:reeds", 0, MaterialType.BLOCK ),
+	SUGAR_CANES_ITEM( 338, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE" ),
 	PAPER( 339, "minecraft:paper", 0 ),
 	BOOK( 340, "minecraft:book", 0 ),
 	SLIMEBALL( 341, "minecraft:slime_ball", 0 ),
@@ -526,11 +597,15 @@ public enum BlockType {
 	PUFFERFISH( 349, "minecraft:fish", 3 ),
 	COOKED_FISH( 350, "minecraft:cooked_fish", 0 ),
 	COOKED_SALMON( 350, "minecraft:cooked_fish", 1 ),
+	
 	INK_SACK( 351, "minecraft:dye", 0 ),
 	ROSE_RED( 351, "minecraft:dye", 1 ),
 	CACTUS_GREEN( 351, "minecraft:dye", 2 ),
 	COCO_BEANS( 351, "minecraft:dye", 3 ),
+	
+	// NOTE: May actually be minecraft:ink_sack which is what XMaterial uses?
 	LAPIS_LAZULI( 351, "minecraft:dye", 4 ),
+	
 	PURPLE_DYE( 351, "minecraft:dye", 5 ),
 	CYAN_DYE( 351, "minecraft:dye", 6 ),
 	LIGHT_GRAY_DYE( 351, "minecraft:dye", 7 ),
@@ -542,6 +617,8 @@ public enum BlockType {
 	MAGENTA_DYE( 351, "minecraft:dye", 13 ),
 	ORANGE_DYE( 351, "minecraft:dye", 14 ),
 	BONE_MEAL( 351, "minecraft:dye", 15 ),
+	
+	
 	BONE( 352, "minecraft:bone", 0 ),
 	SUGAR( 353, "minecraft:sugar", 0 ),
 	CAKE( 354, "minecraft:cake", 0 ),
@@ -628,7 +705,7 @@ public enum BlockType {
 	ENCHANTED_BOOK( 403, "minecraft:enchanted_book", 0 ),
 	REDSTONE_COMPARATOR( 404, "minecraft:comparator", 0, MaterialType.BLOCK ),
 	NETHER_BRICK_ITEM( 405, "minecraft:netherbrick", 0, MaterialType.BLOCK ),
-	NETHER_QUARTZ( 406, "minecraft:quartz", 0, MaterialType.BLOCK ),
+	NETHER_QUARTZ( 406, "minecraft:quartz", 0 ),
 	MINECART_WITH_TNT( 407, "minecraft:tnt_minecart", 0 ),
 	MINECART_WITH_HOPPER( 408, "minecraft:hopper_minecart", 0 ),
 	PRISMARINE_SHARD( 409, "minecraft:prismarine_shard", 0 ),
@@ -683,6 +760,32 @@ public enum BlockType {
 	DISC_11( 2266, "minecraft:record_11", 0 ),
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
+	
+//	Testing to see if we can inject 1.13 block types: :( nope... does not work.
+//  Commenting out for now, will revisit later.
+//
+//	AIR_113( "air", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+//	QUARTZ_113( "quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	NETHER_QUARTZ_ORE_113( "nether_quartz_ore", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_BLOCK_113( "quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	CHISELED_QUARTZ_BLOCK_113( "chiseled_quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_PILLAR_113( "quartz_pillar", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	QUARTZ_SLAB_113( "quartz_slab", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SMOOTH_QUARTZ_113( "smooth_quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//
+//	OAK_LOG_113( "oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SPRUCE_LOG_113( "spruce_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	BIRCH_LOG_113( "birch_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	JUNGLE_LOG_113( "jungle_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+//	OAK_WOOD_113( "oak_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	SPRUCE_WOOD_113( "spruce_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	BIRCH_WOOD_113( "birch_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	JUNGLE_WOOD_113( "jungle_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//	
+	
+	
 	;
     // @formatter:on
 
@@ -690,13 +793,41 @@ public enum BlockType {
     private final String id;
     private final short data;
     private final MaterialType materialType;
+    private final MaterialVersion materialVersion;
+    
+    private final List<String> altNames;
 
     BlockType(int legacyId, String id, int data, MaterialType materialType) {
     	this.legacyId = legacyId;
     	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
     	this.data = (short) data;
     	this.materialType = materialType;
+    	this.materialVersion = MaterialVersion.v1_8;
+    	
+    	this.altNames = new ArrayList<>();
     }
+    
+    
+    BlockType(int legacyId, String id, int data, MaterialType materialType, String... altNames) {
+    	this( legacyId, id, data, materialType );
+    	
+    	for ( String altName : altNames ) {
+			this.altNames.add( altName );
+		}
+    }
+    
+    
+    
+    BlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
+    	this.legacyId = -1;
+    	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
+    	this.data = 0;
+    	this.materialType = materialType;
+    	this.materialVersion = materialVersion;
+
+    	this.altNames = new ArrayList<>();
+    }
+    
     BlockType(MaterialType materialType) {
     	this(0, null, 0, materialType);
     }
@@ -709,6 +840,41 @@ public enum BlockType {
     	this(legacyId, id, data, MaterialType.NOT_SET);
     }
 
+    /**
+     * <p>This function is for legacy versions of spigot that
+     * uses the data value.  This function will returns a 
+     * string value of a material name that
+     * XMaterial will be able to use to look up the correct 
+     * bukkit material type.
+     * </p>
+     * 
+     * <p>The way it needs to be constructed, is by taking the id, 
+     * dropping the "minecraft:" prefix, then if data is non-zero, 
+     * add a colon and the value of data.
+     * </p>
+     * 
+     * 
+     * @return
+     */
+    public String getXMaterialNameLegacy() {
+    	String xMatName = getId().replace( "minecraft:", "" ) +
+    			( getData() > 0 ? ":" + getData() : "" );
+    	return xMatName;
+    }
+    
+    /**
+     * <p>This function will return the lower case name of the BlockType.
+     * This should match  
+     * @return
+     */
+    public String getXMaterialName() {
+    	return name().toLowerCase();
+    }
+    
+    public List<String> getXMaterialAltNames() {
+    	return getAltNames();
+    }
+    
     public static BlockType getBlock(int legacyId) {
         return getBlock(legacyId, (short) 0);
     }
@@ -737,6 +903,9 @@ public enum BlockType {
     	if ( blockType == null ) {
     		blockType = getBlockById( key );
     	}
+    	if ( blockType == null ) {
+    		blockType = getBlockByXMaterialName(key);
+    	}
 
         return blockType;
     }
@@ -763,7 +932,7 @@ public enum BlockType {
                 Short.parseShort(id.split(":")[1]));
         }
         Prison prison = Prison.get();
-        if ( prison != null && prison.getIntegrationManager() != null ) {
+        if ( prison != null && prison.getItemManager() != null ) {
         	Set<Entry<BlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
         	for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
         		if (entry.getValue().contains(id.toLowerCase())) {
@@ -783,6 +952,21 @@ public enum BlockType {
             }
         }
         return null;
+    }
+    
+    private static BlockType getBlockByXMaterialName(String name) {
+    	for (BlockType block : values()) {
+    		if (block.getXMaterialAltNames().size() > 0 ) {
+    			for ( String altName : block.getXMaterialAltNames() ) {
+					
+    				if ( altName.equalsIgnoreCase(name)) {
+    					return block;
+    				}
+				}
+    		}
+    			
+    	}
+    	return null;
     }
 
     public static BlockType getBlockWithData(int id, short data) {
@@ -820,9 +1004,16 @@ public enum BlockType {
     	return materialType == MaterialType.ITEM;
     }
 
-    public MaterialType getMaterialType()
-	{
+    public MaterialType getMaterialType() {
 		return materialType;
+	}
+
+	public MaterialVersion getMaterialVersion() {
+		return materialVersion;
+	}
+	
+	public List<String> getAltNames() {
+		return altNames;
 	}
 
 	@Override public String toString() {

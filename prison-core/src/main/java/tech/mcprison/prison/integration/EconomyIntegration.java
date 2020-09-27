@@ -8,15 +8,21 @@ import tech.mcprison.prison.internal.Player;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface EconomyIntegration extends Integration {
+public abstract class EconomyIntegration 
+	extends IntegrationCore {
 
+	public EconomyIntegration( String keyName, String providerName ) {
+		super( keyName, providerName, IntegrationType.ECONOMY );
+		
+	}
+	
     /**
      * Returns the player's current balance.
      *
      * @param player The {@link Player}.
      * @return a double.
      */
-    double getBalance(Player player);
+    public abstract double getBalance(Player player);
 
     /**
      * Sets the player's balance.
@@ -25,7 +31,7 @@ public interface EconomyIntegration extends Integration {
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    void setBalance(Player player, double amount);
+    public abstract void setBalance(Player player, double amount);
 
     /**
      * Adds to the player's current balance.
@@ -33,7 +39,7 @@ public interface EconomyIntegration extends Integration {
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    void addBalance(Player player, double amount);
+    public abstract void addBalance(Player player, double amount);
 
     /**
      * Removes from the player's current balance.
@@ -41,7 +47,7 @@ public interface EconomyIntegration extends Integration {
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    void removeBalance(Player player, double amount);
+    public abstract void removeBalance(Player player, double amount);
 
     /**
      * Returns whether or not the player can afford a transaction.
@@ -50,10 +56,6 @@ public interface EconomyIntegration extends Integration {
      * @param amount The amount.
      * @return true if the player can afford it, false otherwise.
      */
-    boolean canAfford(Player player, double amount);
-
-    @Override default IntegrationType getType() {
-        return IntegrationType.ECONOMY;
-    }
+    public abstract boolean canAfford(Player player, double amount);
 
 }

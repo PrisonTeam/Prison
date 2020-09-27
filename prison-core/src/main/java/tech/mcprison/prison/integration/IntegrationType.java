@@ -5,6 +5,6 @@ package tech.mcprison.prison.integration;
  */
 public enum IntegrationType {
 
-    ECONOMY, PERMISSION, PLACEHOLDER
+    ECONOMY, PERMISSION, PLACEHOLDER, WORLDGUARD
 
 }

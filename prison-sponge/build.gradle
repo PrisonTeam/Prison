@@ -16,6 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * NOTE: Sponge is disabled since it is missing many core functions that will not
+ *       work with current builds.
+ *
+ 
 plugins {
     id 'org.spongepowered.plugin' version '0.8.1'
 }
@@ -33,7 +38,7 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.spongepowered:spongeapi:6.0.0'
-    compile project(':prison-core')
+    implementation project(':prison-core')
     compileOnly 'org.spongepowered:spongeapi:6.0.0'
 }
 
@@ -54,3 +59,5 @@ shadowJar {
 }
 
 build.dependsOn(shadowJar)
+
+*/

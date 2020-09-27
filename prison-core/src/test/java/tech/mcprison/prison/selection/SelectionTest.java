@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,9 @@ public class SelectionTest {
     @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Before public void setUp() throws Exception {
-        Prison.get().init(new TestPlatform(temporaryFolder.newFolder("test"), false));
+    	TestPlatform testPlatform = new TestPlatform(temporaryFolder.newFolder("test"), false);
+        Prison.get()
+        		.init(testPlatform, "1.12.X-test.1");
     }
 
     @Test public void testSelection() throws Exception {

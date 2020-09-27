@@ -17,17 +17,19 @@
 
 package tech.mcprison.prison.ranks.data;
 
-import com.google.gson.internal.LinkedTreeMap;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.gson.internal.LinkedTreeMap;
+
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 
 /**
@@ -36,7 +38,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class RankLadder {
+public class RankLadder 
+		implements PrisonSortable {
 
     /*
      * Fields & Constants
@@ -46,6 +49,8 @@ public class RankLadder {
     public String name;
     public List<PositionRank> ranks;
     public int maxPrestige;
+    
+    private boolean dirty = false;
 
     /*
      * Document-related
@@ -55,7 +60,10 @@ public class RankLadder {
     }
 
     @SuppressWarnings( "unchecked" )
-	public RankLadder(Document document) {
+	public RankLadder(Document document, PrisonRanks prisonRanks) {
+    	
+    	RankManager rankManager = prisonRanks.getRankManager();
+    	
         this.id = RankUtil.doubleToInt(document.get("id"));
         this.name = (String) document.get("name");
         List<LinkedTreeMap<String, Object>> ranksLocal =
@@ -63,9 +71,29 @@ public class RankLadder {
 
         this.ranks = new ArrayList<>();
         for (LinkedTreeMap<String, Object> rank : ranksLocal) {
-            ranks.add(new PositionRank(RankUtil.doubleToInt(rank.get("position")),
-                    RankUtil.doubleToInt((rank.get("rankId")))));
+        	
+        	int rPos = RankUtil.doubleToInt(rank.get("position"));
+        	int rRankId = RankUtil.doubleToInt((rank.get("rankId")));
+        	String rRankName = (String) rank.get( "rankName" );
+        	Rank rankPrison = null;
+        	
+        	if ( rankManager != null &&  
+    				rankManager.getRank( rRankId ).isPresent() ) {
+
+        		rankPrison = rankManager.getRank( rRankId ).get();
+        		
+        		// if null look it up from loaded ranks:
+        		if ( rRankName == null  ) {
+        			rRankName = rankPrison.name;
+        			dirty = true;
+        		}
+        	}
+        	
+            ranks.add(new PositionRank( rPos, rRankId, rRankName, rankPrison ));
         }
+        
+        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+        
     }
 
     public Document toDocument() {
@@ -77,10 +105,35 @@ public class RankLadder {
         return ret;
     }
 
-    /*
-     * Methods
-     */
+    @Override 
+    public String toString() {
+    	return "Ladder: " + name + "  ranks: " + (ranks == null ? 0 : ranks.size());
+    }
+    
+    public List<Rank> getRanks() {
+    	
+    	List<Rank> rankz = new ArrayList<>();
 
+    	RankManager rankManager = PrisonRanks.getInstance().getRankManager();
+    	
+    	for ( PositionRank rank : ranks ) {
+    		
+    		if ( rank.rank == null ) {
+    			
+    			Rank rnk = rankManager.getRank( rank.rankId ).get();
+    			if ( rnk != null ) {
+    				rank.rank = rnk;
+    			}
+    			else {
+    				Output.get().logWarn( "RankLadder.listAllRanks(): " +
+    						"Could not get Rank from rankId: " + rank.rankId );
+    			}
+    		}
+    		rankz.add( rank.rank );
+    	}
+    	
+    	return rankz;
+    }
 
     /**
      * Add a rank to this ladder.
@@ -96,17 +149,27 @@ public class RankLadder {
         ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
                 .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
-        ranks.add(new PositionRank(position, rank.id));
+        ranks.add(new PositionRank(position, rank.id, rank.name, rank));
+        
+        // Ranks will be reordered within connectRanks() so don't sort here:
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /**
      * Add a rank to this ladder. The rank's position will be set to the next available position
      * (i.e. at the end of the ladder).
+     * 
+     * The sort the ladder based upon the 
      *
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id));
+        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id, rank.name, rank));
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
     /**
@@ -128,14 +191,23 @@ public class RankLadder {
                 break;
             }
         }
+        
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
-    /**
-     * Orders the ranks in the rank list of this ladder by their position, in ascending order.
-     */
-    public void orderRanksByPosition() {
-        ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
-    }
+//    /**
+//     * Orders the ranks in the rank list of this ladder by their position, in ascending order.
+//     */
+//    public void orderRanksByPosition() {
+//        
+//    	// Do not sort here:
+//    	//The ranks within a ladder will be sorted within the function connectRanks():
+//    	//ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+//        
+//        // Reset the rank relationships:
+//        PrisonRanks.getInstance().getRankManager().connectRanks();
+//    }
 
     /*
      * Getters & Setters
@@ -199,7 +271,7 @@ public class RankLadder {
                 ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
 
         int newIndex = positions.indexOf(before) - 1;
-        if (newIndex >= positions.size()) {
+        if (newIndex < 0) {
             return Optional.empty();
         }
 
@@ -255,7 +327,10 @@ public class RankLadder {
             return 0; // obviously, if it's empty, we want to start at the bottom
         }
 
-        orderRanksByPosition();
+        //orderRanksByPosition();
+        // Reset the rank relationships:
+        PrisonRanks.getInstance().getRankManager().connectRanks();
+        
         return ranks.get(ranks.size() - 1).getPosition() + 1;
     }
 
@@ -288,10 +363,24 @@ public class RankLadder {
 
         private int position;
         private int rankId;
+        private String rankName;
+        
+        /** 
+         * Adds a link to the actual Rank. This will save a lot of busy 
+         * work and can reduce the complexity of a lot of code.
+         */
+        private transient Rank rank;
 
-        public PositionRank(int position, int rankId) {
+        /**
+         * 
+         * @param position
+         * @param rankId
+         * @param rankName rankName is never used but makes it easier to read the saved files
+         */
+        public PositionRank(int position, int rankId, String rankName, Rank rank ) {
             this.position = position;
             this.rankId = rankId;
+            this.rankName = rankName;
         }
 
         public int getPosition() {
@@ -309,6 +398,33 @@ public class RankLadder {
         public void setRankId(int rankId) {
             this.rankId = rankId;
         }
+
+		public String getRankName()
+		{
+			return rankName;
+		}
+
+		public void setRankName( String rankName )
+		{
+			this.rankName = rankName;
+		}
+
+		public Rank getRank()
+		{
+			return rank;
+		}
+
+		public void setRank( Rank rank )
+		{
+			this.rank = rank;
+		}
     }
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty( boolean dirty ) {
+		this.dirty = dirty;
+	}
 
 }

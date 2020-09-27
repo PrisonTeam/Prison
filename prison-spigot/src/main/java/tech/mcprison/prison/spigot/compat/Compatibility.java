@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,16 +29,23 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Faizaan A. Datoo
  */
-public interface Compatibility {
+public interface Compatibility 
+	extends CompatibilityGUI {
+	
+	
+    public EquipmentSlot getHand(PlayerInteractEvent e);
 
-    EquipmentSlot getHand(PlayerInteractEvent e);
+    public ItemStack getItemInMainHand(PlayerInteractEvent e);
 
-    ItemStack getItemInMainHand(PlayerInteractEvent e);
-
-    void playIronDoorSound(Location loc);
+    public ItemStack getItemInMainHand(Player player);
+    
+    public void breakItemInMainHand(Player player);
+    
+    public void playIronDoorSound(Location loc);
 
     enum EquipmentSlot {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
     }
+
 
 }

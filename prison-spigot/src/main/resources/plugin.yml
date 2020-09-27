@@ -3,7 +3,22 @@ main: tech.mcprison.prison.spigot.SpigotPrison
 version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://mc-prison.tech
-softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI]
+softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, GemsEconomy]
+
+# Older versions than 1.13 will ignore this, but this will allow 1.13 and up to use newer block types?
+api-version: 1.13
+
+  # ======================================================
+  # New commands compatible only with spigot
+  # ======================================================
+commands:
+  prisonmanager:
+    description: Call a fancy GUI where manage the ranks and mines
+    usage: /<command> gui
+  sellall:
+    description: SellAll Command and SubCommands
+    usage: /<command>
+
 
 permissions:
 
@@ -25,6 +40,15 @@ permissions:
 
   prison.alerts.clear.all:
     description: Clear the alerts for the entire server.
+    
+  prison.gui:
+    description: Opens the Prison's GUI menu.
+
+  prison.prisonmanagergui:
+    description: Opens the Prison's GUI menu.
+
+  prison.placeholder:
+    description: Tools to list and test placeholders.
 
   # Permission Kits
   prison.admin:
@@ -36,6 +60,9 @@ permissions:
       prison.alerts: true
       prison.alerts.clear: true
       prison.alerts.clear.all: true
+      prison.gui: true
+      prison.prisonmanagergui: true
+      prison.placeholder: true
 
   # ==================
   # Mines permissions
@@ -56,31 +83,59 @@ permissions:
   mines.info:
     description: Access to the /mines info command.
 
+  mines.reset:
+    description: Access to the /mines reset command.
+
   mines.wand:
     description: Access to the /mines wand command.
 
   mines.list:
     description: Access to the /mines list command.
 
-  mines.reset:
-    description: Access to the /mines reset command.
+  mines.skipreset:
+    description: Access to the /mines set skipReset command.
 
+  mines.zeroblockresetdelay:
+    description: Access to the /mines set zeroBlockResetDelay command.
+
+  mines.stats:
+    description: Access to the /mines stats command.
+
+  mines.whereami:
+    description: Access to the /mines whereami command.
+    
+  mines.resettime:
+    description: Access to the /mines set resetTime command.
+
+  mines.notification:
+    description: Access to the /mines set notification command.
+    
   mines.tp:
     description: Access to the /mines tp command.
+
+  mines.command:
+    description: Access to the /mines command command.
 
   mines.admin:
     description: Contains all the commands for managing mines.
     default: op
     children:
-      mines.create: true
-      mines.set: true
       mines.block: true
+      mines.create: true
       mines.delete: true
+      mines.set: true
       mines.info: true
       mines.wand: true
       mines.list: true
       mines.reset: true
-      nubes.tp: true
+      mines.skipreset: true
+      mines.zeroblockresetdelay: true
+      mines.stats: true
+      mines.whereami: true
+      mines.resettime: true
+      mines.notification: true
+      mines.tp: true
+      mines.command: true
 
   # ==================
   # Ranks permissions
@@ -108,6 +163,16 @@ permissions:
   ranks.delete:
     description: Access to the /ranks delete command.
 
+  ranks.promote:
+    description: Access to the /ranks promote command.
+
+  ranks.demote:
+    description: Access to the /ranks demote command.
+
+  ranks.setrank:
+    description: Access to the /ranks set rank command.
+
+  
   ranks.admin:
     description: Contains all the commands reserved for admins.
     default: op
@@ -119,3 +184,6 @@ permissions:
       ranks.list: true
       ranks.create: true
       ranks.delete: true
+      ranks.promote: true
+      ranks.demote: true
+      ranks.setrank: true

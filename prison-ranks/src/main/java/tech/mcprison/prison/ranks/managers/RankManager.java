@@ -17,18 +17,24 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Manages the creation, removal, and management of ranks.
@@ -136,6 +142,9 @@ public class RankManager {
 
         // ... add it to the list...
         loadedRanks.add(newRank);
+        
+        // Reset the rank relationships:
+        connectRanks();
 
         // ...and return it.
         return Optional.of(newRank);
@@ -169,6 +178,14 @@ public class RankManager {
      */
     public Optional<Rank> getRank(String name) {
         return loadedRanks.stream().filter(rank -> rank.name.equals(name)).findFirst();
+    }
+    
+    /**
+     * Returns the first rank that has an escaped name that has the & replaced with -.
+     */
+    public Optional<Rank> getRankEscaped(String name) {
+    	return loadedRanks.stream().filter(rank -> 
+    					rank.name.replace( "&", "-" ).equals(name)).findFirst();
     }
 
     /**
@@ -227,6 +244,9 @@ public class RankManager {
 
         // Remove it from the list...
         loadedRanks.remove(rank);
+        
+        // Reset the rank relationships:
+        connectRanks();
 
         // ... and remove the rank's save files.
         collection.delete(rank.filename());
@@ -252,4 +272,178 @@ public class RankManager {
         return loadedRanks;
     }
 
+    /**
+     * <p>This should be ran after the RanksManager and LadderManger are loaded.  Or any
+     * time a rank is add, removed, or position changed within a ladder. 
+     * </p>
+     * 
+     * <p>This function will set the temporal rankPrior and rankNext value in 
+     * each rank based upon each ladder. This will greatly simplify walking the 
+     * ladder by using the linked ranks without having to perform any expensive
+     * calculations.
+     * </p> 
+     */
+    public void connectRanks() {
+    	LadderManager lman = PrisonRanks.getInstance().getLadderManager();
+    	
+    	for ( RankLadder rLadder : lman.getLadders() ) {
+			
+    		rLadder.ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+    		
+    		Rank rankLast = null;
+    		for ( PositionRank pRank : rLadder.ranks ) {
+    			if ( pRank != null && pRank.getPosition() >= 0 ) {
+    				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
+    				if ( opRank.isPresent() ) {
+    					Rank rank = opRank.get();
+    					
+    					// reset the rankPrior and rankNext in case there are no hookups:
+    					// Important if ranks are removed, or inserted, or moved:
+    					rank.rankPrior = null;
+    					rank.rankNext = null;
+    					
+    					if ( rankLast != null ) {
+    						rank.rankPrior = rankLast;
+    						rankLast.rankNext = rank;
+    					}
+    					rankLast = rank;
+    				}
+    			}
+			}
+		}
+    }
+    
+    /*
+     * <p>This function will go through ranks and find ranks that have defined currencies.
+     * When a currency is assigned to a rank, it is verified to be valid.  So in theory
+     * all currencies "should" be valid.  But plugins and setting can change.  
+     * </p>
+     * 
+     * <p>By hitting all currencies up front when prison first loads, it "registers" 
+     * all currencies with all economies that support currencies.  This also allows
+     * error reporting to happen upon prison start up to report lost currencies.
+     * And it allows each economy plugin the chance to list all supported currencies.
+     * </p>   
+     * 
+     * <p>This almost has to be proactive when prison loads, since there is no way to
+     * poll the economy plugins to find out what currencies it supports.  At least its
+     * not a feature for GemsEconomy.
+     * </p>
+     * 
+     */
+    public void identifyAllRankCurrencies() {
+    	for ( Rank rank : loadedRanks ) {
+			if ( rank.currency != null ) {
+				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+						.getEconomyForCurrency( rank.currency );
+				if ( currencyEcon == null ) {
+					Output.get().logError( 
+						String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
+							"rank &a%s&7, but it isn't supported by any Economy integration.",
+							rank.currency, rank.name) );
+				}
+			}
+		}
+    	
+    }
+    
+    
+    
+    public String listAllRanks( String ladderName, List<Rank> ranks, boolean includeAll ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
+    	
+    	for (Rank rank : ranks ) {
+    		
+    		// Get the players per rank!!
+			List<RankPlayer> playersList =
+                    playerManager.getPlayers().stream()
+                        .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+                        .collect(Collectors.toList());
+    		int players = playersList.size();
+    		
+    		if ( includeAll || !includeAll && players > 0 ) {
+    			if ( sb.length() > 0 ) {
+    				sb.append( "&2, " );
+    			}
+    			
+    			
+    			sb.append( " &3" );
+    			sb.append( rank.name );
+    			
+    			if ( players > 0 ) {
+    				
+    				sb.append( " &7" );
+    				sb.append( players );
+    			}
+    		}
+		}
+    	
+    	sb.insert( 0, "&b: " );
+    	sb.insert( 0, ladderName );
+    	sb.insert( 0, "  &7" );
+    	
+    	return sb.toString();
+    }
+    
+    
+    /**
+     * <p>Sends the output of ranksByLadders to the prison Output (console and logs).
+     * </p>
+     * 
+     * @param includeAll If true then includes all ranks, otherwise just ranks within one more players
+     */
+    public void ranksByLadders(  boolean includeAll ) {
+    	ranksByLadders( null, "all", includeAll );
+    }
+    
+    public void ranksByLadders( CommandSender sender, boolean includeAll ) {
+    	ranksByLadders( sender, "all", includeAll );
+    }
+    
+    public void ranksByLadders( CommandSender sender, String ladderName, boolean includeAll ) {
+    	
+    	rankByLadderOutput( sender, "&7Ranks by ladders:" );
+    	
+    	// Track which ranks were included in the ladders listed:
+    	List<Rank> ranksIncluded = new ArrayList<>();
+    	
+    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+    			
+    			List<Rank> ladderRanks = ladder.getRanks();
+    			ranksIncluded.addAll( ladderRanks );
+    			
+    			String ranksByLadder = listAllRanks( ladder.name, ladderRanks, includeAll );
+    			
+    			rankByLadderOutput( sender, ranksByLadder );
+    		}
+    	}
+    	
+    	if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( "none" ) ) {
+
+    		// Next we need to get a list of all ranks that were not included. Use set 
+    		List<Rank> ranksExcluded = new ArrayList<>( loadedRanks );
+    		ranksExcluded.removeAll( ranksIncluded );
+    		
+    		// Next generate a list of ranks that are not associated with any ladder:
+    		// NOTE: No players should be associated with ranks that are not tied to a ladder,
+    		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
+    		//       since player count will always be zero.
+    		String ranksByLadder = listAllRanks( "none", ranksExcluded, true );
+    		
+    		rankByLadderOutput( sender, ranksByLadder );
+    	}
+    }
+
+	private void rankByLadderOutput( CommandSender sender, String ranksByLadder ) {
+		if ( sender == null ) {
+			Output.get().logInfo( ranksByLadder );
+		}
+		else {
+			sender.sendMessage( ranksByLadder );
+		}
+	}
+    
 }

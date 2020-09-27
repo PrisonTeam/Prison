@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -31,11 +32,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
+import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -46,18 +49,22 @@ import tech.mcprison.prison.util.Location;
 /**
  * Posts Prison's internal events.
  *
+ * <p>getTypeId() was deprecated with 1.9.4.
+ * </p>
+ *  
+ * <p>PlayerPickupItemEvent is deprecated with spigot v1.12.2.
+ * </p>
+ * 
  * @author Faizaan A. Datoo
  */
+@SuppressWarnings( "deprecation" )
 public class SpigotListener implements Listener {
 
-    private SpigotPrison spigotPrison;
-
-    public SpigotListener(SpigotPrison spigotPrison) {
-        this.spigotPrison = spigotPrison;
+    public SpigotListener() {
     }
 
     public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, this.spigotPrison);
+        Bukkit.getServer().getPluginManager().registerEvents(this, SpigotPrison.getInstance());
     }
 
     @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
@@ -78,28 +85,45 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
-    @SuppressWarnings( "deprecation" )
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
+        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
-                BlockType.getBlock(e.getBlock().getTypeId()),
+            		blockType,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
     }
 
-    @SuppressWarnings( "deprecation" )
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
+        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(
-                BlockType.getBlock(e.getBlock().getTypeId()),
+            		blockType,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
+    }
+    
+    /**
+     * <p>Monitors when new worlds are loaded, then it fires off a Prison's version of the
+     * same event type.  This is used to initialize mines that are waiting for world to be
+     * loaded through plugins such as Multiverse-core.
+     * </p>
+     * 
+     * @param e The world event
+     */
+    @EventHandler
+    public void onWorldLoadEvent( WorldLoadEvent e ) {
+    	PrisonWorldLoadEvent pwlEvent = new PrisonWorldLoadEvent(e.getWorld().getName());
+    	
+    	Prison.get().getEventBus().post(pwlEvent);
     }
 
     @EventHandler public void onPlayerInteract(PlayerInteractEvent e) {
@@ -115,7 +139,8 @@ public class SpigotListener implements Listener {
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if (spigotPrison.compatibility.getHand(e) != Compatibility.EquipmentSlot.HAND) {
+        if ( SpigotPrison.getInstance().getCompatibility().getHand(e) != 
+        								Compatibility.EquipmentSlot.HAND) {
             return;
         }
 
@@ -123,7 +148,8 @@ public class SpigotListener implements Listener {
         tech.mcprison.prison.internal.events.player.PlayerInteractEvent event =
             new tech.mcprison.prison.internal.events.player.PlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
-                SpigotUtil.bukkitItemStackToPrison(spigotPrison.compatibility.getItemInMainHand(e)),
+                		SpigotUtil.bukkitItemStackToPrison(
+                				SpigotPrison.getInstance().getCompatibility().getItemInMainHand(e)),
                 tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
@@ -141,14 +167,19 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
+    // TODO major potential problems with this function and newer releases.  
+    //      PlayerPickupItemEvent was deprecated and may not exist in newer releases.
+    //      Need to research this and find an alternative and push this back in to 
+    //      the compatibility classes.
+	@EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         PlayerPickUpItemEvent event = new PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
             SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onPlayerChat(AsyncPlayerChatEvent e) {
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event =
             new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
         Prison.get().getEventBus().post(event);

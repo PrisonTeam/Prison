@@ -17,15 +17,18 @@
 
 package tech.mcprison.prison.ranks.data;
 
-import com.google.gson.internal.LinkedTreeMap;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.store.Document;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.google.gson.internal.LinkedTreeMap;
+
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.store.Document;
 
 /**
  * Represents a player with ranks.
@@ -41,30 +44,69 @@ public class RankPlayer {
     public UUID uid;
     public HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
     public HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    
+    public List<RankPlayerName> names;
+    
+    // Block name, count
+    public HashMap<String, Integer> blocksMined;
 
     /*
      * Document-related
      */
 
     public RankPlayer() {
+    	super();
     }
 
     @SuppressWarnings( "unchecked" )
 	public RankPlayer(Document document) {
+    	
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
         LinkedTreeMap<String, Object> prestigeLocal =
             (LinkedTreeMap<String, Object>) document.get("prestige");
+        
+        LinkedTreeMap<String, Object> blocksMinedLocal =
+        		(LinkedTreeMap<String, Object>) document.get("blocksMined");
+        
+        Object namesListObject = document.get( "names" );
+        
 
         this.ranks = new HashMap<>();
         for (String key : ranksLocal.keySet()) {
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
+        
         this.prestige = new HashMap<>();
         for (String key : prestigeLocal.keySet()) {
             prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
         }
+        
+        this.blocksMined = new HashMap<>();
+        if ( blocksMinedLocal != null ) {
+        	for (String key : blocksMinedLocal.keySet()) {
+        		blocksMined.put(key, RankUtil.doubleToInt(blocksMinedLocal.get(key)));
+        	}
+        }
+        
+        if ( namesListObject != null ) {
+        	
+        	for ( Object rankPlayerNameMap : (ArrayList<Object>) namesListObject ) {
+        		LinkedTreeMap<String, Object> rpnMap = (LinkedTreeMap<String, Object>) rankPlayerNameMap;
+        		
+        		if ( rpnMap.size() > 0 ) {
+        			String name = (String) rpnMap.get( "name" );
+        			long date = RankUtil.doubleToLong( rpnMap.get( "date" ) );
+        			
+        			RankPlayerName rankPlayerName = new RankPlayerName( name, date );
+        			getNames().add( rankPlayerName );
+//        			Output.get().logInfo( "RankPlayer: uuid: " + uid + " RankPlayerName: " + rankPlayerName.toString() );
+        		}
+        		
+        	}
+        }
+        
     }
 
     public Document toDocument() {
@@ -72,14 +114,54 @@ public class RankPlayer {
         ret.put("uid", this.uid);
         ret.put("ranks", this.ranks);
         ret.put("prestige", this.prestige);
+        
+        ret.put("names", this.names);
+
+        ret.put("blocksMined", this.blocksMined);
         return ret;
     }
 
     /*
      * Methods
      */
+    
+    
+    
+    public boolean checkName( String playerName ) {
+    	boolean added = false;
+    	
+    	// Check if the last name in the list is not the same as the name passed:
+    	if ( getNames().size() == 0 ||
+    			!getNames().get( getNames().size() - 1 ).getName().equalsIgnoreCase( playerName ) ) {
+    		
+    		RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
+    		getNames().add( rpn );
+    		
+    		added = true;
+    	}
+    	
+    	return added;
+    }
+    
 
-    /**
+    public List<RankPlayerName> getNames() {
+    	if ( names == null ) {
+    		names = new ArrayList<>();
+    	}
+		return names;
+	}
+	public void setNames( List<RankPlayerName> names ) {
+		this.names = names;
+	}
+
+	public HashMap<String, Integer> getBlocksMined() {
+		return blocksMined;
+	}
+	public void setBlocksMined( HashMap<String, Integer> blocksMined ) {
+		this.blocksMined = blocksMined;
+	}
+
+	/**
      * <p>This is a helper function to ensure that the given file name is 
      * always generated correctly and consistently.
      * </p>
@@ -162,6 +244,24 @@ public class RankPlayer {
         }
         int id = ranks.get(ladder.name);
         return PrisonRanks.getInstance().getRankManager().getRank(id);
+    }
+    
+    /**
+     * Retrieves the rank that this player has the specified ladder.
+     *
+     * @param ladder The ladder name to check.
+     * @return The {@link Rank} if found, otherwise null;
+     */
+    public Rank getRank(String ladder) {
+    	Rank results = null;
+    	if (ladder != null && ranks.containsKey(ladder)) {
+    		int id = ranks.get(ladder);
+    		Optional<Rank> ladderOpt = PrisonRanks.getInstance().getRankManager().getRank(id);
+    		if ( ladderOpt.isPresent() ) {
+    			results =  ladderOpt.get();
+    		}
+    	}
+    	return results;
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,14 @@ public class SelectionManager {
         }
         return selectionMap.get(player.getName());
     }
+    
+    public void clearSelection(Player player) {
+    	if (!selectionMap.containsKey(player.getName())) {
+    		selectionMap.remove(player.getName());
+    	}
+    }
 
+    
     public void setSelection(Player player, Selection selection) {
         selectionMap.put(player.getName(), selection);
     }

@@ -15,23 +15,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import java.text.SimpleDateFormat
+import java.util.Date
 
+apply plugin: 'java'
+
+/* Two different ways to enable utf-8 encoding within gradle, but not sure its
+ * even needed at this time.  Keeping for a few builds to make sure all is ok.
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+   options.encoding = 'UTF-8'
+}
+*/
+
+ 
 println """
-================================
-You are building Prison.
+==========================================================================
+You are building the Prison plugin 
+  Version:    ${project.version} 
+  Build time: ${getCurrentTimestamp()}
 
-Note that you are probably using
-a development build and therefore
-a buggy build. Don\'t use it on a
-production server unless you know
-what you are doing! You have been
-WARNED.
-
-Output files will be in
-[subproject]/build/libs.
-The runnable JAR is usually
-named Prison[ModuleName].jar.
-================================
+Output files are located in [subproject]/build/libs.
+The runnable JAR is usually named prison.jar.
+Example: The spigot build artifact is prison-spigot/build/libs/prison.jar
+==========================================================================
 """
 
 buildscript {
@@ -39,10 +46,11 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 
 }
@@ -56,7 +64,6 @@ subprojects {
 
     archivesBaseName = 'Prison'
     group = 'tech.mcprison.prison'
-    version = '3.2.0'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -72,9 +79,9 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.apache.commons:commons-lang3:3.9'
-        compile 'com.google.guava:guava:19.0'
-        compile 'com.google.code.gson:gson:2.8.6'
+        implementation 'org.apache.commons:commons-lang3:3.10'
+        implementation 'com.google.guava:guava:19.0'
+        implementation 'com.google.code.gson:gson:2.8.6'
         testCompile 'junit:junit:4.12'
     }
 
@@ -82,4 +89,10 @@ subprojects {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
+}
+
+def getCurrentTimestamp()
+{
+  SimpleDateFormat df = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss")
+  return df.format (new Date())
 }

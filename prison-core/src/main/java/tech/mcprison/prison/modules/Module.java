@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 
 package tech.mcprison.prison.modules;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.error.ErrorManager;
-
 import java.io.File;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.error.ErrorManager;
 
 /**
  * Represents a module, which is a part of Prison that can be enabled and
@@ -57,16 +56,42 @@ public abstract class Module implements PluginEntity {
     public Module(String name, String version, int target) {
         this.name = name;
         this.version = version;
-        this.dataFolder = new File(PrisonAPI.getModuleManager().getModuleRoot(),
-            name.toLowerCase().replace(" ", "_"));
         this.apiTarget = target;
+
+        this.dataFolder =  setupDataFolder( name );
+        
         this.status = new ModuleStatus();
-        if (!this.dataFolder.exists()) {
-            this.dataFolder.mkdir();
-        }
         this.errorManager = new ErrorManager(this);
     }
 
+    
+    public static File setupDataFolder( String name ) {
+    	File dataFolder = new File(ModuleManager.getModuleRootDefault(),
+				name.toLowerCase().replace(" ", "_"));
+		if (!dataFolder.exists()) {
+		    dataFolder.mkdir();
+		}
+		return dataFolder;
+    }
+    
+    /**
+     * <p>The getBaseCommands() should return all of the base commands that
+     * would apply to the module.  It should include the / as in /mines or
+     * the /ranks command.  It should be viewed as being ran from in game
+     * to be consistent. 
+     * </p>
+     * 
+     * <p>An example of what this would return would be:
+     * </p>
+     * 
+     * <ul>
+     *   <li>Mines plugin: "&2/mines"</li>
+     *   <li>Ranks plugin: "&2/ranks &2/rankup"</li>
+     * </ul>
+     * 
+     * @return
+     */
+    abstract public String getBaseCommands();
     /*
      * Methods, to be overridden
      */

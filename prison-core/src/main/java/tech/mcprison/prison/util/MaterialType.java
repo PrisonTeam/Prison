@@ -5,5 +5,8 @@ public enum MaterialType
 	BLOCK,
 	ITEM,
 	
-	NOT_SET;
+	NOT_SET,
+	
+	INVALID;
+	
 }

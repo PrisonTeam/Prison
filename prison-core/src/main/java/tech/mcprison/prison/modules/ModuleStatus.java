@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,6 +74,21 @@ public class ModuleStatus {
         return status;
     }
 
+    /**
+     * <p>Displays the associated test based upon the three combinations
+     * of status codes.
+     * </p>
+     * 
+     * @return
+     */
+    public String getStatusText() {
+    	return (getStatus() == ModuleStatus.Status.ENABLED ? 
+				"&2Enabled" : 
+			(getStatus() == ModuleStatus.Status.FAILED ? 
+					"&cFailed" : "&9&m-Disabled-" ));
+    }
+
+
     /*
      * Getters & Setters
      */
@@ -88,6 +103,14 @@ public class ModuleStatus {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+    
+    public void addMessage(String message) {
+    	if ( this.message == null ) {
+    		setMessage(message);
+    	} else {
+    		setMessage( getMessage() + ". " + message);
+    	}
     }
 
     public enum Status {

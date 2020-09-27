@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.spigot.inventory;
 
+import org.bukkit.Material;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.inventory.FurnaceRecipe;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -38,8 +40,9 @@ public class SpigotFurnaceRecipe extends SpigotRecipe implements FurnaceRecipe {
     }
 
     @Override public FurnaceRecipe setInput(BlockType input) {
+    	Material material = SpigotUtil.getMaterial( input );
         ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
-            .setInput(SpigotUtil.blockTypeToMaterial(input));
+            .setInput(material);
         return this;
     }
 

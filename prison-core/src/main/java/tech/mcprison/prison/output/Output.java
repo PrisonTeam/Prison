@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.output;
 
+import java.util.Arrays;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
-
-import java.util.Arrays;
 
 /**
  * Standardized output to the console and to players.
@@ -64,9 +64,13 @@ public class Output {
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-        Prison.get().getPlatform().log(gen("&3Prison") + " " + (level == LogLevel.INFO ?
-            "&f" :
-            level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
+    	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
+    		System.err.println("Prison: Output.log Logger failure: " + message );
+    	} else {
+    		Prison.get().getPlatform().log(gen("&3Prison") + " " + (level == LogLevel.INFO ?
+    				"&f" :
+    					level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
+    	}
     }
 
     /**

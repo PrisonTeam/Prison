@@ -29,26 +29,55 @@ repositories {
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+    
+    maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
+  //  maven { url = 'https://maven.enginehub.org/repo/' }
     jcenter()
 }
 
-dependencies {
-    compile project(':prison-core')
-    compile project(':prison-mines')
-    compile project(':prison-ranks')
-    compile 'org.bstats:bstats-bukkit:1.5'
-    compile 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
-	compile 'org.apache.commons:commons-lang3:3.9'
-    compile 'me.clip:placeholderapi:2.9.1'
 
-    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
+
+dependencies {
+    implementation project(':prison-core')
+    implementation project(':prison-mines')
+    implementation project(':prison-ranks')
+    implementation 'org.bstats:bstats-bukkit:1.5'
+    implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
+	implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'me.clip:placeholderapi:2.9.1'
+    
+    implementation 'net.luckperms:api:5.0'
+    implementation 'me.lucko.luckperms:luckperms-api:4.0'
+    
+    
+	implementation 'com.github.cryptomorin:XSeries:7.2.1'
+//	implementation 'com.github.cryptomorin:XSeries:6.3.2.1'
+
+
+	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
+//    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
+	// 1.12.2-R0.1-SNAPSHOT works well:
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+	// 1.13.2 fails since deprecated functions have been removed.
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    
+    
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
-    compileOnly 'me.lucko.luckperms:luckperms-api:4.0'
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
-    compileOnly fileTree(dir: 'lib', include: ['*.jar'])
+
+ //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
+    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])
+
 }
+
+/*
+clean {
+    delete "${rootProject.name}.jar"
+}
+*/
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -63,20 +92,25 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.9'))
+        include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
         include(dependency('me.clip:placeholderapi:2.9.1'))
         include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
+        include(dependency('com.github.cryptomorin:XSeries:7.2.1'))
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
     }
 
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
+    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
+    relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
     classifier ''
-    version = null
+    archiveVersion = ''
+    
+//    minimize()
 }
 
 build.dependsOn(shadowJar)

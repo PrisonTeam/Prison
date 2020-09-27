@@ -17,6 +17,9 @@
 
 package tech.mcprison.prison.ranks;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -35,14 +38,11 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Database;
 
-import java.io.IOException;
-import java.util.Optional;
-
 /**
  * @author Faizaan A. Datoo
  */
 public class PrisonRanks extends Module {
-
+	public static final String MODULE_NAME = "Ranks";
     /*
      * Fields & Constants
      */
@@ -59,9 +59,15 @@ public class PrisonRanks extends Module {
      */
 
     public PrisonRanks(String version) {
-        super("Ranks", version, 3);
+        super(MODULE_NAME, version, 3);
     }
 
+
+    @Override
+    public String getBaseCommands() {
+    	return "&7/&2ranks &7/&2rankup &7/&2rankupMax &7/&2prestige &7/&2prestiges";
+    }
+    
     /*
      * Methods
      */
@@ -75,7 +81,12 @@ public class PrisonRanks extends Module {
 
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
-            getStatus().setMessage("no economy plugin");
+            getStatus().setMessage("&cNo economy plugin");
+            
+            String integrationDebug = PrisonAPI.getIntegrationManager()
+            			.getIntegrationDetails(IntegrationType.ECONOMY);
+            Output.get().logError( "PrisonRanks.enable() - Failed - No Economy Plugin Active - " + 
+            			integrationDebug );
             return;
         }
 
@@ -92,20 +103,33 @@ public class PrisonRanks extends Module {
         try {
             rankManager.loadRanks();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+            getStatus().addMessage("&cFailed Loading Ranks: " + e.getMessage());
             Output.get().logError("A rank file failed to load.", e);
         }
 
         // Load up the ladders
 
 
-        ladderManager = new LadderManager(initCollection("ladders"));
+        ladderManager = new LadderManager(initCollection("ladders"), this);
         try {
             ladderManager.loadLadders();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        	getStatus().addMessage("&cFailed Loading Loadders: " + e.getMessage());
             Output.get().logError("A ladder file failed to load.", e);
         }
         createDefaultLadder();
 
+        
+        // Set the rank relationships:
+        rankManager.connectRanks();
+
+        
+        // Verify that all ranks that use currencies have valid currencies:
+        rankManager.identifyAllRankCurrencies();
+        
+        
         // Load up the players
 
 
@@ -113,6 +137,8 @@ public class PrisonRanks extends Module {
         try {
             playerManager.loadPlayers();
         } catch (IOException e) {
+        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        	getStatus().addMessage("&cFailed Loading Players: " + e.getMessage());
             Output.get().logError("A player file failed to load.", e);
         }
 
@@ -129,6 +155,17 @@ public class PrisonRanks extends Module {
         new ChatHandler();
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
+
+        Output.get().logInfo("Loaded " + getRankCount() + " ranks.");
+        Output.get().logInfo("Loaded " + getladderCount() + " ladders.");
+        Output.get().logInfo("Loaded " + getPlayersCount() + " players.");
+        
+        
+
+        // Display all Ranks in each ladder:
+    	boolean includeAll = true;
+    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+        
     }
 
     private Collection initCollection(String collName) {
@@ -142,25 +179,47 @@ public class PrisonRanks extends Module {
     }
 
     /**
-     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist.
+     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
      */
     private void createDefaultLadder() {
         if (!ladderManager.getLadder("default").isPresent()) {
             Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("default");
 
             if (!rankLadderOptional.isPresent()) {
-                Output.get().logError("Could not create the default ladder.");
-                super.getStatus().toFailed("&cNo default ladder found.");
+            	String message = "Failed to create a new default ladder, preexisting one not be found.";
+            	Output.get().logError(message);
+                super.getStatus().toFailed("&c" + message);
                 return;
             }
 
             try {
                 ladderManager.saveLadder(rankLadderOptional.get());
             } catch (IOException e) {
-                Output.get().logError("Could not save the default ladder.", e);
-                super.getStatus().toFailed("&cNo default ladder found.");
+            	String message = "Failed to save a new default ladder, preexisting one not be found.";
+            	Output.get().logError(message, e);
+                super.getStatus().toFailed("&c" + message);
             }
         }
+
+        if (!ladderManager.getLadder("prestiges").isPresent()) {
+            Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("prestiges");
+
+            if (!rankLadderOptional.isPresent()) {
+                String message = "Failed to create a new prestiges ladder, preexisting one not be found.";
+                Output.get().logError(message);
+                super.getStatus().toFailed("&c" + message);
+                return;
+            }
+
+            try {
+                ladderManager.saveLadder(rankLadderOptional.get());
+            } catch (IOException e) {
+                String message = "Failed to save a new prestiges ladder, preexisting one not be found.";
+                Output.get().logError(message, e);
+                super.getStatus().toFailed("&c" + message);
+            }
+        }
+
     }
 
     /*
@@ -201,4 +260,21 @@ public class PrisonRanks extends Module {
         return database;
     }
 
+    public int getRankCount() {
+    	int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
+    			getRankManager().getRanks().size();
+    	return rankCount;
+    }
+    
+    public int getladderCount() {
+    	int ladderCount = getLadderManager() == null || getLadderManager().getLadders() == null ? 0 : 
+    		getLadderManager().getLadders().size();
+    	return ladderCount;
+    }
+    
+    public int getPlayersCount() {
+    	int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
+    		getPlayerManager().getPlayers().size();
+    	return playersCount;
+    }
 }

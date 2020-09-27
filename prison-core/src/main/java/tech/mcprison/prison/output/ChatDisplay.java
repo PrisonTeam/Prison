@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,13 @@ public class ChatDisplay {
         sender.sendMessage(title);
         for (DisplayComponent component : displayComponents) {
             component.send(sender);
+        }
+    }
+    
+    public void toLog(LogLevel logLevel) {
+    	Output.get().log( title, logLevel );
+        for (DisplayComponent component : displayComponents) {
+        	Output.get().log( component.text(), logLevel );
         }
     }
 

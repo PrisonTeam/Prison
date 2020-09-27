@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -73,5 +73,8 @@ public interface CommandSender {
      * @param json The JSON message. Must be in proper format.
      */
     void sendRaw(String json);
+    
+    
+    public boolean isOp();
 
 }

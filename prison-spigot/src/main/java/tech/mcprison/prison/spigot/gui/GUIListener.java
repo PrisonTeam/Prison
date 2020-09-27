@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,16 +19,11 @@
 package tech.mcprison.prison.spigot.gui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import tech.mcprison.prison.gui.Button;
-import tech.mcprison.prison.gui.ClickedButton;
 import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +31,7 @@ import java.util.List;
 /**
  * @author Faizaan A. Datoo
  */
+// From GABRYCA, I don't know if this's still needed, I won't remove it for now, but might be in the future
 public class GUIListener implements Listener {
 
     private static GUIListener instance;
@@ -56,29 +52,12 @@ public class GUIListener implements Listener {
         inventories.add(inv);
     }
 
-    @EventHandler public void reactToClick(InventoryClickEvent e) {
-        final GUI[] gui = new GUI[1];
-        final Button[] b =
-            new Button[1]; // Workaround to Java lambda's stupid final rule, elements within final arrays are re-assignable >:)
-        inventories.stream().filter(inv -> inv.getTitle().equals(e.getInventory().getTitle()))
-            .forEach(inv -> {
-                gui[0] = inv;
-                b[0] = inv.getButtons().get(e.getSlot());
-            });
-        if (b[0] == null) {
-            return;
-        }
-        e.setCancelled(true);
-        if (b[0].isCloseOnClick()) {
-            e.getWhoClicked().closeInventory();
-        }
-        b[0].getAction()
-            .run(new ClickedButton(b[0], gui[0], new SpigotPlayer((Player) e.getWhoClicked())));
-    }
-
     @EventHandler public void closeInventory(InventoryCloseEvent e) {
         // Remove it if found
-        inventories.removeIf(gui -> gui.getTitle().equals(e.getInventory().getTitle()));
+        inventories.removeIf(gui -> gui.getTitle().equals(
+        				SpigotPrison.getInstance().getCompatibility().getGUITitle( e )
+        		));
+//        inventories.removeIf(gui -> gui.getTitle().equals(e.getInventory().getTitle()));
     }
 
 }

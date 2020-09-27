@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017 The Prison Team
+ *  Copyright (C) 2017-2020 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,17 +35,28 @@ import java.util.Optional;
  */
 public class ModuleManager {
 
+	public static final String MODULE_MANAGER_DIRECTORY = "module_conf";
+	
     private List<Module> modules;
+    private List<String> disabledModules;
     private File moduleRoot;
 
     public ModuleManager() {
         modules = new ArrayList<>();
-        moduleRoot = new File(PrisonAPI.getPluginDirectory(), "module_conf");
-        if (!moduleRoot.exists()) {
-            moduleRoot.mkdir();
-        }
+        disabledModules = new ArrayList<>();
+        
+        moduleRoot = getModuleRootDefault();
     }
 
+    public static File getModuleRootDefault() {
+    	 File moduleRoot = new File(PrisonAPI.getPluginDirectory(), MODULE_MANAGER_DIRECTORY);
+         if (!moduleRoot.exists()) {
+             moduleRoot.mkdir();
+         }
+         
+         return moduleRoot;
+    }
+    
     /**
      * Register a new module.
      */
@@ -77,7 +88,7 @@ public class ModuleManager {
      */
     public boolean enableModule(Module module) {
         long startTime = System.currentTimeMillis();
-        Output.get().logInfo("%s enable start...", module.getName());
+        Output.get().logInfo("%s Module enablement starting...", module.getName());
 
         module.setEnabled(true);
         module.enable();
@@ -85,12 +96,13 @@ public class ModuleManager {
 
         if (module.getStatus().getStatus() != ModuleStatus.Status.ENABLED) {
             // Anything else and we assume that the enable failed.
-            Output.get().logInfo("%s enable &cfailed&f, in %d milliseconds.", module.getName(),
-                (System.currentTimeMillis() - startTime));
+        	
+            Output.get().logInfo("%s Module enablement &cfailed&f in %d milliseconds. &d[%s&d]", module.getName(),
+                (System.currentTimeMillis() - startTime), module.getStatus().getMessage() );
             return false;
         }
 
-        Output.get().logInfo("%s enable succeeded, in %d milliseconds.", module.getName(),
+        Output.get().logInfo("%s Module enabled successfully in %d milliseconds.", module.getName(),
             (System.currentTimeMillis() - startTime));
         return true;
     }
@@ -124,6 +136,8 @@ public class ModuleManager {
     public void unregisterAll() {
         modules.forEach(this::disableModule);
         modules.clear();
+        
+        disabledModules.clear();
     }
 
     /**
@@ -149,7 +163,11 @@ public class ModuleManager {
         return modules;
     }
 
-    public File getModuleRoot() {
+    public List<String> getDisabledModules() {
+		return disabledModules;
+	}
+
+	public File getModuleRoot() {
         return moduleRoot;
     }
 
