@@ -1,5 +1,5 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
 
 ## Description:
 
@@ -13,14 +13,14 @@
 
 ## SubCommands:
 
-- [/prison alerts](prison_docs_command_2_prison_alerts.md)
-- [/prison autofeatures](prison_docs_command_3_prison_autofeatures.md)
-- [/prison gui](prison_docs_command_4_prison_gui.md)
-- [/prison modules](prison_docs_command_5_prison_modules.md)
-- [/prison placeholders](prison_docs_command_6_prison_placeholders.md)
-- [/prison reload](prison_docs_command_7_prison_reload.md)
-- [/prison troubleshoot [name]](prison_docs_command_8_troubleshoot.md)
-- [/prison version](prison_docs_command_9_prison_version.md)
+- [`/prison alerts`](prison_docs_command_2_prison_alerts.md)
+- [`/prison autofeatures`](prison_docs_command_3_prison_autofeatures.md)
+- [`/prison gui`](prison_docs_command_4_prison_gui.md)
+- [`/prison modules`](prison_docs_command_5_prison_modules.md)
+- [`/prison placeholders`](prison_docs_command_6_prison_placeholders.md)
+- [`/prison reload`](prison_docs_command_7_prison_reload.md)
+- [`/prison troubleshoot [name]`](prison_docs_command_8_troubleshoot.md)
+- [`/prison version`](prison_docs_command_9_prison_version.md)
 
 ## How to use the command
 

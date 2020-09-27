@@ -1,5 +1,5 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
 
 ## Description:
 
