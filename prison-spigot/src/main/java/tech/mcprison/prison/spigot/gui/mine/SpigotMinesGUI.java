@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -13,9 +14,9 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.PrisonSortableMines;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
@@ -37,10 +38,11 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // ItemStack itemMines;
 
         // Get the mines
-        PrisonMines pMines = PrisonMines.getInstance();
+        Set<Mine> mines = new PrisonSortableMines().getSortedSet();
+        // PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(pMines.getMines().size() / 9D) * 9;
+        int dimension = (int) Math.ceil(mines.size() / 9D) * 9;
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
@@ -63,7 +65,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesManager -> Mines"));
 
         // Make the buttons for every Mine with info
-        for (Mine m : pMines.getMines()) {
+        for (Mine m : mines ) {
 
             if (guiBuilder(GuiConfig, inv, m)) return;
 

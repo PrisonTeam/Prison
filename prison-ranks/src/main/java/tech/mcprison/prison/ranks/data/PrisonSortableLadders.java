@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.sorting.PrisonSorter;
 
 public class PrisonSortableLadders
@@ -43,7 +42,7 @@ public class PrisonSortableLadders
 	}
 
 	@Override
-	public Set<? extends PrisonSortable> getSortedSet()
+	public Set<RankLadder> getSortedSet()
 	{
 		TreeSet<RankLadder> ladders = new TreeSet<>( new PrisonSortComparableLadders() );
 

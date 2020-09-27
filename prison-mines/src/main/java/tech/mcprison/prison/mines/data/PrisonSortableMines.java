@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.sorting.PrisonSorter;
 
 public class PrisonSortableMines
@@ -37,7 +36,7 @@ public class PrisonSortableMines
 
 
 	@Override
-	public Set<? extends PrisonSortable> getSortedSet() {
+	public Set<Mine> getSortedSet() {
 		TreeSet<Mine> mines = new TreeSet<>( new PrisonSortComparableMines() );
 		
 		List<Mine> unsortedMines = PrisonMines.getInstance().getMineManager().getMines();
