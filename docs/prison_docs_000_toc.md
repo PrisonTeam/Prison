@@ -1,10 +1,12 @@
-### Prison Documentation 
+# Prison Documentation 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 ### Commands Shortcut help (Work-In-Progress)
 
-**CORE COMMANDS:**
+_**If you add the `help` argument at the end of a command, even if incomplete, it will show some info about in game!**_
+
+**PRISON COMMANDS:**
 
 - [/prison](docs-commands/prison_docs_command_1_prison.md)
 - [/prison alerts](docs-commands/prison_docs_command_2_prison_alerts.md)
@@ -13,12 +15,10 @@
 - [/prison modules](docs-commands/prison_docs_command_5_prison_modules.md)
 - [/prison placeholders](docs-commands/prison_docs_command_6_prison_placeholders.md)
 - [/prison reload](docs-commands/prison_docs_command_7_prison_reload.md)
-- [/prison troubleshoot \[name\]](docs-commands/prison_docs_command_8_troubleshoot.md)
 - [/prison version](docs-commands/prison_docs_command_9_prison_version.md)
-- [/sellall](docs-commands/prison_docs_command_10_sellall.md)
-- [/prisonmanager](docs-commands/prison_docs_command_36_prisonmanager.md)
 
-**RANKS COMMANDS:**
+
+**RANKS COMMANDS: _Guidebook TO-DO_**
 
 - [/ranks \[ladder\] ](docs-commands/prison_docs_command_11_ranks.md)
 - [/ranks command](docs-commands/prison_docs_command_12_ranks_command.md)
@@ -26,14 +26,14 @@
 - [/ranks delete \[rankName\] ](docs-commands/prison_docs_command_14_ranks_delete.md)
 - [/ranks demote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_15_ranks_demote.md)
 - [/ranks info \[rankName\] ](docs-commands/prison_docs_command_16_ranks_info.md)
-- [/ranks ladder](docs-commands/prison_docs_command_17_ladder_info.md)
+- [/ranks ladder](docs-commands/prison_docs_command_17_ranks_ladder_info.md)
 - [/ranks list \[ladderName\] ](docs-commands/prison_docs_command_18_ranks_list.md)
 - [/ranks players \[ladderName\] \[action\] ](docs-commands/prison_docs_command_19_ranks_players.md)
 - [/ranks player \[player\] ](docs-commands/prison_docs_command_20_ranks_player.md)
 - [/ranks promote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_21_ranks_promote.md)
 - [/ranks set](docs-commands/prison_docs_command_22_ranks_set.md)
 
-**MINES COMMANDS:**
+**MINES COMMANDS: _Guidebook TO-DO_**
 
 - [/mines](docs-commands/prison_docs_command_23_mines.md)
 - [/mines block](docs-commands/prison_docs_command_24_mines_block.md)
@@ -48,6 +48,16 @@
 - [/mines tp \[mineName\] ](docs-commands/prison_docs_command_33_mines_tp.md)
 - [/mines wand](docs-commands/prison_docs_command_34_mines_wand.md)
 - [/mines whereami](docs-commands/prison_docs_command_35_mines_whereami.md)
+
+**MORE COMMANDS: _Guidebook TO-DO_**
+
+- [/sellall](docs-commands/prison_docs_command_10_sellall.md)
+- [/prisonmanager](docs-commands/prison_docs_command_36_prisonmanager.md)
+- [/prestiges](docs-commands/prison_docs_command_37_prestiges.md)
+- [/prestige](docs-commands/prison_docs_command_38_prestige.md)
+- [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md)
+- [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md)
+
 
 ## Project Related
 
