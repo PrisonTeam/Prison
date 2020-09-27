@@ -1,20 +1,22 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ##Description:
-Short description of the command will be here
+Reload the Prison Plugin -> Show a list of reload commands for the plugin.
+
+##Permissions:
+- `prison.admin`
+- `prison.reload`
+- `prison.placeholder`
 
 ##SubCommands:
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- `/prison reload placeholders`
 
 ## How to use the command
+
+Execute `/prison reload` and add the argument you want at the end of it, for example `/prison reload placeholders`
+
 ### Command Format
-`/prison`
+`/prison reload <Arguments>`
 
 **END of the command INFO**

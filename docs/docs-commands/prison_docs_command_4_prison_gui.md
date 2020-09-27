@@ -1,20 +1,21 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ##Description:
-Short description of the command will be here
+This command will open the `/prison gui` where an admin can manage a lot of things about prison on a GUI.
+
+##Permission:
+- `prison.gui`
+- `prison.admin`
 
 ##SubCommands:
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- `none`
 
 ## How to use the command
+
+Just execute the command himself `/prison gui`
+
 ### Command Format
-`/prison`
+`/prison gui`
 
 **END of the command INFO**

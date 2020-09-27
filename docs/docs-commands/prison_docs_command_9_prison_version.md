@@ -1,20 +1,20 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
-[Prison Documents - Table of Contents](../docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
 ##Description:
-Short description of the command will be here
+Show many infos about prison and also some placeholders
+
+##Permission:
+- `prison admin`
 
 ##SubCommands:
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- `none`
 
 ## How to use the command
+
+Run the command himself to use this, example: `/prison version`
+
 ### Command Format
-`/prison`
+`/prison version`
 
 **END of the command INFO**
