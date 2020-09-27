@@ -19,6 +19,7 @@ package tech.mcprison.prison.ranks.data;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 
 import java.util.List;
@@ -28,7 +29,8 @@ import java.util.List;
  *
  * @author Faizaan A. Datoo
  */
-public class Rank {
+public class Rank
+		implements PrisonSortable {
 
     /*
      * Fields & Constants
@@ -68,6 +70,19 @@ public class Rank {
 
     public Rank() {
     }
+    
+    /**
+     * <p>This is strictly used for testing only!
+     * Never use this function outside of a jUnit test case!
+     * </p>
+     * 
+     * @param id
+     * @param name
+     */
+    protected Rank( String name ) {
+    	this.id = 0;
+    	this.name = name;
+    }
 
     @SuppressWarnings( "unchecked" )
 	public Rank(Document document) {
@@ -104,6 +119,11 @@ public class Rank {
         return ret;
     }
     
+    
+    @Override
+    public String toString() {
+    	return "Rank: " + id + " " + name;
+    }
     
     public String filename() {
     	return "rank_" + id;

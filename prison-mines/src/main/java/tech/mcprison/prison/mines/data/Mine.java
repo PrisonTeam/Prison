@@ -32,6 +32,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
+import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -41,7 +42,8 @@ import tech.mcprison.prison.util.Location;
  * @author Dylan M. Perks
  */
 public class Mine 
-	extends MineScheduler {
+	extends MineScheduler 
+	implements PrisonSortable {
 
     /**
      * Creates a new, empty mine instance

@@ -29,6 +29,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 
 /**
@@ -37,7 +38,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class RankLadder {
+public class RankLadder 
+		implements PrisonSortable {
 
     /*
      * Fields & Constants
@@ -103,6 +105,11 @@ public class RankLadder {
         return ret;
     }
 
+    @Override 
+    public String toString() {
+    	return "Ladder: " + name + "  ranks: " + (ranks == null ? 0 : ranks.size());
+    }
+    
     public List<Rank> getRanks() {
     	
     	List<Rank> rankz = new ArrayList<>();
