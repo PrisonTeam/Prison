@@ -68,6 +68,9 @@ _**If you add the `help` argument at the end of a command, even if incomplete, i
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
+* **[Most Recent Version of Prison Documentation](https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md)** Docs change frequently, but GITHUG's master versions do not. These are the latest docs!
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
