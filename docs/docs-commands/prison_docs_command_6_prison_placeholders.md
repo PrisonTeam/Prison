@@ -1,15 +1,15 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Show a list of Prison Placeholders available at the moment you execute the command in the place you're.
 
-##Permission:
+## Permission:
 
 - `prison.placeholder`
 
-##SubCommands:
+## SubCommands:
 
 - `/prison placeholders list` Show a list of placeholders
 - `/prison placeholders reload` Reload placeholders

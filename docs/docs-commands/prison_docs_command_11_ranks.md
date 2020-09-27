@@ -1,11 +1,11 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Short description of the command will be here
 
-##SubCommands:
+## SubCommands:
 
 - List
 - Of

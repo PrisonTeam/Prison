@@ -1,15 +1,15 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Prison Alerts, you can clear a Prison Alert or All of them
 
-##Permission:
+## Permission:
 
 - `prison.alerts`
 
-##SubCommands:
+## SubCommands:
 
 - `/prison alerts clearall` clear all alerts
 - `/prison alerts clear` clear an alert

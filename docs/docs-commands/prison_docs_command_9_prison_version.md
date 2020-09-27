@@ -1,15 +1,15 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Show many infos about prison and also some placeholders
 
-##Permission:
+## Permission:
 
 - `prison admin`
 
-##SubCommands:
+## SubCommands:
 
 - `none`
 

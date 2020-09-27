@@ -1,13 +1,13 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Show a description of the AutoFeatures and some info about them.
 
 **NOTE:** You should enable in the **config.yml** the autofeatures first, then you can edit them from the `/prison gui` or the `autoFeaturesConfig.yml`.
 
-##Permissions:
+## Permissions:
 
 - `prison.admin`
 - `prison.automanager`
@@ -15,7 +15,7 @@ Show a description of the AutoFeatures and some info about them.
 - `prison.automanager.smelt`
 - `prison.automanager.block`
 
-##SubCommands:
+## SubCommands:
 
 - `none`
 

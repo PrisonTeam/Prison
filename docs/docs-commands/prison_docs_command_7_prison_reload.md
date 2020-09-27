@@ -1,17 +1,17 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Reload the Prison Plugin -> Show a list of reload commands for the plugin.
 
-##Permissions:
+## Permissions:
 
 - `prison.admin`
 - `prison.reload`
 - `prison.placeholder`
 
-##SubCommands:
+## SubCommands:
 
 - `/prison reload placeholders`
 

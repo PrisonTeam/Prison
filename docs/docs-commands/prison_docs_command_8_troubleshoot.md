@@ -1,15 +1,15 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Prison Integrated troubleshooters
 
-##Permission:
+## Permission:
 
 - `prison.troubleshoot`
 
-##SubCommands:
+## SubCommands:
 
 - `/prison troubleshoot list`
 - `/prison troubleshoot item_scan`

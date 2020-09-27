@@ -1,16 +1,16 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
 
-##Description:
+## Description:
 
 Prison Modules command, will show a "status" for modules, like enabled or disabled.
 
-##Permission:
+## Permission:
 
 - `prison.modules`
 - `prison.admin`
 
-##SubCommands:
+## SubCommands:
 
 - `none`
 
