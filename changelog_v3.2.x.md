@@ -8,7 +8,20 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.1-alpha.20 - 2020-09-20
+## tag v3.2.1-alpha.20 - 2020-09-26
+
+* **Bug Fix: Prevent mines from being created that have spaces or no names**
+A bug was found where the admin was able to create a mine with the name of two spaces.  Changed create mine function to disallow any spaces within the name, or an empty name. Also setup the parms to "require" a name, but not sure if that will work correctly. If it does, then there will be multiple layers of protection to prevent spaces.
+
+
+* **New Feature: GUI Works with Spigot 1.8 now!**
+Prison's GUI now works with spigot 1.8.
+
+
+* **New Feature: The command /prison now includes all other root commands!**
+When the command prison is used, it shows a list of all sub-commands.  Now it also includes all other Prison registered root commands so the uses do not have to guess what other commands are available within prison.  This will provide a listing so they can explore others.
+Also disabled the prison troubleshoot command since its not of any benefit.
+
 
 * **Moved the spiget project in to the prison project's class path**
 Move the spiget in to the project's directory with shadowJar since there has been a few issues with the build.

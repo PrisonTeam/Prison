@@ -10,7 +10,12 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.1
 
 
-* **BUG? Able to add more than 100% in one mine?**
+* **Rename Mines**
+Been a few requests to be able to rename mines.  Since so much can go wrong with manually changing the files, this should be a reasonable new feature added before beta.
+
+
+
+* **BUG FIXED: BUG? Able to add more than 100% in one mine?**
 User reported having three copies of everything which totaled more than 300%.
 Used the /mines block add function?  
 
@@ -61,6 +66,66 @@ Create a "void" ladder and prevent ladders from being named: default, void, and 
 * **Autosell feature**
 Be able to allow the players to toggle it on or off. Will not sell what is in inventory, but only the blocks that they are mining.  Use /autosell .
 What would be nice is if you could look up all permissions that start with prison.sellall.1.05 where the number at the end is the multiplier.  So you setup the multiplier based upon permissions and no other configs.  Then take all the multipliers and multiply them together.  So if they have a 1.05 (donor), 1.03 (special limited time), 0.97 (prestige penalty... more difficult the higher you go) would have a total of 1.049.  So basically different ranks, or even different tools could increase or decrease payout.
+
+
+* **Update config.yml when changes are detected**
+Preserving the current settings, replace the out of date config.yml file with the latest that is stored within the jar.  Updating the settings as it goes.
+
+
+* **Ladder commands - global for all ranks in that ladder**
+Add new placeholders for ladder commands to be able to have generic ladder commands that will apply and be ran for all ranks. May be able to eliminate the need for most rank commands.
+
+
+* **Rank Commands - Edit and delete**
+Add line numbers and enable the ability to edit and delete by line number.
+
+
+
+
+GABRYCAToday at 3:46 PM
+3.2.1 -> Nothing to fix 
+
+3.3.0 before -> 
+Bug: Bug fixes which will be reported by the user, if nothing will be reported in a month, then some of the next planned features will be integrated within this:
+New:
+- Add Ranks, Mines, Prestiges and RankupCommands presets
+- Add a walktrough GUI and Command to set up Prison presets on first start in the server
+- <rank>, <rank_next>, <prestige>, <prestige_next> placeholders for RankupCommands
+
+3.3.0 ->
+New:
+- Add close GUI Button 
+- Next page button for ranks, ladders, rankupcommands and mines
+- Eventually add some features which are missing in the GUIs
+- Enhanced GUI listeners and management system (I'll need this for the next feature)
+- Tracker and "cache" of the previous open GUI (will be deleted if there aren't Open GUIs... to sort this out)
+-  Go Back button to go to the previous GUI
+
+
+
+Parameterize Sort order for /mines list.  
+Default sort order should probably be alphabetical.  
+Currently it is alphabetical with most active mines since restart at the top of the list, based upon blocks mined.
+
+
+
+Enable zero block counts for parent mines.
+if 100% block type of IGNORE, then after reset do an full mine air count so zero block reset works. :)
+
+
+
+
+[Plugin Prison - To be able to manage at which layer such or such block appears]
+- For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
+
+  "blocks": [
+    "STONE-20.0-0",                           0 when not configured = all layers 
+    "IRON_ORE-25.0-0,5",                 0,5 for all layers up to the layer 5
+    "GOLD_ORE-25.0-4,7",                4,7 for layers between layer 4 and 7
+    "EMERALD_ORE-25.0-8,0"         8,0 for all layers after layer 8 (in example : so up to layer 10)
+  ],
+
+
 
 
 # To Do Items - Post v3.2.1

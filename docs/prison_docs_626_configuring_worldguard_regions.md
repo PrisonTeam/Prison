@@ -299,7 +299,7 @@ Template:
 
     /lp user <player-name> parent unset <group-name>
 
-    /lp user <player-name> permission unset g:prison.mines.<mine-name>
+    /lp user <player-name> parent unset g:prison.mines.<mine-name>
 
 
 
