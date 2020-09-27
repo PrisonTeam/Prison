@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.1-alpha.20 - 2020-09-27
 
+
+
+* **Fixed issue with sorting of the mine name in the gui.**
+  They are now strictly by alphabetical on the mine name.
+
+
+
 * **New Feature: Custom sorting of mines, ladders, and ranks.**
 Currently mines and ranks are alphabetical in sort order.
 Ladders sorts default first, prestige last, and everything else is alphabetical between them.
@@ -18,8 +25,10 @@ This new feature has not been hooked up yet to any interfaces, but it's ready.
 Need to add mines, but right now there is no way to link mines to ranks.
 
 
+
 * **Bug Fix: Prevent mines from being created that have spaces or no names**
 A bug was found where the admin was able to create a mine with the name of two spaces.  Changed create mine function to disallow any spaces within the name, or an empty name. Also setup the parms to "require" a name, but not sure if that will work correctly. If it does, then there will be multiple layers of protection to prevent spaces.
+
 
 
 * **New Feature: GUI Works with Spigot 1.8 now!**

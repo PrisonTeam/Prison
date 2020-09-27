@@ -14,12 +14,6 @@ issues, and/or to serve as items that should be added, or fixed.
 Been a few requests to be able to rename mines.  Since so much can go wrong with manually changing the files, this should be a reasonable new feature added before beta.
 
 
-
-* **BUG FIXED: BUG? Able to add more than 100% in one mine?**
-User reported having three copies of everything which totaled more than 300%.
-Used the /mines block add function?  
-
-
 * **New Block Model - Implement in parallel**
 Implement and have a fully functional new block handling mechanism that operate in complete parallel to the old method.  This way admins can turn it on when they want to use it, otherwise their server will continue to use the old code.
 
@@ -40,11 +34,6 @@ Implement and have a fully functional new block handling mechanism that operate 
 
 
  
- * **DONE: Add player names to the player file**
- Have no idea who is who in the player files.
- Make it an array of a new object, player name that has name and timestamp.
- When the file is loaded and the player is online, check name, and if not recorded, then add it. 
- 
 
  
  * **Problem with rank removal from Ladders**
@@ -56,16 +45,6 @@ This could cause major corruption if moving ranks between ladders, removing rank
 
 Create a "void" ladder and prevent ladders from being named: default, void, and prestige.  When a rank is removed from a ladder, place it in to none and update all players that use that rank so the rank is still valid.  Do not include void ladders in placeholders.
 
- 
- 
- * **Add GUI support for v1.8.x**
- Might be able to add GUI support for 1.8.x with a few simple lines of code?
-
-
-
-* **Autosell feature**
-Be able to allow the players to toggle it on or off. Will not sell what is in inventory, but only the blocks that they are mining.  Use /autosell .
-What would be nice is if you could look up all permissions that start with prison.sellall.1.05 where the number at the end is the multiplier.  So you setup the multiplier based upon permissions and no other configs.  Then take all the multipliers and multiply them together.  So if they have a 1.05 (donor), 1.03 (special limited time), 0.97 (prestige penalty... more difficult the higher you go) would have a total of 1.049.  So basically different ranks, or even different tools could increase or decrease payout.
 
 
 * **Update config.yml when changes are detected**
@@ -103,10 +82,6 @@ New:
 
 
 
-Parameterize Sort order for /mines list.  
-Default sort order should probably be alphabetical.  
-Currently it is alphabetical with most active mines since restart at the top of the list, based upon blocks mined.
-
 
 
 Enable zero block counts for parent mines.
@@ -119,10 +94,10 @@ if 100% block type of IGNORE, then after reset do an full mine air count so zero
 - For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
 
   "blocks": [
-    "STONE-20.0-0",                           0 when not configured = all layers 
-    "IRON_ORE-25.0-0,5",                 0,5 for all layers up to the layer 5
-    "GOLD_ORE-25.0-4,7",                4,7 for layers between layer 4 and 7
-    "EMERALD_ORE-25.0-8,0"         8,0 for all layers after layer 8 (in example : so up to layer 10)
+    "STONE-20.0-0",         0 when not configured = all layers 
+    "IRON_ORE-25.0-0,5",    0,5 for all layers up to the layer 5
+    "GOLD_ORE-25.0-4,7",    4,7 for layers between layer 4 and 7
+    "EMERALD_ORE-25.0-8,0"  8,0 for all layers after layer 8 (in example : so up to layer 10)
   ],
 
 
@@ -175,21 +150,7 @@ They are inconsistent and non-standard to prison. They do not support the `help`
 
 
 * **Refactor GUI?**
-
-
-* **Prestige references**
-Add the prestige command to the /prison version page; rework the commands layout.
-Add the documentation for prestige.  Gabryca provided the base docs.
-
-
-* **Prestige Fixes**
-The existing prestige command is GUI only.  That may be an issue with 1.8.x. When testing, it appears to work, but may need an non-gui way to rank up.
-
-The /prestige command does not show the cost.  The cost must be shown, along with a warning that the player's balance will be set to zero.
-
-Since the player loses their balance, which may be far more than what the prestige may cost, there really must be a confirmation added confirming the cost, and the player's balance.  It should also identify that the excess amount of money the player will lose.
-
-Must change the cancel button lore.  It's grammatically incorrect with a double negative.  Should only be: "Cancel Prestige".  Likewise the confirmation button should just be "Confirm Prestige" since the colon is grammatically ambiguous.
+Performance updates and validation to ensure computationally expensive processes are not running constantly.
 
 
 
@@ -206,6 +167,7 @@ Delete a mine and try to add a new one right away with the same name.  A user sa
 Might be easier to just reregister all mines?  Not sure if that will work?
 Right now, if a mine is added, in order for it to show up in the placeholders, you would have to restart the server so all the placeholders are reregistered.
  * * maybe just automatically run reset when vital elements change? * *
+
 
 
 * **Add WorldGuard Support**
@@ -262,17 +224,6 @@ Hook up tab completion on the prison commands.
 Need to log major events such as rankups, both to the server log, and also
 to the community.  Server logs for these events, especially when money is
 involved, is important.
-
-
-
-
-* **Exclude specific Prison commands**
-
-
-Ability to exclude, or ignore, specific commands upon startup. 
-
-
-NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command
 
 
 
@@ -338,26 +289,56 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 
-* **Support QuickSell project for use with Prison *Only* ***
-
-*Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
-
-QuickSell has be abandoned, but could be very useful for prison to provide a simplified integration of features. 
-
-Quickly reviewed code and it looks fairly good and probably has very low maintenance. Base initial support could be updating dependencies within Maven. Goal to get QuickSell to work with all supported versions of Prison and all supported versions of spigot.
-
-Explicit support going forward would be directly related to Prison. If a support issue has to do with another 3rd party plugin, then support "could" be refused or unsupported 3rd party plugins could be removed. Primary focus would be for the support of Prison and to provide a QuickSell feature to users of the Prison plugin.
-
-https://www.spigotmc.org/resources/quicksell.6107/
-
-https://github.com/TheBusyBiscuit/QuickSell
-Currently 15 forks.  Activity unknown.
-
-
 # Features recently added:
 
 
+
+* **Done: Prestige references**
+Add the prestige command to the /prison version page; rework the commands layout.
+Add the documentation for prestige.  Gabryca provided the base docs.
+
+
+* **Done: Prestige Fixes**
+The existing prestige command is GUI only.  That may be an issue with 1.8.x. When testing, it appears to work, but may need an non-gui way to rank up.
+
+The /prestige command does not show the cost.  The cost must be shown, along with a warning that the player's balance will be set to zero.
+
+Since the player loses their balance, which may be far more than what the prestige may cost, there really must be a confirmation added confirming the cost, and the player's balance.  It should also identify that the excess amount of money the player will lose.
+
+Must change the cancel button lore.  It's grammatically incorrect with a double negative.  Should only be: "Cancel Prestige".  Likewise the confirmation button should just be "Confirm Prestige" since the colon is grammatically ambiguous.
+
+
+
+**Done! Parameterize Sort order for /mines list.**  
+Default sort order should probably be alphabetical.  
+Currently it is alphabetical with most active mines since restart at the top of the list, based upon blocks mined.
+
+
  
+* **Done!! Add GUI support for v1.8.x**
+ Might be able to add GUI support for 1.8.x with a few simple lines of code?
+
+
+
+* **Done: Autosell feature**
+Be able to allow the players to toggle it on or off. Will not sell what is in inventory, but only the blocks that they are mining.  Use /autosell .
+What would be nice is if you could look up all permissions that start with prison.sellall.1.05 where the number at the end is the multiplier.  So you setup the multiplier based upon permissions and no other configs.  Then take all the multipliers and multiply them together.  So if they have a 1.05 (donor), 1.03 (special limited time), 0.97 (prestige penalty... more difficult the higher you go) would have a total of 1.049.  So basically different ranks, or even different tools could increase or decrease payout.
+
+
+
+
+* **FIXED: BUG? Able to add more than 100% in one mine?**
+User reported having three copies of everything which totaled more than 300%.
+Used the /mines block add function?  
+
+ 
+ 
+* **DONE: Add player names to the player file**
+ Have no idea who is who in the player files.
+ Make it an array of a new object, player name that has name and timestamp.
+ When the file is loaded and the player is online, check name, and if not recorded, then add it. 
+ 
+
  
 * **DONE: Add permissions on notifications for mine resets **
 Only send a message to the player if they have the permission set, and follow the other notification settings too.
@@ -474,6 +455,33 @@ Do not have to precheck if the block was air before, since air cannot trigger a 
       * skipResetBypassThreshold - int - number of *skips* before a forced reset.
       * skipResetBypassCount - transient - int - counts the number of times a reset is skipped. This is transient value and is never saved.
 
+
+
+
+
+
+* **Not needed: Exclude specific Prison commands**
+NOTE: The player asking for this was able to disable the ranks module and that was able to solve their problem. There are no other reasons to cause this much trouble and redesign of the command handling internally, so this is being removed from consideration.
+Ability to exclude, or ignore, specific commands upon startup. 
+NOTE: this may not be needed. Disabling the Prison Ranks module solved the problem, which was trying to use EZRanksPro and prison's /rankup command was conflicting with that plugin's /rankup command
+
+
+
+
+* **OBSOLETE: Sellall is now internal. Support QuickSell project for use with Prison *Only* ***
+
+*Goal:* Something to consider. See if it can work with 1.15.x. This would provide a solution for prison servers to use with the full range of our supported platform versions.  Intentions of pushing changes back in to the main project and not maintaining a new project.
+
+QuickSell has be abandoned, but could be very useful for prison to provide a simplified integration of features. 
+
+Quickly reviewed code and it looks fairly good and probably has very low maintenance. Base initial support could be updating dependencies within Maven. Goal to get QuickSell to work with all supported versions of Prison and all supported versions of spigot.
+
+Explicit support going forward would be directly related to Prison. If a support issue has to do with another 3rd party plugin, then support "could" be refused or unsupported 3rd party plugins could be removed. Primary focus would be for the support of Prison and to provide a QuickSell feature to users of the Prison plugin.
+
+https://www.spigotmc.org/resources/quicksell.6107/
+
+https://github.com/TheBusyBiscuit/QuickSell
+Currently 15 forks.  Activity unknown.
 
 
 

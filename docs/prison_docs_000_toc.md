@@ -36,7 +36,7 @@
 
 ### Commands Shortcut help
 
-** Adding the `help` argument as the first parameter of any command will show additional help. **
+*Adding the `help` argument as the first parameter of any command will show additional help.*
 
 
 **PRISON COMMANDS:** 
