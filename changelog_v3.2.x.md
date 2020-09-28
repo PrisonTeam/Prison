@@ -8,6 +8,28 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
+
+## tag v3.2.2-alpha.1 - 2020-09-27
+
+
+
+* **Bug fix: Prison was allowing the material REDSTONE to be added to mines.**
+This caused a failure during mine resets since that is not a valid block. That is redstone dust!
+Fixed it so upon server startup, it will auto detect the use of this item in mines and convert it to REDSTONE_ORE.  Thus the mine will work and won't disable the mine.
+Also I changed the BlockType to Item so it's still there, but it cannot be presented as a block in the /mines block search tool.
+
+
+* **Set new version to v3.2.2-alpha.1**  2020-09-27
+
+
+## tag v3.2.1 - 2020-09-27
+
+* **New Release!! v3.2.1 published!!**
+Bleeding was pulled in to master branch.  And published to spigotmc.org too. :)
+
+
+
+
 ## tag v3.2.1-alpha.20 - 2020-09-27
 
 

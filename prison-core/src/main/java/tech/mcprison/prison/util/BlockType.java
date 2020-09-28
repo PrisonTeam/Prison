@@ -573,7 +573,7 @@ public enum BlockType {
 	MINECART( 328, "minecraft:minecart", 0 ),
 	SADDLE( 329, "minecraft:saddle", 0 ),
 	IRON_DOOR( 330, "minecraft:iron_door", 0, MaterialType.BLOCK ),
-	REDSTONE( 331, "minecraft:redstone", 0, MaterialType.BLOCK ),
+	REDSTONE( 331, "minecraft:redstone", 0, MaterialType.ITEM ),
 	SNOWBALL( 332, "minecraft:snowball", 0 ),
 	OAK_BOAT( 333, "minecraft:boat", 0 ),
 	LEATHER( 334, "minecraft:leather", 0 ),

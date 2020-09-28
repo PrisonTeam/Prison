@@ -247,6 +247,17 @@ public class Mine
             	// Use the BlockType.name() load the block type:
             	BlockType blockType = BlockType.getBlock(blockTypeName);
             	if ( blockType != null ) {
+            		
+            		if ( blockType == BlockType.REDSTONE ) {
+            			blockType = BlockType.REDSTONE_ORE;
+            			
+            			Output.get().logError( "Warning! An invalid block type was detect when loading blocks for " +
+            					"mine " + getName() + ". Redstone dust is not a valid block type. Using " +
+            							"REDSTONE_ORE instead. If this is incorrect please fix manually." );
+            			
+            			dirty = true;
+            		}
+            		
             		Block block = new Block(blockType, chance);
             		getBlocks().add(block);
             	}
