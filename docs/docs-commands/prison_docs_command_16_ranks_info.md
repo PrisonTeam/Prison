@@ -1,24 +1,28 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Short description of the command will be here
+Get info about a rank.
+
+## Permissions:
+
+- `ranks.info`
+- `ranks.admin`
 
 ## SubCommands:
 
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- none
 
 ## How to use the command
 
+Execute the command like in the example following the format:
+
+- `/ranks info [rankName]`
+- `/ranks info A`
+
 ### Command Format
 
-`/prison`
+`/ranks info [rankName]`
 
 **END of the command INFO**

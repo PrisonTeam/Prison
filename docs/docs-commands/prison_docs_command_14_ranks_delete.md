@@ -1,24 +1,27 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Short description of the command will be here
+Delete a rank.
+
+## Permissions:
+
+- `ranks.delete`
 
 ## SubCommands:
 
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- none
 
 ## How to use the command
 
+Execute the command himself like in the example to delete a rank:
+
+- `/ranks delete [rankName]`
+- `/ranks delete A`
+
 ### Command Format
 
-`/prison`
+`/ranks delete [rankName]`
 
 **END of the command INFO**

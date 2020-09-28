@@ -1,24 +1,37 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Short description of the command will be here
+Demote a player of a rank depending on the ladder you want.
+
+## Permissions:
+
+- `ranks.demote`
 
 ## SubCommands:
 
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- none
 
 ## How to use the command
 
+Execute the command himself following the format shown in the example to demote a player:
+
+- `/ranks demote [playerName] [ladder] [chargePlayers]`
+- `/ranks demote GABRYCA default`
+
+_"Hope you'll never get demoted_
+
+_As this is usually common_
+
+_and in life you'll see only promotions_
+
+_as time goes on"_
+
+**- GABRYCA**
+
 ### Command Format
 
-`/prison`
+`/ranks demote [playerName] [ladder] [chargePlayers]`
 
 **END of the command INFO**

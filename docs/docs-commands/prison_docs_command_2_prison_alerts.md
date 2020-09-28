@@ -1,4 +1,4 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation 
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
