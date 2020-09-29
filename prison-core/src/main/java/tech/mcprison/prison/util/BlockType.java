@@ -761,6 +761,61 @@ public enum BlockType {
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
 	
+	
+	// Minecraft v1.16.x blocks:
+	// crying_obsidian, nether_gold_ore, polished_basalt, basalt, red_nether_bricks, netherite_block, gilded_blackstone
+	ANCIENT_DEBRIS( "minecraft:ancient_debris", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	CRYING_OBSIDIAN( "minecraft:crying_obsidian", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	NETHER_GOLD_ORE( "minecraft:nether_gold_ore", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	BASALT( "minecraft:basal", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	POLISHED_BASALT( "minecraft:polished_basalt", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	NETHERITE_BLOCK( "minecraft:netherite_block", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	BLACKSTONE( "minecraft:base_stone_blackstone", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	POLISHED_BLACKSTONE( "minecraft:polished_blackstone", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	CHISELED_POLISHED_BLACKSTONE( "minecraft:chiseled_polished_blackstone", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	NETHER_BRICKS( "minecraft:nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	RED_NETHER_BRICKS( "minecraft:red_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	CRACKED_NETHER_BRICKS( "minecraft:cracked_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	CHISELED_NETHER_BRICKS( "minecraft:chiseled_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	CRIMSON_PLANKS( "minecraft:crimson_planks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	WARPED_PLANKS( "minecraft:warped_planks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	STRIPPED_CRIMSON_HYPHAE( "minecraft:stripped_crimson_hyphae", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	STRIPPED_WARPED_HYPHAE( "minecraft:stripped_warped_hyphae", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	NETHER_WART_BLOCK( "minecraft:nether_wart_block", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	WARPED_WART_BLOCK( "minecraft:warped_wart_block", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+
+	
+	LODESTONE( "minecraft:lodestone", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	QUARTZ_BRICKS( "minecraft:quartz_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	RESPAWN_ANCHOR( "minecraft:respawn_anchor", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	SHROOMLIGHT( "minecraft:shroomlight", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	CAMPFIRE( "minecraft:campfire", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	SOUL_CAMPFIRE( "minecraft:soul_campfire", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	SOUL_LANTERN( "minecraft:soul_lantern", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	SOUL_TORCH( "minecraft:soul_torch", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	SOUL_SOIL( "minecraft:soul_soil", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	TARGET( "minecraft:target", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	TWISTING_VINES( "minecraft:twisting_vines", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	WEAPING_VINES( "minecraft:weaping_vines", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	
+	
+	
+	
+	
 //	Testing to see if we can inject 1.13 block types: :( nope... does not work.
 //  Commenting out for now, will revisit later.
 //

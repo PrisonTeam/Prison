@@ -9,8 +9,22 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-09-27
+## tag v3.2.2-alpha.1 - 2020-09-29
 
+
+* **Added a few v1.16 block types.**
+Not sure if they will actually work.  Obviously will never work with mc versions < 1.16.  Use at own risk.
+ANCIENT_DEBRIS CRYING_OBSIDIAN NETHER_GOLD_ORE BASALT POLISHED_BASALT
+NETHERITE_BLOCK BLACKSTONE POLISHED_BLACKSTONE CHISELED_POLISHED_BLACKSTONE
+NETHER_BRICKS RED_NETHER_BRICKS CRACKED_NETHER_BRICKS CHISELED_NETHER_BRICKS
+CRIMSON_PLANKS WARPED_PLANKS STRIPPED_CRIMSON_HYPHAE
+STRIPPED_WARPED_HYPHAE NETHER_WART_BLOCK WARPED_WART_BLOCK
+LODESTONE QUARTZ_BRICKS RESPAWN_ANCHOR SHROOMLIGHT CAMPFIRE SOUL_CAMPFIRE
+SOUL_LANTERN SOUL_TORCH SOUL_SOIL TARGET TWISTING_VINES WEAPING_VINES
+
+
+* **Fix: Changed nether_brick to an item**
+ since this is an item and not a block. Added support so if it is found in a mine upon server startup, it will change it to a double_nether_brick_slab.
 
 
 * **Bug fix: Prison was allowing the material REDSTONE to be added to mines.**
