@@ -248,12 +248,39 @@ public class Mine
             	BlockType blockType = BlockType.getBlock(blockTypeName);
             	if ( blockType != null ) {
             		
+            		
+            		/**
+            		 * <p>The following is code to correct the use of items being used as a
+            		 * block in a mine, which will cause a failure in trying to place an 
+            		 * item as a block.
+            		 * </p>
+            		 * 
+            		 * <p>This is intended for the old block model and is temp code to ensure 
+            		 * that there are less errors the end user will experience.
+            		 * </p>
+            		 */
+            		String errorMessage = "Warning! An invalid block type of %s was " +
+            				"detect when loading blocks for " +
+        					"mine %s. %s is not a valid block type. Using " +
+        					"%s instead. If this is incorrect please fix manually.";
+            		
             		if ( blockType == BlockType.REDSTONE ) {
+            			BlockType itemType = blockType;
             			blockType = BlockType.REDSTONE_ORE;
             			
-            			Output.get().logError( "Warning! An invalid block type was detect when loading blocks for " +
-            					"mine " + getName() + ". Redstone dust is not a valid block type. Using " +
-            							"REDSTONE_ORE instead. If this is incorrect please fix manually." );
+            			Output.get().logError( 
+            					String.format( errorMessage, itemType.name(), getName(), 
+            							"Redstone dust", blockType.name()) );
+            					            			
+            			dirty = true;
+            		}
+            		else if ( blockType == BlockType.NETHER_BRICK ) {
+            			BlockType itemType = blockType;
+            			blockType = BlockType.DOUBLE_NETHER_BRICK_SLAB;
+            			
+            			Output.get().logError( 
+            					String.format( errorMessage, itemType.name(), getName(), 
+            							"Individual nether brick", blockType.name()) );
             			
             			dirty = true;
             		}
