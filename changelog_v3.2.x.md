@@ -9,7 +9,21 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-09-29
+## tag v3.2.2-alpha.1 - 2020-09-30
+
+
+* **Bug fix: change how /ranks list works with perms.**
+Should allow all players to use this command since no-perm players can use /ranks and that just redirects to this command.
+Removed admin features unless player has the ranks.list perm or they are op. The admin features are links to other internal commands.
+
+
+
+* **Potential bug fix if a config option does not exist**
+Reformatted so the code will have a better chance of fitting on the screen without a bunch of horizontal scrolling... 
+plus got rid of a few instances of Objects.requireNonNull() which throws exceptions, which are not being caught.  Which is also the wrong behavior to what we need here... if those configs are null, then instead of throwing exceptions, just move on to the next conditional in the if chain.
+Should probably never use Objects.requireNonNull since it will crash prison and prevent intended functionality.  This should probably be removed from elsewhere.
+
+
 
 * **New feature: Gui Languages Support**
 New languages folder containing the GUI and future languages files so players can edit them or contribute to make a new
