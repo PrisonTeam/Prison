@@ -48,17 +48,20 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Blocks of the mine
         List<String> confirmLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToConfirm"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning2"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning3")
+                messages.getString("Gui.Lore.ClickToConfirm"),
+                messages.getString("Gui.Lore.PrestigeWarning"),
+                messages.getString("Gui.Lore.PrestigeWarning2"),
+                messages.getString("Gui.Lore.PrestigeWarning3")
         );
 
         // Blocks of the mine
         List<String> cancelLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToCancel"));
+                messages.getString("Gui.Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmLore, SpigotPrison.format("&3" + "Confirm: Prestige"));

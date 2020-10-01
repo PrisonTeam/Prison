@@ -59,29 +59,32 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Create the lore
         List<String> rankupCommandsLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Gui.Lore.ClickToOpen"),
                 "",
-                guiConfig.getString("Gui.Lore.Info")
+                messages.getString("Gui.Lore.Info")
         );
 
         SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
 
         // Create the lore
         List<String> editPriceLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Gui.Lore.ClickToOpen"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"),
-                guiConfig.getString("Gui.Lore.Price") + rank.cost
+                messages.getString("Gui.Lore.Info"),
+                messages.getString("Gui.Lore.Price") + rank.cost
         );
 
         // Create the lore
         List<String> editTagLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Gui.Lore.ClickToOpen"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"),
-                guiConfig.getString("Gui.Lore.Tag") + rank.tag
+                messages.getString("Gui.Lore.Info"),
+                messages.getString("Gui.Lore.Tag") + rank.tag
         );
 
         // Create the button

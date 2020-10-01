@@ -47,25 +47,26 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // Get the dimensions and if needed increases them
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
         } else {
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFoundAdmin")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFoundAdmin")));
             return;
         }
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.EmptyGui")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyRanks")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyRanks")));
             p.closeInventory();
             return;
         }
@@ -103,16 +104,19 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Optional<Rank> rankOptional) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         ItemStack itemRank;
         // Init the lore array with default values for ladders
         List<String> ranksLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                guiConfig.getString("Gui.Lore.ClickToManageRank"),
+                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Gui.Lore.ClickToManageRank"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"));
+                messages.getString("Gui.Lore.Info"));
 
         if (!rankOptional.isPresent()){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.CantGetRanksAdmin")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.CantGetRanksAdmin")));
             return;
         }
 
@@ -120,16 +124,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Rank rank = rankOptional.get();
 
         // Add the RankID Lore
-        ranksLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Id") + rank.id));
+        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Id") + rank.id));
 
         // Add the RankName lore
-        ranksLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Name") + rank.name));
+        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Name") + rank.name));
 
         // Add the Rank Tag lore
-        ranksLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
+        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
 
         // Add the Price lore
-        ranksLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Price3") + rank.cost));
+        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Price3") + rank.cost));
 
         // Init a variable
         List<RankPlayer> players =
@@ -138,7 +142,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                         .collect(Collectors.toList());
 
         // Add the number of players with this rank
-        ranksLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
 
         // RankUpCommands info lore
         ranksLore.add("");
@@ -154,15 +158,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     static void getCommands(List<String> ranksLore, Rank rank) {
 
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            ranksLore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ContainsTheRank") + rank.name + GuiConfig.getString("Gui.Lore.ContainsNoCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ContainsTheRank") + rank.name + messages.getString("Gui.Lore.ContainsNoCommands")));
         } else {
-            ranksLore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.LadderThereAre") + rank.rankUpCommands.size() + GuiConfig.getString("Gui.Lore.LadderCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.LadderThereAre") + rank.rankUpCommands.size() + messages.getString("Gui.Lore.LadderCommands")));
             for (String command : rank.rankUpCommands) {
-                ranksLore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.RankupCommands") + command));
+                ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.RankupCommands") + command));
             }
-            ranksLore.add(SpigotPrison.format(GuiConfig.getString("Gui.Lore.ClickToManageCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ClickToManageCommands")));
         }
     }
 }

@@ -49,24 +49,27 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Lore of the button
         List<String> rankslore = createLore(
-        		guiConfig.getString("Gui.Lore.RanksButton"),
-        		guiConfig.getString("Gui.Lore.ClickToOpen"));
+        		messages.getString("Gui.Lore.RanksButton"),
+                messages.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> prisontaskslore = createLore(
-                guiConfig.getString("Gui.Lore.PrisonTasksButton"),
-                guiConfig.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Gui.Lore.PrisonTasksButton"),
+                messages.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> mineslore = createLore(
-                guiConfig.getString("Gui.Lore.MinesButton"),
-                guiConfig.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Gui.Lore.MinesButton"),
+                messages.getString("Gui.Lore.ClickToOpen"));
 
         // Lore of the button
         List<String> sellallLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Gui.Lore.ClickToOpen"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, rankslore, SpigotPrison.format("&3" + "Ranks"));

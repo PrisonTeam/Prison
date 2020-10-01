@@ -151,15 +151,17 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
 
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         if (!ladder.isPresent()){
-            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.LadderPrestigesNotFound")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.LadderPrestigesNotFound")));
             return;
         }
 
         RankLadder ladderData = ladder.get();
 
         if (!ladderData.getLowestRank().isPresent()){
-            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoRanksPrestigesLadder")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksPrestigesLadder")));
             return;
         }
 
@@ -178,8 +180,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    guiConfig.getString("Gui.Lore.Info"),
-                    guiConfig.getString("Gui.Lore.Price3") + rank.cost
+                    messages.getString("Gui.Lore.Info"),
+                    messages.getString("Gui.Lore.Price3") + rank.cost
             );
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
@@ -201,8 +203,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         List<String> rankupLore = createLore(
-                guiConfig.getString("Gui.Lore.IfYouHaveEnoughMoney"),
-                guiConfig.getString("Gui.Lore.ClickToRankup")
+                messages.getString("Gui.Lore.IfYouHaveEnoughMoney"),
+                messages.getString("Gui.Lore.ClickToRankup")
         );
 
         ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));

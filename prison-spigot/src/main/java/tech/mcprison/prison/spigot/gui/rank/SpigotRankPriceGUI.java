@@ -62,22 +62,25 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Gui.Lore.ClickToDecrease")
         );
 
         // Create a new lore
         List<String> confirmButtonLore;
         confirmButtonLore = createLore(
-                guiConfig.getString("Gui.Lore.LeftClickToConfirm"),
-                guiConfig.getString("Gui.Lore.Price2") + val,
-                guiConfig.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Gui.Lore.LeftClickToConfirm"),
+                messages.getString("Gui.Lore.Price2") + val,
+                messages.getString("Gui.Lore.RightClickToCancel")
         );
 
         // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Gui.Lore.ClickToIncrease")
         );
 
         // Decrease button

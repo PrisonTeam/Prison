@@ -44,6 +44,8 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
 
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         Inventory inv;
 
         boolean emptyInv = false;
@@ -57,7 +59,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoSellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoSellAllItems")));
             p.closeInventory();
             return null;
         }
@@ -69,7 +71,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.TooManySellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManySellAllItems")));
             return null;
         }
 
@@ -77,7 +79,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    guiConfig.getString("Gui.Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
+                    messages.getString("Gui.Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
             ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);

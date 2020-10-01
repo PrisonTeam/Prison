@@ -57,21 +57,24 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Create new lore
         List<String> changeDecreaseValueLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Gui.Lore.ClickToDecrease")
         );
 
         // Create a new lore
         List<String> confirmButtonLore = createLore(
-                guiConfig.getString("Gui.Lore.LeftClickToConfirm"),
-                guiConfig.getString("Gui.Lore.Radius") + val,
-                guiConfig.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Gui.Lore.LeftClickToConfirm"),
+                messages.getString("Gui.Lore.Radius") + val,
+                messages.getString("Gui.Lore.RightClickToCancel")
         );
 
         // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Gui.Lore.ClickToIncrease")
         );
 
         // Decrease buttons

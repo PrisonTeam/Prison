@@ -62,6 +62,7 @@ import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.languages.GuiMessagesConfig;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -231,6 +232,11 @@ public class SpigotPrison extends JavaPlugin {
     public static FileConfiguration getSellAllConfig(){
         SellAllConfig configs = new SellAllConfig();
         return configs.getFileSellAllConfig();
+    }
+
+    public static FileConfiguration getGuiMessagesConfig(){
+        GuiMessagesConfig messagesConfig = new GuiMessagesConfig();
+        return messagesConfig.getFileGuiMessagesConfig();
     }
     
     public AutoManagerFeatures getAutoFeatures() {

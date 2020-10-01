@@ -109,20 +109,21 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         LadderManager lm = getRankPlugin().getLadderManager();
         Optional<RankLadder> ladder = lm.getLadder(GuiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
         if ( !ladder.isPresent() || !ladder.get().getLowestRank().isPresent() ){
-            getPlayer().sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFoundHelp1") + GuiConfig.getString("Options.Ranks.Ladder") + GuiConfig.getString("Gui.Message.NoRanksFoundHelp2")));
+            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFoundHelp1") + GuiConfig.getString("Options.Ranks.Ladder") + messages.getString("Gui.Message.NoRanksFoundHelp2")));
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.get().ranks.size() == 0) {
-            getPlayer().sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRanksFound")));
+            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFound")));
             return;
         }
 
@@ -158,6 +159,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Not sure how you want to represent this:
         Material materialHas;
         materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
@@ -193,11 +197,11 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         List<String> rankupLore = createLore(
-                guiConfig.getString("Gui.Lore.IfYouHaveEnoughMoney"),
-                guiConfig.getString("Gui.Lore.ClickToRankup")
+                messages.getString("Gui.Lore.IfYouHaveEnoughMoney"),
+                messages.getString("Gui.Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format(guiConfig.getString("Gui.Lore.Rankup")));
+        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format(messages.getString("Gui.Lore.Rankup")));
         inv.setItem(dimension - 5, rankupButton);
     }
 

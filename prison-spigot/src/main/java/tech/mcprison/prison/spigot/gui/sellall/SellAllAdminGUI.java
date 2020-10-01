@@ -45,6 +45,8 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
 
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         boolean emptyInv = false;
 
         try {
@@ -56,7 +58,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoSellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoSellAllItems")));
             p.closeInventory();
             return null;
         }
@@ -68,7 +70,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.TooManySellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManySellAllItems")));
             return null;
         }
 

@@ -39,9 +39,10 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         if (rank.rankUpCommands.size() == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRankupCommands")));
             return;
         }
 
@@ -52,14 +53,14 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.EmptyGui")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyRankupCommands")));
             p.closeInventory();
             return;
         }
@@ -91,15 +92,18 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         ItemStack itemCommand;
         // Init the lore array with default values for ladders
         List<String> commandsLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"));
+                messages.getString("Gui.Lore.Info"));
 
         // Adding a lore
-        commandsLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Command") + command));
+        commandsLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
         itemCommand = createButton(Material.TRIPWIRE_HOOK, 1, commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));

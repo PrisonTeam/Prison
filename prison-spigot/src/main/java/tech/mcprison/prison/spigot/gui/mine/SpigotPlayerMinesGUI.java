@@ -38,17 +38,18 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoMines")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoMines")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyMines")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -72,9 +73,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
+    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m, List<String> minesLore) {
         try {
-            buttonsSetup(guiConfig, inv, m, mineslore);
+            buttonsSetup(guiConfig, inv, m, minesLore);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -83,22 +84,25 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> mineslore) {
+    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> minesLore) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         ItemStack itemMines;
         Material material;
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
         if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
             material = Material.COAL_ORE;
-            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.StatusUnlockedMine")));
-            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.ClickToTeleport")));
+            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.StatusUnlockedMine")));
+            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ClickToTeleport")));
         } else {
             material = Material.REDSTONE_BLOCK;
-            mineslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.StatusLockedMine")));
+            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.StatusLockedMine")));
         }
 
         // Create the button
-        itemMines = createButton(material, 1, mineslore, SpigotPrison.format("&3" + m.getName()));
+        itemMines = createButton(material, 1, minesLore, SpigotPrison.format("&3" + m.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemMines);

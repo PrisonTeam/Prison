@@ -51,17 +51,18 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoBlocksMine")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoBlocksMine")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyBlocks")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyBlocks")));
             p.closeInventory();
             return;
         }
@@ -142,12 +143,15 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Create the lore
         List<String> blockslore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                guiConfig.getString("Gui.Lore.ClickToEditBlock"),
+                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Gui.Lore.ClickToEditBlock"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"));
+                messages.getString("Gui.Lore.Info"));
 
 
         boolean isEnum = true;
@@ -162,10 +166,10 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         }
 
         // Add a lore
-        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
+        blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
 
         // Add a lore
-        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+        blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
 
         // Make the item
         ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
@@ -175,12 +179,15 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
-    	// Create the lore
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
+        // Create the lore
     	List<String> blockslore = createLore(
-    			guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-    			guiConfig.getString("Gui.Lore.ClickToEditBlock"),
+    			messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+    			messages.getString("Gui.Lore.ClickToEditBlock"),
     			"",
-    			guiConfig.getString("Gui.Lore.Info"));
+    			messages.getString("Gui.Lore.Info"));
 
 
     	boolean isEnum = true;
@@ -195,10 +202,10 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	}
 
     	// Add a lore
-    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
+    	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
 
     	// Add a lore
-    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+    	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
 
     	// Make the item
     	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));

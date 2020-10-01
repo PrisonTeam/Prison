@@ -11,6 +11,16 @@ that you need.
 
 ## tag v3.2.2-alpha.1 - 2020-09-29
 
+* **New feature: Gui Languages Support**
+New languages folder containing the GUI and future languages files so players can edit them or contribute to make a new
+one with translations to download and put there, then you can select it by editing in the `config.yml` the `default-language:`
+to the language of your area, this's also related to the file language name,
+for example the name of the GUI messages file should be `GUI-en_US.yml` by default, so if you translate to another language
+(for example italian) you should rename a new file to `GUI-it_IT.yml` and edit in the config.yml the string 
+`default-language: en_US` to `default-language: it_IT`, if you select a language file missing in the folder or invalid, 
+it'll be generated anyway using the default config as the model so it won't break the plugin, then you can translate it 
+later or edit the config to the correct one. 
+
 * **New feature: added some new 1.14 and 1.15 blocks**
 Added some more new blocks since some of the 1.16 blocks appear to work in most circumstances.
 Use at your own risk.

@@ -56,12 +56,15 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         List<String> enabledLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                messages.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
 
         List<String> disabledLore = createLore(
-                guiConfig.getString("Gui.Lore.RightClickToEnable")
+                messages.getString("Gui.Lore.RightClickToEnable")
         );
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltAllBlocks ) ) {

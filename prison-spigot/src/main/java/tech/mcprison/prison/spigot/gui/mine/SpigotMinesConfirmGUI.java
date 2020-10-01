@@ -53,13 +53,16 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+
+        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Blocks of the mine
         List<String> confirmlore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToConfirm"));
+                messages.getString("Gui.Lore.ClickToConfirm"));
 
         // Blocks of the mine
         List<String> cancelore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToCancel"));
+                messages.getString("Gui.Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, SpigotPrison.format("&3" + "Confirm: " + mineName));
