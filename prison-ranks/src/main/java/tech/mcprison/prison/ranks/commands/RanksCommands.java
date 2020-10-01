@@ -35,7 +35,7 @@ import tech.mcprison.prison.util.Text;
 public class RanksCommands {
 
     @Command(identifier = "ranks create", description = "Creates a new rank", 
-    											onlyPlayers = false, permissions = "ranks.create")
+    							onlyPlayers = false, permissions = "ranks.create")
     public void createRank(CommandSender sender,
         @Arg(name = "rankName", description = "The name of this rank.") String name,
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
@@ -111,7 +111,7 @@ public class RanksCommands {
     }
 
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 
-    										onlyPlayers = false, permissions = "ranks.delete")
+    								onlyPlayers = false, permissions = "ranks.delete")
     public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
         // Check to ensure the rank exists
         Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
@@ -139,10 +139,14 @@ public class RanksCommands {
     }
 
     @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", 
-    												onlyPlayers = false, permissions = "ranks.list")
+    							onlyPlayers = false, altPermissions = "ranks.list"
+    							)
     public void listRanks(CommandSender sender,
         @Arg(name = "ladderName", def = "default") String ladderName) {
 
+    	boolean hasPerm = sender.hasPermission("ranks.list") ||
+    					sender.isOp();
+    	
         Optional<RankLadder> ladderOpt =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
@@ -163,7 +167,11 @@ public class RanksCommands {
         
 
         ChatDisplay display = new ChatDisplay("Ranks in " + ladderName);
-        display.text("&7Click on a rank's name to view more info.");
+        
+        if ( hasPerm ) {
+        	display.text("&7Click on a rank's name to view more info.");
+        }
+        
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -185,8 +193,15 @@ public class RanksCommands {
             if ( rankName.contains( "&" ) ) {
             	rankName = rankName.replace( "&", "-" );
             }
-            FancyMessage msg = new FancyMessage(text).command("/ranks info " + rankName)
-                .tooltip("&7Click to view info.");
+            FancyMessage msg = null;
+            if ( hasPerm ) {
+            	msg = new FancyMessage(text).command("/ranks info " + rankName)
+            			.tooltip("&7Click to view info.");
+            }
+            else {
+            	msg = new FancyMessage(text);
+            }
+            
             builder.add(msg);
         	
         	rank = rank.rankNext;
@@ -215,34 +230,38 @@ public class RanksCommands {
 //        }
 
         display.addComponent(builder.build());
-        display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
-                .tooltip("&7Create a new rank.")));
-
-        List<String> others = new ArrayList<>();
-        for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-            if (!other.name.equals(ladderName) && (other.name.equals("default") || sender
-                .hasPermission("ranks.rankup." + other.name.toLowerCase()))) {
-                if (sender.hasPermission("ranks.admin")) {
-                    others.add("/ranks list " + other.name);
-                } else {
-                    others.add("/ranks " + other.name);
-                }
-            }
-        }
-
-        if (others.size() != 0) {
-            FancyMessage msg = new FancyMessage("&8You may also try ");
-            int i = 0;
-            for (String other : others) {
-                i++;
-                if (i == others.size() && others.size() > 1) {
-                    msg.then(" &8and ");
-                }
-                msg.then("&7" + other).tooltip("&7Click to view.").command(other);
-                msg.then(i == others.size() ? "&8." : "&8,");
-            }
-            display.addComponent(new FancyMessageComponent(msg));
+        
+        if ( hasPerm ) {
+        	display.addComponent(new FancyMessageComponent(
+        			new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
+        			.tooltip("&7Create a new rank.")));
+        	
+        	List<String> others = new ArrayList<>();
+        	for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
+        		if (!other.name.equals(ladderName) && (other.name.equals("default") || sender
+        				.hasPermission("ranks.rankup." + other.name.toLowerCase()))) {
+        			if (sender.hasPermission("ranks.admin")) {
+        				others.add("/ranks list " + other.name);
+        			} else {
+        				others.add("/ranks " + other.name);
+        			}
+        		}
+        	}
+        	
+        	if (others.size() != 0) {
+        		FancyMessage msg = new FancyMessage("&8You may also try ");
+        		int i = 0;
+        		for (String other : others) {
+        			i++;
+        			if (i == others.size() && others.size() > 1) {
+        				msg.then(" &8and ");
+        			}
+        			msg.then("&7" + other).tooltip("&7Click to view.").command(other);
+        			msg.then(i == others.size() ? "&8." : "&8,");
+        		}
+        		display.addComponent(new FancyMessageComponent(msg));
+        	}
+        	
         }
 
         display.send(sender);
@@ -250,8 +269,8 @@ public class RanksCommands {
     }
 
     @Command(identifier = "ranks info", description = "Information about a rank.", 
-    											onlyPlayers = false, permissions = "ranks.info", 
-    											altPermissions = "ranks.admin" )
+    							onlyPlayers = false, permissions = "ranks.info", 
+    							altPermissions = "ranks.admin" )
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
     	
         Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
@@ -307,7 +326,7 @@ public class RanksCommands {
 
     // set commands
     @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", 
-    												onlyPlayers = false, permissions = "ranks.set")
+    							onlyPlayers = false, permissions = "ranks.set")
     public void setCost(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
     		@Arg(name = "cost", description = "The cost of this rank.") double cost){
@@ -376,7 +395,7 @@ public class RanksCommands {
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
-    														onlyPlayers = false, permissions = "ranks.set")
+    							onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, 
     				@Arg(name = "rankName") String rankName, 
     				@Arg(name = "tag", description = "The desired tag.") String tag){
