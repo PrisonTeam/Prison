@@ -182,12 +182,12 @@ public class RanksCommands {
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
             
             String text =
-                String.format("&3%s &9[&3%s&9] &7- %s&7%s%s &7- Commands: &3%d", 
+                String.format("&3%s &9[&3%s&9] &7- %s&7%s%s &7- %s", 
                 			rank.name, rank.tag, 
                 			(defaultRank ? "&b(&9Default&b) &7-" : ""),
                 			Text.numberToDollars(rank.cost),
                 			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
-                			rank.rankUpCommands.size());
+                			(hasPerm ? "Commands: &3" + rank.rankUpCommands.size() : "") );
             
             String rankName = rank.name;
             if ( rankName.contains( "&" ) ) {
