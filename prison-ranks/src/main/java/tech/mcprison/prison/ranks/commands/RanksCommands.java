@@ -166,7 +166,10 @@ public class RanksCommands {
         }
         
 
-        ChatDisplay display = new ChatDisplay("Ranks in " + ladderName);
+        String rankHeader = "Ranks" + 
+        				( hasPerm || !hasPerm && !ladderName.equalsIgnoreCase( "default" ) ?
+        						" in " + ladderName : "");
+        ChatDisplay display = new ChatDisplay( rankHeader );
         
         if ( hasPerm ) {
         	display.text("&7Click on a rank's name to view more info.");
@@ -181,13 +184,20 @@ public class RanksCommands {
         	
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
             
+            String textRankName = ( hasPerm ?
+            							String.format( "&3%s " , rank.name )
+            							: "");
+            String textCmdCount = ( hasPerm ? 
+            							String.format( " &7- Commands: &3%d", rank.rankUpCommands.size())
+            							: "" );
+            
             String text =
-                String.format("&3%s &9[&3%s&9] &7- %s&7%s%s &7- %s", 
-                			rank.name, rank.tag, 
+                String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
+                			textRankName, rank.tag, 
                 			(defaultRank ? "&b(&9Default&b) &7-" : ""),
                 			Text.numberToDollars(rank.cost),
                 			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
-                			(hasPerm ? "Commands: &3" + rank.rankUpCommands.size() : "") );
+                			textCmdCount );
             
             String rankName = rank.name;
             if ( rankName.contains( "&" ) ) {
