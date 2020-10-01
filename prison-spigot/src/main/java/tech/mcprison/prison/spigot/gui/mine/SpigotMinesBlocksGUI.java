@@ -50,7 +50,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 		}
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
@@ -88,7 +87,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         			blockmaterialdisplay = blockmaterial;
         		}
         		
-        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
+        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
         		
         	}
         }
@@ -109,7 +108,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         			blockmaterialdisplay = blockmaterial;
         		}
         		
-        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
+        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
         		
         	}
         }
@@ -120,9 +119,9 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
         try {
-            buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+            buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -131,9 +130,9 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         return false;
     }
     
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
     	try {
-    		buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+    		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
     		p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
     		ex.printStackTrace();
@@ -142,7 +141,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
@@ -178,7 +177,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         inv.addItem(block1);
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

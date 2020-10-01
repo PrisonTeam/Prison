@@ -34,19 +34,16 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> MineInfo"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        if (guiBuilder(inv, GuiConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Opens the inventory
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -55,7 +52,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+    private void buttonsSetup(Inventory inv) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

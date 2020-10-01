@@ -29,9 +29,6 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
@@ -39,15 +36,15 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
-        if (guiBuilder(GuiConfig, inv, afConfig)) return;
+        if (guiBuilder(inv, afConfig)) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
         try {
-            buttonsSetup(guiConfig, inv, afConfig);
+            buttonsSetup(inv, afConfig);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -56,7 +53,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

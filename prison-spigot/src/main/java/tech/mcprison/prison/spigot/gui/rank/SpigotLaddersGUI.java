@@ -43,8 +43,6 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
@@ -67,7 +65,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
 
-            if (guiBuilder(GuiConfig, inv, ladder)) return;
+            if (guiBuilder(inv, ladder)) return;
 
         }
 
@@ -76,9 +74,9 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+    private boolean guiBuilder(Inventory inv, RankLadder ladder) {
         try {
-            buttonsSetup(guiConfig, inv, ladder);
+            buttonsSetup(inv, ladder);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -87,7 +85,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+    private void buttonsSetup(Inventory inv, RankLadder ladder) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

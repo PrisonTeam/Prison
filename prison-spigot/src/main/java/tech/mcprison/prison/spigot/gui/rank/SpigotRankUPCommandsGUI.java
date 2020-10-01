@@ -38,7 +38,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         if (rank.rankUpCommands.size() == 0){
@@ -71,7 +70,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // For every command make a button
         for (String command : rank.rankUpCommands) {
 
-            if (guiBuilder(GuiConfig, inv, command)) return;
+            if (guiBuilder(inv, command)) return;
 
         }
 
@@ -80,9 +79,9 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, String command) {
+    private boolean guiBuilder(Inventory inv, String command) {
         try {
-            buttonsSetup(guiConfig, inv, command);
+            buttonsSetup(inv, command);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -91,7 +90,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {
+    private void buttonsSetup(Inventory inv, String command) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

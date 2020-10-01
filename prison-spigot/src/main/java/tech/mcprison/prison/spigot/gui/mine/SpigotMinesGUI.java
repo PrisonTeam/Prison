@@ -45,7 +45,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(mines.size() / 9D) * 9;
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
@@ -68,7 +67,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Make the buttons for every Mine with info
         for (Mine m : mines ) {
 
-            if (guiBuilder(GuiConfig, inv, m)) return;
+            if (guiBuilder(inv, m)) return;
 
         }
 
@@ -77,9 +76,9 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m) {
+    private boolean guiBuilder(Inventory inv, Mine m) {
         try {
-            buttonsSetup(guiConfig, inv, m);
+            buttonsSetup(inv, m);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -88,7 +87,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m) {
+    private void buttonsSetup(Inventory inv, Mine m) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

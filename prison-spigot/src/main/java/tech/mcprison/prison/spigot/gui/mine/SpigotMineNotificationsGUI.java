@@ -34,24 +34,21 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> MineNotifications"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // Init variables
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         String enabledOrDisabled = m.getNotificationMode().name();
 
-        if (guiBuilder(inv, GuiConfig, enabledOrDisabled)) return;
+        if (guiBuilder(inv, enabledOrDisabled)) return;
 
         // Opens the inventory
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {
+    private boolean guiBuilder(Inventory inv, String enabledOrDisabled) {
         try {
-            buttonsSetup(inv, guiConfig, enabledOrDisabled);
+            buttonsSetup(inv, enabledOrDisabled);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -60,7 +57,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {
+    private void buttonsSetup(Inventory inv, String enabledOrDisabled) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

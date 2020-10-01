@@ -32,21 +32,18 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // Config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
-        if (guiBuilder(inv, GuiConfig, afConfig)) return;
+        if (guiBuilder(inv, afConfig)) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
         try {
-            buttonsSetup(inv, guiConfig, afConfig);
+            buttonsSetup(inv, afConfig);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -55,7 +52,7 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

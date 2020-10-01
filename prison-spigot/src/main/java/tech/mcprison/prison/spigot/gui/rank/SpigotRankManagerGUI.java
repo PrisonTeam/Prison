@@ -37,19 +37,16 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> RankManager"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        if (guiBuilder(inv, GuiConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Open the inventory
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -58,7 +55,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+    private void buttonsSetup(Inventory inv) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 

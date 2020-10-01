@@ -30,20 +30,19 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         // Load configs
         Configuration conf = SpigotPrison.getSellAllConfig();
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         Inventory inv;
 
-        if (guiBuilder(conf, GuiConfig)) return;
+        if (guiBuilder(conf)) return;
 
-        inv = buttonsSetup(conf, GuiConfig);
+        inv = buttonsSetup(conf);
         if (inv == null) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
+    private Inventory buttonsSetup(Configuration conf) {
 
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
@@ -88,9 +87,9 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         return inv;
     }
 
-    private boolean guiBuilder(Configuration conf, Configuration guiConfig) {
+    private boolean guiBuilder(Configuration conf) {
         try {
-            buttonsSetup(conf, guiConfig);
+            buttonsSetup(conf);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
