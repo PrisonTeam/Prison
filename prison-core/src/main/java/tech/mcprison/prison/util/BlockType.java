@@ -760,10 +760,51 @@ public enum BlockType {
 	DISC_11( 2266, "minecraft:record_11", 0 ),
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
+
+	
+	
+	// Minecraft v1.14.x blocks:
+	BAMBOO( "minecraft:bamboo", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	BAMBOO_SAPLING( "minecraft:bamboo_sapling", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	
+	BARREL( "minecraft:barrel", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	BELL( "minecraft:bell", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	BLAST_FURNACE( "minecraft:blast_furnace", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	
+	CAMPFIRE( "minecraft:campfire", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	CARTOGRAPHY_TABLE( "minecraft:cartography_table", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	COMPOSTER( "minecraft:composter", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	FLETCHING_TABLE( "minecraft:fletching_table", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	//FLOWERS( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	GRINDSTONE( "minecraft:grindstone", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	JIGSAW( "minecraft:jigsaw", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	LANTERN( "minecraft:lantern", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	LECTERN( "minecraft:lectern", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	
+	LOOM( "minecraft:loom", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	// Already exists: NOTE_BLOCK( "minecraft:note_block", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	SCAFFOLDING( "minecraft:scaffolding", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	//SIGNS( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	//SLABS( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	SMITHING_TABLE( "minecraft:smithing_table", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	SMOKER( "minecraft:smoker", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	//STAIRS( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	STONECUTTER( "minecraft:stonecutter", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	SWEET_BERRY_BUSH( "minecraft:sweet_berry_bush", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	//WALLS( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_14 ),
+	
+	
+	
+	
+	// Minecraft v1.15.x blocks:
+	BEE_NEST( "minecraft:bee_nest", MaterialType.BLOCK, MaterialVersion.v1_15 ),
+	BEEHIVE( "minecraft:beehive", MaterialType.BLOCK, MaterialVersion.v1_15 ),
+	HONEY_BLOCK( "minecraft:honey_block", MaterialType.BLOCK, MaterialVersion.v1_15 ),
+	HONEYCOMB_BLOCK( "minecraft:honeycomb_block", MaterialType.BLOCK, MaterialVersion.v1_15 ),
+	
 	
 	
 	// Minecraft v1.16.x blocks:
-	// crying_obsidian, nether_gold_ore, polished_basalt, basalt, red_nether_bricks, netherite_block, gilded_blackstone
 	ANCIENT_DEBRIS( "minecraft:ancient_debris", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	CRYING_OBSIDIAN( "minecraft:crying_obsidian", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	NETHER_GOLD_ORE( "minecraft:nether_gold_ore", MaterialType.BLOCK, MaterialVersion.v1_16 ),
@@ -799,7 +840,6 @@ public enum BlockType {
 	
 	
 	SHROOMLIGHT( "minecraft:shroomlight", MaterialType.BLOCK, MaterialVersion.v1_16 ),
-	CAMPFIRE( "minecraft:campfire", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	SOUL_CAMPFIRE( "minecraft:soul_campfire", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	
 	

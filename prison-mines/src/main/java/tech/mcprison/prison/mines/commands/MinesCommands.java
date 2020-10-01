@@ -569,8 +569,11 @@ public class MinesCommands {
         	BlockType block = blocks.get(i);
             FancyMessage msg =
                     new FancyMessage(
-                    		String.format("&7%s %s  (%s)", 
-                    				Integer.toString(i), block.name(), block.getId().replace("minecraft:", "")))
+                    		String.format("&7%s %s  (%s)%s", 
+                    				Integer.toString(i), block.name(), 
+                    				block.getId().replace("minecraft:", ""),
+                    				(block.getMaterialVersion() == null ? "" : 
+                    					"(" + block.getMaterialVersion() + ")")))
                     .suggest("/mines block add " + getLastMineReferenced() + " " + block.name() + " %")
                         .tooltip("&7Click to add block to a mine.");
                 builder.add(msg);

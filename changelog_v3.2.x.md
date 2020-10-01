@@ -11,6 +11,15 @@ that you need.
 
 ## tag v3.2.2-alpha.1 - 2020-09-29
 
+* **New feature: added some new 1.14 and 1.15 blocks**
+Added some more new blocks since some of the 1.16 blocks appear to work in most circumstances.
+Use at your own risk.
+These blocks may not properly be spawned and may not be all blocks available for these versions.
+v1.14 : BAMBOO, BAMBOO_SAPLING, BARREL, BELL, CAMPFIRE, CARTOGRAPHY_TABLE, COMOSTER, 
+FLETCHING_TABLE, GRINDSTONE, JIGSAW, LANTERN, LECTERN, LOOM, SCAFFOLDING,
+SMITHING_TABLE, SMOKER, STONECUTTER, SWEET_BERRY_BUSH
+v1.15 : BEE_NEST, BEEHIVE, HONEY_BLOCK, HONEYCOMB_BLOCK
+
 
 * **Added a few v1.16 block types.**
 Not sure if they will actually work.  Obviously will never work with mc versions < 1.16.  Use at own risk.
