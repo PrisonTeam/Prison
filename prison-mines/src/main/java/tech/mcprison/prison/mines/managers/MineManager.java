@@ -183,7 +183,7 @@ public class MineManager
     	boolean success = false;
     	if ( mine != null ) {
     		coll.delete( mine.getName() );
-    		getMinesByName().remove(mine.getName());
+    		getMinesByName().remove(mine.getName().toLowerCase());
     		success = getMines().remove(mine);
     	}
 	    return success;
@@ -222,6 +222,24 @@ public class MineManager
             saveMine(m);
         }
     }
+
+    
+
+
+	public void rename( Mine mine, String newName ) {
+		
+		String oldMineName = mine.getName();
+		
+		// Remove the old mine:
+		removeMine( oldMineName );
+
+		// rename the mine:
+		mine.setName( newName );
+		
+		// Add the mine back with the new name:
+		add( mine );
+		
+	}
 
 
     /**

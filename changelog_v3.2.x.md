@@ -9,7 +9,13 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-09-30
+## tag v3.2.2-alpha.1 - 2020-10-02
+
+
+* **New Feature: Rename Mines.  Bug Fix: Delete Mines.**
+You can now rename mines.
+This also fixes an issue with not being able to delete a mine: It deletes successfully, but is still active in memory.
+
 
 
 * **Bug fix: change how /ranks list works with perms.**

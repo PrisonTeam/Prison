@@ -125,9 +125,50 @@ public class MinesCommands {
         Prison.get().getSelectionManager().clearSelection((Player) sender);
 
     }
+    
+    @Command(identifier = "mines rename", description = "Creates a new mine.", 
+    		onlyPlayers = false, permissions = "mines.rename")
+    public void renameCommand(CommandSender sender,
+    			@Arg(name = "mineName", description = "The existing name of the mine.", def = " ") String mineName,
+    		@Wildcard(join=true)
+    			@Arg(name = "newName", description = "The new name for the mine.", def = " ") String newName
+    		) {
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+    	if ( newName == null || newName.contains( " " ) || newName.trim().length() == 0 ) {
+    		sender.sendMessage( "&3New mine name cannot contain spaces or be empty. &b[&d" + newName + "&b]" );
+    		return;
+    	}
+    	newName = newName.trim();
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+    	if ( pMines.getMine(newName) != null ) {
+    		sender.sendMessage( "&3Invalid new mine name. Another mine has that name. &b[&d" + newName + "&b]" );
+    		return;
+    		
+    	}
+    	
+    	Mine mine = pMines.getMine(mineName);
+
+    	setLastMineReferenced(newName);
+    	
+
+    	pMines.getMineManager().rename(mine, newName);
+    	
+    	
+    	sender.sendMessage( String.format( "&3Mine &d%s &3was successfully renamed to &d%s&3.", mineName, newName) );
+    	
+    	pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
+    	
+    }
+    
 
     @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", 
-    		onlyPlayers = false, permissions = "mines.set")
+    		onlyPlayers = true, permissions = "mines.set")
     public void spawnpointCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
 

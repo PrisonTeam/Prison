@@ -71,6 +71,9 @@ permissions:
   mines.create:
     description: Access to the /mines create command.
 
+  mines.rename:
+    description: Access to the /mines rename command.
+  
   mines.set:
     description: Access to the /mines set command.
 
@@ -122,6 +125,7 @@ permissions:
     children:
       mines.block: true
       mines.create: true
+      mines.rename: true
       mines.delete: true
       mines.set: true
       mines.info: true
