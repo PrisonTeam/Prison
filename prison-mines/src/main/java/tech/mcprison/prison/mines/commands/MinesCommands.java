@@ -212,6 +212,58 @@ public class MinesCommands {
         pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
     }
 
+
+    @Command(identifier = "mines set tag", description = "Sets the mine's tag name.", 
+    		onlyPlayers = true, permissions = "mines.set")
+    public void tagCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName, 
+        @Wildcard(join=true)
+    		@Arg(name = "tag", description = "Tag value for the mine. Use [null] to remove.") String tag ) {
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+
+        if ( tag == null || tag.trim().length() == 0 ) {
+        	sender.sendMessage( "&cTag name must be a valid value. To remove use a value of &anull&c." );
+        	return;
+        }
+        
+        if ( tag.equalsIgnoreCase( "null" ) ) {
+        	tag = null;
+        }
+
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine mine = pMines.getMine(mineName);
+
+        if ( tag == null && mine.getTag() == null || 
+        		mine.getTag() != null &&
+        		mine.getTag().equalsIgnoreCase( tag )) {
+        
+        	sender.sendMessage( "&cThe new tag name is the same as what it was. No change was made." );
+        	return;
+        }
+        
+        mine.setTag( tag );
+
+        setLastMineReferenced(mineName);
+        
+        pMines.getMineManager().saveMine(mine);
+
+        if ( tag == null ) {
+        	sender.sendMessage( 
+        			String.format( "&cThe tag name was cleared for the mine %s.", 
+        					mine.getName() ) );
+        }
+        else {
+        	sender.sendMessage( 
+        			String.format( "&cThe tag name was change to %s for the mine %s.", 
+        					tag, mine.getName() ) );
+        }
+        
+    }
+
+    
     @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, 
     						description = "Adds a block to a mine.")
     public void addBlockCommand(CommandSender sender,
@@ -774,6 +826,10 @@ public class MinesCommands {
         	}
         	
         	
+        	String noTagMessag = String.format( "&7(not set) &3Will default to mine name if used." );
+        	chatDisplay.text("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
+        	
+        	
         	String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
         	chatDisplay.text("&3World: &7%s", worldName);
         	
@@ -1166,6 +1222,10 @@ public class MinesCommands {
             			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
+            	
+            	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
+            		row.addTextComponent( "%s ", m.getTag() );
+            	}
             	
             	boolean hasCmds = m.getResetCommands().size() > 0;
             	if ( hasCmds ) {

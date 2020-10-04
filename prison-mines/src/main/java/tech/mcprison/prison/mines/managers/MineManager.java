@@ -416,6 +416,20 @@ public class MineManager
 				DecimalFormat iFmt = new DecimalFormat("#,##0");
 				
 				switch ( placeHolderKey.getPlaceholder() ) {
+					case prison_mn_minename:
+					case prison_mines_name_minename:
+					case prison_mn_pm:
+					case prison_mines_name_playermines:
+						results = mine.getName();
+						break;
+						
+					case prison_mt_minename:
+					case prison_mines_tag_minename:
+					case prison_mt_pm:
+					case prison_mines_tag_playermines:
+						results = mine.getTag() == null ? mine.getName() : mine.getTag();
+						break;
+						
 					case prison_mi_minename:
 					case prison_mines_interval_minename:
 					case prison_mi_pm:

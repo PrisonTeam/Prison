@@ -171,7 +171,12 @@ public class Mine
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
         setName((String) document.get("name")); // Mine name:
-		
+        
+        
+        String tag = (String) document.get("tag");
+        setTag( tag );
+        
+        
 		World world = null;
 		
 		if ( worldName == null ) {
@@ -395,6 +400,8 @@ public class Mine
         Document ret = new Document();
         ret.put("world", getWorldName());
         ret.put("name", getName());
+        
+        ret.put( "tag", getTag() );
         ret.put("minX", getBounds().getMin().getX());
         ret.put("minY", getBounds().getMin().getY());
         ret.put("minZ", getBounds().getMin().getZ());

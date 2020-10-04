@@ -22,6 +22,8 @@ public abstract class MineData {
 	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
 		
 	private String name;
+	private String tag;
+	
 	private boolean enabled = false;
 	
 	private Bounds bounds;
@@ -84,6 +86,8 @@ public abstract class MineData {
     }
     
     public MineData() {
+    	this.tag = null;
+    	
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	
@@ -139,6 +143,13 @@ public abstract class MineData {
         return name;
     }
 
+    public String getTag() {
+    	return tag;
+    }
+    public void setTag( String tag ) {
+    	this.tag = tag;
+    }
+    
     /**
      * Sets the name of this mine
      *

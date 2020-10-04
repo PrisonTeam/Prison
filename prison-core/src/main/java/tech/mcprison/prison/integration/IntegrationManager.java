@@ -135,6 +135,8 @@ public class IntegrationManager {
 		
 		
 		// Mine aliases:
+		prison_mn_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mt_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mif_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
@@ -152,6 +154,8 @@ public class IntegrationManager {
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
 		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
+		prison_mines_name_minename(prison_mn_minename, PlaceHolderFlags.MINES),
+		prison_mines_tag_minename(prison_mt_minename, PlaceHolderFlags.MINES),
 		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
 		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceHolderFlags.MINES),
 		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
@@ -168,6 +172,8 @@ public class IntegrationManager {
 		
 		
 		// PlayerMine aliases:
+		prison_mn_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mt_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mi_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mif_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
@@ -182,6 +188,8 @@ public class IntegrationManager {
 		prison_mrc_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 
 		
+		prison_mines_name_playermines(prison_mn_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_tag_playermines(prison_mt_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_interval_playermines(prison_mi_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_interval_formatted_playermines(prison_mif_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_timeleft_playermines(prison_mtl_pm, PlaceHolderFlags.PLAYERMINES),
