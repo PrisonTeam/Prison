@@ -85,6 +85,7 @@ public class GuiMessagesConfig {
         dataConfig("Gui.Lore.ClickToManageRank","&8Manage this rank.");
         dataConfig("Gui.Lore.ClickToManageCommands","&8Manage RankUPCommands.");
         dataConfig("Gui.Lore.ClickToOpen","&8Click to open.");
+        dataConfig("Gui.Lore.ClickToRename", "&8Click to rename.");
         dataConfig("Gui.Lore.ClickToTeleport","&8Click to teleport.");
         dataConfig("Gui.Lore.ClickToUse","&8Click to use.");
         dataConfig("Gui.Lore.ClickToRankup","&8Click to rankup");
@@ -110,6 +111,7 @@ public class GuiMessagesConfig {
         dataConfig("Gui.Lore.LeftClickToReset","&aLeft Click to reset");
         dataConfig("Gui.Lore.ManageResetTime","&8Manage the reset time of Mine.");
         dataConfig("Gui.Lore.MinesButton","&8Mines GUI manager.");
+        dataConfig("Gui.Lore.MineName", "&3Mine Name: &f");
         dataConfig("Gui.Lore.Name","&3Rank Name: &7");
         dataConfig("Gui.Lore.Notifications","&8Edit Mines notifications.");
         dataConfig("Gui.Lore.PlayersWithTheRank","&3Players at rank: &7");
@@ -173,6 +175,11 @@ public class GuiMessagesConfig {
         dataConfig("Gui.Message.ZeroBlocksReset1","&8Set a mine's delay ");
         dataConfig("Gui.Message.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Gui.Message.ZeroBlocksReset3","&8reaches zero blocks.");
+        dataConfig("Gui.Message.mineNameRename", "&7[&3Info&7] &3Please write the &6mineName &3you'd like to use and &6submit&3.");
+        dataConfig("Gui.Message.mineNameRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Gui.Message.OutOfTimeNoChanges", "&cYou ran out of time, nothing changed.");
+        dataConfig("Gui.Message.rankTagRename", "&7[&3Info&7] &3Please write the &6tag &3you'd like to use and &6submit&3.");
+        dataConfig("Gui.Message.rankTagRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
     }
 
     public FileConfiguration getFileGuiMessagesConfig(){

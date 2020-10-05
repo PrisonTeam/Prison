@@ -90,7 +90,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         );
 
         // Blocks of the mine button and lore
-        List<String> blocksoftheminelore = createLore(
+        List<String> blocksOfTheMineLore = createLore(
                 messages.getString("Gui.Lore.ClickToOpen"),
                 messages.getString("Gui.Lore.Blocks2"));
 
@@ -100,8 +100,13 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ManageResetTime"),
                 messages.getString("Gui.Lore.ResetTime") + mine.getResetTime());
 
+        List<String> mineRenameLore = createLore(
+                messages.getString("Gui.Lore.ClickToRename"),
+                messages.getString("Gui.Lore.MineName") + mineName
+        );
+
         // Create the button, set up the material, amount, lore and name
-        ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
+        ItemStack resetMine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
 
         // Create the button
         ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnlore, SpigotPrison.format("&3" + "Mine_Spawn: " + mineName));
@@ -117,7 +122,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         ItemStack MinesTP = createButton(bed, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + mineName));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + mineName));
+        ItemStack blocksOfTheMine = createButton(Material.COAL_ORE, 1, blocksOfTheMineLore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + mineName));
 
         // Create the button, set up the material, amount, lore and name
         Material watch = Material.matchMaterial( "watch" );
@@ -128,23 +133,28 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         }
         ItemStack mineResetTime = createButton(watch, 1, mineResetTimeLore, SpigotPrison.format("&3" + "Reset_Time: " + mineName));
 
-        // Position of the button
-        inv.setItem(10, resetmine);
+        ItemStack mineRename = createButton(Material.FEATHER, 1, mineRenameLore, SpigotPrison.format("&3" + "Mine_Name: " + mineName));
 
         // Position of the button
-        inv.setItem(13, MineSpawn);
+        inv.setItem(10, resetMine);
 
         // Position of the button
-        inv.setItem(16, MinesNotifications);
+        inv.setItem(12, MineSpawn);
 
         // Position of the button
-        inv.setItem(28, MinesTP);
+        inv.setItem(14, MinesNotifications);
 
         // Position of the button
-        inv.setItem(31, blocksofthemine);
+        inv.setItem(16, MinesTP);
 
         // Position of the button
-        inv.setItem(34, mineResetTime);
+        inv.setItem(29, blocksOfTheMine);
+
+        // Position of the button
+        inv.setItem(31, mineResetTime);
+
+        // Position of the button
+        inv.setItem(33, mineRename);
     }
 
 }

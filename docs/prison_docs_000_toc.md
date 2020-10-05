@@ -76,6 +76,7 @@
 - [/mines delete \[mineName\] \[confirm\] ](docs-commands/prison_docs_command_27_mines_delete.md)
 - [/mines info \[mineName\] \[page\] ](docs-commands/prison_docs_command_28_mines_info.md)
 - [/mines list \[page\] ](docs-commands/prison_docs_command_29_mines_list.md)
+- [/mines rename \[page\] ](docs-commands/prison_docs_command_41_mines_rename.md)
 - [/mines reset \[mineName\] ](docs-commands/prison_docs_command_30_mines_reset.md)
 - [/mines set](docs-commands/prison_docs_command_31_mines_set.md)
 - [/mines stats](docs-commands/prison_docs_command_32_mines_stats.md)

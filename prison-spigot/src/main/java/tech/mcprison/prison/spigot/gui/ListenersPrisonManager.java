@@ -52,6 +52,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.languages.GuiMessagesConfig;
 
 
 /**
@@ -64,7 +65,8 @@ public class ListenersPrisonManager implements Listener {
     public static List<String> activeGui = new ArrayList<>();
     public boolean isChatEventActive = false;
     public int id;
-    public String rankNameOfChat;
+    public String rankNameOfChat = null;
+    public String mineNameOfChat = null;
 
     public ListenersPrisonManager(){}
 
@@ -100,14 +102,26 @@ public class ListenersPrisonManager implements Listener {
             Player p = e.getPlayer();
             String message = e.getMessage();
             Bukkit.getScheduler().cancelTask(id);
-            if (message.equalsIgnoreCase("close")){
-                isChatEventActive = false;
-                p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
-                e.setCancelled(true);
-            } else {
-                Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
-                e.setCancelled(true);
-                isChatEventActive = false;
+            if (rankNameOfChat != null) {
+                if (message.equalsIgnoreCase("close")) {
+                    isChatEventActive = false;
+                    p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
+                    e.setCancelled(true);
+                } else {
+                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
+                    e.setCancelled(true);
+                    isChatEventActive = false;
+                }
+            } else if (mineNameOfChat != null){
+                if (message.equalsIgnoreCase("close")) {
+                    isChatEventActive = false;
+                    p.sendMessage(SpigotPrison.format("&cRename mine closed, nothing got changed"));
+                    e.setCancelled(true);
+                } else {
+                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
+                    e.setCancelled(true);
+                    isChatEventActive = false;
+                }
             }
         }
     }
@@ -840,15 +854,17 @@ public class ListenersPrisonManager implements Listener {
         // Check the button name and do the actions
         } else if (buttonname.equalsIgnoreCase("RankTag")){
 
+            Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
             // Send messages to the player
-            p.sendMessage(SpigotPrison.format("&7[&3Info&7] &3Please write the &6tag &3you'd like to use and &6submit&3."));
-            p.sendMessage(SpigotPrison.format("&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3."));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRename")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRenameClose")));
             // Start the async task
             isChatEventActive = true;
             rankNameOfChat = rankName;
             id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                 isChatEventActive = false;
-                p.sendMessage(SpigotPrison.format("&cYou ran out of time, tag not changed."));
+                p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
             }, 20L * 30);
             p.closeInventory();
         }
@@ -1036,12 +1052,12 @@ public class ListenersPrisonManager implements Listener {
 
     private void MineInfoGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        // Output finally the buttonname and the minename explicit out of the array
-        String buttonname = parts[0];
+        // Output finally the buttonName and the mineName explicit out of the array
+        String buttonName = parts[0];
         String mineName = parts[1];
 
         // Check the name of the button and do the actions
-        switch (buttonname) {
+        switch (buttonName) {
             case "Blocks_of_the_Mine:":
 
                 // Open the GUI
@@ -1113,6 +1129,24 @@ public class ListenersPrisonManager implements Listener {
                 gui2.open();
 
                 break;
+            case "Mine_Name": {
+
+                Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
+                // Send messages to the player
+                p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRename")));
+                p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRenameClose")));
+                // Start the async task
+                isChatEventActive = true;
+                mineNameOfChat = mineName;
+                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+                    isChatEventActive = false;
+                    p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
+                }, 20L * 30);
+                p.closeInventory();
+
+                break;
+            }
         }
     }
 
