@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -14,9 +13,10 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.data.PrisonSortableMines;
+import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
@@ -37,8 +37,9 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Init the ItemStack
         // ItemStack itemMines;
 
-        // Get the mines
-        Set<Mine> mines = new PrisonSortableMines().getSortedSet();
+        // Get the mines - In sort order, minus any marked as suppressed
+    	List<Mine> mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
+//        Set<Mine> mines = new PrisonSortableMines().getSortedSet();
         // PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them

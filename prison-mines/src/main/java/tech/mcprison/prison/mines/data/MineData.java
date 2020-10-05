@@ -26,6 +26,13 @@ public abstract class MineData {
 	
 	private boolean enabled = false;
 	
+	/**
+	 * A sortOrder of -1 means it should be excluded from most mine listings.
+	 * An example would be for private mines or child mines where you only want the
+	 * parent listed.
+	 */
+	private int sortOrder = 0;
+	
 	private Bounds bounds;
 
 	private Location spawn;
@@ -93,6 +100,12 @@ public abstract class MineData {
     	
     	this.enabled = false;
     	
+    	/**
+    	 * Mines are sorted based upon the sortOrder, ascending.  If a mine is given
+    	 * a value of -1 then it will be excluded from most mine listings.
+    	 */
+    	this.sortOrder = 0;
+    	
     	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
     	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
@@ -148,6 +161,13 @@ public abstract class MineData {
     }
     public void setTag( String tag ) {
     	this.tag = tag;
+    }
+    
+    public int getSortOrder() {
+    	return sortOrder;
+    }
+    public void setSortOrder( int sortOrder ) {
+    	this.sortOrder = sortOrder;
     }
     
     /**

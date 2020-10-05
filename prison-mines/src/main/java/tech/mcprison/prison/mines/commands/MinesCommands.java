@@ -44,6 +44,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -257,12 +258,71 @@ public class MinesCommands {
         }
         else {
         	sender.sendMessage( 
-        			String.format( "&cThe tag name was change to %s for the mine %s.", 
+        			String.format( "&cThe tag name was changed to %s for the mine %s.", 
         					tag, mine.getName() ) );
         }
         
     }
 
+    
+    @Command(identifier = "mines set sortOrder", description = "Sets the mine's sort order, or " +
+    		"prevents a mine from being included in most listings. If more than one mine has the " +
+    		"same sort order, then they will be sorted alphabetically within that sub-group.", 
+    		onlyPlayers = true, permissions = "mines.set")
+    public void sortOrderCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName, 
+    		@Arg(name = "sortOrder", description = "The sort order for listing mines. A value " +
+    				"of -1 or [supress] will prevent the mine from beign included in most listings.",
+    				def = "0" ) String sortOrder ) {
+    	
+    	int order = 0;
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+    	
+    	if ( sortOrder == null ) {
+    		sortOrder = "0";
+    	}
+    	else if ( "suppress".equalsIgnoreCase( sortOrder.trim() ) ) {
+    		sortOrder = "-1";
+    	}
+    	
+		try {
+			order = Integer.parseInt( sortOrder );
+		}
+		catch ( NumberFormatException e ) {
+			sender.sendMessage( "Invalid sortOrder.  Use an integer value of [0-n], or " +
+					"[-1, supress] to prevent the mine from being included in most listings." );
+			return;
+		}
+		
+		if ( order < -1 ) {
+			order = -1;
+		}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	Mine mine = pMines.getMine(mineName);
+    	
+    	if ( order == mine.getSortOrder()) {
+    		sender.sendMessage( "&cThe new sort order is the same as what it was. No change was made." );
+    		return;
+    	}
+    	
+    	mine.setSortOrder( order );
+    	
+    	setLastMineReferenced(mineName);
+    	
+    	pMines.getMineManager().saveMine(mine);
+    	
+    	String suppressedMessage = order == -1 ? "This mine will be suppressed from most listings." : "";
+    	sender.sendMessage( 
+    			String.format( "&cThe sort order was changed to %s for the mine %s. %s", 
+    					Integer.toString( mine.getSortOrder() ), mine.getName(),
+    					suppressedMessage ) );
+    	
+    }
+    
     
     @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, 
     						description = "Adds a block to a mine.")
@@ -1130,9 +1190,10 @@ public class MinesCommands {
 
     @Command(identifier = "mines list", permissions = "mines.list", onlyPlayers = false)
     public void listCommand(CommandSender sender, 
-    		@Arg(name = "sort", def = "alpha",
-    			description = "Sort the list by either alpha or active [alpha, active]. " +
-    					" Most active mines are based upon blocks mined since server restart.") 
+    		@Arg(name = "sort", def = "sortOrder",
+    			description = "Sort the list by either alpha or active [" + 
+    					"sortOrder alpha active allSortOrder allAlpha allActive" +
+    					"].  Most active mines are based upon blocks mined since server restart.") 
     				String sort,
             @Arg(name = "page", def = "1", 
             	description = "Page of search results (optional) [1-n, ALL]") String page 
@@ -1141,12 +1202,14 @@ public class MinesCommands {
         display.text("&8Click a mine's name to see more information.");
     	Player player = getPlayer( sender );
     	
-    	if ( sort != null && !sort.equalsIgnoreCase( "alpha" ) && 
-    			!sort.equalsIgnoreCase( "active" )) { 
+    	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
+    	
+    	// If sort was invalid, double check to see if it is a page number or ALL:
+    	if ( sortOrder == MineSortOrder.invalid && sort != null ) {
     		if ( "ALL".equalsIgnoreCase( sort )) {
     			// The user did not specify a sort order, but instead this is the page number
     			// so fix it for them:
-    			sort = "alpha";
+    			sortOrder = MineSortOrder.sortOrder;
     			page = "ALL";
     		}
     		else {
@@ -1154,7 +1217,7 @@ public class MinesCommands {
     				int test = Integer.parseInt( sort );
     				
     				// This is actually the page number so default to alpha sort:
-    				sort = "alpha";
+    				sortOrder = MineSortOrder.sortOrder;
     				page = Integer.toString( test );
     			}
     			catch ( NumberFormatException e ) {
@@ -1165,29 +1228,29 @@ public class MinesCommands {
     		}
     	}
     	
+
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
     	
     	
-    	// Sort mines by: total blocks mined, name
-    	List<Mine> mineList = pMines.getMines();
+    	// Get mines in the correct sorted order and suppress the mines if they should
+    	List<Mine> mineList = pMines.getMines( sortOrder );
     	
-    	// Sort first by name, then blocks mined so final sort order will be:
-    	//   Most blocks mined, then alphabetical
-    	mineList.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
-
-    	// for now hold off on sorting by total blocks mined.
-    	if ( "active".equalsIgnoreCase( sort )) {
-    		mineList.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
-    	}
-    	
+//    	// Sort first by name, then blocks mined so final sort order will be:
+//    	//   Most blocks mined, then alphabetical
+//    	mineList.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+//
+//    	// for now hold off on sorting by total blocks mined.
+//    	if ( "active".equalsIgnoreCase( sort )) {
+//    		mineList.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+//    	}
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/mines list " + sort, pMines.getMines().size(),
+        		"/mines list " + sort, mineList.size(),
         		0, page, 7 );
         
         BulletedListComponent list = 
-        		getMinesLineItemList(pMines.getMines(), player, cmdPageData, mMan.isMineStats());
+        		getMinesLineItemList(mineList, player, cmdPageData, mMan.isMineStats());
     	
     	display.addComponent(list);
     	
@@ -1222,6 +1285,16 @@ public class MinesCommands {
             			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
+  
+            	if ( m.getSortOrder() >= 0 ) {
+            		String sortMessage = m.getSortOrder() == -1 ? "suppressed" :
+            									Integer.toString( m.getSortOrder() );
+            		row.addFancy( 
+            				new FancyMessage( String.format("&7%s ", 
+            						sortMessage) )
+            				.tooltip("&7Sort order."));
+            	}
+            	
             	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
             		row.addTextComponent( "%s ", m.getTag() );

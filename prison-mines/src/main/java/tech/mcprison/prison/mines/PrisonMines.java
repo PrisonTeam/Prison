@@ -34,6 +34,7 @@ import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
@@ -71,7 +72,7 @@ public class PrisonMines extends Module {
      * 
      */
 	private final TreeMap<Long, Mine> playerCache;
-	
+
 	
     
     public PrisonMines(String version) {
@@ -231,6 +232,10 @@ public class PrisonMines extends Module {
 
     public List<Mine> getMines() {
         return getMineManager().getMines();
+    }
+    
+    public List<Mine> getMines( MineSortOrder sortOrder ) {
+    	return getMineManager().getMines( sortOrder );
     }
 
     public Mine getMine(String mineName) {

@@ -65,6 +65,66 @@ public class MineManager
     
     private boolean mineStats = false;
 
+	
+	public enum MineSortOrder {
+
+		sortOrder,
+		alpha,
+		active,
+		
+		allSortOrder(true),
+		allAlpha(true),
+		allActive(true),
+		
+		invalid;
+		
+		private final boolean includeSuppressed;
+		
+		private MineSortOrder( boolean includeSuppressed ) {
+			this.includeSuppressed = includeSuppressed;
+			
+		}
+		private MineSortOrder() {
+			this(false);
+		}
+		
+		public boolean isIncludeSuppressed() {
+			return includeSuppressed;
+		}
+		
+		public static MineSortOrder fromString( String sortOrder ) {
+			MineSortOrder results = MineSortOrder.invalid;
+			
+			if ( sortOrder != null && sortOrder.trim().length() == 0 ) {
+				for ( MineSortOrder so : values() ) {
+					if ( so.name().equalsIgnoreCase( sortOrder ) ) {
+						results = so;
+						break;
+					}
+				}
+				
+			}
+			
+			return results;
+		}
+		
+		static String availableSortOrders() {
+			StringBuilder sb = new StringBuilder();
+			
+			for ( MineSortOrder so : values() ) {
+				if ( so != invalid ) {
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					sb.append( so.name() );
+				}
+			}
+			
+			return sb.toString();
+		}
+	}
+	
+	
     /**
      * <p>MineManager must be fully instantiated prior to trying to load the mines,
      * otherwise if the mines cannot find the world they should be, they will be
@@ -258,6 +318,38 @@ public class MineManager
     public List<Mine> getMines() {
         return mines;
     }
+    
+    public List<Mine> getMines( MineSortOrder sortOrder ) {
+    	return getMines( sortOrder, getMines() );
+    }
+    
+    protected List<Mine> getMines( MineSortOrder sortOrder, List<Mine> mines ) {
+    	List<Mine> results = new ArrayList<>();
+    	
+    	for ( Mine mine : mines ) {
+    		if ( sortOrder.isIncludeSuppressed() ||
+    				!sortOrder.isIncludeSuppressed() && mine.getSortOrder() >= 0) {
+    			results.add( mine );
+    		}
+		}
+    	
+    	// Sort first by name, then by other means if needed:
+    	results.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+
+    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.allSortOrder ) {
+    		results.sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+    	}
+    	
+    	// for now hold off on sorting by total blocks mined.
+    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.allActive ) {
+    		results.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    	}
+    	
+    	return results;
+    }
+    
+    
+    
 
 	public TreeMap<String, Mine> getMinesByName() {
 		return minesByName;

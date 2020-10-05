@@ -177,6 +177,10 @@ public class Mine
         setTag( tag );
         
         
+        Double sortOrder = (Double) document.get( "sortOrder" );
+        setSortOrder( sortOrder == null ? -1 : sortOrder.intValue() );
+
+        
 		World world = null;
 		
 		if ( worldName == null ) {
@@ -402,6 +406,8 @@ public class Mine
         ret.put("name", getName());
         
         ret.put( "tag", getTag() );
+        ret.put( "sortOrder", getSortOrder() );
+        
         ret.put("minX", getBounds().getMin().getX());
         ret.put("minY", getBounds().getMin().getY());
         ret.put("minZ", getBounds().getMin().getZ());
