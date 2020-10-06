@@ -27,6 +27,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Optional<RankLadder> ladder;
+    
+    private Configuration messages = null;
 
     public SpigotRanksGUI(Player p, Optional<RankLadder> ladder) {
         this.p = p;
@@ -46,7 +48,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getGuiMessagesConfig();
 
         // Get the dimensions and if needed increases them
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
@@ -104,7 +106,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Optional<Rank> rankOptional) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+//        Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemRank;
         // Init the lore array with default values for ladders

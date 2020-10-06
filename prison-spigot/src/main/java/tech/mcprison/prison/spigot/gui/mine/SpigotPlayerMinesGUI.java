@@ -20,6 +20,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
+    
+    private Configuration messages = null;
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -40,7 +42,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getGuiConfig();
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
@@ -88,7 +90,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> minesLore) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+    	// Don't load this every time a button is created.... making it a class variable:
+        // Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemMines;
         Material material;

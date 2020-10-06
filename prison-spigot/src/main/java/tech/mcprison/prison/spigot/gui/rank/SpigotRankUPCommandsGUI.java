@@ -21,6 +21,8 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
+    
+    private Configuration messages = null;
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -38,7 +40,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getGuiMessagesConfig();
 
         if (rank.rankUpCommands.size() == 0){
             p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRankupCommands")));
@@ -92,7 +94,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, String command) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemCommand;
         // Init the lore array with default values for ladders

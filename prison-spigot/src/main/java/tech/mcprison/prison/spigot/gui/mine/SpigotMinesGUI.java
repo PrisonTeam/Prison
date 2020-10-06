@@ -18,6 +18,7 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
@@ -28,6 +29,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
+    
+    private Configuration messages = null;
 
     public SpigotMinesGUI(Player p) {
         this.p = p;
@@ -47,7 +50,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
         // Load config
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
@@ -91,7 +94,8 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Mine m) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+    	// Don't load this every time a button is created.... making it a class variable:
+        // Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemMines;
         // Init the lore array with default values for ladders

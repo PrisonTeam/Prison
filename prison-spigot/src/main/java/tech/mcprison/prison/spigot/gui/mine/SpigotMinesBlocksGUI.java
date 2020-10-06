@@ -25,6 +25,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
+    
+    private Configuration messages = null;
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -50,7 +52,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 		}
 
         // Load config
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getGuiMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
@@ -143,7 +145,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+    	// Don't load this every time a button is created.... making it a class variable:
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // Create the lore
         List<String> blockslore = createLore(
@@ -179,7 +182,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         // Create the lore
     	List<String> blockslore = createLore(

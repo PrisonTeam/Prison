@@ -12,6 +12,11 @@ that you need.
 ## tag v3.2.2-alpha.1 - 2020-10-06
 
 
+* **Bug Fix: A config file was being loaded many times to build one gui page.**
+Moved the config to a class variable so it would only be loaded once.
+This reduced the opening of a 39 mine GUI from 5.5 seconds down to 6 milliseconds for the offending function call.
+
+
 * **v3.2.2-alpha.2 - 2020-10-06**
 
 
