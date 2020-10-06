@@ -36,7 +36,9 @@ public class GuiMessagesConfig {
         // Check if the config exists
         if(!file.exists()){
             try {
-                file.mkdir();
+            	File parentDir = file.getParentFile();
+                parentDir.mkdirs();
+                
                 file.createNewFile();
                 conf = YamlConfiguration.loadConfiguration(file);
                 conf.set(path, SpigotPrison.format(string));
