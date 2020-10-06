@@ -472,6 +472,11 @@ public class Mine
         return ret;
     }
 
+    @Override
+    public String toString() {
+    	return getName() + "  " + getTotalBlocksMined();
+    }
+    
     private Location getLocation(Document doc, World world, String x, String y, String z) {
     	return new Location(world, (double) doc.get(x), (double) doc.get(y), (double) doc.get(z));
     }

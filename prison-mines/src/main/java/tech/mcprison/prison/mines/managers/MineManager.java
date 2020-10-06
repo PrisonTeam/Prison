@@ -35,6 +35,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
@@ -72,30 +73,30 @@ public class MineManager
 		alpha,
 		active,
 		
-		allSortOrder(true),
-		allAlpha(true),
-		allActive(true),
+		xSortOrder(true),
+		xAlpha(true),
+		xActive(true),
 		
 		invalid;
 		
-		private final boolean includeSuppressed;
+		private final boolean excluded;
 		
-		private MineSortOrder( boolean includeSuppressed ) {
-			this.includeSuppressed = includeSuppressed;
+		private MineSortOrder( boolean excluded ) {
+			this.excluded = excluded;
 			
 		}
 		private MineSortOrder() {
 			this(false);
 		}
 		
-		public boolean isIncludeSuppressed() {
-			return includeSuppressed;
+		public boolean isExcluded() {
+			return excluded;
 		}
 		
 		public static MineSortOrder fromString( String sortOrder ) {
 			MineSortOrder results = MineSortOrder.invalid;
 			
-			if ( sortOrder != null && sortOrder.trim().length() == 0 ) {
+			if ( sortOrder != null && sortOrder.trim().length() > 0 ) {
 				for ( MineSortOrder so : values() ) {
 					if ( so.name().equalsIgnoreCase( sortOrder ) ) {
 						results = so;
@@ -123,8 +124,7 @@ public class MineManager
 			return sb.toString();
 		}
 	}
-	
-	
+		
     /**
      * <p>MineManager must be fully instantiated prior to trying to load the mines,
      * otherwise if the mines cannot find the world they should be, they will be
@@ -319,30 +319,42 @@ public class MineManager
         return mines;
     }
     
-    public List<Mine> getMines( MineSortOrder sortOrder ) {
+    public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
     	return getMines( sortOrder, getMines() );
     }
     
-    protected List<Mine> getMines( MineSortOrder sortOrder, List<Mine> mines ) {
-    	List<Mine> results = new ArrayList<>();
+    protected PrisonSortableResults getMines( MineSortOrder sortOrder, List<Mine> mines ) {
+    	PrisonSortableResults results = new PrisonSortableResults( sortOrder );
+    	
+    	
+    	// if invalid, then that's invalid, so default to sortOrder:
+    	if ( sortOrder == MineSortOrder.invalid ) {
+    		sortOrder = MineSortOrder.sortOrder;
+    	}
+
     	
     	for ( Mine mine : mines ) {
-    		if ( sortOrder.isIncludeSuppressed() ||
-    				!sortOrder.isIncludeSuppressed() && mine.getSortOrder() >= 0) {
-    			results.add( mine );
+    		if ( mine.getSortOrder() < 0 ) {
+    			results.getExclude().add( mine );
+    		}
+    		else {
+    			results.getInclude().add( mine );
     		}
 		}
-    	
-    	// Sort first by name, then by other means if needed:
-    	results.sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
 
-    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.allSortOrder ) {
-    		results.sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+    	// Sort first by name, then by other means if needed:
+    	results.getInclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+    	results.getExclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+
+    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.xSortOrder ) {
+    		results.getInclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+    		results.getExclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
     	}
     	
     	// for now hold off on sorting by total blocks mined.
-    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.allActive ) {
-    		results.sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.xActive ) {
+    		results.getInclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    		results.getExclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
     	}
     	
     	return results;

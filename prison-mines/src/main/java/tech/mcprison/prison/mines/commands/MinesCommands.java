@@ -43,6 +43,7 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -1192,7 +1193,7 @@ public class MinesCommands {
     public void listCommand(CommandSender sender, 
     		@Arg(name = "sort", def = "sortOrder",
     			description = "Sort the list by either alpha or active [" + 
-    					"sortOrder alpha active allSortOrder allAlpha allActive" +
+    					"sortOrder alpha active xSortOrder xAlpha xActive" +
     					"].  Most active mines are based upon blocks mined since server restart.") 
     				String sort,
             @Arg(name = "page", def = "1", 
@@ -1203,38 +1204,48 @@ public class MinesCommands {
     	Player player = getPlayer( sender );
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
+    	Output.get().logInfo( "### mine sort " + sort + "   " + sortOrder.name() );
     	
     	// If sort was invalid, double check to see if it is a page number or ALL:
-    	if ( sortOrder == MineSortOrder.invalid && sort != null ) {
-    		if ( "ALL".equalsIgnoreCase( sort )) {
+    	if ( sortOrder == MineSortOrder.invalid ) {
+    		sortOrder = MineSortOrder.sortOrder;
+
+    		if ( sort != null && "ALL".equalsIgnoreCase( sort )) {
     			// The user did not specify a sort order, but instead this is the page number
     			// so fix it for them:
-    			sortOrder = MineSortOrder.sortOrder;
     			page = "ALL";
     		}
-    		else {
+    		else if ( sort != null ) {
     			try {
     				int test = Integer.parseInt( sort );
     				
     				// This is actually the page number so default to alpha sort:
-    				sortOrder = MineSortOrder.sortOrder;
     				page = Integer.toString( test );
     			}
     			catch ( NumberFormatException e ) {
     				// Oof... this isn't a page number, so report an error.
-    				sender.sendMessage( "Invalid sort order.  Use either alpha, " +
-    						"active, or a page number such as [1-n, ALL]" );
+    				sender.sendMessage( "Invalid sort order.  Use a valid sort order " +
+    						"or a page number such as [1-n, ALL]" );
     			}
     		}
     	}
-    	
 
         PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
     	
     	
     	// Get mines in the correct sorted order and suppress the mines if they should
-    	List<Mine> mineList = pMines.getMines( sortOrder );
+    	PrisonSortableResults sortedMines = pMines.getMines( sortOrder );
+    	
+    	display.text( "&3  Mines listed: &7%s   &3Mines suppressed: &7%s",
+    					sortedMines.getSortedList().size(),
+    					sortedMines.getSortedSuppressedList().size());
+    	
+    	if ( sortedMines.getSortedSuppressedList().size() > 0 ) {
+    		display.text( "&8To view suppressed mines sort by: %s", 
+    				sortedMines.getSuppressedListSortTypes() );
+    	}
+    	
     	
 //    	// Sort first by name, then blocks mined so final sort order will be:
 //    	//   Most blocks mined, then alphabetical
@@ -1246,11 +1257,11 @@ public class MinesCommands {
 //    	}
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/mines list " + sort, mineList.size(),
+        		"/mines list " + sortOrder.name(), sortedMines.getSortedList().size(),
         		0, page, 7 );
         
         BulletedListComponent list = 
-        		getMinesLineItemList(mineList, player, cmdPageData, mMan.isMineStats());
+        		getMinesLineItemList(sortedMines, player, cmdPageData, mMan.isMineStats());
     	
     	display.addComponent(list);
     	
@@ -1261,7 +1272,7 @@ public class MinesCommands {
     }
 
 
-    private BulletedListComponent getMinesLineItemList( List<Mine> mines, Player player,
+    private BulletedListComponent getMinesLineItemList( PrisonSortableResults sortedMines, Player player,
     		CommandPagedData cmdPageData, boolean isMineStatsEnabled )
 	{
     	BulletedListComponent.BulletedListBuilder builder =
@@ -1272,7 +1283,7 @@ public class MinesCommands {
     	
     	int count = 0;
     	 
-        for (Mine m : mines) {
+        for (Mine m : sortedMines.getSortedList()) {
         	
             if ( cmdPageData == null ||
             		count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
@@ -1281,20 +1292,24 @@ public class MinesCommands {
             	
             	//row.addTextComponent( m.getWorldName() + " " );
             	
+            	if ( m.getSortOrder() < 0 ) {
+            		row.addFancy( 
+            				new FancyMessage( String.format("&3(&b%s&3) ", 
+            						"X") )
+            				.tooltip("&7Sort order: Suppressed"));
+            	}
+            	else {
+            		row.addFancy( 
+            				new FancyMessage( String.format("&3(&b%s&3) ", 
+            						Integer.toString( m.getSortOrder() )) )
+            				.tooltip("&7Sort order."));
+            	}
+            	
+            	
             	row.addFancy( 
             			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Click to view info."));
-  
-            	if ( m.getSortOrder() >= 0 ) {
-            		String sortMessage = m.getSortOrder() == -1 ? "suppressed" :
-            									Integer.toString( m.getSortOrder() );
-            		row.addFancy( 
-            				new FancyMessage( String.format("&7%s ", 
-            						sortMessage) )
-            				.tooltip("&7Sort order."));
-            	}
-            	
             	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
             		row.addTextComponent( "%s ", m.getTag() );

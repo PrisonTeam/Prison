@@ -16,6 +16,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
@@ -38,12 +39,12 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // ItemStack itemMines;
 
         // Get the mines - In sort order, minus any marked as suppressed
-    	List<Mine> mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
+    	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
 //        Set<Mine> mines = new PrisonSortableMines().getSortedSet();
         // PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(mines.size() / 9D) * 9;
+        int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
         // Load config
         Configuration messages = SpigotPrison.getGuiMessagesConfig();
@@ -66,7 +67,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesManager -> Mines"));
 
         // Make the buttons for every Mine with info
-        for (Mine m : mines ) {
+        for (Mine m : mines.getSortedList() ) {
 
             if (guiBuilder(inv, m)) return;
 

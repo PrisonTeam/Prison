@@ -33,6 +33,7 @@ import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.mines.managers.PlayerManager;
@@ -234,7 +235,7 @@ public class PrisonMines extends Module {
         return getMineManager().getMines();
     }
     
-    public List<Mine> getMines( MineSortOrder sortOrder ) {
+    public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
     	return getMineManager().getMines( sortOrder );
     }
 

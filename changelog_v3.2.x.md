@@ -9,7 +9,27 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-10-02
+## tag v3.2.2-alpha.1 - 2020-10-06
+
+
+* **Updated the sorting of mines to simplify the sorting.**
+Now the sort types either include or exclude the mines.  There are no sort types that include all mines.  But the function that performs the sorting based upon the sort type returns a collection that contains the included mines (sortOrder >= 0) and also a second collection that contains the excluded mines (sortOrder == -1).
+The returned object, PrisonSortableResults, has helper functions to simplify integration in to the /mines list command.
+The /mines list command now shows how many mines are included and excluded in that listing, and identifies what the other sort types will display the suppressed mines.
+
+
+
+* **New Feature: Setup the complex sorting on mines.**
+Mines can now be assigned a sort order, with even suppressing mines from being included in the output.
+Mines list can now be sorted in six different orders: alpha, active, and now sortOrder (user defined order), all of which suppresses mines with a -1 for the sort orders. Plus those but with including the suppressed mines.
+The default being sortOrder, but if no mines have been configured, then they all will have a sortOrder == 0, and then all will be sorted alphabetically within that grouping.
+Changed the prison's GUI to display mines in the sortOrder, with suppression of the -1 sortOrder values.
+Added a junit test to test the generated sorting orders since they can be rather complex and should be tested at compile time that they are correct.
+Note: In adding this new sorting, found where the bug was where the actual internal sort order was being altered.  This is no longer the case and is fixed.
+
+
+* **New Feature: Added Mine Tag Names and 8 new placeholders to support them.**
+This is required for the future changes to support linking mines and ranks.
 
 
 * **New Feature: Rename Mines.  Bug Fix: Delete Mines.**
@@ -41,6 +61,7 @@ for example the name of the GUI messages file should be `GUI-en_US.yml` by defau
 it'll be generated anyway using the default config as the model so it won't break the plugin, then you can translate it 
 later or edit the config to the correct one. 
 
+
 * **New feature: added some new 1.14 and 1.15 blocks**
 Added some more new blocks since some of the 1.16 blocks appear to work in most circumstances.
 Use at your own risk.
@@ -49,6 +70,9 @@ v1.14 : BAMBOO, BAMBOO_SAPLING, BARREL, BELL, CAMPFIRE, CARTOGRAPHY_TABLE, COMOS
 FLETCHING_TABLE, GRINDSTONE, JIGSAW, LANTERN, LECTERN, LOOM, SCAFFOLDING,
 SMITHING_TABLE, SMOKER, STONECUTTER, SWEET_BERRY_BUSH
 v1.15 : BEE_NEST, BEEHIVE, HONEY_BLOCK, HONEYCOMB_BLOCK
+
+
+* **Prison_v3.2.2-alpha.1c - 2020-10-01**
 
 
 * **Added a few v1.16 block types.**
@@ -66,10 +90,15 @@ SOUL_LANTERN SOUL_TORCH SOUL_SOIL TARGET TWISTING_VINES WEAPING_VINES
  since this is an item and not a block. Added support so if it is found in a mine upon server startup, it will change it to a double_nether_brick_slab.
 
 
+* **Prison_v3.2.2-alpha.1b - 2020-09-29**
+
+
 * **Bug fix: Prison was allowing the material REDSTONE to be added to mines.**
 This caused a failure during mine resets since that is not a valid block. That is redstone dust!
 Fixed it so upon server startup, it will auto detect the use of this item in mines and convert it to REDSTONE_ORE.  Thus the mine will work and won't disable the mine.
 Also I changed the BlockType to Item so it's still there, but it cannot be presented as a block in the /mines block search tool.
+
+
 
 
 * **Set new version to v3.2.2-alpha.1**  2020-09-27

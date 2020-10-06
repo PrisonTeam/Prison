@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 
 public class MineManagerTest
 		extends
@@ -53,6 +54,7 @@ public class MineManagerTest
 	public void testGetMinesMineSortOrderListOfMine() {
 		List<Mine> mines = getTestMines();
 		
+		
 		// check to make sure the mines are in an unsorted order:
 		assertEquals( "D", mines.get( 0 ).getName() );
 		assertEquals( "b", mines.get( 1 ).getName() );
@@ -62,38 +64,38 @@ public class MineManagerTest
 		System.out.println( toString(mines, "Before sort:") );
 
 		// sort by alpha and confirm:
-		mines = getMines( MineSortOrder.alpha, mines );
-		System.out.println( toString(mines, "After alpha:") );
+		PrisonSortableResults sorted = getMines( MineSortOrder.alpha, mines );
+		System.out.println( toString(sorted.getSortedList(), "After alpha:") );
 		
-		assertEquals( "A", mines.get( 0 ).getName() );
-		assertEquals( "b", mines.get( 1 ).getName() );
-		assertEquals( "C", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 2 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 		
 		// Set mine b to sortOrder -1 so it is not included in alpha sort:
 		mines.get( 1 ).setSortOrder( -1 );
 		
 		// Resort with alpha and b should not be included:
-		mines = getMines( MineSortOrder.alpha, mines );
-		System.out.println( toString(mines, "After alpha without b:") );
+		sorted = getMines( MineSortOrder.alpha, sorted.getSortedList() );
+		System.out.println( toString(sorted.getSortedList(), "After alpha without b:") );
 
 		// Without mine b:
-		assertEquals( "A", mines.get( 0 ).getName() );
-		// assertEquals( "b", mines.get( 1 ).getName() );
-		assertEquals( "C", mines.get( 1 ).getName() );
-		assertEquals( "D", mines.get( 2 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 0 ).getName() );
+		// assertEquals( "b", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 2 ).getName() );
 		
 		
 		// Reset and now sort with alphaAll:
 		mines = getTestMines();	// d, b, a, c
 		mines.get( 1 ).setSortOrder( -1 );
-		mines = getMines( MineSortOrder.allAlpha, mines );
-		System.out.println( toString(mines, "After allAlpha with all:") );
+		sorted = getMines( MineSortOrder.xAlpha, mines );
+		System.out.println( toString(sorted.getSortedList(), "After xAlpha with only the excluded:") );
 		
-		assertEquals( "A", mines.get( 0 ).getName() );
-		assertEquals( "b", mines.get( 1 ).getName() );
-		assertEquals( "C", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+//		assertEquals( "A", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 0 ).getName() );
+//		assertEquals( "C", sorted.getSortedList().get( 2 ).getName() );
+//		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 		
 	
 		// Reset and now sort with active:
@@ -101,13 +103,13 @@ public class MineManagerTest
 		//mines.get( 1 ).setSortOrder( -1 );
 		mines.get( 1 ).setTotalBlocksMined( 5 ); // b
 		mines.get( 3 ).setTotalBlocksMined( 1 ); // C
-		mines = getMines( MineSortOrder.active, mines );
-		System.out.println( toString(mines, "After active:") );
+		sorted = getMines( MineSortOrder.active, mines );
+		System.out.println( toString(sorted.getSortedList(), "After active:") );
 		
-		assertEquals( "b", mines.get( 0 ).getName() );
-		assertEquals( "C", mines.get( 1 ).getName() );
-		assertEquals( "A", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 2 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 
 		
 		// Reset and now sort with active:
@@ -115,13 +117,13 @@ public class MineManagerTest
 		mines.get( 1 ).setSortOrder( -1 );
 		mines.get( 1 ).setTotalBlocksMined( 5 );
 		mines.get( 3 ).setTotalBlocksMined( 1 );
-		mines = getMines( MineSortOrder.active, mines );
-		System.out.println( toString(mines, "After active & suppress:") );
+		sorted = getMines( MineSortOrder.active, mines );
+		System.out.println( toString(sorted.getSortedList(), "After active & suppress:") );
 		
-		// assertEquals( "b", mines.get( 0 ).getName() );
-		assertEquals( "C", mines.get( 0 ).getName() );
-		assertEquals( "A", mines.get( 1 ).getName() );
-		assertEquals( "D", mines.get( 2 ).getName() );
+		// assertEquals( "b", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 2 ).getName() );
 		
 	
 		
@@ -130,13 +132,13 @@ public class MineManagerTest
 		mines.get( 1 ).setSortOrder( -1 );
 		mines.get( 1 ).setTotalBlocksMined( 5 );
 		mines.get( 3 ).setTotalBlocksMined( 1 );
-		mines = getMines( MineSortOrder.allActive, mines );
-		System.out.println( toString(mines, "After allActive:") );
+		sorted = getMines( MineSortOrder.xActive, mines );
+		System.out.println( toString(sorted.getSortedList(), "After xActive:") );
 		
-		assertEquals( "b", mines.get( 0 ).getName() );
-		assertEquals( "C", mines.get( 1 ).getName() );
-		assertEquals( "A", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 0 ).getName() );
+//		assertEquals( "C", sorted.getSortedList().get( 1 ).getName() );
+//		assertEquals( "A", sorted.getSortedList().get( 2 ).getName() );
+//		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 		
 		
 		
@@ -150,13 +152,13 @@ public class MineManagerTest
 		//mines.get( 1 ).setSortOrder( -1 );
 		mines.get( 1 ).setTotalBlocksMined( 5 );
 		mines.get( 3 ).setTotalBlocksMined( 1 );
-		mines = getMines( MineSortOrder.sortOrder, mines );
-		System.out.println( toString(mines, "After sortOrder:") );
+		sorted = getMines( MineSortOrder.sortOrder, mines );
+		System.out.println( toString(sorted.getSortedList(), "After sortOrder:") );
 		
-		assertEquals( "C", mines.get( 0 ).getName() );
-		assertEquals( "A", mines.get( 1 ).getName() );
-		assertEquals( "b", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 1 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 2 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 		
 
 		
@@ -169,13 +171,13 @@ public class MineManagerTest
 		mines.get( 3 ).setSortOrder( 3 );
 		mines.get( 1 ).setTotalBlocksMined( 5 );
 		mines.get( 3 ).setTotalBlocksMined( 1 );
-		mines = getMines( MineSortOrder.sortOrder, mines );
-		System.out.println( toString(mines, "After sortOrder:") );
+		sorted = getMines( MineSortOrder.sortOrder, mines );
+		System.out.println( toString(sorted.getSortedList(), "After sortOrder:") );
 		
-		assertEquals( "C", mines.get( 0 ).getName() );
-		assertEquals( "A", mines.get( 1 ).getName() );
-		// assertEquals( "b", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 2 ).getName() );
+		assertEquals( "C", sorted.getSortedList().get( 0 ).getName() );
+		assertEquals( "A", sorted.getSortedList().get( 1 ).getName() );
+		// assertEquals( "b", sorted.getSortedList().get( 2 ).getName() );
+		assertEquals( "D", sorted.getSortedList().get( 2 ).getName() );
 		
 		
 		// Reset and now sort with sortOrder with a -1 on b:
@@ -186,13 +188,13 @@ public class MineManagerTest
 		mines.get( 3 ).setSortOrder( 3 );
 		mines.get( 3 ).setTotalBlocksMined( 5 );
 		mines.get( 0 ).setTotalBlocksMined( 1 );
-		mines = getMines( MineSortOrder.allSortOrder, mines );
-		System.out.println( toString(mines, "After sortOrder including suppressed:") );
+		sorted = getMines( MineSortOrder.xSortOrder, mines );
+		System.out.println( toString(sorted.getSortedList(), "After xSortOrder:") );
 		
-		assertEquals( "b", mines.get( 0 ).getName() );
-		assertEquals( "C", mines.get( 1 ).getName() );
-		assertEquals( "A", mines.get( 2 ).getName() );
-		assertEquals( "D", mines.get( 3 ).getName() );
+		assertEquals( "b", sorted.getSortedList().get( 0 ).getName() );
+//		assertEquals( "C", sorted.getSortedList().get( 1 ).getName() );
+//		assertEquals( "A", sorted.getSortedList().get( 2 ).getName() );
+//		assertEquals( "D", sorted.getSortedList().get( 3 ).getName() );
 
 	}
 
