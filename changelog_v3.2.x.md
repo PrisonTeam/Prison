@@ -12,6 +12,9 @@ that you need.
 ## tag v3.2.2-alpha.1 - 2020-10-06
 
 
+* **v3.2.2-alpha.2 - 2020-10-06**
+
+
 * **Updated the sorting of mines to simplify the sorting.**
 Now the sort types either include or exclude the mines.  There are no sort types that include all mines.  But the function that performs the sorting based upon the sort type returns a collection that contains the included mines (sortOrder >= 0) and also a second collection that contains the excluded mines (sortOrder == -1).
 The returned object, PrisonSortableResults, has helper functions to simplify integration in to the /mines list command.
