@@ -45,6 +45,8 @@ You can now rename mines.
 This also fixes an issue with not being able to delete a mine: It deletes successfully, but is still active in memory.
 
 
+* **Prison_v3.2.2-alpha.1d.jar - 2020-10-01**
+
 
 * **Bug fix: change how /ranks list works with perms.**
 Should allow all players to use this command since no-perm players can use /ranks and that just redirects to this command.
@@ -70,6 +72,9 @@ it'll be generated anyway using the default config as the model so it won't brea
 later or edit the config to the correct one. 
 
 
+* **Prison_v3.2.2-alpha.1c - 2020-10-01**
+
+
 * **New feature: added some new 1.14 and 1.15 blocks**
 Added some more new blocks since some of the 1.16 blocks appear to work in most circumstances.
 Use at your own risk.
@@ -78,9 +83,6 @@ v1.14 : BAMBOO, BAMBOO_SAPLING, BARREL, BELL, CAMPFIRE, CARTOGRAPHY_TABLE, COMOS
 FLETCHING_TABLE, GRINDSTONE, JIGSAW, LANTERN, LECTERN, LOOM, SCAFFOLDING,
 SMITHING_TABLE, SMOKER, STONECUTTER, SWEET_BERRY_BUSH
 v1.15 : BEE_NEST, BEEHIVE, HONEY_BLOCK, HONEYCOMB_BLOCK
-
-
-* **Prison_v3.2.2-alpha.1c - 2020-10-01**
 
 
 * **Added a few v1.16 block types.**
