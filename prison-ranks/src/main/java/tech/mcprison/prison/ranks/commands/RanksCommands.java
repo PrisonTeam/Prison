@@ -14,6 +14,8 @@ import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -477,6 +479,13 @@ public class RanksCommands {
 				sendToPlayerAndConsole( sender, messageRank );
 			}
 			
+			// Print out the player's balance:
+			double balance = getPlayerBalance( player );
+			String message = String.format( "&7The current balance for &b%s &7is &b%s", 
+					player.getName(), dFmt.format( balance ) );
+			sendToPlayerAndConsole( sender, message );
+			
+			
 			if (sender.hasPermission("ranks.admin") && rankPlayer.names.size() > 1) {
 	            // This is admin-exclusive content
 
@@ -663,5 +672,32 @@ public class RanksCommands {
 		}
 		return result;
 	}
+	
+	public double getPlayerBalance( Player player ) {
+		
+		EconomyIntegration economy = 
+					(EconomyIntegration) PrisonAPI.getIntegrationManager()
+							.getForType(IntegrationType.ECONOMY)
+							.orElseThrow(IllegalStateException::new);
+		
+		return economy.getBalance( player );
+	}
     
+	public double getPlayerBalance( Player player, String currency ) {
+		
+
+		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+						.getEconomyForCurrency( currency );
+		if ( currencyEcon == null ) {
+			// ERROR: currency is not support
+			Output.get().logInfo( "The currency %s is not supported.  Therefore there is no blance.",
+					currency );
+			return 0;
+		}
+		else {
+			return currencyEcon.getBalance( player, currency );
+		}
+
+	}
+	
 }
