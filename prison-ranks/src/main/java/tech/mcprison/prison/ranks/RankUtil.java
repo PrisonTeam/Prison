@@ -98,6 +98,7 @@ public class RankUtil {
 
 		next_rank_set, 
 		set_to_default_rank,
+		original_rank_is_null, 
 		set_to_next_higher_rank,
 		set_to_prior_lower_rank,
 		
@@ -124,7 +125,7 @@ public class RankUtil {
 		fireRankupEvent,
 		
 		rankup_successful, 
-		failure_exception_caught_check_server_logs, 
+		failure_exception_caught_check_server_logs
 		
 		;
 	}
@@ -290,8 +291,10 @@ public class RankUtil {
         
 
         Optional<Rank> currentRankOptional = player.getRank(ladder);
+        Rank originalRank = currentRankOptional.orElse( null );
+        
         results.addTransaction( RankupTransactions.orginal_rank );
-        results.setOriginalRank( currentRankOptional.orElse( null ) );
+        results.setOriginalRank( originalRank );
        
         
         Rank targetRank = null;
@@ -312,6 +315,14 @@ public class RankUtil {
             }
             results.addTransaction( RankupTransactions.set_to_default_rank );
             targetRank = lowestRank.get();
+            
+            // need to set this to a valid value:
+            originalRank = lowestRank.get();
+        }
+        
+        if ( originalRank == null ) {
+        	results.addTransaction( RankupTransactions.original_rank_is_null );
+        	
         }
         
         // If default ladder and rank is null at this point, that means use the "default" rank:
@@ -397,6 +408,7 @@ public class RankUtil {
         // We'll check if the player can afford it first, and if so, we'll make the transaction and proceed.
 
         double nextRankCost = targetRank.cost;
+        double currentRankCost = (originalRank == null ? 0 : originalRank.cost);
         if (pForceCharge != PromoteForceCharge.no_charge ) {
         	
         	
@@ -428,11 +440,15 @@ public class RankUtil {
         				if ( pForceCharge == PromoteForceCharge.refund_player) {
         					
         				results.addTransaction( RankupTransactions.player_balance_initial );
-        				results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
+        				results.setBalanceInitial( originalRank == null ? 0 : 
+        									currencyEcon.getBalance( prisonPlayer, originalRank.currency ) );
         				results.addTransaction( RankupTransactions.player_balance_increased);
-        				currencyEcon.addBalance(prisonPlayer, nextRankCost, targetRank.currency );
+        				if ( originalRank != null ) {
+        					currencyEcon.addBalance(prisonPlayer, currentRankCost, originalRank.currency );
+        				}
         				results.addTransaction( RankupTransactions.player_balance_final );
-        				results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
+        				results.setBalanceFinal( originalRank == null ? 0 :
+        									currencyEcon.getBalance( prisonPlayer, originalRank.currency ) );
         			} else {
         				// Should never hit this code!!
         			}
@@ -463,7 +479,7 @@ public class RankUtil {
     				results.addTransaction( RankupTransactions.player_balance_initial );
     				results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
     				results.addTransaction( RankupTransactions.player_balance_increased);
-    				economy.addBalance(prisonPlayer, nextRankCost );
+    				economy.addBalance(prisonPlayer, currentRankCost );
     				results.addTransaction( RankupTransactions.player_balance_final );
     				results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
     			} else {
@@ -581,7 +597,7 @@ public class RankUtil {
     					
     				case player_balance_increased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( tRank.cost ) );
+    					sb.append( tRank == null ? "" : dFmt.format( oRank.cost ) );
     					
     					break;
     					
