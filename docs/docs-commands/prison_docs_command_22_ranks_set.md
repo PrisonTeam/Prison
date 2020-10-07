@@ -3,7 +3,7 @@
 
 ## Description:
 
-Manages a ranks and set it.
+Manages a rank or player.
 
 ## Permissions: 
 
