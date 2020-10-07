@@ -1,24 +1,24 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Short description of the command will be here
+Shows a list of ranks.
+
+## Permissions:
+
+- `ranks.list`
 
 ## SubCommands:
 
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- none
 
 ## How to use the command
 
+Execute the command itself and add the ladder name you want to see, like in the example: `/ranks list default`.
+
 ### Command Format
 
-`/prison`
+`/ranks list [ladderName]`
 
 **END of the command INFO**
