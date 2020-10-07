@@ -194,7 +194,7 @@ public class RanksCommands {
             String text =
                 String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
                 			textRankName, rank.tag, 
-                			(defaultRank ? "&b(&9Default&b) &7-" : ""),
+                			(defaultRank ? "&b(&9Default&b) &7- " : ""),
                 			Text.numberToDollars(rank.cost),
                 			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
                 			textCmdCount );
