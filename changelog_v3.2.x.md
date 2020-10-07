@@ -9,7 +9,24 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-10-06
+## tag v3.2.2-alpha.1 - 2020-10-07
+
+
+* **Bug fix: Had to make changes to which functions Vault is using based upon Vault's version.**
+It appears like formerly deprecated functions have been disabled and does nothing now.
+Made changes to inspect the version of vault that is being used, then properly target the correct function so it works properly with all versions of vault, including pre v1.4.0.
+This bug fix is potentially a critical bug fix and may warrant publishing Prison release v3.2.2 to take care of this issue.
+
+
+* **New feature: Added the player's current balance on the command /ranks player.**
+
+
+
+* **Bug fix: Found that the wrong amount was being refunded to the player when doing a /ranks demote with a player_refund.**
+Works now, and the log entries are also correct.
+
+
+* **Space missing in the display of the default rank for the command /ranks list.**
 
 
 * **Bug Fix: A config file was being loaded many times to build one gui page.**
