@@ -41,7 +41,7 @@ public class VaultEconomy
 			addDebugInfo( "2" );
 			try {
 				addDebugInfo( "3" );
-				this.econWrapper = new VaultEconomyWrapper();
+				this.econWrapper = new VaultEconomyWrapper( getProviderName() );
 				addDebugInfo( "4" );
 			}
 			catch ( java.lang.NoClassDefFoundError | Exception e ) {

@@ -21,9 +21,11 @@ package tech.mcprison.prison.spigot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -498,4 +500,27 @@ public class SpigotUtil {
         return InventoryView.Property.valueOf(property.name());
     }
 
+    
+    /**
+     * <p>Vault economy requires the parameter of bukkit's OfflinePlayer.
+     * That was never exposed for good reasons, and do not want to use
+     * bukkit/spigot specific code within that integration.  So, this is
+     * where this code will live since it is a Spigot untility.
+     * </p>
+     * 
+     * @param uuid
+     * @return OfflinePlayer
+     */
+    public static OfflinePlayer getBukkitOfflinePlayer( UUID uuid ) {
+    	OfflinePlayer results = null;
+    	
+    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
+    		if ( uuid != null && offP.getUniqueId().equals(uuid) ) {
+    			results = offP;
+    			break;
+	  		}
+		}
+    	
+    	return results;
+    }
 }
