@@ -9,7 +9,13 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.1 - 2020-10-07
+## tag v3.2.2-alpha.3 - 2020-10-07
+
+
+* **v3.2.2-alpha.3 - 2020-10-07**
+Bump to v3.2.2-alpha.3 due to significant update to the Vault integration.  
+Have not heard anyone else has had issues, so may hold off on releasing v3.2.2 for a few days to add more updates.
+
 
 
 * **Bug fix: Had to make changes to which functions Vault is using based upon Vault's version.**
