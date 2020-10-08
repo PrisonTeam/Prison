@@ -299,7 +299,8 @@ class SpigotPlatform implements Platform {
         }
     }
 
-    @SuppressWarnings("unchecked") @Override public void unregisterCommand(String command) {
+    @SuppressWarnings("unchecked") @Override 
+    public void unregisterCommand(String command) {
         try {
             ((Map<String, Command>) plugin.knownCommands
                 .get(plugin.commandMap.get(Bukkit.getServer()))).remove(command);
@@ -464,6 +465,8 @@ class SpigotPlatform implements Platform {
 		 
         // Finally print the version after loading the prison plugin:
 //        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+		 
+		 boolean isPlugManPresent = false;
         
         // Store all loaded plugins within the PrisonCommand for later inclusion:
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
@@ -473,11 +476,31 @@ class SpigotPlatform implements Platform {
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );
+        	
+        	if ( "PlugMan".equalsIgnoreCase( name ) ) {
+        		isPlugManPresent = true;
+        	}
 		}
+        
+        if ( isPlugManPresent ) {
+        	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
+        	chatDisplay.text( "&7The use of PlugMan on this Prison server will corrupt internals" );
+        	chatDisplay.text( "&7of Prison and may lead to a non-functional state, or even total" );
+        	chatDisplay.text( "&7corruption of the internal settings, the saved files, and maybe" );
+        	chatDisplay.text( "&7even the mines and surrounding areas too." );
+        	chatDisplay.text( "&7The only safe way to restart Prison is through a server restart." );
+        	chatDisplay.text( "&7Use of PlugMan at your own risk.  You have been warned. " );
+        	chatDisplay.text( "&7Prison support team has no obligation to help recover, or repair," );
+        	chatDisplay.text( "&7any troubles that may result of the use of PlugMan." );
+        	chatDisplay.text( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
+        	chatDisplay.text( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	
+        	chatDisplay.sendtoOutputLogInfo();;
+        }
 
         // NOTE: The following code does not actually get all of the commands that have been
         //       registered with the bukkit plugin registry.  So commenting this out and may revisit
-        //       in the future.  Only tested with 1.8.8 so may work better with more cent version.
+        //       in the future.  Only tested with 1.8.8 so may work better with more recent version.
 //        SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
 //        
 //        try {
