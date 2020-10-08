@@ -9,7 +9,12 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.3 - 2020-10-08
+## tag v3.2.2-alpha.4 - 2020-10-08
+
+
+* **tag v3.2.2-alpha.4 - 2020-10-08**
+Had to bump this to alpha.4 due to the new mine sortOrder being set to -1 if 
+the value is not found in the save files! This may cause users to panic.
 
 
 * **New Feature: Initial work in linking Mines and Ranks.**
