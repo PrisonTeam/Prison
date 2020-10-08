@@ -9,17 +9,22 @@ import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-public abstract class MineData {
+public abstract class MineData
+		implements ModuleElement {
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
 	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
 	
 	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
+	
+	private transient final ModuleElementType elementType;
 		
 	private String name;
 	private String tag;
@@ -65,6 +70,8 @@ public abstract class MineData {
     
     private boolean usePagingOnReset = false;
     
+    private ModuleElement rank;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -93,6 +100,8 @@ public abstract class MineData {
     }
     
     public MineData() {
+    	this.elementType = ModuleElementType.MINE;
+    	
     	this.tag = null;
     	
     	this.blocks = new ArrayList<>();
@@ -125,6 +134,8 @@ public abstract class MineData {
         this.resetCommands = new ArrayList<>();
         
         this.usePagingOnReset = false;
+        
+        this.rank = null;
     }
 
     /**
@@ -145,6 +156,10 @@ public abstract class MineData {
 	}
 	public void setEnabled( boolean enabled ) {
 		this.enabled = enabled;
+	}
+	
+	public ModuleElementType getModuleElementType() {
+		return elementType;
 	}
 
     /**
@@ -498,9 +513,15 @@ public abstract class MineData {
 	public boolean isUsePagingOnReset() {
 		return usePagingOnReset;
 	}
-
 	public void setUsePagingOnReset( boolean usePagingOnReset ) {
 		this.usePagingOnReset = usePagingOnReset;
+	}
+
+	public ModuleElement getRank() {
+		return rank;
+	}
+	public void setRank( ModuleElement rank ) {
+		this.rank = rank;
 	}
 	
 }
