@@ -132,12 +132,31 @@ public class LadderCommands {
         
         display.send(sender);
     }
+    
+    @Command(identifier = "ranks ladder moveRank", description = "Moves a rank to a new " +
+    		"ladder position or a new ladder.", 
+			onlyPlayers = false, permissions = "ranks.ladder")
+		public void ladderMoveRank(CommandSender sender, 
+				@Arg(name = "ladderName") String ladderName,
+				@Arg(name = "rankName") String rankName,
+				@Arg(name = "position", def = "0", verifiers = "min[0]", 
+				description = "Position where you want the rank to be moved to. " +
+						"0 is the first position in the ladder.") int position) {
+    	sender.sendMessage( "Attempting to remove the specified rank from it's original ladder, " +
+    			"then it will be added back to the target ladder at the spcified location. The rank " +
+    			"will not be lost." );
+    	ladderRemoveRank( sender, ladderName, rankName );
+    	ladderAddRank(sender, ladderName, rankName, position );
+    }
 
-    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder.", 
+    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderAddRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
-        @Arg(name = "rankName") String rankName,
-        @Arg(name = "position", def = "0", verifiers = "min[0]") int position) {
+    public void ladderAddRank(CommandSender sender, 
+    		@Arg(name = "ladderName") String ladderName,
+	        @Arg(name = "rankName") String rankName,
+	        @Arg(name = "position", def = "0", verifiers = "min[0]",
+	        description = "Position where you want the rank to be added. " +
+	        		"0 is the first position in the ladder.") int position) {
         Optional<RankLadder> ladder =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if (!ladder.isPresent()) {
@@ -167,8 +186,8 @@ public class LadderCommands {
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
             
-            Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s'.", rank.get().name,
-            		ladder.get().name);
+            Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
+            		rank.get().name, ladder.get().name, Integer.toString( position ));
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
