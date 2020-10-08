@@ -9,7 +9,34 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.3 - 2020-10-07
+## tag v3.2.2-alpha.3 - 2020-10-08
+
+
+* **New Feature: Initial work in linking Mines and Ranks.**
+This is just the initial framework for the final product.  Ranks have not been modified yet.
+
+
+* **New Feature: New Feature: Add a warning if PlugMan is detected.**
+It notifies the user that prison will not behave well and can be corrupted if PlugMan tries to reload it.
+Also states we are not responsible for any corruption, nor are we obligated to help recover from said corruption.
+
+
+* **New Feature: Added ability to send the ChatDisplay object directly to console log.**
+
+
+* **New Feature: Added /ranks ladder moveRank**
+since most people don't realize they can remove a rank from a ladder (it is not deleted) and then add it back in to another place within the same ladder, or another ladder.
+This new feature just calls /ranks ladder remove and then /ranks ladder addRank.  Simplifies the process and makes it clear to the user that the option is there.
+
+
+* **Eliminated the listing of placeholders from /prison version**
+since it was getting to be a really long list.
+Provided a reminder on where to find the placeholders.
+
+
+* **BUG FIX!! Found that the default value on mine sortOrder was being set to -1 instead of zero.**
+This will suppress all the mines, but nothing will be lost. This value will be set upon initial 
+loading of the mines if they did not have that value set previously.
 
 
 * **v3.2.2-alpha.3 - 2020-10-07**
