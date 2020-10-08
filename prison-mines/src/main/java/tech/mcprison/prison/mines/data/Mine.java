@@ -178,7 +178,7 @@ public class Mine
         
         
         Double sortOrder = (Double) document.get( "sortOrder" );
-        setSortOrder( sortOrder == null ? -1 : sortOrder.intValue() );
+        setSortOrder( sortOrder == null ? 0 : sortOrder.intValue() );
 
         
 		World world = null;
