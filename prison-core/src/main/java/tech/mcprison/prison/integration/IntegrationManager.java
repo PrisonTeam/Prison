@@ -631,7 +631,9 @@ public class IntegrationManager {
         	// Generates the placeholder list for the /prison version command, printing
         	// two placeholders per line.
 			if ( integType ==  IntegrationType.PLACEHOLDER ) {
-				getPlaceholderTemplateList( results );
+				results.add(  new TextComponent( "    &7To list all or search for placeholders see: " +
+						"&a/prison placeholders") );
+//				getPlaceholderTemplateList( results );
 			}
 			
 			List<Integration> plugins = getAllForType( integType );
