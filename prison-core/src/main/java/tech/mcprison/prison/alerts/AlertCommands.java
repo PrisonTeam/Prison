@@ -1,15 +1,15 @@
 package tech.mcprison.prison.alerts;
 
+import java.util.List;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
-
-import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
@@ -24,7 +24,7 @@ public class AlertCommands {
     public void prisonAlertsCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;
@@ -52,7 +52,7 @@ public class AlertCommands {
     public void prisonAlertsClearCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;
@@ -71,7 +71,7 @@ public class AlertCommands {
     public void prisonAlertsClearAllCommand(CommandSender sender) {
         if (!(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
         Player player = (Player) sender;

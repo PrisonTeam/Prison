@@ -33,10 +33,12 @@ public class Output {
 
     // Fields
     private static Output instance;
-    public String PREFIX_TEMPLATE = "&8| %s &8|";
-    public String INFO_PREFIX = gen("&3Info") + " &7";
-    public String WARNING_PREFIX = gen("&6Warning") + " &7";
-    public String ERROR_PREFIX = gen("&cError") + " &7";
+    
+    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
+    public String INFO_PREFIX = gen("Info");
+    public String WARNING_PREFIX = gen("Warning");
+    public String ERROR_PREFIX = gen("Error");
+    public String DEBUG_PREFIX = gen("Debug");
 
     // Constructor
 
@@ -53,11 +55,67 @@ public class Output {
         return instance;
     }
 
+    
+    /**
+     * Need standardization on this.
+     * 
+     * @param level
+     * @return
+     */
+    private String getLogPrefix( LogLevel level) {
+        String prefix = null;
+        
+        switch ( level )
+		{
+			case INFO:
+				prefix = INFO_PREFIX;
+				break;
+			case WARNING:
+				prefix = WARNING_PREFIX;
+				break;
+			case ERROR:
+				prefix = ERROR_PREFIX;
+				break;
+			case DEBUG:
+				prefix = DEBUG_PREFIX;
+				break;
+				
+			case PLAIN:
+			default:
+				prefix = "";
+				break;
+		}
+        return getLogColorCode(level) + prefix;
+    }
+    
+    private String getLogColorCode( LogLevel level) {
+    	String colorCode = null;
+    	
+    	switch ( level )
+    	{
+    		case INFO:
+    			colorCode = "&f";
+    			break;
+    		case WARNING:
+    			colorCode = "&6";
+    			break;
+    		case ERROR:
+    			colorCode = "&c";
+    			break;
+    		case DEBUG:
+    			colorCode = "&9";
+    			break;
+    			
+    		case PLAIN:
+    		default:
+    			colorCode = "";
+    			break;
+    	}
+    	return colorCode;
+    }
+    
     public String format(String message, LogLevel level, Object... args) {
-        String prefix = level == LogLevel.INFO ?
-            INFO_PREFIX :
-            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
-        return prefix + String.format(message, args);
+        return getLogPrefix(level) + String.format(message, args);
     }
 
     /**
@@ -67,9 +125,10 @@ public class Output {
     	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
     		System.err.println("Prison: Output.log Logger failure: " + message );
     	} else {
-    		Prison.get().getPlatform().log(gen("&3Prison") + " " + (level == LogLevel.INFO ?
-    				"&f" :
-    					level == LogLevel.WARNING ? "&6" : "&c") + String.format(message, args));
+    		Prison.get().getPlatform().log(
+    				gen("&3Prison") + " " + 
+    				getLogColorCode(level) +
+    				String.format(message, args));
     	}
     }
 
@@ -116,10 +175,11 @@ public class Output {
      * Send a message to a {@link CommandSender}
      */
     public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
-        String prefix = level == LogLevel.INFO ?
-            INFO_PREFIX :
-            level == LogLevel.WARNING ? WARNING_PREFIX : ERROR_PREFIX;
-        sender.sendMessage(prefix + String.format(message, args));
+        sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    }
+    
+    public void send(CommandSender sender, String message, Object... args) {
+    	sendMessage(sender, message, LogLevel.PLAIN, args);
     }
 
     /**
@@ -129,7 +189,7 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendInfo(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(INFO_PREFIX + String.format(message, args));
+    	sendMessage(sender, message, LogLevel.INFO, args);
     }
 
     /**
@@ -139,7 +199,7 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendWarn(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(WARNING_PREFIX + String.format(message, args));
+    	sendMessage(sender, message, LogLevel.WARNING, args);
     }
 
     /**
@@ -149,12 +209,12 @@ public class Output {
      * @param message The message to send. This may include color codes, but the default is grey.
      */
     public void sendError(CommandSender sender, String message, Object... args) {
-        sender.sendMessage(ERROR_PREFIX + String.format(message, args));
+    	sendMessage(sender, message, LogLevel.ERROR, args);
     }
 
     // Private methods
 
-    public String gen(String name) {
+    private String gen(String name) {
         return String.format(PREFIX_TEMPLATE, name);
     }
 

@@ -369,7 +369,7 @@ class SpigotPlatform implements Platform {
             return;
         }
 
-        log(Output.get().gen("&eDebug") + " &7", message, format);
+        log( Output.get().format( message, LogLevel.DEBUG), format );
     }
 
     @Override public String runConverter() {

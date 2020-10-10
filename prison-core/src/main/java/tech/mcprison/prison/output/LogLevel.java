@@ -24,15 +24,23 @@ package tech.mcprison.prison.output;
  * @author Dylan M. Perks
  */
 public enum LogLevel {
+	
+	/** No prefix */
+	PLAIN,
     /**
      * Information severity.
      */
-    INFO, /**
+    INFO, 
+    /**
      * Warning severity.
      */
-    WARNING, /**
+    WARNING, 
+    /**
      * Error severity.
      */
-    ERROR
+    ERROR,
+    
+    /** Debug */
+    DEBUG;
 
 }

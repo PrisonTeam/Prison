@@ -18,15 +18,19 @@
 
 package tech.mcprison.prison.commands;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.output.Output;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
 
 
 public class RegisteredCommand {
@@ -75,7 +79,7 @@ public class RegisteredCommand {
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             
             Output.get().logInfo( "&cLack of Permission Error: &7Player &3%s &7lacks permission to " +
             		"run the command &3%s&7. Permissions needed: [&3%s&7]. Alt Permissions: [&3%s&7]", 
@@ -152,7 +156,7 @@ public class RegisteredCommand {
             }
         } catch (Exception e) {
             Prison.get().getLocaleManager().getLocalizable("internalErrorOccurred")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             e.printStackTrace();
         }
     }

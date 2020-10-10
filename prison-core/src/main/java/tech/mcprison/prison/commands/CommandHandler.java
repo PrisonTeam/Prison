@@ -18,17 +18,28 @@
 
 package tech.mcprison.prison.commands;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.commands.handlers.*;
+import tech.mcprison.prison.commands.handlers.BlockArgumentHandler;
+import tech.mcprison.prison.commands.handlers.DoubleArgumentHandler;
+import tech.mcprison.prison.commands.handlers.IntegerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.PlayerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.StringArgumentHandler;
+import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.localization.Localizable;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 public class CommandHandler {
 
@@ -322,7 +333,7 @@ public class CommandHandler {
 
         if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return true;
         }
 

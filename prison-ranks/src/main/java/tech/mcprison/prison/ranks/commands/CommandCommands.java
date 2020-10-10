@@ -1,22 +1,21 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
+
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.localization.Localizable.Level;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * @author Faizaan A. Datoo
@@ -26,13 +25,13 @@ public class CommandCommands {
 	public CommandCommands() {
 		super();
 		
-		// Now this is slight strange. Once in a while I've been seeing exceptions that the 
+		// Now this is slightly strange. Once in a while I've been seeing exceptions that the 
 		// following class cannot be resolved.  So I don't know why it can't, but it was not
 		// being used directly within this Ranks module, so it's being added here just to 
 		// allow the compiler to add it, and so hopefully the class loaders at run time can
 		// finally access it consistently.
 		@SuppressWarnings( "unused" )
-		Level force = Localizable.Level.ERROR;
+		LogLevel force = LogLevel.ERROR;
 	}
 
     @Command(identifier = "ranks command add", 

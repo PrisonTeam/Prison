@@ -37,7 +37,6 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
@@ -49,6 +48,7 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
@@ -100,20 +100,20 @@ public class MinesCommands {
         Selection selection = Prison.get().getSelectionManager().getSelection(player);
         if (!selection.isComplete()) {
         	pMines.getMinesMessages().getLocalizable("select_bounds")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         if (!selection.getMin().getWorld().getName()
             .equalsIgnoreCase(selection.getMax().getWorld().getName())) {
         	pMines.getMinesMessages().getLocalizable("world_diff")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
         if (PrisonMines.getInstance().getMine(mineName) != null) {
         	pMines.getMinesMessages().getLocalizable("mine_exists")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             return;
         }
 
@@ -375,7 +375,7 @@ public class MinesCommands {
         	m.getPrisonBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
         	if (totalComp[0] > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full").
-        					sendTo(sender, Localizable.Level.ERROR);
+        					sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
@@ -407,7 +407,7 @@ public class MinesCommands {
         	m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
         	if (totalComp[0] > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full")
-        		.sendTo(sender, Localizable.Level.ERROR);
+        		.sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
@@ -488,7 +488,7 @@ public class MinesCommands {
         	
         	if (totalChance > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full").
-        					sendTo(sender, Localizable.Level.ERROR);
+        					sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
@@ -553,7 +553,7 @@ public class MinesCommands {
         	
         	if (totalChance > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full").
-        					sendTo(sender, Localizable.Level.ERROR);
+        					sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
