@@ -17,6 +17,8 @@ public interface ModuleElement {
 	// private transient final ModuleElementType elementType;
 	public ModuleElementType getModuleElementType();
 	
+	public int getId();
+	
 	public String getName();
 	
 	public String getTag();

@@ -71,6 +71,12 @@ public abstract class MineData
     private boolean usePagingOnReset = false;
     
     private ModuleElement rank;
+    /**
+     * When loading mines, ranks will not have been loaded yet, so must
+     * save the rankString to be paired to the Ranks later.
+     * The rankString are the components of the ModuleElement.
+     */
+    private String rankString;
     
 
     public enum MineNotificationMode {
@@ -136,6 +142,7 @@ public abstract class MineData
         this.usePagingOnReset = false;
         
         this.rank = null;
+        this.rankString = null;
     }
 
     /**
@@ -183,6 +190,19 @@ public abstract class MineData
     }
     public void setSortOrder( int sortOrder ) {
     	this.sortOrder = sortOrder;
+    }
+    
+    
+    /**
+     * Mines do not use an id.  So these will always
+     * return a -1 and will ignore any value that is
+     * set.  An id is forced by Ranks and Ladders.
+     */
+    public int getId() {
+    	return -1;
+    }
+    public void setId( int idIsIgnored ) {
+    	// ignore
     }
     
     /**
@@ -522,6 +542,13 @@ public abstract class MineData
 	}
 	public void setRank( ModuleElement rank ) {
 		this.rank = rank;
+	}
+
+	public String getRankString() {
+		return rankString;
+	}
+	public void setRankString( String rankString ) {
+		this.rankString = rankString;
 	}
 	
 }

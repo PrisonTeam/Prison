@@ -241,6 +241,12 @@ public class Mine
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
+        
+        String rankString = (String) document.get( "rank" );
+        setRank( null );
+        setRankString( rankString );
+        
+        
         // This is a validation set to ensure only one block type is loaded file system.
         // Must keep the first one loaded.
         Set<String> validateBlockNames = new HashSet<>();
@@ -468,6 +474,12 @@ public class Mine
         
         
         ret.put( "usePagingOnReset", isUsePagingOnReset() );
+        
+        
+        String rank = getRank().getModuleElementType() + "," + getRank().getName() + "," + 
+        				getRank().getId() + "," + getRank().getTag();
+        ret.put("rank", rank );
+
         
         return ret;
     }
