@@ -69,7 +69,7 @@ public class RankUpCommand {
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
+			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
     public void rankUp(Player sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
@@ -101,6 +101,10 @@ public class RankUpCommand {
         UUID playerUuid = sender.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
+		if ( ladder == null ) {
+			// ladder cannot be null, 
+			return;
+		}
 
         RankPlayer rankPlayer = getPlayer( sender, playerUuid, sender.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
@@ -110,7 +114,7 @@ public class RankUpCommand {
 		boolean WillPrestige = false;
 
 		// If the ladder's the prestige one, it'll execute all of this
-		if (ladder.equalsIgnoreCase("prestiges")) {
+		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
 
 			if (!(lm.getLadder("default").isPresent())){
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] There isn't a default ladder! Please report this to an admin!"));
@@ -155,10 +159,10 @@ public class RankUpCommand {
         	// Get the player rank after
         	pRankAfter = rankPlayer.getRank(ladder);
 
+        	
+        	// Prestige method
+        	prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
         }
-
-        // Prestige method
-		prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
 	}
 
 	private void prestigePlayer(Player sender, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
@@ -315,15 +319,18 @@ public class RankUpCommand {
 
 
 	public String confirmLadder( CommandSender sender, String ladderName ) {
+		String results = null;
 		Optional<RankLadder> ladderOptional =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         // The ladder doesn't exist
         if (!ladderOptional.isPresent()) {
             Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
-            ladderName = null;
         }
-        return ladderName;
+        else {
+        	results = ladderOptional.get().name;
+        }
+        return results;
 	}
 
 
