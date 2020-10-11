@@ -41,11 +41,16 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
@@ -426,9 +431,63 @@ public class SpigotPrison extends JavaPlugin {
         	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
         	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
+        
+        // Try to load the mines and ranks that have the ModuleElement placeholders:
+        // Both the mine and ranks modules must be enabled.
+        if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
+        	linkMinesAndRanks();
+        }
     }
 
-    private void applyDeferredIntegrationInitializations() {
+    private void linkMinesAndRanks() {
+
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
+    			PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()
+    			) {
+    		RankManager rm = PrisonRanks.getInstance().getRankManager();
+    		MineManager mm = PrisonMines.getInstance().getMineManager();
+
+    		// go through all mines and link them to the Ranks and link that
+    		// rank back to the mine. 
+    		// So just by linking mines, will also link all of the ranks too.
+    		// It's important to understand the primary source is within the Mine 
+    		// since a mine can only have one rank.
+    		rm.getRanks();
+    		mm.getMines();
+
+    		int count = 0;
+    		for ( Mine mine : mm.getMines() )
+			{
+				if ( mine.getRank() == null && mine.getRankString() != null ) {
+					String[] rParts = mine.getRankString().split( "," );
+					
+					if ( rParts.length > 2 ) {
+						ModuleElementType meType = ModuleElementType.fromString( rParts[0] );
+						String rankName = rParts[1];
+						
+						if ( meType == ModuleElementType.RANK ) {
+							Rank rank = rm.getRank( rankName ).orElse( null );
+							
+							if ( rank != null ) {
+								mine.setRank( rank );
+								rank.getMines().add( mine );
+								count++;
+							}
+						}
+					}
+				}
+			}
+    		
+    		Output.get().logInfo( "A total of %s Mines and Ranks have been linked together.", 
+    				Integer.toString( count ) );
+    		
+    	}
+
+    	
+	}
+
+	private void applyDeferredIntegrationInitializations() {
     	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
     		deferredIntegration.deferredInitialization();
     	}
