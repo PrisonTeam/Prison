@@ -7,7 +7,7 @@ Show many infos about prison and also some placeholders
 
 ## Permission:
 
-- `prison admin`
+- `prison.admin`
 
 ## SubCommands:
 

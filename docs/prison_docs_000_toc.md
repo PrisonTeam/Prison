@@ -40,58 +40,57 @@
 
 
 **PRISON COMMANDS:** 
-(Work-In-Progress)
 
-- [/prison](docs-commands/prison_docs_command_1_prison.md)
-- [/prison alerts](docs-commands/prison_docs_command_2_prison_alerts.md)
-- [/prison autofeatures](docs-commands/prison_docs_command_3_prison_autofeatures.md)
-- [/prison gui](docs-commands/prison_docs_command_4_prison_gui.md)
-- [/prison modules](docs-commands/prison_docs_command_5_prison_modules.md)
-- [/prison placeholders](docs-commands/prison_docs_command_6_prison_placeholders.md)
-- [/prison reload](docs-commands/prison_docs_command_7_prison_reload.md)
-- [/prison version](docs-commands/prison_docs_command_9_prison_version.md)
+- [/prison](docs-commands/prison_docs_command_1_prison.md) `prison.admin` 
+- [/prison alerts](docs-commands/prison_docs_command_2_prison_alerts.md) `prison.alerts`
+- [/prison autofeatures](docs-commands/prison_docs_command_3_prison_autofeatures.md) `prison.admin` `prison.automanager` `prison.automanager.pickup` `prison.automanager.smelt` `prison.automanager.block`
+- [/prison gui](docs-commands/prison_docs_command_4_prison_gui.md) `prison.gui`
+- [/prison modules](docs-commands/prison_docs_command_5_prison_modules.md) `prison.modules`
+- [/prison placeholders](docs-commands/prison_docs_command_6_prison_placeholders.md) `prison.placeholder`
+- [/prison reload](docs-commands/prison_docs_command_7_prison_reload.md) `prison.reload`
+- [/prison version](docs-commands/prison_docs_command_9_prison_version.md) `prison.admin`
 
 
-**RANKS COMMANDS: _Guidebook TO-DO_** (Work-In-Progress)
+**RANKS COMMANDS**:
 
-- [/ranks \[ladder\] ](docs-commands/prison_docs_command_11_ranks.md)
-- [/ranks command](docs-commands/prison_docs_command_12_ranks_command.md)
-- [/ranks create \[rankName\] \[cost\] \[ladder\] \[tag\] ](docs-commands/prison_docs_command_13_ranks_create.md)
-- [/ranks delete \[rankName\] ](docs-commands/prison_docs_command_14_ranks_delete.md)
-- [/ranks demote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_15_ranks_demote.md)
-- [/ranks info \[rankName\] ](docs-commands/prison_docs_command_16_ranks_info.md)
-- [/ranks ladder](docs-commands/prison_docs_command_17_ranks_ladder_info.md)
-- [/ranks list \[ladderName\] ](docs-commands/prison_docs_command_18_ranks_list.md)
-- [/ranks players \[ladderName\] \[action\] ](docs-commands/prison_docs_command_19_ranks_players.md)
-- [/ranks player \[player\] ](docs-commands/prison_docs_command_20_ranks_player.md)
-- [/ranks promote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_21_ranks_promote.md)
-- [/ranks set](docs-commands/prison_docs_command_22_ranks_set.md)
+- [/ranks \[ladder\] ](docs-commands/prison_docs_command_11_ranks.md) `ranks.admin`
+- [/ranks command](docs-commands/prison_docs_command_12_ranks_command.md) `prison.alerts`
+- [/ranks create \[rankName\] \[cost\] \[ladder\] \[tag\] ](docs-commands/prison_docs_command_13_ranks_create.md) `ranks.create`
+- [/ranks delete \[rankName\] ](docs-commands/prison_docs_command_14_ranks_delete.md) `ranks.delete`
+- [/ranks demote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_15_ranks_demote.md) `ranks.demote`
+- [/ranks info \[rankName\] ](docs-commands/prison_docs_command_16_ranks_info.md) `ranks.info`
+- [/ranks ladder](docs-commands/prison_docs_command_17_ranks_ladder_info.md) `ranks.admin`
+- [/ranks list \[ladderName\] ](docs-commands/prison_docs_command_18_ranks_list.md) `ranks.list`
+- [/ranks players \[ladderName\] \[action\] ](docs-commands/prison_docs_command_19_ranks_players.md) `ranks.admin`
+- [/ranks player \[player\] ](docs-commands/prison_docs_command_20_ranks_player.md) `ranks.admin`
+- [/ranks promote \[playerName\] \[ladder\] \[chargePlayers\] ](docs-commands/prison_docs_command_21_ranks_promote.md) `ranks.promote`
+- [/ranks set](docs-commands/prison_docs_command_22_ranks_set.md) `ranks.admin`
 
 **MINES COMMANDS: _Guidebook TO-DO_** (Work-In-Progress)
 
-- [/mines](docs-commands/prison_docs_command_23_mines.md)
-- [/mines block](docs-commands/prison_docs_command_24_mines_block.md)
-- [/mines command](docs-commands/prison_docs_command_25_mines_command.md)
-- [/mines create \[mineName\] ](docs-commands/prison_docs_command_26_mines_create.md)
-- [/mines delete \[mineName\] \[confirm\] ](docs-commands/prison_docs_command_27_mines_delete.md)
-- [/mines info \[mineName\] \[page\] ](docs-commands/prison_docs_command_28_mines_info.md)
-- [/mines list \[page\] ](docs-commands/prison_docs_command_29_mines_list.md)
-- [/mines rename \[page\] ](docs-commands/prison_docs_command_41_mines_rename.md)
-- [/mines reset \[mineName\] ](docs-commands/prison_docs_command_30_mines_reset.md)
-- [/mines set](docs-commands/prison_docs_command_31_mines_set.md)
-- [/mines stats](docs-commands/prison_docs_command_32_mines_stats.md)
-- [/mines tp \[mineName\] ](docs-commands/prison_docs_command_33_mines_tp.md)
-- [/mines wand](docs-commands/prison_docs_command_34_mines_wand.md)
-- [/mines whereami](docs-commands/prison_docs_command_35_mines_whereami.md)
+- [/mines](docs-commands/prison_docs_command_23_mines.md) `mines.admin`
+- [/mines block](docs-commands/prison_docs_command_24_mines_block.md) `mines.admin`
+- [/mines command](docs-commands/prison_docs_command_25_mines_command.md) `mines.admin`
+- [/mines create \[mineName\] ](docs-commands/prison_docs_command_26_mines_create.md) `mines.create`
+- [/mines delete \[mineName\] \[confirm\] ](docs-commands/prison_docs_command_27_mines_delete.md) `mines.delete`
+- [/mines info \[mineName\] \[page\] ](docs-commands/prison_docs_command_28_mines_info.md) `mines.info`
+- [/mines list \[page\] ](docs-commands/prison_docs_command_29_mines_list.md) `mines.list`
+- [/mines rename \[page\] ](docs-commands/prison_docs_command_41_mines_rename.md) `mines.rename`
+- [/mines reset \[mineName\] ](docs-commands/prison_docs_command_30_mines_reset.md) `mines.reset`
+- [/mines set](docs-commands/prison_docs_command_31_mines_set.md) `mines.admin`
+- [/mines stats](docs-commands/prison_docs_command_32_mines_stats.md) `mines.stats`
+- [/mines tp \[mineName\] ](docs-commands/prison_docs_command_33_mines_tp.md) `mines.tp` `mines.tp.[mineName]`
+- [/mines wand](docs-commands/prison_docs_command_34_mines_wand.md) `mines.wand`
+- [/mines whereami](docs-commands/prison_docs_command_35_mines_whereami.md) `mines.whereami`
 
 **MORE COMMANDS: _Guidebook TO-DO_** (Work-In-Progress)
 
-- [/sellall](docs-commands/prison_docs_command_10_sellall.md)
-- [/prisonmanager](docs-commands/prison_docs_command_36_prisonmanager.md)
-- [/prestiges](docs-commands/prison_docs_command_37_prestiges.md)
-- [/prestige](docs-commands/prison_docs_command_38_prestige.md)
-- [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md)
-- [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md)
+- [/sellall](docs-commands/prison_docs_command_10_sellall.md) `prison.admin` `none for GUI`
+- [/prisonmanager](docs-commands/prison_docs_command_36_prisonmanager.md) `prison.admin for Admin GUI` `none for Players GUIs`
+- [/prestiges](docs-commands/prison_docs_command_37_prestiges.md) `none`
+- [/prestige](docs-commands/prison_docs_command_38_prestige.md) `ranks.user` `ranks.rankup.prestiges`
+- [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md) `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
+- [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md) `ranks.user` `ranks.rankup.[ladderName]`
 
 
 
