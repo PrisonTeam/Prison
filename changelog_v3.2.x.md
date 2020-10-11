@@ -9,7 +9,15 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.4 - 2020-10-08
+## tag v3.2.2-alpha.5 - 2020-10-11
+
+
+
+* **v3.2.2-alpha.5 - 2020-10-11**
+
+
+* **Cleaned up and standardized log levels.**
+Added PLAIN for use with mine resets, and DEBUG too.  Eliminated redundancies.
 
 
 * **tag v3.2.2-alpha.4 - 2020-10-08**
