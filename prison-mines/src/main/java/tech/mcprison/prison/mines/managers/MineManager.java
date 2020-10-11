@@ -66,17 +66,73 @@ public class MineManager
     
     private boolean mineStats = false;
 
-	
+	/**
+	 * <p>These sort orders control how the mines are sorted, and which ones 
+	 * are omitted from the result's included list of mines.
+	 * </p>
+	 * 
+	 * <p>The type invalid is used to indicate that String value could not be
+	 * converted to a MineSortOrder when using the fromString() function.
+	 * </p>
+	 * 
+	 * <p>There are three primary sort orders: sortOrder, alpha, and active.
+	 * Those primary three excludes any mine that has a sortOrder of -1.
+	 * Each of these has a counter sort type that includes the excluded
+	 * mines, and are: xSortOrder, xAplha, and xActive.
+	 * </p>
+	 * 
+	 *
+	 */
 	public enum MineSortOrder {
 
+		/**
+		 * The sort order is based upon the mine's sortOrder field.  If more than
+		 * one mine exists within a sortOrder, then they will be sub-sorted by
+		 * alphabetical order. Mines are excluded if they have a sortOrder of -1, 
+		 * but are placed within the exclude results set and they are sub-sorted 
+		 * alphabetically.
+		 */
 		sortOrder,
+		
+		/**
+		 * All mines are sorted by alphabetical order. Mines are excluded if they 
+		 * have a sortOrder of -1, but are placed within the exclude results set 
+		 * and they are sub-sorted alphabetically.
+		 */
 		alpha,
+		
+		/** 
+		 * This provides a list of mines with the most active mines sorted to the
+		 * top of the list.
+		 * 
+		 * All mines are sorted alphabetically, with the most active mines being
+		 * placed at the very top of the list. The value of totalBlocksMined is 
+		 * used to order the mines.  The value of totalBlocksMined resets to zero
+		 * upon server restart.  So this provides the most active mines 
+		 * since the server started. Mines are excluded if they have a 
+		 * sortOrder of -1, but are placed within the exclude results set and 
+		 * they are sub-sorted alphabetically.
+		 */
 		active,
 		
+		/**
+		 * Same as sortOrder but ignores excluded mines.
+		 */
 		xSortOrder(true),
+		
+		/**
+		 * Same as alpha but ignores excluded mines.
+		 */
 		xAlpha(true),
+		/**
+		 * Same as active but ignores excluded mines.
+		 */
 		xActive(true),
 		
+		/**
+		 * Not a valid sort order, but is used within the fromString to indicate
+		 * that the parameter sortOrder is invalid.
+		 */
 		invalid;
 		
 		private final boolean excluded;
@@ -109,6 +165,12 @@ public class MineManager
 			return results;
 		}
 		
+		/**
+		 * Returns a space separated list of available sort orders, omitting
+		 * invalid.
+		 * 
+		 * @return
+		 */
 		static String availableSortOrders() {
 			StringBuilder sb = new StringBuilder();
 			

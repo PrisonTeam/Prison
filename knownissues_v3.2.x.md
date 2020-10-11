@@ -7,7 +7,9 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Beta v3.2.1
+# To Do Items - During Beta v3.2.2
+
+
 
 
 * **Rename Mines**

@@ -12,6 +12,11 @@ that you need.
 ## tag v3.2.2-alpha.5 - 2020-10-11
 
 
+* **New Feature!! Added the first Prison API components**
+Started to add some api end points to make it easier to access some basic internals
+without having to figure out how to conform to prison's restrictions.
+
+
 * **Continuing work on linking mines and ranks...**
 Mines and ranks are now being linked together upon server startup. 
 Not finished.  There are still items to be added, like the mine and rank commands to work with adding and removing ranks and mines.
