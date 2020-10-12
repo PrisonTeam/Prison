@@ -9,7 +9,11 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.5 - 2020-10-11
+## tag v3.2.2-alpha.5 - 2020-10-12
+
+
+
+* **Upgrade XSeries from v7.2.1 to v7.5.4**
 
 
 * **New Feature!! Added the first Prison API components**
