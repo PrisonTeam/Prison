@@ -878,7 +878,17 @@ public enum BlockType {
 //	SPRUCE_WOOD_113( "spruce_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
 //	BIRCH_WOOD_113( "birch_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
 //	JUNGLE_WOOD_113( "jungle_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	
+//  DEAD_TUBE_CORAL_BLOCK_113 ( "dead_tube_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  TUBE_CORAL_BLOCK_113 ( "tube_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  DEAD_BRAIN_CORAL_BLOCK_113 ( "dead_brain_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  BRAIN_CORAL_BLOCK_113 ( "brain_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  DEAD_BUBBLE_CORAL_BLOCK_113 ( "dead_bubble_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  BUBBLE_CORAL_BLOCK_113 ( "bubble_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  DEAD_HORN_CORAL_BLOCK_113 ( "dead_horn_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  HORN_CORAL_BLOCK_113 ( "horn_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
+//  DEAD_FIRE_CORAL_BLOCK_113( "dead_fire_coral_block", MaterialType.Block, MaterialVersion.v1_13 ),
+//  FIRE_CORAL_BLOCK_113( "fire_coral_block", MaterialType.Block, MaterialVersion.v1_13 ),
+//	Reminder: Add Terracotta blocks too in the future
 	
 	
 	;
