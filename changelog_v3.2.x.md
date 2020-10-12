@@ -11,6 +11,10 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-10-12
 
+* **New Features! Added 48 v1.12 blocks and 44 v1.13 blocks!**
+V1.12 blocks: 16 colored glazed terracotta, 16 colored concrete, 16 colored concrete powder.
+v1.13 blocks: 10 coral types, 10 coral block types, 10 coral fan types, and 10 coral wall fan types, cave_air, void_air, blue_ice, and bubble_column.
+
 
 
 * **Upgrade XSeries from v7.2.1 to v7.5.4**

@@ -760,7 +760,132 @@ public enum BlockType {
 	DISC_11( 2266, "minecraft:record_11", 0 ),
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
+	
 
+	// Minecraft v1.12.x blocks:
+	
+	WHITE_GLAZED_TERRACOTTA( "minecraft:white_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	ORANGE_GLAZED_TERRACOTTA( "minecraft:orange_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	MAGENTA_GLAZED_TERRACOTTA( "minecraft:magenta_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_BLUE_GLAZED_TERRACOTTA( "minecraft:light_blue_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	YELLOW_GLAZED_TERRACOTTA( "minecraft:yellow_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+
+	LIME_GLAZED_TERRACOTTA( "minecraft:lime_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	PINK_GLAZED_TERRACOTTA( "minecraft:pink_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GRAY_GLAZED_TERRACOTTA( "minecraft:gray_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_GRAY_GLAZED_TERRACOTTA( "minecraft:light_gray_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	CYAN_GLAZED_TERRACOTTA( "minecraft:cyan_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	PURPLE_GLAZED_TERRACOTTA( "minecraft:purple_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLUE_GLAZED_TERRACOTTA( "minecraft:blue_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BROWN_GLAZED_TERRACOTTA( "minecraft:brown_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GREEN_GLAZED_TERRACOTTA( "minecraft:green_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	RED_GLAZED_TERRACOTTA( "minecraft:red_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLACK_GLAZED_TERRACOTTA( "minecraft:black_glazed_terracotta", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	
+	WHITE_CONCRETE( "minecraft:white_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	ORANGE_CONCRETE( "minecraft:orange_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	MAGENTA_CONCRETE( "minecraft:magenta_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_BLUE_CONCRETE( "minecraft:light_blue_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	YELLOW_CONCRETE( "minecraft:yellow_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	LIME_CONCRETE( "minecraft:lime_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	PINK_CONCRETE( "minecraft:pink_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GRAY_CONCRETE( "minecraft:gray_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_GRAY_CONCRETE( "minecraft:light_gray_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	CYAN_CONCRETE( "minecraft:cyan_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	PURPLE_CONCRETE( "minecraft:purple_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLUE_CONCRETE( "minecraft:blue_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BROWN_CONCRETE( "minecraft:brown_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GREEN_CONCRETE( "minecraft:green_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	RED_CONCRETE( "minecraft:red_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLACK_CONCRETE( "minecraft:black_concrete", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	
+	WHITE_CONCRETE_POWDER( "minecraft:white_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	ORANGE_CONCRETE_POWDER( "minecraft:orange_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	MAGENTA_CONCRETE_POWDER( "minecraft:magenta_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_BLUE_CONCRETE_POWDER( "minecraft:light_blue_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	YELLOW_CONCRETE_POWDER( "minecraft:yellow_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	LIME_CONCRETE_POWDER( "minecraft:lime_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	PINK_CONCRETE_POWDER( "minecraft:pink_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GRAY_CONCRETE_POWDER( "minecraft:gray_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	LIGHT_GRAY_CONCRETE_POWDER( "minecraft:light_gray_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	CYAN_CONCRETE_POWDER( "minecraft:cyan_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	PURPLE_CONCRETE_POWDER( "minecraft:purple_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLUE_CONCRETE_POWDER( "minecraft:blue_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BROWN_CONCRETE_POWDER( "minecraft:brown_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	GREEN_CONCRETE_POWDER( "minecraft:green_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	RED_CONCRETE_POWDER( "minecraft:red_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	BLACK_CONCRETE_POWDER( "minecraft:black_concrete_powder", MaterialType.BLOCK, MaterialVersion.v1_12 ),
+	
+	
+	
+	
+	// Minecraft v1.13.x blocks:
+
+	CAVE_AIR( "minecraft:cave_air", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	VOID_AIR( "minecraft:void_air", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+
+	BLUE_ICE( "minecraft:blue_ice", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BUBBLE_COLUMN( "minecraft:bubble_column", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	TUBE_CORAL( "minecraft:tube_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BRAIN_CORAL( "minecraft:brain_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BUBBLE_CORAL( "minecraft:bubble_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	FIRE_CORAL( "minecraft:fire_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	HORN_CORAL( "minecraft:horn_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+
+	DEAD_TUBE_CORAL( "minecraft:dead_tube_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BRAIN_CORAL( "minecraft:dead_brain_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BUBBLE_CORAL( "minecraft:dead_bubble_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_FIRE_CORAL( "minecraft:dead_fire_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_HORN_CORAL( "minecraft:dead_horn_coral", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	
+	TUBE_CORAL_BLOCK( "minecraft:tube_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BRAIN_CORAL_BLOCK( "minecraft:brain_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BUBBLE_CORAL_BLOCK( "minecraft:bubble_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	FIRE_CORAL_BLOCK( "minecraft:fire_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	HORN_CORAL_BLOCK( "minecraft:horn_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	DEAD_TUBE_CORAL_BLOCK( "minecraft:dead_tube_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BRAIN_CORAL_BLOCK( "minecraft:dead_brain_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BUBBLE_CORAL_BLOCK( "minecraft:dead_bubble_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_FIRE_CORAL_BLOCK( "minecraft:dead_fire_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_HORN_CORAL_BLOCK( "minecraft:dead_horn_coral_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+
+	
+	TUBE_CORAL_FAN( "minecraft:tube_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BRAIN_CORAL_FAN( "minecraft:brain_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BUBBLE_CORAL_FAN( "minecraft:bubble_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	FIRE_CORAL_FAN( "minecraft:fire_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	HORN_CORAL_FAN( "minecraft:horn_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+
+	DEAD_TUBE_CORAL_FAN( "minecraft:dead_tube_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BRAIN_CORAL_FAN( "minecraft:dead_brain_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BUBBLE_CORAL_FAN( "minecraft:dead_bubble_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_FIRE_CORAL_FAN( "minecraft:dead_fire_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_HORN_CORAL_FAN( "minecraft:dead_horn_coral_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+
+	TUBE_CORAL_WALL_FAN( "minecraft:tube_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BRAIN_CORAL_WALL_FAN( "minecraft:brain_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BUBBLE_CORAL_WALL_FAN( "minecraft:bubble_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	FIRE_CORAL_WALL_FAN( "minecraft:fire_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	HORN_CORAL_WALL_FAN( "minecraft:horn_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	DEAD_TUBE_CORAL_WALL_FAN( "minecraft:dead_tube_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BRAIN_CORAL_WALL_FAN( "minecraft:dead_brain_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_BUBBLE_CORAL_WALL_FAN( "minecraft:dead_bubble_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_FIRE_CORAL_WALL_FAN( "minecraft:dead_fire_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DEAD_HORN_CORAL_WALL_FAN( "minecraft:dead_horn_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	
 	
 	
 	// Minecraft v1.14.x blocks:
@@ -854,42 +979,7 @@ public enum BlockType {
 	
 	
 	
-	
-	
-//	Testing to see if we can inject 1.13 block types: :( nope... does not work.
-//  Commenting out for now, will revisit later.
-//
-//	AIR_113( "air", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	
-//	QUARTZ_113( "quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	NETHER_QUARTZ_ORE_113( "nether_quartz_ore", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	QUARTZ_BLOCK_113( "quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	CHISELED_QUARTZ_BLOCK_113( "chiseled_quartz_block", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	QUARTZ_PILLAR_113( "quartz_pillar", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	QUARTZ_SLAB_113( "quartz_slab", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	SMOOTH_QUARTZ_113( "smooth_quartz", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//
-//	OAK_LOG_113( "oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	SPRUCE_LOG_113( "spruce_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	BIRCH_LOG_113( "birch_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	JUNGLE_LOG_113( "jungle_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	
-//	OAK_WOOD_113( "oak_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	SPRUCE_WOOD_113( "spruce_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	BIRCH_WOOD_113( "birch_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//	JUNGLE_WOOD_113( "jungle_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  DEAD_TUBE_CORAL_BLOCK_113 ( "dead_tube_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  TUBE_CORAL_BLOCK_113 ( "tube_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  DEAD_BRAIN_CORAL_BLOCK_113 ( "dead_brain_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  BRAIN_CORAL_BLOCK_113 ( "brain_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  DEAD_BUBBLE_CORAL_BLOCK_113 ( "dead_bubble_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  BUBBLE_CORAL_BLOCK_113 ( "bubble_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  DEAD_HORN_CORAL_BLOCK_113 ( "dead_horn_coral_block"	, MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  HORN_CORAL_BLOCK_113 ( "horn_coral_block" , MaterialType.BLOCK, MaterialVersion.v1_13 ),
-//  DEAD_FIRE_CORAL_BLOCK_113( "dead_fire_coral_block", MaterialType.Block, MaterialVersion.v1_13 ),
-//  FIRE_CORAL_BLOCK_113( "fire_coral_block", MaterialType.Block, MaterialVersion.v1_13 ),
-//	Reminder: Add Terracotta blocks too in the future
-	
+
 	
 	;
     // @formatter:on
