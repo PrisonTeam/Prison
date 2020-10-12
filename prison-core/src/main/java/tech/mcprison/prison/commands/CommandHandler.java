@@ -336,6 +336,10 @@ public class CommandHandler {
                 .sendTo(sender, LogLevel.ERROR);
             return true;
         }
+        
+//        Output.get().logError( "### #### CommandHandler.onCommand : 1  " +
+//        		"label = " + label + "  args.length = " + 
+//        			(args == null ? "null" : args.length) );
 
         rootCommand.execute(sender, args);
 

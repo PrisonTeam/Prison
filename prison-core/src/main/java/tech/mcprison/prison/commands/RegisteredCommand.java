@@ -99,6 +99,12 @@ public class RegisteredCommand {
 
             RegisteredCommand command = suffixesByName.get(suffixLabel);
             if (command == null) {
+                
+//                Output.get().logError( "### #### RegisteredCommands.execute : 1  " +
+//                		"if(command == null) ::  args.length = " + 
+//                			(args == null ? "null" : args.length) +
+//                			"  args[0] == " + args[0]);
+
                 executeMethod(sender, args);
             } else {
                 String[] nargs = new String[args.length - 1];
