@@ -4,6 +4,7 @@ public enum MaterialVersion
 {
 	v1_8,
 	
+	v1_12,
 	v1_13,
 	
 	v1_14,
