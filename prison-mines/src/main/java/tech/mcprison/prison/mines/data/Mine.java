@@ -476,9 +476,11 @@ public class Mine
         ret.put( "usePagingOnReset", isUsePagingOnReset() );
         
         
-        String rank = getRank().getModuleElementType() + "," + getRank().getName() + "," + 
-        				getRank().getId() + "," + getRank().getTag();
-        ret.put("rank", rank );
+        if ( getRank() != null ) {
+        	String rank = getRank().getModuleElementType() + "," + getRank().getName() + "," + 
+        			getRank().getId() + "," + getRank().getTag();
+        	ret.put("rank", rank );
+        }
 
         
         return ret;
