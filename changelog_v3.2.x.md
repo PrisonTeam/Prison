@@ -9,7 +9,19 @@ that you need.
 
 
 
-## tag v3.2.2-alpha.5 - 2020-10-12
+## tag v3.2.2-alpha.5 - 2020-10-13
+
+
+* **New Feature!! Added new 20 new blocks to the old block model.**
+  v1.10.x:  structure_block, magma_block, bone_block
+  v1.11.x: shulker_box - plus the 16 other colors that are available.
+  
+
+* **Bug fix: Prevent a NPE when no rank is assigned to the mine.**
+
+
+* **v3.2.2-alpha.5c - 2020-10-13** Important bug fix.  Need to bump alpha version soon.
+
 
 * **New Features! Added 48 v1.12 blocks and 44 v1.13 blocks!**
 V1.12 blocks: 16 colored glazed terracotta, 16 colored concrete, 16 colored concrete powder.

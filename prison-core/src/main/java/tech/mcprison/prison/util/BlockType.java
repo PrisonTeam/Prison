@@ -761,6 +761,37 @@ public enum BlockType {
 	WAIT_DISC( 2267, "minecraft:record_wait", 0 ),
 	
 	
+	// Minecraft v1.10.x blocks:
+	
+	STRUCTURE_VOID( "minecraft:structure_void", MaterialType.BLOCK, MaterialVersion.v1_10 ),
+	MAGMA_BLOCK( "minecraft:magma_block", MaterialType.BLOCK, MaterialVersion.v1_10 ),
+	BONE_BLOCK( "minecraft:bone_block", MaterialType.BLOCK, MaterialVersion.v1_10 ),
+
+	
+	// Minecraft v1.11.x blocks:
+	
+	SHULKER_BOX( "minecraft:shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+
+	WHITE_SHULKER_BOX( "minecraft:white_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	ORANGE_SHULKER_BOX( "minecraft:orange_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	MAGENTA_SHULKER_BOX( "minecraft:magenta_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	LIGHT_BLUE_SHULKER_BOX( "minecraft:light_blue_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	YELLOW_SHULKER_BOX( "minecraft:yellow_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+
+	LIME_SHULKER_BOX( "minecraft:lime_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	PINK_SHULKER_BOX( "minecraft:pink_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	GRAY_SHULKER_BOX( "minecraft:gray_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	LIGHT_GRAY_SHULKER_BOX( "minecraft:light_gray_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	CYAN_SHULKER_BOX( "minecraft:cyan_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	
+	PURPLE_SHULKER_BOX( "minecraft:purple_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	BLUE_SHULKER_BOX( "minecraft:blue_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	BROWN_SHULKER_BOX( "minecraft:brown_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	GREEN_SHULKER_BOX( "minecraft:green_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	RED_SHULKER_BOX( "minecraft:red_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+	BLACK_SHULKER_BOX( "minecraft:black_shulker_box", MaterialType.BLOCK, MaterialVersion.v1_11 ),
+
+	
 
 	// Minecraft v1.12.x blocks:
 	
@@ -945,8 +976,8 @@ public enum BlockType {
 	CHISELED_POLISHED_BLACKSTONE( "minecraft:chiseled_polished_blackstone", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	
 	
-	NETHER_BRICKS( "minecraft:nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
-	RED_NETHER_BRICKS( "minecraft:red_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	NETHER_BRICKS( "minecraft:nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_8 ),
+	RED_NETHER_BRICKS( "minecraft:red_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_10 ),
 	CRACKED_NETHER_BRICKS( "minecraft:cracked_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	CHISELED_NETHER_BRICKS( "minecraft:chiseled_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	
