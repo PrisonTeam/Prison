@@ -45,13 +45,9 @@ public class RanksChatSetup {
 
         for ( char rankName = 'A'; rankName <= 'Z'; rankName++) {
 
-            Bukkit.dispatchCommand(sender, "ranks create " + rankName + " " + price + " default &7[&" + colorID + "" + rankName + "&7]&f");
+            Bukkit.dispatchCommand(sender, "ranks create " + rankName + " " + price + " default &7[&" + ((colorID++ % 9) + 1) + "" + rankName + "&7]&f");
             if (permissionManagerCommand != null) {
                 Bukkit.dispatchCommand(sender, "ranks command add " + rankName + " " + permissionManagerCommand + rankName);
-            }
-
-            if (colorID < 9){
-                colorID++;
             }
 
             if (price == 0){
@@ -59,12 +55,8 @@ public class RanksChatSetup {
             } else {
                 price = price * 1.5;
             }
-
-            if (colorID > 9) colorID = 1;
         }
 
         sender.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.SuccessRanksSetup")));
-
     }
-
 }
