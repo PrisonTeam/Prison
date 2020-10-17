@@ -30,6 +30,7 @@ public abstract class MineData
 	private String tag;
 	
 	private boolean enabled = false;
+	private boolean virtual = false;
 	
 	/**
 	 * A sortOrder of -1 means it should be excluded from most mine listings.
@@ -114,6 +115,7 @@ public abstract class MineData
     	this.prisonBlocks = new ArrayList<>();
     	
     	this.enabled = false;
+    	this.virtual = false;
     	
     	/**
     	 * Mines are sorted based upon the sortOrder, ascending.  If a mine is given
@@ -159,12 +161,31 @@ public abstract class MineData
 	
   
     public boolean isEnabled() {
-		return enabled;
+		return !isVirtual() && enabled;
 	}
 	public void setEnabled( boolean enabled ) {
 		this.enabled = enabled;
 	}
 	
+	
+	/**
+	 * <p>A virtual mine does not have any coordinates defined for either the
+	 * mine itself, or the spawn point.  A virtual mine can never be enabled.
+	 * </p>
+	 * 
+	 * <p>A virtual mine can be potentially useful to be pre-created and auto 
+	 * configured.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isVirtual() {
+		return virtual;
+	}
+	public void setVirtual( boolean virtual ) {
+		this.virtual = virtual;
+	}
+
 	public ModuleElementType getModuleElementType() {
 		return elementType;
 	}
@@ -215,10 +236,17 @@ public abstract class MineData
     }
     
 	public String getWorldName() {
+		if ( isVirtual() ) {
+			return "Virtually-Undefined";
+		}
 		return worldName;
 	}
 	public void setWorldName( String worldName ) {
-		this.worldName = worldName;
+		// cannot set the world name if it is a virtual mine:
+		if ( !isVirtual() ) {
+			this.worldName = worldName;
+		}
+		
 	}
 	
 	/**
@@ -236,7 +264,7 @@ public abstract class MineData
 	 * @return
 	 */
 	public Optional<World> getWorld() {
-		return Optional.ofNullable( getBounds().getMin().getWorld() );
+		return Optional.ofNullable( isVirtual() ? null : getBounds().getMin().getWorld() );
 //        return Prison.get().getPlatform().getWorld(worldName);
     }
 	
@@ -328,10 +356,16 @@ public abstract class MineData
     }
 
     public boolean isInMine(Location location) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
         return getBounds().within(location);
     }
     
     public boolean isInMine(BlockType blockType) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
         for (Block block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;
@@ -341,6 +375,9 @@ public abstract class MineData
     }
     
     public boolean isInMine(PrisonBlock blockType) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
     	for (PrisonBlock block : getPrisonBlocks()) {
     		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
     			return true;
@@ -350,6 +387,9 @@ public abstract class MineData
     }
 
     public double area() {
+    	if ( isVirtual() ) {
+    		return 0;
+    	}
         return getBounds().getArea();
     }
 
@@ -371,8 +411,11 @@ public abstract class MineData
      * @return this instance for chaining
      */
     public void setSpawn(Location location) {
-    	hasSpawn = (location != null);
-        spawn = location;
+    	// cannot set spawn when virtual:
+    	if ( !isVirtual() ) {
+    		hasSpawn = (location != null);
+    		spawn = location;
+    	}
     }
     
 	public boolean isHasSpawn() {

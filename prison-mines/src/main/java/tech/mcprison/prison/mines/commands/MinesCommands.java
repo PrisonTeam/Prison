@@ -79,11 +79,28 @@ public class MinesCommands {
         return true;
     }
 
-    @Command(identifier = "mines create", description = "Creates a new mine.", 
+    @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
+    		@Arg(name = "virtual", description = "Create a virtual mine in name only; no physical location. " +
+    				"This allows the mine to be predefined before specifying the coordinates. Use [virtual]. ", def = "") 
+    					String virtualMine,
     		@Wildcard(join=true)
-        @Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName) {
+    		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName
+    		) {
+    	boolean virtual = false;
+    	
+    	if ( virtualMine != null && virtualMine.trim().length() > 0 ) {
+    		if ( "virtual".equalsIgnoreCase( virtualMine.trim()) ) {
+    			virtual = true;
+    		}
+    		else {
+    			// Combine virtualMine to the beginning of the mineName if it exists.  It was not
+    			// intended to be the virtualMine parameter. Yes, adding a space will be an error, but
+    			// they added it any way.
+    			mineName = virtualMine + (mineName == null ? "" : " " + mineName.trim() );
+    		}
+    	}
 
         if ( mineName == null || mineName.contains( " " ) || mineName.trim().length() == 0 ) {
         	sender.sendMessage( "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
@@ -93,37 +110,51 @@ public class MinesCommands {
 
     	Player player = getPlayer( sender );
     	
-    	if (player == null || !player.isOnline()) {
+    	if ( !virtual && (player == null || !player.isOnline())) {
     		sender.sendMessage( "&3You must be a player in the game to run this command." );
     		return;
     	}
 
     	PrisonMines pMines = PrisonMines.getInstance();
-        Selection selection = Prison.get().getSelectionManager().getSelection(player);
-        if (!selection.isComplete()) {
-        	pMines.getMinesMessages().getLocalizable("select_bounds")
-                .sendTo(sender, LogLevel.ERROR);
-            return;
-        }
+    	
+    	if (PrisonMines.getInstance().getMine(mineName) != null) {
+    		pMines.getMinesMessages().getLocalizable("mine_exists")
+    		.sendTo(sender, LogLevel.ERROR);
+    		return;
+    	}
 
-        if (!selection.getMin().getWorld().getName()
-            .equalsIgnoreCase(selection.getMax().getWorld().getName())) {
-        	pMines.getMinesMessages().getLocalizable("world_diff")
-                .sendTo(sender, LogLevel.ERROR);
-            return;
-        }
+    	Selection selection = null;
 
-        if (PrisonMines.getInstance().getMine(mineName) != null) {
-        	pMines.getMinesMessages().getLocalizable("mine_exists")
-                .sendTo(sender, LogLevel.ERROR);
-            return;
-        }
+    	// virtual mine will skip the setting of the boundaries, but it will make
+    	// the mine unusable.
+    	if ( !virtual ) {
+    	
+    		selection = Prison.get().getSelectionManager().getSelection(player);
+    		if (!selection.isComplete()) {
+    			pMines.getMinesMessages().getLocalizable("select_bounds")
+    			.sendTo(sender, LogLevel.ERROR);
+    			return;
+    		}
+    		
+    		if (!selection.getMin().getWorld().getName()
+    				.equalsIgnoreCase(selection.getMax().getWorld().getName())) {
+    			pMines.getMinesMessages().getLocalizable("world_diff")
+    			.sendTo(sender, LogLevel.ERROR);
+    			return;
+    		}
+    	}
+    	
 
         setLastMineReferenced(mineName);
         
         Mine mine = new Mine(mineName, selection);
         pMines.getMineManager().add(mine);
         pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
+        
+        if ( mine.isVirtual() ) {
+        	player.sendMessage( "You just created a virtual mine. You can configure it but you will not " +  
+        					"be able to use it until you use the command &7/mines set area");
+        }
         
         // Delete the selection:
         Prison.get().getSelectionManager().clearSelection((Player) sender);
@@ -190,6 +221,12 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine mine = pMines.getMine(mineName);
 
+        
+        if ( !mine.isVirtual() ) {
+        	sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+        	return;
+        }
+        
         if ( !mine.isEnabled() ) {
         	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
         	return;
@@ -444,10 +481,11 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
 
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+        // you should be able to configure virtual and disabled mines
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
         
         if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
         
@@ -588,11 +626,6 @@ public class MinesCommands {
         
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
-        
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
         
         BlockType blockType = BlockType.getBlock(block);
         if (blockType == null) {
@@ -765,10 +798,11 @@ public class MinesCommands {
         	
         	Mine mine = pMines.getMine(mineName);
         	
-            if ( !mine.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+        	// should be able to delete disabled and virtual mines:
+//            if ( !mine.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
         	
         	// Remove from the manager:
         	pMines.getMineManager().removeMine(mine);
@@ -884,6 +918,10 @@ public class MinesCommands {
         // Display Mine Info only:
         if ( cmdPageData.getCurPage() == 1 ) {
         	
+        	if ( !m.isVirtual() ) {
+        		chatDisplay.text("&cWarning!! This mine is &lVirtual&r&c!! &7Use &3/mines set area &7to enable." );
+        	}
+        	
         	if ( !m.isEnabled() ) {
         		chatDisplay.text("&cWarning!! This mine is &lDISABLED&r&c!!" );
         	}
@@ -892,9 +930,11 @@ public class MinesCommands {
         	String noTagMessag = String.format( "&7(not set) &3Will default to mine name if used." );
         	chatDisplay.text("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
         	
+        	if ( !m.isVirtual() ) {
+        		String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
+        		chatDisplay.text("&3World: &7%s", worldName);
+        	}
         	
-        	String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
-        	chatDisplay.text("&3World: &7%s", worldName);
         	
         	if ( m.getRank() == null ) {
         		chatDisplay.text( "&3No rank is linked to this mine." );
@@ -904,29 +944,29 @@ public class MinesCommands {
         	}
         	
         	
-        	String minCoords = m.getBounds().getMin().toBlockCoordinates();
-        	String maxCoords = m.getBounds().getMax().toBlockCoordinates();
-        	chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
-        	Player player = getPlayer( sender );
-        	
-        	chatDisplay.text("&3Center: &7%s   &3%s &7%s", 
-        			m.getBounds().getCenter().toBlockCoordinates(), 
-        			(player == null ? "" : "Distance:"),
-        			(player == null ? "" : fFmt.format( m.getBounds().getDistance3d( player.getLocation() ) ))
-        			);
-        	if ( mMan.isMineStats() ) {
-        	}
-        	
-        	
-        	String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        	chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
-        	
-        	if ( mMan.isMineStats() ) {
-        		RowComponent rowStats = new RowComponent();
-        		rowStats.addTextComponent( "  -- &7 Stats :: " );
-        		rowStats.addTextComponent( m.statsMessage() );
+        	if ( !m.isVirtual() ) {
+        		String minCoords = m.getBounds().getMin().toBlockCoordinates();
+        		String maxCoords = m.getBounds().getMax().toBlockCoordinates();
+        		chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
+        		Player player = getPlayer( sender );
         		
-        		chatDisplay.addComponent(rowStats);
+        		chatDisplay.text("&3Center: &7%s   &3%s &7%s", 
+        				m.getBounds().getCenter().toBlockCoordinates(), 
+        				(player == null ? "" : "Distance:"),
+        				(player == null ? "" : fFmt.format( m.getBounds().getDistance3d( player.getLocation() ) ))
+        				);
+        		
+        		
+        		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
+        		chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
+        		
+        		if ( mMan.isMineStats() ) {
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Stats :: " );
+        			rowStats.addTextComponent( m.statsMessage() );
+        			
+        			chatDisplay.addComponent(rowStats);
+        		}
         	}
         	
         	
@@ -953,7 +993,7 @@ public class MinesCommands {
         		chatDisplay.addComponent( row );
         	}
         	
-        	{
+        	if ( !m.isVirtual() ) {
         		RowComponent row = new RowComponent();
         		
         		long targetResetTime = m.getTargetResetTime();
@@ -1182,6 +1222,13 @@ public class MinesCommands {
         
         Mine m = pMines.getMine(mineName);
         
+        
+        if ( !m.isVirtual() ) {
+        	sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+        	return;
+        }
+        
+
         if ( !m.isEnabled() ) {
         	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
         	return;
@@ -1336,6 +1383,14 @@ public class MinesCommands {
 
             	
             	
+            	if ( m.isVirtual() ) {
+            		row.addFancy(  
+            				new FancyMessage( "&cVIRTUAL " )
+            				.command("/mines set area " + m.getName())
+            				.tooltip("&7Click to set the mine's area to make it a real mine. "));
+            	}
+            	
+            	
             	if ( !m.isEnabled() ) {
             		row.addFancy(  
             				new FancyMessage( "&cDISABLED!! " )
@@ -1344,9 +1399,11 @@ public class MinesCommands {
             						"disabled. World may not exist? "));
             	}
             	
-            	row.addFancy( 
-            			new FancyMessage("&eTP ").command("/mines tp " + m.getName())
-            			.tooltip("&7Click to TP to the mine"));
+            	if ( !m.isVirtual() ) {
+            		row.addFancy( 
+            				new FancyMessage("&eTP ").command("/mines tp " + m.getName())
+            				.tooltip("&7Click to TP to the mine"));
+            	}
             	
             	
             	if ( m.isUsePagingOnReset() ) {
@@ -1358,16 +1415,20 @@ public class MinesCommands {
             	
             	row.addTextComponent( "  &3Reset: &7" );
             	
-            	row.addFancy( 
-            			new FancyMessage(dFmt.format(m.getRemainingTimeSec()))
-            			.tooltip( "Estimated time in seconds before the mine resets" ) );
-            	row.addTextComponent( " sec &3(&b" );
+            	if ( !m.isVirtual() ) {
+            		row.addFancy( 
+            				new FancyMessage(dFmt.format(m.getRemainingTimeSec()))
+            				.tooltip( "Estimated time in seconds before the mine resets" ) );
+            		row.addTextComponent( " sec &3(&b" );
+            	}
+            	
             	row.addFancy( 
             			new FancyMessage(dFmt.format(m.getResetTime()))
             			.tooltip( "Reset time in seconds" ) );
             	row.addTextComponent( " sec&3)&b" );
             	
-            	if ( player != null && m.getBounds().withinSameWorld( player.getLocation() ) ) {
+            	if ( !m.isVirtual() && player != null && 
+            			m.getBounds().withinSameWorld( player.getLocation() ) ) {
             		
             		row.addTextComponent( "  &3Dist: &7");
             		row.addFancy( 
@@ -1379,35 +1440,35 @@ public class MinesCommands {
             	builder.add(row.getFancy());
             	
             	
-            	
-            	RowComponent row2 = new RowComponent();
+            	if ( !m.isVirtual() ) {
+            		RowComponent row2 = new RowComponent();
 //            	row2.addTextComponent( "            &3Rem: " );
-            	
-            	// Right justify the total blocks mined, with 1000's separators:
-            	String blocksMined = "           " + dFmt.format( m.getTotalBlocksMined() );
-            	blocksMined = blocksMined.substring( blocksMined.length() - 10);
-            	
-            	row2.addFancy( 
-            			new FancyMessage( String.format("  %s  &3Rem: ", blocksMined)).
-            			tooltip( "Blocks mined" ) );
-            	
-            	row2.addFancy( 
-            			new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
-            			tooltip( "Percent Blocks Remaining" ) );
-            	
-            	row2.addTextComponent( "%%  &3RCnt: &7" );
-            	
-            	row2.addFancy( 
-            			new FancyMessage(dFmt.format(m.getResetCount())).
-            			tooltip( "Times the mine was reset." ) );
-            	
-            	
-            	row2.addTextComponent( " &3 Vol: &7" );
-            	row2.addFancy( 
-            			new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
-            			tooltip( "Volume in Blocks" ) );
-            	
-            	
+            		
+            		// Right justify the total blocks mined, with 1000's separators:
+            		String blocksMined = "           " + dFmt.format( m.getTotalBlocksMined() );
+            		blocksMined = blocksMined.substring( blocksMined.length() - 10);
+            		
+            		row2.addFancy( 
+            				new FancyMessage( String.format("  %s  &3Rem: ", blocksMined)).
+            				tooltip( "Blocks mined" ) );
+            		
+            		row2.addFancy( 
+            				new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
+            				tooltip( "Percent Blocks Remaining" ) );
+            		
+            		row2.addTextComponent( "%%  &3RCnt: &7" );
+            		
+            		row2.addFancy( 
+            				new FancyMessage(dFmt.format(m.getResetCount())).
+            				tooltip( "Times the mine was reset." ) );
+            		
+            		
+            		row2.addTextComponent( " &3 Vol: &7" );
+            		row2.addFancy( 
+            				new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
+            				tooltip( "Volume in Blocks" ) );
+            		
+            		
 //       	 String noteMode = m.getNotificationMode().name() + 
 //       			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
 //       					 " " + dFmt.format( m.getNotificationRadius() ) : "" );
@@ -1420,11 +1481,14 @@ public class MinesCommands {
 //       			 new FancyMessage(m.getBounds().getDimensions()).tooltip( "Size of Mine" ) );
 //       	 
 //       	 row.addTextComponent( "&7 - &b");
-            
-            	builder.add(row2.getFancy());
+            		
+            		builder.add(row2.getFancy());
+            		
+            	}
             	
             	
-            	if ( isMineStatsEnabled ) {
+            	
+            	if ( !m.isVirtual() && isMineStatsEnabled ) {
             		RowComponent rowStats = new RowComponent();
             		
             		rowStats.addTextComponent( "  -- &7 Stats :: " );
@@ -1474,10 +1538,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
             
         	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled );
         	double skipPercent = 80.0d;
@@ -1565,10 +1629,10 @@ public class MinesCommands {
 					PrisonMines pMines = PrisonMines.getInstance();
 					Mine m = pMines.getMine(mineName);
 			        
-			        if ( !m.isEnabled() ) {
-			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-			        	return;
-			        }
+//			        if ( !m.isEnabled() ) {
+//			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//			        	return;
+//			        }
 					
 					m.setResetTime( resetTime );
 					
@@ -1641,10 +1705,10 @@ public class MinesCommands {
     			PrisonMines pMines = PrisonMines.getInstance();
     			Mine m = pMines.getMine(mineName);
     	        
-    	        if ( !m.isEnabled() ) {
-    	        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-    	        	return;
-    	        }
+//    	        if ( !m.isEnabled() ) {
+//    	        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//    	        	return;
+//    	        }
     			
     			m.setZeroBlockResetDelaySec( resetTime );
     			
@@ -1703,10 +1767,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
             
         	double thresholdPercent = 0.0d;
         	
@@ -1775,10 +1839,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
         	
         	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
         	
@@ -1850,10 +1914,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
             
             if ( !action.equalsIgnoreCase( "enable" ) && !action.equalsIgnoreCase( "disable" )) {
             	sender.sendMessage( "&7Invalid value for action: [enable, disable]" );
@@ -1895,10 +1959,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
             
             if ( rankName == null || rankName.trim().length() == 0 ) {
             	sender.sendMessage( "&cRank name is required." );
@@ -1933,10 +1997,10 @@ public class MinesCommands {
     		PrisonMines pMines = PrisonMines.getInstance();
     		Mine m = pMines.getMine(mineName);
     		
-    		if ( !m.isEnabled() ) {
-    			sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-    			return;
-    		}
+//    		if ( !m.isEnabled() ) {
+//    			sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//    			return;
+//    		}
     		
     		
     		if ( m.getRank() == null ) {
@@ -1970,10 +2034,10 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
         
         Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
         
@@ -2021,10 +2085,10 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-            if ( !m.isEnabled() ) {
-            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-            	return;
-            }
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
         	
             if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
             	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
@@ -2092,6 +2156,13 @@ public class MinesCommands {
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine m = pMines.getMine(mineName);
     	
+    	
+        if ( !m.isVirtual() ) {
+        	sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+        	return;
+        }
+        
+    	
     	String minePermission = "mines.tp." + m.getName().toLowerCase();
     	if ( !sender.isOp() &&
     			!sender.hasPermission("mines.tp") && 
@@ -2103,10 +2174,10 @@ public class MinesCommands {
             }
     	
 
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
         
     	if ( sender instanceof Player ) {
     		m.teleportPlayerOut( (Player) sender );
@@ -2155,7 +2226,7 @@ public class MinesCommands {
     	List<Mine> inMine = new ArrayList<>();
     	TreeMap<Integer, Mine> nearMine = new TreeMap<>();
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
-    		if ( mine.getBounds().within( player.getLocation() ) ) {
+    		if ( !mine.isVirtual() && mine.getBounds().within( player.getLocation() ) ) {
     			inMine.add( mine );
     		}
     		
@@ -2302,10 +2373,10 @@ public class MinesCommands {
 //    	MineManager mMan = pMines.getMineManager();
         Mine m = pMines.getMine(mineName);
         
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
         
         if (m.getResetCommands() == null || m.getResetCommands().size() == 0) {
             Output.get().sendInfo(sender, "The mine '%s' contains no commands.", m.getName());
@@ -2358,10 +2429,10 @@ public class MinesCommands {
 //    	MineManager mMan = pMines.getMineManager();
         Mine m = pMines.getMine(mineName);
         
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
 
         if ( command == null || command.trim().length() == 0 ) {
         	sender.sendMessage( 

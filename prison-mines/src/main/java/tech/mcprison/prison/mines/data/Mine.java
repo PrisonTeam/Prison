@@ -67,11 +67,17 @@ public class Mine
     	super();
     	
     	setName(name);
-    	setBounds(selection.asBounds());
-    	
-    	setWorldName( getBounds().getMin().getWorld().getName());
-    	
-    	setEnabled( true );
+    	if ( selection == null ) {
+    		setVirtual( true );
+    	}
+    	else {
+    		
+    		setBounds(selection.asBounds());
+    		
+    		setWorldName( getBounds().getMin().getWorld().getName());
+    		
+    		setEnabled( true );
+    	}
         
         // Kick off the initialize:
         initialize();
@@ -171,10 +177,13 @@ public class Mine
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
         setName((String) document.get("name")); // Mine name:
-        
+
         
         String tag = (String) document.get("tag");
         setTag( tag );
+
+        
+        setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
         
         
         Double sortOrder = (Double) document.get( "sortOrder" );
@@ -183,42 +192,46 @@ public class Mine
         
 		World world = null;
 		
-		if ( worldName == null ) {
-			Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
-					"Contact support on how to fix.",  
-					getName());
+		if ( !isVirtual() ) {
+			if ( worldName == null ) {
+				Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
+						"Contact support on how to fix.",  
+						getName());
+			}
+			
+			Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
+			if (!worldOptional.isPresent()) {
+				MineManager mineMan = PrisonMines.getInstance().getMineManager();
+				
+				// Store this mine and the world in MineManager's unavailableWorld for later
+				// processing and hooking up to the world object. Print an error message upon
+				// the first mine's world not existing.
+				mineMan.addUnavailableWorld( worldName, this );
+				
+				setEnabled( false );
+			}
+			else {
+				world = worldOptional.get();
+				setEnabled( true );
+			}
+
+			//        World world = worldOptional.get();
+			
+			setBounds( new Bounds( 
+					getLocation(document, world, "minX", "minY", "minZ"),
+					getLocation(document, world, "maxX", "maxY", "maxZ")));
+			
+			setHasSpawn((boolean) document.get("hasSpawn"));
+			if (isHasSpawn()) {
+				setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
+			}
+			
 		}
-		
-		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
-        if (!worldOptional.isPresent()) {
-            MineManager mineMan = PrisonMines.getInstance().getMineManager();
-            
-            // Store this mine and the world in MineManager's unavailableWorld for later
-            // processing and hooking up to the world object. Print an error message upon
-            // the first mine's world not existing.
-            mineMan.addUnavailableWorld( worldName, this );
-            
-            setEnabled( false );
-        }
-        else {
-        	world = worldOptional.get();
-        	setEnabled( true );
-        }
         
-//        World world = worldOptional.get();
 
         
         Double resetTimeDouble = (Double) document.get("resetTime");
         setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
-
-        setBounds( new Bounds( 
-        			getLocation(document, world, "minX", "minY", "minZ"),
-        			getLocation(document, world, "maxX", "maxY", "maxZ")));
-        
-        setHasSpawn((boolean) document.get("hasSpawn"));
-        if (isHasSpawn()) {
-        	setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
-        }
 
         
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
@@ -410,6 +423,8 @@ public class Mine
         Document ret = new Document();
         ret.put("world", getWorldName());
         ret.put("name", getName());
+        
+        ret.put( "isVirtual", isVirtual() );
         
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );

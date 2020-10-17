@@ -121,8 +121,11 @@ public abstract class MineReset
 	protected void initialize() {
     	super.initialize();
     	
-    	// Once the mine has been loaded, MUST get a count of all air blocks.
-    	refreshBlockBreakCountUponStartup();
+    	if ( !isVirtual() ) {
+    		
+    		// Once the mine has been loaded, MUST get a count of all air blocks.
+    		refreshBlockBreakCountUponStartup();
+    	}
     }
     
     /**
@@ -162,6 +165,11 @@ public abstract class MineReset
 
 	private void resetSynchonouslyInternal() {
 		try {
+			
+			if ( isVirtual() ) {
+				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+				return;
+			}
 			
 			if ( !isEnabled() ) {
 				Output.get().logError(
@@ -389,6 +397,10 @@ public abstract class MineReset
     private long teleportAllPlayersOut(int targetY) {
     	long start = System.currentTimeMillis();
     	
+    	if ( isVirtual() ) {
+    		return 0;
+    	}
+    	
     	World world = getBounds().getCenter().getWorld();
 
     	if ( isEnabled() && world != null ) {
@@ -432,7 +444,11 @@ public abstract class MineReset
      * @param player
      */
     public void teleportPlayerOut(Player player) {
-		
+    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
 		if ( !isEnabled() ) {
 			player.sendMessage( 
 					String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
@@ -470,7 +486,7 @@ public abstract class MineReset
 	public int getPlayerCount() {
 		int count = 0;
 		
-		if ( isEnabled() ) {
+		if ( !isVirtual() && isEnabled() ) {
 
 			World world = getWorld().get();
 			
@@ -524,6 +540,10 @@ public abstract class MineReset
      */
     protected void generateBlockListAsync() {
 		
+    	if ( isVirtual() ) {
+    		// ignore and generate no error messages:
+    		return;
+    	}
 		if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: Block count failure: Mine is not enabled. " +
@@ -597,8 +617,11 @@ public abstract class MineReset
     	
 //		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
 
+    	if ( isVirtual() ) {
+    		canceled = true;
+    	}
     	
-    	if ( getResetPage() == 0 ) {
+    	if ( !canceled && getResetPage() == 0 ) {
     		generateBlockListAsync();   		
     		
     		canceled = resetAsynchonouslyInitiate();
@@ -740,6 +763,10 @@ public abstract class MineReset
     private boolean resetAsynchonouslyInitiate() {
     	boolean canceled = false;
 		
+    	if ( isVirtual()) {
+    		canceled = true;
+    	}
+    	else 
 		if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: resetAsynchonouslyInitiate failure: Mine is not enabled. " +
@@ -797,7 +824,10 @@ public abstract class MineReset
      *  
      */
     private void resetAsynchonouslyUpdate() {
-    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
     	if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: resetAsynchonouslyUpdate failure: Mine is not enabled. " +
@@ -948,6 +978,10 @@ public abstract class MineReset
 	{
     	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
     	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else 
     	if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: refreshAirCountAsyncTask failure: Mine is not enabled. " +
@@ -1060,6 +1094,9 @@ public abstract class MineReset
 	}
 	
 	public double getPercentRemainingBlockCount() {
+		if ( isVirtual() ) {
+			return 0;
+		}
 		int totalCount = getBounds().getTotalBlockCount();
 		int remainingCount = getRemainingBlockCount();
 		double percentRemaining = (totalCount == 0d ? 0d : (remainingCount * 100d) / (double) totalCount);
@@ -1177,6 +1214,10 @@ public abstract class MineReset
     private void broadcastResetMessageToAllPlayersWithRadius() {
     	long start = System.currentTimeMillis();
     	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else 
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
     		
@@ -1215,6 +1256,11 @@ public abstract class MineReset
     }
     
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
+    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
     		

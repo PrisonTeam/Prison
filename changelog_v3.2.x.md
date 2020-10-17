@@ -10,6 +10,12 @@ that you need.
 ## tag v3.2.2-alpha.5 - 2020-10-17
 
 
+* **New Feature! Virtual Mines!**
+Now able to create virtual mines.  A virtual mine does not exist yet since it has no location, but you can configure all of the options first before setting the area with /prison set area.
+This is phase 1 of this new feature.  Not fully tested yet. 
+The intention is that when you auto configure all your ranks, it will also auto configure all your mines to go with those ranks.  Then you can go back and set the mine's area as you build them.
+
+
 * **Links the rank command commands to the rank commands so they can be used together.**
 Setup createRank to return a boolean to indicate if the rank was successfully created. This will allow programmatic internal use of createRank to automate more features such as rank configurations.
 
