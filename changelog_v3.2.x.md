@@ -10,6 +10,11 @@ that you need.
 ## tag v3.2.2-alpha.5 - 2020-10-17
 
 
+* **Linked the various mine and rank commands to their respective managers**
+so they can be easily accessed programmatically now.
+
+
+
 * **New Feature! Virtual Mines!**
 Now able to create virtual mines.  A virtual mine does not exist yet since it has no location, but you can configure all of the options first before setting the area with /prison set area.
 This is phase 1 of this new feature.  Not fully tested yet. 
