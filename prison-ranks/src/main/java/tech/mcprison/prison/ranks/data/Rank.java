@@ -105,16 +105,19 @@ public class Rank
 			this.name = (String) document.get("name");
 			this.tag = (String) document.get("tag");
 			this.cost = (double) document.get("cost");
+			
 			String currency = (String) document.get("currency");
 			this.currency = (currency == null || 
 					"null".equalsIgnoreCase( currency ) ? null : currency);
 			this.rankUpCommands = (List<String>) document.get("commands");
 			
-	        List<String> mineStrings = (List<String>) document.get("mines");
-	        getMines().clear();
-	        setMineStrings( mineStrings );
-	        
-
+			getMines().clear();
+			getMineStrings().clear();
+			Object minesObj = document.get("mines");
+			if ( minesObj != null ) {
+				List<String> mineStrings = (List<String>) minesObj;
+				setMineStrings( mineStrings );
+			}
 			
 		}
 		catch ( Exception e )
@@ -125,6 +128,7 @@ public class Rank
 					Integer.toString( this.id ), (this.name == null ? "null" : this.name ),
 					e.getMessage())
 					);
+			
 		}
     }
 
@@ -270,6 +274,9 @@ public class Rank
 	}
 
 	public List<ModuleElement> getMines() {
+		if ( mines == null ) {
+			this.mines = new ArrayList<>();
+		}
 		return mines;
 	}
 	public void setMines( List<ModuleElement> mines ) {
@@ -277,6 +284,9 @@ public class Rank
 	}
 
 	public List<String> getMineStrings() {
+		if ( mineStrings == null ) {
+			this.mineStrings = new ArrayList<>();
+		}
 		return mineStrings;
 	}
 	public void setMineStrings( List<String> mineStrings ) {
