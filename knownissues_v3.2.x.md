@@ -10,6 +10,8 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.2
 
 
+* **EX with auto pickup**
+For cetain blocks such as coal, diamonds, other... provide xp...
 
 
 * **Rename Mines**

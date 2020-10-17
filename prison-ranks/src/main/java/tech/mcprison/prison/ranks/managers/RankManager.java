@@ -29,6 +29,10 @@ import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.CommandCommands;
+import tech.mcprison.prison.ranks.commands.LadderCommands;
+import tech.mcprison.prison.ranks.commands.RankUpCommand;
+import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
@@ -50,6 +54,12 @@ public class RankManager {
     private Collection collection;
     private List<Rank> loadedRanks;
 
+    private  CommandCommands rankCommandCommands;
+    private RanksCommands ranksCommands;
+    private RankUpCommand rankupCommands;
+    private LadderCommands ladderCommands;
+
+    
     /*
      * Constructor
      */
@@ -441,6 +451,34 @@ public class RankManager {
 		else {
 			sender.sendMessage( ranksByLadder );
 		}
+	}
+
+	public CommandCommands getRankCommandCommands() {
+		return rankCommandCommands;
+	}
+	public void setRankCommandCommands( CommandCommands rankCommandCommands ) {
+		this.rankCommandCommands = rankCommandCommands;
+	}
+
+	public RanksCommands getRanksCommands() {
+		return ranksCommands;
+	}
+	public void setRanksCommands( RanksCommands ranksCommands ) {
+		this.ranksCommands = ranksCommands;
+	}
+
+	public RankUpCommand getRankupCommands() {
+		return rankupCommands;
+	}
+	public void setRankupCommands( RankUpCommand rankupCommands ) {
+		this.rankupCommands = rankupCommands;
+	}
+
+	public LadderCommands getLadderCommands() {
+		return ladderCommands;
+	}
+	public void setLadderCommands( LadderCommands ladderCommands ) {
+		this.ladderCommands = ladderCommands;
 	}
     
 }

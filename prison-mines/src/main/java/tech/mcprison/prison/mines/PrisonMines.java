@@ -61,6 +61,8 @@ public class PrisonMines extends Module {
 
     private MineManager mineManager;
     private PlayerManager player;
+    
+    private MinesCommands minesCommands;
 
 
     /**
@@ -111,7 +113,9 @@ public class PrisonMines extends Module {
 //        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
-        Prison.get().getCommandHandler().registerCommands(new MinesCommands());
+        
+        setMinesCommands( new MinesCommands() );
+        Prison.get().getCommandHandler().registerCommands( getMinesCommands() );
         //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
@@ -254,5 +258,12 @@ public class PrisonMines extends Module {
     public PlayerManager getPlayerManager() {
         return player;
     }
+
+	public MinesCommands getMinesCommands() {
+		return minesCommands;
+	}
+	public void setMinesCommands( MinesCommands minesCommands ) {
+		this.minesCommands = minesCommands;
+	}
 
 }
