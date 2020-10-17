@@ -10,6 +10,10 @@ that you need.
 ## tag v3.2.2-alpha.5 - 2020-10-17
 
 
+* **Links the rank command commands to the rank commands so they can be used together.**
+Setup createRank to return a boolean to indicate if the rank was successfully created. This will allow programmatic internal use of createRank to automate more features such as rank configurations.
+
+
 * **Add mine commands to add ranks to mines, and to remove ranks from mines.**
 
 

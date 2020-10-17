@@ -36,28 +36,44 @@ import tech.mcprison.prison.util.Text;
  * @author Faizaan A. Datoo
  */
 public class RanksCommands {
+	
+	private CommandCommands rankCommandCommands = null;
+	
+	public RanksCommands( CommandCommands rankCommandCommands ) {
+		this.rankCommandCommands = rankCommandCommands;
+	}
+	
+    public CommandCommands getRankCommandCommands() {
+		return rankCommandCommands;
+	}
+	public void setRankCommandCommands( CommandCommands rankCommandCommands ) {
+		this.rankCommandCommands = rankCommandCommands;
+	}
 
-    @Command(identifier = "ranks create", description = "Creates a new rank", 
+
+	@Command(identifier = "ranks create", description = "Creates a new rank", 
     							onlyPlayers = false, permissions = "ranks.create")
-    public void createRank(CommandSender sender,
+    public boolean createRank(CommandSender sender,
         @Arg(name = "rankName", description = "The name of this rank.") String name,
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
         @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
             String ladder,
         @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
             String tag) {
+		
+		boolean success = false;
 
         // Ensure a rank with the name doesn't already exist
         if (PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
             Output.get()
                 .sendWarn(sender, "A rank by this name already exists. Try a different name.");
-            return;
+            return success;
         }
         
         // Ensure a rank with the name doesn't already exist
         if (name == null || name.trim().length() == 0 || name.contains( "&" )) {
         	Output.get().sendWarn(sender, "A rank name is required and cannot contain formatting codes.");
-        	return;
+        	return success;
         }
 
         // Fetch the ladder first, so we can see if it exists
@@ -66,7 +82,7 @@ public class RanksCommands {
             PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
         if (!rankLadderOptional.isPresent()) {
             Output.get().sendWarn(sender, "A ladder by the name of '%s' does not exist.", ladder);
-            return;
+            return success;
         }
 
         // Set a default tag if necessary
@@ -81,7 +97,7 @@ public class RanksCommands {
         // Ensure it was created
         if (!newRankOptional.isPresent()) {
             Output.get().sendError(sender, "The rank could not be created.");
-            return;
+            return success;
         }
 
         Rank newRank = newRankOptional.get();
@@ -101,6 +117,8 @@ public class RanksCommands {
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
             
+            success = true;
+            
             // Tell the player the good news!
             Output.get()
             	.sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
@@ -111,6 +129,7 @@ public class RanksCommands {
             Output.get().logError("Ladder could not be written to disk.", e);
         }
 
+        return success;
     }
 
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 

@@ -144,9 +144,12 @@ public class PrisonRanks extends Module {
 
         // Load up the commands
 
+        CommandCommands rankCommandCommands = new CommandCommands();
+        RanksCommands rankCommands = new RanksCommands(rankCommandCommands );
+
         Prison.get().getCommandHandler().registerCommands(new RankUpCommand());
-        Prison.get().getCommandHandler().registerCommands(new CommandCommands());
-        Prison.get().getCommandHandler().registerCommands(new RanksCommands());
+        Prison.get().getCommandHandler().registerCommands(rankCommandCommands);
+        Prison.get().getCommandHandler().registerCommands(rankCommands);
         Prison.get().getCommandHandler().registerCommands(new LadderCommands());
 
         // Load up all else
