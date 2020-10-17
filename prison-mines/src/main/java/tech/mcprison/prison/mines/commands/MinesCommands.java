@@ -894,6 +894,14 @@ public class MinesCommands {
         	String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
         	chatDisplay.text("&3World: &7%s", worldName);
         	
+        	if ( m.getRank() == null ) {
+        		chatDisplay.text( "&3No rank is linked to this mine." );
+        	}
+        	else {
+        		chatDisplay.text( "&3Rank: &7%s", m.getRank() );
+        	}
+        	
+        	
         	String minCoords = m.getBounds().getMin().toBlockCoordinates();
         	String maxCoords = m.getBounds().getMax().toBlockCoordinates();
         	chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);

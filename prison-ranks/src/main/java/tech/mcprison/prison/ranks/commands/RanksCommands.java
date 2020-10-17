@@ -18,6 +18,7 @@ import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -308,10 +309,27 @@ public class RanksCommands {
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
                 ladders.stream().map(rankLadder -> rankLadder.name).collect(Collectors.toList())));
+        
+        if ( rank.getMines().size() == 0 ) {
+        	display.text( "&3This rank is not linked to any mines" );
+        }
+        else {
+        	StringBuilder sb = new StringBuilder();
+        	
+        	for ( ModuleElement mine : rank.getMines() ) {
+				if ( sb.length() > 0 ) {
+					sb.append( "&3, " );
+				}
+				sb.append( "&7" );
+				sb.append( mine.getName() );
+			}
+        	
+        	display.text( "&3Mines linked to this rank: %s", sb.toString() );
+        }
 
         display.text("&3Cost: &7%s", Text.numberToDollars(rank.cost));
         
-        display.text("&3Currency: &7<&a%s&7>", (rank.currency == null ? "&cnone" : rank.currency) );
+        display.text("&3Currency: &7<&a%s&7>", (rank.currency == null ? "&cdefault" : rank.currency) );
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
