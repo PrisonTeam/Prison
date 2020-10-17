@@ -34,6 +34,8 @@ import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
@@ -264,6 +266,9 @@ public interface Platform {
 	
 	
 	public PrisonBlock getPrisonBlock( String blockName );
+	
+	
+	public boolean linkModuleElements( ModuleElement sourceElement, ModuleElementType targetElementType, String name );
 
 
 	

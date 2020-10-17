@@ -60,12 +60,18 @@ import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -632,5 +638,98 @@ class SpigotPlatform implements Platform {
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		
 		return SpigotUtil.getPrisonBlock( blockName );
+	}
+	
+	
+	/**
+	 * ModuleElements are Mines or Ranks, and sometimes maybe even ladders.
+	 * 
+	 * The purpose of this function is to link together Mines and rank (and maybe even
+	 * ladders) when they cannot reference each other within their native modules. So
+	 * this external linking is required.
+	 * 
+	 * Currently, the only linkage that is supported are:
+	 * 
+	 * Mine to one rank
+	 * rank has many mines
+	 * 
+	 * 
+	 */
+	@Override
+	public boolean linkModuleElements( ModuleElement sourceElement, 
+					ModuleElementType targetElementType, String name ) {
+		boolean results = false;
+		
+		if ( sourceElement != null) {
+			
+			if ( sourceElement.getModuleElementType() == ModuleElementType.MINE && 
+					sourceElement instanceof Mine ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( targetElementType != null && targetElementType == ModuleElementType.RANK &&
+						PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+					
+					RankManager rm = PrisonRanks.getInstance().getRankManager();
+					if ( rm != null ) {
+						Rank rank = rm.getRank( name ).orElse( null );
+						
+						if ( rank != null ) {
+							Mine mine = (Mine) sourceElement;
+							
+							// Add the mine to the rank, and the rank to the mine:
+							mine.setRank( rank );
+							rank.getMines().add( mine );
+							
+							// save both the mine and the rank:
+							MineManager mm = PrisonMines.getInstance().getMineManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+							
+							results = true;
+						}
+					}
+				}
+			}
+			
+			else if ( sourceElement.getModuleElementType() == ModuleElementType.RANK && 
+					sourceElement instanceof Rank ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( targetElementType != null && targetElementType == ModuleElementType.MINE &&
+						PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+					MineManager mm = PrisonMines.getInstance().getMineManager();
+					if ( mm != null ) {
+						Mine mine = mm.getMine( name );
+						
+						if ( mine != null ) {
+							Rank rank = (Rank) sourceElement;
+							
+							mine.setRank( rank );
+							rank.getMines().add( mine );
+
+							// save both the mine and the rank:
+							RankManager rm = PrisonRanks.getInstance().getRankManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+
+							results = true;
+						}
+							
+					}
+				}
+			}
+		}
+		
+
+
+		return results;
 	}
 }

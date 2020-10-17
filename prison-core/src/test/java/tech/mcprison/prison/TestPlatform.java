@@ -42,6 +42,8 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
@@ -239,4 +241,11 @@ public class TestPlatform implements Platform {
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		return null;
 	}
+	
+	@Override
+	public boolean linkModuleElements( ModuleElement sourceElement, 
+					ModuleElementType targetElementType, String name ) {
+		return false;
+	}
+
 }
