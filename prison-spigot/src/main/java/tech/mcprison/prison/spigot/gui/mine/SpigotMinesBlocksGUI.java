@@ -52,7 +52,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 		}
 
         // Load config
-        this.messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

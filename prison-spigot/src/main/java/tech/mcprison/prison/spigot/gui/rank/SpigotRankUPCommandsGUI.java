@@ -40,7 +40,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        this.messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getMessagesConfig();
 
         if (rank.rankUpCommands.size() == 0){
             p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRankupCommands")));

@@ -60,7 +60,7 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(

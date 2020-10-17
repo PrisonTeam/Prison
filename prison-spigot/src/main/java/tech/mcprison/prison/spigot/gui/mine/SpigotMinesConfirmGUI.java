@@ -51,7 +51,7 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         // Blocks of the mine
         List<String> confirmlore = createLore(

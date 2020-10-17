@@ -55,7 +55,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         // Declare buttons
         ItemStack autoPickup;

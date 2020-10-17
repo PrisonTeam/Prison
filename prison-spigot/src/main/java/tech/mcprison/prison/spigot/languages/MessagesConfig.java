@@ -12,11 +12,11 @@ import java.io.IOException;
  * @author GABRYCA
  **/
 
-public class GuiMessagesConfig {
+public class MessagesConfig {
 
     private FileConfiguration conf;
 
-    public GuiMessagesConfig() {
+    public MessagesConfig() {
 
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/GUI-" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
@@ -182,6 +182,11 @@ public class GuiMessagesConfig {
         dataConfig("Gui.Message.OutOfTimeNoChanges", "&cYou ran out of time, nothing changed.");
         dataConfig("Gui.Message.rankTagRename", "&7[&3Info&7] &3Please write the &6tag &3you'd like to use and &6submit&3.");
         dataConfig("Gui.Message.rankTagRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Setup.Message.MissingPermission", "&7[&cError&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
+        dataConfig("Setup.Message.WrongFormat", "&7[&cError&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
+        dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3Info&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
+        dataConfig("Setup.Message.SuccessRanksSetup", "&7[&3Info&7] &3The ranks setup got completed with &asuccess&3 and the ranks got added to the default ladder,\n please check the logs if something's missing!");
+
     }
 
     public FileConfiguration getFileGuiMessagesConfig(){

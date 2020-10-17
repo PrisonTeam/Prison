@@ -57,7 +57,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         // Create the lore
         List<String> rankupCommandsLore = createLore(

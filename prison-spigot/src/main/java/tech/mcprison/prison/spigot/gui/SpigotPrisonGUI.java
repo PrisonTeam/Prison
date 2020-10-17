@@ -47,7 +47,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         // Lore of the button
         List<String> rankslore = createLore(

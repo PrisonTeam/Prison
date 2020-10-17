@@ -45,7 +45,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
 
-        this.messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

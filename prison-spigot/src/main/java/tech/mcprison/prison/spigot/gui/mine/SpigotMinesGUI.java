@@ -18,7 +18,6 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
@@ -50,7 +49,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
         // Load config
-        this.messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

@@ -851,7 +851,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the button name and do the actions
         } else if (buttonname.equalsIgnoreCase("RankTag")){
 
-            Configuration messages = SpigotPrison.getGuiMessagesConfig();
+            Configuration messages = SpigotPrison.getMessagesConfig();
 
             // Send messages to the player
             p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRename")));
@@ -1128,7 +1128,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             case "Mine_Name": {
 
-                Configuration messages = SpigotPrison.getGuiMessagesConfig();
+                Configuration messages = SpigotPrison.getMessagesConfig();
 
                 // Send messages to the player
                 p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRename")));

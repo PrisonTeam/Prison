@@ -88,6 +88,7 @@ public class GuiConfig {
         dataConfig("Options.Ranks.Enchantment_effect_current_rank","true");
         dataConfig("Options.Mines.PermissionWarpPlugin","mines.tp.");
         dataConfig("Options.Mines.CommandWarpPlugin","mines tp");
+        dataConfig("Options.Setup.EnabledGUI", "true");
     }
 
     public FileConfiguration getFileGuiConfig(){

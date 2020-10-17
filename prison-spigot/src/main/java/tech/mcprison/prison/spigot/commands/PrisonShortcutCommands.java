@@ -82,6 +82,12 @@ public class PrisonShortcutCommands implements Listener {
 		}
 	}
 
+	@Command(identifier = "ranks setup", onlyPlayers = false,
+			altPermissions = {"prison.setup", "prison.admin"}, description = "Setup all the ranks from A to Z with default values in the default ladder")
+	public void ranksSetupCommand(CommandSender sender) {
+    	sender.dispatchCommand("prisonmanager setup ranks");
+	}
+
 	@Command(identifier = "prestiges", onlyPlayers = true, altPermissions = {"-none-", "prison.admin"})
 	public void prestigesGUICommand(CommandSender sender){
 

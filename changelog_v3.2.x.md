@@ -7,7 +7,22 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag v3.2.2-alpha.5 - 2020-10-17
 
+* **New Feature! Added _/ranks setup_ and _/prisonmanager setup ranks_ commands.**
+Now you can setup your default ranks in the default ladder with a command without
+adding them manually for the first time, this command will add all Ranks from A to Z
+and their rankupCommands executing the command that your permissions manager uses to add
+a permission to the player to access to the `/mines tp <mineName>` command, the mineName
+given by the permission have this format `mines.tp.<rankName>` so you should make your Mines
+with the same name of the rank, you can edit the `mines.tp.` for to another you want, like
+`essentials.warps.` in the _guiconfig.yml_.
+The supported permissions managers for now are: 
+- Ultra Permissions
+- LuckPerms
+- PermissionsEX
+- zPermissions
+- PowerfulPerms
 
 ## tag v3.2.2-alpha.5 - 2020-10-13
 

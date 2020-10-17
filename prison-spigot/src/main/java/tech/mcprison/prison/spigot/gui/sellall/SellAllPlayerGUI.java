@@ -43,7 +43,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     private Inventory buttonsSetup(Configuration conf) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         Inventory inv;
 

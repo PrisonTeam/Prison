@@ -48,7 +48,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        this.messages = SpigotPrison.getGuiMessagesConfig();
+        this.messages = SpigotPrison.getMessagesConfig();
 
         // Get the dimensions and if needed increases them
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
@@ -158,7 +158,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     static void getCommands(List<String> ranksLore, Rank rank) {
 
-        Configuration messages = SpigotPrison.getGuiMessagesConfig();
+        Configuration messages = SpigotPrison.getMessagesConfig();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
             ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ContainsTheRank") + rank.name + messages.getString("Gui.Lore.ContainsNoCommands")));
