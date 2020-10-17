@@ -86,13 +86,13 @@ public class RanksCommands {
         Rank newRank = newRankOptional.get();
 
         // Save the rank
-        try {
+//        try {
             PrisonRanks.getInstance().getRankManager().saveRank(newRank);
-        } catch (IOException e) {
-            Output.get().sendError(sender,
-                "The new rank could not be saved to disk. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk.", e);
-        }
+//        } catch (IOException e) {
+//            Output.get().sendError(sender,
+//                "The new rank could not be saved to disk. Check the console for details.");
+//            Output.get().logError("Rank could not be written to disk.", e);
+//        }
 
         // Add the ladder
 
@@ -352,15 +352,15 @@ public class RanksCommands {
         rank.cost = cost;
         
         // Save the rank
-        try {
+//        try {
             PrisonRanks.getInstance().getRankManager().saveRank(rank);
 
             Output.get().sendInfo(sender,"Successfully set the cost of rank '%s' to "+cost,rankName);
-        } catch (IOException e) {
-            Output.get().sendError(sender,
-                "The rank could not be saved to disk. The change in rank cost has not been saved. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk (setCost).", e);
-        }
+//        } catch (IOException e) {
+//            Output.get().sendError(sender,
+//                "The rank could not be saved to disk. The change in rank cost has not been saved. Check the console for details.");
+//            Output.get().logError("Rank could not be written to disk (setCost).", e);
+//        }
     }
     
     // set commands
@@ -395,15 +395,15 @@ public class RanksCommands {
     	rank.currency = currency;
     	
     	// Save the rank
-    	try {
+//    	try {
     		PrisonRanks.getInstance().getRankManager().saveRank(rank);
     		
     		Output.get().sendInfo(sender,"Successfully set the currency for the rank '%s' to %s", rankName, currency);
-    	} catch (IOException e) {
-    		Output.get().sendError(sender,
-    				"The rank could not be saved to disk. The change in rank currency has not been saved. Check the console for details.");
-    		Output.get().logError("Rank could not be written to disk (setCurrency).", e);
-    	}
+//    	} catch (IOException e) {
+//    		Output.get().sendError(sender,
+//    				"The rank could not be saved to disk. The change in rank currency has not been saved. Check the console for details.");
+//    		Output.get().logError("Rank could not be written to disk (setCurrency).", e);
+//    	}
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
@@ -421,15 +421,15 @@ public class RanksCommands {
         rank.tag = tag;
         
         // Save the rank
-        try {
+//        try {
             PrisonRanks.getInstance().getRankManager().saveRank(rank);
 
             Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
-        } catch (IOException e) {
-            Output.get().sendError(sender,
-                "The rank could not be saved to disk. The tag change for the rank has not been saved. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk.", e);
-        }
+//        } catch (IOException e) {
+//            Output.get().sendError(sender,
+//                "The rank could not be saved to disk. The tag change for the rank has not been saved. Check the console for details.");
+//            Output.get().logError("Rank could not be written to disk.", e);
+//        }
 
     }
     

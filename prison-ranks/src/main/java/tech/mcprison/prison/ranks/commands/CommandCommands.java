@@ -1,6 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -58,15 +57,15 @@ public class CommandCommands {
         }
         rank.rankUpCommands.add(command);
     	
-        try {
+//        try {
         	PrisonRanks.getInstance().getRankManager().saveRank( rank );
         	
         	Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.name);
-        } catch (IOException e) {
-            Output.get().sendError(sender,
-                "The new command for the rank could not be saved to disk. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk.", e);
-        }
+//        } catch (IOException e) {
+//            Output.get().sendError(sender,
+//                "The new command for the rank could not be saved to disk. Check the console for details.");
+//            Output.get().logError("Rank could not be written to disk.", e);
+//        }
 
 
     }
@@ -95,16 +94,16 @@ public class CommandCommands {
         
         if ( rank.rankUpCommands.remove(command) ) {
         	
-            try {
+//            try {
             	PrisonRanks.getInstance().getRankManager().saveRank( rank );
             	
             	Output.get()
             		.sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.name);
-            } catch (IOException e) {
-                Output.get().sendError(sender,
-                    "The updated rank could not be saved to disk. Check the console for details.");
-                Output.get().logError("Rank could not be written to disk.", e);
-            }
+//            } catch (IOException e) {
+//                Output.get().sendError(sender,
+//                    "The updated rank could not be saved to disk. Check the console for details.");
+//                Output.get().logError("Rank could not be written to disk.", e);
+//            }
         } else {
         	Output.get()
         		.sendWarn(sender, "The rank doesn't contain that command. Nothing was changed.");

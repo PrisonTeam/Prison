@@ -165,7 +165,11 @@ it'll be generated anyway using the default config as the model so it won't brea
 later or edit the config to the correct one. 
 
 
-* **Prison_v3.2.2-alpha.1c - 2020-10-01**
+* **Prison_v3.2.2-alpha.1c - 2020-10-16**
+
+
+* **Found an inconsistency in how the ranks are dealing with the document engine.**
+Mines do not throw exceptions, but they were within ranks, which is not needed.
 
 
 * **New feature: added some new 1.14 and 1.15 blocks**

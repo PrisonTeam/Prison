@@ -31,8 +31,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
@@ -94,9 +94,8 @@ public class RankManager {
      *
      * @param rank     The {@link Rank} to save.
      * @param saveFile The key to write the rank as. Case sensitive.
-     * @throws IOException If the rank could not be serialized, or if the rank could not be saved to the file.
      */
-    public void saveRank(Rank rank, String saveFile) throws IOException {
+    public void saveRank(Rank rank, String saveFile) {
         collection.save(saveFile, rank.toDocument());
     }
 
@@ -104,18 +103,16 @@ public class RankManager {
      * Saves a rank to its save file.
      *
      * @param rank The {@link Rank} to save.
-     * @throws IOException If the rank could not be serialized, or if the rank could not be saved to the file.
      */
-    public void saveRank(Rank rank) throws IOException {
+    public void saveRank(Rank rank) {
         this.saveRank(rank, rank.filename());
     }
 
     /**
      * Saves all the loaded ranks to their own files within a directory.
      *
-     * @throws IOException If the rankFolder does not exist, or if one of the ranks could not be saved.
      */
-    public void saveRanks() throws IOException {
+    public void saveRanks() {
         for (Rank rank : loadedRanks) {
             saveRank(rank);
         }
