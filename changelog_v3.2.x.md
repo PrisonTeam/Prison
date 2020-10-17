@@ -9,6 +9,20 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-10-17
 
+
+* **Add mine commands to add ranks to mines, and to remove ranks from mines.**
+
+
+
+* **Added mines and ranks to the /mines info and /ranks info commands.**
+
+
+
+* **Added to the platform the ability to link mines with ranks.**
+Individual ranks or mines cannot perform this action, but going through the platform can.
+
+
+
 * **New Feature! Added _/ranks setup_ and _/prisonmanager setup ranks_ commands.**
 Now you can setup your default ranks in the default ladder with a command without
 adding them manually for the first time, this command will add all Ranks from A to Z
@@ -23,6 +37,7 @@ The supported permissions managers for now are:
 - PermissionsEX
 - zPermissions
 - PowerfulPerms
+
 
 ## tag v3.2.2-alpha.5 - 2020-10-13
 
@@ -180,7 +195,7 @@ it'll be generated anyway using the default config as the model so it won't brea
 later or edit the config to the correct one. 
 
 
-* **Prison_v3.2.2-alpha.1c - 2020-10-16**
+* **Prison_v3.2.2-alpha.1c - 2020-10-10**
 
 
 * **Found an inconsistency in how the ranks are dealing with the document engine.**

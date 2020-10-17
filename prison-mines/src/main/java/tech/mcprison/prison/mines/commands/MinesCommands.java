@@ -45,6 +45,8 @@ import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -1878,6 +1880,83 @@ public class MinesCommands {
     }
 
 
+    @Command(identifier = "mines set rank", permissions = "mines.set", 
+    		description = "Links a mine to a rank.")
+    public void setMineRankCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine.") String mineName,
+        @Arg(name = "rankName", description = "Then rank name to link to this mine.") 
+    					String rankName
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if ( !m.isEnabled() ) {
+            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+            	return;
+            }
+            
+            if ( rankName == null || rankName.trim().length() == 0 ) {
+            	sender.sendMessage( "&cRank name is required." );
+            	return;
+            }
+            
+            boolean success = Prison.get().getPlatform().linkModuleElements( m, 
+            						ModuleElementType.RANK, rankName );
+            
+            if ( !success ) {
+            	sender.sendMessage( String.format( "&3Invalid Rank Name: &7%s", rankName ));
+            }
+            else {
+            	sender.sendMessage( String.format( "&3Rank &7%s &3has been linked to mine &7%s", 
+            						rankName, m.getName() ));
+            }
+        } 
+    }
+
+
+    
+    @Command(identifier = "mines set norank", permissions = "mines.set", 
+    		description = "Unlinks a rank from a mine")
+    public void setMineNoRankCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine.") String mineName
+    
+    		) {
+    	
+    	if (performCheckMineExists(sender, mineName)) {
+    		setLastMineReferenced(mineName);
+    		
+    		PrisonMines pMines = PrisonMines.getInstance();
+    		Mine m = pMines.getMine(mineName);
+    		
+    		if ( !m.isEnabled() ) {
+    			sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+    			return;
+    		}
+    		
+    		
+    		if ( m.getRank() == null ) {
+    			sender.sendMessage( "&cThis mine has no ranks to unlink." );
+    			return;
+    		}
+    		
+    		ModuleElement rank = m.getRank();
+    		
+    		m.setRank( null );
+    		
+    		pMines.getMineManager().saveMine( m );
+    		
+    		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
+    				rank.getName(), m.getName() ));
+    		
+    	} 
+    }
+    
+    
 
     @Command(identifier = "mines set area", permissions = "mines.set", 
     				description = "Set the area of a mine to your current selection.")
