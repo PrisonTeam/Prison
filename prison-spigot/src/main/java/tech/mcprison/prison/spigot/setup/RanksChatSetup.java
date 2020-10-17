@@ -55,6 +55,7 @@ public class RanksChatSetup {
             } else {
                 price = price * 1.5;
             }
+
         }
 
         sender.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.SuccessRanksSetup")));
