@@ -11,11 +11,11 @@ import java.util.Objects;
 /**
  * @author GABRYCA
  */
-public class SellAllConfig {
+public class sellAllConfig {
 
     private FileConfiguration conf;
 
-    public SellAllConfig(){
+    public sellAllConfig(){
 
         if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true")){
             return;
@@ -24,11 +24,19 @@ public class SellAllConfig {
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
 
+        // Get the final config
+        conf = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public void sellAllConfigGen(){
+
+        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true")){
+            return;
+        }
+
         // Everything's here
         values();
 
-        // Get the final config
-        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     private void dataConfig(String path, String string){

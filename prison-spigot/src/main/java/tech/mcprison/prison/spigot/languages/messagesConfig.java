@@ -12,26 +12,30 @@ import java.io.IOException;
  * @author GABRYCA
  **/
 
-public class MessagesConfig {
+public class messagesConfig {
 
     private FileConfiguration conf;
 
-    public MessagesConfig() {
+    public messagesConfig() {
 
         // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/GUI-" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
-
-        // Everything's here
-        values();
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
 
         // Get the final config
         conf = YamlConfiguration.loadConfiguration(file);
     }
 
+    public void messagesConfigGen() {
+
+        // Everything's here
+        values();
+
+    }
+
     private void dataConfig(String path, String string){
 
         // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/GUI-" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
 
         // Check if the config exists
         if(!file.exists()){
@@ -58,7 +62,7 @@ public class MessagesConfig {
                 }
                 if (newValue) {
                     conf.save(file);
-                    System.out.println(Color.AQUA + "[Prison - GUI-" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml]" + Color.GREEN + " Added " + editedItems + " new values to the GuiConfig.yml");
+                    System.out.println(Color.AQUA + "[Prison - " + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml]" + Color.GREEN + " Added " + editedItems + " new values to the GuiConfig.yml");
                 }
             } catch (IOException e2){
                 e2.printStackTrace();

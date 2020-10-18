@@ -12,11 +12,11 @@ import java.util.Objects;
 /**
  * @author GABRYCA
  */
-public class GuiConfig {
+public class guiConfig {
 
     private FileConfiguration conf;
 
-    public GuiConfig() {
+    public guiConfig() {
 
         if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
             return;
@@ -25,11 +25,19 @@ public class GuiConfig {
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
+        // Get the final config
+        conf = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public void guiConfigGen() {
+
+        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
+            return;
+        }
+
         // Everything's here
         values();
 
-        // Get the final config
-        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     private void dataConfig(String path, String string){
@@ -68,7 +76,6 @@ public class GuiConfig {
 
         // Get the final config
         conf = YamlConfiguration.loadConfiguration(file);
-
 
     }
 
