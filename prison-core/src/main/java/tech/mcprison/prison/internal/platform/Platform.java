@@ -162,8 +162,10 @@ public interface Platform {
      * @param message The message. May include color codes, amp-prefixed.
      * @param format  The objects inserted via {@link String#format(String, Object...)}.
      */
-    void log(String message, Object... format);
+    public void log(String message, Object... format);
 
+    public void logCore( String message );
+    
     /**
      * Logs a debug message to the console if the user has debug messages enabled.
      *

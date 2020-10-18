@@ -19,6 +19,7 @@
 package tech.mcprison.prison.output;
 
 import java.util.Arrays;
+import java.util.MissingFormatArgumentException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -125,10 +126,29 @@ public class Output {
     	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
     		System.err.println("Prison: Output.log Logger failure: " + message );
     	} else {
-    		Prison.get().getPlatform().log(
-    				gen("&3Prison") + " " + 
-    				getLogColorCode(level) +
-    				String.format(message, args));
+    		try {
+				Prison.get().getPlatform().log(
+						gen("&3Prison") + " " + 
+						getLogColorCode(level) +
+						String.format(message, args));
+			}
+			catch ( MissingFormatArgumentException e )
+			{
+				StringBuilder sb = new StringBuilder();
+				
+				for ( Object arg : args ) {
+					sb.append( "[" );
+					sb.append( arg );
+					sb.append( "] " );
+				}
+				
+				Prison.get().getPlatform().logCore(
+						gen("&3Prison") + " " + 
+						getLogColorCode(LogLevel.ERROR) +
+						"Failure to generate log message due to incorrect number of parameters: [" + 
+						e.getMessage() + "] :: Original raw message [" + message + "] " +
+						"Arguments: " + sb.toString() );
+			}
     	}
     }
 

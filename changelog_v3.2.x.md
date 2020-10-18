@@ -7,7 +7,14 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag v3.2.2-alpha.5 - 2020-10-17
+
+## tag v3.2.2-alpha.5 - 2020-10-18
+
+
+* **Added a logCore feature that does not try to translate colors...**
+this helps to bypass exceptions if an exception is trapped.
+Added a dump when parameters on messages are not properly paired.  This will be critical when all messages will be externalized and subject to users messing up the formatting placeholders.
+
 
 * **New feature!  Auto generate Ranks and Mines!!**
 This is based upon the work of Gabryaca, but I reproduced it to be a part of the RanksCommand and gave it the capability of generating virtual mines too!

@@ -144,6 +144,14 @@ public class TestPlatform implements Platform {
         System.out.println(ChatColor.stripColor(String.format(message, format)));
     }
 
+    @Override
+    public void logCore( String message ) {
+    	if (suppressOutput) {
+    		return;
+    	}
+    	System.out.println(ChatColor.stripColor(message));
+    }
+    
     @Override public void debug(String message, Object... format) {
         log(message, format);
     }

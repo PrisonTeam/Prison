@@ -359,16 +359,23 @@ class SpigotPlatform implements Platform {
         					.playIronDoorSound(block.getLocation());
     }
 
-    @Override public void log(String message, Object... format) {
+    @Override 
+    public void log(String message, Object... format) {
         message = Text.translateAmpColorCodes(String.format(message, format));
 
-        ConsoleCommandSender sender = Bukkit.getConsoleSender();
+        logCore( message );
+    }
+
+    @Override 
+	public void logCore( String message )
+	{
+		ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) {
             Bukkit.getLogger().info(ChatColor.stripColor(message));
         } else {
             sender.sendMessage(message);
         }
-    }
+	}
 
     @Override public void debug(String message, Object... format) {
         if (!plugin.debug) {
