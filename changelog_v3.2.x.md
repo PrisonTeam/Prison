@@ -9,6 +9,18 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-10-17
 
+* **New feature!  Auto generate Ranks and Mines!!**
+This is based upon the work of Gabryaca, but I reproduced it to be a part of the RanksCommand and gave it the capability of generating virtual mines too!
+This is actually a starting point of what it can become.  I not only added the creation of mines, but I also hooked it up to link the mines and ranks together as it generates them.
+
+
+* **Added a new command to the Platform... This allows the creation of a Rank or Mine based upon a ModuleElement.**
+That has major impact on added flexibility, and could lead to an automation of generating mines and ranks.
+
+
+* **Storing the rank commands within the PrisonRanks class.**
+The allows internal access to the commands so they can be used internally too.  Will be used for automation purposes.
+
 
 * **Linked the various mine and rank commands to their respective managers**
 so they can be easily accessed programmatically now.

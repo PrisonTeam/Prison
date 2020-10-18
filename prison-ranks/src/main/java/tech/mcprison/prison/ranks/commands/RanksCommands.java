@@ -6,19 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -132,6 +136,210 @@ public class RanksCommands {
         return success;
     }
 
+	
+	@Command(identifier = "ranks autoConfigure", description = "Auto configures Ranks and Mines using " +
+			"single letters A through Z for both the rank and mine names. If both ranks and mines are " +
+			"generated, they will also be linked together automatically. To set the starting price use " +
+			"price=x. To set multiplier mult=x. " +
+			"Default values [full price=50000 mult=1.5]", 
+			onlyPlayers = false, permissions = "ranks.set")
+	public void autoConfigureRanks(CommandSender sender, 
+			@Wildcard(join=true)
+			@Arg(name = "options", 
+				description = "Options: [full ranks mines price=x mult=x]", 
+				def = "full") String options
+			) {
+		String optionHelp = "[full ranks mines price=x mult=x]";
+		boolean ranks = false;
+		boolean mines = false;
+		double startingPrice = 50000;
+		double percentMultipler = 1.5;
+		
+		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
+		if ( options.trim().length() == 0 ) {
+			Output.get().sendError(sender,
+					"Invalid options.  Use %s.  Was: %s",
+					optionHelp, options );
+			return;
+		}
+
+		if ( options.contains( "full" ) ) {
+			ranks = true;
+			mines = true;
+			options = options.replace( "full", "" );
+		}
+		if ( options.contains( "ranks" ) ) {
+			ranks = true;
+			options = options.replace( "ranks", "" );
+		}
+		if ( options.contains( "mines" ) ) {
+			mines = true;
+			options = options.replace( "mines", "" );
+		}
+		
+		String priceStr = extractParameter("price=", options);
+		if ( priceStr != null ) {
+			options = options.replace( priceStr, "" );
+			priceStr = priceStr.replace( "price=", "" ).trim();
+			
+			try {
+				startingPrice = Double.parseDouble( priceStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}
+		
+		
+		String multStr = extractParameter("mult=", options);
+		if ( multStr != null ) {
+			options = options.replace( multStr, "" );
+			multStr = multStr.replace( "mult=", "" ).trim();
+			
+			try {
+				percentMultipler = Double.parseDouble( multStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}
+		
+		
+		// What's left over, if not just a blank string, must be an error:
+		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
+		if ( options == null || 
+				!"full".equalsIgnoreCase( options ) && !"ranks".equalsIgnoreCase( options ) && 
+				!"mines".equalsIgnoreCase( options ) && !options.startsWith( "price=" )) {
+			Output.get().sendError(sender,
+	                "Invalid options.  Use either [full, ranks, mines, price=x].  Was: %s",
+	                options == null ? "null" : options );
+			return;
+		}
+		
+		TreeMap<String, RegisteredPluginsData> plugins = 
+								Prison.get().getPrisonCommands().getRegisteredPluginData();
+		
+//
+        String permCmd = null;
+        String perm = "prison.rank.";
+        
+        if ( plugins.containsKey("LuckPerms") ){
+        	permCmd = "lp user {player} permission set " + perm;
+        } 
+        else if ( plugins.containsKey("PermissionsEx") ){
+        	permCmd = "pex user {player} add " + perm;
+        } 
+        else if ( plugins.containsKey("UltraPermissions") ){
+        	permCmd = "upc addplayerpermission {player} " + perm;
+        } 
+        else if ( plugins.containsKey("zPermissions") ){
+        	permCmd = "permissions player {player} set " + perm;
+        } 
+        else if ( plugins.containsKey("PowerfulPerms") ){
+        	permCmd = "pp user {player} add " + perm;
+        }
+
+
+		
+		int countRanks = 0;
+		int countRankCmds = 0;
+		int countMines = 0;
+		int countLinked = 0;
+		
+		if ( ranks ) {
+			
+	        int colorID = 1;
+	        double price = 0;
+
+	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
+	        	String rankName = Character.toString( cRank );
+	        	String tag = "&7[&" + ((colorID++ % 9) + 1) + rankName + "&7]&f";
+	        	
+	        	if ( createRank(sender, rankName, price, "default", tag) ) {
+	        		countRanks++;
+	        		
+	        		if ( permCmd != null ) {
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + rankName);
+	        			countRankCmds++;
+	        		}
+	        		
+	        		if ( mines ) {
+
+	        			// Creates a virtual mine:
+	        			ModuleElement mine = Prison.get().getPlatform().createModuleElement( 
+	        					sender, ModuleElementType.MINE, rankName, tag );
+	        			
+	        			if ( mine != null ) {
+	        				countMines++;
+	        				
+	        				// Links the virtual mine to generated rank:
+	        				if ( Prison.get().getPlatform().linkModuleElements( mine, ModuleElementType.RANK, rankName ) ) {
+	        					countLinked++;
+	        				}
+	        			}
+	        		}
+	        	}
+
+	            if (price == 0){
+	                price += startingPrice;
+	            } else {
+	                price *= percentMultipler;
+	            }
+
+	        }
+		}
+		
+		if ( countRanks == 0 ) {
+			Output.get().logInfo( "Ranks autoConfigure: No ranks were created.");
+		}
+		else {
+			Output.get().logInfo( "Ranks autoConfigure: %d ranks were created.", countRanks);
+			
+			if ( countRankCmds == 0 ) {
+				Output.get().logInfo( "Ranks autoConfigure: No rank commandss were created.");
+			}
+			else {
+				Output.get().logInfo( "Ranks autoConfigure: %d rank commands were created.", countRanks);
+				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> was " +
+						"created for each rank. Make sure you add every permission to your " +
+						"permission plugin or they may not work. " +
+						 perm);
+			}
+		}
+		
+		if ( countMines == 0 ) {
+			Output.get().logInfo( "Ranks autoConfigure: No mines were created.");
+		}
+		else {
+			Output.get().logInfo( "Ranks autoConfigure: %d mines were created.", countMines);
+			
+			if ( countLinked == 0 ) {
+				Output.get().logInfo( "Ranks autoConfigure: No mines and no ranks were linked.");
+			}
+			else {
+				Output.get().logInfo( "Ranks autoConfigure: %d ranks and mines were linked.", countLinked);
+			}
+		}
+		
+		Output.get().logInfo( "");
+		
+		
+	}
+	
+	private String extractParameter( String key, String options ) {
+		String results = null;
+		int idx = options.indexOf( key );
+		if ( idx != -1 ) {
+			int idxEnd = options.indexOf( " ", idx );
+			if ( idxEnd == -1 ) {
+				idxEnd = options.length();
+			}
+			results = options.substring( idx, idxEnd );
+		}
+		return results;
+	}
+	
+	
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 
     								onlyPlayers = false, permissions = "ranks.delete")
     public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
