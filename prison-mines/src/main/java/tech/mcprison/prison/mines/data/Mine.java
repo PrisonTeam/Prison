@@ -429,13 +429,16 @@ public class Mine
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );
         
-        ret.put("minX", getBounds().getMin().getX());
-        ret.put("minY", getBounds().getMin().getY());
-        ret.put("minZ", getBounds().getMin().getZ());
-        ret.put("maxX", getBounds().getMax().getX());
-        ret.put("maxY", getBounds().getMax().getY());
-        ret.put("maxZ", getBounds().getMax().getZ());
-        ret.put("hasSpawn", isHasSpawn());
+        if ( !isVirtual() ) {
+        	ret.put("minX", getBounds().getMin().getX());
+        	ret.put("minY", getBounds().getMin().getY());
+        	ret.put("minZ", getBounds().getMin().getZ());
+        	ret.put("maxX", getBounds().getMax().getX());
+        	ret.put("maxY", getBounds().getMax().getY());
+        	ret.put("maxZ", getBounds().getMax().getZ());
+        	ret.put("hasSpawn", isHasSpawn());
+        	
+        }
         
         ret.put("resetTime", getResetTime() );
         ret.put("notificationMode", getNotificationMode().name() );
