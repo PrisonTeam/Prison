@@ -50,7 +50,7 @@ public class RankConversionAgent implements ConversionAgent {
                         prefix = prefix + "&3]";
                     }
 
-                    if(PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
+                    if(PrisonRanks.getInstance().getRankManager().getRank(name) != null) {
                         break; // Already added
                     }
 

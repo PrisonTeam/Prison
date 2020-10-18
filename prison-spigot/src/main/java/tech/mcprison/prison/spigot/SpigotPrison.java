@@ -477,7 +477,7 @@ public class SpigotPrison extends JavaPlugin {
 						String rankName = rParts[1];
 						
 						if ( meType == ModuleElementType.RANK ) {
-							Rank rank = rm.getRank( rankName ).orElse( null );
+							Rank rank = rm.getRankOptional( rankName ).orElse( null );
 							
 							if ( rank != null ) {
 								mine.setRank( rank );

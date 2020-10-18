@@ -1,7 +1,6 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
@@ -45,12 +44,11 @@ public class CommandCommands {
             command = command.replaceFirst("/", "");
         }
 
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null) {
             rank.rankUpCommands = new ArrayList<>();
@@ -81,12 +79,11 @@ public class CommandCommands {
             command = command.replaceFirst("/", "");
         }
 
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null) {
             rank.rankUpCommands = new ArrayList<>();
@@ -115,12 +112,11 @@ public class CommandCommands {
     public void commandList(CommandSender sender, 
     		@Arg(name = "rankName") String rankName) {
     	
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
             Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.name);

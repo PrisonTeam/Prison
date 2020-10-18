@@ -755,7 +755,7 @@ public class ListenersPrisonManager implements Listener {
     private void RanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Get the rank
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
+        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional(buttonNameMain);
 
         // Check if the rank exist
         if (!rankOptional.isPresent()) {
@@ -827,7 +827,7 @@ public class ListenersPrisonManager implements Listener {
         String rankName = parts[1];
 
         // Get the rank
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
 
         // Check the button name and do the actions
         if (buttonname.equalsIgnoreCase("RankupCommands")){

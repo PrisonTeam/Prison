@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import tech.mcprison.prison.PrisonAPI;
@@ -52,7 +53,10 @@ public class RankManager {
      */
 
     private Collection collection;
+    
     private List<Rank> loadedRanks;
+    private TreeMap<String, Rank> ranksByName;
+    private TreeMap<Integer, Rank> ranksById;
 
     private  CommandCommands rankCommandCommands;
     private RanksCommands ranksCommands;
@@ -69,13 +73,35 @@ public class RankManager {
      */
     public RankManager(Collection collection) {
         this.collection = collection;
+        
         this.loadedRanks = new ArrayList<>();
+        this.ranksByName = new TreeMap<>();
+        this.ranksById = new TreeMap<>();
     }
 
     /*
      * Methods & Getters & Setters
      */
+    
+    private void addRank( Rank rank ) {
+    	if ( rank != null ) {
+    		getLoadedRanks().add( rank );
+    		getRanksByName().put( rank.getName(), rank );
+    		getRanksById().put( rank.id, rank );
+    	}
+    }
+    
+    private void removeRankFromCollections( Rank rank ) {
+    	if ( rank != null ) {
+    		getLoadedRanks().remove( rank );
+    		getRanksByName().remove( rank.getName() );
+    		getRanksById().remove( rank.id );
+    	}
+    	
+    }
 
+    
+    
     /**
      * Loads a rank from a file into the loaded ranks list.
      * After this method is called, the rank will be ready for use in the server.
@@ -85,7 +111,9 @@ public class RankManager {
      */
     public void loadRank(String rankFile) throws IOException {
         Document document = collection.get(rankFile).orElseThrow(IOException::new);
-        loadedRanks.add(new Rank(document));
+        
+        addRank( new Rank(document) );
+//        loadedRanks.add(new Rank(document));
     }
 
     /**
@@ -96,7 +124,8 @@ public class RankManager {
      */
     public void loadRanks() throws IOException {
         List<Document> ranks = collection.getAll();
-        ranks.forEach(document -> loadedRanks.add(new Rank(document)));
+        ranks.forEach(document -> addRank(new Rank(document)));
+//        ranks.forEach(document -> loadedRanks.add(new Rank(document)));
     }
 
     /**
@@ -148,7 +177,8 @@ public class RankManager {
         newRank.rankUpCommands = new ArrayList<>();
 
         // ... add it to the list...
-        loadedRanks.add(newRank);
+        addRank(newRank);
+//        loadedRanks.add(newRank);
         
         // Reset the rank relationships:
         connectRanks();
@@ -164,28 +194,52 @@ public class RankManager {
      * @return The next available rank's ID.
      */
     private int getNextAvailableId() {
-        // Set the highest to -1 for now, since we'll add one at the end
-        int highest = -1;
-
-        // If anything's higher, it's now the highest...
-        for (Rank rank : loadedRanks) {
-            if (highest < rank.id) {
-                highest = rank.id;
-            }
-        }
-
-        return highest + 1;
+    	
+    	int current = (getRanksById().size() == 0 ?
+    				-1 : getRanksById().lastKey().intValue());
+    	
+    	return current + 1;
+    	
+//        // Set the highest to -1 for now, since we'll add one at the end
+//        int highest = -1;
+//
+//        // If anything's higher, it's now the highest...
+//        for (Rank rank : loadedRanks) {
+//            if (highest < rank.id) {
+//                highest = rank.id;
+//            }
+//        }
+//
+//        return highest + 1;
     }
 
     /**
-     * Returns the rank with the specified name.
+     * <p>Returns the rank with the specified name.
+     * </p>
+     * 
+     * <p>Deprecated: use the non-Optional getRank() instead.
+     * </p>
      *
      * @param name The rank's name, case-sensitive.
      * @return An optional containing either the {@link Rank} if it could be found, or empty if it does not exist by the specified name.
      */
-    public Optional<Rank> getRank(String name) {
+    @Deprecated 
+    public Optional<Rank> getRankOptional(String name) {
         return loadedRanks.stream().filter(rank -> rank.name.equals(name)).findFirst();
     }
+
+    /**
+     * <p>The preferred way to get a rank by name. This has better performance.
+     * </p>
+     * 
+     * @param name
+     * @return
+     */
+    public Rank getRank(String name) {
+    	return getRanksByName().get( name );
+    }
+    
+    
     
     /**
      * Returns the first rank that has an escaped name that has the & replaced with -.
@@ -250,7 +304,8 @@ public class RankManager {
         }
 
         // Remove it from the list...
-        loadedRanks.remove(rank);
+        removeRankFromCollections( rank );
+//        loadedRanks.remove(rank);
         
         // Reset the rank relationships:
         connectRanks();
@@ -266,10 +321,15 @@ public class RankManager {
      * @param id The rank's ID.
      * @return An optional containing either the {@link Rank} if it could be found, or empty if it does not exist by the specified id.
      */
-    public Optional<Rank> getRank(int id) {
+    @Deprecated 
+    public Optional<Rank> getRankOptional(int id) {
         return loadedRanks.stream().filter(rank -> rank.id == id).findFirst();
     }
 
+    public Rank getRank( int id ) {
+    	return getRanksById().get( id );
+    }
+    
     /**
      * Returns a list of all the loaded ranks on the server.
      *
@@ -453,6 +513,23 @@ public class RankManager {
 		}
 	}
 
+	
+	
+	
+	
+	private List<Rank> getLoadedRanks() {
+		return loadedRanks;
+	}
+
+	private TreeMap<String, Rank> getRanksByName() {
+		return ranksByName;
+	}
+
+	private TreeMap<Integer, Rank> getRanksById() {
+		return ranksById;
+	}
+	
+	
 	public CommandCommands getRankCommandCommands() {
 		return rankCommandCommands;
 	}

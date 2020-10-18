@@ -340,7 +340,7 @@ public class RankUtil {
         	} 
         	
         	if ( targetRank == null && rankName != null ) {
-        		Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank( rankName );
+        		Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional( rankName );
         		
         		if ( rankOptional.isPresent() ) {
         			targetRank = rankOptional.get();

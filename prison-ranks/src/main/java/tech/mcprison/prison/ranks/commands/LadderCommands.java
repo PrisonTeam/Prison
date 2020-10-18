@@ -110,17 +110,22 @@ public class LadderCommands {
             new BulletedListComponent.BulletedListBuilder();
         
         boolean first = true;
-        for (RankLadder.PositionRank rank : ladder.get().ranks) {
-            Optional<Rank> rankOptional =
-                PrisonRanks.getInstance().getRankManager().getRank(rank.getRankId());
-            if(!rankOptional.isPresent()) {
-                continue; // Skip it
-            }
+        for (RankLadder.PositionRank rankPos : ladder.get().ranks) {
+        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
+        	if ( rank == null ) {
+        		continue;
+        	}
+        	
+//            Optional<Rank> rankOptional =
+//                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
+//            if(!rankOptional.isPresent()) {
+//                continue; // Skip it
+//            }
             
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
 
-            builder.add("&3#%d &8- &3%s %s", rank.getPosition(),
-                rankOptional.get().name, 
+            builder.add("&3#%d &8- &3%s %s", rankPos.getPosition(),
+                rank.name, 
                 (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
             	);
             first = false;
@@ -164,13 +169,14 @@ public class LadderCommands {
             return;
         }
 
-        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rank.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+//        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
 
-        if (ladder.get().containsRank(rank.get().id)) {
+        if (ladder.get().containsRank(rank.id)) {
             Output.get()
                 .sendError(sender, "The ladder '%s' already contains the rank '%s'.", ladderName,
                     rankName);
@@ -178,16 +184,16 @@ public class LadderCommands {
         }
 
         if (position > 0) {
-            ladder.get().addRank(position, rank.get());
+            ladder.get().addRank(position, rank);
         } else {
-            ladder.get().addRank(rank.get());
+            ladder.get().addRank(rank);
         }
 
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
             
             Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
-            		rank.get().name, ladder.get().name, Integer.toString( position ));
+            		rank.name, ladder.get().name, Integer.toString( position ));
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
@@ -206,18 +212,19 @@ public class LadderCommands {
             return;
         }
 
-        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rank.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+//        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
 
-        ladder.get().removeRank(ladder.get().getPositionOfRank(rank.get()));
+        ladder.get().removeRank(ladder.get().getPositionOfRank(rank));
 
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
 
-            Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.get().name,
+            Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.name,
             		ladder.get().name);
         } catch (IOException e) {
             Output.get().sendError(sender,

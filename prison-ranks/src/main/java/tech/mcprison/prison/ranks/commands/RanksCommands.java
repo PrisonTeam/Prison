@@ -68,7 +68,7 @@ public class RanksCommands {
 		boolean success = false;
 
         // Ensure a rank with the name doesn't already exist
-        if (PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
+        if (PrisonRanks.getInstance().getRankManager().getRank(name) != null) {
             Output.get()
                 .sendWarn(sender, "A rank by this name already exists. Try a different name.");
             return success;
@@ -207,11 +207,9 @@ public class RanksCommands {
 		
 		// What's left over, if not just a blank string, must be an error:
 		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
-		if ( options == null || 
-				!"full".equalsIgnoreCase( options ) && !"ranks".equalsIgnoreCase( options ) && 
-				!"mines".equalsIgnoreCase( options ) && !options.startsWith( "price=" )) {
+		if ( options.trim().length() != 0 ) {
 			Output.get().sendError(sender,
-	                "Invalid options.  Use either [full, ranks, mines, price=x].  Was: %s",
+	                "Invalid options..  Use either [full, ranks, mines, price=x].  Was: [%s]",
 	                options == null ? "null" : options );
 			return;
 		}
@@ -344,13 +342,11 @@ public class RanksCommands {
     								onlyPlayers = false, permissions = "ranks.delete")
     public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
         // Check to ensure the rank exists
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-
-        Rank rank = rankOptional.get();
 
         if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.id)
             && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
@@ -513,17 +509,15 @@ public class RanksCommands {
     							altPermissions = "ranks.admin" )
     public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
     	
-        Optional<Rank> rankOpt = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOpt.isPresent()) {
-        	rankOpt = PrisonRanks.getInstance().getRankManager().getRankEscaped(rankName);
-        	if (!rankOpt.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
+//        	rankOpt = PrisonRanks.getInstance().getRankManager().getRankEscaped(rankName);
+//        	if (!rankOpt.isPresent()) {
         		Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
         		return;
-        	}
+//        	}
         }
 
-        Rank rank = rankOpt.get(); 
-        
         List<RankLadder> ladders =
             PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.id);
 
@@ -587,13 +581,12 @@ public class RanksCommands {
     public void setCost(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
     		@Arg(name = "cost", description = "The cost of this rank.") double cost){
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
         
-        Rank rank = rankOptional.get();
         rank.cost = cost;
         
         // Save the rank
@@ -615,8 +608,8 @@ public class RanksCommands {
     		@Arg(name = "rankName") String rankName, 
     		@Arg(name = "currency", description = "The currency to use with this rank.") String currency){
     	
-    	Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-    	if (!rankOptional.isPresent()) {
+    	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+    	if ( rank == null ) {
     		Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
     		return;
     	}
@@ -636,7 +629,6 @@ public class RanksCommands {
     	}
     	
     	
-    	Rank rank = rankOptional.get();
     	rank.currency = currency;
     	
     	// Save the rank
@@ -656,13 +648,13 @@ public class RanksCommands {
     public void setTag(CommandSender sender, 
     				@Arg(name = "rankName") String rankName, 
     				@Arg(name = "tag", description = "The desired tag.") String tag){
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+    	
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
             return;
         }
         
-        Rank rank = rankOptional.get();
         rank.tag = tag;
         
         // Save the rank
