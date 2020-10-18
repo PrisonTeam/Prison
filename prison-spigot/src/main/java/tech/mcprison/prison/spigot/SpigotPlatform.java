@@ -728,8 +728,46 @@ class SpigotPlatform implements Platform {
 			}
 		}
 		
-
-
+		return results;
+	}
+	
+	/**
+	 * <p>This function will create the specified ModuleElement.  It will create the minimal 
+	 * possible element, of which, the settings can then be changed.  If the create was
+	 * successful, then it will return the element, otherwise it will return a null.
+	 * </p>
+	 * 
+	 * <p>Minimal mines will be a virtual mine, but with the tag set.
+	 * </p>
+	 * 
+	 * <p>Minimal rank will be placed on the default ladder with a cost of zero.
+	 * </p>
+	 * 
+	 */
+	public ModuleElement createModuleElement( tech.mcprison.prison.internal.CommandSender sender, 
+					ModuleElementType elementType, String name, String tag ) {
+		ModuleElement results = null;
+		
+		if ( elementType == ModuleElementType.MINE ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			Mine mine = mm.getMine( name );
+			if ( mine == null ) {
+				PrisonMines.getInstance().getMinesCommands().createCommand( sender, "virtual", name );
+				mine = mm.getMine( name );
+				mine.setTag( tag );
+				
+				results = mine;
+			}
+		}
+		else if ( elementType == ModuleElementType.RANK ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
+			
+			Rank rank = rm.getRank( name ).orElseGet( null );
+			
+			results = rank;
+		}
+		
 		return results;
 	}
 }

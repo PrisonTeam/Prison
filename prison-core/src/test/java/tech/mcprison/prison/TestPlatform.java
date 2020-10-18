@@ -248,4 +248,8 @@ public class TestPlatform implements Platform {
 		return false;
 	}
 
+	@Override
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag ) {
+		return null;
+	}
 }
