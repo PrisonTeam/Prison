@@ -53,7 +53,7 @@
 
 **RANKS COMMANDS**:
 
-- [/ranks \[ladder\] ](docs-commands/prison_docs_command_42_ranks_autoconfigure.md) `ranks.set`
+- [/ranks autoConfigure \[arg\] \[startPrice\] \[multiplier\] ](docs-commands/prison_docs_command_42_ranks_autoconfigure.md) `ranks.set`
 - [/ranks \[ladder\] ](docs-commands/prison_docs_command_11_ranks.md) `ranks.admin`
 - [/ranks command](docs-commands/prison_docs_command_12_ranks_command.md) `prison.alerts`
 - [/ranks create \[rankName\] \[cost\] \[ladder\] \[tag\] ](docs-commands/prison_docs_command_13_ranks_create.md) `ranks.create`

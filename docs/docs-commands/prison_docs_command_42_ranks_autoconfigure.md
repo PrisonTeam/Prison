@@ -1,7 +1,7 @@
 ### Prison Documentation - **WORK-IN-PROGRESS**
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
-##Permission:
+## Permission:
 
 - `ranks.set`
 
