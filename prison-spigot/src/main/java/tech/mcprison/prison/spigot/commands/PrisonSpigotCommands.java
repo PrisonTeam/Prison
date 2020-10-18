@@ -22,7 +22,6 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
-import tech.mcprison.prison.spigot.setup.RanksChatSetup;
 
 import java.util.Objects;
 
@@ -50,16 +49,6 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
                     e.setCancelled(true);
                 } else if (message.equalsIgnoreCase("confirm")) {
                     Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-                    e.setCancelled(true);
-                    isChatEventActive = false;
-                }
-            } else if (mode.equalsIgnoreCase("ranksSetup")){
-                if (message.equalsIgnoreCase("cancel")) {
-                    isChatEventActive = false;
-                    p.sendMessage(SpigotPrison.format("&cRanks setup cancelled"));
-                    e.setCancelled(true);
-                } else if (message.equalsIgnoreCase("confirm")) {
-                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> RanksChatSetup.get().setup(senderOfCommand));
                     e.setCancelled(true);
                     isChatEventActive = false;
                 }
@@ -130,65 +119,6 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
                 return true;
             }
             return prisonManagerGUI(sender, p);
-
-        } else if (args[0].equalsIgnoreCase("setup")){
-
-            //if (haveGuiRequirements(sender) || !(guiConfig.getString("Options.Setup.EnabledGUI").equalsIgnoreCase("true")) || p == null){
-                return setupByChat(sender, messages, args);
-            //} else {
-            //    return setupByGui(p, messages, args);
-            //}
-        }
-
-        return true;
-    }
-
-    private boolean setupByChat(CommandSender sender, Configuration messages, String[] args){
-
-        if (!sender.hasPermission("prison.setup") || !sender.hasPermission("prison.admin")){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.MissingPermission")));
-            return true;
-        }
-
-        if (args.length == 1){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.WrongFormat")));
-            return true;
-        }
-
-        if (args[1].equalsIgnoreCase("ranks")){
-
-            isChatEventActive = true;
-            sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
-            sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
-            mode = "ranksSetup";
-            senderOfCommand = sender;
-            id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                if (isChatEventActive) {
-                    isChatEventActive = false;
-                    sender.sendMessage(SpigotPrison.format("&cYou ran out of time, ranks setup cancelled."));
-                }
-            }, 20L * 15);
-
-        } else {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.WrongFormat")));
-        }
-
-        return true;
-    }
-
-    private boolean setupByGui(Player p, Configuration messages, String[] args){
-
-        if (!p.hasPermission("prison.setup") || !p.hasPermission("prison.admin")){
-            p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.MissingPermission")));
-            return true;
-        }
-
-        if (args.length == 1){
-            p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.WrongFormat")));
-            return true;
-        }
-
-        if (args[1].equalsIgnoreCase("ranks")){
 
         }
 
