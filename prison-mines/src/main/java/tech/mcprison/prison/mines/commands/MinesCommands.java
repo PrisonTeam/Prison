@@ -103,7 +103,7 @@ public class MinesCommands {
     	}
 
         if ( mineName == null || mineName.contains( " " ) || mineName.trim().length() == 0 ) {
-        	sender.sendMessage( "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
+        	sendMessage( sender, "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
     		return;
         }
         mineName = mineName.trim();
@@ -111,7 +111,7 @@ public class MinesCommands {
     	Player player = getPlayer( sender );
     	
     	if ( !virtual && (player == null || !player.isOnline())) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+    		sendMessage( sender, "&3You must be a player in the game to run this command." );
     		return;
     	}
 
@@ -132,14 +132,14 @@ public class MinesCommands {
     		selection = Prison.get().getSelectionManager().getSelection(player);
     		if (!selection.isComplete()) {
     			pMines.getMinesMessages().getLocalizable("select_bounds")
-    			.sendTo(sender, LogLevel.ERROR);
+    						.sendTo(sender, LogLevel.ERROR);
     			return;
     		}
     		
     		if (!selection.getMin().getWorld().getName()
     				.equalsIgnoreCase(selection.getMax().getWorld().getName())) {
     			pMines.getMinesMessages().getLocalizable("world_diff")
-    			.sendTo(sender, LogLevel.ERROR);
+    						.sendTo(sender, LogLevel.ERROR);
     			return;
     		}
     	}
@@ -149,16 +149,28 @@ public class MinesCommands {
         
         Mine mine = new Mine(mineName, selection);
         pMines.getMineManager().add(mine);
-        pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
         
         if ( mine.isVirtual() ) {
-        	player.sendMessage( "You just created a virtual mine. You can configure it but you will not " +  
-        					"be able to use it until you use the command &7/mines set area");
+        	sendMessage( sender, "&3Virtual mine created: use command " +
+        			"&7/mines set area &3 to enable as a normal mine." );
+        }
+        else {
+        	pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
         }
         
-        // Delete the selection:
-        Prison.get().getSelectionManager().clearSelection((Player) sender);
-
+        if ( !virtual && sender != null && sender instanceof Player ) {
+        	// Delete the selection:
+        	Prison.get().getSelectionManager().clearSelection((Player) sender);
+        }
+    }
+    
+    private void sendMessage( CommandSender sender, String message ) {
+    	if ( sender == null ) {
+    		Output.get().logInfo( message );
+    	}
+    	else {
+    		sender.sendMessage( message );
+    	}
     }
     
     @Command(identifier = "mines rename", description = "Creates a new mine.", 
@@ -1035,7 +1047,7 @@ public class MinesCommands {
 //        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
         	
-        	{
+        	if ( !m.isVirtual() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
         				Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
@@ -1046,7 +1058,7 @@ public class MinesCommands {
         	}
         	
         	
-        	{
+        	if ( !m.isVirtual() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
         				dFmt.format( m.getRemainingBlockCount() ), 
@@ -1074,7 +1086,7 @@ public class MinesCommands {
         	}
         	
         	
-        	{
+        	if ( !m.isVirtual() ) {
         		RowComponent row = new RowComponent();
         		if ( m.getResetThresholdPercent() == 0 ) {
         			row.addTextComponent( "&3Reset Threshold: &cDISABLED");
@@ -1462,11 +1474,13 @@ public class MinesCommands {
             				new FancyMessage(dFmt.format(m.getResetCount())).
             				tooltip( "Times the mine was reset." ) );
             		
-            		
-            		row2.addTextComponent( " &3 Vol: &7" );
-            		row2.addFancy( 
-            				new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
-            				tooltip( "Volume in Blocks" ) );
+            		if ( !m.isVirtual() ) {
+            			
+            			row2.addTextComponent( " &3 Vol: &7" );
+            			row2.addFancy( 
+            					new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
+            					tooltip( "Volume in Blocks" ) );
+            		}
             		
             		
 //       	 String noteMode = m.getNotificationMode().name() + 
@@ -1799,8 +1813,9 @@ public class MinesCommands {
         	
         	pMines.getMineManager().saveMine( m );
         	
-        	double blocks =  m.getBounds().getTotalBlockCount() * 
-								m.getResetThresholdPercent() / 100.0d;
+        	double blocks = m.isVirtual() ? 0 :
+        						m.getBounds().getTotalBlockCount() * 
+									m.getResetThresholdPercent() / 100.0d;
         	
             DecimalFormat dFmt = new DecimalFormat("#,##0");
             DecimalFormat fFmt = new DecimalFormat("#,##0.00");

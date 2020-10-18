@@ -300,7 +300,7 @@ public class RanksCommands {
 				Output.get().logInfo( "Ranks autoConfigure: %d rank commands were created.", countRanks);
 				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> was " +
 						"created for each rank. Make sure you add every permission to your " +
-						"permission plugin or they may not work. " +
+						"permission plugin or they may not work. ",
 						 perm);
 			}
 		}

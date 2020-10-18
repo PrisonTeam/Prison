@@ -78,9 +78,9 @@ public class RankLadder
         	Rank rankPrison = null;
         	
         	if ( rankManager != null &&  
-    				rankManager.getRankOptional( rRankId ).isPresent() ) {
+    				rankManager.getRank( rRankId ) !=  null) {
 
-        		rankPrison = rankManager.getRankOptional( rRankId ).get();
+        		rankPrison = rankManager.getRank( rRankId );
         		
         		// if null look it up from loaded ranks:
         		if ( rRankName == null  ) {
@@ -123,7 +123,7 @@ public class RankLadder
     		
     		if ( rank != null && rank.rank == null ) {
     			//
-    			Rank rnk = rankManager.getRankOptional( rank.rankId ).orElseGet( null );
+    			Rank rnk = rankManager.getRank( rank.rankId );
     			if ( rnk != null ) {
     				rank.rank = rnk;
     			}
