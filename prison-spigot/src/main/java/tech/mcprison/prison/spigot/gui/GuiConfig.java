@@ -12,11 +12,11 @@ import java.util.Objects;
 /**
  * @author GABRYCA
  */
-public class guiConfig {
+public class GuiConfig {
 
     private FileConfiguration conf;
 
-    public guiConfig() {
+    public GuiConfig() {
 
         if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
             return;

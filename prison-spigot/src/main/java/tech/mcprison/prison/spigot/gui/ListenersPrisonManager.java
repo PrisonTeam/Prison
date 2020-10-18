@@ -415,6 +415,21 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
+            // Check the title and do the actions
+            case "Prison Setup -> Confirmation":{
+
+                Configuration messages = SpigotPrison.getMessagesConfig();
+
+                if (parts[0].equalsIgnoreCase("Confirm:")){
+                    Bukkit.dispatchCommand(p, "ranks autoConfigure");
+                } else if (parts[0].equalsIgnoreCase("Cancel:")){
+                    p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.Aborted")));
+                }
+                p.closeInventory();
+                e.setCancelled(true);
+
+                break;
+            }
         }
     }
 

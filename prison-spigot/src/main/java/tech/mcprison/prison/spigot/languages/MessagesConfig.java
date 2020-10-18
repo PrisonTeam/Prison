@@ -12,11 +12,11 @@ import java.io.IOException;
  * @author GABRYCA
  **/
 
-public class messagesConfig {
+public class MessagesConfig {
 
     private FileConfiguration conf;
 
-    public messagesConfig() {
+    public MessagesConfig() {
 
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
@@ -159,6 +159,14 @@ public class messagesConfig {
         dataConfig("Gui.Lore.Volume","&3Volume: &7");
         dataConfig("Gui.Lore.Value", "&3Value: &a$");
         dataConfig("Gui.Lore.World","&3World: &7");
+        dataConfig("Gui.Lore.noRanksFoundSetup", "&3There aren't Ranks!");
+        dataConfig("Gui.Lore.noRanksFoundSetup2", "&3If you want continue the setup.");
+        dataConfig("Gui.Lore.noRanksFoundSetup3", "&3All Ranks and Mines from A to Z will be made");
+        dataConfig("Gui.Lore.noRanksFoundSetup4", "&3With &adefault &3values!");
+        dataConfig("Gui.Lore.noRanksFoundSetup5", "&3You can do the same by command:");
+        dataConfig("Gui.Lore.noRanksFoundSetup6", "&1/ranks autoConfigure full <price=x> <mult=x>!");
+        dataConfig("Gui.Lore.noRanksFoundSetup7", "&3Please replace the X with the starting price and");
+        dataConfig("Gui.Lore.noRanksFoundSetup8", "&3multiplier, default price = 50000, multiplier = 1.5.");
         dataConfig("Gui.Message.CantGetRanksAdmin", "&3[PRISON WARN] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled.");
         dataConfig("Gui.Message.NoSellAllItems", "&cSorry but there aren't SellAll Items to show.");
         dataConfig("Gui.Message.EmptyGui","&cSorry, the GUI looks empty.");
@@ -190,7 +198,7 @@ public class messagesConfig {
         dataConfig("Setup.Message.WrongFormat", "&7[&cError&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3Info&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
         dataConfig("Setup.Message.SuccessRanksSetup", "&7[&3Info&7] &3The ranks setup got completed with &asuccess&3 and the ranks got added to the default ladder,\n please check the logs if something's missing!");
-
+        dataConfig("Setup.Message.Aborted", "&7[&3Info&7] &3Prison Setup Cancelled.");
     }
 
     public FileConfiguration getFileGuiMessagesConfig(){

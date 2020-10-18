@@ -65,9 +65,9 @@ import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.GUIListener;
-import tech.mcprison.prison.spigot.gui.guiConfig;
+import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
-import tech.mcprison.prison.spigot.languages.messagesConfig;
+import tech.mcprison.prison.spigot.languages.MessagesConfig;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -155,7 +155,7 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         
-        new guiConfig();
+        new GuiConfig();
 
         GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
@@ -168,10 +168,10 @@ public class SpigotPrison extends JavaPlugin {
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
 
         // Generate first time files experimental
-        messagesConfig messagesConfig = new messagesConfig();
+        MessagesConfig messagesConfig = new MessagesConfig();
         messagesConfig.messagesConfigGen();
 
-        guiConfig optionsGUI = new guiConfig();
+        GuiConfig optionsGUI = new GuiConfig();
         optionsGUI.guiConfigGen();
 
         sellAllConfig optionsSellAll = new sellAllConfig();
@@ -240,7 +240,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public static FileConfiguration getGuiConfig(){
-        guiConfig messages = new guiConfig();
+        GuiConfig messages = new GuiConfig();
         return messages.getFileGuiConfig();
     }
 
@@ -250,7 +250,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public static FileConfiguration getMessagesConfig(){
-        messagesConfig messagesConfig = new messagesConfig();
+        MessagesConfig messagesConfig = new MessagesConfig();
         return messagesConfig.getFileGuiMessagesConfig();
     }
     

@@ -20,6 +20,7 @@ import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -53,8 +54,9 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoMines")));
             p.closeInventory();
+            PrisonSetupGUI gui = new PrisonSetupGUI(p);
+            gui.open();
             return;
         }
 

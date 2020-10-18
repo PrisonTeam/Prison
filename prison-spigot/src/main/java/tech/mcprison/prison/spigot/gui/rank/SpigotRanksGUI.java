@@ -18,6 +18,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -60,8 +61,9 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.EmptyGui")));
             p.closeInventory();
+            PrisonSetupGUI gui = new PrisonSetupGUI(p);
+            gui.open();
             return;
         }
 
