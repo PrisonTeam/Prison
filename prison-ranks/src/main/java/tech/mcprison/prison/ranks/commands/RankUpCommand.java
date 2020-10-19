@@ -62,7 +62,7 @@ public class RankUpCommand {
     			permissions = "ranks.user", 
     			altPermissions = "ranks.rankupmax.[ladderName] ranks.rankupmax.prestige", 
     			onlyPlayers = false) 
-    public void rankUpMax(Player sender,
+    public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
     	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax." );
@@ -70,13 +70,13 @@ public class RankUpCommand {
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
 			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
-    public void rankUp(Player sender,
+    public void rankUp(CommandSender sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
 
-    private void rankUpPrivate(Player sender, String ladder, RankupModes mode, String permission ) {
+    private void rankUpPrivate(CommandSender sender, String ladder, RankupModes mode, String permission ) {
 
         // RETRIEVE THE LADDER
 
@@ -98,7 +98,9 @@ public class RankUpCommand {
         	return;
         }
         
-        UUID playerUuid = sender.getUUID();
+        Player player = getPlayer( sender, null );
+        
+        //UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
 		if ( ladder == null ) {
@@ -106,7 +108,7 @@ public class RankUpCommand {
 			return;
 		}
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, sender.getName() );
+        RankPlayer rankPlayer = getPlayer( sender, player.getUUID(), player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
 		Rank pRankSecond = rankPlayer.getRank("default");
 		Rank pRankAfter = null;
@@ -161,17 +163,17 @@ public class RankUpCommand {
 
         	
         	// Prestige method
-        	prestigePlayer(sender, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+        	prestigePlayer(player, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
         }
 	}
 
-	private void prestigePlayer(Player sender, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+	private void prestigePlayer(Player player, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
 		// Get the player rank after, just to check if it has success
     	Rank pRankSecond;
     	// Conditions
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 			// Set the player rank to the first one of the default ladder
-			PrisonAPI.dispatchCommand("ranks set rank " + sender.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
+			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
 			// Check if the ranks match
@@ -179,9 +181,9 @@ public class RankUpCommand {
 				// Get economy
 				EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
 				// Set the player balance to 0 (reset)
-				economy.setBalance(sender, 0);
+				economy.setBalance(player, 0);
 				// Send a message to the player because he did prestige!
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
+				player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
 			}
 		}
 	}

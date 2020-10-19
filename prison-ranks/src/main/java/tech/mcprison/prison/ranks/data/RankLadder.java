@@ -118,9 +118,6 @@ public class RankLadder
     	
     	for ( PositionRank rank : ranks ) {
     		
-    		Output.get().logInfo( "#### rank is null = " + (rank == null) + 
-    						"  rank.rankId = " + (rank == null ? "null" : rank.rankId ) );
-    		
     		if ( rank != null && rank.rank == null ) {
     			//
     			Rank rnk = rankManager.getRank( rank.rankId );

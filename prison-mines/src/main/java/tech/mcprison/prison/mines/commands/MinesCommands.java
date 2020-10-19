@@ -2297,8 +2297,10 @@ public class MinesCommands {
 	
 
     
-    @Command(identifier = "mines wand", permissions = "mines.wand", description = "Receive a wand to select a mine area.")
-    public void wandCommand(Player sender) {
+    @Command(identifier = "mines wand", permissions = "mines.wand", 
+    		description = "Receive a wand to select a mine area.", 
+    		onlyPlayers = false )
+    public void wandCommand(CommandSender sender) {
     	
     	Player player = getPlayer( sender );
     	
@@ -2307,7 +2309,7 @@ public class MinesCommands {
     		return;
     	}
 
-        Prison.get().getSelectionManager().bestowSelectionTool(sender);
+        Prison.get().getSelectionManager().bestowSelectionTool(player);
         sender.sendMessage(
             "&3Here you go! &7Left click to select the first corner, and right click to select the other.");
     }
