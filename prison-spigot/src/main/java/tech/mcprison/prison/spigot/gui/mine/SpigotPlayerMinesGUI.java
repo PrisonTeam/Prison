@@ -9,11 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -97,8 +101,31 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         Material material;
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
+        /**
+         * The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
+         * based upon the XMaterial enumeration name, or supported past names.
+         */
+        Material mineMaterial = null;
+        String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
+        if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
+        	XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
+        	if ( mineXMaterial != null ) {
+        		mineMaterial = mineXMaterial.parseMaterial();
+        	}
+        	else {
+        		Output.get().logInfo( "Warning: A block was specified for mine %s but it was " +
+        				"unable to be mapped to an XMaterial type. Key = " +
+        				"[Options.Mines.MaterialType.%s] value = " +
+        				"[%s] Please use valid material names as found in the XMaterial " +
+        				"source on git hub: " +
+        				"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/" +
+        				"com/cryptomorin/xseries/XMaterial.java ", 
+        				m.getName(), m.getName(), mineXMaterial );
+        	}
+        }
+
         if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
-            material = Material.COAL_ORE;
+            material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
             minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.StatusUnlockedMine")));
             minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ClickToTeleport")));
         } else {
