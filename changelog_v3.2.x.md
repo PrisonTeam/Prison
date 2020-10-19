@@ -10,6 +10,13 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-10-18
 
+* **Wraping up changes on virtual mines**
+Fixes issues with virual mines. Allows full configurations of vitual mines except for setting the area and spawn point.
+
+
+* **Bug Fix: Found the wrong parameter was being used on a few commands**
+Fixes some hard to find problems where the wrong parameter was being supplied to the commands.  It would work most of the time, but under some conditions it would fail.  Was using a parameter of Player instead of CommandSender. 
+
 
 * **Added a logCore feature that does not try to translate colors...**
 this helps to bypass exceptions if an exception is trapped.
