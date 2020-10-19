@@ -234,22 +234,23 @@ public class RanksCommands {
 		
 //
         String permCmd = null;
-        String perm = "prison.rank.";
+        String perm1 = "mines.";
+        String perm2 = "mines.tp.";
         
         if ( plugins.containsKey("LuckPerms") ){
-        	permCmd = "lp user {player} permission set " + perm;
+        	permCmd = "lp user {player} permission set ";
         } 
         else if ( plugins.containsKey("PermissionsEx") ){
-        	permCmd = "pex user {player} add " + perm;
+        	permCmd = "pex user {player} add ";
         } 
         else if ( plugins.containsKey("UltraPermissions") ){
-        	permCmd = "upc addplayerpermission {player} " + perm;
+        	permCmd = "upc addplayerpermission {player} ";
         } 
         else if ( plugins.containsKey("zPermissions") ){
-        	permCmd = "permissions player {player} set " + perm;
+        	permCmd = "permissions player {player} set ";
         } 
         else if ( plugins.containsKey("PowerfulPerms") ){
-        	permCmd = "pp user {player} add " + perm;
+        	permCmd = "pp user {player} add ";
         }
 
 
@@ -273,7 +274,9 @@ public class RanksCommands {
 	        		countRanks++;
 	        		
 	        		if ( permCmd != null ) {
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + rankName);
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + perm1 + rankName);
+	        			countRankCmds++;
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + perm2 + rankName);
 	        			countRankCmds++;
 	        		}
 	        		
@@ -314,10 +317,11 @@ public class RanksCommands {
 			}
 			else {
 				Output.get().logInfo( "Ranks autoConfigure: %d rank commands were created.", countRanks);
-				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> was " +
+				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> and " +
+						"%s<rankName> was " +
 						"created for each rank. Make sure you add every permission to your " +
 						"permission plugin or they may not work. ",
-						 perm);
+						 perm1, perm2 );
 			}
 		}
 		
