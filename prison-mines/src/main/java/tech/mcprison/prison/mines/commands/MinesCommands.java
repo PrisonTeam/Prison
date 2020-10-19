@@ -98,7 +98,7 @@ public class MinesCommands {
     			// Combine virtualMine to the beginning of the mineName if it exists.  It was not
     			// intended to be the virtualMine parameter. Yes, adding a space will be an error, but
     			// they added it any way.
-    			mineName = virtualMine + (mineName == null ? "" : " " + mineName.trim() );
+    			mineName = virtualMine + (mineName == null ? "" : " " + mineName.trim() ).trim();
     		}
     	}
 
