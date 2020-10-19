@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.2-alpha.6 - 2020-10-19
 
 
+* **New feature: produce a warning when the first parameter of any prison command is not a CommandSender.**
+Parameters using Player has been causing stack traces under different circumstances because the prison command handler ALWAYS passes a CommandSender object as the first parameter, therefore that is the type it needs to be to prevent a method type mismatch exception.  The new changes will provide a warning when starting prison; it should ideally be caught at compile time but it can't.
+
+
+
 * **tag v3.2.2-alpha.6 - 2020-10-19** Bump the version due to significant changes.
 It needs more testing prior to being released to the alpha channel.
 

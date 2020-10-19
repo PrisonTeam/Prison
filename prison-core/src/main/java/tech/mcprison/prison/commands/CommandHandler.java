@@ -38,6 +38,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
@@ -312,6 +313,25 @@ public class CommandHandler {
                 }
             }
 
+            // Validate that the first parameter, if it exists, is actually a CommandSender:
+            if ( method.getParameterCount() > 0 ) {
+            	
+            	// The first parameter "should" be CommandSender:
+            	Class<?> cmdSender = method.getParameterTypes()[0];
+            	
+            	if ( !cmdSender.getSimpleName().equalsIgnoreCase( "CommandSender") ) {
+            		Output.get().logWarn( 
+            			String.format( 
+            				"Possible issue has been detected with a prison command where " +
+            				"the first parameter is not a CommandSender: " +
+            				"class = [%s] method = [%s] first parameter type = [%s]"
+            				, method.getDeclaringClass().getSimpleName(), method.getName(),
+            				cmdSender.getSimpleName()
+            					));
+            	}
+            	
+            }
+            
             mainCommand.set(commands, method);
         }
     }
