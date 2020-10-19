@@ -13,19 +13,16 @@ issues, and/or to serve as items that should be added, or fixed.
 * **ranks autoConfigure - Feature Ideas**
 - Generate default blocks for all mines.
 - Add perms for /mines tp
-- 
+- option for using EssentialsX warps instead: essentials.warps.<mineName>
+- Perm names: mines.tp.<mineName>, mines.<mineName>
 
 
 * **Commands - Enhancement**
-Be able to select commands for edit and deletion, or even moving, with line numbers.
+Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
 
 
 * **EX with auto pickup**
 For certain blocks such as coal, diamonds, other... provide xp...
-
-
-* **Rename Mines**
-Been a few requests to be able to rename mines.  Since so much can go wrong with manually changing the files, this should be a reasonable new feature added before beta.
 
 
 * **New Block Model - Implement in parallel**
@@ -46,18 +43,6 @@ Implement and have a fully functional new block handling mechanism that operate 
 * **Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
  Blue should work on this.
 
-
- 
-
- 
- * **Problem with rank removal from Ladders**
-Create a new rank to the default ladder.  Add a player to it. Then remove the rank from the ladder.
- 
-The ladder no longer contains the rank. But the player is still associated with the rank, but yet ranks cannot contain players if they are not on a ladder.  The commands expect a valid ladder name.  Also there does not appear to be any checks and balances when ranks are moved from one ladder to the other since ranks have no idea what ladder they are in.
-
-This could cause major corruption if moving ranks between ladders, removing ranks from a ladder, and players being associated with those ranks. 
-
-Create a "void" ladder and prevent ladders from being named: default, void, and prestige.  When a rank is removed from a ladder, place it in to none and update all players that use that rank so the rank is still valid.  Do not include void ladders in placeholders.
 
 
 
@@ -304,6 +289,22 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+ 
+
+* **DONE: Rename Mines**
+Been a few requests to be able to rename mines.  Since so much can go wrong with manually changing the files, this should be a reasonable new feature added before beta.
+
+
+ 
+ * **Fixed: Problem with rank removal from Ladders**
+ This was fixed a few weeks ago. Parts of the code was rewritten when implementing the new mine sortOrder code. The bugs were found and fixed at that time.  There is not a new ladder, but the concept of "none" as a ladder exists virtually.  During prison startup all ladders and ranks are displayed within the prison startup details and none is always listed there.
+- Create a new rank to the default ladder.  Add a player to it. Then remove the rank from the ladder.
+- The ladder no longer contains the rank. But the player is still associated with the rank, but yet ranks cannot contain players if they are not on a ladder.  The commands expect a valid ladder name.  Also there does not appear to be any checks and balances when ranks are moved from one ladder to the other since ranks have no idea what ladder they are in.
+- This could cause major corruption if moving ranks between ladders, removing ranks from a ladder, and players being associated with those ranks. 
+- Create a "void" ladder and prevent ladders from being named: default, void, and prestige.  When a rank is removed from a ladder, place it in to none and update all players that use that rank so the rank is still valid.  Do not include void ladders in placeholders.
+
 
 
 
