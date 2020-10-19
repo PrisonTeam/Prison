@@ -249,9 +249,10 @@ public class RanksCommands {
 	        int colorID = 1;
 	        double price = 0;
 
+	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
-	        	String tag = "&7[&" + ((colorID++ % 9) + 1) + rankName + "&7]&f";
+	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]&f";
 	        	
 	        	if ( createRank(sender, rankName, price, "default", tag) ) {
 	        		countRanks++;

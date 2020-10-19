@@ -173,7 +173,7 @@ public class MinesCommands {
     	}
     }
     
-    @Command(identifier = "mines rename", description = "Creates a new mine.", 
+    @Command(identifier = "mines rename", description = "Rename a mine.", 
     		onlyPlayers = false, permissions = "mines.rename")
     public void renameCommand(CommandSender sender,
     			@Arg(name = "mineName", description = "The existing name of the mine.", def = " ") String mineName,
@@ -234,7 +234,7 @@ public class MinesCommands {
         Mine mine = pMines.getMine(mineName);
 
         
-        if ( !mine.isVirtual() ) {
+        if ( mine.isVirtual() ) {
         	sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
         	return;
         }
@@ -395,10 +395,11 @@ public class MinesCommands {
         
         Mine m = pMines.getMine(mineName);
         
-        if ( !m.isEnabled() ) {
-        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-        	return;
-        }
+        // should be able manage blocks even if disabled or virtual:
+//        if ( !m.isEnabled() ) {
+//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//        	return;
+//        }
         
         if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
         	
@@ -930,7 +931,7 @@ public class MinesCommands {
         // Display Mine Info only:
         if ( cmdPageData.getCurPage() == 1 ) {
         	
-        	if ( !m.isVirtual() ) {
+        	if ( m.isVirtual() ) {
         		chatDisplay.text("&cWarning!! This mine is &lVirtual&r&c!! &7Use &3/mines set area &7to enable." );
         	}
         	
@@ -1235,7 +1236,7 @@ public class MinesCommands {
         Mine m = pMines.getMine(mineName);
         
         
-        if ( !m.isVirtual() ) {
+        if ( m.isVirtual() ) {
         	sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
         	return;
         }
@@ -1273,7 +1274,6 @@ public class MinesCommands {
     	Player player = getPlayer( sender );
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
-    	Output.get().logInfo( "### mine sort " + sort + "   " + sortOrder.name() );
     	
     	// If sort was invalid, double check to see if it is a page number or ALL:
     	if ( sortOrder == MineSortOrder.invalid ) {
@@ -2172,7 +2172,7 @@ public class MinesCommands {
     	Mine m = pMines.getMine(mineName);
     	
     	
-        if ( !m.isVirtual() ) {
+        if ( m.isVirtual() ) {
         	sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
         	return;
         }
@@ -2420,10 +2420,6 @@ public class MinesCommands {
     			@Arg(name = "state", def = "before", description = "State can be either before or after.") String state,
     			@Arg(name = "command") @Wildcard String command) {
     	
-//    	if ( 1 < 2 ) {
-//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-//    		return;
-//    	}
 
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -2446,16 +2442,10 @@ public class MinesCommands {
 //    	MineManager mMan = pMines.getMineManager();
         Mine m = pMines.getMine(mineName);
         
-//        if ( !m.isEnabled() ) {
-//        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-//        	return;
-//        }
-
         if ( command == null || command.trim().length() == 0 ) {
         	sender.sendMessage( 
         			String.format( "&7Please provide a valid command: command=[%s]", command) );
         	return;
-        	
         }
         
         String newComand = state + ": " + command;
