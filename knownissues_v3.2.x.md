@@ -10,8 +10,18 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.2
 
 
+* **ranks autoConfigure - Feature Ideas**
+- Generate default blocks for all mines.
+- Add perms for /mines tp
+- 
+
+
+* **Commands - Enhancement**
+Be able to select commands for edit and deletion, or even moving, with line numbers.
+
+
 * **EX with auto pickup**
-For cetain blocks such as coal, diamonds, other... provide xp...
+For certain blocks such as coal, diamonds, other... provide xp...
 
 
 * **Rename Mines**

@@ -8,7 +8,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.5 - 2020-10-18
+## tag v3.2.2-alpha.6 - 2020-10-19
+
+
+* **tag v3.2.2-alpha.6 - 2020-10-19** Bump the version due to significant changes.
+It needs more testing prior to being released to the alpha channel.
+
+
+* **Bug fix: prevent the config files for gui and it's messages from loading from the file every single time it is accessed.**
+And they were accessed everywhere, and for one message, even three to four times just to generate one message.
+This should improve performance significantly for the gui overall.
 
 
 * **Provide a way to get the counts of a given ModuleElementType.**
