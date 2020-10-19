@@ -11,6 +11,23 @@ that you need.
 ## tag v3.2.2-alpha.6 - 2020-10-19
 
 
+* **tag v3.2.2-alpha.6a - 2020-10-19**
+
+* **Fix issue with mine name** 
+that is related to virtual mines if not creating a virtual mine.  An extra space was added to the end of the mine name which was triggering an error message about spaces in mine names.
+
+
+* **Add a second perm to allow mines.tp.<mineName>**
+to be added to each rank that is auto generated.
+will provide support soon for EssentialsX warp...
+
+
+* **New Feature: Allow the user to specify the material name in the GUI config files to use for a mine's block type.**
+The material names are based upon XMaterial for consistancy throughout all versions of spigot/minecraft.
+The format is: Options.Mines.MaterialType.<MineName>
+
+
+
 * **New feature: produce a warning when the first parameter of any prison command is not a CommandSender.**
 Parameters using Player has been causing stack traces under different circumstances because the prison command handler ALWAYS passes a CommandSender object as the first parameter, therefore that is the type it needs to be to prevent a method type mismatch exception.  The new changes will provide a warning when starting prison; it should ideally be caught at compile time but it can't.
 

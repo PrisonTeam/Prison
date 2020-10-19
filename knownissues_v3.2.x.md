@@ -10,6 +10,12 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.2
 
 
+* **Add numeric abbreviations on rank costs**
+ K, M, B, T, Q, etc... 
+ New placeholder? Formatted?
+ https://en.wikipedia.org/wiki/Metric_prefix Use Prefix Symbol column.
+
+
 * **ranks autoConfigure - Feature Ideas**
 - Generate default blocks for all mines.
 - Add perms for /mines tp
