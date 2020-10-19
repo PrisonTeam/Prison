@@ -149,15 +149,35 @@ public class RegisteredCommand {
         try {
             try {
                 method.invoke(methodInstance, resultArgs.toArray());
-            } catch (InvocationTargetException e) {
+            } 
+            catch ( IllegalArgumentException | InvocationTargetException e) {
                 if (e.getCause() instanceof CommandError) {
                     CommandError ce = (CommandError) e.getCause();
                     Output.get().sendError(sender, ce.getColorizedMessage());
                     if (ce.showUsage()) {
                         sender.sendMessage(getUsage());
                     }
-                } else {
-                    throw e;
+                } 
+                else {
+    				StringBuilder sb = new StringBuilder();
+    				
+    				for ( Object arg : resultArgs ) {
+    					sb.append( "[" );
+    					sb.append( arg );
+    					sb.append( "] " );
+    				}
+
+                	String message = "RegisteredCommand.executeMethod(): Invoke error: [" +
+                				e.getMessage() + "] cause: [" +
+                				(e.getCause() == null ? "" : e.getCause().getMessage()) + "] " + 
+                				" target instance: [" +
+                				method.getName() + " " + method.getParameterCount() + " " + 
+                				methodInstance.getClass().getCanonicalName() + "] " +
+                				"command arguments: " + sb.toString()
+                				;
+                	Output.get().sendError( sender, message );
+                	
+//                    throw e;
                 }
             }
         } catch (Exception e) {
