@@ -275,6 +275,7 @@ public interface Platform {
 
 	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag );
 
-
+	
+	public int getModuleElementCount( ModuleElementType elementType );
 	
 }

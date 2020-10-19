@@ -260,4 +260,9 @@ public class TestPlatform implements Platform {
 	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag ) {
 		return null;
 	}
+	
+	@Override
+	public int getModuleElementCount( ModuleElementType elementType ) {
+		return 0;
+	}
 }

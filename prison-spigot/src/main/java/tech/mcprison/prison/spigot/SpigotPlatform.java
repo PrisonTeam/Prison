@@ -682,7 +682,7 @@ class SpigotPlatform implements Platform {
 					
 					RankManager rm = PrisonRanks.getInstance().getRankManager();
 					if ( rm != null ) {
-						Rank rank = rm.getRankOptional( name ).orElse( null );
+						Rank rank = rm.getRank( name );
 						
 						if ( rank != null ) {
 							Mine mine = (Mine) sourceElement;
@@ -770,9 +770,25 @@ class SpigotPlatform implements Platform {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
 			
-			Rank rank = rm.getRankOptional( name ).orElseGet( null );
+			Rank rank = rm.getRank( name );
 			
 			results = rank;
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public int getModuleElementCount( ModuleElementType elementType ) {
+		int results = 0;
+		
+		if ( elementType == ModuleElementType.MINE ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			results = mm.getMines().size();
+		}
+		else if ( elementType == ModuleElementType.RANK ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			results = rm.getRanks().size();
 		}
 		
 		return results;

@@ -70,13 +70,14 @@ public class RanksCommands {
         // Ensure a rank with the name doesn't already exist
         if (PrisonRanks.getInstance().getRankManager().getRank(name) != null) {
             Output.get()
-                .sendWarn(sender, "A rank by this name already exists. Try a different name.");
+                .sendWarn(sender, 
+                		String.format( "&3The rank named &7%s &3already exists. Try a different name.", name) );
             return success;
         }
         
         // Ensure a rank with the name doesn't already exist
         if (name == null || name.trim().length() == 0 || name.contains( "&" )) {
-        	Output.get().sendWarn(sender, "A rank name is required and cannot contain formatting codes.");
+        	Output.get().sendWarn(sender, "&3A rank name is required and cannot contain formatting codes.");
         	return success;
         }
 
@@ -85,7 +86,7 @@ public class RanksCommands {
         Optional<RankLadder> rankLadderOptional =
             PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
         if (!rankLadderOptional.isPresent()) {
-            Output.get().sendWarn(sender, "A ladder by the name of '%s' does not exist.", ladder);
+            Output.get().sendWarn(sender, "&3A ladder by the name of '&7%s&3' does not exist.", ladder);
             return success;
         }
 
@@ -100,7 +101,7 @@ public class RanksCommands {
 
         // Ensure it was created
         if (!newRankOptional.isPresent()) {
-            Output.get().sendError(sender, "The rank could not be created.");
+            Output.get().sendError(sender, "&3The rank could not be created.");
             return success;
         }
 
@@ -125,12 +126,12 @@ public class RanksCommands {
             
             // Tell the player the good news!
             Output.get()
-            	.sendInfo(sender, "Your new rank, '%s', was created in the ladder '%s'", name, ladder);
+            	.sendInfo(sender, "&3Your new rank, '&7%s&3', was created in the ladder '&7%s&3'", name, ladder);
         } catch (IOException e) {
             Output.get().sendError(sender,
-                "The '%s' ladder could not be saved to disk. Check the console for details.",
+                "&3The '&7%s&3' ladder could not be saved to disk. Check the console for details.",
                 rankLadderOptional.get().name);
-            Output.get().logError("Ladder could not be written to disk.", e);
+            Output.get().logError("&3Ladder could not be written to disk.", e);
         }
 
         return success;
@@ -149,7 +150,20 @@ public class RanksCommands {
 				description = "Options: [full ranks mines price=x mult=x]", 
 				def = "full") String options
 			) {
-		String optionHelp = "[full ranks mines price=x mult=x]";
+		
+		int rankCount = PrisonRanks.getInstance().getRankManager().getRanks().size();
+		int mineCount = Prison.get().getPlatform().getModuleElementCount( ModuleElementType.MINE );
+		
+		if ( rankCount > 0 || mineCount > 0 ) {
+			String message = String.format( "&3Cannot run &7/ranks autoConfigure &3 with any " +
+					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d", 
+					rankCount, mineCount );
+			Output.get().logWarn( message );
+			return;
+		}
+		
+		
+		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx&b]";
 		boolean ranks = false;
 		boolean mines = false;
 		double startingPrice = 50000;
@@ -158,7 +172,7 @@ public class RanksCommands {
 		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
 		if ( options.trim().length() == 0 ) {
 			Output.get().sendError(sender,
-					"Invalid options.  Use %s.  Was: %s",
+					"&3Invalid options.  Use %s&3.  Was: &3%s",
 					optionHelp, options );
 			return;
 		}
@@ -209,7 +223,8 @@ public class RanksCommands {
 		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
 		if ( options.trim().length() != 0 ) {
 			Output.get().sendError(sender,
-	                "Invalid options..  Use either [full, ranks, mines, price=x].  Was: [%s]",
+	                "Invalid options..  Use either %s&3.  Was: [%s]",
+	                optionHelp, 
 	                options == null ? "null" : options );
 			return;
 		}

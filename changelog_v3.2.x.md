@@ -10,8 +10,13 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-10-18
 
-* **Wraping up changes on virtual mines**
-Fixes issues with virual mines. Allows full configurations of vitual mines except for setting the area and spawn point.
+
+* **Provide a way to get the counts of a given ModuleElementType.**
+Allows for access in modules that don't have direct access to other modules.
+
+
+* **Wrapping up changes on virtual mines**
+Fixes issues with virtual mines. Allows full configurations of virtual mines except for setting the area and spawn point.
 
 
 * **Bug Fix: Found the wrong parameter was being used on a few commands**
