@@ -113,7 +113,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
 
         LadderManager lm = getRankPlugin().getLadderManager();
         Optional<RankLadder> ladder = lm.getLadder("prestiges");
@@ -151,7 +151,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         if (!ladder.isPresent()){
             player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.LadderPrestigesNotFound")));

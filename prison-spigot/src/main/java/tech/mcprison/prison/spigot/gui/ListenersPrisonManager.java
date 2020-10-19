@@ -418,7 +418,7 @@ public class ListenersPrisonManager implements Listener {
             // Check the title and do the actions
             case "Prison Setup -> Confirmation":{
 
-                Configuration messages = SpigotPrison.getMessagesConfig();
+                Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
                 if (parts[0].equalsIgnoreCase("Confirm:")){
                     Bukkit.dispatchCommand(p, "ranks autoConfigure");
@@ -866,7 +866,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the button name and do the actions
         } else if (buttonname.equalsIgnoreCase("RankTag")){
 
-            Configuration messages = SpigotPrison.getMessagesConfig();
+            Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
             // Send messages to the player
             p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRename")));
@@ -888,7 +888,7 @@ public class ListenersPrisonManager implements Listener {
     private void PlayerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
 
         // Check the buttonName and do the actions
         if (buttonNameMain.equals(SpigotPrison.format(Objects.requireNonNull(GuiConfig.getString("Gui.Lore.Rankup")).substring(2)))){
@@ -1054,7 +1054,7 @@ public class ListenersPrisonManager implements Listener {
     private void PlayerMinesGUI(Player p, String buttonNameMain) {
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
         String permission = SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
         if (p.hasPermission(permission + buttonNameMain) || p.hasPermission(permission.substring(0, permission.length() - 1))){
@@ -1143,7 +1143,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             case "Mine_Name": {
 
-                Configuration messages = SpigotPrison.getMessagesConfig();
+                Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
                 // Send messages to the player
                 p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRename")));

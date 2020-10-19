@@ -54,7 +54,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         List<String> enabledLore = createLore(
                 messages.getString("Gui.Lore.ShiftAndRightClickToDisable")

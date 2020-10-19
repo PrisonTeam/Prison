@@ -97,6 +97,9 @@ public class SpigotPrison extends JavaPlugin {
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
+    
+    private MessagesConfig messagesConfig;
+    private GuiConfig guiConfig;
 
     private static SpigotPrison config;
 
@@ -167,12 +170,6 @@ public class SpigotPrison extends JavaPlugin {
 
         getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
 
-        // Generate first time files experimental
-        MessagesConfig messagesConfig = new MessagesConfig();
-        messagesConfig.messagesConfigGen();
-
-        GuiConfig optionsGUI = new GuiConfig();
-        optionsGUI.guiConfigGen();
 
         sellAllConfig optionsSellAll = new sellAllConfig();
         optionsSellAll.sellAllConfigGen();
@@ -239,9 +236,11 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().deinit();
     }
 
-    public static FileConfiguration getGuiConfig(){
-        GuiConfig messages = new GuiConfig();
-        return messages.getFileGuiConfig();
+    public FileConfiguration getGuiConfig() {
+    	if ( guiConfig == null ) {
+    		guiConfig = new GuiConfig();
+    	}
+        return guiConfig.getFileGuiConfig();
     }
 
     public static FileConfiguration getSellAllConfig(){
@@ -249,8 +248,11 @@ public class SpigotPrison extends JavaPlugin {
         return configs.getFileSellAllConfig();
     }
 
-    public static FileConfiguration getMessagesConfig(){
-        MessagesConfig messagesConfig = new MessagesConfig();
+    public FileConfiguration getMessagesConfig(){
+    	if ( messagesConfig == null ) {
+    		messagesConfig = new MessagesConfig();
+    	}
+    	
         return messagesConfig.getFileGuiMessagesConfig();
     }
     

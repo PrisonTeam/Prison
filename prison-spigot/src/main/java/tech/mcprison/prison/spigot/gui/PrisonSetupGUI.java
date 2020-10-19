@@ -44,7 +44,7 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Blocks of the mine
         List<String> confirmLore = createLore(

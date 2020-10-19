@@ -1,13 +1,14 @@
 package tech.mcprison.prison.spigot.gui;
 
-import org.bukkit.Color;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import tech.mcprison.prison.spigot.SpigotPrison;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
  * @author GABRYCA
@@ -16,68 +17,70 @@ public class GuiConfig {
 
     private FileConfiguration conf;
 
+    
+    private File file;
+    private int changeCount = 0;
+    
+
+    
     public GuiConfig() {
 
-        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
-            return;
+        if ( Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
+            initialize();
         }
 
-        // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
-        // Get the final config
-        conf = YamlConfiguration.loadConfiguration(file);
     }
 
-    public void guiConfigGen() {
 
-        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
-            return;
-        }
+    public void initialize() {
 
-        // Everything's here
+    	// Filepath
+    	file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+
+    	if( !file.exists() ) {
+    		try {
+    			File parentDir = file.getParentFile();
+    			parentDir.mkdirs();
+    			
+    			file.createNewFile();
+    		} 
+    		catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	} 
+    	
+    	conf = YamlConfiguration.loadConfiguration(file);
+    	
+        // Everything's here (not anymore...)
         values();
 
-    }
+        if ( changeCount > 0 ) {
+        	try {
+				conf.save(file);
+				
+				Output.get().logInfo( "&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s", 
+						changeCount, file.getAbsoluteFile() );
+			}
+			catch ( IOException e ) {
 
-    private void dataConfig(String path, String string){
+				Output.get().logInfo( "&4Failed to save &b%d &4new values to the GuiConfig.yml file located at &b%s&4. " +
+						"&a %s", 
+						changeCount, file.getAbsoluteFile(), e.getMessage() );
 
-        // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
-
-        // Check if the config exists
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-                conf = YamlConfiguration.loadConfiguration(file);
-                conf.set(path, SpigotPrison.format(string));
-                conf.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                boolean newValue = false;
-                int editedItems = 0;
-                conf = YamlConfiguration.loadConfiguration(file);
-                if (getFileGuiConfig().getString(path) == null){
-                    conf.set(path, SpigotPrison.format(string));
-                    editedItems++;
-                    newValue = true;
-                }
-                if (newValue) {
-                    conf.save(file);
-                    System.out.println(Color.AQUA + "[Prison - GuiConfig.yml]" + Color.GREEN + " Added " + editedItems + " new values to the GuiConfig.yml");
-                }
-            } catch (IOException e2){
-                e2.printStackTrace();
-            }
+			}
         }
-
-        // Get the final config
-        conf = YamlConfiguration.loadConfiguration(file);
-
     }
+
+    private void dataConfig(String key, String value){
+
+    	if (conf.getString(key) == null) {
+    		conf.set(key, SpigotPrison.format(value));
+    		changeCount++;
+    	}
+    }
+
+
 
     private void values(){
         dataConfig("Options.Ranks.GUI_Enabled","true");

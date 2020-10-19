@@ -50,7 +50,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
         // Load config
-        this.messages = SpigotPrison.getMessagesConfig();
+        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

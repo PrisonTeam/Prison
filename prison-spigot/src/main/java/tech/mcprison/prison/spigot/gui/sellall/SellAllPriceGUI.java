@@ -53,7 +53,7 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create a new lore
         List<String> changeDecreaseValueLore;

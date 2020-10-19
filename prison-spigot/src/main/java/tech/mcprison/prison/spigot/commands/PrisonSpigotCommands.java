@@ -80,8 +80,8 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
         }
 
         // Load config
-        Configuration guiConfig = SpigotPrison.getGuiConfig();
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
+//        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         if (args.length == 0) {
             sender.sendMessage(SpigotPrison.format("&cIncorrect usage, the command should be /prisonmanager -gui-ranks-mines-prestiges-prestige-setup"));
@@ -175,7 +175,10 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
 
     private void prestigeByChat(CommandSender sender, Player p) {
         isChatEventActive = true;
-        sender.sendMessage(SpigotPrison.format(SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning") + SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning2") + SpigotPrison.getGuiConfig().getString("Gui.Lore.PrestigeWarning3")));
+        sender.sendMessage(SpigotPrison.format(SpigotPrison.getInstance().getGuiConfig().getString("Gui.Lore.PrestigeWarning") +
+        		SpigotPrison.getInstance().getGuiConfig().getString("Gui.Lore.PrestigeWarning2") + 
+        		SpigotPrison.getInstance().getGuiConfig().getString("Gui.Lore.PrestigeWarning3")));
+        
         sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
         sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
         Player finalP = p;

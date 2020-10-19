@@ -54,7 +54,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // The Reset Mine button and lore
         List<String> resetminelore = createLore(

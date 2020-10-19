@@ -55,7 +55,7 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create new lore
         List<String> changeDecreaseValueLore = createLore(

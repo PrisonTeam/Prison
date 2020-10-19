@@ -59,7 +59,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, String enabledOrDisabled) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create a new lore
         List<String> modeWithinLore = createLore(

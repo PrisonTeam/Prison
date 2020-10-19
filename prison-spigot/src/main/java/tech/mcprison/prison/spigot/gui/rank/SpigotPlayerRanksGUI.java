@@ -108,8 +108,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         LadderManager lm = getRankPlugin().getLadderManager();
         Optional<RankLadder> ladder = lm.getLadder(GuiConfig.getString("Options.Ranks.Ladder"));
@@ -130,7 +130,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) (Math.ceil(ladder.get().ranks.size() / 9D) * 9) + 9;
 
-        Configuration guiConfig = SpigotPrison.getGuiConfig();
+        Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
 
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
 
@@ -160,7 +160,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
 
-        Configuration messages = SpigotPrison.getMessagesConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Not sure how you want to represent this:
         Material materialHas;
