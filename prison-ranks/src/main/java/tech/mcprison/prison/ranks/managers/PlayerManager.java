@@ -674,6 +674,8 @@ public class PlayerManager
 						
 					case prison_pb:
 					case prison_player_balance:
+					case prison_pb_laddername:
+					case prison_player_balance_laddername:
 						results = getPlayerBalance( rankPlayer, ladderName, false );
 						
 					default:
