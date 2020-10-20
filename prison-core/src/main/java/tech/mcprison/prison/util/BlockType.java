@@ -151,8 +151,12 @@ public enum BlockType {
 	WET_SPONGE( 19, "minecraft:sponge", 1, MaterialType.BLOCK ),
 	GLASS( 20, "minecraft:glass", 0, MaterialType.BLOCK ),
 	
-	LAPIS_LAZULI_ORE( 21, "minecraft:lapis_ore", 0, MaterialType.BLOCK ),
-	LAPIS_LAZULI_BLOCK( 22, "minecraft:lapis_block", 0, MaterialType.BLOCK ),
+	
+	LAPIS_ORE( 21, "minecraft:lapis_ore", 0, MaterialType.BLOCK, "LAPIS_LAZULI_ORE" ),
+	LAPIS_LAZULI_ORE( 21, "minecraft:lapis_ore", 0, MaterialType.BLOCK ), // obsolete...
+	
+	LAPIS_BLOCK( 22, "minecraft:lapis_block", 0, MaterialType.BLOCK, "LAPIS_LAZULI_BLOCK" ),
+	LAPIS_LAZULI_BLOCK( 22, "minecraft:lapis_block", 0, MaterialType.BLOCK ), // obsolete...
 	
 	DISPENSER( 23, "minecraft:dispenser", 0, MaterialType.BLOCK ),
 	SANDSTONE( 24, "minecraft:sandstone", 0, MaterialType.BLOCK ),
@@ -214,7 +218,9 @@ public enum BlockType {
 	BRICKS( 45, "minecraft:brick_block", 0, MaterialType.BLOCK ),
 	TNT( 46, "minecraft:tnt", 0, MaterialType.BLOCK ),
 	BOOKSHELF( 47, "minecraft:bookshelf", 0, MaterialType.BLOCK ),
-	MOSS_STONE( 48, "minecraft:mossy_cobblestone", 0, MaterialType.BLOCK, "MOSSY_COBBLESTONE" ),
+	
+	MOSSY_COBBLESTONE( 48, "minecraft:mossy_cobblestone", 0, MaterialType.BLOCK, "MOSSY_COBBLESTONE" ),
+	MOSS_STONE( 48, "minecraft:mossy_cobblestone", 0, MaterialType.BLOCK, "MOSSY_COBBLESTONE", "MOSS_STONE" ),
 	
 	OBSIDIAN( 49, "minecraft:obsidian", 0, MaterialType.BLOCK ),
 	TORCH( 50, "minecraft:torch", 0, MaterialType.BLOCK ),
@@ -447,7 +453,10 @@ public enum BlockType {
 	RED_CARPET( 171, "minecraft:carpet", 14, MaterialType.BLOCK ),
 	BLACK_CARPET( 171, "minecraft:carpet", 15, MaterialType.BLOCK ),
 	HARDENED_CLAY( 172, "minecraft:hardened_clay", 0, MaterialType.BLOCK, "TERRACOTTA", "HARD_CLAY" ),
-	BLOCK_OF_COAL( 173, "minecraft:coal_block", 0, MaterialType.BLOCK ),
+
+	COAL_BLOCK( 173, "minecraft:coal_block", 0, MaterialType.BLOCK, "BLOCK_OF_COAL" ),
+	BLOCK_OF_COAL( 173, "minecraft:coal_block", 0, MaterialType.BLOCK ), // obsolete...
+	
 	PACKED_ICE( 174, "minecraft:packed_ice", 0, MaterialType.BLOCK ),
 	SUNFLOWER( 175, "minecraft:double_plant", 0, MaterialType.BLOCK ),
 	LILAC( 175, "minecraft:double_plant", 1, MaterialType.BLOCK ),
@@ -1116,6 +1125,15 @@ public enum BlockType {
         return null;
     }
     
+    /**
+     * This is just an alias for getBlock() which checks for matches in 
+     * many robust ways with numerous fall backs to ensure the best matching.
+     * @param key
+     * @return
+     */
+    public static BlockType fromString( String key ) {
+    	return getBlock( key );
+    }
     /**
      * <p>Must search first on block name since the block id has potential for duplicates which
      * will corrupt the block list for the mine. If at all possible, only search by the block name.
