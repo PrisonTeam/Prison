@@ -27,6 +27,11 @@ public class PrisonBlock {
 		this.chance = chance;
 	}
 	
+	@Override
+	public String toString() {
+		return getBlockName() + " " + Double.toString( getChance() );
+	}
+	
 	public String getBlockName() {
 		return blockName;
 	}

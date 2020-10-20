@@ -531,4 +531,34 @@ public class Mine
         return getName().hashCode();
     }
 
+
+	public String getBlockListString()
+	{
+		StringBuilder sb = new StringBuilder();
+
+       if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	for ( PrisonBlock block : getPrisonBlocks()) {
+        		if ( sb.length() > 0 ) {
+        			sb.append( ", " );
+        		}
+        		sb.append( block.toString() );
+        	}
+        }
+        else {
+        	for ( Block block : getBlocks() ) {
+        		if ( sb.length() > 0 ) {
+        			sb.append( ", " );
+        		}
+        		sb.append( block.toString() );
+        	}
+        }
+
+		sb.insert( 0, ": [" );
+		sb.append( "]" );
+		sb.insert( 0, getName() );
+		sb.insert( 0, "Mine " );
+		
+		return sb.toString();
+	}
+
 }
