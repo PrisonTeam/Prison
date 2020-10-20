@@ -96,9 +96,11 @@ public class IntegrationManager {
 		prison_r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcrf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 
@@ -106,9 +108,11 @@ public class IntegrationManager {
 		prison_rank(prison_r, PlaceHolderFlags.PLAYER),
 		prison_rank_tag(prison_rt, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost(prison_rc, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_formatted(prison_rcf, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_bar(prison_rcb, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_remaining(prison_rcr, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_remaining_formatted(prison_rcrf, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
 		
@@ -117,9 +121,11 @@ public class IntegrationManager {
 		prison_r_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rc_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcrf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rrt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		
@@ -127,11 +133,23 @@ public class IntegrationManager {
 		prison_rank_laddername(prison_r_laddername, PlaceHolderFlags.LADDERS),
 		prison_rank_tag_laddername(prison_rt_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_laddername(prison_rc_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_formatted_laddername(prison_rcf_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_bar_laddername(prison_rcb_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_remaining_laddername(prison_rcr_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_remaining_formatted_laddername(prison_rcrf_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_laddername(prison_rr_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceHolderFlags.LADDERS),
+	
+		
+		
+		// player
+		prison_pb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_player_balance(prison_pb, PlaceHolderFlags.PLAYER),
+		
+		prison_pb_laddername(prison_pb, PlaceHolderFlags.LADDERS),
+		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
+
 		
 		
 		// Mine aliases:

@@ -50,6 +50,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.util.PlaceholdersUtil;
 
 /**
  * Manages all the players in the records.
@@ -296,7 +297,7 @@ public class PlayerManager
     	return results;
     }
     
-    public String getPlayerNextRankCost( RankPlayer rankPlayer, String ladderName ) {
+    public String getPlayerNextRankCost( RankPlayer rankPlayer, String ladderName, boolean formatted ) {
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
@@ -312,7 +313,12 @@ public class PlayerManager
     					}
     					
     					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
-    					sb.append( dFmt.format( cost ));
+    					if ( formatted ) {
+    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( cost )));
+    					}
+    					else {
+    						sb.append( dFmt.format( cost ));
+    					}
     				}
     			}
     		}
@@ -320,7 +326,7 @@ public class PlayerManager
     	
     	return sb.toString();
     }
-    
+        
     public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
@@ -399,7 +405,7 @@ public class PlayerManager
     	return sb.toString();
     }
     
-    public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName ) {
+    public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName, boolean formatted ) {
     	StringBuilder sb = new StringBuilder();
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
@@ -431,12 +437,56 @@ public class PlayerManager
     						remaining = 0;
     					}
     					
-    					sb.append( dFmt.format( remaining ));
+    					if ( formatted ) {
+    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( remaining )));
+    					}
+    					else {
+    						sb.append( dFmt.format( remaining ));
+    					}
     				}
     			}
     		}
     	}
     	
+    	return sb.toString();
+    }
+    
+    private String getPlayerBalance( RankPlayer rankPlayer, String ladderName, boolean formatted ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
+    	if( prisonPlayer == null ) {
+    		Output.get().logError( String.format( "getPlayerBalance: " +
+    				"Could not load player: %s", rankPlayer.uid) );
+    		return "0";
+    	}
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			RankLadder key = entry.getKey();
+    			if ( ladderName == null ||
+    					ladderName != null && key.name.equalsIgnoreCase( ladderName )) {
+    				
+    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    					if ( sb.length() > 0 ) {
+    						sb.append(",  ");
+    					}
+    					
+    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					
+    					if ( formatted ) {
+    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( balance )));
+    					}
+    					else {
+    						sb.append( dFmt.format( balance ));
+    					}
+    				}
+    			}
+    		}
+    	}
+
     	return sb.toString();
     }
     
@@ -570,7 +620,14 @@ public class PlayerManager
 					case prison_rankup_cost:
 					case prison_rc_laddername:
 					case prison_rankup_cost_laddername:
-						results = getPlayerNextRankCost( rankPlayer, ladderName );
+						results = getPlayerNextRankCost( rankPlayer, ladderName, false );
+						break;
+						
+					case prison_rcf:
+					case prison_rankup_cost_formatted:
+					case prison_rcf_laddername:
+					case prison_rankup_cost_formatted_laddername:
+						results = getPlayerNextRankCost( rankPlayer, ladderName, true );
 						break;
 						
 					case prison_rcp:
@@ -591,7 +648,14 @@ public class PlayerManager
 					case prison_rankup_cost_remaining:
 					case prison_rcr_laddername:
 					case prison_rankup_cost_remaining_laddername:
-						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName );
+						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName, false );
+						break;
+						
+					case prison_rcrf:
+					case prison_rankup_cost_remaining_formatted:
+					case prison_rcrf_laddername:
+					case prison_rankup_cost_remaining_formatted_laddername:
+						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName, true );
 						break;
 						
 					case prison_rr:
@@ -607,6 +671,10 @@ public class PlayerManager
 					case prison_rankup_rank_tag_laddername:
 						results = getPlayerNextRankTag( rankPlayer, ladderName );
 						break;
+						
+					case prison_pb:
+					case prison_player_balance:
+						results = getPlayerBalance( rankPlayer, ladderName, false );
 						
 					default:
 						break;

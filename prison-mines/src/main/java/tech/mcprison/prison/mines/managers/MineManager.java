@@ -39,6 +39,7 @@ import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.util.PlaceholdersUtil;
 
 /**
  * Manages the creation, removal, and management of mines.
@@ -48,12 +49,6 @@ import tech.mcprison.prison.store.Document;
 public class MineManager 
 	implements ManagerPlaceholders {
 
-	public static final double TIME_SECOND = 1.0;
-	public static final double TIME_MINUTE = TIME_SECOND * 60.0;
-	public static final double TIME_HOUR = TIME_MINUTE * 60.0;
-	public static final double TIME_DAY = TIME_HOUR * 24.0;
-	
-	
     // Base list
     private List<Mine> mines;
     private TreeMap<String, Mine> minesByName;
@@ -608,7 +603,7 @@ public class MineManager
 					case prison_mif_pm:
 					case prison_mines_interval_formatted_playermines:
 						double timeMif = mine.getResetTime();
-						results = formattedTime( timeMif );
+						results = PlaceholdersUtil.formattedTime( timeMif );
 						break;
 						
 					case prison_mtl_minename:
@@ -634,7 +629,7 @@ public class MineManager
 					case prison_mines_timeleft_formatted_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						double timeMtlf = mine.getRemainingTimeSec();
-						results = formattedTime( timeMtlf );
+						results = PlaceholdersUtil.formattedTime( timeMtlf );
 						break;
 						
 					case prison_ms_minename:
@@ -797,38 +792,7 @@ public class MineManager
 	}
 
 
-	private String formattedTime( double time ) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	long days = (long)(time / TIME_DAY);
-    	time -= (days * TIME_DAY);
-    	if ( days > 0 ) {
-    		sb.append( days );
-    		sb.append( "d " );
-    	}
-    	
-    	long hours = (long)(time / TIME_HOUR);
-    	time -= (hours * TIME_HOUR);
-    	if ( sb.length() > 0 || hours > 0 ) {
-    		sb.append( hours );
-    		sb.append( "h " );
-    	}
-    	
-    	long mins = (long)(time / TIME_MINUTE);
-    	time -= (mins * TIME_MINUTE);
-    	if ( sb.length() > 0 || mins > 0 ) {
-    		sb.append( mins );
-    		sb.append( "m " );
-    	}
-    	
-    	double secs = (double)(time / TIME_SECOND);
-    	time -= (secs * TIME_SECOND);
-    	DecimalFormat dFmt = new DecimalFormat("#0");
-    	sb.append( dFmt.format( secs ));
-    	sb.append( "s " );
-    	
-		return sb.toString();
-	}
+
 
 
 	/**
