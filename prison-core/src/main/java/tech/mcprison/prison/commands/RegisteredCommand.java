@@ -176,8 +176,10 @@ public class RegisteredCommand {
                 				"command arguments: " + sb.toString()
                 				;
                 	Output.get().sendError( sender, message );
-                	
-//                    throw e;
+
+                	// Generally these errors are major and require program fixes, so throw
+                	// the exception so the stacklist is logged.
+                    throw e;
                 }
             }
         } catch (Exception e) {
