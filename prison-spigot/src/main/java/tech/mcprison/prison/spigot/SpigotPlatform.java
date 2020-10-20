@@ -42,6 +42,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XBlock;
+import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
@@ -82,13 +83,15 @@ import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author Faizaan A. Datoo
  */
-class SpigotPlatform implements Platform {
+class SpigotPlatform 
+	implements Platform {
 
     private SpigotPrison plugin;
     private List<PluginCommand> commands = new ArrayList<>();
@@ -100,7 +103,22 @@ class SpigotPlatform implements Platform {
     
     private SpigotPlaceholders placeholders;
 
-    SpigotPlatform(SpigotPrison plugin) {
+    /**
+     * This is only for junit testing.
+     */
+    protected SpigotPlatform() {
+    	super();
+    	
+    	this.plugin = null;
+    	//this.scoreboardManager = new SpigotScoreboardManager();
+    	//this.storage = initStorage();
+    	
+    	//this.placeholders = new SpigotPlaceholders();
+    	
+    	//ActionBarUtil.init(plugin);
+    }
+    
+    public SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
         this.storage = initStorage();
@@ -793,4 +811,214 @@ class SpigotPlatform implements Platform {
 		
 		return results;
 	}
+	
+	
+	/**
+	 * <p>This function assigns blocks to all of the generated mines.  It is intended that
+	 * these mines were just created by the autoCreate function which will ensure that
+	 * no blocks have yet been assigned to any mines.  Because it is assumed that no 
+	 * blocks are in any of these mines, no check is performed to eliminate possible 
+	 * duplicates or to prevent total chance from exceeding 100.0%.
+	 * </p>
+	 * 
+	 * <p>This function uses a sliding window of X number of block types to assign.  
+	 * The number of block types is defined by the percents List in both the number of
+	 * blocks, but also the percentage for each block.  
+	 * The current List has 6 types per mine, with the first few and last few having less.
+	 * The percents are assigned to the most valuable to the least valuable blocks:
+	 * 5%, 10%, 20%, 20%, 20%, and 25%.
+	 * </p>
+	 * 
+	 * <p>This function works with the old and new prison block models, and uses the
+	 * exact same blocks for consistency.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void autoCreateMineBlockAssignment() {
+		List<String> blockList = null; 
+		
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	blockList = buildBlockListXMaterial();
+        }
+        else {
+        	blockList = buildBlockListBlockType();
+        }
+		
+		MineManager mm = PrisonMines.getInstance().getMineManager();
+		List<Mine> mines = mm.getMines();
+		
+		List<Double> percents = new ArrayList<>();
+		percents.add( 5d );
+		percents.add( 10d );
+		percents.add( 20d );
+		percents.add( 20d );
+		percents.add( 20d );
+		percents.add( 25d );
+		int mineBlockSize = percents.size();
+		
+		int startPos = 1;
+		for ( Mine mine : mines ) {
+			
+			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
+			
+			 // If startPos > percents.size(), which means we are past the initial 
+			 // ramp up to the full variety of blocks per mine.  At that point, if 
+			 // percents is grater than mBlocks, then we must trim the first entry
+			 // from percents so that the most valuable block is able to have more
+			 // than just 5% allocation. 
+			 // This should only happen at the tail end of processing and will only
+			 // have a decrease by one per mine so there should never be a need to
+			 // to check more than once, or remove more than one.
+			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+				 percents.remove( 0 );
+			 }
+			 
+			double total = 0;
+			for ( int i = 0; i < mBlocks.size(); i++ )
+			{
+				
+				tech.mcprison.prison.mines.data.Block block = 
+						new tech.mcprison.prison.mines.data.Block( 
+								mBlocks.get( i ), percents.get( i ) );
+				
+				mine.getBlocks().add( block );
+
+				total += block.getChance();
+				
+				// If this is the last block and the totals are not 100%, then
+				// add the balance to the last block.
+				if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+					double remaining = 100.0d - total;
+					block.setChance( remaining + block.getChance() );
+				}
+				
+			}
+			
+			mm.saveMine( mine );
+			
+			String mineBlockListing = mine.getBlockListString();
+			Output.get().logInfo( mineBlockListing );
+		}
+	}
+	
+	/**
+	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
+	 * up to the specified length. The result set will be less than the specified length if at
+	 * the beginning of the list, or at the end.
+	 *  
+	 * @param blockList
+	 * @param startPos
+	 * @param length
+	 * @return
+	 */
+	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
+		List<String> results = new ArrayList<>();
+		
+		for ( int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); 
+												i >= 0 && i >= startPos - length + 1; i-- ) {
+			results.add( blockList.get( i ) );
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * This listing of blocks is based strictly upon XMaterial. 
+	 * This is the preferred list to use with the new block model.
+	 * 
+	 * @return
+	 */
+	protected List<String> buildBlockListXMaterial() {
+		List<String> blockList = new ArrayList<>();
+		
+		blockList.add( XMaterial.COBBLESTONE.name() );
+		blockList.add( XMaterial.ANDESITE.name() );
+		blockList.add( XMaterial.DIORITE.name() );
+		blockList.add( XMaterial.COAL_ORE.name() );
+
+		blockList.add( XMaterial.GRANITE.name() );
+		blockList.add( XMaterial.STONE.name() );
+		blockList.add( XMaterial.IRON_ORE.name() );
+		blockList.add( XMaterial.POLISHED_ANDESITE.name() );
+
+//		blockList.add( XMaterial.POLISHED_DIORITE.name() );
+//		blockList.add( XMaterial.POLISHED_GRANITE.name() );
+		blockList.add( XMaterial.GOLD_ORE.name() );
+
+		
+		blockList.add( XMaterial.MOSSY_COBBLESTONE.name() );
+		blockList.add( XMaterial.COAL_BLOCK.name() );
+		blockList.add( XMaterial.NETHER_QUARTZ_ORE.name() );
+		blockList.add( XMaterial.IRON_BLOCK.name() );
+
+		blockList.add( XMaterial.LAPIS_ORE.name() );
+		blockList.add( XMaterial.REDSTONE_ORE.name() );
+		blockList.add( XMaterial.DIAMOND_ORE.name() );
+
+		blockList.add( XMaterial.QUARTZ_BLOCK.name() );
+		blockList.add( XMaterial.EMERALD_ORE.name() );
+
+		blockList.add( XMaterial.GOLD_BLOCK.name() );
+		blockList.add( XMaterial.LAPIS_BLOCK.name() );
+		blockList.add( XMaterial.REDSTONE_BLOCK.name() );
+		
+//		blockList.add( XMaterial.SLIME_BLOCK.name() );
+		blockList.add( XMaterial.DIAMOND_BLOCK.name() );
+		blockList.add( XMaterial.EMERALD_BLOCK.name() );
+		
+		return blockList;
+	}
+	
+	/**
+	 * This listing of blocks is based strictly upon the old prison's block
+	 * model.
+	 * 
+	 * Please note, that right now these names match exactly with XMaterial only
+	 * because I renamed a few of them to make them match.  But if more are added
+	 * in the future, then there may be mismatches.
+	 * 
+	 * @return
+	 */
+	protected List<String> buildBlockListBlockType() {
+		List<String> blockList = new ArrayList<>();
+		
+		blockList.add( BlockType.COBBLESTONE.name() );
+		blockList.add( BlockType.ANDESITE.name() );
+		blockList.add( BlockType.DIORITE.name() );
+		blockList.add( BlockType.COAL_ORE.name() );
+		
+		blockList.add( BlockType.GRANITE.name() );
+		blockList.add( BlockType.STONE.name() );
+		blockList.add( BlockType.IRON_ORE.name() );
+		blockList.add( BlockType.POLISHED_ANDESITE.name() );
+		
+//		blockList.add( BlockType.POLISHED_DIORITE.name() );
+//		blockList.add( BlockType.POLISHED_GRANITE.name() );
+		blockList.add( BlockType.GOLD_ORE.name() );
+		
+		
+		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
+		blockList.add( BlockType.COAL_BLOCK.name() );
+		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
+		blockList.add( BlockType.IRON_BLOCK.name() );
+		
+		blockList.add( BlockType.LAPIS_ORE.name() );
+		blockList.add( BlockType.REDSTONE_ORE.name() );
+		blockList.add( BlockType.DIAMOND_ORE.name() );
+		
+		blockList.add( BlockType.QUARTZ_BLOCK.name() );
+		blockList.add( BlockType.EMERALD_ORE.name() );
+		
+		blockList.add( BlockType.GOLD_BLOCK.name() );
+		blockList.add( BlockType.LAPIS_BLOCK.name() );
+		blockList.add( BlockType.REDSTONE_BLOCK.name() );
+		
+//		blockList.add( BlockType.SLIME_BLOCK.name() );
+		blockList.add( BlockType.DIAMOND_BLOCK.name() );
+		blockList.add( BlockType.EMERALD_BLOCK.name() );
+		
+		return blockList;
+	}
+	
 }

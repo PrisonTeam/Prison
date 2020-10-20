@@ -265,4 +265,9 @@ public class TestPlatform implements Platform {
 	public int getModuleElementCount( ModuleElementType elementType ) {
 		return 0;
 	}
+	
+	@Override
+	public void autoCreateMineBlockAssignment() {
+		
+	}
 }

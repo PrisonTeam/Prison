@@ -278,4 +278,7 @@ public interface Platform {
 	
 	public int getModuleElementCount( ModuleElementType elementType );
 	
+	
+	public void autoCreateMineBlockAssignment();
+	
 }

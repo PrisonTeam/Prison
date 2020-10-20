@@ -306,6 +306,11 @@ public class RanksCommands {
 	        }
 		}
 		
+		// If mines were created, go ahead and auto assign blocks to the mines:
+		if ( countMines > 0 ) {
+			Prison.get().getPlatform().autoCreateMineBlockAssignment();
+		}
+		
 		if ( countRanks == 0 ) {
 			Output.get().logInfo( "Ranks autoConfigure: No ranks were created.");
 		}

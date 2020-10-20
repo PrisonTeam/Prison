@@ -8,7 +8,30 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.6 - 2020-10-19
+## tag v3.2.2-alpha.6 - 2020-10-20
+
+
+* **Created the code to add blocks to virtual mines when they are being generated with the /ranks autoConfigure command.**
+Blocks are setup in a List with the least valuable to the most valuable.  Then it's a sliding window of selecting blocks from the lowest mine to the highest ranked mine.  The percentage per blocks are 5, 10, 20, 20, 20, 25 where the most valuable are least represented.
+
+
+* **Added a few new blocks to prison's old block model.**
+These are actually duplicates of what already exists, but these are instead named to mirror XMaterial names.  The reason for this is to ensure consistency between the two block models used for testing.
+Removed the items.csv document since it is not being used anymore and will only cause confusion if admins think they can add new blocks through that file.
+
+
+
+* **Added some internal reporting of the data contents.**
+Most of this will be used with logging in the /ranks autoConfigure and also jUnit testing.
+
+
+* **Error logging needs to throw these stack traces** since thats really the only way to get the details we need to fix the problem.
+A throw was eliminated, but needs to be added back.
+
+
+* **New Feature: Added 12 new placeholders including aliases.**
+Added formatted placeholders for player's costs.  Added a new placeholder for player balance.
+Created a PlaceholdersUtil class to perform some common functions, such as formatting an amount to include a metric prefix.
 
 
 * **tag v3.2.2-alpha.6a - 2020-10-19**
