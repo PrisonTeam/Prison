@@ -248,6 +248,9 @@ public class Rank
 	}
 
 	public List<String> getRankUpCommands() {
+		if ( rankUpCommands == null ) {
+			rankUpCommands = new ArrayList<>();
+		}
 		return rankUpCommands;
 	}
 	public void setRankUpCommands( List<String> rankUpCommands ) {

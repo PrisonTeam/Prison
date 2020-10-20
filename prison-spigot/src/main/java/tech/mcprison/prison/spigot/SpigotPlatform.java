@@ -756,6 +756,85 @@ class SpigotPlatform
 		return results;
 	}
 	
+
+	@Override
+	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB ) {
+		boolean results = false;
+		
+		unlinkModuleElement( elementA, elementB );
+		
+		return results;
+	}
+	
+	
+	private boolean unlinkModuleElement( ModuleElement elementA, ModuleElement elementB ) {
+		boolean results = false;
+		
+		
+		if ( elementA != null) {
+			
+			if ( elementA.getModuleElementType() == ModuleElementType.MINE && 
+					elementA instanceof Mine ) {
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( elementB != null && elementB.getModuleElementType() == ModuleElementType.RANK ) {
+					
+					RankManager rm = PrisonRanks.getInstance().getRankManager();
+					if ( rm != null ) {
+						// To remove the rank from the mine, just set the value to null:
+						Mine mine = (Mine) elementA;
+						mine.setRank( null );
+						
+						Rank rank = (Rank) elementB;
+						rank.getMines().remove( mine );
+
+						// save both the mine and the rank:
+						MineManager mm = PrisonMines.getInstance().getMineManager();
+						mm.saveMine( mine );
+						rm.saveRank( rank );
+
+					}
+				}
+			}
+			
+			else if ( elementA.getModuleElementType() == ModuleElementType.RANK && 
+					elementA instanceof Rank ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( elementB != null && elementB.getModuleElementType() == ModuleElementType.MINE ) {
+					MineManager mm = PrisonMines.getInstance().getMineManager();
+					if ( mm != null ) {
+						Mine mine = (Mine) elementB;
+						
+						if ( mine != null ) {
+							Rank rank = (Rank) elementA;
+							
+							mine.setRank( rank );
+							rank.getMines().remove( mine );
+
+							// save both the mine and the rank:
+							RankManager rm = PrisonRanks.getInstance().getRankManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+
+							results = true;
+						}
+							
+					}
+				}
+			}
+		}
+
+		
+		return results;
+	}
+	
 	/**
 	 * <p>This function will create the specified ModuleElement.  It will create the minimal 
 	 * possible element, of which, the settings can then be changed.  If the create was

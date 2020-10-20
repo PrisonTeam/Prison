@@ -271,6 +271,9 @@ public interface Platform {
 	
 	
 	public boolean linkModuleElements( ModuleElement sourceElement, ModuleElementType targetElementType, String name );
+	
+	
+	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB );
 
 
 	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag );

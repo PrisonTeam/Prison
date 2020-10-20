@@ -1974,14 +1974,15 @@ public class MinesCommands {
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-//            if ( !m.isEnabled() ) {
-//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-//            	return;
-//            }
             
             if ( rankName == null || rankName.trim().length() == 0 ) {
             	sender.sendMessage( "&cRank name is required." );
             	return;
+            }
+            
+            if ( m.getRank() != null ) {
+            	// First unlink the preexisting mine and rank:
+            	Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
             }
             
             boolean success = Prison.get().getPlatform().linkModuleElements( m, 
@@ -2012,12 +2013,6 @@ public class MinesCommands {
     		PrisonMines pMines = PrisonMines.getInstance();
     		Mine m = pMines.getMine(mineName);
     		
-//    		if ( !m.isEnabled() ) {
-//    			sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-//    			return;
-//    		}
-    		
-    		
     		if ( m.getRank() == null ) {
     			sender.sendMessage( "&cThis mine has no ranks to unlink." );
     			return;
@@ -2025,9 +2020,8 @@ public class MinesCommands {
     		
     		ModuleElement rank = m.getRank();
     		
-    		m.setRank( null );
+    		Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
     		
-    		pMines.getMineManager().saveMine( m );
     		
     		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
     				rank.getName(), m.getName() ));
