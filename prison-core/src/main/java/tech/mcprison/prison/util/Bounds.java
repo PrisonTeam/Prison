@@ -36,7 +36,35 @@ public class Bounds {
     
     private final int totalBlockCount;
 
+    
+	public enum Edges {
+		top,
+		bottom,
+		north,
+		south,
+		east,
+		west,
+		
+		walls;
+		
+		public static Edges fromString( String edge ) {
+			Edges results = null;
+			
+			if ( edge != null && edge.trim().length() > 0 ) {
+				for ( Edges e : values() ) {
+					if ( e.name().equalsIgnoreCase( edge.trim() )) {
+						results = e;
+					}
+				}
+			}
+			
+			return results;
+		}
+	}
+
+    
     public Bounds(Location min, Location max) {
+		
         this.min = min;
         this.max = max;
         
@@ -69,6 +97,148 @@ public class Bounds {
         			(getxBlockMax() - getxBlockMin() + 1) *
         			(getzBlockMax() - getzBlockMin() + 1);
     }
+
+    
+    /**
+     * <p>This constructor takes an existing Bounds and applies adjustments
+     * as specified with the combination of edge and amount.
+     * </p>
+     * 
+     * <p>This applies adjustments to prevent maxs from being less than the mins,
+     * and vice-a-versa. It also prevents y from going out of bounds too.
+     * </p>
+     * 
+     * @param bounds
+     * @param edge
+     * @param amount
+     */
+    public Bounds( Bounds bounds, Edges edge, int amount ) {
+		
+		int xMin = bounds.getxBlockMin();
+		int xMax = bounds.getxBlockMax();
+		
+		int yMin = bounds.getyBlockMin();
+		int yMax = bounds.getyBlockMax();
+		
+		int zMin = bounds.getzBlockMin();
+		int zMax = bounds.getzBlockMax();
+		
+		switch ( edge )
+		{
+			case top:
+				yMax += amount;
+				if ( yMax < yMin ) {
+					yMax = yMin;
+				}
+				if ( yMax > 255 ) {
+					yMax = 255;
+				}
+				break;
+				
+			case bottom:
+				yMin -= amount;
+				if ( yMin > yMax ) {
+					yMin = yMax;
+				}
+				if ( yMin < 0 ) {
+					yMin = 0;
+				}
+				break;
+				
+			case north:
+				zMax += amount;
+				if ( zMax < zMin ) {
+					zMax = zMin;
+				}
+				break;
+				
+			case south:
+				zMin -= amount;
+				if ( zMin > zMax ) {
+					zMin = zMax;
+				}
+				break;
+				
+			case east:
+				xMax += amount;
+				if ( xMax < xMin ) {
+					xMax = xMin;
+				}
+				break;
+	
+			case west:
+				xMin -= amount;
+				if ( xMin > xMax ) {
+					xMin = xMax;
+				}
+				break;
+				
+			case walls:
+				
+				int zAvg = (zMax + zMin) / 2;
+				
+				zMax += amount;
+				zMin -= amount;
+				
+				if ( zMax < zMin ) {
+					zMax = zAvg;
+					zMin = zAvg;
+				}
+				
+				int xAvg = (xMax + xMin) / 2;
+				
+				xMax += amount;
+				xMin -= amount;
+				
+				if ( xMax < xMin ) {
+					xMax = xAvg;
+					xMin = xAvg;
+				}
+				break;
+				
+			default:
+				break;
+		}
+		
+		
+
+		Location min = new Location( bounds.getMin().getWorld(), xMin, yMin, zMin );
+		Location max = new Location( bounds.getMax().getWorld(), xMax, yMax, zMax );
+
+		
+        this.min = min;
+        this.max = max;
+        
+        this.xBlockMax = Math.max(min.getBlockX(), max.getBlockX());
+        this.xBlockMin = Math.min(min.getBlockX(), max.getBlockX());
+        
+        this.yBlockMax = Math.max(min.getBlockY(), max.getBlockY());
+        this.yBlockMin = Math.min(min.getBlockY(), max.getBlockY());
+        
+        this.zBlockMax = Math.max(min.getBlockZ(), max.getBlockZ());
+        this.zBlockMin = Math.min(min.getBlockZ(), max.getBlockZ());
+        
+        this.xMin = Math.min(min.getX(), max.getX());
+        this.xMax = Math.max(min.getX(), max.getX());
+        
+        this.yMin = Math.min(min.getY(), max.getY());
+        this.yMax = Math.max(min.getY(), max.getY());
+        
+        this.zMin = Math.min(min.getZ(), max.getZ());
+        this.zMax = Math.max(min.getZ(), max.getZ());
+        
+        double centerX = (xBlockMin + xBlockMax) / 2.0d;
+        double centerY = (yBlockMin + yBlockMax) / 2.0d;
+        double centerZ = (zBlockMin + zBlockMax) / 2.0d;
+        
+        this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
+
+        this.totalBlockCount = 
+        			(getyBlockMax() - getyBlockMin() + 1) *
+        			(getxBlockMax() - getxBlockMin() + 1) *
+        			(getzBlockMax() - getzBlockMin() + 1);
+    }
+
     
     public void setWorld( World world ) {
     	if ( world != null ) {
@@ -266,8 +436,7 @@ public class Bounds {
         return result;
     }
 
-	public int getxBlockMin()
-	{
+	public int getxBlockMin() {
 		return xBlockMin;
 	}
 

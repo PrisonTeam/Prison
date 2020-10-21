@@ -55,6 +55,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.MaterialType;
 import tech.mcprison.prison.util.Text;
 
@@ -2104,12 +2105,12 @@ public class MinesCommands {
 
     
     
- //   @Command(identifier = "mines set size", permissions = "mines.set", description = "Change the size of the mine")
+    @Command(identifier = "mines set size", permissions = "mines.set", description = "Change the size of the mine")
     public void setSizeCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName,
-    		@Arg(name = "adjustment", description = "How to adust the size [increase, inc, decrease, dec]", def = "increase") String adjustment,
-    		@Arg(name = "edge", description = "Edge to adjust [top, bottom, north, east, south, west]", def = "top") String edge, 
-    		@Arg(name = "amount", description = "amount to adjust", def = "1") String amount 
+    		@Arg(name = "edge", description = "Edge to adjust [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
+    		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
+    		@Arg(name = "amount", description = "amount to adjust, [-1, 1]", def = "1") int amount 
     		
     		) {
     	
@@ -2117,15 +2118,34 @@ public class MinesCommands {
     		return;
     	}
     	
+    	Edges e = Edges.fromString( edge );
+    	if ( e == null ) {
+    		sender.sendMessage( "&cInvalid edge value. [top, bottom, north, east, south, west, walls]" );
+    		return;
+    	}
+    	
+    	if ( amount == 0 ) {
+    		sender.sendMessage( "&cInvalid amount. Cannot be zero." );
+    		return;
+    	}
+
+//    	if ( adjustment == null || "smaller".equalsIgnoreCase( adjustment ) || "larger".equalsIgnoreCase( adjustment ) ) {
+//    		sender.sendMessage( "&cInvalid adjustment. [larger, smaller]" );
+//    		return;
+//    	}
+    	
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine mine = pMines.getMine(mineName);
-    	
     	
     	if ( mine.isVirtual() ) {
     		sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
     		return;
     	}
     	
+    	
+    	mine.adjustSize( e, amount );
+    	
+    	pMines.getMineManager().saveMine( mine );
     	
     	
     }

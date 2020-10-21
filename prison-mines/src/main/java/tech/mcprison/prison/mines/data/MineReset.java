@@ -18,6 +18,8 @@ import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds;
+import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -1303,7 +1305,7 @@ public abstract class MineReset
     public void enableTracer() {
     	
     	// First clear the mine:
-    	clearMine();
+    	clearMine( true );
 
 //    	Prison.get().getPlatform().enableMineTracer( 
 //    				getWorldName(),
@@ -1314,8 +1316,30 @@ public abstract class MineReset
     	
     }
     
+    /**
+     * <p>This will adjust the size of the existing mine's area.
+     * Any voids left due to reductions in size will not be auto
+     * filled.
+     * </p>
+     * 
+     * @param edge
+     * @param amount
+     */
+    public void adjustSize( Edges edge, int amount ) {
+    	
+    	// First clear the mine:
+    	clearMine( false );
+		
+
+		Bounds newBounds = new Bounds( getBounds(), edge, amount );
+		setBounds( newBounds );
+		
+		// Finally trace the mine:
+		clearMine( true );
+    }
     
-    private void clearMine() {
+    
+    private void clearMine( boolean tracer ) {
 		
 		try {
 			
@@ -1357,7 +1381,6 @@ public abstract class MineReset
 			int zMin = getBounds().getzBlockMin();
 			int zMax = getBounds().getzBlockMax();
 			
-			int i = 0;
 			for (int y = yMax; y >= yMin; y--) {
 //    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
 				for (int x = xMin; x <= xMax; x++) {
@@ -1368,20 +1391,17 @@ public abstract class MineReset
 						boolean yEdge = y == yMin || y == yMax;
 						boolean zEdge = z == zMin || z == zMax;
 						
-						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
-										 yEdge && zEdge;
+						boolean isEdge = tracer &&
+										(xEdge && yEdge || xEdge && zEdge ||
+										 yEdge && zEdge);
 						
 						if ( useNewBlockModel ) {
 							
 							targetBlock.getBlockAt().setPrisonBlock( isEdge ? blockRedPB : blockAirPB );
-							i++;
-
 						}
 						else {
 							
 							targetBlock.getBlockAt().setType( isEdge ? blockRedBT : blockAirBT );
-							i++;
-							
 						}
 					}
 				}

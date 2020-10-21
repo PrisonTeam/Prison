@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.6 - 2020-10-20
+## tag v3.2.2-alpha.6 - 2020-10-21
+
+
+* **New feature: /mines set size**
+Can now adjust the mine size by specifying the edge and adjustment amount. Edges are top, bottom, north, south, east, west, and walls.
+When adjusting the size, it automatically goes in to tracer mode so the mine's dimensions are easily seen.
 
 
 * **Created the code to add blocks to virtual mines when they are being generated with the /ranks autoConfigure command.**
