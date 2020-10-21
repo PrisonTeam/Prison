@@ -18,12 +18,14 @@
 
 package tech.mcprison.prison.selection;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.BlockType;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.BlockType;
 
 /**
  * @author Faizaan A. Datoo
@@ -47,8 +49,31 @@ public class SelectionManager {
      * @param player The {@link Player} to give the selection tool to
      */
     public void bestowSelectionTool(Player player) {
+    	int countBefore = selectionWandCount( player );
+    	
         player.give(SELECTION_TOOL);
+
+        int countAfter = selectionWandCount( player );
+        
+        Output.get().logInfo( "Prison selection wand (blaze_rod) was given to player %s. " +
+        		"Count before command: %d.  Count after command: %d. ",
+        		player.getName(), countBefore, countAfter );
     }
+    
+	private int selectionWandCount( Player player) {
+		int count = 0;
+		Inventory inv = player.getInventory();
+		
+		for (ItemStack is : inv.getItems()) {
+			if ( is != null && 
+					// is.getName().toLowerCase().contains( "selection wand" ) && 
+					// is.getDisplayName().toLowerCase().contains( "selection wand" ) && 
+					is.getMaterial() == BlockType.BLAZE_ROD ) {
+				count += is.getAmount();
+			}
+		}
+		return count;
+	}
 
     public Selection getSelection(Player player) {
         if (!selectionMap.containsKey(player.getName())) {
