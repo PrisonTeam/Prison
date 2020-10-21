@@ -8,12 +8,34 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.6 - 2020-10-21
+## tag v3.2.2-alpha.7 - 2020-10-21
+
+
+* **Disabled the loading of the /items.csv file**
+since that is obsolete and not working anymore.  The items.csv file has been removed from the project since people were thinking they can just modify that file to add custom blocks.  Nope...
+
+
+* **Add logging to count how many blaze rods the player has before and after issuing the /mines wand command.**
+there have been a few reports that it does not work, but I cannot reproduce the error.  So this is step one in confirming if they actually get the blaze rod or not.
+One possibility could be that another plugin is canceling the event so the player never gets the blaze rod.
+
+
+* **v3.2.2-alpha.7b - 2020-10-21**
+
+
+* **Temp pulled alpha.7** Someone said the were getting a lot of errors with this release. Hence the past two fixes.
+
+
+* **Fix potential issue where the user tries to use a % % as escape characters when they should be using { } instead.**
+It was causing a failure when trying to redisplay the text as for the % was trying to be used as a placeholder when fed through the String.format command.
 
 
 * **New feature: /mines set size**
 Can now adjust the mine size by specifying the edge and adjustment amount. Edges are top, bottom, north, south, east, west, and walls.
 When adjusting the size, it automatically goes in to tracer mode so the mine's dimensions are easily seen.
+
+
+* **v3.2.2-alpha.7 - 2020-10-21**
 
 
 * **Created the code to add blocks to virtual mines when they are being generated with the /ranks autoConfigure command.**
