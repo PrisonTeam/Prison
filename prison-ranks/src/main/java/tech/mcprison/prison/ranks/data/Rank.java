@@ -80,6 +80,8 @@ public class Rank
     public Rank() {
     	super();
     	
+    	this.rankUpCommands = new ArrayList<>();
+    	
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
     }
@@ -109,7 +111,12 @@ public class Rank
 			String currency = (String) document.get("currency");
 			this.currency = (currency == null || 
 					"null".equalsIgnoreCase( currency ) ? null : currency);
-			this.rankUpCommands = (List<String>) document.get("commands");
+
+			getRankUpCommands().clear();
+			Object cmds = document.get("commands");
+			if ( cmds != null ) {
+				this.rankUpCommands = (List<String>) cmds;
+			}
 			
 			getMines().clear();
 			getMineStrings().clear();
