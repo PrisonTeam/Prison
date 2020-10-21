@@ -275,4 +275,9 @@ public class TestPlatform implements Platform {
 	public void autoCreateMineBlockAssignment() {
 		
 	}
+	
+	@Override
+	public void enableMineTracer( String worldName, Location min, Location max ) {
+		
+	}
 }
