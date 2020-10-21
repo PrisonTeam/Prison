@@ -2078,6 +2078,59 @@ public class MinesCommands {
         //pMines.getMineManager().clearCache();
     }
 
+    
+
+    @Command(identifier = "mines set tracer", permissions = "mines.set", 
+    				description = "Clear the mine and set a tracer around the outside")
+    public void setTracerCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName) {
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine mine = pMines.getMine(mineName);
+        
+        
+        if ( mine.isVirtual() ) {
+        	sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+        	return;
+        }
+
+        mine.enableTracer();
+
+    }
+
+    
+    
+ //   @Command(identifier = "mines set size", permissions = "mines.set", description = "Change the size of the mine")
+    public void setSizeCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName,
+    		@Arg(name = "adjustment", description = "How to adust the size [increase, inc, decrease, dec]", def = "increase") String adjustment,
+    		@Arg(name = "edge", description = "Edge to adjust [top, bottom, north, east, south, west]", def = "top") String edge, 
+    		@Arg(name = "amount", description = "amount to adjust", def = "1") String amount 
+    		
+    		) {
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	Mine mine = pMines.getMine(mineName);
+    	
+    	
+    	if ( mine.isVirtual() ) {
+    		sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		return;
+    	}
+    	
+    	
+    	
+    }
+    
+    
 
     @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
     		description = "Enable paging during a mine reset.")
