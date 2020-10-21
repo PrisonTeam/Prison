@@ -38,9 +38,18 @@ public class ItemManager {
 
     private Multimap<BlockType, String> items;
 
+    
+    /**
+     * This has not been used for a while.  Will need to provide an alternative way to 
+     * add custom blocks.
+     * 
+     * @throws Exception
+     */
+    @Deprecated
     public ItemManager() throws Exception {
+    	items = ArrayListMultimap.create();
+    /*
         File file = new File(Prison.get().getDataFolder(), "/items.csv");
-        items = ArrayListMultimap.create();
 
         if (!file.exists()) {
         	try (
@@ -76,6 +85,7 @@ public class ItemManager {
         catch (Exception e) {
         	throw new IOException("Error while reading items.csv -- it's probably invalid", e);
         }
+       */
     }
 
     public Map<BlockType, Collection<String>> getItems() {
