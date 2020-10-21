@@ -390,12 +390,18 @@ public class PrisonCommand {
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
     		@Wildcard(join=true)
-    		@Arg(name = "text", description = "Placeholder text to test" ) String text ) {
+    		@Arg(name = "text", 
+    			description = "Placeholder text to test using { } as escape characters" ) String text ) {
     	
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
         BulletedListComponent.BulletedListBuilder builder =
                 new BulletedListComponent.BulletedListBuilder();
+        
+        if ( text.contains( "%" )) {
+        	Output.get().logInfo( "&3You cannot use &7%%&3 as escape characters. Use &7{ }&3 instead." );
+        	return;
+        }
         
     	Player player = getPlayer( sender );
     	UUID playerUuid = (player == null ? null : player.getUUID());
