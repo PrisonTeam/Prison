@@ -2242,7 +2242,7 @@ public class MinesCommands {
     		// This is checking for within a certain distance from any mine, so we just need to use
     		// some arbitrary distance as a max radius.  We do not want to use the individual values
     		// that have been set for each mine.
-    		else if ( mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
+    		else if ( !mine.isVirtual() &&  mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
     			Double distance = mine.getBounds().getDistance3d( player.getLocation() );
 //    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
