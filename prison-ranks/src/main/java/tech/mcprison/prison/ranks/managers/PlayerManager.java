@@ -314,7 +314,7 @@ public class PlayerManager
     					
     					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
     					if ( formatted ) {
-    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( cost )));
+    						sb.append( PlaceholdersUtil.formattedSize( cost ));
     					}
     					else {
     						sb.append( dFmt.format( cost ));
@@ -438,7 +438,7 @@ public class PlayerManager
     					}
     					
     					if ( formatted ) {
-    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( remaining )));
+    						sb.append( PlaceholdersUtil.formattedSize( remaining ));
     					}
     					else {
     						sb.append( dFmt.format( remaining ));
@@ -477,7 +477,7 @@ public class PlayerManager
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     					if ( formatted ) {
-    						sb.append( dFmt.format( PlaceholdersUtil.formattedSize( balance )));
+    						sb.append( PlaceholdersUtil.formattedSize( balance ));
     					}
     					else {
     						sb.append( dFmt.format( balance ));
