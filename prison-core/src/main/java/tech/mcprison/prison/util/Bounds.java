@@ -146,16 +146,16 @@ public class Bounds {
 				break;
 				
 			case north:
-				zMax += amount;
-				if ( zMax < zMin ) {
-					zMax = zMin;
+				zMin -= amount;
+				if ( zMin > zMax ) {
+					zMin = zMax;
 				}
 				break;
 				
 			case south:
-				zMin -= amount;
-				if ( zMin > zMax ) {
-					zMin = zMax;
+				zMax += amount;
+				if ( zMax < zMin ) {
+					zMax = zMin;
 				}
 				break;
 				
