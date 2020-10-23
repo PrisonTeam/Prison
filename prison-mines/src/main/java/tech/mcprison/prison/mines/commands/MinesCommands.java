@@ -2168,20 +2168,20 @@ public class MinesCommands {
     	
     	Edges e = Edges.fromString( edge );
     	if ( e == null ) {
-    		sender.sendMessage( "&cInvalid edge value. [top, bottom, north, east, south, west, walls]" );
+    		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
     		return;
     	}
     	
     	if ( pattern != null && "?".equals( pattern )) {
-    		sender.sendMessage( "&cAvailable Patterns: [" + 
-    				LinerPatterns.toStringAll() + "]" );
+    		sender.sendMessage( "&3Available Patterns: [&7" + 
+    				LinerPatterns.toStringAll() + "&3]" );
     		
     	}
     	
     	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
     	if ( linerPattern == null ) {
-    		sender.sendMessage( "&cInvalid pattern. Select one of these: [" + 
-    							LinerPatterns.toStringAll() + "]" );
+    		sender.sendMessage( "&cInvalid pattern.&3 Select one of these: [&7" + 
+    							LinerPatterns.toStringAll() + "&3]" );
     		return;
     	}
     	
@@ -2190,7 +2190,7 @@ public class MinesCommands {
     	Mine mine = pMines.getMine(mineName);
     	
     	if ( mine.isVirtual() ) {
-    		sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
     		return;
     	}
     	
