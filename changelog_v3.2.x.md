@@ -8,7 +8,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.7 - 2020-10-21
+## tag v3.2.2-alpha.7 - 2020-10-22
+
+
+* **New Feature: Now able to line a mine based upon the selection of edges and patterns.**
+This feature helps players to get up and running their prison a lot faster.
+Many additional patterns can be added in the future.  Supports 2d patterns that are from 1x1 to any larger size.
+
+
+* **Bug fix? Needed to add TokenEnchant to the softdepend**
+to prevent a java.lang.NoClassDefFoundError with the class com/vk2gpz/vklib/logging/ColorConsoleLogger.
+Not really sure if I can call this a Prison bug since it appears to originate from within the TE API code base.  But this works around their potential short comings.
+
+
+* **Bug fix!  Trying to format an already formatted item... oof!!**
+This had everything to do with formatted currency amounts in placeholders.
 
 
 * **Disabled the loading of the /items.csv file**

@@ -42,6 +42,8 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
+import tech.mcprison.prison.mines.data.MineLinerBuilder;
+import tech.mcprison.prison.mines.data.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
@@ -2147,6 +2149,55 @@ public class MinesCommands {
     	
     	pMines.getMineManager().saveMine( mine );
     	
+    	
+    }
+    
+    @Command(identifier = "mines set liner", permissions = "mines.set", 
+    			description = "Change the blocks that line the mine.")
+    public void setLinerCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine") String mineName,
+    		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
+    		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
+    		@Arg(name = "pattern", description = "pattern to use [?]", def = "bright") String pattern 
+    		
+    		) {
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+    	
+    	Edges e = Edges.fromString( edge );
+    	if ( e == null ) {
+    		sender.sendMessage( "&cInvalid edge value. [top, bottom, north, east, south, west, walls]" );
+    		return;
+    	}
+    	
+    	if ( pattern != null && "?".equals( pattern )) {
+    		sender.sendMessage( "&cAvailable Patterns: [" + 
+    				LinerPatterns.toStringAll() + "]" );
+    		
+    	}
+    	
+    	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
+    	if ( linerPattern == null ) {
+    		sender.sendMessage( "&cInvalid pattern. Select one of these: [" + 
+    							LinerPatterns.toStringAll() + "]" );
+    		return;
+    	}
+    	
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	Mine mine = pMines.getMine(mineName);
+    	
+    	if ( mine.isVirtual() ) {
+    		sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		return;
+    	}
+    	
+    	
+    	new MineLinerBuilder( mine, e, linerPattern );
+    	
+    	// NOTE: The mine itself was not changed, so nothing to save:
     	
     }
     
