@@ -65,10 +65,10 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         );
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
-            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
+            ItemStack Enabled = createButton(Material.RECORD_4, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
+            ItemStack Disabled = createButton(Material.RECORD_3, 1, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
             inv.addItem(Disabled);
         }
 
