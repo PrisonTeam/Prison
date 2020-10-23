@@ -65,10 +65,10 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         );
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltAllBlocks ) ) {
-            ItemStack Enabled = createButton(Material.RECORD_4, 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
+            ItemStack Enabled = createButton(Material.LIME_STAINED_GLASS_PANE, 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.RECORD_3, 1, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
+            ItemStack Disabled = createButton(Material.RED_STAINED_GLASS_PANE, 1, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
             inv.addItem(Disabled);
         }
 
