@@ -8,7 +8,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.7 - 2020-10-22
+## tag v3.2.2-alpha.8 - 2020-10-22
+
+
+
+* **v3.2.2-alpha.8 - 2020-10-22**
 
 
 * **New Feature: Now able to line a mine based upon the selection of edges and patterns.**
