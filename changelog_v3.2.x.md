@@ -11,6 +11,9 @@ that you need.
 ## tag v3.2.2-alpha.8 - 2020-10-22
 
 
+* **Rank Tags modified to accept spaces**
+To match the capabilities of the Mine Tag, the rank tag was adjusted to allow spaces.  The command /ranks set tag was also changed to remove the tag if desired.  Also changed the /ranks create command to accept spaces in the tag name too.
+
 
 * **v3.2.2-alpha.8 - 2020-10-22**
 

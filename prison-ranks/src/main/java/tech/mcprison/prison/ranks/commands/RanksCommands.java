@@ -62,8 +62,9 @@ public class RanksCommands {
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
         @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
             String ladder,
-        @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
-            String tag) {
+        @Wildcard(join=true)
+        	@Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
+            		String tag) {
 		
 		boolean success = false;
 
@@ -126,7 +127,8 @@ public class RanksCommands {
             
             // Tell the player the good news!
             Output.get()
-            	.sendInfo(sender, "&3Your new rank, '&7%s&3', was created in the ladder '&7%s&3'", name, ladder);
+            	.sendInfo(sender, "&3Your new rank, '&7%s&3', was created in the ladder '&7%s&3', " +
+            			"using the tag value of '&7%s&3'", name, ladder, tag);
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "&3The '&7%s&3' ladder could not be saved to disk. Check the console for details.",
@@ -672,7 +674,8 @@ public class RanksCommands {
     							onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, 
     				@Arg(name = "rankName") String rankName, 
-    				@Arg(name = "tag", description = "The desired tag.") String tag){
+    				@Wildcard(join=true)
+    					@Arg(name = "tag", description = "Tag value for the Rank. Use [null] to remove.") String tag){
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
@@ -680,19 +683,39 @@ public class RanksCommands {
             return;
         }
         
+
+        if ( tag == null || tag.trim().length() == 0 ) {
+        	sender.sendMessage( "&cTag name must be a valid value. To remove use a value of &anull&c." );
+        	return;
+        }
+        
+        if ( tag.equalsIgnoreCase( "null" ) ) {
+        	tag = null;
+        }
+
+
+        if ( tag == null && rank.getTag() == null || 
+        		rank.getTag() != null &&
+        		rank.getTag().equalsIgnoreCase( tag )) {
+        
+        	sender.sendMessage( "&cThe new tag name is the same as what it was. No change was made." );
+        	return;
+        }
+
         rank.tag = tag;
         
-        // Save the rank
-//        try {
-            PrisonRanks.getInstance().getRankManager().saveRank(rank);
+        PrisonRanks.getInstance().getRankManager().saveRank(rank);
 
-            Output.get().sendInfo(sender,"Successfully set the tag of rank '%s' to "+tag,rankName);
-//        } catch (IOException e) {
-//            Output.get().sendError(sender,
-//                "The rank could not be saved to disk. The tag change for the rank has not been saved. Check the console for details.");
-//            Output.get().logError("Rank could not be written to disk.", e);
-//        }
-
+        if ( tag == null ) {
+        	sender.sendMessage( 
+        			String.format( "&cThe tag name was cleared for the rank %s.", 
+        					rank.getName() ) );
+        }
+        else {
+        	sender.sendMessage( 
+        			String.format( "&cThe tag name was changed to %s for the rank %s.", 
+        					tag, rank.getName() ) );
+        }
     }
     
     @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
