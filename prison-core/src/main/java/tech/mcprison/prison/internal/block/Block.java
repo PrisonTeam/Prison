@@ -67,6 +67,14 @@ public interface Block {
     
     
     public void setPrisonBlock( PrisonBlock prisonBlock );
+    
+    /**
+     * This function will set the current BlockFace for the block.
+     * This is needed to properly set blocks such as ladders.
+     * 
+     * @param blockFace
+     */
+    public void setBlockFace( BlockFace blockFace );
 
     
     /**

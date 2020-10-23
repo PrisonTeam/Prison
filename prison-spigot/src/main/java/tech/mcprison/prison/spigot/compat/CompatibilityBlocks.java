@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.BlockType;
 
@@ -36,4 +37,5 @@ public interface CompatibilityBlocks {
 	
 	public void setDurability( ItemStack itemInHand, int newDurability );
 	
+	public void setBlockFace( Block bBlock, BlockFace blockFace );
 }
