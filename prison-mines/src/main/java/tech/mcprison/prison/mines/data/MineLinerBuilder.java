@@ -6,6 +6,7 @@ import java.util.List;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
@@ -30,7 +31,8 @@ public class MineLinerBuilder {
 		
 		blackAndWhite,
 		seaEchos,
-		obby
+		obby, 
+		beacon
 		;
 		
 		public static LinerPatterns fromString( String pattern ) {
@@ -122,14 +124,14 @@ public class MineLinerBuilder {
 				
 				select2DPattern( edge );
 				// Top is where yMax is constant (yMin = yMax):
-				generatePattern( world, xMin, xMax, yMax, yMax, zMin, zMax );
+				generatePattern( edge, world, xMin, xMax, yMax, yMax, zMin, zMax );
 				break;
 				
 			case bottom:
 				
 				select2DPattern( edge );
 				// Bottom is where yMin is constant (yMax = yMin):
-				generatePattern( world, xMin, xMax, yMin, yMin, zMin, zMax );
+				generatePattern( edge, world, xMin, xMax, yMin, yMin, zMin, zMax );
 				
 				break;
 				
@@ -137,7 +139,7 @@ public class MineLinerBuilder {
 				
 				select2DPattern( edge );
 				// North is where zMax is constant (zMin = zMax):
-				generatePattern( world, xMin, xMax, yMin, yMax, zMax, zMax );
+				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 				
 				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 				
@@ -147,7 +149,7 @@ public class MineLinerBuilder {
 				
 				select2DPattern( edge );
 				// South is where zMin is constant (zMax = zMin):
-				generatePattern( world, xMin, xMax, yMin, yMax, zMin, zMin );
+				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMin, zMin );
 
 				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 				
@@ -157,7 +159,7 @@ public class MineLinerBuilder {
 				
 				select2DPattern( edge );
 				// East is where xMin is constant (xMax = xMin):
-				generatePattern( world, xMin, xMin, yMin, yMax, zMin, zMax );
+				generatePattern( edge, world, xMin, xMin, yMin, yMax, zMin, zMax );
 				
 				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 			
@@ -167,7 +169,7 @@ public class MineLinerBuilder {
 				
 				select2DPattern( edge );
 				// West is where xMax is constant (xMin = xMax):
-				generatePattern( world, xMax, xMax, yMin, yMax, zMin, zMax );
+				generatePattern( edge, world, xMax, xMax, yMin, yMax, zMin, zMax );
 				
 				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 				
@@ -196,7 +198,7 @@ public class MineLinerBuilder {
 	}
 	
 	
-	private void generatePattern( World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
+	private void generatePattern( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
 		try {
 			
 			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
@@ -205,6 +207,40 @@ public class MineLinerBuilder {
 
 //			Output.get().logInfo( "### MineLinerBuilder - xMin=%d, xMax=%d, yMin=%d, yMax=%d, zMin=%d, zMax=%d ",
 //					xMin, xMax, yMin, yMax, zMin, zMax);
+			
+			boolean isLadderBlock = false;
+			boolean isLadderPossible = false;
+			
+			
+			BlockFace ladderFace = null;
+			switch ( edge )
+			{
+				case north:
+					ladderFace = BlockFace.SOUTH;
+					isLadderPossible = true;
+					break;
+				case south:
+					ladderFace = BlockFace.NORTH;
+					isLadderPossible = true;
+					break;
+				case east:
+					ladderFace = BlockFace.WEST;
+					isLadderPossible = true;
+					break;
+				case west:
+					ladderFace = BlockFace.EAST;
+					isLadderPossible = true;
+					break;
+				case top:
+					ladderFace = BlockFace.BOTTOM;
+					break;
+				case bottom:
+					ladderFace = BlockFace.TOP;
+					break;
+
+				default:
+					break;
+			}
 			
 			
 			for (int x = xMin; x <= xMax; x++) {
@@ -229,25 +265,80 @@ public class MineLinerBuilder {
 //								"x3d=%d, y3d=%d, z3d=%d ",
 //								nextBlockName, x, y, z, x3d, y3d, z3d);
 						
+						
 						Location targetLocation = new Location(world, x, y, z);
 						Block targetBlock = targetLocation.getBlockAt();
 						
 						// Do not replace any air blocks: This allows us to follow the contour of
 						// the terrain.
 						
+//						boolean isXPos = isLadderPossible && y > yMin && (xMin != xMax );
+//						boolean isZPos = isLadderPossible && y > yMin && (zMin != zMax );
+//						
+//						boolean isX1 = isXPos && (xMax + xMin) / 2 == x;
+//						boolean isX2 = isXPos && (xMax + xMin) / 2 == x+1;
+//
+//						boolean isZ1 = isZPos && (zMax + zMin) / 2 == z;
+//						boolean isZ2 = isZPos && (zMax + zMin) / 2 == z+1;
+						
+						isLadderBlock = 
+								isLadderPossible && y > yMin &&
+									(xMin != xMax ) && 
+										((xMax + xMin) / 2 == x || (xMax + xMin) / 2 == x + 1) || 
+								isLadderPossible && y > yMin &&
+									(zMin != zMax ) && 
+										((zMax + zMin) / 2 == z || (zMax + zMin) / 2 == z + 1);
+						
+//						Output.get().logInfo( "### MineLinerBuilder - %s  %s  %s isLadder=%s   x=%d, y=%d, z=%d  " +
+//								"  block: %s  ",
+//								(isXPos || isZPos) ? "Y" : "N", (isX1 || isZ1) ? "Y" : "N", (isX2 || isZ2) ? "Y" : "N",
+//								(isLadderBlock ? "Y" : "N"), x, y, z,  nextBlockName);
+						
+						
 						if ( useNewBlockModel ) {
 							
 							if ( !targetBlock.isEmpty() ) {
-								PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
-								targetBlock.setPrisonBlock( nextBlockType );
+										
+								
+								if ( isLadderBlock ) {
+									Block faceBlock = targetBlock.getRelative( ladderFace );
+									
+									PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+									faceBlock.setPrisonBlock( nextBlockType );
+
+									PrisonBlock ladderBlockType = new PrisonBlock("ladder");
+									targetBlock.setPrisonBlock( ladderBlockType );
+									targetBlock.setBlockFace( ladderFace );
+								}
+								else {
+									
+									PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+									targetBlock.setPrisonBlock( nextBlockType );
+								}
 							}
 							
 						}
 						else {
 							
 							if ( !targetBlock.isEmpty() ) {
-								BlockType nextBlockType = BlockType.fromString( nextBlockName );
-								targetBlock.setType( nextBlockType );
+								
+								if ( isLadderBlock ) {
+									Block faceBlock = targetBlock.getRelative( ladderFace );
+									
+									BlockType nextBlockType = BlockType.fromString( nextBlockName );
+									faceBlock.setType( nextBlockType );
+
+									BlockType ladderBlockType = BlockType.LADDER;
+									targetBlock.setType( ladderBlockType );
+									targetBlock.setBlockFace( ladderFace );
+								}
+								else {
+									
+									BlockType nextBlockType = BlockType.fromString( nextBlockName );
+									targetBlock.setType( nextBlockType );
+								}
+
+								
 							}
 						}
 					}
@@ -277,8 +368,8 @@ public class MineLinerBuilder {
 						{ "pillar_quartz_block", "coal_block" }
 				};
 				pattern2d = baw;
-				
 				break;
+				
 			
 			case seaEchos:
 				String[][] seaEchos =
@@ -288,8 +379,19 @@ public class MineLinerBuilder {
 						{ "pillar_quartz_block", "obsidian", "sea_lantern" },
 				};
 				pattern2d = seaEchos;
-				
 				break;
+				
+				
+			case beacon:
+				String[][] beacon =
+				{
+						{ "beacon", "diamond_block", "diamond_block", "diamond_block" },
+						{ "diamond_block", "diamond_block", "diamond_block", "diamond_block" },
+						{ "diamond_block", "diamond_block", "diamond_block", "diamond_block" }
+				};
+				pattern2d = beacon;
+				break;
+				
 				
 			case obby:
 				String[][] obby =
@@ -297,18 +399,19 @@ public class MineLinerBuilder {
 						{ "obsidian" }
 				};
 				pattern2d = obby;
-				
 				break;
+				
 				
 			case white: 
 				String[][] white =
 				{
-					{ "iron_block", "end_stone" },
-					{ "end_stone", "iron_block" }
+					{ "iron_block", "chiseled_quartz_block" },
+					{ "chiseled_quartz_block", "iron_block" }
 				};
 				pattern2d = white;
 				break;
-			
+
+				
 			case bright:
 			default:
 				

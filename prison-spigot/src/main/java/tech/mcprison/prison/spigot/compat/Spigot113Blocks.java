@@ -2,11 +2,14 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.util.BlockType;
@@ -229,5 +232,51 @@ public abstract class Spigot113Blocks
 		
 		Damageable damage = (Damageable) itemInHand.getItemMeta();
 		damage.setDamage( newDamage );
+	}
+	
+	
+	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
+		
+		
+		org.bukkit.block.BlockFace spigotBlockFace = null;
+		
+		switch ( blockFace )
+		{
+//			case TOP:
+//				spigotBlockFace = org.bukkit.block.BlockFace.UP;
+//				break;
+//			case BOTTOM:
+//				spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
+//				break;
+			case NORTH:
+				spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
+				break;
+			case EAST:
+				spigotBlockFace = org.bukkit.block.BlockFace.EAST;
+				break;
+			case SOUTH:
+				spigotBlockFace = org.bukkit.block.BlockFace.SOUTH;
+				break;
+			case WEST:
+				spigotBlockFace = org.bukkit.block.BlockFace.WEST;
+				break;
+
+			default:
+				break;
+		}
+		
+		if ( spigotBlockFace != null ) {
+			
+			BlockState state = spigotBlock.getState();
+			
+			if ( state.getBlockData() instanceof Directional ) {
+				
+				Directional bukkitDirectional = (Directional) state.getBlockData();
+				bukkitDirectional.setFacing( spigotBlockFace );
+				state.setBlockData(bukkitDirectional);
+				state.update();
+			}
+			
+		}
 	}
 }

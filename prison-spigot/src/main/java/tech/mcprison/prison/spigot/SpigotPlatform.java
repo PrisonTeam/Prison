@@ -1114,24 +1114,24 @@ class SpigotPlatform
 	public void enableMineTracer( String worldName, Location min, Location max ) {
 		
     	
-    	org.bukkit.World world = getBukkitWorld( worldName );
-    	
-    	org.bukkit.Location loc1 = new org.bukkit.Location( 
-    						world, min.getBlockX(), min.getBlockY(), min.getBlockZ() );
-    	
-    	org.bukkit.Location loc2 = new org.bukkit.Location( 
-    						world, max.getBlockX(), max.getBlockY(), max.getBlockZ() );
-
-    	
-    	// https://www.spigotmc.org/wiki/particle-list-1-8-8/
-    	
-//    	Particle redStone = ParticleDisplay.colored( loc1, Color.RED, 0.5f );
-    	
-//    	 Particle.DustOptions dust = new Particle.DustOptions(org.bukkit.Color.RED, 0.5f);
-    	
-    	ParticleDisplay display = ParticleDisplay.simple( loc1, Particle.REDSTONE );
-    	
-    	XParticle.structuredCube( loc1, loc2, 0.10d, display );
+//    	org.bukkit.World world = getBukkitWorld( worldName );
+//    	
+//    	org.bukkit.Location loc1 = new org.bukkit.Location( 
+//    						world, min.getBlockX(), min.getBlockY(), min.getBlockZ() );
+//    	
+//    	org.bukkit.Location loc2 = new org.bukkit.Location( 
+//    						world, max.getBlockX(), max.getBlockY(), max.getBlockZ() );
+//
+//    	
+//    	// https://www.spigotmc.org/wiki/particle-list-1-8-8/
+//    	
+////    	Particle redStone = ParticleDisplay.colored( loc1, Color.RED, 0.5f );
+//    	
+////    	 Particle.DustOptions dust = new Particle.DustOptions(org.bukkit.Color.RED, 0.5f);
+//    	
+//    	ParticleDisplay display = ParticleDisplay.simple( loc1, Particle.REDSTONE );
+//    	
+//    	XParticle.structuredCube( loc1, loc2, 0.10d, display );
     	
 	}
 	

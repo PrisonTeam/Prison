@@ -1341,76 +1341,8 @@ public abstract class MineReset
     
     private void clearMine( boolean tracer ) {
 		
-		try {
-			
-			if ( isVirtual() ) {
-				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
-				return;
-			}
-			
-			
-			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-			
-			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
-
-			Optional<World> worldOptional = getWorld();
-			World world = worldOptional.get();
-			
-			
-			PrisonBlock blockAirPB = new PrisonBlock( "AIR" );
-			BlockType blockAirBT = BlockType.AIR;
-			
-			PrisonBlock blockRedPB = new PrisonBlock( "RED_STAINED_GLASS" );
-			BlockType blockRedBT = BlockType.RED_STAINED_GLASS;
-
-//			PrisonBlock blockRedstonePB = new PrisonBlock( "REDSTONE_BLOCK" );
-//			BlockType blockRedstoneBT = BlockType.REDSTONE_BLOCK;
-			
-	
-			
-			// Reset the block break count before resetting the blocks:
-//			setBlockBreakCount( 0 );
-//			Random random = new Random();
-			
-			int yMin = getBounds().getyBlockMin();
-			int yMax = getBounds().getyBlockMax();
-			
-			int xMin = getBounds().getxBlockMin();
-			int xMax = getBounds().getxBlockMax();
-			
-			int zMin = getBounds().getzBlockMin();
-			int zMax = getBounds().getzBlockMax();
-			
-			for (int y = yMax; y >= yMin; y--) {
-//    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
-				for (int x = xMin; x <= xMax; x++) {
-					for (int z = zMin; z <= zMax; z++) {
-						Location targetBlock = new Location(world, x, y, z);
-						
-						boolean xEdge = x == xMin || x == xMax;
-						boolean yEdge = y == yMin || y == yMax;
-						boolean zEdge = z == zMin || z == zMax;
-						
-						boolean isEdge = tracer &&
-										(xEdge && yEdge || xEdge && zEdge ||
-										 yEdge && zEdge);
-						
-						if ( useNewBlockModel ) {
-							
-							targetBlock.getBlockAt().setPrisonBlock( isEdge ? blockRedPB : blockAirPB );
-						}
-						else {
-							
-							targetBlock.getBlockAt().setType( isEdge ? blockRedBT : blockAirBT );
-						}
-					}
-				}
-			}
-			
-			
-		} catch (Exception e) {
-			Output.get().logError("&cFailed to reset mine " + getName(), e);
-		}
+    	MineTracerBuilder tracerBuilder = new MineTracerBuilder();
+    	tracerBuilder.clearMine( (Mine) this, tracer );
     }
     
     

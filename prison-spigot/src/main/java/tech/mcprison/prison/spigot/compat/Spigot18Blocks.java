@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
@@ -360,4 +361,53 @@ public abstract class Spigot18Blocks
 	}
 	
 	
+
+	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
+		
+		
+		if ( spigotBlock.getType() == Material.LADDER ) {
+			
+			
+			org.bukkit.block.BlockFace spigotBlockFace = null;
+			
+			switch ( blockFace )
+			{
+//			case TOP:
+//				spigotBlockFace = org.bukkit.block.BlockFace.UP;
+//				break;
+//			case BOTTOM:
+//				spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
+//				break;
+				case NORTH:
+					spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
+					break;
+				case EAST:
+					spigotBlockFace = org.bukkit.block.BlockFace.EAST;
+					break;
+				case SOUTH:
+					spigotBlockFace = org.bukkit.block.BlockFace.SOUTH;
+					break;
+				case WEST:
+					spigotBlockFace = org.bukkit.block.BlockFace.WEST;
+					break;
+					
+				default:
+					break;
+			}
+			
+			if ( spigotBlockFace != null ) {
+				
+				BlockState state = spigotBlock.getState();
+				
+				org.bukkit.material.Ladder ladder = (org.bukkit.material.Ladder) state.getData();
+				
+				ladder.setFacingDirection( spigotBlockFace );
+				
+				state.setData( ladder );
+				state.update();
+				
+			}
+		}
+		
+	}
 }
