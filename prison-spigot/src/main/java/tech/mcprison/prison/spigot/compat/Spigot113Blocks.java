@@ -274,7 +274,7 @@ public abstract class Spigot113Blocks
 				Directional bukkitDirectional = (Directional) state.getBlockData();
 				bukkitDirectional.setFacing( spigotBlockFace );
 				state.setBlockData(bukkitDirectional);
-				state.update();
+				state.update( true, false );
 			}
 			
 		}

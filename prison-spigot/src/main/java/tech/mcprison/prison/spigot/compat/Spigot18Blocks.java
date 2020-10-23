@@ -404,7 +404,9 @@ public abstract class Spigot18Blocks
 				ladder.setFacingDirection( spigotBlockFace );
 				
 				state.setData( ladder );
-				state.update();
+				
+				// turn off physics so the ladders will "stick" to glowstone and other blocks.
+				state.update( true, false );
 				
 			}
 		}
