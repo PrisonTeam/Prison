@@ -24,7 +24,7 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(display);
+        meta.setDisplayName(SpigotPrison.format(display));
         try {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         } catch (NoClassDefFoundError ignored){}

@@ -30,19 +30,13 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -324,6 +318,27 @@ public class ListenersPrisonManager implements Listener {
                 // Call the method
                 BlocksGUI(e, p, parts);
 
+                break;
+            }
+
+            // Check the inventory name and do the actions
+            case "Mines -> BlocksList":{
+
+                if (parts[0].equalsIgnoreCase("Next")){
+                    SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, parts[1], Integer.parseInt(parts[2]));
+
+                    p.closeInventory();
+
+                    gui.open();
+                } else {
+                    SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, 0.00, parts[1], parts[0]);
+
+                    p.closeInventory();
+
+                    gui.open();
+                }
+
+                e.setCancelled(true);
                 break;
             }
 
@@ -1200,6 +1215,15 @@ public class ListenersPrisonManager implements Listener {
         String buttonname = parts[0];
         String mineName = parts[1];
         double percentage = Double.parseDouble(parts[2]);
+
+        if (buttonname.equalsIgnoreCase("Add")){
+            SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, mineName, 0);
+
+            p.closeInventory();
+
+            gui.open();
+            return;
+        }
 
         // Check the click Type and do the actions
         if (e.isShiftClick() && e.isRightClick()) {

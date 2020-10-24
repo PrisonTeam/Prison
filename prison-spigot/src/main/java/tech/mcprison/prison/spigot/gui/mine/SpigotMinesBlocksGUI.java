@@ -40,39 +40,24 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(mineName);
 
         // Get the dimensions and if needed increases them
-        int dimension;
+        int dimension = 54;
         
 		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
-		if ( useNewBlockModel ) {
-			dimension = (int) Math.ceil(m.getPrisonBlocks().size() / 9D) * 9;
-		}
-		else {
-			dimension = (int) Math.ceil(m.getBlocks().size() / 9D) * 9;
-		}
 
         // Load config
         this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
-        // If the inventory is empty
-        if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoBlocksMine")));
-            p.closeInventory();
-            return;
-        }
-
-        // If the dimension's too big, don't open the GUI
-        if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyBlocks")));
-            p.closeInventory();
-            return;
-        }
-
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
+        List<String> addBlockLore = createLore(
+                messages.getString("Gui.Lore.ClickToAddBlock")
+        );
+
+        ItemStack addBlockButton = createButton(Material.LIME_STAINED_GLASS, 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
+        inv.setItem(56, addBlockButton);
+
         if ( useNewBlockModel ) {
-        	
         	
         	// For every block makes a button
         	for (PrisonBlock block : m.getPrisonBlocks()) {
