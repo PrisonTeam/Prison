@@ -204,6 +204,11 @@ public class ListenersPrisonManager implements Listener {
         // Get title
         String title = compat.getGUITitle(e).substring(2);
 
+        if (buttonNameMain.equalsIgnoreCase("Close")){
+            p.closeInventory();
+            e.setCancelled(true);
+        }
+
         // Check if the GUI have the right title and do the actions
         switch (title) {
 

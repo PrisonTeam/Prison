@@ -27,8 +27,6 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
         this.rankName = rankname;
     }
 
-
-
     public void open() {
 
         // Check if Ranks are enabled

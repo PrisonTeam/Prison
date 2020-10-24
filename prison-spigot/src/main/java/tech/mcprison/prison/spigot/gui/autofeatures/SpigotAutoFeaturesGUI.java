@@ -29,7 +29,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = 27;
+        int dimension = 54;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> AutoFeatures"));
 
         // Config
@@ -64,6 +64,12 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         ItemStack enabledOrDisabled;
         ItemStack playSound;
         ItemStack hologram;
+
+        List<String> closeGUILore = createLore(
+          messages.getString("Gui.Lore.ClickToClose")
+        );
+
+        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.playSoundIfInventoryIsFull ) ){
 
@@ -164,29 +170,32 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             autoBlock = createButton(Material.RED_STAINED_GLASS_PANE, 1, autoBlockLore, SpigotPrison.format("&c" + "AutoBlock Disabled"));
         }
 
-        //Position of the button
-        inv.setItem(2, playSound);
+        // Position of the button
+        inv.setItem(11, playSound);
 
-        //Position of the button
-        inv.setItem(6, hologram);
+        // Position of the button
+        inv.setItem(15, hologram);
 
-        //Position of the button
-        inv.setItem(10, autoPickup);
+        // Position of the button
+        inv.setItem(28, autoPickup);
 
-        //Position of the button
-        inv.setItem(13, autoSmelt);
+        // Position of the button
+        inv.setItem(31, autoSmelt);
 
-        //Position of the button
-        inv.setItem(16, autoBlock);
+        // Position of the button
+        inv.setItem(34, autoBlock);
 
-        //Position of the button
-        inv.setItem(19, enabledOrDisabled);
+        // Position of the button
+        inv.setItem(37, enabledOrDisabled);
 
-        //Position of the button
-        inv.setItem(22, enabledOrDisabled);
+        // Position of the button
+        inv.setItem(40, enabledOrDisabled);
 
-        //Position of the button
-        inv.setItem(25, enabledOrDisabled);
+        // Position of the button
+        inv.setItem(43, enabledOrDisabled);
+
+        // Position of the button
+        inv.setItem(53, closeGUI);
     }
 
 

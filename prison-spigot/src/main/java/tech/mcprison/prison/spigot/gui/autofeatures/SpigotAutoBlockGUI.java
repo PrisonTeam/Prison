@@ -29,7 +29,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = 27;
+        int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
 
         // Config
@@ -63,6 +63,13 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         List<String> disabledLore = createLore(
                 messages.getString("Gui.Lore.RightClickToEnable")
         );
+
+        List<String> closeGUILore = createLore(
+                messages.getString("Gui.Lore.ClickToClose")
+        );
+
+        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(35, closeGUI);
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockAllBlocks ) ) {
             ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));

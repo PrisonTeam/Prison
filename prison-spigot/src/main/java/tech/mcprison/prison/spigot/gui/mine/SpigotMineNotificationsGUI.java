@@ -76,6 +76,13 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToChoose"),
                 messages.getString("Gui.Lore.DisableNotifications"));
 
+        List<String> closeGUILore = createLore(
+                messages.getString("Gui.Lore.ClickToClose")
+        );
+
+        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(26, closeGUI);
+
         // Add the selected lore to the mode used
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 

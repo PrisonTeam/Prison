@@ -90,6 +90,13 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         	commandMinecart = Material.matchMaterial( "command_block_minecart" );
         }
 
+        List<String> closeGUILore = createLore(
+                messages.getString("Gui.Lore.ClickToClose")
+        );
+
+        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(26, closeGUI);
+
         ItemStack rankupCommands = createButton(commandMinecart, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
 
         // Create the button

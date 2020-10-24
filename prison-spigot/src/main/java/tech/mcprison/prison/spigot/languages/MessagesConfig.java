@@ -98,6 +98,7 @@ public class MessagesConfig {
         dataConfig("Gui.Lore.ClickToUse","&8Click to use.");
         dataConfig("Gui.Lore.ClickToRankup","&8Click to rankup");
         dataConfig("Gui.Lore.ClickToEditBlock", "&8Click to edit percentage.");
+        dataConfig("Gui.Lore.ClickToClose", "&cClick to close the GUI.");
         dataConfig("Gui.Lore.Chance","&3Chance: ");
         dataConfig("Gui.Lore.Command","&3Command: &7");
         dataConfig("Gui.Lore.ContainsTheRank","&3The Rank ");

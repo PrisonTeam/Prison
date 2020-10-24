@@ -58,7 +58,7 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
                 messages.getString("Gui.Lore.noRanksFoundSetup6"),
                 messages.getString("Gui.Lore.noRanksFoundSetup7"),
                 messages.getString("Gui.Lore.noRanksFoundSetup8")
-                );
+        );
 
         // Blocks of the mine
         List<String> cancelLore = createLore(

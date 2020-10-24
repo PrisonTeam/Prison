@@ -105,6 +105,13 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.MineName") + mineName
         );
 
+        List<String> closeGUILore = createLore(
+                messages.getString("Gui.Lore.ClickToClose")
+        );
+
+        // Create the button, set the material, amount, lore and name
+        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+
         // Create the button, set up the material, amount, lore and name
         ItemStack resetMine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
 
@@ -155,6 +162,9 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         // Position of the button
         inv.setItem(33, mineRename);
+
+        // Position of the button
+        inv.setItem(45, closeGUI);
     }
 
 }
