@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Particle;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -46,8 +44,6 @@ import org.bukkit.plugin.Plugin;
 import com.cryptomorin.xseries.XBlock;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.messages.Titles;
-import com.cryptomorin.xseries.particles.ParticleDisplay;
-import com.cryptomorin.xseries.particles.XParticle;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
@@ -1109,30 +1105,5 @@ class SpigotPlatform
 		return blockList;
 	}
 	
-	
-	@Override
-	public void enableMineTracer( String worldName, Location min, Location max ) {
-		
-    	
-//    	org.bukkit.World world = getBukkitWorld( worldName );
-//    	
-//    	org.bukkit.Location loc1 = new org.bukkit.Location( 
-//    						world, min.getBlockX(), min.getBlockY(), min.getBlockZ() );
-//    	
-//    	org.bukkit.Location loc2 = new org.bukkit.Location( 
-//    						world, max.getBlockX(), max.getBlockY(), max.getBlockZ() );
-//
-//    	
-//    	// https://www.spigotmc.org/wiki/particle-list-1-8-8/
-//    	
-////    	Particle redStone = ParticleDisplay.colored( loc1, Color.RED, 0.5f );
-//    	
-////    	 Particle.DustOptions dust = new Particle.DustOptions(org.bukkit.Color.RED, 0.5f);
-//    	
-//    	ParticleDisplay display = ParticleDisplay.simple( loc1, Particle.REDSTONE );
-//    	
-//    	XParticle.structuredCube( loc1, loc2, 0.10d, display );
-    	
-	}
 	
 }

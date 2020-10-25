@@ -276,8 +276,4 @@ public class TestPlatform implements Platform {
 		
 	}
 	
-	@Override
-	public void enableMineTracer( String worldName, Location min, Location max ) {
-		
-	}
 }

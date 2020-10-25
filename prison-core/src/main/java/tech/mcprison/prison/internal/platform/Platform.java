@@ -285,6 +285,4 @@ public interface Platform {
 	public void autoCreateMineBlockAssignment();
 	
 
-	public void enableMineTracer( String worldName, Location min, Location max );
-	
 }
