@@ -242,23 +242,23 @@ public abstract class Spigot113Blocks
 		
 		switch ( blockFace )
 		{
-//			case TOP:
-//				spigotBlockFace = org.bukkit.block.BlockFace.UP;
-//				break;
-//			case BOTTOM:
-//				spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
-//				break;
+			case TOP:
+				spigotBlockFace = org.bukkit.block.BlockFace.UP;
+				break;
+			case BOTTOM:
+				spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
+				break;
 			case NORTH:
-				spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
-				break;
-			case EAST:
-				spigotBlockFace = org.bukkit.block.BlockFace.EAST;
-				break;
-			case SOUTH:
 				spigotBlockFace = org.bukkit.block.BlockFace.SOUTH;
 				break;
-			case WEST:
+			case EAST:
 				spigotBlockFace = org.bukkit.block.BlockFace.WEST;
+				break;
+			case SOUTH:
+				spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
+				break;
+			case WEST:
+				spigotBlockFace = org.bukkit.block.BlockFace.EAST;
 				break;
 
 			default:

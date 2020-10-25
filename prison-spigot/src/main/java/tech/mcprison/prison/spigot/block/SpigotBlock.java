@@ -47,7 +47,10 @@ public class SpigotBlock implements Block {
     }
 
     @Override public Block getRelative(BlockFace face) {
-        return new SpigotBlock(bBlock.getRelative(org.bukkit.block.BlockFace.valueOf(face.name())));
+        return new SpigotBlock(
+        		bBlock.getRelative(
+        				org.bukkit.block.BlockFace.valueOf(
+        						face.name())));
     }
 
     @Override public BlockType getType() {

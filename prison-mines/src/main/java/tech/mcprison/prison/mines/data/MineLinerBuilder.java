@@ -15,6 +15,8 @@ import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 
 public class MineLinerBuilder {
+	
+	public static final String REPAIR_LINER = "repair_liner";
 
 	private Mine mine;
 	private Bounds liner;
@@ -32,7 +34,9 @@ public class MineLinerBuilder {
 		blackAndWhite,
 		seaEchos,
 		obby, 
-		beacon
+		beacon,
+		
+		repair
 		;
 		
 		public static LinerPatterns fromString( String pattern ) {
@@ -136,42 +140,36 @@ public class MineLinerBuilder {
 				break;
 				
 			case north:
+				// North is in the direction of negative Z
 				
 				select2DPattern( edge );
-				// North is where zMax is constant (zMin = zMax):
-				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
-				
-				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
+				// North is where zMin is constant (zMax = zMin):
+				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMin, zMin );
 				
 				break;
 
 			case south:
+				// South is in the direction of positive Z
 				
 				select2DPattern( edge );
-				// South is where zMin is constant (zMax = zMin):
-				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMin, zMin );
+				// South is where zMax is constant (zMin = zMax):
+				generatePattern( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
 
-				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
-				
 				break;
 				
 			case east:
 				
 				select2DPattern( edge );
-				// East is where xMin is constant (xMax = xMin):
-				generatePattern( edge, world, xMin, xMin, yMin, yMax, zMin, zMax );
+				// East is where xMax is constant (xMin = xMax):
+				generatePattern( edge, world, xMax, xMax, yMin, yMax, zMin, zMax );
 				
-				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
-			
 				break;
 
 			case west:
 				
 				select2DPattern( edge );
-				// West is where xMax is constant (xMin = xMax):
-				generatePattern( edge, world, xMax, xMax, yMin, yMax, zMin, zMax );
-				
-				insertLadders( edge, world, xMin, xMax, yMin, yMax, zMax, zMax );
+				// West is where xMin is constant (xMax = xMin):
+				generatePattern( edge, world, xMin, xMin, yMin, yMax, zMin, zMax );
 				
 				break;
 				
@@ -180,22 +178,6 @@ public class MineLinerBuilder {
 		}
 	}
 	
-	/**
-	 * This function perhaps should be combined with generatePattern() to automatically insert ladders
-	 * in one pass.
-	 * 
-	 * @param edge
-	 * @param world
-	 * @param xMin
-	 * @param xMax
-	 * @param yMin
-	 * @param yMax
-	 * @param zMin
-	 * @param zMax
-	 */
-	private void insertLadders( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
-		
-	}
 	
 	
 	private void generatePattern( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
@@ -208,34 +190,41 @@ public class MineLinerBuilder {
 //			Output.get().logInfo( "### MineLinerBuilder - xMin=%d, xMax=%d, yMin=%d, yMax=%d, zMin=%d, zMax=%d ",
 //					xMin, xMax, yMin, yMax, zMin, zMax);
 			
-			boolean isLadderBlock = false;
+			
 			boolean isLadderPossible = false;
 			
 			
-			BlockFace ladderFace = null;
+			BlockFace blockFace = null;
+//			BlockFace blockFaceOpposite = null;
 			switch ( edge )
 			{
 				case north:
-					ladderFace = BlockFace.SOUTH;
+					blockFace = BlockFace.NORTH;
+//					blockFaceOpposite = BlockFace.SOUTH;
 					isLadderPossible = true;
 					break;
 				case south:
-					ladderFace = BlockFace.NORTH;
+					blockFace = BlockFace.SOUTH;
+//					blockFaceOpposite = BlockFace.NORTH;
 					isLadderPossible = true;
 					break;
 				case east:
-					ladderFace = BlockFace.WEST;
+					blockFace = BlockFace.EAST;
+//					blockFaceOpposite = BlockFace.WEST;
 					isLadderPossible = true;
 					break;
 				case west:
-					ladderFace = BlockFace.EAST;
+					blockFace = BlockFace.WEST;
+//					blockFaceOpposite = BlockFace.EAST;
 					isLadderPossible = true;
 					break;
 				case top:
-					ladderFace = BlockFace.BOTTOM;
+					blockFace = BlockFace.UP;
+//					blockFaceOpposite = BlockFace.UP;
 					break;
 				case bottom:
-					ladderFace = BlockFace.TOP;
+					blockFace = BlockFace.DOWN;
+//					blockFaceOpposite = BlockFace.DOWN;
 					break;
 
 				default:
@@ -243,13 +232,13 @@ public class MineLinerBuilder {
 			}
 			
 			
-			for (int x = xMin; x <= xMax; x++) {
+			for (int y = yMin; y <= yMax; y++) {
 				
-				// Get the block-pattern-x position, mapped relative to the 2d pattern:
-				int x3d = (x - xMin) % getPattern3d().size();
-				
-				for (int y = yMin; y <= yMax; y++) {
+				for (int x = xMin; x <= xMax; x++) {
 
+					// Get the block-pattern-x position, mapped relative to the 2d pattern:
+					int x3d = (x - xMin) % getPattern3d().size();
+					
 					// Get the block-pattern-x position, mapped relative to the 2d pattern:
 					int y3d = (y - yMin) % getPattern3d().get( x3d ).size();
 					
@@ -266,8 +255,7 @@ public class MineLinerBuilder {
 //								nextBlockName, x, y, z, x3d, y3d, z3d);
 						
 						
-						Location targetLocation = new Location(world, x, y, z);
-						Block targetBlock = targetLocation.getBlockAt();
+						
 						
 						// Do not replace any air blocks: This allows us to follow the contour of
 						// the terrain.
@@ -281,63 +269,113 @@ public class MineLinerBuilder {
 //						boolean isZ1 = isZPos && (zMax + zMin) / 2 == z;
 //						boolean isZ2 = isZPos && (zMax + zMin) / 2 == z+1;
 						
-						isLadderBlock = 
-								isLadderPossible && y > yMin &&
-									(xMin != xMax ) && 
-										((xMax + xMin) / 2 == x || (xMax + xMin) / 2 == x + 1) || 
-								isLadderPossible && y > yMin &&
-									(zMin != zMax ) && 
-										((zMax + zMin) / 2 == z || (zMax + zMin) / 2 == z + 1);
+						boolean isLadderBlock = false;
+						
+						isLadderBlock = isLadderPossible && y > yMin && ( 
+								isLadderBlock( x, xMin, xMax ) ||
+								isLadderBlock( z, zMin, zMax ));
+						
+//						if ( isLadderPossible && y > yMin && ( xMin != xMax ) ) {
+//							isLadderBlock = ((xMax - xMin) < 2) || 
+//									((xMax + xMin) / 2 == x || (xMax + xMin) / 2 == x + 1)
+//									;
+//						}
+//						else
+//						if ( isLadderPossible && y > yMin && ( zMin != zMax ) ) {
+//							isLadderBlock = ((zMax - zMin) < 2) || 
+//									((zMax + zMin) / 2 == z|| (zMax + zMin) / 2 == z + 1)
+//									;
+//						}
+						
 						
 //						Output.get().logInfo( "### MineLinerBuilder - %s  %s  %s isLadder=%s   x=%d, y=%d, z=%d  " +
 //								"  block: %s  ",
 //								(isXPos || isZPos) ? "Y" : "N", (isX1 || isZ1) ? "Y" : "N", (isX2 || isZ2) ? "Y" : "N",
 //								(isLadderBlock ? "Y" : "N"), x, y, z,  nextBlockName);
 						
+						Location targetLocation = new Location(world, x, y, z);
+						Block tBlock = targetLocation.getBlockAt();
+						Block tBlockPlus1 = getRelativeBlock( targetLocation, edge, 1 );
+						Block tBlockPlus2 = getRelativeBlock( targetLocation, edge, 2 );
+						
+						
+//						Output.get().logInfo( "### MineLinerBuilder - %s isLadder=%s  " +
+//								"Loc:%s tB:%s tB1:%s tB2:%s  " +
+//								" x=%s y=%d z=%d  block: %s  ",
+//								edge, (isLadderBlock ? "Y" : " "), 
+//								targetLocation.toBlockCoordinates(),
+//								tBlock.getLocation().toBlockCoordinates(), 
+//								tBlockPlus1.getLocation().toBlockCoordinates(), 
+//								tBlockPlus2.getLocation().toBlockCoordinates(), 
+//									x, y, z,  nextBlockName);
 						
 						if ( useNewBlockModel ) {
 							
-							if ( !targetBlock.isEmpty() ) {
-										
+							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 								
 								if ( isLadderBlock ) {
-									Block faceBlock = targetBlock.getRelative( ladderFace );
-									
-									PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
-									faceBlock.setPrisonBlock( nextBlockType );
 
-									PrisonBlock ladderBlockType = new PrisonBlock("ladder");
-									targetBlock.setPrisonBlock( ladderBlockType );
-									targetBlock.setBlockFace( ladderFace );
+									tBlock.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
+									tBlockPlus1.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
 								}
 								else {
 									
-									PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
-									targetBlock.setPrisonBlock( nextBlockType );
+									tBlock.setPrisonBlock( tBlockPlus1.getPrisonBlock() );
+								}
+							}
+							
+							else if ( !tBlock.isEmpty() ||
+									isLadderBlock && !tBlockPlus1.isEmpty() ) {
+										
+								PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+								
+								if ( isLadderBlock ) {
+									
+									tBlockPlus1.setPrisonBlock( nextBlockType );
+
+									PrisonBlock ladderBlockType = new PrisonBlock("ladder");
+									tBlock.setPrisonBlock( ladderBlockType );
+									tBlock.setBlockFace( blockFace );
+								}
+								else {
+									
+									tBlock.setPrisonBlock( nextBlockType );
 								}
 							}
 							
 						}
 						else {
 							
-							if ( !targetBlock.isEmpty() ) {
+							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 								
 								if ( isLadderBlock ) {
-									Block faceBlock = targetBlock.getRelative( ladderFace );
 									
-									BlockType nextBlockType = BlockType.fromString( nextBlockName );
-									faceBlock.setType( nextBlockType );
-
-									BlockType ladderBlockType = BlockType.LADDER;
-									targetBlock.setType( ladderBlockType );
-									targetBlock.setBlockFace( ladderFace );
+									tBlock.setType( tBlockPlus2.getType() );
+									tBlockPlus1.setType( tBlockPlus2.getType() );
 								}
 								else {
 									
-									BlockType nextBlockType = BlockType.fromString( nextBlockName );
-									targetBlock.setType( nextBlockType );
+									tBlock.setType( tBlockPlus1.getType() );
 								}
+							}
+							
+							else if ( !tBlock.isEmpty() ||
+									isLadderBlock && !tBlockPlus1.isEmpty() ) {
+								
+								BlockType nextBlockType = BlockType.fromString( nextBlockName );
+								
+								if ( isLadderBlock ) {
+									
+									tBlockPlus1.setType( nextBlockType );
 
+									BlockType ladderBlockType = BlockType.LADDER;
+									tBlock.setType( ladderBlockType );
+									tBlock.setBlockFace( blockFace );
+								}
+								else {
+									
+									tBlock.setType( nextBlockType );
+								}
 								
 							}
 						}
@@ -354,12 +392,140 @@ public class MineLinerBuilder {
 
 	}
 	
+	/**
+	 * <p>This identifies if the curr position should be a ladder block. This
+	 * will identify either two or three ladder points, depending upon 
+	 * if the length is odd or even.
+	 * </p>
+	 * 
+	 * <p>The center point will always be a ladder point.  But if the length 
+	 * is even
+	 * then the next block after the mid is also a ladder point.  But if
+	 * the length is odd, then include both sides of the center point.
+	 * </p>
+	 * 
+	 * <p>Skip checks: if min == max then that's the face we are building... so skip because
+	 * it's the other two dimension that are being processed. Since the liner
+	 * is one block bigger than the mine on each end, skip if curr is also
+	 * equal to min or max (the corners).
+	 * </p>
+	 * 
+	 * <p>If the mine on the edge is 3 blocks or less in width, have them all
+	 * be ladders.  
+	 * 
+	 * @param curr
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	private boolean isLadderBlock( int curr, int min, int max ) {
+		
+		boolean results = false;
+		
+		// Skip if the face or corners of liner.
+		if ( min != max && curr != min && curr != max ) {
+			
+			int len = max - min + 1;
+			boolean isEven = len % 2 == 0;
+
+			int mid = (int) Math.floor( len / 2d ) + ( isEven ? -1 : 0);
+
+			// The following is actually 3 blocks since max and min are
+			// skipped due to being corners.  So if the min is 1 to 3 blocks
+			// wide, always have ladders that wide.
+			results = len <= 5;
+			
+			if ( len > 5 ) {
+				
+//				if ( !isEven ) {
+//					mid += 1;
+//				}
+				
+				if ( curr == (min + mid) ) {
+					results = true;
+				}
+				else {
+					results = isEven ?
+						// if distance is even, then next ladder position is mid - 1
+						 ( curr == min + mid + 1 ) :
+						// If odd, then one above and below mid:
+						( curr == min + mid + 1 || curr == min + mid - 1);
+				}
+
+			}
+
+			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
+					"  len=%d  mid=%d  " +
+					"isEven=%s  results=%s " +
+					" (min+mid)=%d ",
+					curr, min, max, len, mid,
+					(isEven ? "true" : "false"),
+					(results ? "true" : "false"), (min+mid) );
+			
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * <p>This gets a block that is offset in the direction (edge) that is
+	 * specified.
+	 * </p>
+	 * 
+	 * @param location
+	 * @param edge
+	 * @param offset
+	 * @return
+	 */
+	private Block getRelativeBlock( Location location, Edges edge, int offset )
+	{
+		Location relLoc = new Location( location );
+		switch ( edge )
+		{
+			case north:
+				relLoc.setZ( relLoc.getBlockZ() - offset );
+				break;
+			case south:
+				relLoc.setZ( relLoc.getBlockZ() + offset );
+				break;
+			case east:
+				relLoc.setX( relLoc.getBlockX() + offset );
+				break;
+			case west:
+				relLoc.setX( relLoc.getBlockX() - offset );
+				break;
+			case top:
+				relLoc.setY( relLoc.getBlockY() + offset );
+				break;
+			case bottom:
+				relLoc.setY( relLoc.getBlockY() - offset );
+				break;
+
+			default:
+				break;
+		}
+
+		Block block = relLoc.getBlockAt();
+				
+		return block;
+	}
+
+
+
 	private void select2DPattern( Edges edge ) {
 		
 		String[][] pattern2d = null;
 		
 		switch ( getPattern() )
 		{
+			case repair:
+				String[][] repair =
+				{
+						{ REPAIR_LINER }
+				};
+				pattern2d = repair;
+				break;
+				
 			
 			case blackAndWhite:
 				String[][] baw =

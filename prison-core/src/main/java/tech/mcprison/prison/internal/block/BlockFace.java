@@ -26,6 +26,32 @@ package tech.mcprison.prison.internal.block;
  */
 public enum BlockFace {
 
-    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM
+    NORTH, SOUTH, EAST, WEST, TOP, BOTTOM, UP, DOWN;
+	
+	    public BlockFace getOppositeFace() {
+	        switch (this) {
+	        case NORTH:
+	            return SOUTH;
+	        case SOUTH:
+	        	return NORTH;
+	        case EAST:
+	        	return WEST;
+	        case WEST:
+	        	return EAST;
+	        case TOP:
+	        	return BOTTOM;
+	        case BOTTOM:
+	        	return TOP;
+	        case UP:
+	        	return DOWN;
+	        case DOWN:
+	        	return UP;
+	        default:
+	        	return NORTH;
+
+	        }
+	 }
+    
+    
 
 }

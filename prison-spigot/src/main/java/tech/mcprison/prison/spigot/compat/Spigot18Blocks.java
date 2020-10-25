@@ -372,12 +372,12 @@ public abstract class Spigot18Blocks
 			
 			switch ( blockFace )
 			{
-//			case TOP:
-//				spigotBlockFace = org.bukkit.block.BlockFace.UP;
-//				break;
-//			case BOTTOM:
-//				spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
-//				break;
+				case TOP:
+					spigotBlockFace = org.bukkit.block.BlockFace.UP;
+					break;
+				case BOTTOM:
+					spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
+					break;
 				case NORTH:
 					spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
 					break;
@@ -390,7 +390,7 @@ public abstract class Spigot18Blocks
 				case WEST:
 					spigotBlockFace = org.bukkit.block.BlockFace.WEST;
 					break;
-					
+						
 				default:
 					break;
 			}

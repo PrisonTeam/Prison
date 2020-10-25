@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.output.Output;
@@ -1330,9 +1331,23 @@ public abstract class MineReset
     	// First clear the mine:
     	clearMine( false );
 		
+    	if ( amount < 0 ) {
+    		while ( amount++ < 0 ) {
+    			
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
 
-		Bounds newBounds = new Bounds( getBounds(), edge, amount );
-		setBounds( newBounds );
+    			Bounds newBounds = new Bounds( getBounds(), edge, -1 );
+    			setBounds( newBounds );
+    			
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
+    		}
+    	}
+    	else {
+    		
+    		Bounds newBounds = new Bounds( getBounds(), edge, amount );
+    		setBounds( newBounds );
+    	}
+
 		
 		// Finally trace the mine:
 		clearMine( true );

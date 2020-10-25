@@ -38,4 +38,5 @@ public interface CompatibilityBlocks {
 	public void setDurability( ItemStack itemInHand, int newDurability );
 	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
+	
 }
