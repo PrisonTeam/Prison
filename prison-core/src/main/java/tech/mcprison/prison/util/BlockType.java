@@ -103,7 +103,10 @@ public enum BlockType {
 	POLISHED_DIORITE( 1, "minecraft:stone", 4, MaterialType.BLOCK ),
 	ANDESITE( 1, "minecraft:stone", 5, MaterialType.BLOCK ),
 	POLISHED_ANDESITE( 1, "minecraft:stone", 6, MaterialType.BLOCK ),
+	
 	GRASS( 2, "minecraft:grass", 0, MaterialType.BLOCK ),
+	GRASS_BLOCK( 2, "minecraft:grass_block", 0, MaterialType.BLOCK ),
+	
 	DIRT( 3, "minecraft:dirt", 0, MaterialType.BLOCK ),
 	COARSE_DIRT( 3, "minecraft:dirt", 1, MaterialType.BLOCK ),
 	PODZOL( 3, "minecraft:dirt", 2, MaterialType.BLOCK ),
@@ -925,6 +928,30 @@ public enum BlockType {
 	DEAD_FIRE_CORAL_WALL_FAN( "minecraft:dead_fire_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
 	DEAD_HORN_CORAL_WALL_FAN( "minecraft:dead_horn_coral_wall_fan", MaterialType.BLOCK, MaterialVersion.v1_13 ),
 	
+	
+	
+	
+	ACACIA_LOG( "minecraft:acacia_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	BIRCH_LOG( "minecraft:birch_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	DARK_OAK_LOG( "minecraft:dark_oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	JUNGLE_LOG( "minecraft:jungle_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	OAK_LOG( "minecraft:oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	SPRUCE_LOG( "minecraft:spruce_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	
+	
+	STRIPPED_ACACIA_LOG( "minecraft:stripped_acacia_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_BIRCH_LOG( "minecraft:stripped_birch_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_DARK_OAK_LOG( "minecraft:stripped_dark_oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_JUNGLE_LOG( "minecraft:stripped_jungle_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_OAK_LOG( "minecraft:stripped_oak_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_SPRUCE_LOG( "minecraft:stripped_spruce_log", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+
+	STRIPPED_ACACIA_WOOD( "minecraft:stripped_acacia_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_BIRCH_WOOD( "minecraft:stripped_birch_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_DARK_OAK_WOOD( "minecraft:stripped_dark_oak_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_JUNGLE_WOOD( "minecraft:stripped_jungle_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_OAK_WOOD( "minecraft:stripped_oak_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
+	STRIPPED_SPRUCE_WOOD( "minecraft:stripped_spruce_wood", MaterialType.BLOCK, MaterialVersion.v1_13 ),
 	
 	
 	
