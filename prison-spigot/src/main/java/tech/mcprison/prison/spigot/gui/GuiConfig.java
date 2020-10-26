@@ -75,7 +75,7 @@ public class GuiConfig {
     private void dataConfig(String key, String value){
 
     	if (conf.getString(key) == null) {
-    		conf.set(key, SpigotPrison.format(value));
+    		conf.set(key, value);
     		changeCount++;
     	}
     }

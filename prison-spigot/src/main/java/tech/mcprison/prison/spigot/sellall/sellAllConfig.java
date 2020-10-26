@@ -49,7 +49,7 @@ public class sellAllConfig {
             try {
                 file.createNewFile();
                 conf = YamlConfiguration.loadConfiguration(file);
-                conf.set(path, SpigotPrison.format(string));
+                conf.set(path, string);
                 conf.save(file);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -59,7 +59,7 @@ public class sellAllConfig {
                 boolean newValue = false;
                 conf = YamlConfiguration.loadConfiguration(file);
                     if (getFileSellAllConfig().getString(path) == null){
-                        conf.set(path, SpigotPrison.format(string));
+                        conf.set(path, string);
                         newValue = true;
                     }
                     if (newValue) {
