@@ -8,7 +8,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.8 - 2020-10-25
+## tag v3.2.2-alpha.8 - 2020-10-26
+
+
+* **v3.2.2-alpha.9 - 2020-10-26**
+
+
+* **Added the ability to move a mine but am not enabling it.**
+It is not behaving as well as it should.  The tracer is being left behind when it shouldn't.
+Other adjustments to the sizing and liner functions have been made too.
 
 
 * **Adjustments to getting the MineLinerBuilder working.**
