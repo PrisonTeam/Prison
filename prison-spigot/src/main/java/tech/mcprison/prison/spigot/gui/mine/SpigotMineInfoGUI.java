@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -110,7 +111,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         );
 
         // Create the button, set the material, amount, lore and name
-        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack resetMine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));

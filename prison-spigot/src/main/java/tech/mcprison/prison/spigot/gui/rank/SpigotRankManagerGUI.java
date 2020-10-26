@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -94,7 +95,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToClose")
         );
 
-        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(26, closeGUI);
 
         ItemStack rankupCommands = createButton(commandMinecart, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));

@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -54,7 +55,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToAddBlock")
         );
 
-        ItemStack addBlockButton = createButton(Material.LIME_STAINED_GLASS, 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
+        ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
         inv.setItem(56, addBlockButton);
 
         if ( useNewBlockModel ) {

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -80,7 +81,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToClose")
         );
 
-        ItemStack closeGUI = createButton(Material.RED_STAINED_GLASS, 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(26, closeGUI);
 
         // Add the selected lore to the mode used
