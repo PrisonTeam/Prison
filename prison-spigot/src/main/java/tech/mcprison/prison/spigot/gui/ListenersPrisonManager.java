@@ -201,6 +201,7 @@ public class ListenersPrisonManager implements Listener {
         if (buttonNameMain.equalsIgnoreCase("Close")){
             p.closeInventory();
             e.setCancelled(true);
+            return;
         }
 
         // Check if the GUI have the right title and do the actions
@@ -1614,6 +1615,9 @@ public class ListenersPrisonManager implements Listener {
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
+
+
+
         String mode = parts[1];
 
         boolean enabled = mode.equalsIgnoreCase("Enabled");

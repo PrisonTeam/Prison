@@ -116,11 +116,13 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Add a lore
         minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ResetTime") + m.getResetTime()));
 
-        // Add a lore
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
+        if (!m.isVirtual()) {
+            // Add a lore
+            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
 
-        // Add a lore
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
+            // Add a lore
+            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
+        }
 
         // Add a lore
         minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Blocks")));
