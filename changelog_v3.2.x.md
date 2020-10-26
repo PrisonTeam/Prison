@@ -8,7 +8,30 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.8 - 2020-10-22
+## tag v3.2.2-alpha.8 - 2020-10-25
+
+
+* **Adjustments to getting the MineLinerBuilder working.**
+These here are minor changes that makes a few aspects work slightly better.
+
+
+* **Change the way the caching is working on block mappings.**
+Removed the caching of no-hits on block conversions.  Normally recording the no-hit conditions will result in significant performance improvements, but removed them for now to make sure they are not causing issues.  Will have to reenable them (rewrite the code) in the future.
+
+
+* **Provided more detailed reports on missing block types**
+from spigot mapping to prison's old block types.  Some of these will be needed until we can get the new block model fully functional.
+
+
+* **Added a few new block types for v1.13.**
+The major one that fixed some significant issues was GRASS_BLOCK since it used to be named GRASS in older versions of minecraft, but now GRASS is just the plant.
+Also added 18 new log types for v1.13 and newer.
+
+* **Removed traces of the enableMineTracer within the Platform object.**
+
+
+* **More improvements to the /mines set size and the /mines set liner commands.**
+Added ladders to the liner, and also added repair to undo the liner based upon the surrounding blocks.  Appears to be working well for spigot 1.8.8.
 
 
 * **Rank Tags modified to accept spaces**
