@@ -212,6 +212,7 @@ public class SpigotUtil {
 		
 		StringBuilder sbNoMap = new StringBuilder();
 		StringBuilder sbNotSupported = new StringBuilder();
+		StringBuilder sbSpigotNotSupported = new StringBuilder();
 		
 		int supportedBlockCountPrison = 0;
 		int supportedBlockCountXMaterial = 0;
@@ -261,6 +262,28 @@ public class SpigotUtil {
 			}
 		}
 		
+		
+		for ( Material spigotMaterial : Material.values() ) {
+			
+			if ( spigotMaterial.isBlock() &&
+					BlockType.getBlock( spigotMaterial.name() ) == null ) {
+				
+				String name = spigotMaterial.name().toLowerCase();
+				if ( !name.contains( "banner" ) && !name.contains( "button" ) && 
+						!name.contains( "pressure_plate" ) && !name.contains( "potted_" ) && 
+						!name.contains( "_head" ) && !name.contains( "_skull" ) && 
+						!name.contains( "_bed" ) && !name.contains( "_trapdoor" ) && 
+						!name.contains( "stem" ) && !name.contains( "stairs" ) && 
+						!name.contains( "_slab" ) ) {
+					
+					sbSpigotNotSupported.append( spigotMaterial.name() );
+					sbSpigotNotSupported.append( " " );
+				}
+				
+			}
+			
+		}
+		
 		// Next test all of the spigot/bukkit Materials:
 		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
 										.testCountAllBlockTypes();
@@ -275,22 +298,28 @@ public class SpigotUtil {
 		logTestBlocks( sbNoMap, "### SpigotUtil.testAllPrisonBlockTypes:  " +
 										"Prison Blocks no maps to XMaterial: " );
 		logTestBlocks( sbNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
-										"Prison Blocks not supported with version: " );
+										"Prison Blocks not supported: " );
+		
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Spigot blocks ignored: " +
+				"banner, button, pressure_plate, potted, head, skull, bed, trapdoor, stem, stairs, slab "  );
+		logTestBlocks( sbSpigotNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+				"Spigot blocks not supported: " );
 	}
     
 	
 	private static void logTestBlocks( StringBuilder sb, String message ) {
 		
 		int start = 0;
-		int end = 150;
+		int end = 100;
 		
 		while ( sb.length() > end ) {
-			end = sb.indexOf( " ", end );
+			end = sb.lastIndexOf( " ", end );
 			Output.get().logWarn( message + 
 					(end < 0 ? sb.substring( start ) : sb.substring( start, end )));
 
 			start = end;
-			end += 150;
+			end += 100;
 		}
 		
 		Output.get().logWarn( message + sb.substring( start ));
