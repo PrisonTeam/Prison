@@ -2071,6 +2071,19 @@ public class MinesCommands {
         setLastMineReferenced(mineName);
         
         m.setBounds(selection.asBounds());
+        if ( m.isVirtual() ) {
+        	m.setVirtual( false );
+        	m.setEnabled( true );
+        	
+        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	String message = String.format( "&3The mine &7%s &3 is no longer a virutal mine " +
+        			"and has been enabled with an area of &7%s &3blocks.",
+        			m.getName(), dFmt.format( m.getBounds().getArea() ));
+        	
+        	sender.sendMessage( message );
+        	Output.get().logInfo( message );
+        }
+
         pMines.getMineManager().saveMine( m );
         
         pMines.getMinesMessages().getLocalizable("mine_redefined")
