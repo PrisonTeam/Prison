@@ -11,6 +11,28 @@ that you need.
 ## tag v3.2.2-alpha.8 - 2020-10-26
 
 
+* **v3.2.2-alpha.9b - 2020-10-26**
+
+
+* **Fixes issue with not enabling a virtual mines**
+when the area is set with the command: /mines set area help
+
+
+* **Fixes to some blocks and use of XMaterial for STAINED_GLASS** 
+This allows for multi-version support since material names have changed at 1.13. This supports 1.8 through 1.16 now. This fixes an exception for versions less than 1.13.
+
+
+* **Fixes to config, now you'll not see any "§" but only "&"**
+There might be some strings that won't translate that, If you spot them (like lores with an & instead of color), please report it.  This fixes an issue for some user's environment not being able to properly translate the `§` when generating the GUI config files and language files.  Basically the file's UTF-8 encoding was being treated as ASCII and that character was being converted to a hex value that could not be translated back to something usable.
+
+
+* **v3.2.2-alpha.9a - 2020-10-26**
+
+
+* **Enable OPs to tp players even from console.**
+Also if the player who is running the command is the same as the name being passed as a parameter, then allow it.
+
+
 * **v3.2.2-alpha.9 - 2020-10-26**
 
 
