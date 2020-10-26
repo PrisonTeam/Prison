@@ -1343,6 +1343,7 @@ public abstract class MineReset
     		}
     	}
     	else {
+    		new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
     		
     		Bounds newBounds = new Bounds( getBounds(), edge, amount );
     		setBounds( newBounds );

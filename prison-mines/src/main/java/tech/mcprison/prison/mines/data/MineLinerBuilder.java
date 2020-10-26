@@ -250,43 +250,9 @@ public class MineLinerBuilder {
 						
 						String nextBlockName = getPattern3d().get( x3d ).get( y3d ).get( z3d );
 						
-//						Output.get().logInfo( "### MineLinerBuilder - block: %s   x=%d, y=%d, z=%d  " +
-//								"x3d=%d, y3d=%d, z3d=%d ",
-//								nextBlockName, x, y, z, x3d, y3d, z3d);
-						
-						
-						
-						
-						// Do not replace any air blocks: This allows us to follow the contour of
-						// the terrain.
-						
-//						boolean isXPos = isLadderPossible && y > yMin && (xMin != xMax );
-//						boolean isZPos = isLadderPossible && y > yMin && (zMin != zMax );
-//						
-//						boolean isX1 = isXPos && (xMax + xMin) / 2 == x;
-//						boolean isX2 = isXPos && (xMax + xMin) / 2 == x+1;
-//
-//						boolean isZ1 = isZPos && (zMax + zMin) / 2 == z;
-//						boolean isZ2 = isZPos && (zMax + zMin) / 2 == z+1;
-						
-						boolean isLadderBlock = false;
-						
-						isLadderBlock = isLadderPossible && y > yMin && ( 
-								isLadderBlock( x, xMin, xMax ) ||
-								isLadderBlock( z, zMin, zMax ));
-						
-//						if ( isLadderPossible && y > yMin && ( xMin != xMax ) ) {
-//							isLadderBlock = ((xMax - xMin) < 2) || 
-//									((xMax + xMin) / 2 == x || (xMax + xMin) / 2 == x + 1)
-//									;
-//						}
-//						else
-//						if ( isLadderPossible && y > yMin && ( zMin != zMax ) ) {
-//							isLadderBlock = ((zMax - zMin) < 2) || 
-//									((zMax + zMin) / 2 == z|| (zMax + zMin) / 2 == z + 1)
-//									;
-//						}
-						
+						boolean isLadderBlock = isLadderPossible && y > yMin && ( 
+												isLadderBlock( x, xMin, xMax ) ||
+												isLadderBlock( z, zMin, zMax ));
 						
 //						Output.get().logInfo( "### MineLinerBuilder - %s  %s  %s isLadder=%s   x=%d, y=%d, z=%d  " +
 //								"  block: %s  ",
@@ -348,6 +314,11 @@ public class MineLinerBuilder {
 							
 							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 								
+								
+//								Output.get().logInfo( "#### repair : isLadderBlock: %s block types:  tb: %s  tb1: %s tb2: %s",
+//										(isLadderBlock ? "Y" : "-" ),
+//										tBlock.getType(), tBlockPlus1.getType(), tBlockPlus2.getType() );
+//								
 								if ( isLadderBlock ) {
 									
 									tBlock.setType( tBlockPlus2.getType() );
@@ -437,9 +408,6 @@ public class MineLinerBuilder {
 			
 			if ( len > 5 ) {
 				
-//				if ( !isEven ) {
-//					mid += 1;
-//				}
 				
 				if ( curr == (min + mid) ) {
 					results = true;
@@ -454,13 +422,13 @@ public class MineLinerBuilder {
 
 			}
 
-			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
-					"  len=%d  mid=%d  " +
-					"isEven=%s  results=%s " +
-					" (min+mid)=%d ",
-					curr, min, max, len, mid,
-					(isEven ? "true" : "false"),
-					(results ? "true" : "false"), (min+mid) );
+//			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
+//					"  len=%d  mid=%d  " +
+//					"isEven=%s  results=%s " +
+//					" (min+mid)=%d ",
+//					curr, min, max, len, mid,
+//					(isEven ? "true" : "false"),
+//					(results ? "true" : "false"), (min+mid) );
 			
 		}
 		
