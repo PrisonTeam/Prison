@@ -1355,7 +1355,14 @@ public abstract class MineReset
     }
     
     
-    private void clearMine( boolean tracer ) {
+    public void moveMine( Edges edge, int amount ) {
+    	
+    	MineMover moveMine = new MineMover();
+    	moveMine.moveMine( (Mine) this, edge, amount );
+    }
+    
+    
+    public void clearMine( boolean tracer ) {
 		
     	MineTracerBuilder tracerBuilder = new MineTracerBuilder();
     	tracerBuilder.clearMine( (Mine) this, tracer );

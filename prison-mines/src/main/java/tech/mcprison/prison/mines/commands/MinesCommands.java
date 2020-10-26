@@ -2152,6 +2152,47 @@ public class MinesCommands {
     	
     }
     
+    
+//    @Command(identifier = "mines set move", permissions = "mines.set", 
+//    				description = "Move the location of the mine by a few blocks")
+    public void moveMineCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName,
+    		@Arg(name = "direction", def = "north",
+    				description = "Direction to move mine [top, bottom, north, east, south, west, walls]" ) String direction, 
+    		@Arg(name = "amount", description = "amount to move, [1, 2, 3, ...]", def = "1") int amount 
+    		
+    		) {
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+    	
+    	Edges edge = Edges.fromString( direction );
+    	if ( edge == null || edge == Edges.walls ) {
+    		sender.sendMessage( "&cInvalid direction value. [top, bottom, north, east, south, west]" );
+    		return;
+    	}
+    	
+    	if ( amount < 1 ) {
+    		sender.sendMessage( "&cInvalid amount. Must be 1 or more." );
+    		return;
+    	}
+    	
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	Mine mine = pMines.getMine(mineName);
+    	
+    	if ( mine.isVirtual() ) {
+    		sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		return;
+    	}
+    	
+    	
+    	mine.moveMine( edge, amount );
+    	
+    	pMines.getMineManager().saveMine( mine );
+    }
+    
     @Command(identifier = "mines set liner", permissions = "mines.set", 
     			description = "Change the blocks that line the mine.")
     public void setLinerCommand(CommandSender sender,

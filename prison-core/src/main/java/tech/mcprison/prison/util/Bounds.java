@@ -60,6 +60,48 @@ public class Bounds {
 			
 			return results;
 		}
+		
+		public Edges oppositeEdge() {
+			return oppositeEdge(this);
+		}
+		
+		public static Edges oppositeEdge( Edges edge ) {
+			Edges results = null;
+			
+			switch ( edge )
+			{
+				case top:
+					results = bottom;
+					break;
+
+				case bottom:
+					results = top;
+					break;
+					
+				case north:
+					results = south;
+					break;
+					
+				case south:
+					results = north;
+					break;
+					
+				case east:
+					results = west;
+					break;
+					
+				case west:
+					results = east;
+					break;
+					
+				default:
+					results = edge;
+					break;
+			}
+			
+			
+			return results;
+		}
 	}
 
     

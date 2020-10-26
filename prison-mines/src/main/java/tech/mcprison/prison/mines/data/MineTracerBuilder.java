@@ -12,6 +12,42 @@ import tech.mcprison.prison.util.Location;
 public class MineTracerBuilder
 {
 
+	public enum TracerType {
+		
+		pink("PINK_STAINED_GLASS"),
+		red("REd_STAINED_GLASS"),
+		
+		redstone("REDSTONE_BLOCK"),
+		dust("REDSTONE_wire"), // redstone_wire is the block, redstone is the inventory item
+		
+		air("AIR")
+		
+		;
+		
+		private final String blockType;
+		
+		private TracerType( String blockType ) {
+			this.blockType = blockType;
+		}
+		
+		public String getBlockType() {
+			return blockType;
+		}
+
+		public static TracerType fromString( String type ) {
+			TracerType results = TracerType.pink;
+			
+			for ( TracerType tracerType : values() )
+			{
+				if ( tracerType.name().equalsIgnoreCase( type )) {
+					results = tracerType;
+					break;
+				}
+			}
+			
+			return results;
+		}
+	}
     
     public void clearMine( Mine mine, boolean tracer ) {
 		
@@ -68,17 +104,18 @@ public class MineTracerBuilder
 						boolean yEdge = y == yMin || y == yMax;
 						boolean zEdge = z == zMin || z == zMax;
 						
-						boolean isEdge = tracer &&
-										(xEdge && yEdge || xEdge && zEdge ||
-										 yEdge && zEdge);
+						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
+										 yEdge && zEdge;
 						
 						if ( useNewBlockModel ) {
 							
-							targetBlock.getBlockAt().setPrisonBlock( isEdge ? blockRedPB : blockAirPB );
+							targetBlock.getBlockAt().setPrisonBlock( 
+									tracer && isEdge ? blockRedPB : blockAirPB );
 						}
 						else {
 							
-							targetBlock.getBlockAt().setType( isEdge ? blockRedBT : blockAirBT );
+							targetBlock.getBlockAt().setType( 
+									tracer && isEdge ? blockRedBT : blockAirBT );
 						}
 					}
 				}
