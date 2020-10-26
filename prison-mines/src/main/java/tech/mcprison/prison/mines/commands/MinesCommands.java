@@ -2299,7 +2299,10 @@ public class MinesCommands {
 
     	Player playerAlt = getOnlinePlayer( playerName );
     	
-    	if (player == null || !player.isOnline()) {
+    	if ( sender.isOp() && playerAlt != null && playerAlt.isOnline() ) {
+    		player = playerAlt;
+    	}
+    	else if ( player == null || !player.isOnline()) {
 
     		if ( playerName != null && playerName.trim().length() > 0 && playerAlt == null) {
     			sender.sendMessage( "&3Specified player is not in the game so they cannot be teleported." );
@@ -2316,7 +2319,7 @@ public class MinesCommands {
     		}
     		
     	}
-    	else if ( playerAlt != null ) {
+    	else if ( playerAlt != null && !player.getName().equalsIgnoreCase( playerAlt.getName()  ) ) {
     		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
     	}
 
