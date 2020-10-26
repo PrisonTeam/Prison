@@ -19,12 +19,22 @@ public abstract class Spigot113Blocks
 	implements CompatibilityBlocks {
 
 	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
+		BlockType results = null;
 		
-		if ( results == null ) {
-			if ( spigotBlock != null ) {
-				
+		if ( spigotBlock != null ) {
+			
+			results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
+			
+			if ( results == null ) {
 				results = BlockType.getBlock( spigotBlock.getType().name() );
+
+//				if ( results == null ) {
+//					Output.get().logInfo( "#### 1.13 getBlockType() Cannot map block from spigot to prison:" +
+//							"  spigotBlock.getType().name() = %s " +
+//							"  BlockType.getBlock() = %s ",
+//							spigotBlock.getType().name(),
+//							(results == null ? "" : results.name() ));
+//				}
 				
 				putCachedBlockType( spigotBlock, NO_DATA_VALUE, results );
 			}
@@ -71,7 +81,7 @@ public abstract class Spigot113Blocks
 			}
 		}
 		
-		return results == NULL_TOKEN ? null : results;
+		return results;
 	}
 	
 	
@@ -92,7 +102,7 @@ public abstract class Spigot113Blocks
 			
 		}
 		
-		return results == NULL_TOKEN ? null : results;
+		return results;
 	}
 	
 	
@@ -134,7 +144,7 @@ public abstract class Spigot113Blocks
 
 		}
 		
-		return results == NULL_TOKEN ? null : results;
+		return results;
 	}
 
 	
@@ -234,7 +244,13 @@ public abstract class Spigot113Blocks
 		damage.setDamage( newDamage );
 	}
 	
-	
+	/**
+	 * This is called setBlockFace, but it is really intended for use with ladders. 
+	 * The block face is the face in which to place the ladder.  So when 
+	 * BlockFace.NORTH is specified, it needs to set the 
+	 * org.bukkit.block.BlockFace.SOUTH.  Not sure why it has to be the
+	 * opposite, which is unlike v1.8.8?
+	 */
 	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
 		
 		
