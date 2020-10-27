@@ -8,7 +8,38 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.8 - 2020-10-26
+## tag v3.2.2-alpha.10 - 2020-10-26
+
+
+* **v3.2.2-alpha.10 - 2020-10-26**
+Version bump due to the significance of the last bug fix.
+
+
+* **Major bug fix: Eliminated the in prison caching of players.**
+This collection was not able to deal with players reconnecting to the server, which would give them new player objects.  The issue was that prison would have an obsolete (zombie) copy of the player and their inventory. So if any operations would be performed on the inventory, such as giving a selection wand, it would be placed in the orphaned object and the player would never get it.  The only way to "fix" this issue would be to restart the server and then it would fail once they would log out and reconnect.
+This was confirmed a problem with 1.9.2, 1.13.4, 1.15.2, and 1.16.3.  It was not an issue with spigot v1.8.8.  This did not impact players retrieved from events.
+This fixes the issue by removing prison caching of the players.  Now all instances of the players being used within prison are now live bukkit objects.
+I suspect this issue has been within prison for a long time.  Not sure why no one reported it before, or if they did, it was not clear how to reproduce this issue and the ones reporting it may not have been able to provide enough information to reproduce it.  The way it is reproducable is to login, get a /mines wand or have prison interact with the player's inventory, then log out and then back in. Then /mines wand will fail to place it in the real player's inventory.  It will only go in to the prison cache.
+
+
+* **v3.2.2-alpha.9e - 2020-10-26**
+
+* **Bug fix: When a world is not available upon startup** it will try to set the boundaries for the mine.  In doing so, it will try to extract the correct world to enable it and to remove the virtual status if it was set.  If the world has not yet been loaded (ie... if you're using multiverse) then this was causing an error for that mine.  This now will only mark the mine as disabled and allow the multiverse plugin to trigger the completion of the mine loading event for that mine (as it has been doing before virtual mines were added).
+If a mine has the boundaries set and if it was disabled or virtual, then make it a real mine.  Have checks to ensure the world is available, if not, then disable the mine.
+
+
+* **v3.2.2-alpha.9d - 2020-10-26**
+
+* **New feature: Dump player's inventory to console**
+This is useful to check status of various prison related functions.
+One area that this maybe useful with some players reporting that they are getting a Prison Selection Wand, but it's not showing up in their inventory, although inspection of their inventory is showing they are getting it.
+
+
+* **v3.2.2-alpha.9c - 2020-10-26**
+
+
+* **Fix to GUIs and Close button conflict**
+Fix to Mines GUI lore issues for Virtual Mines
 
 
 * **v3.2.2-alpha.9b - 2020-10-26**
