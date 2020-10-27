@@ -11,6 +11,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
@@ -312,6 +313,26 @@ public abstract class MineData
      */
     public void setBounds(Bounds bounds) {
     	this.bounds = bounds;
+    	
+    	if ( bounds != null && ( isVirtual() || !getWorld().isPresent()) ) {
+    		// Move all this internal to the mines... 
+        	World world = bounds.getMin().getWorld();
+        	
+        	if ( world != null ) {
+        		
+        		setWorld( world );
+        		setWorldName( world.getName() );
+        		setVirtual( false );
+        		setEnabled( true );
+        	}
+        	else {
+        		setEnabled( false );
+        		Output.get().logWarn( 
+        				String.format( "&cCould not activate mine &7%s &cbecause the " +
+        				"world object cannot be aquired. Bounds failed be set correctly " +
+        				"and this mine is &ddisabled&c.", getName()) );
+        	}
+    	}
         
     	// The world name MUST NEVER be changed.  If world is null then it will screw
     	// up the original location of when the was created.  World name is set

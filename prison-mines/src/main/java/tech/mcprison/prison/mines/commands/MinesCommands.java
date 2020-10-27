@@ -36,6 +36,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
@@ -2070,10 +2071,13 @@ public class MinesCommands {
         
         setLastMineReferenced(mineName);
         
+        boolean wasVirtual = m.isVirtual();
+        
+        // Setting the bounds when it's virtual will configure all the internals:
+        
         m.setBounds(selection.asBounds());
-        if ( m.isVirtual() ) {
-        	m.setVirtual( false );
-        	m.setEnabled( true );
+        if ( wasVirtual ) {
+        	
         	
         	DecimalFormat dFmt = new DecimalFormat("#,##0");
         	String message = String.format( "&3The mine &7%s &3 is no longer a virutal mine " +

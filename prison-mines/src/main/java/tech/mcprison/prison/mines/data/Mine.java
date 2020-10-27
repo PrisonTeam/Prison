@@ -217,9 +217,14 @@ public class Mine
 
 			//        World world = worldOptional.get();
 			
+		
+			
+			Location locMin = getLocation(document, world, "minX", "minY", "minZ");
+			Location locMax = getLocation(document, world, "maxX", "maxY", "maxZ");
+			
 			setBounds( new Bounds( 
-					getLocation(document, world, "minX", "minY", "minZ"),
-					getLocation(document, world, "maxX", "maxY", "maxZ")));
+					locMin,
+					locMax));
 			
 			setHasSpawn((boolean) document.get("hasSpawn"));
 			if (isHasSpawn()) {
