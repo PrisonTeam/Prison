@@ -119,4 +119,9 @@ public class TestPlayer implements Player {
     @Override public Inventory getInventory() {
         return null;
     }
+    
+    @Override
+    public void printDebugInventoryInformationToConsole() {
+    	
+    }
 }

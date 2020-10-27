@@ -18,9 +18,16 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -31,12 +38,6 @@ import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author Faizaan A. Datoo
@@ -221,4 +222,84 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
 
     }
 
+    @SuppressWarnings( "deprecation" )
+	public void printDebugInventoryInformationToConsole() {
+    	
+    	try {
+    		printDebugInfo( bukkitPlayer.getInventory().getContents(), "Inventory Contents");
+    	}
+    	catch ( java.lang.NoSuchMethodError | Exception e ) {
+    		// Ignore: Not supported with that version of spigot:
+    	}
+    	
+    	try {
+    		printDebugInfo( bukkitPlayer.getInventory().getExtraContents(), "Inventory Extra Contents");
+    	}
+    	catch ( java.lang.NoSuchMethodError | Exception e ) {
+    		// Ignore: Not supported with that version of spigot:
+    	}
+        
+    	try {
+    		printDebugInfo( bukkitPlayer.getInventory().getArmorContents(), "Inventory Armor Contents");
+    	}
+    	catch ( java.lang.NoSuchMethodError | Exception e ) {
+    		// Ignore: Not supported with that version of spigot:
+    	}
+    	try {
+    		printDebugInfo( bukkitPlayer.getInventory().getStorageContents(), "Inventory Storage Contents");
+    	}
+    	catch ( java.lang.NoSuchMethodError | Exception e ) {
+    		// Ignore: Not supported with that version of spigot:
+    	}
+        
+    	try {
+			printDebugInfo( bukkitPlayer.getInventory().getItemInHand(), "Inventory Item In Hand (pre 1.13)");
+		}
+		catch ( java.lang.NoSuchMethodError | Exception e ) {
+			// Ignore: Not supported with that version of spigot:
+		}
+    	
+    	try {
+			printDebugInfo( bukkitPlayer.getInventory().getItemInMainHand(), "Inventory Item in Main Hand");
+		}
+		catch ( java.lang.NoSuchMethodError | Exception e ) {
+			// Ignore: Not supported with that version of spigot:
+		}
+    	
+    	try {
+    		printDebugInfo( bukkitPlayer.getInventory().getItemInOffHand(), "Inventory Item in Off Hand");
+    	}
+    	catch ( java.lang.NoSuchMethodError | Exception e ) {
+    		// Ignore: Not supported with that version of spigot:
+    	}
+    }
+    
+    private void printDebugInfo( org.bukkit.inventory.ItemStack[] iStacks, String title ) {
+    	
+    	Output.get().logInfo( "&7%s:", title );
+    	for ( int i = 0; i < iStacks.length; i++ ) {
+    		org.bukkit.inventory.ItemStack iStack = iStacks[i];
+    		
+    		if ( iStack != null ) {
+    			
+    			ItemStack pItemStack = SpigotUtil.bukkitItemStackToPrison(iStack);
+    			
+    			Output.get().logInfo( "    i=%d  &3%s  &3%d &a[&3%s&a]", 
+    					i, iStack.getType().name(), iStack.getAmount(),
+    					(pItemStack == null ? "" : 
+    						(pItemStack.getDisplayName() == null ? "" : 
+    							pItemStack.getDisplayName())) );
+    		}
+    	}
+    }
+    
+    private void printDebugInfo( org.bukkit.inventory.ItemStack iStack, String title ) {
+    	
+    	Output.get().logInfo( "&7%s:", title );
+    	if ( iStack != null ) {
+    		
+    		Output.get().logInfo( "    &3%s  &3%d", 
+    				iStack.getType().name(), iStack.getAmount() );
+    	}
+    }
 }

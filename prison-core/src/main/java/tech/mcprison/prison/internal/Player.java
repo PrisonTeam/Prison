@@ -117,4 +117,12 @@ public interface Player extends CommandSender, InventoryHolder {
      * is modified
      */
     void updateInventory();
+    
+    
+    /**
+     * Dumps the inventory contents of the player to the console.
+     * 
+     */
+    public void printDebugInventoryInformationToConsole();
+    
 }
