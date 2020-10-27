@@ -96,7 +96,9 @@ class SpigotPlatform
     private SpigotPrison plugin;
     private List<PluginCommand> commands = new ArrayList<>();
     private Map<String, World> worlds = new HashMap<>();
-    private List<Player> players = new ArrayList<>();
+    
+//    @Deprecated
+//    private List<Player> players = new ArrayList<>();
 
     private ScoreboardManager scoreboardManager;
     private Storage storage;
@@ -194,31 +196,45 @@ class SpigotPlatform
     }
     
     @Override public Optional<Player> getPlayer(String name) {
-        return Optional.ofNullable(
-            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
-                .orElseGet(() -> {
-                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
-                    if (playerBukkit == null) {
-                        return null;
-                    }
-                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-                    players.add(player);
-                    return player;
-                }));
+    	
+    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+
+    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
+    	
+//        return Optional.ofNullable(
+//            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
+//                .orElseGet(() -> {
+//                	
+//           // ### getting the bukkit player here!
+//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+//                    if (playerBukkit == null) {
+//                        return null;
+//                    }
+//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
+//                    players.add(player);
+//                    return player;
+//                }));
     }
 
     @Override public Optional<Player> getPlayer(UUID uuid) {
-        return Optional.ofNullable(
-            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
-                .orElseGet(() -> {
-                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
-                    if (playerBukkit == null) {
-                        return null;
-                    }
-                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-                    players.add(player);
-                    return player;
-                }));
+    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+
+    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
+    	
+//        return Optional.ofNullable(
+//            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
+//                .orElseGet(() -> {
+//                	
+//                	
+//    	// ### getting the bukkit player here!
+//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+//                    if (playerBukkit == null) {
+//                        return null;
+//                    }
+//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
+//                    players.add(player);
+//                    return player;
+//                }));
     }
 
     @Override public List<Player> getOnlinePlayers() {
@@ -238,16 +254,38 @@ class SpigotPlatform
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
     	SpigotOfflinePlayer player = null;
     	
-    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
-    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
-					  uuid != null && offP.getUniqueId().equals(uuid) ) {
-    			player = new SpigotOfflinePlayer( offP );
-    			
-	  			players.add(player);
-	              break;
-	  		}
-		}
+    	if ( uuid != null ) {
+    		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
+    		player = (oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
+    		
+    	}
     	
+    	if ( player == null && name != null && name.trim().length() > 0 ) {
+    		
+    		// No hits on uuid so only compare names:
+    		for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
+    			if ( oPlayer.getName().equalsIgnoreCase( name.trim() ) ) {
+    				
+    				player = new SpigotOfflinePlayer( oPlayer );
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return Optional.ofNullable( player );
+    	
+    	
+//    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
+//    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
+//					  uuid != null && offP.getUniqueId().equals(uuid) ) {
+//    			
+//	// ### getting the offline bukkit player here!
+//    			player = new SpigotOfflinePlayer( offP );
+//	  			players.add(player);
+//	              break;
+//	  		}
+//		}
+//    	
 //    	List<OfflinePlayer> olPlayers = Arrays.asList( Bukkit.getOfflinePlayers() );
 //    	for ( OfflinePlayer offlinePlayer : olPlayers ) {
 //    		if ( name != null && offlinePlayer.getName().equals(name) ||
@@ -257,7 +295,7 @@ class SpigotPlatform
 //                break;
 //    		}
 //		}
-    	return Optional.ofNullable( player );
+//    	return Optional.ofNullable( player );
     }
     
     @Override public String getPluginVersion() {
