@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
@@ -72,7 +71,7 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onGuiClosing(InventoryCloseEvent e){
 
-        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
             return;
         }
 
@@ -130,7 +129,7 @@ public class ListenersPrisonManager implements Listener {
     public void onClick(InventoryClickEvent e){
 
         // Check if GUIs are enabled
-        if (!(Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true"))){
+        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
             return;
         }
 
@@ -688,7 +687,7 @@ public class ListenersPrisonManager implements Listener {
             File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
 
-            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(Objects.requireNonNull(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE"))), buttonNameMain);
+            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE")), buttonNameMain);
             gui.open();
 
         }
@@ -776,16 +775,13 @@ public class ListenersPrisonManager implements Listener {
     private void RanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Get the rank
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional(buttonNameMain);
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
 
         // Check if the rank exist
-        if (!rankOptional.isPresent()) {
+        if (rank == null) {
             p.sendMessage(SpigotPrison.format("&cThe rank " + buttonNameMain + " does not exist."));
             return;
         }
-
-        // Get the rank
-        Rank rank = rankOptional.get();
 
         // Check clicks
         if (e.isShiftClick() && e.isRightClick()) {
@@ -843,25 +839,22 @@ public class ListenersPrisonManager implements Listener {
 
     private void RankManagerGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        // Output finally the buttonname and the minename explicit out of the array
-        String buttonname = parts[0];
+        // Output finally the buttonName and the minename explicit out of the array
+        String buttonName = parts[0];
         String rankName = parts[1];
 
         // Get the rank
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 
         // Check the button name and do the actions
-        if (buttonname.equalsIgnoreCase("RankupCommands")){
+        if (buttonName.equalsIgnoreCase("RankupCommands")){
 
             // Check if the rank exist
-            if (!rankOptional.isPresent()) {
+            if (rank == null) {
                 // Send a message to the player
                 p.sendMessage(SpigotPrison.format("&c[ERROR] The rank " + rankName + " does not exist."));
                 return;
             }
-
-            // Get the rank
-            Rank rank = rankOptional.get();
 
             // Check the rankupCommand of the Rank
             if (rank.rankUpCommands == null) {
@@ -876,16 +869,16 @@ public class ListenersPrisonManager implements Listener {
             }
 
         // Check the button name and do the actions
-        } else if (buttonname.equalsIgnoreCase("RankPrice")){
+        } else if (buttonName.equalsIgnoreCase("RankPrice")){
 
             // Check and open a GUI
-            if(rankOptional.isPresent()) {
-                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rankOptional.get().cost, rankOptional.get().name);
+            if(rank != null) {
+                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rank.cost, rank.name);
                 gui.open();
             }
 
         // Check the button name and do the actions
-        } else if (buttonname.equalsIgnoreCase("RankTag")){
+        } else if (buttonName.equalsIgnoreCase("RankTag")){
 
             Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
@@ -909,11 +902,11 @@ public class ListenersPrisonManager implements Listener {
     private void PlayerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
+        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Check the buttonName and do the actions
-        if (buttonNameMain.equals(SpigotPrison.format(Objects.requireNonNull(GuiConfig.getString("Gui.Lore.Rankup")).substring(2)))){
-            Bukkit.dispatchCommand(p, "rankup " + GuiConfig.getString("Options.Ranks.Ladder"));
+        if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Gui.Lore.Rankup").substring(2)))){
+            Bukkit.dispatchCommand(p, "rankup " + messages.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
 
