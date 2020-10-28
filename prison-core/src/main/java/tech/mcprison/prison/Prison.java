@@ -27,6 +27,7 @@ import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
@@ -83,6 +84,8 @@ public class Prison
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
     private Database metaDatabase;
+    
+    private PrisonBlockTypes prisonBlockTypes;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -130,6 +133,17 @@ public class Prison
 
         this.prisonCommands = new PrisonCommand();
         this.commandHandler.registerCommands(prisonCommands);
+        
+        
+        // Setup hooks in to the valid prison block types.  This will be only
+        // the block types that have tested to be valid on the server that is
+        // running prison.  This provides full compatibility to the admins that
+        // if a block is listed, then it's usable.  No more guessing or finding
+        // out after the fact that a block that was used was invalid for
+        // their version of minecraft.
+        this.prisonBlockTypes = new PrisonBlockTypes();
+        this.prisonBlockTypes.loadServerBlockTypes();
+        
 
         long stopTime = System.currentTimeMillis();
         
@@ -361,4 +375,16 @@ public class Prison
         return integrationManager;
     }
 
+    /**
+     * Setup hooks in to the valid prison block types.  This will be only the 
+     * block types that have tested to be valid on the server that is running 
+     * prison.  This provides full compatibility to the admins that if a block 
+     * is listed, then it's usable.  No more guessing or finding out after the 
+     * fact that a block that was used was invalid for their version of minecraft.
+     */
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return prisonBlockTypes;
+	}
+
+    
 }
