@@ -268,7 +268,7 @@ public class SpigotPrison extends JavaPlugin {
     
 
     public static String format(String format){
-        return ChatColor.translateAlternateColorCodes('&', format);
+        return format == null ? "" : ChatColor.translateAlternateColorCodes('&', format);
     }
 
     private void initMetrics() {
