@@ -125,7 +125,7 @@ public abstract class Spigot18Blocks
 			
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
@@ -145,7 +145,7 @@ public abstract class Spigot18Blocks
 			
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 	
 
@@ -190,7 +190,7 @@ public abstract class Spigot18Blocks
 
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 	
 	

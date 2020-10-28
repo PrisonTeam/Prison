@@ -19,13 +19,11 @@ public abstract class Spigot113Blocks
 	implements CompatibilityBlocks {
 
 	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = null;
+		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
 		
-		if ( spigotBlock != null ) {
+		if ( results == null ) {
+			if ( spigotBlock != null ) {
 			
-			results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
-			
-			if ( results == null ) {
 				results = BlockType.getBlock( spigotBlock.getType().name() );
 
 //				if ( results == null ) {
@@ -81,7 +79,7 @@ public abstract class Spigot113Blocks
 			}
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 	
 	
@@ -102,7 +100,7 @@ public abstract class Spigot113Blocks
 			
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 	
 	
@@ -144,7 +142,7 @@ public abstract class Spigot113Blocks
 
 		}
 		
-		return results;
+		return results == NULL_TOKEN ? null : results;
 	}
 
 	

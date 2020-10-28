@@ -22,6 +22,9 @@ public class CompatibilityCache {
 	
 	public static final byte NO_DATA_VALUE = (byte) -1;
 	
+	public static final XMaterial NULL_TOKEN = XMaterial.VOID_AIR;
+	
+	
 	private Map<String, BlockType> blockTypeCache;
 	
 	private Map<String, XMaterial> xMaterialCache;
@@ -39,14 +42,14 @@ public class CompatibilityCache {
 		
 		BlockType blockType = blockTypeCache.get( key );
 		
-		return blockType;
+		return blockType == BlockType.NULL_BLOCK ? null : blockType;
 	}
 	public void putCachedBlockType( Block spigotBlock, byte data, BlockType blockType ) {
-		if ( spigotBlock != null && blockType != null ) {
+		if ( spigotBlock != null ) {
 			String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
 			
 			if ( !blockTypeCache.containsKey( key ) ) {
-				blockTypeCache.put( key, blockType );
+				blockTypeCache.put( key, blockType == null ? BlockType.NULL_BLOCK : blockType );
 			}
 		}
 	}
@@ -57,14 +60,14 @@ public class CompatibilityCache {
 		
 		BlockType blockType = blockTypeCache.get( key );
 		
-		return blockType;
+		return blockType == BlockType.NULL_BLOCK ? null : blockType;
 	}
 	public void putCachedBlockType( ItemStack spigotStack, byte data, BlockType blockType ) {
-		if ( spigotStack != null && blockType != null ) {
+		if ( spigotStack != null ) {
 			String key = spigotStack.getType().name() + ( data <= 0 ? "" : ":" +data);
 			
 			if ( !blockTypeCache.containsKey( key ) ) {
-				blockTypeCache.put( key, blockType );
+				blockTypeCache.put( key, blockType == null ? BlockType.NULL_BLOCK : blockType );
 			}
 		}
 	}
@@ -78,18 +81,17 @@ public class CompatibilityCache {
 		
 		XMaterial xMat = xMaterialCache.get( key );
 		
-		return xMat;
+		// Using VOID_AIR as temp placeholder for null values:
+		return xMat == XMaterial.VOID_AIR ? null : xMat;
 	}
 	
 	public void putCachedXMaterial( PrisonBlock prisonBlock, XMaterial xMat )
 	{
-		if ( xMat != null ) {
+		String key = prisonBlock.getBlockName();
 			
-			String key = prisonBlock.getBlockName();
-			
-			if ( !xMaterialCache.containsKey( key ) ) {
-				xMaterialCache.put( key, xMat );
-			}
+		if ( !xMaterialCache.containsKey( key ) ) {
+			// Using VOID_AIR as temp placeholder for null values:
+			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
 		}
 	}
 
@@ -98,15 +100,15 @@ public class CompatibilityCache {
 		
 		XMaterial xMat = xMaterialCache.get( key );
 		
-		return xMat;
+		// Using VOID_AIR as temp placeholder for null values:
+		return xMat == XMaterial.VOID_AIR ? null : xMat;
 	}
 	public void putCachedXMaterial( Block spigotBlock, byte data, XMaterial xMat ) {
-		if ( xMat != null ) {
-			String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
+		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
 			
-			if ( !xMaterialCache.containsKey( key ) ) {
-				xMaterialCache.put( key, xMat );
-			}
+		if ( !xMaterialCache.containsKey( key ) ) {
+			// Using VOID_AIR as temp placeholder for null values:
+			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
 		}
 	}
 	
@@ -115,16 +117,15 @@ public class CompatibilityCache {
 		
 		XMaterial xMat = xMaterialCache.get( key );
 		
-		return xMat;
+		// Using VOID_AIR as temp placeholder for null values:
+		return xMat == XMaterial.VOID_AIR ? null : xMat;
 	}
 	public void putCachedXMaterial( BlockType blockType, byte data, XMaterial xMat ) {
-		if ( xMat != null ) {
-			
 			String key = blockType.name() + ( data <= 0 ? "" : ":" +data);
 			
 			if ( !xMaterialCache.containsKey( key ) ) {
-				xMaterialCache.put( key, xMat );
-			}
+			// Using VOID_AIR as temp placeholder for null values:
+			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
 		}
 	}
 	
