@@ -11,6 +11,28 @@ that you need.
 ## tag v3.2.2-alpha.10 - 2020-10-26
 
 
+* **Hooking up more of the prison's mines commands to properly, and fully, use the new prison block model.**
+The new PrisonBlocks are now being validated against the dynamic list of valid blocks that are available on the server that is running prison.  So within the block search, as one example, it will only show valid blocks that can be used; the old block model would show all possible blocks within prison, some of which may not have been blocks.
+
+
+* **Enhancements for Prison's new block model**
+Enhance the PrisonBlock to use block instead of mineable for better consistency with bukkit and spigot use of blocks.  Also set block name to be always lower case for easier searches.
+PrisonBlockTypes has been enhanced to be able to search for blocks by name.  This is using a b-tree for quicker retrieval instead of loop though all available blocks.
+When valid blocks are added to PrisonBlockTypes (the valid blocks that exist on that server) they are have their isValid and isBlock values set to true.  Also now using XMaterial names for better long term consistency that will not change if the admins upgrade or down grade their servers.
+
+
+* **Hook PrisonBlockTypes up to the Prison object.**
+This will load a list of new block types at server startup that have been validated against the version of minecraft that is running.  This will ensure that the only blocks that the player will see listed in block searches, as one example, will be blocks they can actually use.  This is highly dynamic based upon the server and not the complier.
+This is preparing for the use of the new block model by giving access to valid blocks within many of the /mine related commands.
+
+
+* **Remove more of the Items related code** which has not been used for awhile.  ItemManager and troubleshooters related to that.
+
+
+* **Reenabled the caching of null values when translating from one material type to another.**
+This prevents looking up a failed code many times and only allows one error message to be logged to the console.
+
+
 * **v3.2.2-alpha.10 - 2020-10-26**
 Version bump due to the significance of the last bug fix.
 
