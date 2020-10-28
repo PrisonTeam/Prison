@@ -22,7 +22,6 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
-import tech.mcprison.prison.util.ItemManager;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -45,9 +44,9 @@ public class PrisonAPI {
         return Prison.get().getEventBus();
     }
 
-    public static ItemManager getItemManager() {
-        return Prison.get().getItemManager();
-    }
+//    public static ItemManager getItemManager() {
+//        return Prison.get().getItemManager();
+//    }
 
     public static Optional<World> getWorld(String name) {
         return Prison.get().getPlatform().getWorld(name);

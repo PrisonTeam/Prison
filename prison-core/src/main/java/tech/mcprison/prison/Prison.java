@@ -25,7 +25,6 @@ import com.google.common.eventbus.EventBus;
 
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
-import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.internal.platform.Platform;
@@ -37,9 +36,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
-import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
 import tech.mcprison.prison.util.EventExceptionHandler;
-import tech.mcprison.prison.util.ItemManager;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -81,7 +78,7 @@ public class Prison
     private SelectionManager selectionManager;
     private EventBus eventBus;
     private LocaleManager localeManager;
-    private ItemManager itemManager;
+//    private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
@@ -206,19 +203,20 @@ public class Prison
         this.selectionManager = new SelectionManager();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
+        
 
-        try {
-            this.itemManager = new ItemManager();
-        } catch (Exception e) {
-            this.errorManager.throwError(new Error(
-                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
-                    .appendStackTrace("when loading items.csv", e));
-            Output.get().logError("Try running /prison troubleshoot item_scan.");
-        }
+//        try {
+//            this.itemManager = new ItemManager();
+//        } catch (Exception e) {
+//            this.errorManager.throwError(new Error(
+//                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
+//                    .appendStackTrace("when loading items.csv", e));
+//            Output.get().logError("Try running /prison troubleshoot item_scan.");
+//        }
     }
 
     private void registerInbuiltTroubleshooters() {
-        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
+//        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
     }
 
     private void scheduleAlertNagger() {
@@ -335,12 +333,12 @@ public class Prison
         return selectionManager;
     }
 
-    /**
-     * Returns the item manager, which manages the "friendly" names of items
-     */
-    public ItemManager getItemManager() {
-        return itemManager;
-    }
+//    /**
+//     * Returns the item manager, which manages the "friendly" names of items
+//     */
+//    public ItemManager getItemManager() {
+//        return itemManager;
+//    }
 
     /**
      * Returns the meta database, which is used to store data from within the core.

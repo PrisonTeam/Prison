@@ -19,13 +19,7 @@
 package tech.mcprison.prison.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import tech.mcprison.prison.Prison;
 
 
 /**
@@ -1202,17 +1196,17 @@ public enum BlockType {
             return getBlockWithData(Integer.parseInt(id.split(":")[0]),
                 Short.parseShort(id.split(":")[1]));
         }
-        Prison prison = Prison.get();
-        if ( prison != null && prison.getItemManager() != null ) {
-        	Set<Entry<BlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
-        	for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
-        		if (entry.getValue().contains(id.toLowerCase())) {
-        			return entry.getKey();
-        		}
-        	}
-        	
-        	return getBlockByName(id);
-        }
+//        Prison prison = Prison.get();
+//        if ( prison != null && prison.getItemManager() != null ) {
+//        	Set<Entry<BlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
+//        	for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
+//        		if (entry.getValue().contains(id.toLowerCase())) {
+//        			return entry.getKey();
+//        		}
+//        	}
+//        	
+//        	return getBlockByName(id);
+//        }
         return null;
     }
 
