@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
@@ -36,6 +35,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
+    // Load config
+    private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
+    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
@@ -44,19 +46,16 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         //        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Server server = SpigotPrison.getInstance().getServer();
-
         PrisonRanks rankPlugin;
         RankPlayer rPlayer;
-
         ModuleManager modMan = Prison.get().getModuleManager();
  	    Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+        rankPlugin = (PrisonRanks) module;
 
  	    // Check
         if (!(checkRanks(player))){
             return;
         }
-
- 	    rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){
             player.sendMessage(SpigotPrison.format("&cError: rankPlugin == null"));
@@ -107,16 +106,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-
         LadderManager lm = getRankPlugin().getLadderManager();
-        Optional<RankLadder> ladder = lm.getLadder(GuiConfig.getString("Options.Ranks.Ladder"));
+        Optional<RankLadder> ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
-        if ( !ladder.isPresent() || !ladder.get().getLowestRank().isPresent() ){
-            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFoundHelp1") + GuiConfig.getString("Options.Ranks.Ladder") + messages.getString("Gui.Message.NoRanksFoundHelp2")));
+        if (!ladder.isPresent() || !ladder.get().getLowestRank().isPresent()){
+            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Gui.Message.NoRanksFoundHelp2")));
             getPlayer().closeInventory();
             return;
         }
@@ -130,26 +125,25 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) (Math.ceil(ladder.get().ranks.size() / 9D) * 9) + 9;
 
-        Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-
+        // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
 
+        // Get many parameters
         RankLadder ladderData = ladder.get();
-
         Rank rank = ladderData.getLowestRank().get();
-
         Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
 
-        if (guiBuilder(GuiConfig, dimension, guiConfig, inv, rank, playerRank)) return;
+        // Call the whole GUI and build it
+        if (guiBuilder(dimension, inv, rank, playerRank)) return;
 
         // Open the inventory
         getPlayer().openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(getPlayer());
     }
 
-    private boolean guiBuilder(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
+    private boolean guiBuilder( int dimension, Inventory inv, Rank rank, Rank playerRank) {
         try {
-            buttonsSetup(guiConfig, dimension, guiConfig2, inv, rank, playerRank);
+            buttonsSetup(dimension, inv, rank, playerRank);
         } catch (NullPointerException ex){
             getPlayer().sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -158,41 +152,42 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, int dimension, Configuration guiConfig2, Inventory inv, Rank rank, Rank playerRank) {
-
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private void buttonsSetup(int dimension, Inventory inv, Rank rank, Rank playerRank) {
 
         // Not sure how you want to represent this:
-        Material materialHas;
-        materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
-        Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
+        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
+        // Variables
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
-
         int amount = 1;
+
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    guiConfig2.getString("Gui.Lore.Info"),
-                    guiConfig2.getString("Gui.Lore.Price3") + rank.cost
+                    messages.getString("Gui.Lore.Info"),
+                    messages.getString("Gui.Lore.Price3") + rank.cost
             );
+
             ItemStack itemRank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
                     amount++, ranksLore, SpigotPrison.format(rank.tag));
+
             if (playerRank != null && playerRank.equals(rank)){
                 playerHasThisRank = false;
             }
+
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (Objects.requireNonNull(guiConfig2.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
+                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
                         itemRank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }
             }
-            inv.addItem(itemRank);
 
+            inv.addItem(itemRank);
             rank = rank.rankNext;
         }
 
@@ -204,5 +199,4 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format(messages.getString("Gui.Lore.Rankup")));
         inv.setItem(dimension - 5, rankupButton);
     }
-
 }
