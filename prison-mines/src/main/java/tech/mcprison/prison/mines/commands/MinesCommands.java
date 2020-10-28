@@ -2504,8 +2504,7 @@ public class MinesCommands {
     			!sender.hasPermission("mines.tp") && 
     			!sender.hasPermission( minePermission ) ) {
                 Output.get()
-                    .sendError(sender, "You need the permission '%s' or '%s' to tp to this mine.",
-                        "mines.tp", minePermission );
+                    .sendError(sender, "Sorry. You're unable to teleport there." );
                 return;
             }
     	
