@@ -113,7 +113,7 @@ public class PrisonSpigotAPI {
         if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
         	
         	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
-        	if ( prisonBlock != null && prisonBlock.isMineable() ) {
+        	if ( prisonBlock != null && prisonBlock.isBlock() ) {
         		results = prisonBlock.getBlockName();
         	}
         }
@@ -146,7 +146,7 @@ public class PrisonSpigotAPI {
 			if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
 				
 				prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
-				if ( prisonBlock != null && !prisonBlock.isMineable() ) {
+				if ( prisonBlock != null && !prisonBlock.isBlock() ) {
 					prisonBlock = null;
 				}
 			}

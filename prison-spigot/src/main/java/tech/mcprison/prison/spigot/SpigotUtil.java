@@ -153,7 +153,11 @@ public class SpigotUtil {
 				Material mat = xMat.parseMaterial();
 				if ( mat != null ) {
 					if ( mat.isBlock() ) {
-						PrisonBlock block = new PrisonBlock( mat.name() );
+						
+						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
+						
+						block.setValid( true );
+						block.setBlock( mat.isBlock() );
 						
 						blockTypes.add( block );
 					}

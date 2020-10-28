@@ -2,7 +2,8 @@ package tech.mcprison.prison.internal.block;
 
 /**
  * <p>This class embodies the nature of the block and different behaviors, if
- * they exist.
+ * they exist.  The block name should be based upon the XMaterial name if
+ * possible to ensure correct mapping for different versions of spigot.
  * </p>
  *
  */
@@ -12,18 +13,31 @@ public class PrisonBlock {
 	private double chance;
 	
 	private boolean valid = true;
-	private boolean mineable = true;
+	private boolean block = true;
 	
 	private boolean legacyBlock = false;
 	
+	
+	/**
+	 * The name of this block should be based upon the XMaterial name in all 
+	 * lower case.
+	 * 
+	 * @param blockName
+	 */
 	public PrisonBlock( String blockName ) {
 		this( blockName, 0);
 	}
 
+	/**
+	 * The block name will be set to all lower case for consistancy when searching and mapping.
+	 * 
+	 * @param blockName
+	 * @param chance
+	 */
 	public PrisonBlock( String blockName, double chance ) {
 		super();
 		
-		this.blockName = blockName;
+		this.blockName = blockName.toLowerCase();
 		this.chance = chance;
 	}
 	
@@ -53,11 +67,11 @@ public class PrisonBlock {
 		this.valid = valid;
 	}
 
-	public boolean isMineable() {
-		return mineable;
+	public boolean isBlock() {
+		return block;
 	}
-	public void setMineable( boolean mineable ){
-		this.mineable = mineable;
+	public void setBlock( boolean isBlock ){
+		this.block = isBlock;
 	}
 
 	/**

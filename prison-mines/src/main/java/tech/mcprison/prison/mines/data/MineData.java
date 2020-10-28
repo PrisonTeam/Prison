@@ -406,6 +406,19 @@ public abstract class MineData
     	}
     	return false;
     }
+    
+    public PrisonBlock getPrisonBlock( PrisonBlock blockType ) {
+    	PrisonBlock results = null;
+    	
+    	for (PrisonBlock block : getPrisonBlocks()) {
+    		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
+    			results = block;
+    			break;
+    		}
+    	}
+    	
+    	return results;
+    }
 
     public double area() {
     	if ( isVirtual() ) {
