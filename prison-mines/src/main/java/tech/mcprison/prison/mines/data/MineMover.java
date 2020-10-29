@@ -15,9 +15,9 @@ public class MineMover
 		
 		mine.clearMine( false );
 		
-		new MineLinerBuilder( mine, Edges.top, LinerPatterns.repair );
-		new MineLinerBuilder( mine, Edges.bottom, LinerPatterns.repair );
-		new MineLinerBuilder( mine, Edges.walls, LinerPatterns.repair );
+		new MineLinerBuilder( mine, Edges.top, LinerPatterns.repair, false );
+		new MineLinerBuilder( mine, Edges.bottom, LinerPatterns.repair, false );
+		new MineLinerBuilder( mine, Edges.walls, LinerPatterns.repair, false );
 
 		while ( amount-- > 0 ) {
     		

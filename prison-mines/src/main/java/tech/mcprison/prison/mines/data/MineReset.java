@@ -1334,16 +1334,16 @@ public abstract class MineReset
     	if ( amount < 0 ) {
     		while ( amount++ < 0 ) {
     			
-    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
 
     			Bounds newBounds = new Bounds( getBounds(), edge, -1 );
     			setBounds( newBounds );
     			
-    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
     		}
     	}
     	else {
-    		new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair );
+    		new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
     		
     		Bounds newBounds = new Bounds( getBounds(), edge, amount );
     		setBounds( newBounds );

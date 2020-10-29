@@ -2358,7 +2358,8 @@ public class MinesCommands {
     		@Arg(name = "mineName", description = "The name of the mine") String mineName,
     		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
-    		@Arg(name = "pattern", description = "pattern to use [?]", def = "bright") String pattern 
+    		@Arg(name = "pattern", description = "pattern to use [?]", def = "bright") String pattern,
+    		@Arg(name = "force", description = "Force liner if air [force no]", def = "no") String force
     		
     		) {
     	
@@ -2385,6 +2386,15 @@ public class MinesCommands {
     		return;
     	}
     	
+    	boolean isForced = false;
+    	if ( force != null && !"force".equalsIgnoreCase( force ) && !"no".equalsIgnoreCase( force ) ) {
+    		sender.sendMessage( 
+    				String.format( "&3The only valid values for &7force &3 is &7force&3 and &7no&3. " +
+    						"Was &2[&7%s&2]", force ) );
+    	}
+    	else if ( "force".equalsIgnoreCase( force ) ) {
+    		isForced = true;
+    	}
     	
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine mine = pMines.getMine(mineName);
@@ -2395,7 +2405,7 @@ public class MinesCommands {
     	}
     	
     	
-    	new MineLinerBuilder( mine, e, linerPattern );
+    	new MineLinerBuilder( mine, e, linerPattern, isForced );
     	
     	// NOTE: The mine itself was not changed, so nothing to save:
     	

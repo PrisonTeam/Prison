@@ -23,6 +23,8 @@ public class MineLinerBuilder {
 	
 	private LinerPatterns pattern;
 	
+	private boolean isForced = false;
+	
 	private List<List<List<String>>> pattern3d = null;
 	
 	
@@ -83,7 +85,7 @@ public class MineLinerBuilder {
 		
 	}
 	
-	public MineLinerBuilder( Mine mine, Edges edge, LinerPatterns pattern ) {
+	public MineLinerBuilder( Mine mine, Edges edge, LinerPatterns pattern, boolean isForced ) {
 		super();
 		
 		this.pattern3d = new ArrayList<>();
@@ -97,6 +99,8 @@ public class MineLinerBuilder {
 								Edges.bottom, 1 ), Edges.walls, 1);
 		
 		this.pattern = pattern;
+		
+		this.isForced = isForced;
 		
 		if ( pattern != null ) {
 			mine.enableTracer();
@@ -235,7 +239,7 @@ public class MineLinerBuilder {
 			}
 			
 			
-			for (int y = yMin; y <= yMax; y++) {
+			for (int y = yMin; y <= yMax + (isForced && yMin > yMax ? -1 : 0); y++) {
 				
 				for (int x = xMin; x <= xMax; x++) {
 
@@ -293,7 +297,8 @@ public class MineLinerBuilder {
 								}
 							}
 							
-							else if ( !tBlock.isEmpty() ||
+							else if ( isForced ||
+									!tBlock.isEmpty() ||
 									isLadderBlock && !tBlockPlus1.isEmpty() ) {
 										
 								PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
@@ -333,10 +338,14 @@ public class MineLinerBuilder {
 								}
 							}
 							
-							else if ( !tBlock.isEmpty() ||
+							else if ( isForced ||
+									!tBlock.isEmpty() ||
 									isLadderBlock && !tBlockPlus1.isEmpty() ) {
 								
 								BlockType nextBlockType = BlockType.fromString( nextBlockName );
+//								if ( nextBlockType == null ) {
+//									nextBlockType = BlockType.fromString( nextBlockName );
+//								}
 								
 								if ( isLadderBlock ) {
 									
@@ -758,6 +767,13 @@ public class MineLinerBuilder {
 	}
 	public void setPattern( LinerPatterns pattern ) {
 		this.pattern = pattern;
+	}
+
+	public boolean isForced() {
+		return isForced;
+	}
+	public void setForced( boolean isForced ) {
+		this.isForced = isForced;
 	}
 	
 }
