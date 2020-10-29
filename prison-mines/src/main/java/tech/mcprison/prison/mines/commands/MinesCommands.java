@@ -2389,7 +2389,7 @@ public class MinesCommands {
     	boolean isForced = false;
     	if ( force != null && !"force".equalsIgnoreCase( force ) && !"no".equalsIgnoreCase( force ) ) {
     		sender.sendMessage( 
-    				String.format( "&3The only valid values for &7force &3 is &7force&3 and &7no&3. " +
+    				String.format( "&3The valid values for &7force &3 are &7force&3 and &7no&3. " +
     						"Was &2[&7%s&2]", force ) );
     	}
     	else if ( "force".equalsIgnoreCase( force ) ) {
