@@ -482,7 +482,14 @@ public class MineLinerBuilder {
 	}
 
 
-
+	/**
+	 * The block names that are used in these 2D patterns much match both
+	 * the BlockType enums (the old prison block names) and the Xmaterial names.
+	 * If they don't match both, use the XMaterial names, then add that name to the 
+	 * BlockType enum as an XMaterial altName.
+	 * 
+	 * @param edge
+	 */
 	private void select2DPattern( Edges edge ) {
 		
 		String[][] pattern2d = null;
@@ -542,15 +549,15 @@ public class MineLinerBuilder {
 			case glowingPlanks:
 				String[][] glowingPlanks =
 				{
-						{ "dark_oak", "spruce", "acacia", "glowstone" }, // dsag
-						{ "birch", "acacia", "jungle", "dark_oak" },     // bajd
-						{ "acacia", "glowstone", "dark_oak", "spruce" }, // dsag
-						{ "jungle", "dark_oak", "birch", "acacia" },     // bajd
+						{ "dark_oak_planks", "spruce_planks", "acacia_planks", "glowstone" }, // dsag
+						{ "birch_planks", "acacia_planks", "jungle_planks", "dark_oak_planks" },     // bajd
+						{ "acacia_planks", "glowstone", "dark_oak_planks", "spruce_planks" }, // dsag
+						{ "jungle_planks", "dark_oak_planks", "birch_planks", "acacia_planks" },     // bajd
 						
-						{ "dark_oak", "birch", "acacia", "jungle" },      // dbaj
-						{ "spruce", "acacia", "glowstone", "dark_oak" },  // sagd
-						{ "acacia", "jungle", "dark_oak", "birch" },      // dbaj
-						{ "glowstone", "dark_oak", "spruce", "acacia" }   // sagd
+						{ "dark_oak", "birch_planks", "acacia_planks", "jungle_planks" },      // dbaj
+						{ "spruce_planks", "acacia_planks", "glowstone", "dark_oak" },  // sagd
+						{ "acacia_planks", "jungle_planks", "dark_oak_planks", "birch_planks" },      // dbaj
+						{ "glowstone", "dark_oak_planks", "spruce_planks", "acacia_planks" }   // sagd
 				};
 				pattern2d = glowingPlanks;
 				break;
@@ -559,8 +566,8 @@ public class MineLinerBuilder {
 			case darkOakPrismarine:
 				String[][] darkOakPrismarine =
 				{
-						{ "prismarine_bricks", "dark_prismarine", "dark_oak", "prismarine" },
-						{ "dark_oak", "prismarine", "prismarine_bricks", "dark_prismarine" }
+						{ "prismarine_bricks", "dark_prismarine", "dark_oak_planks", "prismarine" },
+						{ "dark_oak_planks", "prismarine", "prismarine_bricks", "dark_prismarine" }
 				};
 				pattern2d = darkOakPrismarine;
 				break;
@@ -569,9 +576,9 @@ public class MineLinerBuilder {
 			case bricked:
 				String[][] bricked =
 				{
-						{ "prismarine_bricks", "jungle", "brick_block" },
-						{ "mossy_stonebrick", "dark_prismarine", "dark_oak" },
-						{ "spruce", "nether_brick", "sea_lantern" }
+						{ "prismarine_bricks", "jungle_planks", "brick_block" },
+						{ "mossy_stone_bricks", "dark_prismarine", "dark_oak_planks" },
+						{ "spruce_planks", "nether_bricks", "sea_lantern" }
 				};
 				pattern2d = bricked;
 				break;
