@@ -2178,9 +2178,15 @@ public class MinesCommands {
     
 
     @Command(identifier = "mines set area", permissions = "mines.set", 
-    				description = "Set the area of a mine to your current selection.")
+    				description = "Set the area of a mine to your current selection or a 1x1 mine under your feet.")
     public void redefineCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "source", description = "&3The source to use for setting the area. The &7wand&3 " +
+        		"uses the area defined by the wand. &7Feet&3 defines a 1x1 mine under your feet" +
+        		"which is useful in void worlds or when flying and can be enlarged with " +
+        		"&7/mines set size help&3 . &2[&7wand feet&2]", 
+        				def = "wand") String source
+        ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
@@ -2189,12 +2195,25 @@ public class MinesCommands {
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
+        Player player = getPlayer( sender );
+        
 //        if ( !m.isEnabled() ) {
 //        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //        	return;
 //        }
         
-        Selection selection = Prison.get().getSelectionManager().getSelection((Player) sender);
+        Selection selection = null;
+
+        if ( source != null && "feet".equalsIgnoreCase( source ) ) {
+        	selection = new Selection( player.getLocation(), player.getLocation());
+        }
+        else if ( source == null || "wand".equalsIgnoreCase( source ) ) {
+        	selection = Prison.get().getSelectionManager().getSelection( player );
+        }
+        else {
+        	sender.sendMessage( "&3Valid values for &2source &3are &7wand&3 and &7feet&3." );
+        	return;
+        }
         
         if (!selection.isComplete()) {
         	pMines.getMinesMessages().getLocalizable("select_bounds")
@@ -2218,6 +2237,7 @@ public class MinesCommands {
         // Setting the bounds when it's virtual will configure all the internals:
         
         m.setBounds(selection.asBounds());
+        
         if ( wasVirtual ) {
         	
         	
