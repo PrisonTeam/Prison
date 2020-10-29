@@ -297,6 +297,8 @@ public class RanksCommands {
 	        			if ( cRankNext <= 'Z' ) {
 	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext);
 	        				countRankCmds++;
+	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm2 + rankNameNext);
+	        				countRankCmds++;
 	        			}
 	        			
 	        		}
