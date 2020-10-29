@@ -235,24 +235,34 @@ public class RanksCommands {
 								Prison.get().getPrisonCommands().getRegisteredPluginData();
 		
 //
-        String permCmd = null;
+        String permCmdAdd = null;
+        String permCmdDel = null;
         String perm1 = "mines.";
         String perm2 = "mines.tp.";
         
         if ( plugins.containsKey("LuckPerms") ){
-        	permCmd = "lp user {player} permission set ";
+        	permCmdAdd = "lp user {player} permission set ";
+        	permCmdDel = "lp user {player} permission unset ";
         } 
         else if ( plugins.containsKey("PermissionsEx") ){
-        	permCmd = "pex user {player} add ";
+        	permCmdAdd = "pex user {player} add ";
+        	permCmdDel = "pex user {player} add -";
         } 
         else if ( plugins.containsKey("UltraPermissions") ){
-        	permCmd = "upc addplayerpermission {player} ";
+        	permCmdAdd = "upc addplayerpermission {player} ";
+        	permCmdDel = "upc removeplayerpermission {player} ";
+        } 
+        else if ( plugins.containsKey("GroupManager") ){
+        	permCmdAdd = "manuaddp {player} ";
+        	permCmdDel = "manudelp {player} ";
         } 
         else if ( plugins.containsKey("zPermissions") ){
-        	permCmd = "permissions player {player} set ";
+        	permCmdAdd = "permissions player {player} set ";
+        	permCmdDel = "permissions player {player} unset ";
         } 
         else if ( plugins.containsKey("PowerfulPerms") ){
-        	permCmd = "pp user {player} add ";
+        	permCmdAdd = "pp user {player} add ";
+        	permCmdAdd = "pp user {player} remove ";
         }
 
 
@@ -272,14 +282,23 @@ public class RanksCommands {
 	        	String rankName = Character.toString( cRank );
 	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]&f";
 	        	
+	        	char cRankNext = (char) (cRank + 1);
+	        	String rankNameNext = Character.toString( cRankNext );
+	        	
 	        	if ( createRank(sender, rankName, price, "default", tag) ) {
 	        		countRanks++;
 	        		
-	        		if ( permCmd != null ) {
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + perm1 + rankName);
+	        		if ( permCmdAdd != null ) {
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName);
 	        			countRankCmds++;
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmd + perm2 + rankName);
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName);
 	        			countRankCmds++;
+	        			
+	        			if ( cRankNext <= 'Z' ) {
+	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext);
+	        				countRankCmds++;
+	        			}
+	        			
 	        		}
 	        		
 	        		if ( mines ) {
