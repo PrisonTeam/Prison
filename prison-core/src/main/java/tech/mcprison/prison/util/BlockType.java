@@ -123,7 +123,7 @@ public enum BlockType {
 	
 	FLOWING_WATER( 8, "minecraft:flowing_water", 0, MaterialType.BLOCK, "WATER" ),
 	
-	STILL_WATER( 9, "minecraft:water", 0, MaterialType.BLOCK ),
+	STILL_WATER( 9, "minecraft:water", 0, MaterialType.BLOCK, "STATIONARY_WATER"),
 	FLOWING_LAVA( 10, "minecraft:flowing_lava", 0, MaterialType.BLOCK, "LAVA" ),
 	STILL_LAVA( 11, "minecraft:lava", 0, MaterialType.BLOCK ),
 	

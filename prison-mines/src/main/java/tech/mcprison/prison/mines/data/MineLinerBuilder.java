@@ -613,7 +613,7 @@ public class MineLinerBuilder {
 							{ "iron_block", "end_stone" },
 
 							{ "chiseled_quartz_block", "pillar_quartz_block" },
-							{ "glowstone", "quartz_stone" },
+							{ "glowstone", "quartz_block" },
 							{ "chiseled_quartz_block", "pillar_quartz_block" }
 						};
 				pattern2d = bright;
