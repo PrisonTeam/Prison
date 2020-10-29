@@ -8,7 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.10 - 2020-10-29
+## tag v3.2.2-alpha.11 - 2020-10-29
+
+
+* **v3.2.2-alpha.11 - 2020-10-29**
+
+
+* **For /ranks autoConfigure: Almost forgot to add the removal of the mines.tp.<mineName> when demoting a player.**
 
 
 * **Added a new feature: can now set the area of a mine based upon location of your feet.**
