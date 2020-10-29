@@ -8,7 +8,53 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.10 - 2020-10-26
+## tag v3.2.2-alpha.10 - 2020-10-29
+
+
+* **Added a new feature: can now set the area of a mine based upon location of your feet.**
+This allows you to create a virtual mine, then set its location where you're standing or flying, then you can resize it.  This bypasses the need of having to use a wand to create a mine or define it's size and location and allows it to be defined in mid air or in a void world where you cannot click on any blocks.
+
+
+* **Fix the report on how many blocks are in a new mine.** It was reporting on surface area and not block count.
+Fixed an issue with world being saved correctly. When a virtual mine was converted to a real mine, the world and world name were not always being updated.  Fixed it by not only being more aggressive when setting the Bounds, but also when saving the mine.
+
+
+* **Reenable the compatibility cache on block mapping.**
+This eliminates related failures to map blocks, which will prevent wasted time continuously looking them up.
+
+
+* **A few more tweaks to the block types to fix missing block from a pattern.**
+
+
+* **Added the ability to add the "force" option to the /mines set liner command.**
+Normally the command only adds the liner if there is not air so that the mine's liner does not extend above the ground level, and it ends at ground level.  
+Force is intended to cause the liner to work in a void area where all there is only air.  Otherwise you would have to place blocks on the outside to "trick" the liner to work.
+
+
+* **Fixed the block names for the new liner patterns.**
+I accidentally added them based upon actual block names and not what is mapped to the prison block names or the new block types which are keyed to XMaterials.  This fixed them.
+
+
+* **Added a compatibility reference to help map it to XMaterials.** 
+Jungle_planks
+
+
+* **Enhance the ranks auto configure by adding support for GroupManager permission plugin.**
+Also added the remove permission of the next higher rank so as to support demotions.
+
+
+* **Added three new patterns to the MineLinerBuilder.**
+
+
+* **Minor code improvements for the player GUI and this should also fix the null value.**
+
+
+* **The gui was trying to pass null strings to this format function.**
+If the parameter value is null, then just return an empty String, otherwise try to format it.
+
+
+* **Simplify the error message if a player does not have access to tp to a mine**
+they should not be seeing anything pertaining to perms.
 
 
 * **Hooking up more of the prison's mines commands to properly, and fully, use the new prison block model.**
