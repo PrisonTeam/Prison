@@ -137,7 +137,7 @@ public enum BlockType {
 	OAK_WOOD( 17, "minecraft:log", 0, MaterialType.BLOCK ),
 	SPRUCE_WOOD( 17, "minecraft:log", 1, MaterialType.BLOCK ),
 	BIRCH_WOOD( 17, "minecraft:log", 2, MaterialType.BLOCK ),
-	JUNGLE_WOOD( 17, "minecraft:log", 3, MaterialType.BLOCK ),
+	JUNGLE_WOOD( 17, "minecraft:log", 3, MaterialType.BLOCK, "jungle_planks" ),
 	
 	OAK_LEAVES( 18, "minecraft:leaves", 0, MaterialType.BLOCK ),
 	SPRUCE_LEAVES( 18, "minecraft:leaves", 1, MaterialType.BLOCK ),
