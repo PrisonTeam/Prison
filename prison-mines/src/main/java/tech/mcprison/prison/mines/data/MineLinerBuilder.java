@@ -34,7 +34,10 @@ public class MineLinerBuilder {
 		blackAndWhite,
 		seaEchos,
 		obby, 
+		glowingPlanks,
+		darkOakPrismarine,
 		beacon,
+		bricked,
 		
 		repair
 		;
@@ -535,6 +538,44 @@ public class MineLinerBuilder {
 				pattern2d = obby;
 				break;
 				
+				
+			case glowingPlanks:
+				String[][] glowingPlanks =
+				{
+						{ "dark_oak", "spruce", "acacia", "glowstone" }, // dsag
+						{ "birch", "acacia", "jungle", "dark_oak" },     // bajd
+						{ "acacia", "glowstone", "dark_oak", "spruce" }, // dsag
+						{ "jungle", "dark_oak", "birch", "acacia" },     // bajd
+						
+						{ "dark_oak", "birch", "acacia", "jungle" },      // dbaj
+						{ "spruce", "acacia", "glowstone", "dark_oak" },  // sagd
+						{ "acacia", "jungle", "dark_oak", "birch" },      // dbaj
+						{ "glowstone", "dark_oak", "spruce", "acacia" }   // sagd
+				};
+				pattern2d = glowingPlanks;
+				break;
+
+				
+			case darkOakPrismarine:
+				String[][] darkOakPrismarine =
+				{
+						{ "prismarine_bricks", "dark_prismarine", "dark_oak", "prismarine" },
+						{ "dark_oak", "prismarine", "prismarine_bricks", "dark_prismarine" }
+				};
+				pattern2d = darkOakPrismarine;
+				break;
+				
+				
+			case bricked:
+				String[][] bricked =
+				{
+						{ "prismarine_bricks", "jungle", "brick_block" },
+						{ "mossy_stonebrick", "dark_prismarine", "dark_oak" },
+						{ "spruce", "nether_brick", "sea_lantern" }
+				};
+				pattern2d = bricked;
+				break;
+
 				
 			case white: 
 				String[][] white =
