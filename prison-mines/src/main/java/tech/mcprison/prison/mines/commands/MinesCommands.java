@@ -2224,7 +2224,7 @@ public class MinesCommands {
         	DecimalFormat dFmt = new DecimalFormat("#,##0");
         	String message = String.format( "&3The mine &7%s &3 is no longer a virutal mine " +
         			"and has been enabled with an area of &7%s &3blocks.",
-        			m.getName(), dFmt.format( m.getBounds().getArea() ));
+        			m.getName(), dFmt.format( m.getBounds().getTotalBlockCount() ));
         	
         	sender.sendMessage( message );
         	Output.get().logInfo( message );

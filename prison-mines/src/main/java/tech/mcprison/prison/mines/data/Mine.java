@@ -426,7 +426,16 @@ public class Mine
     
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("world", getWorldName());
+        
+        // If world name is not set, try to get it from the bounds:
+        String worldName = getWorldName();
+        if ( worldName == null || worldName.trim().length() == 0 &&
+        		getBounds() != null && getBounds().getMin() != null &&
+        		getBounds().getMin().getWorld() != null ) {
+        	worldName = getBounds().getMin().getWorld().getName();
+        	setWorldName( worldName );
+        }
+        ret.put("world", worldName );
         ret.put("name", getName());
         
         ret.put( "isVirtual", isVirtual() );

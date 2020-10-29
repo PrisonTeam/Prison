@@ -314,8 +314,9 @@ public abstract class MineData
     public void setBounds(Bounds bounds) {
     	this.bounds = bounds;
     	
-    	if ( bounds != null && ( isVirtual() || !getWorld().isPresent()) ) {
-    		// Move all this internal to the mines... 
+    	if ( bounds != null && ( isVirtual() || !getWorld().isPresent() ||
+    			getWorldName() == null || getWorldName().trim().length() == 0 ) ) {
+    		 
         	World world = bounds.getMin().getWorld();
         	
         	if ( world != null ) {
@@ -324,6 +325,8 @@ public abstract class MineData
         		setWorldName( world.getName() );
         		setVirtual( false );
         		setEnabled( true );
+        		
+        		Output.get().logInfo( "Mine " + getName() + ": world has been set and is now enabled." );
         	}
         	else {
         		setEnabled( false );
