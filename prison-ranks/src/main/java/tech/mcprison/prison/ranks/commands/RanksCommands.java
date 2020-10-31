@@ -289,15 +289,15 @@ public class RanksCommands {
 	        		countRanks++;
 	        		
 	        		if ( permCmdAdd != null ) {
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName);
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName.toLowerCase());
 	        			countRankCmds++;
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName);
+	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName.toLowerCase());
 	        			countRankCmds++;
 	        			
 	        			if ( cRankNext <= 'Z' ) {
-	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext);
+	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext.toLowerCase());
 	        				countRankCmds++;
-	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm2 + rankNameNext);
+	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm2 + rankNameNext.toLowerCase());
 	        				countRankCmds++;
 	        			}
 	        			
