@@ -563,8 +563,8 @@ public class MineLinerBuilder {
 						{ "acacia_planks", "glowstone", "dark_oak_planks", "spruce_planks" }, // dsag
 						{ "jungle_planks", "dark_oak_planks", "birch_planks", "acacia_planks" },     // bajd
 						
-						{ "dark_oak", "birch_planks", "acacia_planks", "jungle_planks" },      // dbaj
-						{ "spruce_planks", "acacia_planks", "glowstone", "dark_oak" },  // sagd
+						{ "dark_oak_planks", "birch_planks", "acacia_planks", "jungle_planks" },      // dbaj
+						{ "spruce_planks", "acacia_planks", "glowstone", "dark_oak_planks" },  // sagd
 						{ "acacia_planks", "jungle_planks", "dark_oak_planks", "birch_planks" },      // dbaj
 						{ "glowstone", "dark_oak_planks", "spruce_planks", "acacia_planks" }   // sagd
 				};
