@@ -8,8 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.11 - 2020-10-29
+## tag v3.2.2-alpha.11 - 2020-10-31
 
+
+* **Changed the perms to lower case, specfically the mine/rank name.  Should have been lower case.**
+
+
+* **Had the wrong block name for dark_oak_planks (thought I fixed that already).**
 
 * **v3.2.2-alpha.11 - 2020-10-29**
 

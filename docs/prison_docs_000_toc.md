@@ -41,14 +41,14 @@
 
 **PRISON COMMANDS:** 
 
-- [/prison](docs-commands/prison_docs_command_1_prison.md) `prison.admin` 
-- [/prison alerts](docs-commands/prison_docs_command_2_prison_alerts.md) `prison.alerts`
-- [/prison autofeatures](docs-commands/prison_docs_command_3_prison_autofeatures.md) `prison.admin` `prison.automanager` `prison.automanager.pickup` `prison.automanager.smelt` `prison.automanager.block`
-- [/prison gui](docs-commands/prison_docs_command_4_prison_gui.md) `prison.gui`
-- [/prison modules](docs-commands/prison_docs_command_5_prison_modules.md) `prison.modules`
-- [/prison placeholders](docs-commands/prison_docs_command_6_prison_placeholders.md) `prison.placeholder`
-- [/prison reload](docs-commands/prison_docs_command_7_prison_reload.md) `prison.reload`
-- [/prison version](docs-commands/prison_docs_command_9_prison_version.md) `prison.admin`
+- [/prison](docs-commands/prison_docs_command_01_prison.md) `prison.admin` 
+- [/prison alerts](docs-commands/prison_docs_command_02_prison_alerts.md) `prison.alerts`
+- [/prison autofeatures](docs-commands/prison_docs_command_03_prison_autofeatures.md) `prison.admin` `prison.automanager` `prison.automanager.pickup` `prison.automanager.smelt` `prison.automanager.block` Plus custom permissions.
+- [/prison gui](docs-commands/prison_docs_command_04_prison_gui.md) `prison.gui`
+- [/prison modules](docs-commands/prison_docs_command_05_prison_modules.md) `prison.modules`
+- [/prison placeholders](docs-commands/prison_docs_command_06_prison_placeholders.md) `prison.placeholder`
+- [/prison reload](docs-commands/prison_docs_command_07_prison_reload.md) `prison.reload`
+- [/prison version](docs-commands/prison_docs_command_09_prison_version.md) `prison.admin`
 
 
 **RANKS COMMANDS**:

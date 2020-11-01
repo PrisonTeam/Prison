@@ -3,11 +3,11 @@
 
 ## Description:
 
-Prison Modules command, will show a "status" for modules, like enabled or disabled.
+This command will open the `/prison gui` where an admin can manage Prison features.
 
 ## Permission:
 
-- `prison.modules`
+- `prison.gui`
 - `prison.admin`
 
 ## SubCommands:
@@ -16,10 +16,10 @@ Prison Modules command, will show a "status" for modules, like enabled or disabl
 
 ## How to use the command
 
-Just execute the command himself `/prison modules`
+Just execute the command `/prison gui`
 
 ### Command Format
 
-`/prison modules`
+`/prison gui`
 
 **END of the command INFO**

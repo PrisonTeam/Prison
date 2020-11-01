@@ -10,17 +10,25 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Beta v3.2.2
 
 
-* **Add numeric abbreviations on rank costs**
+
+
+* **Save the liner settings for each mine**
+Currently is not saved and have to manually reissue each time.
+Save all six faces and include pattern and if forced
+Add command to regenerate, or reapply, the liners.
+Add liner details to mines info
+
+* **DONE: Add numeric abbreviations on rank costs**
  K, M, B, T, Q, etc... 
  New placeholder? Formatted?
  https://en.wikipedia.org/wiki/Metric_prefix Use Prefix Symbol column.
 
 
 * **ranks autoConfigure - Feature Ideas**
-- Generate default blocks for all mines.
-- Add perms for /mines tp
 - option for using EssentialsX warps instead: essentials.warps.<mineName>
-- Perm names: mines.tp.<mineName>, mines.<mineName>
+- DONE: Generate default blocks for all mines.
+- DONE: Add perms for /mines tp
+- DONE: Perm names: mines.tp.<mineName>, mines.<mineName>
 
 
 * **Commands - Enhancement**

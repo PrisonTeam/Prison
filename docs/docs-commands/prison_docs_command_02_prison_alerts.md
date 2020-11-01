@@ -3,7 +3,7 @@
 
 ## Description:
 
-Prison Alerts, you can clear a Prison Alert or All of them
+Prison Alerts: you can clear a Prison Alert or All of them. One of the most frequently seen alerts is the notification that an update is available. 
 
 ## Permission:
 
@@ -16,13 +16,11 @@ Prison Alerts, you can clear a Prison Alert or All of them
 
 ## How to use the command
 
-Execute `/prison alerts` followed by the `argument` you want, such as `clearall` or `clear` to use the command
+Execute `/prison alerts` followed by the *argument* you want, such as `clearall` or `clear` to use the command
 
-**NOTE:**
-You can't use this command from the console!
 
 ### Command Format
 
-`/prison alerts <Arguments>`
+`/prison alerts <argument>`
 
 **END of the command INFO**
