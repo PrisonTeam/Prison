@@ -593,12 +593,12 @@ public class IntegrationManager {
         return results;
     }
     
-    public String getIntegrationDetails( IntegrationType intType ) {
+    public String getIntegrationDetails( IntegrationType integrationType ) {
     	StringBuilder sb = new StringBuilder();
     	Set<IntegrationType> keys = integrations.keySet();
     	
     	for ( IntegrationType key : keys ) {
-    		if ( key == intType ) {
+    		if ( key == integrationType ) {
     			sb.append( key.name() );
     			sb.append( ": [" );
     			
@@ -642,23 +642,30 @@ public class IntegrationManager {
     public List<DisplayComponent> getIntegrationComponents() {
     	List<DisplayComponent> results = new ArrayList<>();
     	
-        for ( IntegrationType integType : IntegrationType.values() )
+        for ( IntegrationType integrationType : IntegrationType.values() )
 		{
-        	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integType.name() ) ));
+        	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integrationType.name() ) ));
 
         	// Generates the placeholder list for the /prison version command, printing
         	// two placeholders per line.
-			if ( integType ==  IntegrationType.PLACEHOLDER ) {
+			if ( integrationType ==  IntegrationType.PLACEHOLDER ) {
 				results.add(  new TextComponent( "    &7To list all or search for placeholders see: " +
 						"&a/prison placeholders") );
 //				getPlaceholderTemplateList( results );
 			}
 			
-			List<Integration> plugins = getAllForType( integType );
+			List<Integration> plugins = getAllForType( integrationType );
 			
-			if ( plugins == null || plugins.size() == 0 ) {
+			if ( integrationType == IntegrationType.WORLDGUARD && 
+					(plugins == null || plugins.size() == 0 ) ) {
+				results.add( new TextComponent( "    &e&oWorldGuard integration has not been added " +
+						"to Prison yet.&3 WorldGuard can still be used normally since this " +
+						"is not an error." ));
+			} 
+			else if ( plugins == null || plugins.size() == 0 ) {
 				results.add( new TextComponent( "    &e&onone" ));
-			} else {
+			} 
+			else {
 				for ( Integration plugin : plugins ) {
 					String pluginUrl = plugin.getPluginSourceURL();
 					String msg = String.format( "    &a%s &7<%s&7> %s", plugin.getDisplayName(),
@@ -675,7 +682,7 @@ public class IntegrationManager {
 						results.add( new TextComponent( "        " + altInfo ));
 					}
 					
-					if ( integType ==  IntegrationType.ECONOMY && 
+					if ( integrationType ==  IntegrationType.ECONOMY && 
 							plugin instanceof EconomyCurrencyIntegration ) {
 						EconomyCurrencyIntegration econ = (EconomyCurrencyIntegration) plugin;
 						
