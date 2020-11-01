@@ -649,7 +649,7 @@ public class PrisonCommand {
     	display.text( "&7   Tool lore examples: Pickup, Pickup 7.13, Smelt 55, Block 75.123" );
     	
     	display.text( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
-    	display.text( "&a Or use &7/prison gui");
+    	display.text( "&a Or better yet, you can use the &7/prison gui");
     	
     	List<AutoFeatures> afs = AutoFeatures.permissions.getChildren();
     	StringBuilder sb = new StringBuilder();
