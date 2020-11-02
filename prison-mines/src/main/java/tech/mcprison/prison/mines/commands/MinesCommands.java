@@ -2061,7 +2061,8 @@ public class MinesCommands {
     @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 
     		description = "Enable or disable a mine's notification permission. If enabled, then players " +
     					"must have the mine's permission to get messages for reset. This filter " +
-    					"can be combined with the other notification settings.")
+    					"can be combined with the other notification settings.", 
+    		altPermissions = "mines.notification.[mineName]")
     public void setNotificationPermissionCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "action", def="enable", description = "Enable or disable the permission filtering: [enable, disable]") 
@@ -2086,7 +2087,9 @@ public class MinesCommands {
             }
             
             if ( action.equalsIgnoreCase( "enable" ) && !m.isUseNotificationPermission() ) {
-            	sender.sendMessage( "&7Notification Permission filter has been enabled." );
+            	sender.sendMessage( 
+            			String.format( "&7Notification Permission filter has been enabled. Using permission %s",
+            					m.getMineNotificationPermissionName() ) );
             	m.setUseNotificationPermission( true );
             	pMines.getMineManager().saveMine( m );
             }

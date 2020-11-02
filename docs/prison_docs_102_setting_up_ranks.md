@@ -32,6 +32,23 @@ Prison also provides a number of Admin based commands to manage ranks and ladder
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# New! Prison Fast Start
+
+Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.   
+ -  `/ranks autoConfigure`
+ - `/mines set area help`
+ - `/mines set tracer help`
+ - `/mines set size help`
+ - `/mines set liner help`
+ 
+Documentation pertaining to the use of the auto configuration will be coming soon.
+ 
+Keep in mind that in order to use the command `/ranks autoConfigure` you cannot have any ranks or mines defined yet.  So before you create a test rank, go ahead and run the auto configure so at least that is complete.
+ 
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 #Ranks
 
 There are many different ways you can setup your Prison server and ranks is just one small part of how you can customize everything.

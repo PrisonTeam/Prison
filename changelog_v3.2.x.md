@@ -11,6 +11,17 @@ that you need.
 ## tag v3.2.2-alpha.11 - 2020-10-31
 
 
+* **Update some docs and added a few screen prints.**
+Updates to a few documents to reflect some of the more recent updates to prison.
+
+
+* **Updates to the IntegrationManager** so the variable is more consistent and especially the message for WorldGuard integration is clear that it is not an error that it is not yet active.
+
+
+* **Change the command /prison alerts so they can be ran from the console** since it made no sense why the console was locked out from using them.
+Slight changed the information for /prison gui that shows that it could be preferred to configure the autofeatures.
+
+
 * **Changed the perms to lower case, specfically the mine/rank name.  Should have been lower case.**
 
 

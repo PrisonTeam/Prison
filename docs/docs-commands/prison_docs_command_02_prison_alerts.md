@@ -12,7 +12,7 @@ Prison Alerts: you can clear a Prison Alert or All of them. One of the most freq
 ## SubCommands:
 
 - `/prison alerts clearall` clear all alerts
-- `/prison alerts clear` clear an alert
+- `/prison alerts clear` clear an alert that is specifically yours.
 
 ## How to use the command
 

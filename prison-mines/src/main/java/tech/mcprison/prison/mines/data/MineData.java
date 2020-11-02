@@ -498,7 +498,7 @@ public abstract class MineData
 	}
 
 	public String getMineNotificationPermissionName() {
-		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName();
+		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
 	}
 	
 	/**
