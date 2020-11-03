@@ -165,7 +165,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         inv.setItem(33, mineRename);
 
         // Position of the button
-        inv.setItem(45, closeGUI);
+        inv.setItem(44, closeGUI);
     }
 
 }
