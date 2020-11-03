@@ -511,14 +511,29 @@ public class AutoManagerFeatures
 	private void dropExtra( HashMap<Integer, ItemStack> extra, Player player, Block block ) {
 		if ( extra != null && extra.size() > 0 ) {
 			for ( ItemStack itemStack : extra.values() ) {
-				player.getWorld().dropItem( player.getLocation(), itemStack );
 				
-				notifyPlayerThatInventoryIsFull( player, block );
+				if ( !isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
+					player.getWorld().dropItem( player.getLocation(), itemStack );
+					notifyPlayerThatInventoryIsFull( player, block );
+				}
+				else {
+					notifyPlayerThatInventoryIsFullLosingItems( player, block );
+				}
+					
 			}
 		}
 	}
 
 	private void notifyPlayerThatInventoryIsFull( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFull );
+	}
+	
+	private void notifyPlayerThatInventoryIsFullLosingItems( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullLosingItems );
+		
+	}
+	
+	private void notifyPlayerWithSound( Player player, Block block, AutoFeatures messageId ) {
 
 		String message = autoFeaturesConfig.getFeatureMessage( AutoFeatures.inventoryIsFull );
 		
