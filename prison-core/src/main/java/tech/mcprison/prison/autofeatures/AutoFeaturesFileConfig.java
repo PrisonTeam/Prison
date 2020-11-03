@@ -38,6 +38,9 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateFortuneEnabled(general, true),
 		    	isCalculateSilkEnabled(general, true),
 		    	
+		    	isCalculateXPEnabled(general, true),
+		    	givePlayerXPAsOrbDrops(general, true),
+		    	
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, false),

@@ -11,6 +11,14 @@ that you need.
 ## tag v3.2.2-alpha.11 - 2020-10-31
 
 
+* **New Feature: Added XP calculations to the block break (auto pickup) function**
+which can be disabled.  Give the option to drop the xp as orbs (default) or give it directly to the player with no orbs.
+
+
+* **It was realized that dropItemsIfInventoryIsFull was not hooked up.**
+Hooked it up.
+
+
 * **Update some docs and added a few screen prints.**
 Updates to a few documents to reflect some of the more recent updates to prison.
 
@@ -22,7 +30,7 @@ Updates to a few documents to reflect some of the more recent updates to prison.
 Slight changed the information for /prison gui that shows that it could be preferred to configure the autofeatures.
 
 
-* **Changed the perms to lower case, specfically the mine/rank name.  Should have been lower case.**
+* **Changed the perms to lower case, specifically the mine/rank name.  Should have been lower case.**
 
 
 * **Had the wrong block name for dark_oak_planks (thought I fixed that already).**
