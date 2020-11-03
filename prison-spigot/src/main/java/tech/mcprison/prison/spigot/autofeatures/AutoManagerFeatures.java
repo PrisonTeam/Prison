@@ -514,8 +514,11 @@ public class AutoManagerFeatures
 		if ( extra != null && extra.size() > 0 ) {
 			for ( ItemStack itemStack : extra.values() ) {
 				
-				if ( !isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
-					player.getWorld().dropItem( player.getLocation(), itemStack );
+				if ( isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
+					
+					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+					
+					player.getWorld().dropItem( dropPoint, itemStack );
 					notifyPlayerThatInventoryIsFull( player, block );
 				}
 				else {
@@ -530,6 +533,11 @@ public class AutoManagerFeatures
 		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFull );
 	}
 	
+	@SuppressWarnings( "unused" )
+	private void notifyPlayerThatInventoryIsFullDroppingItems( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullDroppingItems );
+	}
+	
 	private void notifyPlayerThatInventoryIsFullLosingItems( Player player, Block block ) {
 		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullLosingItems );
 		
@@ -537,7 +545,7 @@ public class AutoManagerFeatures
 	
 	private void notifyPlayerWithSound( Player player, Block block, AutoFeatures messageId ) {
 
-		String message = autoFeaturesConfig.getFeatureMessage( AutoFeatures.inventoryIsFull );
+		String message = autoFeaturesConfig.getFeatureMessage( messageId );
 		
 		// Play sound when full
 		if ( isBoolean( AutoFeatures.playSoundIfInventoryIsFull ) ) {
