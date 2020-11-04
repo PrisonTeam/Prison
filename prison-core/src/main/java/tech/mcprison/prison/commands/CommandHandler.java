@@ -44,6 +44,8 @@ import tech.mcprison.prison.util.ChatColor;
 
 public class CommandHandler {
 
+	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
+	
     // TODO unregisterCommands method, to fix argument duplication on module re-enable
 
     private Prison plugin;
@@ -166,7 +168,8 @@ public class CommandHandler {
                 }
             }
             
-            if ( command.getLabel().equalsIgnoreCase( "prison" ) && rootCommands.size() > 1 ) {
+            if ( command.getLabel().equalsIgnoreCase( COMMAND_PRIMARY_ROOT_COMMAND ) && 
+            									rootCommands.size() > 1 ) {
                 message.add(ChatColor.DARK_AQUA + "Prison Root Commands:");
                 // Force a sorting by use of a TreeSet. Collections.sort() would not work.
                 TreeSet<String> rootCommandSet = new TreeSet<>();
