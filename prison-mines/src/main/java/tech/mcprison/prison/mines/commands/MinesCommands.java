@@ -2800,7 +2800,7 @@ public class MinesCommands {
         
         if ( state == null || !state.equalsIgnoreCase( "before" ) && !state.equalsIgnoreCase( "after" )) {
         	sender.sendMessage( 
-        			String.format("&7Please provide a valid state: b&before&7 or &bafter&7. Was state=[&b%s&7]",
+        			String.format("&7Please provide a valid state: &bbefore&7 or &bafter&7. Was state=[&b%s&7]",
         			state ));
         	return;
         }
