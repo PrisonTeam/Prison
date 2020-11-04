@@ -377,6 +377,20 @@ class SpigotPlatform
         }
     }
 
+    
+    @Override
+    public void unregisterAllCommands() {
+    	List<String> cmds = new ArrayList<>();
+    	for ( PluginCommand pluginCommand : commands ) {
+    		cmds.add( pluginCommand.getLabel() );
+		}
+    	
+    	for ( String lable : cmds ) {
+    		unregisterCommand( lable );
+		}
+    }
+    
+    
     @Override public List<PluginCommand> getCommands() {
         return commands;
     }

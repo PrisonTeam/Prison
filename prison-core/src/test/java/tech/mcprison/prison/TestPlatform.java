@@ -110,8 +110,14 @@ public class TestPlatform implements Platform {
 
     }
 
-    @Override public void unregisterCommand(String command) {
+    @Override 
+    public void unregisterCommand(String command) {
 
+    }
+    
+    @Override
+    public void unregisterAllCommands() {
+    	
     }
 
     @Override public List<PluginCommand> getCommands() {

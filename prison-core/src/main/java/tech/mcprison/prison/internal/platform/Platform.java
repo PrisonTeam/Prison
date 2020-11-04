@@ -112,8 +112,12 @@ public interface Platform {
      *
      * @param command The command to unregister, without the preceding '/'.
      */
-    void unregisterCommand(String command);
+    public void unregisterCommand(String command);
 
+    
+    public void unregisterAllCommands();
+
+    
     /**
      * Returns a list of all registered commands.
      */

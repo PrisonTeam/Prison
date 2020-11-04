@@ -233,7 +233,10 @@ public class SpigotPrison extends JavaPlugin {
     	if (this.scheduler != null ) {
     		this.scheduler.cancelAll();
     	}
-        Prison.get().deinit();
+    	
+    	Prison.get().getPlatform().unregisterAllCommands();
+    	
+    	Prison.get().deinit();
     }
 
     public FileConfiguration getGuiConfig() {
