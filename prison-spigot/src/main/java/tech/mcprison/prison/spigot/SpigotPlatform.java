@@ -464,7 +464,8 @@ class SpigotPlatform
         File file = new File(plugin.getDataFolder().getParent(), "Prison.old");
         if (!file.exists()) {
             return Output.get().format(
-                "I could not find a 'Prison.old' folder to convert. You probably haven't had Prison 2 installed before, so you don't need to convert :)",
+                "Could not find a 'Prison.old' folder to convert. Prison 2 may not have been installed " +
+                "before, so there is nothing that can be converted :)",
                 LogLevel.WARNING);
         }
 

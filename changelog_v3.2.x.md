@@ -8,7 +8,28 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.11 - 2020-10-31
+## tag v3.2.2-alpha.11 - 2020-11-04
+
+
+* **Bug Fix: Found a bug in the command registration code** that could result in failing to properly register commands. This would have been an issue if there were upper case letters in a command, since all commands are converted to lowercase when added, but when checking to see if a subcommand was already processed (ie... the "set" in the following two commands:  /mines set tag, /mines set resetTime).  The symptoms would be missing commands at runtime.  I actually have seen this failure in the past, and realized that all commands should be entered as lowercase due to this error.  Now it should work correctly.
+
+
+* **Clarify the role of a CommandHandler field that is used in a situation of when there is a command collision.**
+
+
+* **Fix typo: In the /mines command add function, a & was placed one character to the right of where it should have been.**
+
+
+* **Added an unregister all for the commands and hooked it up on the plugin's onDisable.**
+
+
+* **Fixed issue with dropping of inventory.**
+Had a ! where it shouldn't have been and forgot to hook up the new messageId variable so the warning can change.
+I'm not so sure about messaging this way, using the action bar, but don't want to flood chat with a ton of messages either.  Would have to put a limiter on the chat messages?
+
+
+* **Fixed an index out of range issue in the gui.**  
+Was 45 when should have been 44.
 
 
 * **New Feature: Added XP calculations to the block break (auto pickup) function**
@@ -34,6 +55,7 @@ Slight changed the information for /prison gui that shows that it could be prefe
 
 
 * **Had the wrong block name for dark_oak_planks (thought I fixed that already).**
+
 
 * **v3.2.2-alpha.11 - 2020-10-29**
 
