@@ -62,13 +62,25 @@ public class RegisteredCommand {
         this.parent = parent;
     }
 
+    /**
+     * The suffix is converted to all lowercase before adding to the map.
+     *  
+     * @param suffix
+     * @param command
+     */
     void addSuffixCommand(String suffix, RegisteredCommand command) {
-        suffixesByName.put(suffix.toLowerCase(), command);
+        suffixesByName.put( suffix.toLowerCase(), command);
         suffixes.add(command);
     }
-
+    
+    /**
+     * The suffix is converted to all lowercase before checking to see if it exists in the map.
+     * 
+     * @param suffix
+     * @return if the suffix exists
+     */
     boolean doesSuffixCommandExist(String suffix) {
-        return suffixesByName.get(suffix) != null;
+        return suffixesByName.containsKey( suffix.toLowerCase() );
     }
     
     public String getCompleteLabel() {
