@@ -56,7 +56,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         );
 
         ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
-        inv.setItem(56, addBlockButton);
+        inv.setItem(dimension - 1, addBlockButton);
 
         if ( useNewBlockModel ) {
         	
