@@ -2626,7 +2626,8 @@ public class MinesCommands {
 				}
 			}
     		
-    	} else {
+    	} 
+    	else if ( inMine.size() == 0 ) {
     		// you are not near any mines:
     		sender.sendMessage( "&3Sorry, you are not within " + MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS + 
     				" blocks from any mine." );
