@@ -55,12 +55,18 @@ public abstract class Spigot18Blocks
 				results = BlockType.getBlock(id, data);
 				
 				if ( results == null ) {
-					Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
-							"Spigot block cannot be mapped to a prison BlockType : " +
-							spigotBlock.getType().name() + 
-							" id = " + id + " data = " + data +
-							"  BlockType = " + ( results == null ? "null" : results.name()));
 					
+					results = BlockType.getBlock( spigotBlock.getType().name() );
+					
+					if ( results == null ) {
+						
+						Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
+								"Spigot block cannot be mapped to a prison BlockType : " +
+								spigotBlock.getType().name() + 
+								" id = " + id + " data = " + data +
+								"  BlockType = " + ( results == null ? "null" : results.name()));
+						
+					}
 				}
 				
 				putCachedBlockType( spigotBlock, (byte) data, results );

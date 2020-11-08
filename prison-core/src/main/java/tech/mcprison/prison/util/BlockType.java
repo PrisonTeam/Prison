@@ -124,6 +124,19 @@ public enum BlockType {
 	FLOWING_WATER( 8, "minecraft:flowing_water", 0, MaterialType.BLOCK, "WATER" ),
 	
 	STILL_WATER( 9, "minecraft:water", 0, MaterialType.BLOCK, "STATIONARY_WATER"),
+	
+	STATIONARY_WATER_01( 9, "minecraft:water", 1, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_02( 9, "minecraft:water", 2, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_03( 9, "minecraft:water", 3, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_04( 9, "minecraft:water", 4, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_05( 9, "minecraft:water", 5, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_06( 9, "minecraft:water", 6, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_07( 9, "minecraft:water", 7, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_08( 9, "minecraft:water", 8, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_09( 9, "minecraft:water", 9, MaterialType.BLOCK, "STATIONARY_WATER"),
+	STATIONARY_WATER_10( 9, "minecraft:water", 10, MaterialType.BLOCK, "STATIONARY_WATER"),
+	
+	
 	FLOWING_LAVA( 10, "minecraft:flowing_lava", 0, MaterialType.BLOCK, "LAVA" ),
 	STILL_LAVA( 11, "minecraft:lava", 0, MaterialType.BLOCK ),
 	
