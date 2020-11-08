@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
@@ -45,8 +46,11 @@ import tech.mcprison.prison.util.ChatColor;
 public class CommandHandler {
 
 	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
+	public static final String COMMAND_FALLBACK_PREFIX = "prison";
+	public static final String COMMAND_HELP_TEXT = "help";
+
 	
-    // TODO unregisterCommands method, to fix argument duplication on module re-enable
+	private Map<String, Object> registeredCommands;
 
     private Prison plugin;
     private Map<Class<?>, ArgumentHandler<?>> argumentHandlers =
@@ -54,6 +58,7 @@ public class CommandHandler {
     
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
+    
     private PermissionHandler permissionHandler = (sender, permissions) -> {
         for (String perm : permissions) {
             if (!sender.hasPermission(perm)) {
@@ -193,13 +198,39 @@ public class CommandHandler {
             return message.toArray(new String[0]);
         }
 
-        @Override public String getUsage(RegisteredCommand command) {
+        /**
+         * <p>If the registration of this command was not successful as the original 
+         * label, it would have had the fallback prefix added until the command
+         * was unique. Therefore, use that registered label instead so the users
+         * will know what command they need to enter.
+         * </p>
+         * 
+         * @param label
+         * @param command
+         * @return 
+         */
+        private String getRootCommandRegisteredLabel( String label, RegisteredCommand command ) {
+        	String commandLabel = command.getLabel();
+        	if ( command instanceof RootCommand ) {
+        		RootCommand rootCommand = (RootCommand) command;
+        		if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
+        			commandLabel = rootCommand.getBukkitCommand().getLabelRegistered();
+        		}
+        	}
+        	return commandLabel;
+        }
+        
+        @Override 
+        public String getUsage(RegisteredCommand command) {
             StringBuilder usage = new StringBuilder();
-            usage.append(command.getLabel());
+
+            String cmdLabel = getRootCommandRegisteredLabel( command.getLabel(), command );
+            usage.append(cmdLabel);
 
             RegisteredCommand parent = command.getParent();
             while (parent != null) {
-                usage.insert(0, parent.getLabel() + " ");
+            	String label = getRootCommandRegisteredLabel( parent.getLabel(), parent );
+                usage.insert(0, label + " ");
                 parent = parent.getParent();
             }
 
@@ -233,11 +264,13 @@ public class CommandHandler {
         }
     };
 
-    private String helpSuffix = "help";
+//    private String helpSuffix = "help";
 
     public CommandHandler() {
         this.plugin = Prison.get();
 
+        this.registeredCommands = new TreeMap<>();
+        
         registerArgumentHandler(String.class, new StringArgumentHandler());
         registerArgumentHandler(int.class, new IntegerArgumentHandler());
         registerArgumentHandler(double.class, new DoubleArgumentHandler());
@@ -271,7 +304,7 @@ public class CommandHandler {
         ArgumentHandler<T> argHandler) {
         if (argumentHandlers.get(clazz) != null) {
             throw new IllegalArgumentException(
-                "The is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
+                "There is already a ArgumentHandler bound to the class " + clazz.getName() + ".");
         }
 
         argHandler.handler = this;
@@ -279,7 +312,12 @@ public class CommandHandler {
     }
 
     public void registerCommands(Object commands) {
-        for (Method method : commands.getClass().getDeclaredMethods()) {
+
+    	// Keep a reference to the registered command object so it can be 
+    	// accessed in the future if needed for other uses.
+    	getRegisteredCommands().put( commands.getClass().getSimpleName(), commands );
+    	
+    	for (Method method : commands.getClass().getDeclaredMethods()) {
             Command commandAnno = method.getAnnotation(Command.class);
             if (commandAnno == null) {
                 continue;
@@ -325,10 +363,11 @@ public class CommandHandler {
             	if ( !cmdSender.getSimpleName().equalsIgnoreCase( "CommandSender") ) {
             		Output.get().logWarn( 
             			String.format( 
-            				"Possible issue has been detected with a prison command where " +
+	            			"Possible issue has been detected with " +
+	            			"registering a command where " +
             				"the first parameter is not a CommandSender: " +
-            				"class = [%s] method = [%s] first parameter type = [%s]"
-            				, method.getDeclaringClass().getSimpleName(), method.getName(),
+            				"class = [%s] method = [%s] first parameter type = [%s]",
+            				method.getDeclaringClass().getSimpleName(), method.getName(),
             				cmdSender.getSimpleName()
             					));
             	}
@@ -339,16 +378,10 @@ public class CommandHandler {
         }
     }
 
-    public String getHelpSuffix() {
-        return helpSuffix;
-    }
-
-    public void setHelpSuffix(String suffix) {
-        this.helpSuffix = suffix;
-    }
 
     public boolean onCommand(CommandSender sender, PluginCommand command, String label,
-        String[] args) {
+    								String[] args) {
+    	
         RootCommand rootCommand = rootCommands.get(command);
         if (rootCommand == null) {
             return false;
@@ -368,7 +401,14 @@ public class CommandHandler {
 
         return true;
     }
-
+    
+	public Map<String, Object> getRegisteredCommands() {
+		return registeredCommands;
+	}
+	public void setRegisteredCommands( Map<String, Object> registeredCommands ) {
+		this.registeredCommands = registeredCommands;
+	}
+	
 /*
  * ###Tab-Complete###
  * 

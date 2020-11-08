@@ -8,7 +8,23 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.11 - 2020-11-04
+## tag v3.2.2-alpha.11 - 2020-11-08
+
+
+* **New Feature: Now provides the capture of the actual label that a command is registered with Bukkit when there is a conflict.**  The prison Command Handler now uses the registered label when displaying any of the sub commands or list of all registered root commands.  This will allow the users to know what commands they actually have to enter to get them to work, instead of guessing when there is a conflict.
+
+
+* **Improve block matching for pre mc v1.13.0** 
+For the 1.8.x material types in prison, there exists different states with the data value that could result in block types that are unknown.  Some of it may be orientation or degree of flowing water, or even wetness of soil. I've seen it with leaves of different shades, or even with logs.
+The idea here to fix this issue is not so much that we don't know the block type as much as it shouldn't matter the slight variations in the data field.  Therefore if we fail to match on the id and data, then go off of the material name.  That's a good fallback.
+
+
+* **Bug fix: Fix incorrect display of no other mines near for /mines whereami**
+If the player was standing in a mine and there are no other mines around, it used to show the mine they are in, plus say there are no other mines within 150 blocks.
+Now it will not show the "no other mines in 150 blocks" message.
+
+
+* **Mines Blocks GUI Fix**
 
 
 * **Bug Fix: Found a bug in the command registration code** that could result in failing to properly register commands. This would have been an issue if there were upper case letters in a command, since all commands are converted to lowercase when added, but when checking to see if a subcommand was already processed (ie... the "set" in the following two commands:  /mines set tag, /mines set resetTime).  The symptoms would be missing commands at runtime.  I actually have seen this failure in the past, and realized that all commands should be entered as lowercase due to this error.  Now it should work correctly.

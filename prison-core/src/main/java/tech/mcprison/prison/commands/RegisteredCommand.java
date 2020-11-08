@@ -104,7 +104,7 @@ public class RegisteredCommand {
 
         if (args.length > 0) {
             String suffixLabel = args[0].toLowerCase();
-            if (suffixLabel.equals(handler.getHelpSuffix())) {
+            if (suffixLabel.equals( CommandHandler.COMMAND_HELP_TEXT )) {
                 sendHelpMessage(sender);
                 return;
             }

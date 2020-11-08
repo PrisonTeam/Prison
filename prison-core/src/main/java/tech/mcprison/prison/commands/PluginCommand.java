@@ -23,10 +23,15 @@ package tech.mcprison.prison.commands;
  */
 public class PluginCommand {
 
-    private String label, description, usage;
+    private String label;
+    private String labelRegistered;
+    
+    private String description, usage;
 
     public PluginCommand(String label, String description, String usage) {
         this.label = label;
+        this.labelRegistered = null;
+        
         this.description = description;
         this.usage = usage;
     }
@@ -35,6 +40,13 @@ public class PluginCommand {
         return label;
     }
 
+    public String getLabelRegistered() {
+    	return labelRegistered;
+    }
+    public void setLabelRegistered( String labelRegistered ) {
+    	this.labelRegistered = labelRegistered;
+    }
+    
     public String getDescription() {
         return description;
     }
@@ -44,7 +56,7 @@ public class PluginCommand {
     }
 
     public String getUsage() {
-        return usage;
+        return  getLabelRegistered() == null ? usage : "/" + getLabelRegistered();
     }
 
     public void setUsage(String usage) {

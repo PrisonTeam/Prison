@@ -311,42 +311,43 @@ class SpigotPlatform
         	Command cmd = new Command(command.getLabel(), command.getDescription(), command.getUsage(),
                     Collections.emptyList()) {
 
-                    @Override public boolean execute(CommandSender sender, String commandLabel,
-                        String[] args) {
-                        if (sender instanceof org.bukkit.entity.Player) {
-                            return Prison.get().getCommandHandler()
-                                .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
-                                    command, commandLabel, args);
-                        }
+                @Override 
+                public boolean execute(CommandSender sender, String commandLabel,
+                    String[] args) {
+                    if (sender instanceof org.bukkit.entity.Player) {
                         return Prison.get().getCommandHandler()
-                            .onCommand(new SpigotCommandSender(sender), command, commandLabel,
-                                args);
+                            .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
+                                command, commandLabel, args);
+                    }
+                    return Prison.get().getCommandHandler()
+                        .onCommand(new SpigotCommandSender(sender), command, commandLabel,
+                            args);
                         
-                        /*
-                         * ###Tab-Complete###
-                         * 
-                         * Disabled for now until a full solution can be implemented for tab complete.
-                         * 
-	//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
-	//                  		command.getLabel(), command.getUsage() );
-						@Override
-						public List<String> tabComplete( CommandSender sender, String[] args )
-						{
-					    	Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 1" );
-							// TODO Auto-generated method stub
-							return super.tabComplete( sender, args );
-						}
+                    /*
+                     * ###Tab-Complete###
+                     * 
+                     * Disabled for now until a full solution can be implemented for tab complete.
+                     * 
+//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
+//                  		command.getLabel(), command.getUsage() );
+					@Override
+					public List<String> tabComplete( CommandSender sender, String[] args )
+					{
+				    	Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 1" );
+						// TODO Auto-generated method stub
+						return super.tabComplete( sender, args );
+					}
 
-						@Override
-						public List<String> tabComplete( CommandSender sender, String alias, String[] args )
-								throws IllegalArgumentException
-						{
-							Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 2" );
-							// TODO Auto-generated method stub
-							return super.tabComplete( sender, alias, args );
-						}
-                         */
-                    }       
+					@Override
+					public List<String> tabComplete( CommandSender sender, String alias, String[] args )
+							throws IllegalArgumentException
+					{
+						Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 2" );
+						// TODO Auto-generated method stub
+						return super.tabComplete( sender, alias, args );
+					}
+                     */
+                }       
             };
         	
             @SuppressWarnings( "unused" )
@@ -354,6 +355,11 @@ class SpigotPlatform
             			((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
             				.register(command.getLabel(), "prison", cmd );
             
+         // Always record the registered label:
+ 			if ( cmd != null ) {
+ 				command.setLabelRegistered( cmd.getLabel() );
+ 			}
+        
             commands.add(command);
             
 //            if ( !success ) {
