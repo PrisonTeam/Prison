@@ -280,7 +280,7 @@ public class RanksCommands {
 	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
-	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]&f";
+	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]";
 	        	
 	        	char cRankNext = (char) (cRank + 1);
 	        	String rankNameNext = Character.toString( cRankNext );
