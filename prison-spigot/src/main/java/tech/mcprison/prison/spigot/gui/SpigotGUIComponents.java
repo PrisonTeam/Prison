@@ -56,6 +56,8 @@ public abstract class SpigotGUIComponents {
 
     /**
      * There're 3 configs available for now: messages, guiconfig and sellall
+     * @param type
+     * @return
      * */
     protected static Configuration configs(String type){
         if (type.equalsIgnoreCase("messages")) {
