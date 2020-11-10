@@ -63,7 +63,7 @@ public class CommandHandler {
 //	private List<PluginCommand> commands = new ArrayList<>();
 	
 	
-//	private TabCompleaterData tabCompleaterData;
+	private TabCompleaterData tabCompleaterData;
 	
 //  private String helpSuffix = "help";
 
@@ -73,7 +73,7 @@ public class CommandHandler {
       this.registeredCommands = new TreeMap<>();
       this.allRegisteredCommands = new TreeSet<>();
       
-      //this.tabCompleaterData = new TabCompleaterData();
+      this.tabCompleaterData = new TabCompleaterData();
         
         
       registerArgumentHandler(String.class, new StringArgumentHandler());
@@ -519,7 +519,7 @@ public class CommandHandler {
         	// Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
         	// getTabCompleterData().
         	getAllRegisteredCommands().add( rootRegisteredCommand );
-//        	getTabCompleaterData().add( rootRegisteredCommand );
+        	getTabCompleaterData().add( rootRegisteredCommand );
         	
         	getRootCommands().put( rootPluginCommand, rootRegisteredCommand );
         }
@@ -538,7 +538,7 @@ public class CommandHandler {
                 // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
                 // getTabCompleterData().
                 getAllRegisteredCommands().add( newCommand );
-//                getTabCompleaterData().add( newCommand );
+                getTabCompleaterData().add( newCommand );
 
                     mainCommand = newCommand;
                 }
@@ -622,9 +622,9 @@ public class CommandHandler {
 //		return commands;
 //	}
 
-//    public TabCompleaterData getTabCompleaterData() {
-//		return tabCompleaterData;
-//	}
+    public TabCompleaterData getTabCompleaterData() {
+		return tabCompleaterData;
+	}
 
 /*
  * ###Tab-Complete###

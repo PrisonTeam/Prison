@@ -315,42 +315,52 @@ class SpigotPlatform
     				Collections.emptyList() ) {
 
                 @Override 
-                public boolean execute(CommandSender sender, String commandLabel,
-                    String[] args) {
+                public boolean execute(CommandSender sender, String commandLabel, String[] args) {
                     if (sender instanceof org.bukkit.entity.Player) {
                         return Prison.get().getCommandHandler()
                             .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
                                 command, commandLabel, args);
                     }
+                    
                     return Prison.get().getCommandHandler()
-                        .onCommand(new SpigotCommandSender(sender), command, commandLabel,
-                            args);
-                        
-                    /*
-                     * ###Tab-Complete###
-                     * 
-                     * Disabled for now until a full solution can be implemented for tab complete.
-                     * 
-//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
-//                  		command.getLabel(), command.getUsage() );
-					@Override
-					public List<String> tabComplete( CommandSender sender, String[] args )
-					{
-				    	Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 1" );
-						// TODO Auto-generated method stub
-						return super.tabComplete( sender, args );
-					}
+                    				.onCommand(new SpigotCommandSender(sender), command, commandLabel, args);
+                }    
+                
+       			
+    			@Override
+				public List<String> tabComplete( CommandSender sender, String alias, String[] args )
+						throws IllegalArgumentException
+				{
+    				
+    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( alias, args );
+    				
+    				
+//    				StringBuilder sb = new StringBuilder();
+//    				for ( String arg : args ) {
+//    					sb.append( "[" ).append( arg ).append( "] " );
+//    				}
+//    				
+//    				StringBuilder sbR = new StringBuilder();
+//    				for ( String result : results ) {
+//    					sbR.append( "[" ).append( result ).append( "] " );
+//    				}
+//
+//    				plugin.logDebug( "### registerCommand: Command.tabComplete() : alias= %s  args= %s   results= %s", 
+//    						alias, sb.toString(), sbR.toString() );
 
-					@Override
-					public List<String> tabComplete( CommandSender sender, String alias, String[] args )
-							throws IllegalArgumentException
-					{
-						Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 2" );
-						// TODO Auto-generated method stub
-						return super.tabComplete( sender, alias, args );
-					}
-                     */
-                }       
+    				
+    				return results;
+				}
+
+
+				@Override
+				public List<String> tabComplete( CommandSender sender, String alias, String[] args, 
+										org.bukkit.Location location )
+						throws IllegalArgumentException
+				{
+    				return tabComplete( sender, alias, args );
+				}
+
             };
         	
             @SuppressWarnings( "unused" )

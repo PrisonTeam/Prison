@@ -11,6 +11,11 @@ that you need.
 ## tag v3.2.2-alpha.12 - 2020-11-10
 
 
+* **New Feature!  Tab complete is now functional with prison's command handler.**
+When typing in prison related commands, you can now press tab to complete the typing for you if there was only one option available, or it will fill in common letters until you need to make a choice.  Also typing in a command pressing space then tab shows all available options.  In game is slightly different that in console, where in game show a ghosting of the command where you are typing so tabbing will select that option.
+Works on spigot 1.8 through 1.16.x. Also works in console.  Functional with aliases too.
+
+
 * **New Feature! Command Aliases!**
 Add the complexities of supporting aliases in the prison command handler.  Each command can have one or more aliases mapped to almost any level of paths.
 This also includes a rich support of the sub-command and help listings to better identify which commands are aliases and also what aliases are available. There is room for enhancements that will be added soon.
