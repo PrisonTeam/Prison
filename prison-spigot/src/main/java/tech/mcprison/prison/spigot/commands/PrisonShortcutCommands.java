@@ -32,6 +32,7 @@ public class PrisonShortcutCommands implements Listener {
 	 */
 
     @Command(identifier = "prison gui", description = "Opens the Prison GUI menus.",
+    		aliases = "gui",
 			permissions = "prison.gui", onlyPlayers = true)
 	public void prisonGui(CommandSender sender) {
 

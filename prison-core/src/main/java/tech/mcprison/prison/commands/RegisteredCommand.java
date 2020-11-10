@@ -33,35 +33,84 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 
 
-public class RegisteredCommand {
+public class RegisteredCommand
+		implements Comparable<RegisteredCommand>  {
 
     private String label;
+    private CommandHandler handler;
     private RegisteredCommand parent;
+    private boolean alias = false;
+    
     private String description;
     private String[] permissions;
     private String[] altPermissions;
+    private String[] aliases;
+    private List<RegisteredCommand> registeredAliases;
+    private RegisteredCommand parentOfAlias;
+    
     private boolean onlyPlayers;
     private Method method;
     private Object methodInstance;
-    private CommandHandler handler;
 
     private boolean set = false;
 
     private ArrayList<ExecutableArgument> methodArguments = new ArrayList<ExecutableArgument>();
     private ArrayList<CommandArgument> arguments = new ArrayList<CommandArgument>();
-    private ArrayList<RegisteredCommand> suffixes = new ArrayList<RegisteredCommand>();
-    private ArrayList<Flag> flags = new ArrayList<Flag>();
-    private WildcardArgument wildcard;
-    private Map<String, Flag> flagsByName = new LinkedHashMap<String, Flag>();
-    private Map<String, RegisteredCommand> suffixesByName =
-        new HashMap<String, RegisteredCommand>();
 
-    RegisteredCommand(String label, CommandHandler handler, RegisteredCommand parent) {
+    private WildcardArgument wildcard;
+    
+    private ArrayList<Flag> flags = new ArrayList<Flag>();
+    private Map<String, Flag> flagsByName = new LinkedHashMap<String, Flag>();
+
+    private ArrayList<RegisteredCommand> suffixes = new ArrayList<RegisteredCommand>();
+    private Map<String, RegisteredCommand> suffixesByName = new HashMap<String, RegisteredCommand>();
+
+    
+    public RegisteredCommand(String label, CommandHandler handler, RegisteredCommand parent) {
         this.label = label;
         this.handler = handler;
         this.parent = parent;
+        
+        this.registeredAliases = new ArrayList<>();
     }
 
+//    /**
+//     * For JUnit testing ONLY!  Never use for anything else!
+//     */
+//    private RegisteredCommand( String jUnitUsage ) {
+//    	
+//    	this.junitTest = jUnitUsage;
+//    	
+//    	this.label = "junitTest";
+//    	this.handler = null;
+//    	this.parent = null;
+//    	
+//    	this.registeredAliases = new ArrayList<>();
+//    }
+//    
+//    protected static RegisteredCommand junitTest( String jUnitUsage ) {
+//    	RegisteredCommand results = new RegisteredCommand( jUnitUsage );
+//    	
+//    	return results;
+//    }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( getUsage() )
+    			.append( "  isRoot: " ).append( this instanceof RootCommand )
+    			.append( "  isAlias: " ).append( isAlias() )
+    			.append( "  suffixCnt: " ).append( getSuffixes().size() )
+    			.append( "  hasAliasParent: " ).append( getParentOfAlias() != null );
+    	
+    	if ( getParentOfAlias() != null ) {
+    		sb.append( " (" ).append( getParentOfAlias().getUsage() ).append( ")" );
+    	}
+    	
+    	return sb.toString();
+    }
+    
     /**
      * The suffix is converted to all lowercase before adding to the map.
      *  
@@ -160,7 +209,7 @@ public class RegisteredCommand {
 
         try {
             try {
-                method.invoke(methodInstance, resultArgs.toArray());
+                method.invoke(getMethodInstance(), resultArgs.toArray());
             } 
             catch ( IllegalArgumentException | InvocationTargetException e) {
                 if (e.getCause() instanceof CommandError) {
@@ -175,16 +224,16 @@ public class RegisteredCommand {
     				
     				for ( Object arg : resultArgs ) {
     					sb.append( "[" );
-    					sb.append( arg );
+    					sb.append( arg.toString() );
     					sb.append( "] " );
     				}
 
                 	String message = "RegisteredCommand.executeMethod(): Invoke error: [" +
                 				e.getMessage() + "] cause: [" +
                 				(e.getCause() == null ? "" : e.getCause().getMessage()) + "] " + 
-                				" target instance: [" +
-                				method.getName() + " " + method.getParameterCount() + " " + 
-                				methodInstance.getClass().getCanonicalName() + "] " +
+                				" target instance: [methodName= " +
+                				method.getName() + "  parmCnt=" + method.getParameterCount() + "  methodInstance=" + 
+                				getMethodInstance().getClass().getCanonicalName() + "] " +
                 				"command arguments: " + sb.toString()
                 				;
                 	Output.get().sendError( sender, message );
@@ -236,12 +285,38 @@ public class RegisteredCommand {
         return parent;
     }
 
+    public boolean isAlias() {
+		return alias;
+	}
+	public void setAlias( boolean alias ) {
+		this.alias = alias;
+	}
+
     public String[] getPermissions() {
         return permissions;
     }
 
     public String[] getAltPermissions() {
 		return altPermissions;
+	}
+
+    public String[] getAliases() {
+		return aliases;
+	}
+
+	public List<RegisteredCommand> getRegisteredAliases() {
+		return registeredAliases;
+	}
+	
+	public RegisteredCommand getParentOfAlias() {
+		return parentOfAlias;
+	}
+	public void setParentOfAlias( RegisteredCommand parentOfAlias ) {
+		this.parentOfAlias = parentOfAlias;
+	}
+
+	private Object getMethodInstance() {
+		return methodInstance;
 	}
 
     public RegisteredCommand getSuffixCommand(String suffix) {
@@ -253,7 +328,10 @@ public class RegisteredCommand {
     }
 
     public String getUsage() {
-        return handler.getHelpHandler().getUsage(this);
+        return 
+//        		junitTest == null ?
+        				handler.getHelpHandler().getUsage(this); // : 
+//        				junitTest;
     }
 
     public WildcardArgument getWildcard() {
@@ -285,6 +363,8 @@ public class RegisteredCommand {
         this.description = command.description();
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
+        this.aliases = command.aliases();
+        
         this.onlyPlayers = command.onlyPlayers();
 
         Class<?>[] methodParameters = method.getParameterTypes();
@@ -411,4 +491,11 @@ public class RegisteredCommand {
         return handler.getPermissionHandler().hasPermission(sender, permissions);
     }
 
+
+	@Override
+	public int compareTo( RegisteredCommand arg0 )
+	{
+		return getUsage().compareTo( arg0.getUsage() );
+	}
+	
 }

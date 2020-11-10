@@ -18,6 +18,9 @@
 
 package tech.mcprison.prison.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Faizaan A. Datoo
  */
@@ -26,16 +29,44 @@ public class PluginCommand {
     private String label;
     private String labelRegistered;
     
-    private String description, usage;
+	private String description;
+	private String usage;
 
-    public PluginCommand(String label, String description, String usage) {
+	private List<String> aliases;
+	
+	private RegisteredCommand registeredCommand;
+
+    public PluginCommand(String label, String description, String usage, String[] aliases) {
         this.label = label;
         this.labelRegistered = null;
         
         this.description = description;
         this.usage = usage;
+        
+        this.aliases = new ArrayList<>();
+        if ( aliases != null && aliases.length > 0 ) {
+        	for ( String alyez : aliases ) {
+				this.aliases.add( alyez );
+			}
+        }
     }
 
+
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( getUsage() )
+    			.append( "  alias: " ).append( getAliases().size() )
+    			.append( "  hasRegCmd: " ).append( getRegisteredCommand() != null );
+    	
+    	if ( getRegisteredCommand() != null ) {
+    		sb.append( " (" ).append( getRegisteredCommand().getUsage() ).append( ")" );
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getLabel() {
         return label;
     }
@@ -62,4 +93,16 @@ public class PluginCommand {
     public void setUsage(String usage) {
         this.usage = usage;
     }
+
+	public List<String> getAliases() {
+		return aliases;
+	}
+
+	public RegisteredCommand getRegisteredCommand() {
+		return registeredCommand;
+	}
+	public void setRegisteredCommand( RegisteredCommand registeredCommand ) {
+		this.registeredCommand = registeredCommand;
+	}
+
 }

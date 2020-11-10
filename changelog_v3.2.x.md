@@ -11,6 +11,10 @@ that you need.
 ## tag v3.2.2-alpha.12 - 2020-11-10
 
 
+* **New Feature! Command Aliases!**
+Add the complexities of supporting aliases in the prison command handler.  Each command can have one or more aliases mapped to almost any level of paths.
+This also includes a rich support of the sub-command and help listings to better identify which commands are aliases and also what aliases are available. There is room for enhancements that will be added soon.
+
 
 * **v3.2.2-alpha.12 - 2020-11-10**
 

@@ -308,8 +308,11 @@ class SpigotPlatform
 
     @Override public void registerCommand(PluginCommand command) {
         try {
-        	Command cmd = new Command(command.getLabel(), command.getDescription(), command.getUsage(),
-                    Collections.emptyList()) {
+        	Command cmd = new Command(
+    				command.getLabel(),
+    				command.getDescription(), 
+    				command.getUsage(),
+    				Collections.emptyList() ) {
 
                 @Override 
                 public boolean execute(CommandSender sender, String commandLabel,
@@ -360,7 +363,7 @@ class SpigotPlatform
  				command.setLabelRegistered( cmd.getLabel() );
  			}
         
-            commands.add(command);
+ 			getCommands().add(command);
             
 //            if ( !success ) {
 //            	Output.get().logInfo( "SpigotPlatform.registerCommand: %s  " +
@@ -377,7 +380,7 @@ class SpigotPlatform
         try {
             ((Map<String, Command>) plugin.knownCommands
                 .get(plugin.commandMap.get(Bukkit.getServer()))).remove(command);
-            this.commands.removeIf(pluginCommand -> pluginCommand.getLabel().equals(command));
+            getCommands().removeIf(pluginCommand -> pluginCommand.getLabel().equals(command));
         } catch (IllegalAccessException e) {
             e.printStackTrace(); // This should only happen if something's wrong up there.
         }
@@ -387,7 +390,7 @@ class SpigotPlatform
     @Override
     public void unregisterAllCommands() {
     	List<String> cmds = new ArrayList<>();
-    	for ( PluginCommand pluginCommand : commands ) {
+    	for ( PluginCommand pluginCommand : getCommands() ) {
     		cmds.add( pluginCommand.getLabel() );
 		}
     	
@@ -396,6 +399,17 @@ class SpigotPlatform
 		}
     }
     
+    public PluginCommand findCommand( String label ) {
+    	PluginCommand results = null;
+    	
+    	for ( PluginCommand command : getCommands() ) {
+    		if (command.getLabel().equalsIgnoreCase(label)) {
+    			results = command;
+    			break;
+    		}
+		}
+    	return results;
+    }
     
     @Override public List<PluginCommand> getCommands() {
         return commands;
