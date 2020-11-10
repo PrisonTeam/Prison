@@ -148,9 +148,7 @@ public interface Platform {
      *
      * @param title   The title of the GUI.
      * @param numRows The number of rows in the GUI; must be divisible by 9.
-     * @return The {@link GUI}, ready for use.
      */
-    GUI createGUI(String title, int numRows);
 
     /**
      * If an iron door is open, this method closes it.

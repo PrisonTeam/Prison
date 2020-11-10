@@ -31,7 +31,6 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
@@ -135,12 +134,7 @@ public class TestPlatform implements Platform {
         return new TestScheduler();
     }
 
-    @Override public GUI createGUI(String title, int numRows) {
-        return null;
-    }
-
     @Override public void toggleDoor(Location doorLocation) {
-
     }
 
     @Override public void log(String message, Object... format) {

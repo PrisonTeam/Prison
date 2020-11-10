@@ -52,7 +52,6 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -77,7 +76,6 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
@@ -353,7 +351,7 @@ class SpigotPlatform
 				}
 
 
-				@Override
+				//@Override
 				public List<String> tabComplete( CommandSender sender, String alias, String[] args, 
 										org.bukkit.Location location )
 						throws IllegalArgumentException
@@ -437,9 +435,10 @@ class SpigotPlatform
         return plugin.scheduler;
     }
 
-    @Override public GUI createGUI(String title, int numRows) {
-        return new SpigotGUI(title, numRows);
-    }
+    // Old method removed
+    // @Override public GUI createGUI(String title, int numRows) {
+    //    return new SpigotGUI(title, numRows);
+    // }
 
 //    @SuppressWarnings( "deprecation" )
 	public void toggleDoor(Location doorLocation) {
