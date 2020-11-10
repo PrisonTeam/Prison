@@ -30,7 +30,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
     
-    private Configuration messages = null;
+    private final Configuration messages = configs("messages");
 
     public SpigotMinesGUI(Player p) {
         this.p = p;
@@ -48,9 +48,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
-
-        // Load config
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

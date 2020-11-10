@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -53,5 +54,18 @@ public abstract class SpigotGUIComponents {
         return module instanceof PrisonRanks;
     }
 
-
+    /**
+     * There're 3 configs available for now: messages, guiconfig and sellall
+     * */
+    protected static Configuration configs(String type){
+        if (type.equalsIgnoreCase("messages")) {
+            return SpigotPrison.getInstance().getMessagesConfig();
+        } else if (type.equalsIgnoreCase("sellall")){
+            return SpigotPrison.getSellAllConfig();
+        } else if (type.equalsIgnoreCase("guiconfig")){
+            return SpigotPrison.getInstance().getGuiConfig();
+        } else {
+            return null;
+        }
+    }
 }

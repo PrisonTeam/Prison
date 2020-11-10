@@ -64,7 +64,6 @@ import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
-import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.gui.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.languages.MessagesConfig;
@@ -160,7 +159,6 @@ public class SpigotPrison extends JavaPlugin {
         
         new GuiConfig();
 
-        GUIListener.get().init(this);
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
         Bukkit.getPluginManager().registerEvents(new PrisonSpigotCommands(), this);
 
@@ -482,7 +480,7 @@ public class SpigotPrison extends JavaPlugin {
 						String rankName = rParts[1];
 						
 						if ( meType == ModuleElementType.RANK ) {
-							Rank rank = rm.getRankOptional( rankName ).orElse( null );
+							Rank rank = rm.getRank( rankName );
 							
 							if ( rank != null ) {
 								mine.setRank( rank );

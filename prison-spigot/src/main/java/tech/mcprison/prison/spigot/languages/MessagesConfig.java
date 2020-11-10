@@ -15,11 +15,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class MessagesConfig {
 
+    // Initialize parameters and variables
     private FileConfiguration conf;
-    
-    private File file;
     private int changeCount = 0;
-    
 
     public MessagesConfig() {
 
@@ -29,8 +27,8 @@ public class MessagesConfig {
     public void initialize() {
 
     	// Filepath
-    	this.file = new File(SpigotPrison.getInstance().getDataFolder() + 
-    			"/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") +  ".yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() +
+                "/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
 
     	if( !file.exists() ) {
     		try {
@@ -61,21 +59,19 @@ public class MessagesConfig {
 
 				Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " +
 						"used by the GuiConfig.yml file located at &b%s&4. " +
-						"&a %s", 
-						changeCount, file.getAbsoluteFile(), e.getMessage() );
-
+						"&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
 			}
         }
     }
 
     private void dataConfig(String key, String value){
-
     	if (conf.getString(key) == null) {
     		conf.set(key, value);
     		changeCount++;
     	}
     }
 
+    // All the strings should be here
     private void values(){
         dataConfig("Gui.Lore.ActivateWithinMode","&8Activate Within mode.");
         dataConfig("Gui.Lore.ActivateRadiusMode","&8Activate Radius mode.");

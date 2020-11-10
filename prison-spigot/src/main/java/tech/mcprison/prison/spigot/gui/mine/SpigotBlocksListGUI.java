@@ -6,9 +6,6 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
@@ -22,7 +19,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
     private final String mineName;
     private int counter;
 
-    private Configuration messages = null;
+    private Configuration messages = configs("messages");
 
     public SpigotBlocksListGUI(Player p, String mineName, int counter){
         this.p = p;
@@ -37,8 +34,6 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> BlocksList"));
-
-        messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Lore of block setup
         List<String> blockLoreSetup = createLore(

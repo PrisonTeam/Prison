@@ -21,6 +21,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
+    private final Configuration messages = configs("messages");
 
     public SpigotRankManagerGUI(Player p, Rank rank) {
         this.p = p;
@@ -58,7 +59,6 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create the lore
         List<String> rankupCommandsLore = createLore(
@@ -76,8 +76,6 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.Info"),
                 messages.getString("Gui.Lore.Price") + rank.cost
         );
-
-        // Create the lore
         List<String> editTagLore = createLore(
                 messages.getString("Gui.Lore.ClickToOpen"),
                 "",
@@ -95,25 +93,18 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToClose")
         );
 
+
+        // Create the button
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
-        inv.setItem(26, closeGUI);
-
         ItemStack rankupCommands = createButton(commandMinecart, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
-
-        // Create the button
         ItemStack rankPrice = createButton(Material.GOLD_NUGGET, 1, editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.name));
-
-        // Create the button
         ItemStack rankTag = createButton(Material.NAME_TAG, 1, editTagLore, SpigotPrison.format("&3" + "RankTag" +  " " + rank.name));
 
         // Set the position and add it to the inventory
         inv.setItem(10, rankupCommands);
-
-        // Set the position and add it to the inventory
         inv.setItem(13, rankPrice);
-
-        // Set the position and add it to the inventory
         inv.setItem(16, rankTag);
+        inv.setItem(26, closeGUI);
     }
 
 }

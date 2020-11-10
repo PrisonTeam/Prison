@@ -29,7 +29,6 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -57,9 +56,9 @@ public class ListenersPrisonManager implements Listener {
     public int id;
     public String rankNameOfChat = null;
     public String mineNameOfChat = null;
+    boolean guiNotEnabled = !(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"));
 
     public ListenersPrisonManager(){}
-
 
     public static ListenersPrisonManager get() {
         if (instance == null) {
@@ -71,16 +70,20 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onGuiClosing(InventoryCloseEvent e){
 
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        if (guiNotEnabled){
             return;
         }
 
         Player p = (Player) e.getPlayer();
-
         activeGui.remove(p.getName());
     }
 
     public void addToGUIBlocker(Player p){
+
+        if (guiNotEnabled){
+            return;
+        }
+
         if(!activeGui.contains(p.getName()))
             activeGui.add(p.getName());
     }
@@ -122,7 +125,6 @@ public class ListenersPrisonManager implements Listener {
             e.setCancelled(true);
         }
     }
-
 
     // InventoryClickEvent
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

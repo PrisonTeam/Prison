@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.earth2me.essentials.EssentialsConf;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,8 +29,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Optional<RankLadder> ladder;
-    
-    private Configuration messages = null;
+    private static final Configuration messages = configs("messages");
 
     public SpigotRanksGUI(Player p, Optional<RankLadder> ladder) {
         this.p = p;
@@ -47,9 +47,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         if (!(checkRanks(p))){
             return;
         }
-
-        // Load config
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Get the dimensions and if needed increases them
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
@@ -128,14 +125,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Add the RankID Lore
         ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Id") + rank.id));
-
-        // Add the RankName lore
         ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Name") + rank.name));
-
-        // Add the Rank Tag lore
         ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
-
-        // Add the Price lore
         ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Price3") + rank.cost));
 
         // Init a variable
@@ -146,8 +137,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Add the number of players with this rank
         ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
-
-        // RankUpCommands info lore
         ranksLore.add("");
         getCommands(ranksLore, rank);
 
@@ -159,8 +148,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     }
 
     static void getCommands(List<String> ranksLore, Rank rank) {
-
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
             ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ContainsTheRank") + rank.name + messages.getString("Gui.Lore.ContainsNoCommands")));

@@ -26,8 +26,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
-    
-    private Configuration messages = null;
+    private final Configuration messages = configs("messages");
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -44,9 +43,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         int dimension = 54;
         
 		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
-        // Load config
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
@@ -155,8 +151,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Add a lore
         blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-
-        // Add a lore
         blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
 
         // Make the item
@@ -191,8 +185,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     	// Add a lore
     	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-
-    	// Add a lore
     	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
 
     	// Make the item

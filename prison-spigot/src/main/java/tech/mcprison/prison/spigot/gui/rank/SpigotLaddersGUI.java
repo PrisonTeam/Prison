@@ -22,8 +22,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private final Player p;
-    
-    private Configuration messages = null;
+    private final Configuration messages = configs("messages");
 
     public SpigotLaddersGUI(Player p){
         this.p = p;
@@ -44,8 +43,6 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
-
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){

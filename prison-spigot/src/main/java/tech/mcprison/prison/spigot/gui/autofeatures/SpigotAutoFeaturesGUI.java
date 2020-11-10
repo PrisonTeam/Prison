@@ -22,6 +22,8 @@ import java.util.List;
 public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    private final Configuration messages = configs("messages");
 
     public SpigotAutoFeaturesGUI(Player p){
         this.p = p;
@@ -33,19 +35,17 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         int dimension = 54;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> AutoFeatures"));
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
-        if (guiBuilder(inv, afConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Open the inventory
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -54,9 +54,8 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Declare buttons
         ItemStack autoPickup;
@@ -173,31 +172,13 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         // Position of the button
         inv.setItem(11, playSound);
-
-        // Position of the button
         inv.setItem(15, hologram);
-
-        // Position of the button
         inv.setItem(28, autoPickup);
-
-        // Position of the button
         inv.setItem(31, autoSmelt);
-
-        // Position of the button
         inv.setItem(34, autoBlock);
-
-        // Position of the button
         inv.setItem(37, enabledOrDisabled);
-
-        // Position of the button
         inv.setItem(40, enabledOrDisabled);
-
-        // Position of the button
         inv.setItem(43, enabledOrDisabled);
-
-        // Position of the button
         inv.setItem(53, closeGUI);
     }
-
-
 }

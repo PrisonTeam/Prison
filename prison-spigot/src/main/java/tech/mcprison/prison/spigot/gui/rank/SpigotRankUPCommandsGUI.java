@@ -21,8 +21,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
-    
-    private Configuration messages = null;
+    private final Configuration messages = configs("messages");
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -38,9 +37,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         if (!(checkRanks(p))){
             return;
         }
-
-        // Load config
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         if (rank.rankUpCommands.size() == 0){
             p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRankupCommands")));
@@ -102,8 +98,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
                 "",
                 messages.getString("Gui.Lore.Info"));
-
-        // Adding a lore
         commandsLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name

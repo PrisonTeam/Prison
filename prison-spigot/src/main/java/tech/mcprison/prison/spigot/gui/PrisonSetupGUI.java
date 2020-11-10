@@ -13,6 +13,7 @@ import java.util.List;
 public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private final Player p;
+    private final Configuration messages = configs("messages");
 
     public PrisonSetupGUI(Player p) {
         this.p = p;
@@ -44,7 +45,6 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Blocks of the mine
         List<String> confirmLore = createLore(
@@ -66,14 +66,10 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmLore, SpigotPrison.format("&3" + "Confirm: Setup"));
-
-        // Create the button, set up the material, amount, lore and name
         ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelLore, SpigotPrison.format("&3" + "Cancel: Setup"));
 
         // Position of the button
         inv.setItem(2, confirm);
-
-        // Position of the button
         inv.setItem(6, cancel);
     }
 }

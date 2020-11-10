@@ -24,8 +24,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
-    
-    private Configuration messages = null;
+    private final Configuration messages = configs("messages");
+    private final Configuration GuiConfig = configs("guiconfig");
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -45,8 +45,6 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // If the inventory is empty
         if (dimension == 0){
@@ -73,7 +71,6 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
                    );
 
             if (guiBuilder(GuiConfig, inv, m, minesLore)) return;
-
         }
 
         // Open the inventory
@@ -139,5 +136,4 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         // Add the button to the inventory
         inv.addItem(itemMines);
     }
-
 }

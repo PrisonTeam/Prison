@@ -23,6 +23,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
+    private final Configuration messages = configs("messages");
 
     public SpigotMineNotificationsGUI(Player p, String mineName){
         this.p = p;
@@ -60,23 +61,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, String enabledOrDisabled) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Create a new lore
         List<String> modeWithinLore = createLore(
                 messages.getString("Gui.Lore.ClickToChoose"),
                 messages.getString("Gui.Lore.ActivateWithinMode"));
-
-        // Create a new lore
         List<String> modeRadiusLore = createLore(
                 messages.getString("Gui.Lore.ClickToChoose"),
                 messages.getString("Gui.Lore.ActivateRadiusMode"));
-
-        // Create a new lore
         List<String> disabledModeLore = createLore(
                 messages.getString("Gui.Lore.ClickToChoose"),
                 messages.getString("Gui.Lore.DisableNotifications"));
-
         List<String> closeGUILore = createLore(
                 messages.getString("Gui.Lore.ClickToClose")
         );
@@ -120,11 +115,8 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
             // Add a button to the inventory
             inv.setItem( 11, modeWithin);
-
-            // Add a button to the inventory
             inv.setItem(13, radiusMode);
-
-            // Add a button to the inventory
+            // Add an enchantment effect to the button
             disabledMode.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem(15, disabledMode);
 
@@ -134,11 +126,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
             // Add a button to the inventory
             modeWithin.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem(11, modeWithin);
-
-            // Add a button to the inventory
             inv.setItem(13, radiusMode);
-
-            // Add a button to the inventory
             inv.setItem(15, disabledMode);
 
         // Check which buttons should be added, based on the mode already in use of the Mine Notifications
@@ -146,12 +134,8 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
             // Add a button to the inventory
             inv.setItem( 11, modeWithin);
-
-            // Add a button to the inventory
             radiusMode.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem( 13, radiusMode);
-
-            // Add a button to the inventory
             inv.setItem(15, disabledMode);
 
         }

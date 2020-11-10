@@ -36,8 +36,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
     // Load config
-    private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final Configuration guiConfig = configs("guiconfig");
+    private final Configuration messages = configs("messages");
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
@@ -68,10 +68,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
  	    }
 
  	    PlayerManager playerManager = rankPlugin.getPlayerManager();
-
     	rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() ).orElse( null );
-
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
+
         if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
             Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().

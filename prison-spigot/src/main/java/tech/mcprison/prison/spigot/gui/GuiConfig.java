@@ -15,34 +15,26 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public class GuiConfig {
 
+    // Declaring parameters and variables
     private FileConfiguration conf;
-
-    
-    private File file;
     private int changeCount = 0;
-    
 
-    
+    // Check if the GuiConfig's enabled
     public GuiConfig() {
-
-        if ( Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
+        if (Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
             initialize();
         }
-
-
     }
-
 
     public void initialize() {
 
     	// Filepath
-    	file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
-    	if( !file.exists() ) {
+    	if(!file.exists()) {
     		try {
     			File parentDir = file.getParentFile();
     			parentDir.mkdirs();
-    			
     			file.createNewFile();
     		} 
     		catch (IOException e) {
@@ -55,33 +47,27 @@ public class GuiConfig {
         // Everything's here (not anymore...)
         values();
 
-        if ( changeCount > 0 ) {
+        if (changeCount > 0) {
         	try {
 				conf.save(file);
-				
-				Output.get().logInfo( "&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s", 
-						changeCount, file.getAbsoluteFile() );
+				Output.get().logInfo("&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s",
+						changeCount, file.getAbsoluteFile());
 			}
-			catch ( IOException e ) {
-
-				Output.get().logInfo( "&4Failed to save &b%d &4new values to the GuiConfig.yml file located at &b%s&4. " +
-						"&a %s", 
-						changeCount, file.getAbsoluteFile(), e.getMessage() );
-
+			catch (IOException e) {
+				Output.get().logInfo("&4Failed to save &b%d &4new values to the GuiConfig.yml file located at " +
+                        "&b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage());
 			}
         }
     }
 
     private void dataConfig(String key, String value){
-
     	if (conf.getString(key) == null) {
     		conf.set(key, value);
     		changeCount++;
     	}
     }
 
-
-
+    // All the strings of the config should be here
     private void values(){
         dataConfig("Options.Ranks.GUI_Enabled","true");
         dataConfig("Options.Ranks.Permission_GUI_Enabled","false");
@@ -101,8 +87,8 @@ public class GuiConfig {
         dataConfig("Options.Setup.EnabledGUI", "true");
     }
 
+    // Return method to call the config, you can use this or the global one in the main class
     public FileConfiguration getFileGuiConfig(){
         return conf;
     }
-
 }

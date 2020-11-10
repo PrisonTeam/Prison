@@ -21,6 +21,8 @@ import java.util.Set;
 public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration conf = configs("sellall");
+    private final Configuration messages = configs("messages");
 
     public SellAllAdminGUI(Player p){
         this.p = p;
@@ -28,27 +30,24 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Load configs
-        Configuration conf = SpigotPrison.getSellAllConfig();
-
         Inventory inv;
 
-        if (guiBuilder(conf)) return;
+        if (guiBuilder()) return;
 
-        inv = buttonsSetup(conf);
+        inv = buttonsSetup();
         if (inv == null) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private Inventory buttonsSetup(Configuration conf) {
+    private Inventory buttonsSetup() {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         boolean emptyInv = false;
 
         try {
+            assert conf != null;
             if (conf.getConfigurationSection("Items") == null) {
                 emptyInv = true;
             }
@@ -87,9 +86,9 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         return inv;
     }
 
-    private boolean guiBuilder(Configuration conf) {
+    private boolean guiBuilder() {
         try {
-            buttonsSetup(conf);
+            buttonsSetup();
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();

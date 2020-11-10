@@ -22,6 +22,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration messages = configs("messages");
+    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
     public SpigotAutoBlockGUI(Player p){
         this.p = p;
@@ -33,18 +35,15 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
-        if (guiBuilder(inv, afConfig)) return;
+        if (guiBuilder(inv)) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -53,18 +52,15 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         List<String> enabledLore = createLore(
                 messages.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
-
         List<String> disabledLore = createLore(
                 messages.getString("Gui.Lore.RightClickToEnable")
         );
-
         List<String> closeGUILore = createLore(
                 messages.getString("Gui.Lore.ClickToClose")
         );
@@ -168,5 +164,4 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
     }
-
 }

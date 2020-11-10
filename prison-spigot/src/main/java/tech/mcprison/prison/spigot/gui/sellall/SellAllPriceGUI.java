@@ -20,6 +20,7 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String itemID;
     private final Double val;
+    private final Configuration messages = configs("messages");
 
     public SellAllPriceGUI(Player p, Double val, String itemID){
         this.p = p;
@@ -53,22 +54,16 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-
         // Create a new lore
         List<String> changeDecreaseValueLore;
         changeDecreaseValueLore = createLore(
                 messages.getString("Gui.Lore.ClickToDecrease")
         );
-
-        // Create a new lore
         List<String> confirmButtonLore = createLore(
                 messages.getString("Gui.Lore.LeftClickToConfirm"),
                 messages.getString("Gui.Lore.Price2") + val,
                 messages.getString("Gui.Lore.RightClickToCancel")
         );
-
-        // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
                 messages.getString("Gui.Lore.ClickToIncrease")
         );
@@ -77,20 +72,12 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         // Decrease button
         ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1" ));
         inv.setItem(1, decreaseOf1);
-
-        // Decrease button
         ItemStack decreaseOf5 = createButton(Material.REDSTONE_BLOCK, 10, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10"));
         inv.setItem(10, decreaseOf5);
-
-        // Decrease button
         ItemStack decreaseOf10 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 100"));
         inv.setItem(19, decreaseOf10);
-
-        // Decrease button
         ItemStack decreaseOf50 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1000"));
         inv.setItem(28, decreaseOf50);
-
-        // Decrease button
         ItemStack decreaseOf100 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10000"));
         inv.setItem(37, decreaseOf100);
 
@@ -103,20 +90,12 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         // Increase button
         ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1" ));
         inv.setItem(7, increseOf1);
-
-        // Increase button
         ItemStack increaseOf5 = createButton(Material.EMERALD_BLOCK, 10, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10"));
         inv.setItem(16, increaseOf5);
-
-        // Increase button
         ItemStack increaseOf10 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 100"));
         inv.setItem(25, increaseOf10);
-
-        // Increase button
         ItemStack increaseOf50 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1000"));
         inv.setItem(34, increaseOf50);
-
-        // Increase button
         ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10000"));
         inv.setItem(43, increaseOf100);
     }

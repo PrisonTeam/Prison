@@ -22,6 +22,8 @@ import java.util.List;
 public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    private final Configuration messages = configs("messages");
 
     public SpigotAutoSmeltGUI(Player p){
         this.p = p;
@@ -33,18 +35,15 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
-        if (guiBuilder(inv, afConfig)) return;
+        if (guiBuilder(inv)) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -53,18 +52,14 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
-
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private void buttonsSetup(Inventory inv) {
 
         List<String> enabledLore = createLore(
                 messages.getString("Gui.Lore.ShiftAndRightClickToDisable")
         );
-
         List<String> disabledLore = createLore(
                 messages.getString("Gui.Lore.RightClickToEnable")
         );
-
         List<String> closeGUILore = createLore(
                 messages.getString("Gui.Lore.ClickToClose")
         );
@@ -96,5 +91,4 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
     }
-
 }

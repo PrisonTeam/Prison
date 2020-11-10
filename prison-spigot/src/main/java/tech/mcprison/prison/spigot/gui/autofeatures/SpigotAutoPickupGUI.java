@@ -22,6 +22,8 @@ import java.util.List;
 public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration messages = configs("messages");
+    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
     public SpigotAutoPickupGUI(Player p){
         this.p = p;
@@ -33,18 +35,15 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoPickup"));
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
-        if (guiBuilder(inv, afConfig)) return;
+        if (guiBuilder(inv)) return;
 
         this.p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -53,9 +52,8 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv) {
 
-        Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
         List<String> enabledLore = createLore(
                 messages.getString("Gui.Lore.ShiftAndRightClickToDisable")
@@ -184,5 +182,4 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
     }
-
 }
