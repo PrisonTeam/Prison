@@ -8,7 +8,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.11 - 2020-11-08
+## tag v3.2.2-alpha.12 - 2020-11-10
+
+
+
+* **v3.2.2-alpha.12 - 2020-11-10**
+
+
+* **removed the trailing &f from the rank tag**
+This was within the new feature /ranks autoConfigure.  It was reported that there were issues within the plugin Scoreboard-r by RienBijl that data was being truncated and lost.  Looking in to the issue it was found that there was a stray &f at the end of a tag.  It had no impact, but it was removed anyway since it does nothing.  It was determined that the scoreboard-r plugin is buggy and was causing errors.
 
 
 * **New Feature: Now provides the capture of the actual label that a command is registered with Bukkit when there is a conflict.**  The prison Command Handler now uses the registered label when displaying any of the sub commands or list of all registered root commands.  This will allow the users to know what commands they actually have to enter to get them to work, instead of guessing when there is a conflict.
