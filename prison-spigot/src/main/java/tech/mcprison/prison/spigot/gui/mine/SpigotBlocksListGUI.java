@@ -43,7 +43,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         for (BlockType block : BlockType.values()){
 
-            if (!block.getXMaterialName().equalsIgnoreCase("ignore")) {
+            if (!block.getXMaterialName().equalsIgnoreCase("ignore") || !block.getXMaterialName().equalsIgnoreCase("null_block")) {
                 if (secondCounter >= counter) {
                     ItemStack button = createButton(Material.valueOf(block.getXMaterialName()), 1, blockLoreSetup, SpigotPrison.format("&a" + block.getXMaterialName().toUpperCase()));
                     inv.setItem(inventorySlot, button);
