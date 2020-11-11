@@ -212,7 +212,7 @@ public class ListenersPrisonManager implements Listener {
             case "PrisonManager":
 
                 // Call the method
-                PrisonManagerGUI(e, p, buttonNameMain);
+                prisonManagerGUI(e, p, buttonNameMain);
 
                 break;
 
@@ -220,7 +220,7 @@ public class ListenersPrisonManager implements Listener {
             case "RanksManager -> Ladders": {
 
                 // Call the method
-                LaddersGUI(e, p, buttonNameMain, module);
+                laddersGUI(e, p, buttonNameMain, module);
 
                 break;
             }
@@ -229,7 +229,7 @@ public class ListenersPrisonManager implements Listener {
             case "Ladders -> Ranks": {
 
                 // Call the method
-                RanksGUI(e, p, buttonNameMain);
+                ranksGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -237,7 +237,7 @@ public class ListenersPrisonManager implements Listener {
             case "Prestiges -> PlayerPrestiges": {
 
                 // Call the method
-                PlayerPrestigesGUI(e, p, buttonNameMain);
+                playerPrestigesGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -245,7 +245,7 @@ public class ListenersPrisonManager implements Listener {
             case "Prestige -> Confirmation": {
 
                 // Call the method
-                PrestigeConfirmationGUI(e, p, buttonNameMain);
+                prestigeConfirmationGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -253,7 +253,7 @@ public class ListenersPrisonManager implements Listener {
             case "Ranks -> RankManager": {
 
                 // Call the method
-                RankManagerGUI(e, p, parts);
+                rankManagerGUI(e, p, parts);
 
                 break;
             }
@@ -261,7 +261,7 @@ public class ListenersPrisonManager implements Listener {
             case "Ranks -> PlayerRanks":{
 
                 // Call the method
-                PlayerRanksGUI(e, p, buttonNameMain);
+                playerRanksGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -269,7 +269,7 @@ public class ListenersPrisonManager implements Listener {
             case "RankManager -> RankUPCommands": {
 
                 // Call the method
-                RankUPCommandsGUI(e, p, buttonNameMain);
+                rankUPCommandsGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -277,7 +277,7 @@ public class ListenersPrisonManager implements Listener {
             case "RankManager -> RankPrice": {
 
                 // Call the method
-                RankPriceGUI(e, p, parts);
+                rankPriceGUI(e, p, parts);
 
                 break;
             }
@@ -285,7 +285,7 @@ public class ListenersPrisonManager implements Listener {
             case "MinesManager -> Mines": {
 
                 // Call the method
-                MinesGUI(e, p, buttonNameMain);
+                minesGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -293,14 +293,14 @@ public class ListenersPrisonManager implements Listener {
             case "Mines -> PlayerMines": {
 
                 // Call the method
-                PlayerMinesGUI(p, buttonNameMain);
+                playerMinesGUI(p, buttonNameMain);
 
                 break;
             }
             case "Mines -> MineInfo": {
 
                 // Call the method
-                MineInfoGUI(e, p, parts);
+                mineInfoGUI(e, p, parts);
 
                 break;
             }
@@ -309,7 +309,7 @@ public class ListenersPrisonManager implements Listener {
             case "Mines -> Delete": {
 
                 // Call the method
-                MinesDeleteGUI(p, parts);
+                minesDeleteGUI(p, parts);
 
                 break;
             }
@@ -318,7 +318,7 @@ public class ListenersPrisonManager implements Listener {
             case "MineInfo -> Blocks": {
 
                 // Call the method
-                BlocksGUI(e, p, parts);
+                blocksGUI(e, p, parts);
 
                 break;
             }
@@ -348,7 +348,7 @@ public class ListenersPrisonManager implements Listener {
             case "MineInfo -> ResetTime": {
 
                 // Call the method
-                ResetTimeGUI(e, p, parts);
+                resetTimeGUI(e, p, parts);
 
                 break;
             }
@@ -357,7 +357,7 @@ public class ListenersPrisonManager implements Listener {
             case "MineInfo -> MineNotifications": {
 
                 // Call the method
-                MineNotificationsGUI(e, p, parts);
+                mineNotificationsGUI(e, p, parts);
 
                 break;
             }
@@ -373,7 +373,7 @@ public class ListenersPrisonManager implements Listener {
             case "MineNotifications -> Radius": {
 
                 // Call the method
-                RadiusGUI(e, p, parts);
+                radiusGUI(e, p, parts);
 
                 break;
             }
@@ -381,7 +381,7 @@ public class ListenersPrisonManager implements Listener {
             case "PrisonManager -> AutoFeatures": {
 
                 // Call the method
-                AutoFeaturesGUI(e, p, parts);
+                autoFeaturesGUI(e, p, parts);
 
                 break;
             }
@@ -390,7 +390,7 @@ public class ListenersPrisonManager implements Listener {
             case "AutoFeatures -> AutoPickup":{
 
                 // Call the method
-                AutoPickupGUI(e, p, parts);
+                autoPickupGUI(e, p, parts);
 
                 break;
             }
@@ -399,7 +399,7 @@ public class ListenersPrisonManager implements Listener {
             case "AutoFeatures -> AutoSmelt":{
 
                 // Call the method
-                AutoSmeltGUI(e, p, parts);
+                autoSmeltGUI(e, p, parts);
 
                 break;
             }
@@ -408,7 +408,7 @@ public class ListenersPrisonManager implements Listener {
             case "AutoFeatures -> AutoBlock":{
 
                 // Call the method
-                AutoBlockGUI(e, p, parts);
+                autoBlockGUI(e, p, parts);
 
                 break;
             }
@@ -416,7 +416,7 @@ public class ListenersPrisonManager implements Listener {
             // Check the title and do the actions
             case "PrisonManager -> SellAll-Admin":{
 
-                SellAllAdminGUI(e, p, buttonNameMain);
+                sellAllAdminGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -424,7 +424,7 @@ public class ListenersPrisonManager implements Listener {
             // Check the title and do the actions
             case "SellAll -> ItemValue":{
 
-                SellAllItemValue(e, p, parts);
+                sellAllItemValue(e, p, parts);
 
                 break;
             }
@@ -573,7 +573,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void SellAllItemValue(InventoryClickEvent e, Player p, String[] parts) {
+    private void sellAllItemValue(InventoryClickEvent e, Player p, String[] parts) {
 
         // Rename the parts
         String part1 = parts[0];
@@ -677,7 +677,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void SellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void sellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         if (e.isRightClick()){
 
@@ -697,7 +697,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void PrisonManagerGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void prisonManagerGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the Item display name and do open the right GUI
         switch (buttonNameMain) {
@@ -733,7 +733,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void LaddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module) {
+    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module) {
 
         // Check if the Ranks module's loaded
         if(!(module instanceof PrisonRanks)){
@@ -774,7 +774,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void RanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Get the rank
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
@@ -806,7 +806,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void PlayerPrestigesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void playerPrestigesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the button name and do the actions
         if (buttonNameMain.equalsIgnoreCase("Prestige")){
@@ -820,7 +820,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void PrestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void prestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the button name and do the actions
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
@@ -839,7 +839,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void RankManagerGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void rankManagerGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Output finally the buttonName and the minename explicit out of the array
         String buttonName = parts[0];
@@ -901,7 +901,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void PlayerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Load config
         Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
@@ -917,7 +917,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void RankUPCommandsGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void rankUPCommandsGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the clickType
         if (e.isShiftClick() && e.isRightClick()) {
@@ -936,7 +936,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void RankPriceGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void rankPriceGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Rename the parts
         String part1 = parts[0];
@@ -1040,7 +1040,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void MinesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void minesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Variables
         PrisonMines pMines = PrisonMines.getInstance();
@@ -1068,7 +1068,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void PlayerMinesGUI(Player p, String buttonNameMain) {
+    private void playerMinesGUI(Player p, String buttonNameMain) {
 
         // Load config
         Configuration GuiConfig = SpigotPrison.getInstance().getGuiConfig();
@@ -1079,7 +1079,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void MineInfoGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void mineInfoGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Output finally the buttonName and the mineName explicit out of the array
         String buttonName = parts[0];
@@ -1179,7 +1179,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void MinesDeleteGUI(Player p, String[] parts) {
+    private void minesDeleteGUI(Player p, String[] parts) {
 
         // Output finally the buttonname and the minename explicit out of the array
         String buttonname = parts[0];
@@ -1206,7 +1206,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void BlocksGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void blocksGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Output finally the buttonname and the minename explicit out of the array
         String buttonname = parts[0];
@@ -1245,7 +1245,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void ResetTimeGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void resetTimeGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Rename the parts
         String part1 = parts[0];
@@ -1363,7 +1363,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void MineNotificationsGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void mineNotificationsGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Output finally the buttonname and the minename explicit out of the array
         String buttonname = parts[0];
@@ -1417,7 +1417,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void RadiusGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void radiusGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Rename the variables
         String part1 = parts[0];
@@ -1538,7 +1538,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void AutoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
@@ -1604,7 +1604,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void AutoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
@@ -1686,7 +1686,7 @@ public class ListenersPrisonManager implements Listener {
 
     }
 
-    private void AutoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
@@ -1719,7 +1719,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void AutoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
