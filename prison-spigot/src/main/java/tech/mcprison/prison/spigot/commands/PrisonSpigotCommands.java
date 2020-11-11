@@ -203,13 +203,12 @@ public class PrisonSpigotCommands
         final Player player = getSpigotPlayer( sender );
 
         mode = "prestige";
-        ListenersPrisonManager.get().addChatEventPlayer(p);
+        ListenersPrisonManager.get().addChatEventPlayer(player);
         id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (isChatEventActive) {
                 isChatEventActive = false;
                 player.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
-                ListenersPrisonManager.get().removeChatEventPlayer(p);
-                finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
+                ListenersPrisonManager.get().removeChatEventPlayer(player);
             }
         }, 20L * 30);
     }
