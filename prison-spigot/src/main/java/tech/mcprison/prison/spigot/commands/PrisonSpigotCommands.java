@@ -17,6 +17,7 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
@@ -40,18 +41,26 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
     public void onChat(AsyncPlayerChatEvent e) {
         if (isChatEventActive) {
             Player p = e.getPlayer();
-            String message = e.getMessage();
-            Bukkit.getScheduler().cancelTask(id);
-            if (mode.equalsIgnoreCase("prestige")){
-                if (message.equalsIgnoreCase("cancel")) {
-                    isChatEventActive = false;
-                    p.sendMessage(SpigotPrison.format("&cPrestige cancelled"));
-                    e.setCancelled(true);
-                } else if (message.equalsIgnoreCase("confirm")) {
-                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-                    e.setCancelled(true);
-                    isChatEventActive = false;
+            ListenersPrisonManager.get();
+            if (ListenersPrisonManager.chatEventPlayer.contains(p.getName())){
+                String message = e.getMessage();
+                Bukkit.getScheduler().cancelTask(id);
+                if (mode.equalsIgnoreCase("prestige")) {
+                    if (message.equalsIgnoreCase("cancel")) {
+                        isChatEventActive = false;
+                        p.sendMessage(SpigotPrison.format("&cPrestige cancelled"));
+                        e.setCancelled(true);
+                    } else if (message.equalsIgnoreCase("confirm")) {
+                        Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
+                        e.setCancelled(true);
+                        isChatEventActive = false;
+                    } else {
+                        isChatEventActive = false;
+                        p.sendMessage(SpigotPrison.format("&cPrestige cancelled, you didn't type the word: confirm"));
+                        e.setCancelled(true);
+                    }
                 }
+                ListenersPrisonManager.get().removeChatEventPlayer(p);
             }
         }
     }
@@ -183,9 +192,11 @@ public class PrisonSpigotCommands implements CommandExecutor, Listener {
         sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 15 seconds!"));
         Player finalP = p;
         mode = "prestige";
+        ListenersPrisonManager.get().addChatEventPlayer(p);
         id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (isChatEventActive) {
                 isChatEventActive = false;
+                ListenersPrisonManager.get().removeChatEventPlayer(p);
                 finalP.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
             }
         }, 20L * 15);

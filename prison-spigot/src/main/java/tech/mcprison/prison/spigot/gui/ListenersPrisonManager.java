@@ -43,7 +43,6 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
-
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger
@@ -52,6 +51,7 @@ public class ListenersPrisonManager implements Listener {
 
     private static ListenersPrisonManager instance;
     public static List<String> activeGui = new ArrayList<>();
+    public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
     public int id;
     public String rankNameOfChat = null;
@@ -65,6 +65,21 @@ public class ListenersPrisonManager implements Listener {
             instance = new ListenersPrisonManager();
         }
         return instance;
+    }
+
+    public void addChatEventPlayer(Player p){
+
+        if (!isChatEventActive){
+            return;
+        }
+
+        if (!chatEventPlayer.contains(p.getName())){
+            chatEventPlayer.add(p.getName());
+        }
+    }
+
+    public void removeChatEventPlayer(Player p){
+        chatEventPlayer.remove(p.getName());
     }
 
     @EventHandler
@@ -84,37 +99,41 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        if(!activeGui.contains(p.getName()))
+        if(!activeGui.contains(p.getName())) {
             activeGui.add(p.getName());
+        }
     }
 
     // On chat event to rename the a Rank Tag
     @EventHandler (priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e) {
-        if (isChatEventActive){
+        if (isChatEventActive) {
             Player p = e.getPlayer();
-            String message = e.getMessage();
-            Bukkit.getScheduler().cancelTask(id);
-            if (rankNameOfChat != null) {
-                if (message.equalsIgnoreCase("close")) {
-                    isChatEventActive = false;
-                    p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
-                    e.setCancelled(true);
-                } else {
-                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
-                    e.setCancelled(true);
-                    isChatEventActive = false;
+            if (chatEventPlayer.contains(p.getName())){
+                String message = e.getMessage();
+                Bukkit.getScheduler().cancelTask(id);
+                if (rankNameOfChat != null) {
+                    if (message.equalsIgnoreCase("close")) {
+                        isChatEventActive = false;
+                        p.sendMessage(SpigotPrison.format("&cRename tag closed, nothing got changed"));
+                        e.setCancelled(true);
+                    } else {
+                        Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
+                        e.setCancelled(true);
+                        isChatEventActive = false;
+                    }
+                } else if (mineNameOfChat != null) {
+                    if (message.equalsIgnoreCase("close")) {
+                        isChatEventActive = false;
+                        p.sendMessage(SpigotPrison.format("&cRename mine closed, nothing got changed"));
+                        e.setCancelled(true);
+                    } else {
+                        Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
+                        e.setCancelled(true);
+                        isChatEventActive = false;
+                    }
                 }
-            } else if (mineNameOfChat != null){
-                if (message.equalsIgnoreCase("close")) {
-                    isChatEventActive = false;
-                    p.sendMessage(SpigotPrison.format("&cRename mine closed, nothing got changed"));
-                    e.setCancelled(true);
-                } else {
-                    Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
-                    e.setCancelled(true);
-                    isChatEventActive = false;
-                }
+                removeChatEventPlayer(p);
             }
         }
     }
@@ -890,8 +909,10 @@ public class ListenersPrisonManager implements Listener {
             // Start the async task
             isChatEventActive = true;
             rankNameOfChat = rankName;
+            addChatEventPlayer(p);
             id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                 isChatEventActive = false;
+                removeChatEventPlayer(p);
                 p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
             }, 20L * 30);
             p.closeInventory();
@@ -1168,12 +1189,13 @@ public class ListenersPrisonManager implements Listener {
                 // Start the async task
                 isChatEventActive = true;
                 mineNameOfChat = mineName;
+                addChatEventPlayer(p);
                 id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                     isChatEventActive = false;
+                    removeChatEventPlayer(p);
                     p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
                 }, 20L * 30);
                 p.closeInventory();
-
                 break;
             }
         }
