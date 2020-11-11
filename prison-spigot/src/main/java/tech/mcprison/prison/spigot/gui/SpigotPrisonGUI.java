@@ -2,18 +2,16 @@ package tech.mcprison.prison.spigot.gui;
 
 import java.util.List;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlockTypes;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * @author GABRYCA
