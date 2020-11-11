@@ -11,6 +11,30 @@ that you need.
 ## tag v3.2.2-alpha.12 - 2020-11-10
 
 
+* **Found function names that started with capital letters and changed them to lower case.**
+Function names should never be capitalized since that would imply they are classes, or similar objects, and not functions.
+
+
+* **Compile error with the removal of the prison core gui...**
+Removal of this code was forgotten when removing the prison core gui code.  Not sure how that passed the compiler before committing to git?
+
+
+* **cleaned up unused imports in the gui code; were causing compile warnings.**
+
+
+* **New feature! Hooked the prison GUI up to the new prison command manager.**
+Assigned aliases so as to preserve backwards compatibility with admins who are used to the prisonmanager command.  
+The /prisonmanager command has been replaced with just /gui.  Tested and appears to be working well.  Can do /gui mines, /gui ranks, /gui prestige, /gui prestiges.  
+
+
+* **Added /mtp as an alias to /mines tp.**
+
+
+* **New GUI config system**
+- It's an improvement. Has many code changes
+- Deleted the GuiListener.java class, only SpigotPlatform was using it so nothing should break.
+
+
 * **New Feature!  Tab complete is now functional with prison's command handler.**
 When typing in prison related commands, you can now press tab to complete the typing for you if there was only one option available, or it will fill in common letters until you need to make a choice.  Also typing in a command pressing space then tab shows all available options.  In game is slightly different that in console, where in game show a ghosting of the command where you are typing so tabbing will select that option.
 Works on spigot 1.8 through 1.16.x. Also works in console.  Functional with aliases too.
