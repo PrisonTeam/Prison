@@ -1233,7 +1233,6 @@ public class ListenersPrisonManager implements Listener {
         // Output finally the buttonname and the minename explicit out of the array
         String buttonname = parts[0];
         String mineName = parts[1];
-        double percentage = Double.parseDouble(parts[2]);
 
         if (buttonname.equalsIgnoreCase("Add")){
             SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, mineName, 0);
@@ -1261,6 +1260,7 @@ public class ListenersPrisonManager implements Listener {
             gui.open();
         } else {
 
+            double percentage = Double.parseDouble(parts[2]);
             SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, percentage, mineName, buttonname);
             gui.open();
 
