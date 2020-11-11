@@ -20,8 +20,8 @@ import java.util.Set;
 public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
-    private final Configuration conf = configs("sellall");
+    private final Configuration messages = messages();
+    private final Configuration conf = sellAll();
 
     public SellAllPlayerGUI(Player p){
         this.p = p;

@@ -28,7 +28,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Optional<RankLadder> ladder;
-    private static final Configuration messages = configs("messages");
+    private static final Configuration messages = messages();
 
     public SpigotRanksGUI(Player p, Optional<RankLadder> ladder) {
         this.p = p;

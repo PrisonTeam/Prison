@@ -22,7 +22,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotLaddersGUI(Player p){
         this.p = p;

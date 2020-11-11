@@ -19,7 +19,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotPrisonGUI(Player p){
         this.p = p;

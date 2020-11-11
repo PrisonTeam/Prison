@@ -21,8 +21,8 @@ import java.util.Set;
 public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration conf = configs("sellall");
-    private final Configuration messages = configs("messages");
+    private final Configuration conf = sellAll();
+    private final Configuration messages = messages();
 
     public SellAllAdminGUI(Player p){
         this.p = p;

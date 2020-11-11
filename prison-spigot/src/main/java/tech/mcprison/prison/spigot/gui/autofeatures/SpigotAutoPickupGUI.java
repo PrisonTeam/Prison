@@ -22,8 +22,8 @@ import java.util.List;
 public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
-    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    private final Configuration messages = messages();
+    private final AutoFeaturesFileConfig afConfig = AutoFeaturesFileConfig();
 
     public SpigotAutoPickupGUI(Player p){
         this.p = p;

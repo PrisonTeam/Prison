@@ -19,7 +19,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
     private final String mineName;
     private int counter;
 
-    private Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotBlocksListGUI(Player p, String mineName, int counter){
         this.p = p;
@@ -63,9 +63,6 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
             }
 
         }
-
-        // Load config
-        this.messages = SpigotPrison.getInstance().getMessagesConfig();
 
         // Open the inventory
         this.p.openInventory(inv);

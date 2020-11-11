@@ -19,7 +19,7 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMinesConfirmGUI(Player p, String mineName) {
         this.p = p;

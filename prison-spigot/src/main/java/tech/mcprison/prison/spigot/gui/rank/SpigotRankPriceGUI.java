@@ -20,7 +20,7 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String rankName;
     private final Integer val;
-    Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotRankPriceGUI(Player p, Integer val, String rankname){
         this.p = p;

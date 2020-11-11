@@ -20,7 +20,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
     private final Player p;
     private final String mineName;
     private final Integer val;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMineResetTimeGUI(Player p, Integer val, String mineName){
         this.p = p;

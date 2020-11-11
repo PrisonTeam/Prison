@@ -22,8 +22,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
-    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    private final Configuration messages = messages();
+    private final AutoFeaturesFileConfig afConfig = AutoFeaturesFileConfig();
 
     public SpigotAutoBlockGUI(Player p){
         this.p = p;

@@ -21,7 +21,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
     private final String mineName;
     private final Double val;
     private final String blockName;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMineBlockPercentageGUI(Player p, Double val, String mineName, String blockName){
         this.p = p;

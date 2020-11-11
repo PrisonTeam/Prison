@@ -21,7 +21,7 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
     private final String mineName;
     private final long val;
     private final String typeNotification;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMineNotificationRadiusGUI(Player p, Long val, String typeNotification, String mineName){
         this.p = p;

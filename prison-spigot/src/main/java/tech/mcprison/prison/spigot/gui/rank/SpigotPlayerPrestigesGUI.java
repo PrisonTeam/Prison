@@ -34,8 +34,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
     private final Player player;
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
-    private final Configuration guiConfig = configs("guiconfig");
-    private final Configuration messages = configs("messages");
+    private final Configuration guiConfig = guiConfig();
+    private final Configuration messages = messages();
 
     public SpigotPlayerPrestigesGUI(Player player) {
         this.player = player;

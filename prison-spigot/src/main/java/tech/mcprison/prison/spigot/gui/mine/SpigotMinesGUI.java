@@ -30,7 +30,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
     
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMinesGUI(Player p) {
         this.p = p;

@@ -21,7 +21,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;

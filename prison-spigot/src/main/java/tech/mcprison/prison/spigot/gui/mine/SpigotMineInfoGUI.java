@@ -23,7 +23,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
     private final Player p;
 	private final Mine mine;
     private final String mineName;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotMineInfoGUI(Player p, Mine mine, String mineName){
         this.p = p;

@@ -15,7 +15,7 @@ import java.util.List;
 public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SpigotConfirmPrestigeGUI(Player p) {
         this.p = p;

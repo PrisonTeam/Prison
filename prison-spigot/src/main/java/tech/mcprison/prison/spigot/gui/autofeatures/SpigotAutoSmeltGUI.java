@@ -22,8 +22,8 @@ import java.util.List;
 public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-    private final Configuration messages = configs("messages");
+    private final AutoFeaturesFileConfig afConfig = AutoFeaturesFileConfig();
+    private final Configuration messages = messages();
 
     public SpigotAutoSmeltGUI(Player p){
         this.p = p;

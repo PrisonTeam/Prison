@@ -13,7 +13,7 @@ import java.util.List;
 public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private final Player p;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public PrisonSetupGUI(Player p) {
         this.p = p;

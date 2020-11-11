@@ -20,7 +20,7 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String itemID;
     private final Double val;
-    private final Configuration messages = configs("messages");
+    private final Configuration messages = messages();
 
     public SellAllPriceGUI(Player p, Double val, String itemID){
         this.p = p;

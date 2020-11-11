@@ -24,8 +24,8 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = configs("messages");
-    private final Configuration GuiConfig = configs("guiconfig");
+    private final Configuration messages = messages();
+    private final Configuration GuiConfig = guiConfig();
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -70,7 +70,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             List<String> minesLore = createLore(
                    );
 
-            if (guiBuilder(GuiConfig, inv, m, minesLore)) return;
+            if (guiBuilder(inv, m, minesLore)) return;
         }
 
         // Open the inventory
@@ -78,9 +78,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Mine m, List<String> minesLore) {
+    private boolean guiBuilder(Inventory inv, Mine m, List<String> minesLore) {
         try {
-            buttonsSetup(guiConfig, inv, m, minesLore);
+            buttonsSetup(inv, m, minesLore);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -89,21 +89,21 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Mine m, List<String> minesLore) {
+    private void buttonsSetup(Inventory inv, Mine m, List<String> minesLore) {
 
     	// Don't load this every time a button is created.... making it a class variable:
         // Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemMines;
         Material material;
-        String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
+        String permission = SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
         /**
          * The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
          * based upon the XMaterial enumeration name, or supported past names.
          */
         Material mineMaterial = null;
-        String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
+        String materialTypeStr = GuiConfig.getString("Options.Mines.MaterialType." + m.getName());
         if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
         	XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
         	if ( mineXMaterial != null ) {
