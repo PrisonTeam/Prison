@@ -52,7 +52,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         );
 
         // Add the button to the inventory
-        ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
+        ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, addBlockLore, SpigotPrison.format("&a" + "Add" + " " + mineName));
         inv.setItem(dimension - 1, addBlockButton);
 
         if (useNewBlockModel) {
