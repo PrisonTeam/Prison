@@ -2478,6 +2478,7 @@ public class MinesCommands {
     
 
     @Command(identifier = "mines tp", description = "TP to the mine.", 
+    		aliases = "mtp",
     		altPermissions = {"mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName,

@@ -12,9 +12,9 @@ api-version: 1.13
   # New commands compatible only with spigot
   # ======================================================
 commands:
-  prisonmanager:
-    description: Call a fancy GUI where manage the ranks and mines
-    usage: /<command> gui
+  #prisonmanager:
+    #description: Call a fancy GUI where manage the ranks and mines
+    #usage: /<command> gui
   sellall:
     description: SellAll Command and SubCommands
     usage: /<command>

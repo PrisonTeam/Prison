@@ -54,7 +54,6 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrisonShortcutCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
@@ -160,13 +159,17 @@ public class SpigotPrison extends JavaPlugin {
         new GuiConfig();
 
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
-        Bukkit.getPluginManager().registerEvents(new PrisonSpigotCommands(), this);
 
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
 
-        getCommand("prisonmanager").setExecutor(new PrisonSpigotCommands());
+        
+        PrisonSpigotCommands spigotCommands = new PrisonSpigotCommands();
+        
+        Bukkit.getPluginManager().registerEvents( spigotCommands, this);
+        Prison.get().getCommandHandler().registerCommands( spigotCommands );
+        
 
 
         sellAllConfig optionsSellAll = new sellAllConfig();
@@ -182,7 +185,7 @@ public class SpigotPrison extends JavaPlugin {
         
         new SpigotListener().init();
 
-        Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
+//        Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
         
         initIntegrations();
         initModules();

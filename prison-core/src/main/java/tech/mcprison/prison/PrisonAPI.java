@@ -11,7 +11,6 @@ import com.google.common.eventbus.EventBus;
 
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.commands.PluginCommand;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -96,9 +95,9 @@ public class PrisonAPI {
         return Prison.get().getPlatform().getScheduler();
     }
 
-    public static GUI createGUI(String title, int numRows) {
-        return Prison.get().getPlatform().createGUI(title, numRows);
-    }
+//    public static GUI createGUI(String title, int numRows) {
+//        return Prison.get().getPlatform().createGUI(title, numRows);
+//    }
 
     @Deprecated public static void toggleDoor(Location doorLocation) {
         Prison.get().getPlatform().toggleDoor(doorLocation);
