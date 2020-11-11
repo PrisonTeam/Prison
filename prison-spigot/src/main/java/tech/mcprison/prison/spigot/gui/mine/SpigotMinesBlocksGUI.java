@@ -51,18 +51,17 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToAddBlock")
         );
 
+        // Add the button to the inventory
         ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, addBlockLore, SpigotPrison.format("&a" + "Add"));
         inv.setItem(dimension - 1, addBlockButton);
 
-        if ( useNewBlockModel ) {
+        if (useNewBlockModel) {
         	
         	// For every block makes a button
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		
-        		// Get the block material as a string
+        		// Get the block material as a string and displayname
         		String blockmaterial = block.getBlockName();
-        		
-        		// Display title of the item
         		String blockmaterialdisplay = blockmaterial;
         		
         		// Check if a block's air and changed the item of it to BARRIER
@@ -72,7 +71,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         		}
         		
         		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
-        		
         	}
         }
         else {
@@ -80,10 +78,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         	// For every block makes a button
         	for (Block block : m.getBlocks()) {
         		
-        		// Get the block material as a string
+        		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
-        		
-        		// Display title of the item
         		String blockmaterialdisplay = blockmaterial;
         		
         		// Check if a block's air and changed the item of it to BARRIER
@@ -93,10 +89,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         		}
         		
         		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
-        		
         	}
         }
-        
 
         // Open the inventory
         this.p.openInventory(inv);
@@ -155,8 +149,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Make the item
         ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
-
-        // Add the item to the inventory
         inv.addItem(block1);
     }
 
@@ -170,7 +162,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     			messages.getString("Gui.Lore.ClickToEditBlock"),
     			"",
     			messages.getString("Gui.Lore.Info"));
-
 
     	boolean isEnum = true;
     	try {

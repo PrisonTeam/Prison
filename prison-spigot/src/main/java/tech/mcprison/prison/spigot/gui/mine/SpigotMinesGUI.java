@@ -69,9 +69,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList() ) {
-
             if (guiBuilder(inv, m)) return;
-
         }
 
         // Open the inventory
@@ -105,19 +103,13 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // Add a lore
         minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.World") +  m.getWorldName()));
-
-        // Init a variable and add it to the lore
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SpawnPoint") + spawnPoint));
-
-        // Add a lore
         minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ResetTime") + m.getResetTime()));
 
         if (!m.isVirtual()) {
             // Add a lore
             minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
-
-            // Add a lore
             minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
         }
 
@@ -130,7 +122,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         
         boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
-        if ( useNewBlockModel ) {
+        if (useNewBlockModel) {
         	
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -142,17 +134,15 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         	}
         }
         else {
-        	
+
         	for (Block block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
         		totalChance += chance;
-         		
         		String blockName =
         				StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
         		minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
         	}
         }
-        
 
         if (totalChance < 100.0d) {
             minesLore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
@@ -160,8 +150,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // Create the button
         itemMines = createButton(Material.COAL_ORE, 1, minesLore, SpigotPrison.format("&3" + m.getName()));
-
-        // Add the button to the inventory
         inv.addItem(itemMines);
     }
 

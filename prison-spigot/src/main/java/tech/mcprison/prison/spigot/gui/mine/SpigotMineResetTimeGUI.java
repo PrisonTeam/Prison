@@ -59,19 +59,14 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         List<String> changeDecreaseValueLore = createLore(
                 messages.getString("Gui.Lore.ClickToDecrease")
         );
-
-        // Create a new lore
         List<String> confirmButtonLore = createLore(
                 messages.getString("Gui.Lore.LeftClickToConfirm"),
                 messages.getString("Gui.Lore.Time") + val,
                 messages.getString("Gui.Lore.RightClickToCancel")
         );
-
-        // Create a new lore
         List<String> changeIncreaseValueLore = createLore(
                 messages.getString("Gui.Lore.ClickToIncrease")
         );
-
 
         // Decrease button
         ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + mineName + " " + val + " - 1" ));
@@ -85,7 +80,6 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         ItemStack decreaseOf100 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + mineName + " " + val + " - 100"));
         inv.setItem(37, decreaseOf100);
 
-
         // Create a button and set the position
         Material watch = Material.matchMaterial( "watch" );
         if ( watch == null ) {
@@ -95,7 +89,6 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         }
         ItemStack confirmButton = createButton(watch, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + mineName + " " + val));
         inv.setItem(22, confirmButton);
-
 
         // Increase button
         ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + mineName + " " + val + " + 1" ));
@@ -109,5 +102,4 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + mineName + " " + val + " + 100"));
         inv.setItem(43, increaseOf100);
     }
-
 }
