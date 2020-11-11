@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -42,9 +43,11 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         for (BlockType block : BlockType.values()){
 
-            if (secondCounter >= counter) {
-                ItemStack button = createButton(Material.valueOf(block.getXMaterialName().toUpperCase()), 1, blockLoreSetup, SpigotPrison.format("&a" + block.getXMaterialName().toUpperCase()));
-                inv.setItem(inventorySlot, button);
+            if (!block.getXMaterialName().equalsIgnoreCase("ignore")) {
+                if (secondCounter >= counter) {
+                    ItemStack button = createButton(Material.valueOf(block.getXMaterialName()), 1, blockLoreSetup, SpigotPrison.format("&a" + block.getXMaterialName().toUpperCase()));
+                    inv.setItem(inventorySlot, button);
+                }
             }
 
             secondCounter++;
