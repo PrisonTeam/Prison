@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import tech.mcprison.prison.util.BlockType;
@@ -43,11 +44,9 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         for (BlockType block : BlockType.values()){
 
-            if (!block.getXMaterialName().equalsIgnoreCase("ignore") || !block.getXMaterialName().equalsIgnoreCase("null_block")) {
-                if (secondCounter >= counter) {
-                    ItemStack button = createButton(Material.valueOf(block.getXMaterialName()), 1, blockLoreSetup, SpigotPrison.format("&a" + block.getXMaterialName().toUpperCase()));
-                    inv.setItem(inventorySlot, button);
-                }
+            if (secondCounter >= counter) {
+                ItemStack button = createButton(SpigotUtil.getMaterial(block), 1, blockLoreSetup, SpigotPrison.format("&a" + SpigotUtil.getMaterial(block).getData().getName().toUpperCase() + " " + mineName));
+                inv.setItem(inventorySlot, button);
             }
 
             secondCounter++;
