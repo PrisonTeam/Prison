@@ -44,14 +44,15 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         for (BlockType block : BlockType.values()){
 
-            if (secondCounter >= counter) {
-                ItemStack button = createButton(SpigotUtil.getMaterial(block), 1, blockLoreSetup, SpigotPrison.format("&a" + SpigotUtil.getMaterial(block).getData().getName().toUpperCase() + " " + mineName));
-                inv.setItem(inventorySlot, button);
-            }
+            try {
+                if (secondCounter >= counter) {
+                    ItemStack button = createButton(SpigotUtil.getMaterial(block), 1, blockLoreSetup, SpigotPrison.format("&a" + SpigotUtil.getMaterial(block).getData().getName().toUpperCase() + " " + mineName));
+                    inv.addItem(button);
+                }
+            } catch (NullPointerException ignored){}
 
             secondCounter++;
             counter++;
-            inventorySlot++;
 
             if (counter >= counter + 44){
 
