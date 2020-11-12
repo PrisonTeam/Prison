@@ -46,7 +46,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
             try {
                 if (secondCounter >= counter) {
-                    ItemStack button = createButton(SpigotUtil.getMaterial(block), 1, blockLoreSetup, SpigotPrison.format("&a" + SpigotUtil.getMaterial(block).getData().getName().toUpperCase() + " " + mineName));
+                    ItemStack button = createButton(Material.COAL_ORE, 1, blockLoreSetup, SpigotPrison.format("&a" + block.name().toUpperCase() + " " + mineName));
                     inv.addItem(button);
                 }
             } catch (NullPointerException ignored){}
