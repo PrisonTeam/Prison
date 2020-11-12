@@ -56,7 +56,6 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoSellAllItems")));
             p.closeInventory();
             return null;
         }
