@@ -67,14 +67,14 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToClose")
         );
 
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(35, closeGUI);
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
-            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
+            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
+            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
             inv.addItem(Disabled);
         }
 

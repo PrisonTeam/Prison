@@ -64,14 +64,14 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
                 messages.getString("Gui.Lore.ClickToClose")
         );
 
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(35, closeGUI);
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltAllBlocks ) ) {
-            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
+            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
+            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
             inv.addItem(Disabled);
         }
 

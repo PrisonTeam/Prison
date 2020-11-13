@@ -99,7 +99,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         );
 
         // Create the button, set the material, amount, lore and name
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 1, closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
         ItemStack resetMine = createButton(Material.EMERALD_BLOCK, 1, resetMineLore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
         ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnLore, SpigotPrison.format("&3" + "Mine_Spawn: " + mineName));
         ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, SpigotPrison.format("&3" + "Mine_notifications: " + mineName));
