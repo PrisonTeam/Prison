@@ -34,7 +34,15 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.*;
+import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -202,9 +210,12 @@ public class ListenersPrisonManager implements Listener {
         String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
 
         // If the buttonmain have a name longer than 2 characters (should be with colors), it won't take care about the color ids
-        if ( buttonNameMain.length() > 2 ) {
-        	buttonNameMain = buttonNameMain.substring(2);
-        }
+        // the following is buggy. What we really want is to remove any color codes. If it doesn't
+        // have color codes, then it corrupts the button name.
+//        if ( buttonNameMain.length() > 2 ) {
+//        	buttonNameMain = buttonNameMain.substring(2);
+//        }
+        buttonNameMain = SpigotPrison.stripColor( buttonNameMain );
 
         // Split the button name in parts
         String[] parts = buttonNameMain.split(" ");
@@ -344,15 +355,23 @@ public class ListenersPrisonManager implements Listener {
 
             // Check the inventory name and do the actions
             case "Mines -> BlocksList":{
+            	
+            	String positionStr = ( parts.length > 2 ? parts[2] : "0" );
+            	int position = 0;
+            	try {
+            		position = Integer.parseInt( positionStr );
+            	}
+            	catch( NumberFormatException nfe ) {}
 
-                if (parts[0].equalsIgnoreCase("Next")){
-                    SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, parts[1], Integer.parseInt(parts[2]));
+                if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+                	
+                    SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, parts[1], position);
 
                     p.closeInventory();
 
                     gui.open();
                 } else {
-                    SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, 0.00, parts[1], parts[0]);
+                    SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, 0.00, parts[1], parts[0], position);
 
                     p.closeInventory();
 
