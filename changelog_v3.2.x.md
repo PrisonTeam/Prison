@@ -11,6 +11,18 @@ that you need.
 ## tag v3.2.2-alpha.12 - 2020-11-13
 
 
+* **Updated the SpigotMineBlockPercentageGUI to include a Close button and to show the selected block top and center.**
+Also provided links back to the block list gui.  Setup the parameters to return back by setting the font color to black so it is visible that they exist as the players hover.
+
+
+* **Fixed issue with GUI block list.**
+Using a combination of XMaterial and ItemStacks, its able to display the viewable blocks. Added Prior button to go back to prior page.  Got the Next page button working (it was incorrectly just blindly deleting the first two characters of the button name; changed it to strip color so it is not destructive.  Setup this page to be able to return to it from other pages. Confirmed that this works with spigot v1.8.8 and spigot v1.16.3.
+
+
+* **Fix issue with GUI not being able to display red or lime stained glass panes**
+due to use of material instead of ItemStacks.  This applies to mc v1.8 through mc v1.12 and they display as plain glass panes (no colors).
+
+
 * **Added a SpigotPrison function to strip all colors from text.**
 Needed in the GUI to hide extra parameters.
 
