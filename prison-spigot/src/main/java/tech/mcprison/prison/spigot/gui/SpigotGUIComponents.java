@@ -26,14 +26,30 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(SpigotPrison.format(display));
-        try {
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        } catch (NoClassDefFoundError ignored){}
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+        if ( meta != null ) {
+        	meta.setDisplayName(SpigotPrison.format(display));
+        	try {
+        		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        	} catch (NoClassDefFoundError ignored){}
+        	meta.setLore(lore);
+        	item.setItemMeta(meta);
+        }
 
         return item;
+    }
+    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    	
+    	ItemMeta meta = item.getItemMeta();
+    	if ( meta != null ) {
+    		meta.setDisplayName(SpigotPrison.format(display));
+    		try {
+    			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    		} catch (NoClassDefFoundError ignored){}
+    		meta.setLore(lore);
+    		item.setItemMeta(meta);
+    	}
+    	
+    	return item;
     }
 
     // createLore method (create a lore for the button)

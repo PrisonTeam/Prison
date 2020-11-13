@@ -270,11 +270,17 @@ public class SpigotPrison extends JavaPlugin {
 
     
     
-
+	
     public static String format(String format){
         return format == null ? "" : ChatColor.translateAlternateColorCodes('&', format);
     }
 
+    public static String stripColor(String format){
+    	format = format(format);
+    	
+    	return format == null ? null : ChatColor.stripColor( format );
+    }
+    
     private void initMetrics() {
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it

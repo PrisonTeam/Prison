@@ -8,7 +8,19 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.12 - 2020-11-10
+## tag v3.2.2-alpha.12 - 2020-11-13
+
+
+* **Added a SpigotPrison function to strip all colors from text.**
+Needed in the GUI to hide extra parameters.
+
+
+* **GUI direct support for ItemStacks when creating buttons for mc v1.8 through mc v1.12. **
+With the use of magic numbers with Minecraft versions less than 1.13 the use of Materail to create ItemStacks fails to get the correct type if magic numbers are involved.  Created a new createButton function to work directly with item stacks so the proper blocks can be used with mc v1.8 through v1.12.
+
+
+* **Additions to PrisonBlock handlers to provide more utility functions**
+and to solve a few complex challenges.  Removed NULL_BLOCK from the valid block lists.
 
 
 * **Found function names that started with capital letters and changed them to lower case.**
