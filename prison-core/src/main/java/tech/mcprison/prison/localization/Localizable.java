@@ -45,7 +45,7 @@ import tech.mcprison.prison.output.Output;
 
 /**
  * Represents an object which has the potential to be localized in one of
- * multiple languages and returned as a string.
+ * multiple configs and returned as a string.
  * <p>
  * <p>In the event that a {@link Localizable} cannot be localized with the given
  * parameters or in its parent {@link LocaleManager}'s default locale, it will

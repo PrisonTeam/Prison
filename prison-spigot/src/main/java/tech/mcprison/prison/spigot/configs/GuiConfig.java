@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;

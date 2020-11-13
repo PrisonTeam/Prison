@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.sellall;
+package tech.mcprison.prison.spigot.configs;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

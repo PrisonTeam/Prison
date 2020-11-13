@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.languages;
+package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class MessagesConfig {
 
     	// Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() +
-                "/languages/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
+                "/configs/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
 
     	if( !file.exists() ) {
     		try {

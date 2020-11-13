@@ -63,9 +63,9 @@ import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
-import tech.mcprison.prison.spigot.gui.GuiConfig;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
-import tech.mcprison.prison.spigot.languages.MessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -73,7 +73,7 @@ import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.sellall.SellAllCommands;
-import tech.mcprison.prison.spigot.sellall.sellAllConfig;
+import tech.mcprison.prison.spigot.configs.sellAllConfig;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
