@@ -167,7 +167,6 @@ public class SpigotPrison extends JavaPlugin {
         
         PrisonSpigotCommands spigotCommands = new PrisonSpigotCommands();
         
-        Bukkit.getPluginManager().registerEvents( spigotCommands, this);
         Prison.get().getCommandHandler().registerCommands( spigotCommands );
         
 

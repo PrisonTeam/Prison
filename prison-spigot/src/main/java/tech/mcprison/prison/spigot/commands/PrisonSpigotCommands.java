@@ -31,39 +31,7 @@ public class PrisonSpigotCommands
 				extends PrisonSpigotBaseCommands
 				implements Listener {
 
-    private boolean isChatEventActive;
-    private int id;
-    private String mode;
-//    CommandSender senderOfCommand;
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(AsyncPlayerChatEvent e) {
-        if (isChatEventActive) {
-            Player p = e.getPlayer();
-            ListenersPrisonManager.get();
-            if (ListenersPrisonManager.chatEventPlayer.contains(p.getName())){
-                String message = e.getMessage();
-                Bukkit.getScheduler().cancelTask(id);
-                if (mode.equalsIgnoreCase("prestige")) {
-                    if (message.equalsIgnoreCase("cancel")) {
-                        isChatEventActive = false;
-                        p.sendMessage(SpigotPrison.format("&cPrestige cancelled"));
-                        e.setCancelled(true);
-                    } else if (message.equalsIgnoreCase("confirm")) {
-                        Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-                        e.setCancelled(true);
-                        isChatEventActive = false;
-                    } else {
-                        isChatEventActive = false;
-                        p.sendMessage(SpigotPrison.format("&cPrestige cancelled, you didn't type the word: confirm"));
-                        e.setCancelled(true);
-                    }
-                }
-                ListenersPrisonManager.get().removeChatEventPlayer(p);
-            }
-        }
-    }
-
+    //    CommandSender senderOfCommand;
 
 	@Command(identifier = "mines", onlyPlayers = false,
 			altPermissions = {"-none-", "mines.admin"})
@@ -191,7 +159,9 @@ public class PrisonSpigotCommands
     }
 
     private void prestigeByChat(CommandSender sender) {
-        isChatEventActive = true;
+
+		ListenersPrisonManager listenersPrisonManager = ListenersPrisonManager.get();
+		listenersPrisonManager.chatEventActivator();
 
         sender.sendMessage(SpigotPrison.format(getPrisonConfig("Gui.Lore.PrestigeWarning") +
         		getPrisonConfig("Gui.Lore.PrestigeWarning2") +
@@ -202,13 +172,14 @@ public class PrisonSpigotCommands
 
         final Player player = getSpigotPlayer( sender );
 
-        mode = "prestige";
-        ListenersPrisonManager.get().addChatEventPlayer(player);
-        id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-            if (isChatEventActive) {
-                isChatEventActive = false;
+        listenersPrisonManager.addMode("prestige");
+        listenersPrisonManager.addChatEventPlayer(player);
+        listenersPrisonManager.id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+            if (listenersPrisonManager.chatEventCheck()) {
+                listenersPrisonManager.chatEventDeactivator();
                 player.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
-                ListenersPrisonManager.get().removeChatEventPlayer(player);
+                listenersPrisonManager.removeChatEventPlayer(player);
+                listenersPrisonManager.removeMode();
             }
         }, 20L * 30);
     }
