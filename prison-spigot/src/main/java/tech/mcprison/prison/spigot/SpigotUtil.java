@@ -83,6 +83,13 @@ public class SpigotUtil {
     	return xMat;
     }
     
+    public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
+    	
+    	XMaterial xMat = getXMaterial( prisonBlock.getBlockName());
+    	
+    	return xMat;
+    }
+    
     public static Material getMaterial( BlockType prisonBlockType ) {
     	XMaterial xMat = getXMaterial( prisonBlockType );
     	
@@ -108,6 +115,13 @@ public class SpigotUtil {
 		
         return results;
     }
+	
+	public static BlockType prisonBlockToBlockType( PrisonBlock prisonBlock ) {
+		
+		BlockType results = BlockType.getBlock( prisonBlock.getBlockName() );
+		
+		return results;
+	}
 
 	/**
 	 * <p>Returns a stack of BlockType or a stack of air.
@@ -145,23 +159,45 @@ public class SpigotUtil {
 		return bukkitStack;
 	}
 	
+	/**
+	 * Note that XMaterial.parseMaterial() may work well for v1.13.x and higher,
+	 * but it does not represent the correct block types in lower versions, 
+	 * such as with 1.8.x. This has everything to do with magic numbers.
+	 * Instead convert it to an ItemStack.
+	 * 
+	 * @param blockTypes
+	 */
 	public static void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
 		
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
-				Material mat = xMat.parseMaterial();
-				if ( mat != null ) {
-					if ( mat.isBlock() ) {
+				ItemStack itemStack = xMat.parseItem();
+				if ( itemStack != null ) {
+					
+					if ( itemStack.getType().isBlock() ) {
 						
 						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
 						
 						block.setValid( true );
-						block.setBlock( mat.isBlock() );
+						block.setBlock( itemStack.getType().isBlock() );
 						
 						blockTypes.add( block );
 					}
 				}
+				
+//				Material mat = xMat.parseMaterial();
+//				if ( mat != null ) {
+//					if ( mat.isBlock() ) {
+//						
+//						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
+//						
+//						block.setValid( true );
+//						block.setBlock( mat.isBlock() );
+//						
+//						blockTypes.add( block );
+//					}
+//				}
 				else {
 					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
 							"Possible XMaterial FAIL: XMaterial " + xMat.name() +

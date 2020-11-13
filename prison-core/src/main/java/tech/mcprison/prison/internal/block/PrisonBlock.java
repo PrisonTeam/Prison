@@ -1,5 +1,7 @@
 package tech.mcprison.prison.internal.block;
 
+import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
+
 /**
  * <p>This class embodies the nature of the block and different behaviors, if
  * they exist.  The block name should be based upon the XMaterial name if
@@ -7,7 +9,12 @@ package tech.mcprison.prison.internal.block;
  * </p>
  *
  */
-public class PrisonBlock {
+public class PrisonBlock
+			implements Comparable<PrisonBlock> {
+	
+	public static PrisonBlock IGNORE;
+	public static PrisonBlock NULL_BLOCK;
+	
 	private String blockName;
 	
 	private double chance;
@@ -17,6 +24,10 @@ public class PrisonBlock {
 	
 	private boolean legacyBlock = false;
 	
+	static {
+		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
+		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
+	}
 	
 	/**
 	 * The name of this block should be based upon the XMaterial name in all 
@@ -27,9 +38,13 @@ public class PrisonBlock {
 	public PrisonBlock( String blockName ) {
 		this( blockName, 0);
 	}
+	public PrisonBlock( String blockName, boolean block ) {
+		this( blockName, 0);
+		this.block = block;
+	}
 
 	/**
-	 * The block name will be set to all lower case for consistancy when searching and mapping.
+	 * The block name will be set to all lower case for consistency when searching and mapping.
 	 * 
 	 * @param blockName
 	 * @param chance
@@ -40,6 +55,7 @@ public class PrisonBlock {
 		this.blockName = blockName.toLowerCase();
 		this.chance = chance;
 	}
+	
 	
 	@Override
 	public String toString() {
@@ -97,6 +113,32 @@ public class PrisonBlock {
 	}
 	public void setLegacyBlock( boolean legacyBlock ) {
 		this.legacyBlock = legacyBlock;
+	}
+
+	@Override
+	public boolean equals( Object block ) {
+		boolean results = false;
+
+		if ( block != null && block instanceof PrisonBlock) {
+			results = getBlockName().equalsIgnoreCase( ((PrisonBlock) block).getBlockName() );
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public int compareTo( PrisonBlock block )
+	{
+		int results = 0;
+		
+		if ( block == null ) {
+			results = 1;
+		}
+		else {
+			results = getBlockName().compareToIgnoreCase( block.getBlockName() );
+		}
+			
+		return results;
 	}
 	
 }

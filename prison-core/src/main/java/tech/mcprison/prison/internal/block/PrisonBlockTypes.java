@@ -36,13 +36,7 @@ public class PrisonBlockTypes {
 		// First clear the blockTypes:
 		getBlockTypes().clear();
 		
-		// Add in the internal block types and mark them as not mineable.
-		for ( InternalBlockTypes iBlockType : InternalBlockTypes.values() ) {
-			PrisonBlock block = new PrisonBlock( iBlockType.name() );
-			block.setBlock( false );
-			
-			getBlockTypes().add( block );
-		}
+		getBlockTypes().add( PrisonBlock.IGNORE );
 		
 		// Next using the server's platform, load all of the available blockTypes.
 		Prison.get().getPlatform().getAllPlatformBlockTypes( getBlockTypes() );

@@ -9,7 +9,6 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 
@@ -253,7 +252,7 @@ public abstract class Spigot18Blocks
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
 		
 		if ( prisonBlock != null && 
-				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				!prisonBlock.equals( PrisonBlock.IGNORE ) && 
 				spigotBlock != null ) {
 			
 			XMaterial xMat = getXMaterial( prisonBlock );
@@ -275,7 +274,7 @@ public abstract class Spigot18Blocks
 				BlockState bState = spigotBlock.getState();
 				
 				// Set the block state with the new type and rawData:
-				bState.setType( newType );;
+				bState.setType( newType );
 				bState.setRawData( xMat.getData() );
 				
 				// Force the update but don't apply the physics:
