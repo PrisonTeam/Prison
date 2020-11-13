@@ -499,16 +499,41 @@ public class ListenersPrisonManager implements Listener {
         String part1 = parts[0];
         String part2 = parts[1];
         String part3 = parts[2];
+        
+        // If Close, part 4 won't be defined so handle the close first.
+        if (part1.equalsIgnoreCase( "Close" )) {
+        	int pos = 0;
+        	try {
+        		pos = Integer.parseInt( part3 );
+        	}
+        	catch( NumberFormatException nfe ) {}
+        	
+            SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, part2, pos);
+
+            p.closeInventory();
+
+            gui.open();
+            return;
+        }
+        
         String part4 = parts[3];
 
         // Initialize the variable
         double decreaseOrIncreaseValue = 0;
 
         // If there're enough parts init another variable
-        if (parts.length == 5){
+        if (parts.length > 4 ){
             decreaseOrIncreaseValue = Double.parseDouble(parts[4]);
         }
+        
+        String positionStr = ( parts.length > 5 ? parts[5] : "0" );
+        int position = 0;
+        try {
+        	position = Integer.parseInt( positionStr );
+        }
+        catch( NumberFormatException nfe ) {}
 
+        
         // Check the button name and do the actions
         if (part1.equalsIgnoreCase("Confirm:")) {
 
@@ -521,8 +546,13 @@ public class ListenersPrisonManager implements Listener {
                 // Cancel the event
                 e.setCancelled(true);
 
+               
+                SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, part2, position);
+
                 // Close the inventory
                 p.closeInventory();
+                
+                gui.open();
 
                 return;
 
@@ -575,7 +605,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Open an updated GUI after the value changed
-            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2);
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2, position);
             gui.open();
 
             // Check the calculator symbol
@@ -603,7 +633,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Open a new updated GUI with new values
-            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2);
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, val, part1, part2, position);
             gui.open();
 
             // Cancel the event
@@ -1278,9 +1308,16 @@ public class ListenersPrisonManager implements Listener {
             SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
             gui.open();
         } else {
+        	
+        	String positionStr = ( parts.length > 2 ? parts[2] : "0" );
+        	int position = 0;
+        	try {
+        		position = Integer.parseInt( positionStr );
+        	}
+        	catch( NumberFormatException nfe ) {}
 
             double percentage = Double.parseDouble(parts[2]);
-            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, percentage, mineName, buttonname);
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, percentage, mineName, buttonname, position);
             gui.open();
 
         }
