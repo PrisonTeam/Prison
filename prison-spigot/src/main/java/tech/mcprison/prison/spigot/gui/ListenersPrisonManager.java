@@ -66,6 +66,7 @@ public class ListenersPrisonManager implements Listener {
     public String mineNameOfChat = null;
     boolean guiNotEnabled = !(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"));
     public String mode;
+    private Optional<RankLadder> ladder;
 
     public ListenersPrisonManager(){}
 
@@ -393,30 +394,9 @@ public class ListenersPrisonManager implements Listener {
 
             // Check the inventory name and do the actions
             case "Mines -> BlocksList":{
-            	
-            	String positionStr = ( parts.length > 2 ? parts[2] : "0" );
-            	int position = 0;
-            	try {
-            		position = Integer.parseInt( positionStr );
-            	}
-            	catch( NumberFormatException nfe ) {}
 
-                if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-                	
-                    SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, parts[1], position);
+                BlocksListGUI(e, p, parts);
 
-                    p.closeInventory();
-
-                    gui.open();
-                } else {
-                    SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, 0.00, parts[1], parts[0], position);
-
-                    p.closeInventory();
-
-                    gui.open();
-                }
-
-                e.setCancelled(true);
                 break;
             }
 
@@ -531,6 +511,32 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
+    private void BlocksListGUI(InventoryClickEvent e, Player p, String[] parts) {
+        String positionStr = ( parts.length > 2 ? parts[2] : "0" );
+        int position = 0;
+        try {
+            position = Integer.parseInt( positionStr );
+        }
+        catch( NumberFormatException nfe ) {}
+
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, parts[1], position);
+
+            p.closeInventory();
+
+            gui.open();
+        } else {
+            SpigotMineBlockPercentageGUI gui = new SpigotMineBlockPercentageGUI(p, 0.00, parts[1], parts[0], position);
+
+            p.closeInventory();
+
+            gui.open();
+        }
+
+        e.setCancelled(true);
+    }
+
     private void mineBlockPercentage(InventoryClickEvent e, Player p, String[] parts) {
 
         // Rename the parts
@@ -584,13 +590,8 @@ public class ListenersPrisonManager implements Listener {
                 // Cancel the event
                 e.setCancelled(true);
 
-               
-                SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, part2, position);
-
                 // Close the inventory
                 p.closeInventory();
-                
-                gui.open();
 
                 return;
 
@@ -850,7 +851,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // Get the ladder by the name of the button got before
-        Optional<RankLadder> ladder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
+        ladder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
 
         // Check if the ladder exist, everything can happen but this shouldn't
         if (!ladder.isPresent()) {
@@ -898,6 +899,8 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
+            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
+            gui.open();
             return;
 
         } else {
