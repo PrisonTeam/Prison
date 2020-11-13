@@ -8,7 +8,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.12 - 2020-11-13
+## tag v3.2.2-alpha.13 - 2020-11-13
+
+
+* **v3.2.2-alpha.13 - 2020-11-13**
 
 
 * **Updated the SpigotMineBlockPercentageGUI to include a Close button and to show the selected block top and center.**
