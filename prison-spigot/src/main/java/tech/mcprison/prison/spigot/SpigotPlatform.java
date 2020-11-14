@@ -262,10 +262,19 @@ class SpigotPlatform
     		
     		// No hits on uuid so only compare names:
     		for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
-    			if ( oPlayer.getName().equalsIgnoreCase( name.trim() ) ) {
+    			if ( oPlayer != null && oPlayer.getName() != null && 
+    					oPlayer.getName().equalsIgnoreCase( name.trim() ) ) {
     				
     				player = new SpigotOfflinePlayer( oPlayer );
     				break;
+    			}
+    			else if ( oPlayer == null || oPlayer.getName() == null ) {
+    				Output.get().logWarn( "SpigotPlatform.getOfflinePlayer: Bukkit return a " +
+    						"bad player: OfflinePlayer == null? " + (oPlayer == null) + 
+    						( oPlayer == null ? "" : 
+    							"  name= " + (oPlayer.getName() == null ? "null" : 
+    								oPlayer.getName())));
+    				
     			}
     		}
     	}
