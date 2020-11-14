@@ -435,9 +435,10 @@ public class MinesCommands {
         else {
         	
         	BlockType blockType = BlockType.getBlock(block);
+        	
         	if (blockType == null || blockType.getMaterialType() != MaterialType.BLOCK ) {
         		pMines.getMinesMessages().getLocalizable("not_a_block")
-        		.withReplacements(block).sendTo(sender);
+        										.withReplacements(block).sendTo(sender);
         		return;
         	}
         	
@@ -452,16 +453,29 @@ public class MinesCommands {
         		return;
         	}
         	
-        	final double[] totalComp = {chance};
         	
-        	m.getBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
-        	if (totalComp[0] > 100.0d) {
+        	BlockPercentTotal percentTotal = calculatePercentage( chance, blockType, m );
+        	
+        	if ( percentTotal.getTotalChance() > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full")
         		.sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
-        	m.getBlocks().add(new Block(blockType, chance));
+        	// This is an add block function so if we get this far, add it:
+        	if ( percentTotal.getOldBlock() == null ) {
+        		// add the block since it does not exist in the mine:
+        		m.getBlocks().add( new Block( blockType, chance) );
+        	} 
+        	else if ( chance <= 0 ) {
+        		// block exists in mine, but chance is set to zero so remove it:
+        		m.getBlocks().remove( percentTotal.getOldBlock() );
+        	}
+        	else {
+        		// update the block chance. The block in percentTotal comes from this mine
+        		// so just update the chance:
+        		percentTotal.getOldBlock().setChance( chance );
+        	}
 
         	pMines.getMineManager().saveMine( m );
         	
@@ -476,39 +490,45 @@ public class MinesCommands {
 
 	private void updateMinePrisonBlock( CommandSender sender, Mine m, PrisonBlock prisonBlock, double chance, PrisonMines pMines )
 	{
-		PrisonBlock preexistingPrisonBlock = m.getPrisonBlock( prisonBlock );
+		PrisonBlock existingPrisonBlock = m.getPrisonBlock( prisonBlock );
 
 		if ( chance <= 0 ) {
-			if ( preexistingPrisonBlock == null ) {
+			if ( existingPrisonBlock == null ) {
 				sender.sendMessage( "The percent chance must have a value greater than zero." );
 			}
 			else {
 				// Delete the block since it exists and the chance was set to zero:
-				deleteBlock( sender, pMines, m, preexistingPrisonBlock );
+				deleteBlock( sender, pMines, m, existingPrisonBlock );
 			}
 			return;
 		}
 		
 
-		// if block already exists, back out it's chance since the new block will replace it:
-		final double[] totalComp = { 
-				( chance + (preexistingPrisonBlock == null ? 0 : 
-					preexistingPrisonBlock.getChance()) )};
 		
-		m.getPrisonBlocks().forEach(block1 -> totalComp[0] += block1.getChance());
-		if (totalComp[0] > 100.0d) {
+		BlockPercentTotal percentTotal = calculatePercentage( chance, prisonBlock, m );
+		
+		if ( percentTotal.getTotalChance() > 100.0d) {
 			pMines.getMinesMessages().getLocalizable("mine_full").
 						sendTo(sender, LogLevel.ERROR);
 			return;
 		}
 		
-		if ( preexistingPrisonBlock != null ) {
-			preexistingPrisonBlock.setChance( chance );
+		if ( existingPrisonBlock != null ) {
+			
+			if ( chance <= 0 ) {
+				// remove the block since it has zero chance
+				m.getPrisonBlocks().remove( existingPrisonBlock );
+			}
+			else {
+				// update chance for the prisonBlock. This block is
+				// still in the mine, so just update the chance.
+				existingPrisonBlock.setChance( chance );
+			}
 			
 			pMines.getMineManager().saveMine( m );
 
 			pMines.getMinesMessages().getLocalizable("block_set")
-						.withReplacements(preexistingPrisonBlock.getBlockName(), m.getName()).sendTo(sender);
+						.withReplacements( existingPrisonBlock.getBlockName(), m.getName()).sendTo(sender);
 		}
 		else {
 			prisonBlock.setChance( chance );
@@ -634,7 +654,7 @@ public class MinesCommands {
         		return;
         	}
         	
-        	// If it's 0, just delete it!
+        	// If it's 0, just delete it! If the block is not in the mine, then nothing will happen.
         	if (chance <= 0.0d) {
         		deleteBlock( sender, pMines, m, blockType );
 //            delBlockCommand(sender, mine, block);
@@ -642,25 +662,19 @@ public class MinesCommands {
         	}
         	
         	
-        	double totalChance = chance;
-        	Block blockToUpdate = null;
-        	for ( Block blk : m.getBlocks() ) {
-				if ( blk.getType() == blockType ) {
-					totalChance -= blk.getChance();
-					blockToUpdate = blk;
-				}
-				else {
-					totalChance += blk.getChance();
-				}
-			}
+        	BlockPercentTotal percentTotal = calculatePercentage( chance, blockType, m );
         	
-        	if (totalChance > 100.0d) {
+        	
+        	if ( percentTotal.getTotalChance() > 100.0d) {
         		pMines.getMinesMessages().getLocalizable("mine_full").
         					sendTo(sender, LogLevel.ERROR);
         		return;
         	}
         	
-        	blockToUpdate.setChance( chance );
+        	// Block would have been added or deleted above, so if it gets here, then 
+        	// just update the block that's in the mine, which is stored in the percentTotal
+        	// result object:
+        	percentTotal.getOldBlock().setChance( chance );
         	
         	
         	pMines.getMineManager().saveMine( m );
@@ -675,6 +689,83 @@ public class MinesCommands {
         //pMines.getMineManager().clearCache();
 
     }
+    
+    
+    private BlockPercentTotal calculatePercentage( double chance, BlockType blockType, Mine m ) {
+    	BlockPercentTotal results = new BlockPercentTotal();
+    	results.addChance( chance );
+
+    	for ( Block block : m.getBlocks() ) {
+			if ( block.getType() == blockType ) {
+				// do not replace the block's chance since this may fail
+				results.setOldBlock( block );
+			}
+			else {
+				results.addChance( block.getChance() );
+			}
+		}
+    	
+    	if ( results.getOldBlock() == null ) {
+    		results.setOldBlock( new Block(blockType, chance) );
+    	}
+    	return results;
+    }
+    
+    private BlockPercentTotal calculatePercentage( double chance, PrisonBlock prisonBlock, Mine m ) {
+    	BlockPercentTotal results = new BlockPercentTotal();
+    	results.addChance( chance );
+    	
+    	for ( PrisonBlock block : m.getPrisonBlocks() ) {
+    		if ( block.equals( prisonBlock ) ) {
+    			// do not replace the block's chance since this may fail
+    			results.setPrisonBlock( block );
+    		}
+    		else {
+    			results.addChance( block.getChance() );
+    		}
+    	}
+    	
+    	if ( results.getPrisonBlock() == null ) {
+    		prisonBlock.setChance( chance );
+    		results.setPrisonBlock( prisonBlock );
+    	}
+    	return results;
+    }
+    
+    protected class BlockPercentTotal {
+    	private double totalChance = 0d;
+    	private Block oldBlock = null;
+    	private PrisonBlock prisonBlock = null;
+    	
+    	public BlockPercentTotal() {
+    	}
+
+    	public void addChance( double chance ) {
+    		this.totalChance += chance;
+    	}
+		public double getTotalChance() {
+			return totalChance;
+		}
+		public void setTotalChance( double totalChance ) {
+			this.totalChance = totalChance;
+		}
+
+		public Block getOldBlock() {
+			return oldBlock;
+		}
+		public void setOldBlock( Block oldBlock ) {
+			this.oldBlock = oldBlock;
+		}
+
+		public PrisonBlock getPrisonBlock() {
+			return prisonBlock;
+		}
+		public void setPrisonBlock( PrisonBlock prisonBlock ) {
+			this.prisonBlock = prisonBlock;
+		}
+		
+    }
+    
 
     @Command(identifier = "mines block remove", permissions = "mines.block", onlyPlayers = false, description = "Deletes a block from a mine.")
     public void delBlockCommand(CommandSender sender,
