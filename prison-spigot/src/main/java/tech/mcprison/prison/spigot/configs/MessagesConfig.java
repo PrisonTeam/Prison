@@ -171,6 +171,8 @@ public class MessagesConfig {
         dataConfig("Gui.Lore.noRanksFoundSetup7", "&3Please replace the X with the starting price and");
         dataConfig("Gui.Lore.noRanksFoundSetup8", "&3multiplier, default price = 50000, multiplier = 1.5.");
         dataConfig("Gui.Message.CantGetRanksAdmin", "&3[PRISON WARN] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled.");
+        dataConfig("Gui.Message.CantRunGUIFromConsole", "&7[&3Info&7] You cannot run the GUI from the console.");
+        dataConfig("Gui.Message.DefaultLadderEmpty", "&7[&cError&7] &cThe default ladder has no rank.");
         dataConfig("Gui.Message.NoSellAllItems", "&cSorry but there aren't SellAll Items to show.");
         dataConfig("Gui.Message.EmptyGui","&cSorry, the GUI looks empty.");
         dataConfig("Gui.Message.NoBlocksMine","&cSorry but there aren't blocks inside this Mine.");
@@ -194,14 +196,31 @@ public class MessagesConfig {
         dataConfig("Gui.Message.ZeroBlocksReset3","&8reaches zero blocks.");
         dataConfig("Gui.Message.mineNameRename", "&7[&3Info&7] &3Please write the &6mineName &3you'd like to use and &6submit&3.");
         dataConfig("Gui.Message.mineNameRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Gui.Message.mineNameRenameClosed", "&7[&3Info&7] &cRename mine closed, nothing got changed!");
+        dataConfig("Gui.Message.mineOrGuiDisabled", "&7[&3Info&7] &cGUI and/or GUI Mines is not enabled. Check GuiConfig.yml.");
+        dataConfig("Gui.Message.mineMissingGuiPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI mines");
         dataConfig("Gui.Message.OutOfTimeNoChanges", "&cYou ran out of time, nothing changed.");
+        dataConfig("Gui.Message.PrestigeCancelled", "&7[&3Info&7] &cPrestige cancelled!");
+        dataConfig("Gui.Message.PrestigeCancelledWrongKeyword", "&7[&3Info&7] &cPrestige cancelled, you didn't type the word: confirm");
+        dataConfig("Gui.Message.PrestigeRanOutOfTime", "&7[&3Info&7] &cYou ran out of time, prestige cancelled.");
+        dataConfig("Gui.Message.PrestigesDisabledDefault", "&7[&3Info&7] &cPrestiges are disabled by default, please edit it in your config.yml!");
+        dataConfig("Gui.Message.ConfirmPrestige", "&7[&3Info&7] &aConfirm&3: Type the word &aconfirm &3 to confirm");
+        dataConfig("Gui.Message.CancelPrestige", "&7[&3Info&7] &cCancel&3: Type the word &ccancel &3to cancel, &cyou've 30 seconds.");
+        dataConfig("Gui.Message.PrestigesAreDisabled", "&7[&3Info&7] &cPrestiges are disabled. Check config.yml.");
+        dataConfig("Gui.Message.GuiOrPrestigesDisabled", "&7[&3Info&7] &cGUI and/or GUI Prestiges is not enabled. Check GuiConfig.yml.");
+        dataConfig("Gui.Message.CantFindPrestiges", "&7[&cError&7] &cThe prestige ladder has no prestiges!");
+        dataConfig("Gui.Message.missingGuiPrestigesPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI prestiges");
         dataConfig("Gui.Message.rankTagRename", "&7[&3Info&7] &3Please write the &6tag &3you'd like to use and &6submit&3.");
         dataConfig("Gui.Message.rankTagRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Gui.Message.rankTagRenameClosed", "&7[&3Info&7] &cRename tag closed, nothing got changed!");
+        dataConfig("Gui.Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3Info&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
+        dataConfig("Gui.Message.rankGuiMissingPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI ranks");
         dataConfig("Setup.Message.MissingPermission", "&7[&cError&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "&7[&cError&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3Info&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
         dataConfig("Setup.Message.SuccessRanksSetup", "&7[&3Info&7] &3The ranks setup got completed with &asuccess&3 and the ranks got added to the default ladder,\n please check the logs if something's missing!");
         dataConfig("Setup.Message.Aborted", "&7[&3Info&7] &3Prison Setup Cancelled.");
+
     }
 
     public FileConfiguration getFileGuiMessagesConfig(){

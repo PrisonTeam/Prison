@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,7 +32,9 @@ public class PrisonSpigotCommands
 				extends PrisonSpigotBaseCommands
 				implements Listener {
 
-    //    CommandSender senderOfCommand;
+	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+
+	//    CommandSender senderOfCommand;
 
 	@Command(identifier = "mines", onlyPlayers = false,
 			altPermissions = {"-none-", "mines.admin"})
@@ -78,7 +81,7 @@ public class PrisonSpigotCommands
 	public void prestigesGUICommand(CommandSender sender) {
 
 		if ( !isPrisonConfig( "prestiges") ) {
-			sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled by default, please edit it in your config.yml!"));
+			sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigesDisabledDefault")));
 			return;
 		}
 
@@ -128,14 +131,14 @@ public class PrisonSpigotCommands
             	if (lm != null && (!(lm.getLadder("default").isPresent()) ||
             			!(lm.getLadder("default").get().getLowestRank().isPresent()) ||
             			lm.getLadder("default").get().getLowestRank().get().name == null)) {
-            		sender.sendMessage(SpigotPrison.format("&cError: The default ladder has no rank."));
+            		sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.DefaultLadderEmpty")));
             		return;
             	}
 
             	if (lm != null && (!(lm.getLadder("prestiges").isPresent()) ||
             			!(lm.getLadder("prestiges").get().getLowestRank().isPresent()) ||
             			lm.getLadder("prestiges").get().getLowestRank().get().name == null)) {
-            		sender.sendMessage(SpigotPrison.format("&cError: The prestige ladder has no prestiges"));
+            		sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.CantFindPrestiges")));
             		return;
             	}
 
@@ -167,8 +170,8 @@ public class PrisonSpigotCommands
         		getPrisonConfig("Gui.Lore.PrestigeWarning2") +
         		getPrisonConfig("Gui.Lore.PrestigeWarning3")));
         
-        sender.sendMessage(SpigotPrison.format("&aConfirm&3: Type the word &aconfirm &3 to confirm"));
-        sender.sendMessage(SpigotPrison.format("&cCancel&3: Type the word &ccancel &3to cancel, &cyou've 30 seconds."));
+        sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.ConfirmPrestige")));
+        sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.CancelPrestige")));
 
         final Player player = getSpigotPlayer( sender );
 
@@ -177,7 +180,7 @@ public class PrisonSpigotCommands
         listenersPrisonManager.id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (listenersPrisonManager.chatEventCheck()) {
                 listenersPrisonManager.chatEventDeactivator();
-                player.sendMessage(SpigotPrison.format("&cYou ran out of time, prestige cancelled."));
+                player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigeRanOutOfTime")));
                 listenersPrisonManager.removeChatEventPlayer(player);
                 listenersPrisonManager.removeMode();
             }
@@ -191,13 +194,13 @@ public class PrisonSpigotCommands
     private void prisonManagerPrestiges( CommandSender sender ) {
 
         if ( !isPrisonConfig("prestiges") ) {
-            sender.sendMessage(SpigotPrison.format("&cPrestiges are disabled. Check config.yml"));
+            sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigesAreDisabled")));
             return;
         }
 
 
-        if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Prestiges.GUI_Enabled") ){
-            sender.sendMessage(SpigotPrison.format("&cGUI and/or GUI Prestiges is not enabled. Check GuiConfig.yml"));
+        if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Prestiges.GUI_Enabled")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.GuiOrPrestigesDisabled")));
             return;
         }
 
@@ -205,7 +208,7 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Prestiges.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                sender.sendMessage(SpigotPrison.format("&cYou lack the permissions to use GUI prestiges [" +
+                sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.missingGuiPrestigesPermission") + " [" +
         				perm + "]"));
                 return;
             }
@@ -223,7 +226,7 @@ public class PrisonSpigotCommands
     private void prisonManagerMines(CommandSender sender) {
 
         if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled") ){
-            sender.sendMessage(SpigotPrison.format("&cGUI and/or GUI Mines is not enabled. Check GuiConfig.yml"));
+            sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineOrGuiDisabled")));
             return;
         }
 
@@ -232,7 +235,7 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Mines.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                sender.sendMessage(SpigotPrison.format("&cYou lack the permissions to use GUI mines [" +
+                sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineMissingGuiPermission") + " [" +
         				perm + "]"));
                 return;
             }
@@ -249,18 +252,16 @@ public class PrisonSpigotCommands
     		  onlyPlayers = true )
     private void prisonManagerRanks(CommandSender sender) {
 
-        if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled") ) {
-        	sender.sendMessage(SpigotPrison.format(
-        			String.format( "&cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)",
-        					getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
+        if (!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled")) {
+        	sender.sendMessage(SpigotPrison.format(String.format( messages.getString("Gui.Message.rankGuiDisabledOrAllGuiDisabled"), getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
         	return;
         }
 
-        if ( isConfig("Options.Ranks.Permission_GUI_Enabled") ) {
+        if (isConfig("Options.Ranks.Permission_GUI_Enabled")) {
         	String perm = getConfig( "Options.Ranks.Permission_GUI");
-        	if (!sender.hasPermission( perm ) ) {
+        	if (!sender.hasPermission(perm)) {
 
-        		sender.sendMessage(SpigotPrison.format("&cYou lack the permissions to use GUI ranks [" +
+        		sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankGuiMissingPermission") + " [" +
         				perm + "]"));
         		return;
         	}
@@ -284,14 +285,14 @@ public class PrisonSpigotCommands
     		)
     private void prisonManagerGUI(CommandSender sender) {
 
-        Player player = getSpigotPlayer( sender );
+        Player player = getSpigotPlayer(sender);
 
-        if ( player == null ) {
-        	sender.sendMessage( SpigotPrison.format( "You cannot run the GUI from the console." ) );
+        if (player == null) {
+        	sender.sendMessage( SpigotPrison.format(messages.getString("Gui.Message.CantRunGUIFromConsole")));
         	return;
         }
 
-    	SpigotPrisonGUI gui = new SpigotPrisonGUI( player );
+    	SpigotPrisonGUI gui = new SpigotPrisonGUI(player);
         gui.open();
     }
 }
