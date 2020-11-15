@@ -134,8 +134,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         if (guiBuilder(ladder, dimension, inv)) return;
 
         // Open the inventory
-        getPlayer().openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(getPlayer());
+        openGUI(getPlayer(), inv);
     }
 
     private boolean guiBuilder(Optional<RankLadder> ladder, int dimension, Inventory inv) {

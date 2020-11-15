@@ -37,8 +37,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         inv = buttonsSetup();
         if (inv == null) return;
 
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
     private Inventory buttonsSetup() {

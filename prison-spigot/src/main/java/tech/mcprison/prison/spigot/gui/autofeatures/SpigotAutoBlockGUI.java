@@ -37,8 +37,7 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
         if (guiBuilder(inv)) return;
 
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
     private boolean guiBuilder(Inventory inv) {

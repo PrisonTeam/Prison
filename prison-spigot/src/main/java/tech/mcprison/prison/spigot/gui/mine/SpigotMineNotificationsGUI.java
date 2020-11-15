@@ -44,8 +44,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         if (guiBuilder(inv, enabledOrDisabled)) return;
 
         // Opens the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
     private boolean guiBuilder(Inventory inv, String enabledOrDisabled) {

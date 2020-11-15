@@ -136,8 +136,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         if (guiBuilder(dimension, inv, rank, playerRank)) return;
 
         // Open the inventory
-        getPlayer().openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(getPlayer());
+        openGUI(getPlayer(), inv);
     }
 
     private boolean guiBuilder( int dimension, Inventory inv, Rank rank, Rank playerRank) {

@@ -73,8 +73,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
     private boolean guiBuilder(Inventory inv, String command) {

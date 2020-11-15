@@ -70,15 +70,15 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
         // Create the button, set up the material, amount, lore and name
         ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, ranksLore, SpigotPrison.format("&3" + "Ranks"));
-        ItemStack prisontasks = createButton(Material.IRON_PICKAXE, 1, prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
+        ItemStack autoManager = createButton(Material.IRON_PICKAXE, 1, prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
         ItemStack mines = createButton(Material.DIAMOND_ORE, 1, minesLore, SpigotPrison.format("&3" + "Mines"));
-        ItemStack sellall = createButton(Material.CHEST, 1 ,  sellAllLore, SpigotPrison.format("&3" + "SellAll"));
+        ItemStack sellAll = createButton(Material.CHEST, 1 ,  sellAllLore, SpigotPrison.format("&3" + "SellAll"));
 
         // Position of the button
         inv.setItem(10, ranks);
-        inv.setItem(12, prisontasks);
+        inv.setItem(12, autoManager);
         inv.setItem(14, mines);
-        inv.setItem(16, sellall);
+        inv.setItem(16, sellAll);
         inv.setItem(26, closeGUI);
     }
 }

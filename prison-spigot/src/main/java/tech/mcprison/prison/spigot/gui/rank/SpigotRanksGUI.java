@@ -87,8 +87,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
     private boolean guiBuilder(Inventory inv, Optional<Rank> rankOptional) {
