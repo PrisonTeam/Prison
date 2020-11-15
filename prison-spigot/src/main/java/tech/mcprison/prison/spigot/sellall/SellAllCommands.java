@@ -173,14 +173,14 @@ public class SellAllCommands implements CommandExecutor {
                 return true;
             }
 
-            boolean isARank = rankPlugin.getRankManager().getRankOptional(args[1]).isPresent();
+            boolean isARank = rankPlugin.getRankManager().getRank(args[1]) != null; 
 
             if (!isARank) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Prestige/Rank: " + args[2]));
                 return true;
             }
 
-            boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRankOptional(args[1]).get().id);
+            boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(args[1]).id);
 
             if (!isInPrestigeLadder) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe -prestiges- ladder doesn't contains the Rank: " + args[2]));
