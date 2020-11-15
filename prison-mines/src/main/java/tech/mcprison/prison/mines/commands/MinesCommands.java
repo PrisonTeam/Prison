@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
@@ -64,7 +65,12 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Dylan M. Perks
  */
-public class MinesCommands {
+public class MinesCommands
+	extends BaseCommands {
+	
+	public MinesCommands() {
+		super( "MinesCommands" );
+	}
 	
 	private Long confirmTimestamp;
 	

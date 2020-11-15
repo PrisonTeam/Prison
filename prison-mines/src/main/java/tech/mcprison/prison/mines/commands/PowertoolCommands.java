@@ -1,11 +1,17 @@
 package tech.mcprison.prison.mines.commands;
 
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 
-public class PowertoolCommands {
+public class PowertoolCommands
+	extends BaseCommands {
+	
+	public PowertoolCommands() {
+		super("PowertoolCommands");
+	}
 
     @Command(identifier = "autosmelt", description = "Enables/disables the autosmelt tool.", permissions = "mines.autosmelt")
     public void autosmeltCommand(CommandSender sender) {
