@@ -391,7 +391,8 @@ public class SellAllCommands implements CommandExecutor {
             }
 
             // Get economy
-            EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+    		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+
             // Add balance
             economy.addBalance(sPlayer, moneyToGive);
             if (moneyToGive<0.001){

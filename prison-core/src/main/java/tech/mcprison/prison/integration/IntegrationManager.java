@@ -569,6 +569,11 @@ public class IntegrationManager {
     	}
     	integrations.get(iType).add(i);
     }
+    
+    public EconomyIntegration getEconomy() {
+    	return (EconomyIntegration) getForType(IntegrationType.ECONOMY)
+							.orElse( null );
+    }
 
     public EconomyCurrencyIntegration getEconomyForCurrency(String currency) {
     	EconomyCurrencyIntegration results = null;

@@ -26,7 +26,6 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -340,10 +339,10 @@ public class RankUtil {
         	} 
         	
         	if ( targetRank == null && rankName != null ) {
-        		Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRankOptional( rankName );
         		
-        		if ( rankOptional.isPresent() ) {
-        			targetRank = rankOptional.get();
+        		targetRank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
+        		
+        		if ( targetRank != null ) {
         			
         			if ( !ladder.containsRank( targetRank.id )) {
         				results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER, 
@@ -457,8 +456,8 @@ public class RankUtil {
         		
         	} else {
         		
-        		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
-        				.getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+        		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+
         		if ( pForceCharge == PromoteForceCharge.charge_player) {
         			if (!economy.canAfford(prisonPlayer, nextRankCost)) {
         				//results.setTargetRank( targetRank );

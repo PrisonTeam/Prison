@@ -14,11 +14,10 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -39,11 +38,14 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
-public class RanksCommands {
+public class RanksCommands
+			extends BaseCommands {
 	
 	private CommandCommands rankCommandCommands = null;
 	
 	public RanksCommands( CommandCommands rankCommandCommands ) {
+		super( "RanksCommands" );
+		
 		this.rankCommandCommands = rankCommandCommands;
 	}
 	
@@ -950,60 +952,5 @@ public class RanksCommands {
 //        }
 //    }
     
-    
-    /**
-     * <p>Gets a player by name.  If the player is not online, then try to get them from 
-     * the offline player list. If not one is found, then return a null.
-     * </p>
-     * 
-     * @param sender
-     * @param playerName is optional, if not supplied, then sender will be used
-     * @return Player if found, or null.
-     */
-	private Player getPlayer( CommandSender sender, String playerName ) {
-		Player result = null;
-		
-		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
-		
-		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
-		
-		if ( playerName != null ) {
-			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
-			if ( !opt.isPresent() ) {
-				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
-			}
-			if ( opt.isPresent() ) {
-				result = opt.get();
-			}
-		}
-		return result;
-	}
-	
-	public double getPlayerBalance( Player player ) {
-		
-		EconomyIntegration economy = 
-					(EconomyIntegration) PrisonAPI.getIntegrationManager()
-							.getForType(IntegrationType.ECONOMY)
-							.orElseThrow(IllegalStateException::new);
-		
-		return economy.getBalance( player );
-	}
-    
-	public double getPlayerBalance( Player player, String currency ) {
-		
 
-		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-						.getEconomyForCurrency( currency );
-		if ( currencyEcon == null ) {
-			// ERROR: currency is not support
-			Output.get().logInfo( "The currency %s is not supported.  Therefore there is no blance.",
-					currency );
-			return 0;
-		}
-		else {
-			return currencyEcon.getBalance( player, currency );
-		}
-
-	}
-	
 }

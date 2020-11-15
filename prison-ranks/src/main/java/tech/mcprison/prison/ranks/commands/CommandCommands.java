@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
@@ -18,10 +19,11 @@ import tech.mcprison.prison.ranks.data.Rank;
 /**
  * @author Faizaan A. Datoo
  */
-public class CommandCommands {
+public class CommandCommands
+				extends BaseCommands {
 	
 	public CommandCommands() {
-		super();
+		super( "CommandCommands" );
 		
 		// Now this is slightly strange. Once in a while I've been seeing exceptions that the 
 		// following class cannot be resolved.  So I don't know why it can't, but it was not

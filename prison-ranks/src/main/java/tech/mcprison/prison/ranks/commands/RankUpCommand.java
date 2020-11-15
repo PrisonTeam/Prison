@@ -24,9 +24,9 @@ import java.util.UUID;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
@@ -40,7 +40,6 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
-import tech.mcprison.prison.util.ChatColor;
 
 /**
  * The commands for this module.
@@ -49,8 +48,13 @@ import tech.mcprison.prison.util.ChatColor;
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class RankUpCommand {
+public class RankUpCommand 
+				extends BaseCommands {
 
+	public RankUpCommand() {
+		super( "RankUpCommand" );
+	}
+	
     /*
      * /rankup command
      */
@@ -113,17 +117,17 @@ public class RankUpCommand {
 		Rank pRankSecond = rankPlayer.getRank("default");
 		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
-		boolean WillPrestige = false;
+		boolean willPrestige = false;
 
 		// If the ladder's the prestige one, it'll execute all of this
 		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
 
 			if (!(lm.getLadder("default").isPresent())){
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] There isn't a default ladder! Please report this to an admin!"));
+				sender.sendMessage("&c[ERROR] There isn't a default ladder! Please report this to an admin!");
 				return;
 			}
 			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c[ERROR] Can't get the lowest rank! Please report this to an admin!"));
+				sender.sendMessage("&c[ERROR] Can't get the lowest rank! Please report this to an admin!");
 				return;
 			}
 
@@ -134,11 +138,11 @@ public class RankUpCommand {
 			}
 
 			if (!(rank == pRankSecond)) {
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou aren't at the last rank!"));
+				sender.sendMessage("&cYou aren't at the last rank!");
 				return;
 			}
 			// IF everything's ready, this will be true and the prestige method will start
-			WillPrestige = true;
+			willPrestige = true;
 		}
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -151,7 +155,8 @@ public class RankUpCommand {
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
-        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && !ladder.equals("prestiges")) {
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
+        									!ladder.equals("prestiges")) {
         		rankUpPrivate( sender, ladder, mode, permission );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
@@ -163,27 +168,37 @@ public class RankUpCommand {
 
         	
         	// Prestige method
-        	prestigePlayer(player, rankPlayer, pRank, pRankAfter, lm, WillPrestige, rankupWithSuccess);
+        	prestigePlayer(player, rankPlayer, pRank, pRankAfter, lm, willPrestige, rankupWithSuccess);
         }
 	}
 
-	private void prestigePlayer(Player player, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+	private void prestigePlayer(Player player, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, 
+								LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+		
 		// Get the player rank after, just to check if it has success
     	Rank pRankSecond;
     	// Conditions
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 			// Set the player rank to the first one of the default ladder
-			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + lm.getLadder("default").get().getLowestRank().get().name + " default");
+			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
+											lm.getLadder("default").get().getLowestRank().get().name + " default");
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
 			// Check if the ranks match
 			if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
 				// Get economy
-				EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
-				// Set the player balance to 0 (reset)
-				economy.setBalance(player, 0);
-				// Send a message to the player because he did prestige!
-				player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!"));
+				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+				
+				if ( economy != null ) {
+					
+					// Set the player balance to 0 (reset)
+					economy.setBalance(player, 0);
+					// Send a message to the player because he did prestige!
+					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!");
+				}
+				else {
+					player.sendMessage( "&3No economy is available.  Cannot perform action." );
+				}
 			}
 		}
 	}
@@ -298,8 +313,7 @@ public class RankUpCommand {
     }
 
 
-	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender )
-	{
+	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
@@ -425,34 +439,6 @@ public class RankUpCommand {
         }
 	}
 
-	/**
-     * <p>Gets a player by name.  If the player is not online, then try to get them from 
-     * the offline player list. If not one is found, then return a null.
-     * </p>
-     * 
-     * @param sender
-     * @param playerName is optional, if not supplied, then sender will be used
-     * @return Player if found, or null.
-     */
-	private Player getPlayer( CommandSender sender, String playerName ) {
-		Player result = null;
-		
-		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
-		
-		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
-		
-		if ( playerName != null ) {
-			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
-			if ( !opt.isPresent() ) {
-				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
-			}
-			if ( opt.isPresent() ) {
-				result = opt.get();
-			}
-		}
-		return result;
-	}
-	
 	
 	
 	private void broadcastToWholeServer( CommandSender sender, String message ) {

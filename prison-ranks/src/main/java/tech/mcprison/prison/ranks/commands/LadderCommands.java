@@ -1,6 +1,7 @@
 package tech.mcprison.prison.ranks.commands;
 
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -16,7 +17,12 @@ import java.util.Optional;
 /**
  * @author Faizaan A. Datoo
  */
-public class LadderCommands {
+public class LadderCommands
+				extends BaseCommands {
+	
+	public LadderCommands() {
+		super( "LadderCommands" );
+	}
 
     @Command(identifier = "ranks ladder create", description = "Creates a new rank ladder.", 
     								onlyPlayers = false, permissions = "ranks.ladder")

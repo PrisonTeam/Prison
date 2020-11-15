@@ -507,8 +507,8 @@ public class PlayerManager
     		
     	} else {
     		
-    		EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager()
-    				.getForType(IntegrationType.ECONOMY).orElse(null);
+    		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+
     		if ( economy != null ) {
     			playerBalance = economy.getBalance( player );
     		} else {
