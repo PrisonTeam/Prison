@@ -33,9 +33,8 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
         if (guiBuilder(inv)) return;
 
-        // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        // Open the inventory, I don't remember why I did add the this.p
+        openGUI(p,inv);
     }
 
     private boolean guiBuilder(Inventory inv) {

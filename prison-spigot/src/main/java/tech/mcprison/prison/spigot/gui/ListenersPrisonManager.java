@@ -85,23 +85,18 @@ public class ListenersPrisonManager implements Listener {
     public void chatEventActivator(){
         isChatEventActive = true;
     }
-
     public void chatEventDeactivate(){
         isChatEventActive = false;
     }
-
     public boolean chatEventCheck(){
         return isChatEventActive;
     }
-
     public void addMode(String modex){
         mode = modex;
     }
-
     public void removeMode(){
         mode = null;
     }
-
     public void addChatEventPlayer(Player p){
 
         if (!isChatEventActive){
@@ -247,65 +242,24 @@ public class ListenersPrisonManager implements Listener {
         // Get the player
         Player p = (Player) e.getWhoClicked();
 
-        
-        // If you click an empty slot, this should avoid the error.
-        // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
-        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR ||
-                e.getCurrentItem().getItemMeta() == null || !e.getCurrentItem().hasItemMeta() || 
-                e.getCurrentItem().getItemMeta().getDisplayName() == null) {
-            activeGuiEventCanceller(p, e);
-            return;
-        } else {
-            e.getCurrentItem().getItemMeta().getDisplayName();
-        }
+        // GUIs must have the good conditions to work
+        if (guiConditions(e, p)) return;
 
-        // Get action of the Inventory from the event
-        InventoryAction action = e.getAction();
-
-        // If an action equals one of these, and the inventory is open from the player equals
-        // one of the Prison Title, it'll cancel the event
-        if (action != null) {
-            activeGuiEventCanceller(p, e);
-        }
-
-        // ensure the item has itemMeta and a display name
-        if (!e.getCurrentItem().hasItemMeta()){
-            return;
-        }
-// WARNING DO NOT USE Objects.requireNonNull() since it will throw a NullPointerException!!
-// NEVER should we want that to happen.  If displayName is null then this is not our event 
-// and we should not be screwing with it!
-//        else {
-//            Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName();
-//        }
-
-        // Get the button name
+        // Get parameters
         String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
-
-        // If the buttonMain have a name longer than 2 characters (should be with colors), it won't take care about the color ids
-        // the following is buggy. What we really want is to remove any color codes. If it doesn't
-        // have color codes, then it corrupts the button name.
-//        if ( buttonNameMain.length() > 2 ) {
-//        	buttonNameMain = buttonNameMain.substring(2);
-//        }
-        buttonNameMain = SpigotPrison.stripColor( buttonNameMain );
-
-        // Split the button name in parts
+        buttonNameMain = SpigotPrison.stripColor(buttonNameMain);
         String[] parts = buttonNameMain.split(" ");
-
-        // Get ranks module
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-
-        // Get compat
         Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-
-        // Get title
         String title = compat.getGUITitle(e).substring(2);
 
-        if (buttonNameMain.equalsIgnoreCase("Close")){
-            p.closeInventory();
-            e.setCancelled(true);
-            return;
+        if (activeGui.contains(p.getName())) {
+            // Close GUI button globally
+            if (buttonNameMain.equalsIgnoreCase("Close")) {
+                p.closeInventory();
+                e.setCancelled(true);
+                return;
+            }
         }
 
         // Check if the GUI have the right title and do the actions
@@ -429,7 +383,7 @@ public class ListenersPrisonManager implements Listener {
             // Check the inventory name and do the actions
             case "Mines -> BlocksList":{
 
-                BlocksListGUI(e, p, parts);
+                blocksListGUI(e, p, parts);
 
                 break;
             }
@@ -530,20 +484,52 @@ public class ListenersPrisonManager implements Listener {
             // Check the title and do the actions
             case "Prison Setup -> Confirmation":{
 
-                if (parts[0].equalsIgnoreCase("Confirm:")){
-                    Bukkit.dispatchCommand(p, "ranks autoConfigure");
-                } else if (parts[0].equalsIgnoreCase("Cancel:")){
-                    p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.Aborted")));
-                }
-                p.closeInventory();
-                e.setCancelled(true);
+                prisonSetupConfirmGUI(e, p, parts);
 
                 break;
             }
         }
     }
 
-    private void BlocksListGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private boolean guiConditions(InventoryClickEvent e, Player p) {
+
+        // If you click an empty slot, this should avoid the error.
+        // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
+        if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR ||
+                e.getCurrentItem().getItemMeta() == null || !e.getCurrentItem().hasItemMeta() ||
+                e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+            activeGuiEventCanceller(p, e);
+            return true;
+        }
+
+        // Get action of the Inventory from the event
+        InventoryAction action = e.getAction();
+
+        // If an action equals one of these, and the inventory is open from the player equals
+        // one of the Prison Title, it'll cancel the event
+        if (action != null) {
+            activeGuiEventCanceller(p, e);
+        }
+
+        // ensure the item has itemMeta and a display name
+        if (!e.getCurrentItem().hasItemMeta()){
+            return true;
+        }
+        return false;
+    }
+
+    private void prisonSetupConfirmGUI(InventoryClickEvent e, Player p, String[] parts) {
+
+        if (parts[0].equalsIgnoreCase("Confirm:")){
+            Bukkit.dispatchCommand(p, "ranks autoConfigure");
+        } else if (parts[0].equalsIgnoreCase("Cancel:")){
+            p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.Aborted")));
+        }
+        p.closeInventory();
+        e.setCancelled(true);
+    }
+
+    private void blocksListGUI(InventoryClickEvent e, Player p, String[] parts) {
         String positionStr = ( parts.length > 2 ? parts[2] : "0" );
         int position = 0;
         try {
