@@ -3,10 +3,7 @@ package tech.mcprison.prison.spigot.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
@@ -179,7 +176,7 @@ public class PrisonSpigotCommands
         listenersPrisonManager.addChatEventPlayer(player);
         listenersPrisonManager.id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (listenersPrisonManager.chatEventCheck()) {
-                listenersPrisonManager.chatEventDeactivator();
+                listenersPrisonManager.chatEventDeactivate();
                 player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigeRanOutOfTime")));
                 listenersPrisonManager.removeChatEventPlayer(player);
                 listenersPrisonManager.removeMode();
