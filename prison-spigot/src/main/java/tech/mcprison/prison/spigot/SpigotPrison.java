@@ -55,17 +55,19 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.configs.sellAllConfig;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
-import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -73,7 +75,6 @@ import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.sellall.SellAllCommands;
-import tech.mcprison.prison.spigot.configs.sellAllConfig;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
@@ -168,7 +169,12 @@ public class SpigotPrison extends JavaPlugin {
         PrisonSpigotCommands spigotCommands = new PrisonSpigotCommands();
         
         Prison.get().getCommandHandler().registerCommands( spigotCommands );
-        
+
+		if ( !isPrisonConfig( "prestiges") ) {
+			// Enable the setup of the prestige related commands only if prestiges is enabled:
+			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+		}
+
 
 
         sellAllConfig optionsSellAll = new sellAllConfig();

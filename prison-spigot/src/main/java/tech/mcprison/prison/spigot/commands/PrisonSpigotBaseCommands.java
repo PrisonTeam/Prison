@@ -20,10 +20,7 @@ public class PrisonSpigotBaseCommands {
     
     protected boolean isPrisonConfig( String configId ) {
 
-    	String config = SpigotPrison.getInstance().getConfig().getString( configId );
-    	boolean results = config != null && config.equalsIgnoreCase( "true" );
-    	
-    	return results;
+    	return SpigotPrison.getInstance().isPrisonConfig( configId );
     }
     
     protected String getConfig( String configId ) {
