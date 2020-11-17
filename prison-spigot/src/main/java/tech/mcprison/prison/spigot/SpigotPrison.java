@@ -62,7 +62,7 @@ import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.configs.sellAllConfig;
+import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
@@ -99,6 +99,7 @@ public class SpigotPrison extends JavaPlugin {
     
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
+    private SellAllConfig sellAllConfig;
 
     private static SpigotPrison config;
 
@@ -153,21 +154,16 @@ public class SpigotPrison extends JavaPlugin {
         initCompatibility();
         initUpdater();
         this.scheduler = new SpigotScheduler(this);
-        
+
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
-        
-        new GuiConfig();
 
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
-
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
 
-        
         PrisonSpigotCommands spigotCommands = new PrisonSpigotCommands();
-        
         Prison.get().getCommandHandler().registerCommands( spigotCommands );
 
 		if ( !isPrisonConfig( "prestiges") ) {
@@ -175,43 +171,34 @@ public class SpigotPrison extends JavaPlugin {
 			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
 		}
 
-
-
-        sellAllConfig optionsSellAll = new sellAllConfig();
-        optionsSellAll.sellAllConfigGen();
-
-        // Only register the command if not enabled so it will not conflict with other sellall plugins:
-        if ( SellAllCommands.isEnabled() ) {
-        	new sellAllConfig();
-        	
-        	getCommand("sellall").setExecutor(new SellAllCommands());
-        }
-        
-        
+        new SellAllConfig();
+        new GuiConfig();
         new SpigotListener().init();
 
-//        Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
+
+        // Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
         
         initIntegrations();
         initModules();
-
         applyDeferredIntegrationInitializations();
-        
         initMetrics();
+        Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
+        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+
+
+        // Only register the command if not enabled so it will not conflict with other sellall plugins:
+        if ( SellAllCommands.isEnabled() ) {
+            new SellAllConfig();
+            getCommand("sellall").setExecutor(new SellAllCommands());
+        }
 
 //        if (doAlertAboutConvert) {
 //            Alerts.getInstance().sendAlert(
 //                    "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
 //        }
-        
-        
-        Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
-                
-        
-        
+
         // Finally print the version after loading the prison plugin:
-        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
-        
+
 //        // Store all loaded plugins within the PrisonCommand for later inclusion:
 //        for ( Plugin plugin : Bukkit.getPluginManager().getPlugins() ) {
 //        	String name = plugin.getName();
@@ -229,7 +216,6 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		Output.get().logInfo( "Prison - Finished loading." );
-		
     }
 
     @Override
@@ -250,13 +236,15 @@ public class SpigotPrison extends JavaPlugin {
         return guiConfig.getFileGuiConfig();
     }
 
-    public static FileConfiguration getSellAllConfig(){
-        sellAllConfig configs = new sellAllConfig();
-        return configs.getFileSellAllConfig();
+    public FileConfiguration getSellAllConfig(){
+        if (sellAllConfig == null) {
+            sellAllConfig = new SellAllConfig();
+        }
+        return sellAllConfig.getFileSellAllConfig();
     }
 
     public FileConfiguration getMessagesConfig(){
-    	if ( messagesConfig == null ) {
+    	if (messagesConfig == null) {
     		messagesConfig = new MessagesConfig();
     	}
     	
@@ -270,9 +258,6 @@ public class SpigotPrison extends JavaPlugin {
 	public void setAutoFeatures( AutoManagerFeatures autoFeatures ) {
 		this.autoFeatures = autoFeatures;
 	}
-
-    
-    
 	
     public static String format(String format){
         return format == null ? "" : ChatColor.translateAlternateColorCodes('&', format);
@@ -281,7 +266,7 @@ public class SpigotPrison extends JavaPlugin {
     public static String stripColor(String format){
     	format = format(format);
     	
-    	return format == null ? null : ChatColor.stripColor( format );
+    	return format == null ? null : ChatColor.stripColor(format);
     }
     
     private void initMetrics() {
@@ -350,7 +335,6 @@ public class SpigotPrison extends JavaPlugin {
                 // Plugin is up-to-date
             }
         });
-
     }
 
     private void initDataDir() {
@@ -419,23 +403,22 @@ public class SpigotPrison extends JavaPlugin {
 		MVdWPlaceholderIntegration ph1 = new MVdWPlaceholderIntegration();
 		PlaceHolderAPIIntegration ph2 = new PlaceHolderAPIIntegration();
 		
-		registerIntegration( ph1 );
-		registerIntegration( ph2 );
+		registerIntegration(ph1);
+		registerIntegration(ph2);
 		
 		ph1.deferredInitialization();
 		ph2.deferredInitialization();
 	}
     
     private void registerIntegration(Integration integration) {
-    	integration.setRegistered( 
-    			Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()) );
 
+    	integration.setRegistered(Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()));
     	integration.integrate();
-		
     	PrisonAPI.getIntegrationManager().register(integration);
     }
 
     private void initModules() {
+
         YamlConfiguration modulesConf = loadConfig("modules.yml");
 
         // TODO: This business logic needs to be moved to the Module Manager:
@@ -467,9 +450,8 @@ public class SpigotPrison extends JavaPlugin {
     private void linkMinesAndRanks() {
 
     	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
-    			PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()
-    			) {
+    	if (PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()) {
+
     		RankManager rm = PrisonRanks.getInstance().getRankManager();
     		MineManager mm = PrisonMines.getInstance().getMineManager();
 
@@ -482,34 +464,28 @@ public class SpigotPrison extends JavaPlugin {
     		mm.getMines();
 
     		int count = 0;
-    		for ( Mine mine : mm.getMines() )
-			{
+    		for (Mine mine : mm.getMines()) {
 				if ( mine.getRank() == null && mine.getRankString() != null ) {
 					String[] rParts = mine.getRankString().split( "," );
 					
-					if ( rParts.length > 2 ) {
+					if (rParts.length > 2) {
 						ModuleElementType meType = ModuleElementType.fromString( rParts[0] );
 						String rankName = rParts[1];
 						
-						if ( meType == ModuleElementType.RANK ) {
-							Rank rank = rm.getRank( rankName );
+						if (meType == ModuleElementType.RANK) {
+							Rank rank = rm.getRank(rankName);
 							
-							if ( rank != null ) {
-								mine.setRank( rank );
-								rank.getMines().add( mine );
+							if (rank != null) {
+								mine.setRank(rank);
+								rank.getMines().add(mine);
 								count++;
 							}
 						}
 					}
 				}
 			}
-    		
-    		Output.get().logInfo( "A total of %s Mines and Ranks have been linked together.", 
-    				Integer.toString( count ) );
-    		
+    		Output.get().logInfo("A total of %s Mines and Ranks have been linked together.", Integer.toString(count));
     	}
-
-    	
 	}
 
 	private void applyDeferredIntegrationInitializations() {
@@ -543,8 +519,6 @@ public class SpigotPrison extends JavaPlugin {
 
     	String config = SpigotPrison.getInstance().getConfig().getString( configId );
     	boolean results = config != null && config.equalsIgnoreCase( "true" );
-    	
     	return results;
     }
-
 }

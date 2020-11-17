@@ -1024,12 +1024,12 @@ class SpigotPlatform
 		List<Mine> mines = mm.getMines();
 		
 		List<Double> percents = new ArrayList<>();
-		percents.add( 5d );
-		percents.add( 10d );
-		percents.add( 20d );
-		percents.add( 20d );
-		percents.add( 20d );
-		percents.add( 25d );
+		percents.add(5d);
+		percents.add(10d);
+		percents.add(20d);
+		percents.add(20d);
+		percents.add(20d);
+		percents.add(25d);
 		int mineBlockSize = percents.size();
 		
 		int startPos = 1;
@@ -1088,10 +1088,9 @@ class SpigotPlatform
 	 * @return
 	 */
 	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
+
 		List<String> results = new ArrayList<>();
-		
-		for ( int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); 
-												i >= 0 && i >= startPos - length + 1; i-- ) {
+		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
 			results.add( blockList.get( i ) );
 		}
 		
@@ -1195,6 +1194,4 @@ class SpigotPlatform
 		
 		return blockList;
 	}
-	
-	
 }

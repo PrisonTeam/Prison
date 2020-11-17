@@ -43,7 +43,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         // Lore of block setup
         List<String> blockLoreSetup = createLore(
-                messages.getString("Gui.Lore.ClickToStartBlockSetup")
+                messages.getString("Lore.ClickToStartBlockSetup")
         );
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
@@ -68,13 +68,13 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
         	inv.addItem(button);
         }
         if ( i < blockTypes.size() ) {
-        	List<String> nextPageLore = createLore(  messages.getString("Gui.Lore.ClickToNextPage") );
+        	List<String> nextPageLore = createLore(  messages.getString("Lore.ClickToNextPage") );
         	
         	ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "&7Next &0" + mineName + " " + (i + 1) );
         	inv.setItem(53, nextPageButton);
         }
         if ( i >= (pageSize * 2) ) {
-        	List<String> priorPageLore = createLore(  messages.getString("Gui.Lore.ClickToPriorPage") );
+        	List<String> priorPageLore = createLore(  messages.getString("Lore.ClickToPriorPage") );
         	
         	ItemStack priorPageButton = createButton(Material.BOOK, 1, priorPageLore, 
         											"&7Prior &0" + mineName + " " + (i - (pageSize * 2) - 1) );
@@ -104,7 +104,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 //            if (counter >= counter + 44){
 //
 //                List<String> nextPageLore = createLore(
-//                        messages.getString("Gui.Lore.ClickToNextPage")
+//                        messages.getString("Lore.ClickToNextPage")
 //                );
 //
 //                ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "Next " + mineName + " " + counter);

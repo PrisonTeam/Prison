@@ -52,18 +52,18 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
 
         List<String> ranksLore = createLore(
-        		messages.getString("Gui.Lore.RanksButton"),
-                messages.getString("Gui.Lore.ClickToOpen"));
+        		messages.getString("Lore.RanksButton"),
+                messages.getString("Lore.ClickToOpen"));
         List<String> prisonTasksLore = createLore(
-                messages.getString("Gui.Lore.PrisonTasksButton"),
-                messages.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Lore.PrisonTasksButton"),
+                messages.getString("Lore.ClickToOpen"));
         List<String> minesLore = createLore(
-                messages.getString("Gui.Lore.MinesButton"),
-                messages.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Lore.MinesButton"),
+                messages.getString("Lore.ClickToOpen"));
         List<String> sellAllLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"));
+                messages.getString("Lore.ClickToOpen"));
         List<String> closeGUILore = createLore(
-                messages.getString("Gui.Lore.ClickToClose")
+                messages.getString("Lore.ClickToClose")
         );
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));

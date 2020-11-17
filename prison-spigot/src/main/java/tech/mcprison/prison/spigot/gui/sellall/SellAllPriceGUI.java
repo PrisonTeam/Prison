@@ -56,15 +56,15 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         // Create a new lore
         List<String> changeDecreaseValueLore;
         changeDecreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Lore.ClickToDecrease")
         );
         List<String> confirmButtonLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToConfirm"),
-                messages.getString("Gui.Lore.Price2") + val,
-                messages.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Lore.LeftClickToConfirm"),
+                messages.getString("Lore.Price2") + val,
+                messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Lore.ClickToIncrease")
         );
 
 

@@ -39,7 +39,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         if (rank.rankUpCommands.size() == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRankupCommands")));
             return;
         }
 
@@ -50,14 +50,14 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.EmptyGui")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.EmptyGui")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyRankupCommands")));
             p.closeInventory();
             return;
         }
@@ -94,10 +94,10 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         ItemStack itemCommand;
         // Init the lore array with default values for ladders
         List<String> commandsLore = createLore(
-                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
                 "",
-                messages.getString("Gui.Lore.Info"));
-        commandsLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Command") + command));
+                messages.getString("Lore.Info"));
+        commandsLore.add(SpigotPrison.format(messages.getString("Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
         itemCommand = createButton(Material.TRIPWIRE_HOOK, 1, commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));

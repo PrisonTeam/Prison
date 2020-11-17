@@ -61,25 +61,25 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         // Create the lore
         List<String> rankupCommandsLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Lore.ClickToOpen"),
                 "",
-                messages.getString("Gui.Lore.Info")
+                messages.getString("Lore.Info")
         );
 
         SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
 
         // Create the lore
         List<String> editPriceLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Lore.ClickToOpen"),
                 "",
-                messages.getString("Gui.Lore.Info"),
-                messages.getString("Gui.Lore.Price") + rank.cost
+                messages.getString("Lore.Info"),
+                messages.getString("Lore.Price") + rank.cost
         );
         List<String> editTagLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
+                messages.getString("Lore.ClickToOpen"),
                 "",
-                messages.getString("Gui.Lore.Info"),
-                messages.getString("Gui.Lore.Tag") + rank.tag
+                messages.getString("Lore.Info"),
+                messages.getString("Lore.Tag") + rank.tag
         );
 
         // Create the button
@@ -89,7 +89,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         }
 
         List<String> closeGUILore = createLore(
-                messages.getString("Gui.Lore.ClickToClose")
+                messages.getString("Lore.ClickToClose")
         );
 
 

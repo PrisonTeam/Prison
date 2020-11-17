@@ -46,14 +46,14 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoLadders")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoLadders")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyLadders")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyLadders")));
             p.closeInventory();
             return;
         }
@@ -90,8 +90,8 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         ItemStack itemLadder;
         // Init the lore array with default values for ladders
         List<String> laddersLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
-                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"));
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
         itemLadder = createButton(Material.LADDER, 1, laddersLore, SpigotPrison.format("&3" + ladder.name));

@@ -65,15 +65,15 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
 
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Lore.ClickToDecrease")
         );
         List<String> confirmButtonLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToConfirm"),
-                messages.getString("Gui.Lore.Percentage") + val,
-                messages.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Lore.LeftClickToConfirm"),
+                messages.getString("Lore.Percentage") + val,
+                messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Lore.ClickToIncrease")
         );
 
 
@@ -114,7 +114,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         inv.setItem(43, increaseOf100);
        
         // Return to prior screen:
-        List<String> closeGUILore = createLore( messages.getString("Gui.Lore.ClickToClose") );
+        List<String> closeGUILore = createLore( messages.getString("Lore.ClickToClose") );
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close" + " &0" + mineName + " " + counter));
         inv.setItem(40, closeGUI);
 

@@ -58,15 +58,15 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
 
         // Create new lore
         List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Lore.ClickToDecrease")
         );
         List<String> confirmButtonLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToConfirm"),
-                messages.getString("Gui.Lore.Radius") + val,
-                messages.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Lore.LeftClickToConfirm"),
+                messages.getString("Lore.Radius") + val,
+                messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Lore.ClickToIncrease")
         );
 
         // Decrease buttons

@@ -58,43 +58,43 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         // The Reset Mine button and lore
         List<String> resetMineLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToReset"),
+                messages.getString("Lore.LeftClickToReset"),
                 "",
-                messages.getString("Gui.Lore.RightClickToToggle"),
-                messages.getString("Gui.Lore.SkipReset1"),
-                messages.getString("Gui.Lore.SkipReset2"),
-                messages.getString("Gui.Lore.SkipReset3"),
+                messages.getString("Lore.RightClickToToggle"),
+                messages.getString("Lore.SkipReset1"),
+                messages.getString("Lore.SkipReset2"),
+                messages.getString("Lore.SkipReset3"),
                 "",
-                messages.getString("Gui.Lore.ShiftAndRightClickToToggle"),
-                messages.getString("Gui.Message.ZeroBlocksReset1"),
-                messages.getString("Gui.Message.ZeroBlocksReset2"),
-                messages.getString("Gui.Message.ZeroBlocksReset3")
+                messages.getString("Lore.ShiftAndRightClickToToggle"),
+                messages.getString("Message.ZeroBlocksReset1"),
+                messages.getString("Message.ZeroBlocksReset2"),
+                messages.getString("Message.ZeroBlocksReset3")
         );
         List<String> MineSpawnLore = createLore(
-                messages.getString("Gui.Lore.ClickToUse"),
-                messages.getString("Gui.Lore.SpawnPoint2")
+                messages.getString("Lore.ClickToUse"),
+                messages.getString("Lore.SpawnPoint2")
         );
         List<String> MinesNotificationsLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
-                messages.getString("Gui.Lore.Notifications")
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.Notifications")
         );
         List<String> MinesTpLore = createLore(
-                messages.getString("Gui.Lore.ClickToTeleport"),
-                messages.getString("Gui.Lore.Tp")
+                messages.getString("Lore.ClickToTeleport"),
+                messages.getString("Lore.Tp")
         );
         List<String> blocksOfTheMineLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
-                messages.getString("Gui.Lore.Blocks2"));
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.Blocks2"));
         List<String> mineResetTimeLore = createLore(
-                messages.getString("Gui.Lore.ClickToOpen"),
-                messages.getString("Gui.Lore.ManageResetTime"),
-                messages.getString("Gui.Lore.ResetTime") + mine.getResetTime());
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.ManageResetTime"),
+                messages.getString("Lore.ResetTime") + mine.getResetTime());
         List<String> mineRenameLore = createLore(
-                messages.getString("Gui.Lore.ClickToRename"),
-                messages.getString("Gui.Lore.MineName") + mineName
+                messages.getString("Lore.ClickToRename"),
+                messages.getString("Lore.MineName") + mineName
         );
         List<String> closeGUILore = createLore(
-                messages.getString("Gui.Lore.ClickToClose")
+                messages.getString("Lore.ClickToClose")
         );
 
         // Create the button, set the material, amount, lore and name

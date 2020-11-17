@@ -66,7 +66,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManySellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
             return null;
         }
 

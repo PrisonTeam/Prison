@@ -63,16 +63,16 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
         // Create a new lore
         List<String> modeWithinLore = createLore(
-                messages.getString("Gui.Lore.ClickToChoose"),
-                messages.getString("Gui.Lore.ActivateWithinMode"));
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.ActivateWithinMode"));
         List<String> modeRadiusLore = createLore(
-                messages.getString("Gui.Lore.ClickToChoose"),
-                messages.getString("Gui.Lore.ActivateRadiusMode"));
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.ActivateRadiusMode"));
         List<String> disabledModeLore = createLore(
-                messages.getString("Gui.Lore.ClickToChoose"),
-                messages.getString("Gui.Lore.DisableNotifications"));
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.DisableNotifications"));
         List<String> closeGUILore = createLore(
-                messages.getString("Gui.Lore.ClickToClose")
+                messages.getString("Lore.ClickToClose")
         );
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
@@ -82,17 +82,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 
             // Add the selected lore
-            disabledModeLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Selected")));
+            disabledModeLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("within")){
 
             // Add the selected lore
-            modeWithinLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Selected")));
+            modeWithinLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("radius")){
 
             // Add the selected lore
-            modeRadiusLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Selected")));
+            modeRadiusLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         }
 

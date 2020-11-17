@@ -48,14 +48,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoMines")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoMines")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyMines")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -122,11 +122,11 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
             material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.StatusUnlockedMine")));
-            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ClickToTeleport")));
+            minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusUnlockedMine")));
+            minesLore.add(SpigotPrison.format(messages.getString("Lore.ClickToTeleport")));
         } else {
             material = Material.REDSTONE_BLOCK;
-            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.StatusLockedMine")));
+            minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
         }
 
         // Create the button

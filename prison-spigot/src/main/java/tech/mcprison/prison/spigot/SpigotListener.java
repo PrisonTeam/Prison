@@ -194,5 +194,4 @@ public class SpigotListener implements Listener {
             theirs.setCancelled(true);
         }
     }
-
 }

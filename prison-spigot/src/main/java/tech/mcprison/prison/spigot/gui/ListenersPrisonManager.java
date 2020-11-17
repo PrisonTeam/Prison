@@ -66,7 +66,7 @@ public class ListenersPrisonManager implements Listener {
     public String mineNameOfChat = null;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-    private final Configuration sellAllConfig = SpigotPrison.getSellAllConfig();
+    private final Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
     public String mode;
@@ -186,11 +186,11 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the actions
         if (message.equalsIgnoreCase("cancel")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigeCancelled")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigeCancelled")));
         } else if (message.equalsIgnoreCase("confirm")) {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
         } else {
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.PrestigeCancelledWrongKeyword")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigeCancelledWrongKeyword")));
         }
         // Cancel the event
         e.setCancelled(true);
@@ -202,7 +202,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRenameClosed")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
         }
@@ -214,7 +214,7 @@ public class ListenersPrisonManager implements Listener {
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRenameClosed")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
         }
@@ -1010,8 +1010,8 @@ public class ListenersPrisonManager implements Listener {
         } else if (buttonName.equalsIgnoreCase("RankTag")){
 
             // Send messages to the player
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRename")));
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankTagRenameClose")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRename")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
             // Start the async task
             isChatEventActive = true;
             rankNameOfChat = rankName;
@@ -1019,7 +1019,7 @@ public class ListenersPrisonManager implements Listener {
             id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                 if (isChatEventActive) {
                     removeChatEventPlayer(p);
-                    p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
                     isChatEventActive = false;
                 }
             }, 20L * 30);
@@ -1033,7 +1033,7 @@ public class ListenersPrisonManager implements Listener {
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions
-        if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Gui.Lore.Rankup").substring(2)))){
+        if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Lore.Rankup").substring(2)))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
@@ -1284,8 +1284,8 @@ public class ListenersPrisonManager implements Listener {
             case "Mine_Name:": {
 
                 // Send messages to the player
-                p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRename")));
-                p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineNameRenameClose")));
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRename")));
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRenameClose")));
                 // Start the async task
                 isChatEventActive = true;
                 mineNameOfChat = mineName;
@@ -1293,7 +1293,7 @@ public class ListenersPrisonManager implements Listener {
                 id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                     if (isChatEventActive) {
                         removeChatEventPlayer(p);
-                        p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.OutOfTimeNoChanges")));
+                        p.sendMessage(SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
                         isChatEventActive = false;
                     }
                 }, 20L * 30);

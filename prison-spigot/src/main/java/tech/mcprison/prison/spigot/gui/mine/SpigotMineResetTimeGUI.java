@@ -56,15 +56,15 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
 
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Lore.ClickToDecrease")
         );
         List<String> confirmButtonLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToConfirm"),
-                messages.getString("Gui.Lore.Time") + val,
-                messages.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Lore.LeftClickToConfirm"),
+                messages.getString("Lore.Time") + val,
+                messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Lore.ClickToIncrease")
         );
 
         // Decrease button

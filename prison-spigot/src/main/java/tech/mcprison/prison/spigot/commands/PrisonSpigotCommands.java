@@ -71,7 +71,7 @@ public class PrisonSpigotCommands
     private void prisonManagerMines(CommandSender sender) {
 
         if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled") ){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineOrGuiDisabled")));
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.mineOrGuiDisabled")));
             return;
         }
 
@@ -80,7 +80,7 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Mines.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.mineMissingGuiPermission") + " [" +
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.mineMissingGuiPermission") + " [" +
         				perm + "]"));
                 return;
             }
@@ -98,7 +98,7 @@ public class PrisonSpigotCommands
     private void prisonManagerRanks(CommandSender sender) {
 
         if (!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled")) {
-        	sender.sendMessage(SpigotPrison.format(String.format( messages.getString("Gui.Message.rankGuiDisabledOrAllGuiDisabled"), getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
+        	sender.sendMessage(SpigotPrison.format(String.format( messages.getString("Message.rankGuiDisabledOrAllGuiDisabled"), getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
         	return;
         }
 
@@ -106,7 +106,7 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Ranks.Permission_GUI");
         	if (!sender.hasPermission(perm)) {
 
-        		sender.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.rankGuiMissingPermission") + " [" +
+        		sender.sendMessage(SpigotPrison.format(messages.getString("Message.rankGuiMissingPermission") + " [" +
         				perm + "]"));
         		return;
         	}
@@ -133,7 +133,7 @@ public class PrisonSpigotCommands
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
-        	sender.sendMessage( SpigotPrison.format(messages.getString("Gui.Message.CantRunGUIFromConsole")));
+        	sender.sendMessage( SpigotPrison.format(messages.getString("Message.CantRunGUIFromConsole")));
         	return;
         }
 

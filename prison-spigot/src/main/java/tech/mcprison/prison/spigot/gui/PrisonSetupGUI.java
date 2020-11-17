@@ -47,21 +47,21 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
 
         // Blocks of the mine
         List<String> confirmLore = createLore(
-                messages.getString("Gui.Lore.ClickToConfirm"),
-                messages.getString("Gui.Lore.noRanksFoundSetup"),
-                messages.getString("Gui.Lore.noRanksFoundSetup1"),
-                messages.getString("Gui.Lore.noRanksFoundSetup2"),
-                messages.getString("Gui.Lore.noRanksFoundSetup3"),
-                messages.getString("Gui.Lore.noRanksFoundSetup4"),
-                messages.getString("Gui.Lore.noRanksFoundSetup5"),
-                messages.getString("Gui.Lore.noRanksFoundSetup6"),
-                messages.getString("Gui.Lore.noRanksFoundSetup7"),
-                messages.getString("Gui.Lore.noRanksFoundSetup8")
+                messages.getString("Lore.ClickToConfirm"),
+                messages.getString("Lore.noRanksFoundSetup"),
+                messages.getString("Lore.noRanksFoundSetup1"),
+                messages.getString("Lore.noRanksFoundSetup2"),
+                messages.getString("Lore.noRanksFoundSetup3"),
+                messages.getString("Lore.noRanksFoundSetup4"),
+                messages.getString("Lore.noRanksFoundSetup5"),
+                messages.getString("Lore.noRanksFoundSetup6"),
+                messages.getString("Lore.noRanksFoundSetup7"),
+                messages.getString("Lore.noRanksFoundSetup8")
         );
 
         // Blocks of the mine
         List<String> cancelLore = createLore(
-                messages.getString("Gui.Lore.ClickToCancel"));
+                messages.getString("Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmLore, SpigotPrison.format("&3" + "Confirm: Setup"));

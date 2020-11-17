@@ -48,7 +48,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
         List<String> addBlockLore = createLore(
-                messages.getString("Gui.Lore.ClickToAddBlock")
+                messages.getString("Lore.ClickToAddBlock")
         );
 
         // Add the button to the inventory
@@ -125,10 +125,10 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Create the lore
         List<String> blockslore = createLore(
-                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                messages.getString("Gui.Lore.ClickToEditBlock"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.ClickToEditBlock"),
                 "",
-                messages.getString("Gui.Lore.Info"));
+                messages.getString("Lore.Info"));
 
 
         boolean isEnum = true;
@@ -143,8 +143,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         }
 
         // Add a lore
-        blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-        blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
+        blockslore.add(SpigotPrison.format(messages.getString("Lore.Chance") + block.getChance() + "%"));
+        blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
         // Make the item
         ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
@@ -157,10 +157,10 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Create the lore
     	List<String> blockslore = createLore(
-    			messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-    			messages.getString("Gui.Lore.ClickToEditBlock"),
+    			messages.getString("Lore.ShiftAndRightClickToDelete"),
+    			messages.getString("Lore.ClickToEditBlock"),
     			"",
-    			messages.getString("Gui.Lore.Info"));
+    			messages.getString("Lore.Info"));
 
     	boolean isEnum = true;
     	try {
@@ -174,8 +174,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	}
 
     	// Add a lore
-    	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-    	blockslore.add(SpigotPrison.format(messages.getString("Gui.Lore.BlockType") + blockmaterial));
+    	blockslore.add(SpigotPrison.format(messages.getString("Lore.Chance") + block.getChance() + "%"));
+    	blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
     	// Make the item
     	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));

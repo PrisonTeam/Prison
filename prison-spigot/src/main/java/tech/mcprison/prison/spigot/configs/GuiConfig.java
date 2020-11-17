@@ -13,7 +13,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 /**
  * @author GABRYCA
  */
-public class GuiConfig {
+public class GuiConfig extends SpigotConfigComponents{
 
     // Declaring parameters and variables
     private FileConfiguration conf;
@@ -31,16 +31,7 @@ public class GuiConfig {
     	// Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
 
-    	if(!file.exists()) {
-    		try {
-    			File parentDir = file.getParentFile();
-    			parentDir.mkdirs();
-    			file.createNewFile();
-    		} 
-    		catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    	} 
+    	fileMaker(file);
     	
     	conf = YamlConfiguration.loadConfiguration(file);
     	

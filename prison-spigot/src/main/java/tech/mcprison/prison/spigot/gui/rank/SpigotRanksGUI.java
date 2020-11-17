@@ -51,7 +51,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
         } else {
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksFoundAdmin")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
             return;
         }
 
@@ -65,7 +65,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyRanks")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyRanks")));
             p.closeInventory();
             return;
         }
@@ -108,13 +108,13 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         ItemStack itemRank;
         // Init the lore array with default values for ladders
         List<String> ranksLore = createLore(
-                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                messages.getString("Gui.Lore.ClickToManageRank"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.ClickToManageRank"),
                 "",
-                messages.getString("Gui.Lore.Info"));
+                messages.getString("Lore.Info"));
 
         if (!rankOptional.isPresent()){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.CantGetRanksAdmin")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.CantGetRanksAdmin")));
             return;
         }
 
@@ -122,10 +122,10 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Rank rank = rankOptional.get();
 
         // Add the RankID Lore
-        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Id") + rank.id));
-        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Name") + rank.name));
-        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
-        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Price3") + rank.cost));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.id));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.name));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.cost));
 
         // Init a variable
         List<RankPlayer> players =
@@ -134,7 +134,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                         .collect(Collectors.toList());
 
         // Add the number of players with this rank
-        ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.PlayersWithTheRank") + players.size()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.PlayersWithTheRank") + players.size()));
         ranksLore.add("");
         getCommands(ranksLore, rank);
 
@@ -148,13 +148,13 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
     static void getCommands(List<String> ranksLore, Rank rank) {
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ContainsTheRank") + rank.name + messages.getString("Gui.Lore.ContainsNoCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Lore.ContainsTheRank") + rank.name + messages.getString("Lore.ContainsNoCommands")));
         } else {
-            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.LadderThereAre") + rank.rankUpCommands.size() + messages.getString("Gui.Lore.LadderCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Lore.LadderThereAre") + rank.rankUpCommands.size() + messages.getString("Lore.LadderCommands")));
             for (String command : rank.rankUpCommands) {
-                ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.RankupCommands") + command));
+                ranksLore.add(SpigotPrison.format(messages.getString("Lore.RankupCommands") + command));
             }
-            ranksLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ClickToManageCommands")));
+            ranksLore.add(SpigotPrison.format(messages.getString("Lore.ClickToManageCommands")));
         }
     }
 }

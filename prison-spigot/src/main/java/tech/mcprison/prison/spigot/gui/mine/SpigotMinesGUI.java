@@ -59,7 +59,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.TooManyMines")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -95,25 +95,25 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         ItemStack itemMines;
         // Init the lore array with default values for ladders
         List<String> minesLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToOpen"),
-                messages.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.LeftClickToOpen"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
                 "",
-                messages.getString("Gui.Lore.Info"));
+                messages.getString("Lore.Info"));
 
         // Add a lore
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.World") +  m.getWorldName()));
+        minesLore.add(SpigotPrison.format(messages.getString("Lore.World") +  m.getWorldName()));
         String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SpawnPoint") + spawnPoint));
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.ResetTime") + m.getResetTime()));
+        minesLore.add(SpigotPrison.format(messages.getString("Lore.SpawnPoint") + spawnPoint));
+        minesLore.add(SpigotPrison.format(messages.getString("Lore.ResetTime") + m.getResetTime()));
 
         if (!m.isVirtual()) {
             // Add a lore
-            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.SizeOfMine") + m.getBounds().getDimensions()));
-            minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Volume") + m.getBounds().getTotalBlockCount()));
+            minesLore.add(SpigotPrison.format(messages.getString("Lore.SizeOfMine") + m.getBounds().getDimensions()));
+            minesLore.add(SpigotPrison.format(messages.getString("Lore.Volume") + m.getBounds().getTotalBlockCount()));
         }
 
         // Add a lore
-        minesLore.add(SpigotPrison.format(messages.getString("Gui.Lore.Blocks")));
+        minesLore.add(SpigotPrison.format(messages.getString("Lore.Blocks")));
 
         // Init some variables and do the actions
         DecimalFormat dFmt = new DecimalFormat("##0.00");

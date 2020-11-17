@@ -152,14 +152,14 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
 
         if (!ladder.isPresent()){
-            player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.LadderPrestigesNotFound")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
             return;
         }
 
         RankLadder ladderData = ladder.get();
 
         if (!ladderData.getLowestRank().isPresent()){
-            player.sendMessage(SpigotPrison.format(messages.getString("Gui.Message.NoRanksPrestigesLadder")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
             return;
         }
 
@@ -178,8 +178,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    messages.getString("Gui.Lore.Info"),
-                    messages.getString("Gui.Lore.Price3") + rank.cost
+                    messages.getString("Lore.Info"),
+                    messages.getString("Lore.Price3") + rank.cost
             );
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
@@ -201,8 +201,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         List<String> rankupLore = createLore(
-                messages.getString("Gui.Lore.IfYouHaveEnoughMoney"),
-                messages.getString("Gui.Lore.ClickToRankup")
+                messages.getString("Lore.IfYouHaveEnoughMoney"),
+                messages.getString("Lore.ClickToRankup")
         );
 
         ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));

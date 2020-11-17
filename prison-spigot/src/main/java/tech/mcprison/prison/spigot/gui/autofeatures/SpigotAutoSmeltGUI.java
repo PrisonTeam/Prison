@@ -54,13 +54,13 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
     private void buttonsSetup(Inventory inv) {
 
         List<String> enabledLore = createLore(
-                messages.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                messages.getString("Lore.ShiftAndRightClickToDisable")
         );
         List<String> disabledLore = createLore(
-                messages.getString("Gui.Lore.RightClickToEnable")
+                messages.getString("Lore.RightClickToEnable")
         );
         List<String> closeGUILore = createLore(
-                messages.getString("Gui.Lore.ClickToClose")
+                messages.getString("Lore.ClickToClose")
         );
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));

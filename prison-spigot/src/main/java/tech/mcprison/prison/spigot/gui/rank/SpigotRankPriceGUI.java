@@ -61,16 +61,16 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
 
         // Create a new lore
         List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToDecrease")
+                messages.getString("Lore.ClickToDecrease")
         );
         List<String> confirmButtonLore;
         confirmButtonLore = createLore(
-                messages.getString("Gui.Lore.LeftClickToConfirm"),
-                messages.getString("Gui.Lore.Price2") + val,
-                messages.getString("Gui.Lore.RightClickToCancel")
+                messages.getString("Lore.LeftClickToConfirm"),
+                messages.getString("Lore.Price2") + val,
+                messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Gui.Lore.ClickToIncrease")
+                messages.getString("Lore.ClickToIncrease")
         );
 
         // Decrease button
