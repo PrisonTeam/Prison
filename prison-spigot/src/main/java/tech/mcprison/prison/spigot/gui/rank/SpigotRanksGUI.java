@@ -136,7 +136,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         // Add the number of players with this rank
         ranksLore.add(SpigotPrison.format(messages.getString("Lore.PlayersWithTheRank") + players.size()));
         ranksLore.add("");
-        getCommands(ranksLore, rank);
+        //getCommands(ranksLore, rank);
 
         // Make the button with materials, amount, lore and name
         itemRank = createButton(Material.TRIPWIRE_HOOK, 1, ranksLore, SpigotPrison.format("&3" + rank.name));
@@ -145,16 +145,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         inv.addItem(itemRank);
     }
 
-    static void getCommands(List<String> ranksLore, Rank rank) {
+    //static void getCommands(List<String> ranksLore, Rank rank) {
 
-        if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.ContainsTheRank") + rank.name + messages.getString("Lore.ContainsNoCommands")));
-        } else {
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.LadderThereAre") + rank.rankUpCommands.size() + messages.getString("Lore.LadderCommands")));
-            for (String command : rank.rankUpCommands) {
-                ranksLore.add(SpigotPrison.format(messages.getString("Lore.RankupCommands") + command));
-            }
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.ClickToManageCommands")));
-        }
-    }
+    //    if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
+    //        ranksLore.add(SpigotPrison.format(messages.getString("Lore.ContainsTheRank") + rank.name + messages.getString("Lore.ContainsNoCommands")));
+    //    } else {
+    //        ranksLore.add(SpigotPrison.format(messages.getString("Lore.LadderThereAre") + rank.rankUpCommands.size() + messages.getString("Lore.LadderCommands")));
+    //        for (String command : rank.rankUpCommands) {
+    //            ranksLore.add(SpigotPrison.format(messages.getString("Lore.RankupCommands") + command));
+    //        }
+    //        ranksLore.add(SpigotPrison.format(messages.getString("Lore.ClickToManageCommands")));
+    //    }
+    //}
 }

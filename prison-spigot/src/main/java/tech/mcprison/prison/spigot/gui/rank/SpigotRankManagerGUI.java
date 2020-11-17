@@ -66,7 +66,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 messages.getString("Lore.Info")
         );
 
-        SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
+        // SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
 
         // Create the lore
         List<String> editPriceLore = createLore(
