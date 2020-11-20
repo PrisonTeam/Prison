@@ -171,10 +171,8 @@ public class ListenersPrisonManager implements Listener {
             // Check which one to use
             if (rankNameOfChat != null) {
                 rankAction(e, p, message);
-                rankNameOfChat = null;
             } else if (mineNameOfChat != null) {
                 mineAction(e, p, message);
-                mineNameOfChat = null;
             }
         // If the mode's prestige will execute this
         } else if (mode.equalsIgnoreCase("prestige")){
@@ -209,6 +207,7 @@ public class ListenersPrisonManager implements Listener {
         // Cancel the event and deactivate the chat event, set boolean to false
         e.setCancelled(true);
         isChatEventActive = false;
+        mineNameOfChat = null;
     }
 
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -221,6 +220,7 @@ public class ListenersPrisonManager implements Listener {
         // Cancel the event and set the boolean to false, so it can be deactivated
         e.setCancelled(true);
         isChatEventActive = false;
+        rankNameOfChat = null;
     }
 
     // Cancel the events of the active GUI opened from the player
