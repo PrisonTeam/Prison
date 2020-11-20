@@ -29,7 +29,8 @@ public class PrisonSpigotCommands
 	public void minesGUICommand(CommandSender sender) {
 		if (!sender.hasPermission("mines.admin") && isPrisonConfig("mines-gui-enabled") ) {
 
-			sender.dispatchCommand("gui mines");
+			prisonManagerMines( sender );
+//			sender.dispatchCommand("gui mines");
 		}
 		else {
 			sender.dispatchCommand("mines help");
@@ -48,7 +49,8 @@ public class PrisonSpigotCommands
 			if ((ladderName.equalsIgnoreCase("default") || ladderName.equalsIgnoreCase("ranks")) &&
 					isPrisonConfig("ranks-gui-enabled") ) {
 
-				sender.dispatchCommand("gui ranks");
+				prisonManagerRanks( sender );
+//				sender.dispatchCommand("gui ranks");
 			}
 			else if (ladderName.equalsIgnoreCase("prestiges") &&
 					isPrisonConfig( "ranks-gui-prestiges-enabled") ) {
@@ -70,8 +72,15 @@ public class PrisonSpigotCommands
 		  onlyPlayers = true )
     private void prisonManagerMines(CommandSender sender) {
 
+        Player player = getSpigotPlayer(sender);
+
+        if (player == null) {
+        	sender.sendMessage( messages.getString("Message.CantRunGUIFromConsole"));
+        	return;
+        }
+
         if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled") ){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.mineOrGuiDisabled")));
+            sender.sendMessage(messages.getString("Message.mineOrGuiDisabled"));
             return;
         }
 
@@ -80,13 +89,12 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Mines.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.mineMissingGuiPermission") + " [" +
-        				perm + "]"));
+                sender.sendMessage(messages.getString("Message.mineMissingGuiPermission") + " [" +
+        				perm + "]");
                 return;
             }
         }
 
-        Player player = getSpigotPlayer( sender );
         SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player );
         gui.open();
     }
@@ -97,8 +105,17 @@ public class PrisonSpigotCommands
     		  onlyPlayers = true )
     private void prisonManagerRanks(CommandSender sender) {
 
+        Player player = getSpigotPlayer(sender);
+
+        if (player == null) {
+        	sender.sendMessage( messages.getString("Message.CantRunGUIFromConsole"));
+        	return;
+        }
+
         if (!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled")) {
-        	sender.sendMessage(SpigotPrison.format(String.format( messages.getString("Message.rankGuiDisabledOrAllGuiDisabled"), getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
+        	sender.sendMessage(String.format(String.format( 
+        					messages.getString("Message.rankGuiDisabledOrAllGuiDisabled"), 
+        					getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") )));
         	return;
         }
 
@@ -106,13 +123,12 @@ public class PrisonSpigotCommands
         	String perm = getConfig( "Options.Ranks.Permission_GUI");
         	if (!sender.hasPermission(perm)) {
 
-        		sender.sendMessage(SpigotPrison.format(messages.getString("Message.rankGuiMissingPermission") + " [" +
-        				perm + "]"));
+        		sender.sendMessage(messages.getString("Message.rankGuiMissingPermission") + " [" +
+        				perm + "]");
         		return;
         	}
         }
 
-        Player player = getSpigotPlayer( sender );
         SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player );
         gui.open();
     }
@@ -124,7 +140,7 @@ public class PrisonSpigotCommands
      * @param sender
      */
     @Command( identifier = "gui", description = "The GUI",
-    		  aliases = {"prisonmanager", "prisonmanager gui", "gui admin"},
+    		  aliases = {"prisonmanager gui", "gui admin"},
     		  permissions = {"prison.admin", "prison.prisonmanagergui"},
     		  onlyPlayers = false
     		)
@@ -133,7 +149,7 @@ public class PrisonSpigotCommands
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
-        	sender.sendMessage( SpigotPrison.format(messages.getString("Message.CantRunGUIFromConsole")));
+        	sender.sendMessage( messages.getString("Message.CantRunGUIFromConsole"));
         	return;
         }
 
