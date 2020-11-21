@@ -81,5 +81,11 @@ public class ChatDisplay {
         	Output.get().log( component.text(), logLevel );
         }
     }
+    
+    public void sendtoOutputLogInfo() {
+        for (DisplayComponent component : displayComponents) {
+        	Output.get().logInfo( component.text() );
+        }
+    }
 
 }

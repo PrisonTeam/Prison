@@ -33,7 +33,9 @@ import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MinesConfig;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
@@ -59,6 +61,8 @@ public class PrisonMines extends Module {
 
     private MineManager mineManager;
     private PlayerManager player;
+    
+    private MinesCommands minesCommands;
 
 
     /**
@@ -71,7 +75,7 @@ public class PrisonMines extends Module {
      * 
      */
 	private final TreeMap<Long, Mine> playerCache;
-	
+
 	
     
     public PrisonMines(String version) {
@@ -109,7 +113,9 @@ public class PrisonMines extends Module {
 //        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
-        Prison.get().getCommandHandler().registerCommands(new MinesCommands());
+        
+        setMinesCommands( new MinesCommands() );
+        Prison.get().getCommandHandler().registerCommands( getMinesCommands() );
         //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
         ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
@@ -232,6 +238,10 @@ public class PrisonMines extends Module {
     public List<Mine> getMines() {
         return getMineManager().getMines();
     }
+    
+    public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
+    	return getMineManager().getMines( sortOrder );
+    }
 
     public Mine getMine(String mineName) {
     	return getMineManager().getMine(mineName);
@@ -248,5 +258,12 @@ public class PrisonMines extends Module {
     public PlayerManager getPlayerManager() {
         return player;
     }
+
+	public MinesCommands getMinesCommands() {
+		return minesCommands;
+	}
+	public void setMinesCommands( MinesCommands minesCommands ) {
+		this.minesCommands = minesCommands;
+	}
 
 }

@@ -21,6 +21,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
+    private final Configuration messages = messages();
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -37,11 +38,8 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         if (rank.rankUpCommands.size() == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRankupCommands")));
             return;
         }
 
@@ -52,14 +50,14 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.EmptyGui")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.EmptyGui")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyRankupCommands")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyRankupCommands")));
             p.closeInventory();
             return;
         }
@@ -70,18 +68,17 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         // For every command make a button
         for (String command : rank.rankUpCommands) {
 
-            if (guiBuilder(GuiConfig, inv, command)) return;
+            if (guiBuilder(inv, command)) return;
 
         }
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, String command) {
+    private boolean guiBuilder(Inventory inv, String command) {
         try {
-            buttonsSetup(guiConfig, inv, command);
+            buttonsSetup(inv, command);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -90,16 +87,17 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, String command) {
+    private void buttonsSetup(Inventory inv, String command) {
+
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         ItemStack itemCommand;
         // Init the lore array with default values for ladders
         List<String> commandsLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"));
-
-        // Adding a lore
-        commandsLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Command") + command));
+                messages.getString("Lore.Info"));
+        commandsLore.add(SpigotPrison.format(messages.getString("Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
         itemCommand = createButton(Material.TRIPWIRE_HOOK, 1, commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));

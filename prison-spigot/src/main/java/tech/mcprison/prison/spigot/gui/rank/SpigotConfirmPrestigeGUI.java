@@ -15,6 +15,7 @@ import java.util.List;
 public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration messages = messages();
 
     public SpigotConfirmPrestigeGUI(Player p) {
         this.p = p;
@@ -26,19 +27,15 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         int dimension = 9;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prestige -> Confirmation"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        if (guiBuilder(inv, GuiConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -47,29 +44,26 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+    private void buttonsSetup(Inventory inv) {
+
         // Blocks of the mine
         List<String> confirmLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToConfirm"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning2"),
-                guiConfig.getString("Gui.Lore.PrestigeWarning3")
+                messages.getString("Lore.ClickToConfirm"),
+                messages.getString("Lore.PrestigeWarning"),
+                messages.getString("Lore.PrestigeWarning2"),
+                messages.getString("Lore.PrestigeWarning3")
         );
 
         // Blocks of the mine
         List<String> cancelLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToCancel"));
+                messages.getString("Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmLore, SpigotPrison.format("&3" + "Confirm: Prestige"));
-
-        // Create the button, set up the material, amount, lore and name
         ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelLore, SpigotPrison.format("&3" + "Cancel: Don't Prestige"));
 
         // Position of the button
         inv.setItem(2, confirm);
-
-        // Position of the button
         inv.setItem(6, cancel);
     }
 

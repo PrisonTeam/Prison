@@ -21,9 +21,11 @@ package tech.mcprison.prison.spigot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -81,6 +83,13 @@ public class SpigotUtil {
     	return xMat;
     }
     
+    public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
+    	
+    	XMaterial xMat = getXMaterial( prisonBlock.getBlockName());
+    	
+    	return xMat;
+    }
+    
     public static Material getMaterial( BlockType prisonBlockType ) {
     	XMaterial xMat = getXMaterial( prisonBlockType );
     	
@@ -106,6 +115,13 @@ public class SpigotUtil {
 		
         return results;
     }
+	
+	public static BlockType prisonBlockToBlockType( PrisonBlock prisonBlock ) {
+		
+		BlockType results = BlockType.getBlock( prisonBlock.getBlockName() );
+		
+		return results;
+	}
 
 	/**
 	 * <p>Returns a stack of BlockType or a stack of air.
@@ -143,19 +159,45 @@ public class SpigotUtil {
 		return bukkitStack;
 	}
 	
+	/**
+	 * Note that XMaterial.parseMaterial() may work well for v1.13.x and higher,
+	 * but it does not represent the correct block types in lower versions, 
+	 * such as with 1.8.x. This has everything to do with magic numbers.
+	 * Instead convert it to an ItemStack.
+	 * 
+	 * @param blockTypes
+	 */
 	public static void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
 		
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
-				Material mat = xMat.parseMaterial();
-				if ( mat != null ) {
-					if ( mat.isBlock() ) {
-						PrisonBlock block = new PrisonBlock( mat.name() );
+				ItemStack itemStack = xMat.parseItem();
+				if ( itemStack != null ) {
+					
+					if ( itemStack.getType().isBlock() ) {
+						
+						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
+						
+						block.setValid( true );
+						block.setBlock( itemStack.getType().isBlock() );
 						
 						blockTypes.add( block );
 					}
 				}
+				
+//				Material mat = xMat.parseMaterial();
+//				if ( mat != null ) {
+//					if ( mat.isBlock() ) {
+//						
+//						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
+//						
+//						block.setValid( true );
+//						block.setBlock( mat.isBlock() );
+//						
+//						blockTypes.add( block );
+//					}
+//				}
 				else {
 					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
 							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
@@ -210,6 +252,7 @@ public class SpigotUtil {
 		
 		StringBuilder sbNoMap = new StringBuilder();
 		StringBuilder sbNotSupported = new StringBuilder();
+		StringBuilder sbSpigotNotSupported = new StringBuilder();
 		
 		int supportedBlockCountPrison = 0;
 		int supportedBlockCountXMaterial = 0;
@@ -259,6 +302,28 @@ public class SpigotUtil {
 			}
 		}
 		
+		
+		for ( Material spigotMaterial : Material.values() ) {
+			
+			if ( spigotMaterial.isBlock() &&
+					BlockType.getBlock( spigotMaterial.name() ) == null ) {
+				
+				String name = spigotMaterial.name().toLowerCase();
+				if ( !name.contains( "banner" ) && !name.contains( "button" ) && 
+						!name.contains( "pressure_plate" ) && !name.contains( "potted_" ) && 
+						!name.contains( "_head" ) && !name.contains( "_skull" ) && 
+						!name.contains( "_bed" ) && !name.contains( "_trapdoor" ) && 
+						!name.contains( "stem" ) && !name.contains( "stairs" ) && 
+						!name.contains( "_slab" ) ) {
+					
+					sbSpigotNotSupported.append( spigotMaterial.name() );
+					sbSpigotNotSupported.append( " " );
+				}
+				
+			}
+			
+		}
+		
 		// Next test all of the spigot/bukkit Materials:
 		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
 										.testCountAllBlockTypes();
@@ -273,22 +338,28 @@ public class SpigotUtil {
 		logTestBlocks( sbNoMap, "### SpigotUtil.testAllPrisonBlockTypes:  " +
 										"Prison Blocks no maps to XMaterial: " );
 		logTestBlocks( sbNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
-										"Prison Blocks not supported with version: " );
+										"Prison Blocks not supported: " );
+		
+		
+		Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: Spigot blocks ignored: " +
+				"banner, button, pressure_plate, potted, head, skull, bed, trapdoor, stem, stairs, slab "  );
+		logTestBlocks( sbSpigotNotSupported, "### SpigotUtil.testAllPrisonBlockTypes:  " +
+				"Spigot blocks not supported: " );
 	}
     
 	
 	private static void logTestBlocks( StringBuilder sb, String message ) {
 		
 		int start = 0;
-		int end = 150;
+		int end = 100;
 		
 		while ( sb.length() > end ) {
-			end = sb.indexOf( " ", end );
+			end = sb.lastIndexOf( " ", end );
 			Output.get().logWarn( message + 
 					(end < 0 ? sb.substring( start ) : sb.substring( start, end )));
 
 			start = end;
-			end += 150;
+			end += 100;
 		}
 		
 		Output.get().logWarn( message + sb.substring( start ));
@@ -498,4 +569,27 @@ public class SpigotUtil {
         return InventoryView.Property.valueOf(property.name());
     }
 
+    
+    /**
+     * <p>Vault economy requires the parameter of bukkit's OfflinePlayer.
+     * That was never exposed for good reasons, and do not want to use
+     * bukkit/spigot specific code within that integration.  So, this is
+     * where this code will live since it is a Spigot untility.
+     * </p>
+     * 
+     * @param uuid
+     * @return OfflinePlayer
+     */
+    public static OfflinePlayer getBukkitOfflinePlayer( UUID uuid ) {
+    	OfflinePlayer results = null;
+    	
+    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
+    		if ( uuid != null && offP.getUniqueId().equals(uuid) ) {
+    			results = offP;
+    			break;
+	  		}
+		}
+    	
+    	return results;
+    }
 }

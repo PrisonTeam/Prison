@@ -9,20 +9,36 @@ import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-public abstract class MineData {
+public abstract class MineData
+		implements ModuleElement {
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
 	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
 	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
 	
 	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
+	
+	private transient final ModuleElementType elementType;
 		
 	private String name;
+	private String tag;
+	
 	private boolean enabled = false;
+	private boolean virtual = false;
+	
+	/**
+	 * A sortOrder of -1 means it should be excluded from most mine listings.
+	 * An example would be for private mines or child mines where you only want the
+	 * parent listed.
+	 */
+	private int sortOrder = 0;
 	
 	private Bounds bounds;
 
@@ -56,6 +72,14 @@ public abstract class MineData {
     
     private boolean usePagingOnReset = false;
     
+    private ModuleElement rank;
+    /**
+     * When loading mines, ranks will not have been loaded yet, so must
+     * save the rankString to be paired to the Ranks later.
+     * The rankString are the components of the ModuleElement.
+     */
+    private String rankString;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -84,10 +108,21 @@ public abstract class MineData {
     }
     
     public MineData() {
+    	this.elementType = ModuleElementType.MINE;
+    	
+    	this.tag = null;
+    	
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	
     	this.enabled = false;
+    	this.virtual = false;
+    	
+    	/**
+    	 * Mines are sorted based upon the sortOrder, ascending.  If a mine is given
+    	 * a value of -1 then it will be excluded from most mine listings.
+    	 */
+    	this.sortOrder = 0;
     	
     	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
@@ -108,6 +143,9 @@ public abstract class MineData {
         this.resetCommands = new ArrayList<>();
         
         this.usePagingOnReset = false;
+        
+        this.rank = null;
+        this.rankString = null;
     }
 
     /**
@@ -124,10 +162,33 @@ public abstract class MineData {
 	
   
     public boolean isEnabled() {
-		return enabled;
+		return !isVirtual() && enabled;
 	}
 	public void setEnabled( boolean enabled ) {
 		this.enabled = enabled;
+	}
+	
+	
+	/**
+	 * <p>A virtual mine does not have any coordinates defined for either the
+	 * mine itself, or the spawn point.  A virtual mine can never be enabled.
+	 * </p>
+	 * 
+	 * <p>A virtual mine can be potentially useful to be pre-created and auto 
+	 * configured.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isVirtual() {
+		return virtual;
+	}
+	public void setVirtual( boolean virtual ) {
+		this.virtual = virtual;
+	}
+
+	public ModuleElementType getModuleElementType() {
+		return elementType;
 	}
 
     /**
@@ -139,6 +200,33 @@ public abstract class MineData {
         return name;
     }
 
+    public String getTag() {
+    	return tag;
+    }
+    public void setTag( String tag ) {
+    	this.tag = tag;
+    }
+    
+    public int getSortOrder() {
+    	return sortOrder;
+    }
+    public void setSortOrder( int sortOrder ) {
+    	this.sortOrder = sortOrder;
+    }
+    
+    
+    /**
+     * Mines do not use an id.  So these will always
+     * return a -1 and will ignore any value that is
+     * set.  An id is forced by Ranks and Ladders.
+     */
+    public int getId() {
+    	return -1;
+    }
+    public void setId( int idIsIgnored ) {
+    	// ignore
+    }
+    
     /**
      * Sets the name of this mine
      *
@@ -149,10 +237,17 @@ public abstract class MineData {
     }
     
 	public String getWorldName() {
+		if ( isVirtual() ) {
+			return "Virtually-Undefined";
+		}
 		return worldName;
 	}
 	public void setWorldName( String worldName ) {
-		this.worldName = worldName;
+		// cannot set the world name if it is a virtual mine:
+		if ( !isVirtual() ) {
+			this.worldName = worldName;
+		}
+		
 	}
 	
 	/**
@@ -170,7 +265,7 @@ public abstract class MineData {
 	 * @return
 	 */
 	public Optional<World> getWorld() {
-		return Optional.ofNullable( getBounds().getMin().getWorld() );
+		return Optional.ofNullable( isVirtual() ? null : getBounds().getMin().getWorld() );
 //        return Prison.get().getPlatform().getWorld(worldName);
     }
 	
@@ -218,6 +313,29 @@ public abstract class MineData {
      */
     public void setBounds(Bounds bounds) {
     	this.bounds = bounds;
+    	
+    	if ( bounds != null && ( isVirtual() || !getWorld().isPresent() ||
+    			getWorldName() == null || getWorldName().trim().length() == 0 ) ) {
+    		 
+        	World world = bounds.getMin().getWorld();
+        	
+        	if ( world != null ) {
+        		
+        		setWorld( world );
+        		setWorldName( world.getName() );
+        		setVirtual( false );
+        		setEnabled( true );
+        		
+        		Output.get().logInfo( "Mine " + getName() + ": world has been set and is now enabled." );
+        	}
+        	else {
+        		setEnabled( false );
+        		Output.get().logWarn( 
+        				String.format( "&cCould not activate mine &7%s &cbecause the " +
+        				"world object cannot be aquired. Bounds failed be set correctly " +
+        				"and this mine is &ddisabled&c.", getName()) );
+        	}
+    	}
         
     	// The world name MUST NEVER be changed.  If world is null then it will screw
     	// up the original location of when the was created.  World name is set
@@ -262,10 +380,16 @@ public abstract class MineData {
     }
 
     public boolean isInMine(Location location) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
         return getBounds().within(location);
     }
     
     public boolean isInMine(BlockType blockType) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
         for (Block block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;
@@ -275,6 +399,9 @@ public abstract class MineData {
     }
     
     public boolean isInMine(PrisonBlock blockType) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
     	for (PrisonBlock block : getPrisonBlocks()) {
     		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
     			return true;
@@ -282,8 +409,24 @@ public abstract class MineData {
     	}
     	return false;
     }
+    
+    public PrisonBlock getPrisonBlock( PrisonBlock blockType ) {
+    	PrisonBlock results = null;
+    	
+    	for (PrisonBlock block : getPrisonBlocks()) {
+    		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
+    			results = block;
+    			break;
+    		}
+    	}
+    	
+    	return results;
+    }
 
     public double area() {
+    	if ( isVirtual() ) {
+    		return 0;
+    	}
         return getBounds().getArea();
     }
 
@@ -305,8 +448,11 @@ public abstract class MineData {
      * @return this instance for chaining
      */
     public void setSpawn(Location location) {
-    	hasSpawn = (location != null);
-        spawn = location;
+    	// cannot set spawn when virtual:
+    	if ( !isVirtual() ) {
+    		hasSpawn = (location != null);
+    		spawn = location;
+    	}
     }
     
 	public boolean isHasSpawn() {
@@ -352,7 +498,7 @@ public abstract class MineData {
 	}
 
 	public String getMineNotificationPermissionName() {
-		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName();
+		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
 	}
 	
 	/**
@@ -467,9 +613,22 @@ public abstract class MineData {
 	public boolean isUsePagingOnReset() {
 		return usePagingOnReset;
 	}
-
 	public void setUsePagingOnReset( boolean usePagingOnReset ) {
 		this.usePagingOnReset = usePagingOnReset;
+	}
+
+	public ModuleElement getRank() {
+		return rank;
+	}
+	public void setRank( ModuleElement rank ) {
+		this.rank = rank;
+	}
+
+	public String getRankString() {
+		return rankString;
+	}
+	public void setRankString( String rankString ) {
+		this.rankString = rankString;
 	}
 	
 }

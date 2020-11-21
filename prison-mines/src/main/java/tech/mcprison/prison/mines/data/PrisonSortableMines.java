@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.sorting.PrisonSorter;
 
+@Deprecated
 public class PrisonSortableMines
 		extends PrisonSorter {
 

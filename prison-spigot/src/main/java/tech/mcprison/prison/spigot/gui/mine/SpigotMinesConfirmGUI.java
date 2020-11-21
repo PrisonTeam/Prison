@@ -19,6 +19,7 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
+    private final Configuration messages = messages();
 
     public SpigotMinesConfirmGUI(Player p, String mineName) {
         this.p = p;
@@ -31,19 +32,15 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         int dimension = 9;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> Delete"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        if (guiBuilder(inv, GuiConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -52,26 +49,21 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
-        // Blocks of the mine
-        List<String> confirmlore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToConfirm"));
+    private void buttonsSetup(Inventory inv) {
+
 
         // Blocks of the mine
+        List<String> confirmlore = createLore(
+                messages.getString("Lore.ClickToConfirm"));
         List<String> cancelore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToCancel"));
+                messages.getString("Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
         ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, SpigotPrison.format("&3" + "Confirm: " + mineName));
-
-        // Create the button, set up the material, amount, lore and name
         ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelore, SpigotPrison.format("&3" + "Cancel: " + mineName));
 
         // Position of the button
         inv.setItem(2, confirm);
-
-        // Position of the button
         inv.setItem(6, cancel);
     }
-
 }

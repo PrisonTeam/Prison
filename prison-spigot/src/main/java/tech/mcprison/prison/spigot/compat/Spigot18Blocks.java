@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 
@@ -54,12 +54,18 @@ public abstract class Spigot18Blocks
 				results = BlockType.getBlock(id, data);
 				
 				if ( results == null ) {
-					Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
-							"Spigot block cannot be mapped to a prison BlockType : " +
-							spigotBlock.getType().name() + 
-							" id = " + id + " data = " + data +
-							"  BlockType = " + ( results == null ? "null" : results.name()));
 					
+					results = BlockType.getBlock( spigotBlock.getType().name() );
+					
+					if ( results == null ) {
+						
+						Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
+								"Spigot block cannot be mapped to a prison BlockType : " +
+								spigotBlock.getType().name() + 
+								" id = " + id + " data = " + data +
+								"  BlockType = " + ( results == null ? "null" : results.name()));
+						
+					}
 				}
 				
 				putCachedBlockType( spigotBlock, (byte) data, results );
@@ -246,7 +252,7 @@ public abstract class Spigot18Blocks
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
 		
 		if ( prisonBlock != null && 
-				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				!prisonBlock.equals( PrisonBlock.IGNORE ) && 
 				spigotBlock != null ) {
 			
 			XMaterial xMat = getXMaterial( prisonBlock );
@@ -268,7 +274,7 @@ public abstract class Spigot18Blocks
 				BlockState bState = spigotBlock.getState();
 				
 				// Set the block state with the new type and rawData:
-				bState.setType( newType );;
+				bState.setType( newType );
 				bState.setRawData( xMat.getData() );
 				
 				// Force the update but don't apply the physics:
@@ -360,4 +366,55 @@ public abstract class Spigot18Blocks
 	}
 	
 	
+
+	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
+		
+		
+		if ( spigotBlock.getType() == Material.LADDER ) {
+			
+			
+			org.bukkit.block.BlockFace spigotBlockFace = null;
+			
+			switch ( blockFace )
+			{
+				case TOP:
+					spigotBlockFace = org.bukkit.block.BlockFace.UP;
+					break;
+				case BOTTOM:
+					spigotBlockFace = org.bukkit.block.BlockFace.DOWN;
+					break;
+				case NORTH:
+					spigotBlockFace = org.bukkit.block.BlockFace.NORTH;
+					break;
+				case EAST:
+					spigotBlockFace = org.bukkit.block.BlockFace.EAST;
+					break;
+				case SOUTH:
+					spigotBlockFace = org.bukkit.block.BlockFace.SOUTH;
+					break;
+				case WEST:
+					spigotBlockFace = org.bukkit.block.BlockFace.WEST;
+					break;
+						
+				default:
+					break;
+			}
+			
+			if ( spigotBlockFace != null ) {
+				
+				BlockState state = spigotBlock.getState();
+				
+				org.bukkit.material.Ladder ladder = (org.bukkit.material.Ladder) state.getData();
+				
+				ladder.setFacingDirection( spigotBlockFace );
+				
+				state.setData( ladder );
+				
+				// turn off physics so the ladders will "stick" to glowstone and other blocks.
+				state.update( true, false );
+				
+			}
+		}
+		
+	}
 }

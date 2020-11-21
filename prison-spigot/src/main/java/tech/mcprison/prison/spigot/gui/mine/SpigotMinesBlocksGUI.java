@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -25,6 +26,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
+    private final Configuration messages = messages();
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -38,47 +40,28 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(mineName);
 
         // Get the dimensions and if needed increases them
-        int dimension;
+        int dimension = 54;
         
 		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
-		if ( useNewBlockModel ) {
-			dimension = (int) Math.ceil(m.getPrisonBlocks().size() / 9D) * 9;
-		}
-		else {
-			dimension = (int) Math.ceil(m.getBlocks().size() / 9D) * 9;
-		}
-
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        // If the inventory is empty
-        if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoBlocksMine")));
-            p.closeInventory();
-            return;
-        }
-
-        // If the dimension's too big, don't open the GUI
-        if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyBlocks")));
-            p.closeInventory();
-            return;
-        }
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
 
-        if ( useNewBlockModel ) {
-        	
+        List<String> addBlockLore = createLore(
+                messages.getString("Lore.ClickToAddBlock")
+        );
+
+        // Add the button to the inventory
+        ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), addBlockLore, SpigotPrison.format("&a" + "Add" + " " + mineName));
+        inv.setItem(dimension - 1, addBlockButton);
+
+        if (useNewBlockModel) {
         	
         	// For every block makes a button
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		
-        		// Get the block material as a string
+        		// Get the block material as a string and displayname
         		String blockmaterial = block.getBlockName();
-        		
-        		// Display title of the item
         		String blockmaterialdisplay = blockmaterial;
         		
         		// Check if a block's air and changed the item of it to BARRIER
@@ -87,8 +70,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         			blockmaterialdisplay = blockmaterial;
         		}
         		
-        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
-        		
+        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
         	}
         }
         else {
@@ -96,10 +78,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         	// For every block makes a button
         	for (Block block : m.getBlocks()) {
         		
-        		// Get the block material as a string
+        		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
-        		
-        		// Display title of the item
         		String blockmaterialdisplay = blockmaterial;
         		
         		// Check if a block's air and changed the item of it to BARRIER
@@ -108,20 +88,17 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         			blockmaterialdisplay = blockmaterial;
         		}
         		
-        		if (guiBuilder(GuiConfig, inv, block, blockmaterial, blockmaterialdisplay)) return;
-        		
+        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
         	}
         }
-        
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
         try {
-            buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+            buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -130,9 +107,9 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         return false;
     }
     
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
     	try {
-    		buttonsSetup(guiConfig, inv, block, blockmaterial, blockmaterialdisplay);
+    		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
     		p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
     		ex.printStackTrace();
@@ -141,13 +118,17 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
+
+    	// Don't load this every time a button is created.... making it a class variable:
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         // Create the lore
         List<String> blockslore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-                guiConfig.getString("Gui.Lore.ClickToEditBlock"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"),
+                messages.getString("Lore.ClickToEditBlock"),
                 "",
-                guiConfig.getString("Gui.Lore.Info"));
+                messages.getString("Lore.Info"));
 
 
         boolean isEnum = true;
@@ -162,26 +143,24 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         }
 
         // Add a lore
-        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-
-        // Add a lore
-        blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+        blockslore.add(SpigotPrison.format(messages.getString("Lore.Chance") + block.getChance() + "%"));
+        blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
         // Make the item
         ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
-
-        // Add the item to the inventory
         inv.addItem(block1);
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
-    	// Create the lore
-    	List<String> blockslore = createLore(
-    			guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"),
-    			guiConfig.getString("Gui.Lore.ClickToEditBlock"),
-    			"",
-    			guiConfig.getString("Gui.Lore.Info"));
+    private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
 
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
+        // Create the lore
+    	List<String> blockslore = createLore(
+    			messages.getString("Lore.ShiftAndRightClickToDelete"),
+    			messages.getString("Lore.ClickToEditBlock"),
+    			"",
+    			messages.getString("Lore.Info"));
 
     	boolean isEnum = true;
     	try {
@@ -195,10 +174,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	}
 
     	// Add a lore
-    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Chance") + block.getChance() + "%"));
-
-    	// Add a lore
-    	blockslore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.BlockType") + blockmaterial));
+    	blockslore.add(SpigotPrison.format(messages.getString("Lore.Chance") + block.getChance() + "%"));
+    	blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
     	// Make the item
     	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));

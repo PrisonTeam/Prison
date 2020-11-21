@@ -42,6 +42,19 @@ public class Block {
         this.chance = chance;
     }
 
+    public Block(String blockType, double chance ) {
+    	this.chance = chance;
+    	
+    	BlockType block = BlockType.fromString( blockType );
+    	this.type = block;
+    	
+    }
+    
+	@Override
+	public String toString() {
+		return getType().name() + " " + Double.toString( getChance() );
+	}
+
 	public BlockType getType()
 	{
 		return type;

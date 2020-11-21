@@ -25,9 +25,9 @@ import com.google.common.eventbus.EventBus;
 
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
-import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
@@ -37,9 +37,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
-import tech.mcprison.prison.troubleshoot.inbuilt.ItemTroubleshooter;
 import tech.mcprison.prison.util.EventExceptionHandler;
-import tech.mcprison.prison.util.ItemManager;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -81,11 +79,13 @@ public class Prison
     private SelectionManager selectionManager;
     private EventBus eventBus;
     private LocaleManager localeManager;
-    private ItemManager itemManager;
+//    private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
     private Database metaDatabase;
+    
+    private PrisonBlockTypes prisonBlockTypes;
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -133,6 +133,17 @@ public class Prison
 
         this.prisonCommands = new PrisonCommand();
         this.commandHandler.registerCommands(prisonCommands);
+        
+        
+        // Setup hooks in to the valid prison block types.  This will be only
+        // the block types that have tested to be valid on the server that is
+        // running prison.  This provides full compatibility to the admins that
+        // if a block is listed, then it's usable.  No more guessing or finding
+        // out after the fact that a block that was used was invalid for
+        // their version of minecraft.
+        this.prisonBlockTypes = new PrisonBlockTypes();
+        this.prisonBlockTypes.loadServerBlockTypes();
+        
 
         long stopTime = System.currentTimeMillis();
         
@@ -206,19 +217,20 @@ public class Prison
         this.selectionManager = new SelectionManager();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
+        
 
-        try {
-            this.itemManager = new ItemManager();
-        } catch (Exception e) {
-            this.errorManager.throwError(new Error(
-                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
-                    .appendStackTrace("when loading items.csv", e));
-            Output.get().logError("Try running /prison troubleshoot item_scan.");
-        }
+//        try {
+//            this.itemManager = new ItemManager();
+//        } catch (Exception e) {
+//            this.errorManager.throwError(new Error(
+//                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
+//                    .appendStackTrace("when loading items.csv", e));
+//            Output.get().logError("Try running /prison troubleshoot item_scan.");
+//        }
     }
 
     private void registerInbuiltTroubleshooters() {
-        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
+//        PrisonAPI.getTroubleshootManager().registerTroubleshooter(new ItemTroubleshooter());
     }
 
     private void scheduleAlertNagger() {
@@ -335,12 +347,12 @@ public class Prison
         return selectionManager;
     }
 
-    /**
-     * Returns the item manager, which manages the "friendly" names of items
-     */
-    public ItemManager getItemManager() {
-        return itemManager;
-    }
+//    /**
+//     * Returns the item manager, which manages the "friendly" names of items
+//     */
+//    public ItemManager getItemManager() {
+//        return itemManager;
+//    }
 
     /**
      * Returns the meta database, which is used to store data from within the core.
@@ -363,4 +375,16 @@ public class Prison
         return integrationManager;
     }
 
+    /**
+     * Setup hooks in to the valid prison block types.  This will be only the 
+     * block types that have tested to be valid on the server that is running 
+     * prison.  This provides full compatibility to the admins that if a block 
+     * is listed, then it's usable.  No more guessing or finding out after the 
+     * fact that a block that was used was invalid for their version of minecraft.
+     */
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return prisonBlockTypes;
+	}
+
+    
 }

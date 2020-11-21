@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -22,6 +23,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
+    private final Configuration messages = messages();
 
     public SpigotMineNotificationsGUI(Player p, String mineName){
         this.p = p;
@@ -34,24 +36,20 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> MineNotifications"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // Init variables
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         String enabledOrDisabled = m.getNotificationMode().name();
 
-        if (guiBuilder(inv, GuiConfig, enabledOrDisabled)) return;
+        if (guiBuilder(inv, enabledOrDisabled)) return;
 
         // Opens the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {
+    private boolean guiBuilder(Inventory inv, String enabledOrDisabled) {
         try {
-            buttonsSetup(inv, guiConfig, enabledOrDisabled);
+            buttonsSetup(inv, enabledOrDisabled);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -60,37 +58,41 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig, String enabledOrDisabled) {
+    private void buttonsSetup(Inventory inv, String enabledOrDisabled) {
+
+
         // Create a new lore
         List<String> modeWithinLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToChoose"),
-                guiConfig.getString("Gui.Lore.ActivateWithinMode"));
-
-        // Create a new lore
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.ActivateWithinMode"));
         List<String> modeRadiusLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToChoose"),
-                guiConfig.getString("Gui.Lore.ActivateRadiusMode"));
-
-        // Create a new lore
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.ActivateRadiusMode"));
         List<String> disabledModeLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToChoose"),
-                guiConfig.getString("Gui.Lore.DisableNotifications"));
+                messages.getString("Lore.ClickToChoose"),
+                messages.getString("Lore.DisableNotifications"));
+        List<String> closeGUILore = createLore(
+                messages.getString("Lore.ClickToClose")
+        );
+
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(26, closeGUI);
 
         // Add the selected lore to the mode used
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 
             // Add the selected lore
-            disabledModeLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Selected")));
+            disabledModeLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("within")){
 
             // Add the selected lore
-            modeWithinLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Selected")));
+            modeWithinLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("radius")){
 
             // Add the selected lore
-            modeRadiusLore.add(SpigotPrison.format(guiConfig.getString("Gui.Lore.Selected")));
+            modeRadiusLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         }
 
@@ -112,11 +114,8 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
             // Add a button to the inventory
             inv.setItem( 11, modeWithin);
-
-            // Add a button to the inventory
             inv.setItem(13, radiusMode);
-
-            // Add a button to the inventory
+            // Add an enchantment effect to the button
             disabledMode.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem(15, disabledMode);
 
@@ -126,11 +125,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
             // Add a button to the inventory
             modeWithin.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem(11, modeWithin);
-
-            // Add a button to the inventory
             inv.setItem(13, radiusMode);
-
-            // Add a button to the inventory
             inv.setItem(15, disabledMode);
 
         // Check which buttons should be added, based on the mode already in use of the Mine Notifications
@@ -138,12 +133,8 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
             // Add a button to the inventory
             inv.setItem( 11, modeWithin);
-
-            // Add a button to the inventory
             radiusMode.addUnsafeEnchantment(Enchantment.LUCK, 1);
             inv.setItem( 13, radiusMode);
-
-            // Add a button to the inventory
             inv.setItem(15, disabledMode);
 
         }

@@ -1,13 +1,14 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation 
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Show many infos about prison and also some placeholders
+This command will open the `/prison gui` where an admin can manage Prison features.
 
 ## Permission:
 
-- `prison admin`
+- `prison.gui`
+- `prison.admin`
 
 ## SubCommands:
 
@@ -15,10 +16,10 @@ Show many infos about prison and also some placeholders
 
 ## How to use the command
 
-Run the command himself to use this, example: `/prison version`
+Just execute the command `/prison gui`
 
 ### Command Format
 
-`/prison version`
+`/prison gui`
 
 **END of the command INFO**

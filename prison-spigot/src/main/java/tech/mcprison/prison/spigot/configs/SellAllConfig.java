@@ -1,70 +1,64 @@
-package tech.mcprison.prison.spigot.sellall;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import tech.mcprison.prison.spigot.SpigotPrison;
+package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
  * @author GABRYCA
  */
-public class SellAllConfig {
+public class SellAllConfig extends SpigotConfigComponents {
 
     private FileConfiguration conf;
+    private int changeCount = 0;
 
     public SellAllConfig(){
 
-        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true")){
-            return;
-        }
-
-        // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-
-        // Everything's here
-        values();
-
-        // Get the final config
-        conf = YamlConfiguration.loadConfiguration(file);
+    	// Do not use requireNonNull. Should never throw an exception if they don't have
+    	// it configured.
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
+    		
+    		initialize();
+    	}
+    	
     }
 
-    private void dataConfig(String path, String string){
+    private void initialize(){
 
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
 
         // Check if the config exists
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-                conf = YamlConfiguration.loadConfiguration(file);
-                conf.set(path, SpigotPrison.format(string));
-                conf.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                boolean newValue = false;
-                conf = YamlConfiguration.loadConfiguration(file);
-                    if (getFileSellAllConfig().getString(path) == null){
-                        conf.set(path, SpigotPrison.format(string));
-                        newValue = true;
-                    }
-                    if (newValue) {
-                        conf.save(file);
-                    }
-            } catch (IOException e2){
-                e2.printStackTrace();
-            }
-        }
+        fileMaker(file);
 
-        // Get the final config
+        // Get the config
         conf = YamlConfiguration.loadConfiguration(file);
 
+        // Call method
+        values();
+
+        if (changeCount > 0) {
+            try {
+                conf.save(file);
+                Output.get().logInfo( "&aThere were &b%d &anew values added for the language files " + "used by the SellAllConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile() );
+            }
+            catch (IOException e) {
+                Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + "used by the SellAllConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
+            }
+        }
+    }
+
+    public void dataConfig(String key, String value){
+        if (conf.getString(key) == null) {
+            conf.set(key, value);
+            changeCount++;
+        }
     }
 
     private void values(){
@@ -89,5 +83,4 @@ public class SellAllConfig {
     public FileConfiguration getFileSellAllConfig(){
         return conf;
     }
-
 }

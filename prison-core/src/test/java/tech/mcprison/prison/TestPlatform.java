@@ -31,7 +31,6 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
@@ -42,6 +41,8 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
@@ -108,8 +109,14 @@ public class TestPlatform implements Platform {
 
     }
 
-    @Override public void unregisterCommand(String command) {
+    @Override 
+    public void unregisterCommand(String command) {
 
+    }
+    
+    @Override
+    public void unregisterAllCommands() {
+    	
     }
 
     @Override public List<PluginCommand> getCommands() {
@@ -127,12 +134,7 @@ public class TestPlatform implements Platform {
         return new TestScheduler();
     }
 
-    @Override public GUI createGUI(String title, int numRows) {
-        return null;
-    }
-
     @Override public void toggleDoor(Location doorLocation) {
-
     }
 
     @Override public void log(String message, Object... format) {
@@ -142,6 +144,14 @@ public class TestPlatform implements Platform {
         System.out.println(ChatColor.stripColor(String.format(message, format)));
     }
 
+    @Override
+    public void logCore( String message ) {
+    	if (suppressOutput) {
+    		return;
+    	}
+    	System.out.println(ChatColor.stripColor(message));
+    }
+    
     @Override public void debug(String message, Object... format) {
         log(message, format);
     }
@@ -239,4 +249,31 @@ public class TestPlatform implements Platform {
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		return null;
 	}
+	
+	@Override
+	public boolean linkModuleElements( ModuleElement sourceElement, 
+					ModuleElementType targetElementType, String name ) {
+		return false;
+	}
+
+	@Override
+	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB ) {
+		return false;
+	}
+	
+	@Override
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag ) {
+		return null;
+	}
+	
+	@Override
+	public int getModuleElementCount( ModuleElementType elementType ) {
+		return 0;
+	}
+	
+	@Override
+	public void autoCreateMineBlockAssignment() {
+		
+	}
+	
 }

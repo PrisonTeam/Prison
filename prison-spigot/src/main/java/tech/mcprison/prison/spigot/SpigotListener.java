@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -61,11 +60,14 @@ import tech.mcprison.prison.util.Location;
 public class SpigotListener implements Listener {
 
     public SpigotListener() {
+    	super();
     }
 
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, SpigotPrison.getInstance());
-    }
+    // Do not use this init() function since it is non-standard in how 
+    // prison is registering events. See SpigotPrison.onEnable().
+//    public void init() {
+//        Bukkit.getServer().getPluginManager().registerEvents(this, SpigotPrison.getInstance());
+//    }
 
     @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
         Prison.get().getEventBus().post(
@@ -194,5 +196,4 @@ public class SpigotListener implements Listener {
             theirs.setCancelled(true);
         }
     }
-
 }

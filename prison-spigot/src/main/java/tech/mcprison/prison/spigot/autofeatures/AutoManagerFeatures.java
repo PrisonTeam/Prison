@@ -8,12 +8,14 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -511,16 +513,39 @@ public class AutoManagerFeatures
 	private void dropExtra( HashMap<Integer, ItemStack> extra, Player player, Block block ) {
 		if ( extra != null && extra.size() > 0 ) {
 			for ( ItemStack itemStack : extra.values() ) {
-				player.getWorld().dropItem( player.getLocation(), itemStack );
 				
-				notifyPlayerThatInventoryIsFull( player, block );
+				if ( isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
+					
+					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+					
+					player.getWorld().dropItem( dropPoint, itemStack );
+					notifyPlayerThatInventoryIsFull( player, block );
+				}
+				else {
+					notifyPlayerThatInventoryIsFullLosingItems( player, block );
+				}
+					
 			}
 		}
 	}
 
 	private void notifyPlayerThatInventoryIsFull( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFull );
+	}
+	
+	@SuppressWarnings( "unused" )
+	private void notifyPlayerThatInventoryIsFullDroppingItems( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullDroppingItems );
+	}
+	
+	private void notifyPlayerThatInventoryIsFullLosingItems( Player player, Block block ) {
+		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullLosingItems );
+		
+	}
+	
+	private void notifyPlayerWithSound( Player player, Block block, AutoFeatures messageId ) {
 
-		String message = autoFeaturesConfig.getFeatureMessage( AutoFeatures.inventoryIsFull );
+		String message = autoFeaturesConfig.getFeatureMessage( messageId );
 		
 		// Play sound when full
 		if ( isBoolean( AutoFeatures.playSoundIfInventoryIsFull ) ) {
@@ -732,10 +757,14 @@ public class AutoManagerFeatures
 				default:
 					count += autoPickup( isBoolean( AutoFeatures.autoPickupAllBlocks ), p, itemInHand, e );
 					break;
-		}
+			}
 		
 					
 		}
+		
+		// Calculate XP on block break if enabled:
+		calculateXP( p, blockName, count );
+		
 		
 //				Output.get().logInfo( "In mine: %s  blockName= [%s] %s  drops= %s  count= %s  dropNumber= %s ", 
 //						mine.getName(), blockName, Integer.toString( dropNumber ),
@@ -1059,6 +1088,86 @@ public class AutoManagerFeatures
 			player.updateInventory();
 			
 		}
+	}
+	
+	private void calculateXP( Player player, String blockName, int count ) {
+		
+		if ( isBoolean( AutoFeatures.isCalculateXPEnabled )) {
+			
+			int xp = 0;
+			for ( int i = 0; i < count; i++ ) {
+				xp += calculateXP( blockName );
+			}
+			
+			if ( xp > 0 ) {
+				
+				if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
+					
+					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+					
+					((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
+				}
+				else {
+					
+					player.giveExp( xp );
+				}
+				
+			}
+		}
+	}
+	/**
+	 * <p>This calculate xp based upon the block that is broken.
+	 * Fortune does not increase XP that a block drops.
+	 * </p>
+	 * 
+	 * <ul>
+	 *   <li>Coal Ore: 0 - 2</li>
+	 *   <li>Nether Gold Ore: 0 - 1</li>
+	 *   <li>Diamond Ore, Emerald Ore: 3 - 7</li>
+	 *   <li>Lapis Luzuli Ore, Nether Quartz Ore: 2 - 5</li>
+	 *   <li>Redstone Ore: 1 - 5</li>
+	 *   <li>Monster Spawner: 15 - 43</li>
+	 * </ul>
+	 * 
+	 * @param Block
+	 * @return
+	 */
+	private int calculateXP( String blockName ) {
+		int xp = 0;
+		
+		switch ( blockName.toLowerCase() )
+		{
+			case "coal_ore":
+				xp = getRandom().nextInt( 2 );
+				break;
+				
+			case "nether_gold_ore":
+				xp = getRandom().nextInt( 1 );
+				break;
+				
+			case "diamond_ore":
+			case "emerald_ore":
+				xp = getRandom().nextInt( 4 ) + 3;
+				break;
+				
+			case "lapis_ore":
+			case "nether_quartz_ore":
+				xp = getRandom().nextInt( 3 ) + 2;
+				break;
+				
+			case "redstone_ore":
+				xp = getRandom().nextInt( 4 ) + 1;
+				break;
+				
+			case "spawn":
+				xp = getRandom().nextInt( 28 ) + 15;
+				break;
+
+			default:
+				break;
+		}
+		
+		return xp;
 	}
 	
 	/**

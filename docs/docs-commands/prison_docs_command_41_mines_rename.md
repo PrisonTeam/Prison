@@ -3,23 +3,22 @@
 
 ## Description:
 
-Prison Modules command, will show a "status" for modules, like enabled or disabled.
-
-## Permission:
-
-- `prison.modules`
-- `prison.admin`
+Short description of the command will be here
 
 ## SubCommands:
 
-- `none`
+- List
+- Of
+- Sub
+- Commands
+- With
+- Short
+- Description
 
 ## How to use the command
 
-Just execute the command himself `/prison modules`
-
 ### Command Format
 
-`/prison modules`
+`/prison`
 
 **END of the command INFO**

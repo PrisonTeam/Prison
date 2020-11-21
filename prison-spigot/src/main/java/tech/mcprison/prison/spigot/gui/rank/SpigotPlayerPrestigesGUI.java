@@ -32,9 +32,10 @@ import java.util.Optional;
 public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
     private final Player player;
-
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
+    private final Configuration guiConfig = guiConfig();
+    private final Configuration messages = messages();
 
     public SpigotPlayerPrestigesGUI(Player player) {
         this.player = player;
@@ -113,7 +114,6 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
 
         LadderManager lm = getRankPlugin().getLadderManager();
         Optional<RankLadder> ladder = lm.getLadder("prestiges");
@@ -131,16 +131,15 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Prestiges -> PlayerPrestiges"));
 
         // guiBuilder and validation
-        if (guiBuilder(GuiConfig, ladder, dimension, inv)) return;
+        if (guiBuilder(ladder, dimension, inv)) return;
 
         // Open the inventory
-        getPlayer().openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(getPlayer());
+        openGUI(getPlayer(), inv);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
+    private boolean guiBuilder(Optional<RankLadder> ladder, int dimension, Inventory inv) {
         try {
-            buttonsSetup(guiConfig, ladder, dimension, inv);
+            buttonsSetup(ladder, dimension, inv);
         } catch (NullPointerException ex){
             getPlayer().sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -149,17 +148,18 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Optional<RankLadder> ladder, int dimension, Inventory inv) {
+    private void buttonsSetup(Optional<RankLadder> ladder, int dimension, Inventory inv) {
+
 
         if (!ladder.isPresent()){
-            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.LadderPrestigesNotFound")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
             return;
         }
 
         RankLadder ladderData = ladder.get();
 
         if (!ladderData.getLowestRank().isPresent()){
-            player.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoRanksPrestigesLadder")));
+            player.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
             return;
         }
 
@@ -178,8 +178,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    guiConfig.getString("Gui.Lore.Info"),
-                    guiConfig.getString("Gui.Lore.Price3") + rank.cost
+                    messages.getString("Lore.Info"),
+                    messages.getString("Lore.Price3") + rank.cost
             );
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
@@ -201,8 +201,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         List<String> rankupLore = createLore(
-                guiConfig.getString("Gui.Lore.IfYouHaveEnoughMoney"),
-                guiConfig.getString("Gui.Lore.ClickToRankup")
+                messages.getString("Lore.IfYouHaveEnoughMoney"),
+                messages.getString("Lore.ClickToRankup")
         );
 
         ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));

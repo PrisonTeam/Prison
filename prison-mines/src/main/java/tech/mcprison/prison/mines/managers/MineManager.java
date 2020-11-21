@@ -35,9 +35,11 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.util.PlaceholdersUtil;
 
 /**
  * Manages the creation, removal, and management of mines.
@@ -47,12 +49,6 @@ import tech.mcprison.prison.store.Document;
 public class MineManager 
 	implements ManagerPlaceholders {
 
-	public static final double TIME_SECOND = 1.0;
-	public static final double TIME_MINUTE = TIME_SECOND * 60.0;
-	public static final double TIME_HOUR = TIME_MINUTE * 60.0;
-	public static final double TIME_DAY = TIME_HOUR * 24.0;
-	
-	
     // Base list
     private List<Mine> mines;
     private TreeMap<String, Mine> minesByName;
@@ -65,6 +61,127 @@ public class MineManager
     
     private boolean mineStats = false;
 
+	/**
+	 * <p>These sort orders control how the mines are sorted, and which ones 
+	 * are omitted from the result's included list of mines.
+	 * </p>
+	 * 
+	 * <p>The type invalid is used to indicate that String value could not be
+	 * converted to a MineSortOrder when using the fromString() function.
+	 * </p>
+	 * 
+	 * <p>There are three primary sort orders: sortOrder, alpha, and active.
+	 * Those primary three excludes any mine that has a sortOrder of -1.
+	 * Each of these has a counter sort type that includes the excluded
+	 * mines, and are: xSortOrder, xAplha, and xActive.
+	 * </p>
+	 * 
+	 *
+	 */
+	public enum MineSortOrder {
+
+		/**
+		 * The sort order is based upon the mine's sortOrder field.  If more than
+		 * one mine exists within a sortOrder, then they will be sub-sorted by
+		 * alphabetical order. Mines are excluded if they have a sortOrder of -1, 
+		 * but are placed within the exclude results set and they are sub-sorted 
+		 * alphabetically.
+		 */
+		sortOrder,
+		
+		/**
+		 * All mines are sorted by alphabetical order. Mines are excluded if they 
+		 * have a sortOrder of -1, but are placed within the exclude results set 
+		 * and they are sub-sorted alphabetically.
+		 */
+		alpha,
+		
+		/** 
+		 * This provides a list of mines with the most active mines sorted to the
+		 * top of the list.
+		 * 
+		 * All mines are sorted alphabetically, with the most active mines being
+		 * placed at the very top of the list. The value of totalBlocksMined is 
+		 * used to order the mines.  The value of totalBlocksMined resets to zero
+		 * upon server restart.  So this provides the most active mines 
+		 * since the server started. Mines are excluded if they have a 
+		 * sortOrder of -1, but are placed within the exclude results set and 
+		 * they are sub-sorted alphabetically.
+		 */
+		active,
+		
+		/**
+		 * Same as sortOrder but ignores excluded mines.
+		 */
+		xSortOrder(true),
+		
+		/**
+		 * Same as alpha but ignores excluded mines.
+		 */
+		xAlpha(true),
+		/**
+		 * Same as active but ignores excluded mines.
+		 */
+		xActive(true),
+		
+		/**
+		 * Not a valid sort order, but is used within the fromString to indicate
+		 * that the parameter sortOrder is invalid.
+		 */
+		invalid;
+		
+		private final boolean excluded;
+		
+		private MineSortOrder( boolean excluded ) {
+			this.excluded = excluded;
+			
+		}
+		private MineSortOrder() {
+			this(false);
+		}
+		
+		public boolean isExcluded() {
+			return excluded;
+		}
+		
+		public static MineSortOrder fromString( String sortOrder ) {
+			MineSortOrder results = MineSortOrder.invalid;
+			
+			if ( sortOrder != null && sortOrder.trim().length() > 0 ) {
+				for ( MineSortOrder so : values() ) {
+					if ( so.name().equalsIgnoreCase( sortOrder ) ) {
+						results = so;
+						break;
+					}
+				}
+				
+			}
+			
+			return results;
+		}
+		
+		/**
+		 * Returns a space separated list of available sort orders, omitting
+		 * invalid.
+		 * 
+		 * @return
+		 */
+		static String availableSortOrders() {
+			StringBuilder sb = new StringBuilder();
+			
+			for ( MineSortOrder so : values() ) {
+				if ( so != invalid ) {
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					sb.append( so.name() );
+				}
+			}
+			
+			return sb.toString();
+		}
+	}
+		
     /**
      * <p>MineManager must be fully instantiated prior to trying to load the mines,
      * otherwise if the mines cannot find the world they should be, they will be
@@ -183,7 +300,7 @@ public class MineManager
     	boolean success = false;
     	if ( mine != null ) {
     		coll.delete( mine.getName() );
-    		getMinesByName().remove(mine.getName());
+    		getMinesByName().remove(mine.getName().toLowerCase());
     		success = getMines().remove(mine);
     	}
 	    return success;
@@ -223,6 +340,24 @@ public class MineManager
         }
     }
 
+    
+
+
+	public void rename( Mine mine, String newName ) {
+		
+		String oldMineName = mine.getName();
+		
+		// Remove the old mine:
+		removeMine( oldMineName );
+
+		// rename the mine:
+		mine.setName( newName );
+		
+		// Add the mine back with the new name:
+		add( mine );
+		
+	}
+
 
     /**
      * Returns the mine with the specified name.
@@ -240,6 +375,50 @@ public class MineManager
     public List<Mine> getMines() {
         return mines;
     }
+    
+    public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
+    	return getMines( sortOrder, getMines() );
+    }
+    
+    protected PrisonSortableResults getMines( MineSortOrder sortOrder, List<Mine> mines ) {
+    	PrisonSortableResults results = new PrisonSortableResults( sortOrder );
+    	
+    	
+    	// if invalid, then that's invalid, so default to sortOrder:
+    	if ( sortOrder == MineSortOrder.invalid ) {
+    		sortOrder = MineSortOrder.sortOrder;
+    	}
+
+    	
+    	for ( Mine mine : mines ) {
+    		if ( mine.getSortOrder() < 0 ) {
+    			results.getExclude().add( mine );
+    		}
+    		else {
+    			results.getInclude().add( mine );
+    		}
+		}
+
+    	// Sort first by name, then by other means if needed:
+    	results.getInclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+    	results.getExclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+
+    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.xSortOrder ) {
+    		results.getInclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+    		results.getExclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+    	}
+    	
+    	// for now hold off on sorting by total blocks mined.
+    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.xActive ) {
+    		results.getInclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    		results.getExclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+    	}
+    	
+    	return results;
+    }
+    
+    
+    
 
 	public TreeMap<String, Mine> getMinesByName() {
 		return minesByName;
@@ -398,6 +577,20 @@ public class MineManager
 				DecimalFormat iFmt = new DecimalFormat("#,##0");
 				
 				switch ( placeHolderKey.getPlaceholder() ) {
+					case prison_mn_minename:
+					case prison_mines_name_minename:
+					case prison_mn_pm:
+					case prison_mines_name_playermines:
+						results = mine.getName();
+						break;
+						
+					case prison_mt_minename:
+					case prison_mines_tag_minename:
+					case prison_mt_pm:
+					case prison_mines_tag_playermines:
+						results = mine.getTag() == null ? mine.getName() : mine.getTag();
+						break;
+						
 					case prison_mi_minename:
 					case prison_mines_interval_minename:
 					case prison_mi_pm:
@@ -410,7 +603,7 @@ public class MineManager
 					case prison_mif_pm:
 					case prison_mines_interval_formatted_playermines:
 						double timeMif = mine.getResetTime();
-						results = formattedTime( timeMif );
+						results = PlaceholdersUtil.formattedTime( timeMif );
 						break;
 						
 					case prison_mtl_minename:
@@ -436,7 +629,7 @@ public class MineManager
 					case prison_mines_timeleft_formatted_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						double timeMtlf = mine.getRemainingTimeSec();
-						results = formattedTime( timeMtlf );
+						results = PlaceholdersUtil.formattedTime( timeMtlf );
 						break;
 						
 					case prison_ms_minename:
@@ -599,38 +792,7 @@ public class MineManager
 	}
 
 
-	private String formattedTime( double time ) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	long days = (long)(time / TIME_DAY);
-    	time -= (days * TIME_DAY);
-    	if ( days > 0 ) {
-    		sb.append( days );
-    		sb.append( "d " );
-    	}
-    	
-    	long hours = (long)(time / TIME_HOUR);
-    	time -= (hours * TIME_HOUR);
-    	if ( sb.length() > 0 || hours > 0 ) {
-    		sb.append( hours );
-    		sb.append( "h " );
-    	}
-    	
-    	long mins = (long)(time / TIME_MINUTE);
-    	time -= (mins * TIME_MINUTE);
-    	if ( sb.length() > 0 || mins > 0 ) {
-    		sb.append( mins );
-    		sb.append( "m " );
-    	}
-    	
-    	double secs = (double)(time / TIME_SECOND);
-    	time -= (secs * TIME_SECOND);
-    	DecimalFormat dFmt = new DecimalFormat("#0");
-    	sb.append( dFmt.format( secs ));
-    	sb.append( "s " );
-    	
-		return sb.toString();
-	}
+
 
 
 	/**

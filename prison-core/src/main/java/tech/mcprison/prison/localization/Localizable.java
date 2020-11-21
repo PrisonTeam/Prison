@@ -29,21 +29,23 @@
 
 package tech.mcprison.prison.localization;
 
-import com.google.common.collect.Lists;
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.output.Output;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Lists;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
+
 /**
  * Represents an object which has the potential to be localized in one of
- * multiple languages and returned as a string.
+ * multiple configs and returned as a string.
  * <p>
  * <p>In the event that a {@link Localizable} cannot be localized with the given
  * parameters or in its parent {@link LocaleManager}'s default locale, it will
@@ -290,19 +292,8 @@ public class Localizable {
      * @param level  The message level to set this to.
      * @since 1.0
      */
-    public void sendTo(CommandSender sender, Level level) {
-        switch (level) {
-            case WARN:
-                Output.get().sendWarn(sender, localizeFor(sender));
-                break;
-            case ERROR:
-                Output.get().sendError(sender, localizeFor(sender));
-                break;
-            case INFO:
-            default:
-                Output.get().sendInfo(sender, localizeFor(sender));
-                break;
-        }
+    public void sendTo(CommandSender sender, LogLevel level) {
+    	Output.get().sendMessage(sender, localizeFor(sender), level);
     }
 
     /**
@@ -316,10 +307,9 @@ public class Localizable {
      * are included by default by the library.</p>
      *
      * @param sender The {@link CommandSender} to send this {@link Localizable} to
-     * @since 1.0
      */
     public void sendTo(CommandSender sender) {
-        sendTo(sender, Level.INFO);
+        sendTo(sender, LogLevel.PLAIN);
     }
 
     /**
@@ -362,8 +352,9 @@ public class Localizable {
         return nullable != null ? nullable : "";
     }
 
-    public enum Level {
-        INFO, WARN, ERROR
-    }
+    // Use LogLevel instead since they are the same:
+//    public enum Level {
+//        PLAIN, INFO, WARN, ERROR
+//    }
 
 }

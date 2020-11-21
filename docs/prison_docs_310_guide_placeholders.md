@@ -19,6 +19,32 @@ Add in to the mix, that different plugins deal with placeholders in slightly dif
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+# Placeholder Types and Counts
+
+* **Rank Related:** 4 including aliases
+* **Rankup Related:** 16 including aliases
+
+
+* **Rank Ladder Related:** 4 including aliases **times** each ladder
+* **Rankup Ladder Related:** 16 including aliases **times** each ladder
+
+
+* **Player Balance Related:** 2 including aliases
+* **Player Ladder Balance Related:** 2 including aliases **times** each ladder
+
+
+* **Mine Related:** 28 including aliases **times** each mine
+* **Mine Player Related:** 14 including aliases
+
+
+**Total base Placeholders:** 86 including aliases
+
+
+**Total if 26 Mines and 3 Ladders:** 836 placeholder including aliases (20 + 24*3 ladder + 2 + 28*26 mines + 14) 
+	
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 # Requirements
 
@@ -31,15 +57,19 @@ There is always more than one way to do things, and the same goes for having mor
 
 # Placeholder Theory for Prison
 
-There are two major types of placeholders in prison: Player based and Mine based.
+There are two major types of placeholders in prison: Player based and Mine based. With the most recent releases of prison, there have been hybrids added that are a combination of the two.  For example there are now ladder based placeholder that allow targeting ranks on a specific ladder, instead of all ladders.  Also there are player mine placeholders that report on the mine stats for the mine in which the player is physically located in.  The player mine placeholders have no value when the player is not in a mine, and they will change as the player goes from mine to mine.
 
-The player based placeholders can only report on the player that is initiating the command, or request. These placeholders pertain to the player's attributes, such as rank or next rank.  Internally, all of these requests must include the player's UUID, which is why you cannot just add them to a sign, since the sign does not know any player's UUID.
+There are also different types of data that are returned in placeholders. Text, numbers, formatted numbers, and bar graphs.
 
-There are actually two kinds of player based placeholders.  Rank placeholders that returns all of the player's current attributes for all active ladders they are associated with.  For example, if they are active on four ladders, then they will have four active ranks on four ladders with possible values.  So it may look something like this: `[mod][Zeus][+2][B]`, of which the ladders could be mod, donor, prestige, and default.  The thing to remember about player rank placeholders is that they may return more than one value, and you cannot control the order of the values (yet).
+The player based placeholders can only report on the player that is initiating the command, or request. These placeholders pertain to the player's attributes, such as rank, next rank, their balance, how more they need before reaching the next rank, and etc.  Internally, all of these requests must include the player's UUID, which is why you cannot just add them to a sign, since the sign does not know any player's UUID.
 
-The other player based placeholders are similar to the player rank placeholders, but are specific to a single ladder.  This allows you to get single placeholder, and control the order of placeholders, at the expense of having to specify multiple placeholders.
+There are actually two major kinds of player based placeholders; a third type is "related" more to mines and not specifically to the player's ranks.  Rank placeholders that returns all of the player's current attributes for all active ladders they are associated with.  For example, if they are active on four ladders, then they will have four active ranks on four ladders with possible values.  So it may look something like this: `[mod][Zeus][+2][B]`, of which the ladders could be mod, donor, prestige, and default.  The thing to remember about player rank placeholders is that they may return more than one value, and you cannot control the order of the values.
+
+The other player based placeholders, which complements the Rank Placeholders, are the ladder placeholders that narrows the ranks down to a specific ladder.  So with our example above, if you only want the ranks from the *default* ladder, that is now possible. Also you can control the order they appear by ordering the ladder placeholders in a specific sequence.  
 
 The Mine based placeholders provide details about mines, and the mine name becomes part of the placeholder name.  Out of all of the possible mine based placeholders, each one is duplicated for each mine.  So, in rough terms, if there are different mine placeholders and you have 40 mines, then prison will generate about 400 place holders: 40 mines x 10 placeholders each = 400 placeholders for prison.
+
+The same applies to the ladder placeholders as the mine placeholders; for every ladder, there will be a specific placeholder that represents each ladder.  
 
 Prison has integrations for direct use of providing placeholder values to to the other plugins. Some of those other plugins request placeholder values using partial placeholder names.  Therefore to improve performance and to prevent having to always reconstructing the full placeholder names, prison precomputes the fragments for all placeholders.  Therefore, with our example of 40 mines and 10 placeholders, the actual internal number of placeholder combinations that prison will respond to is 800: 40 mines x 10 placeholders per mine  x 2 for aliases = 800 placeholders for prison.
 
@@ -54,7 +84,7 @@ Also, internally, prison only responds to the placeholder name without the escap
 
 # Rank Command Placeholders
 
-The Rank Commands recognize only two placeholders, but they are not considered part of the standard placeholders.  There are also only two placeholders that are recognized and both are case sensitive, and must also include curly braces too.
+The Rank Commands recognize only two placeholders, but they are not considered part of the standard placeholders.  There are also only two placeholders that are recognized and both are case sensitive (must be lower case), and must also include curly braces too.
 
 * {player}
 * {player_uid}
@@ -78,8 +108,13 @@ There are a few commands within prison that will allow you list placeholders, se
 * **/prison placeholders search**
 * **/prison placeholders test**
 
+* **/prison placeholders reload**
 
-* **/prison version** Provides the same placeholder listing as /prison placeholders list.
+NOTE: the `/prison placeholders reload` command only reloads and registers the placeholders with the placeholder integrations.  This would be required to enable placeholders on a new mine or new ranks or a new ladder that were added since the last server restart.  Also if you reload another plugin, such as papi, you will need to reload the plugins, which just re-registers them.
+
+
+
+* **/prison version** No longer provides a list of placeholders since it's become too large.
 
 
 
@@ -93,25 +128,45 @@ Example of placeholder command listings
 <h3>Prison Placeholder Listings</h3>
 
 <img src="images/prison_docs_310_guide_placeholders_2.png" alt="Prison Placeholder Listing" title="Prison Placeholder Listing" width="500" />
+<img src="images/prison_docs_310_guide_placeholders_2b.png" alt="Prison Placeholder Listing" title="Prison Placeholder Listing" width="500" />
 
-Example of the list of placeholders that is available through **/prison version** and **/prison placeholders list**.  Please note that this list may evolve as new placeholders are added.  Use these commands to get the current listing that is available on your server.
+Example of the list of placeholders that is available through **/prison placeholders list**.  Please note that this list may evolve as new placeholders are added.  Use these commands to get the current listing that is available on your server.
 
 
-<h3>Prison Placeholder Search with Two Search Patters</h3>
+<h3>Prison Placeholder Search with Two Search Patterns</h3>
 
 <img src="images/prison_docs_310_guide_placeholders_3.png" alt="Prison Placeholder Search" title="Prison Placeholder Search" width="500" />
 
-This is an example of searching for placeholders using two search patterns: *temp5* and *format*. The term temp5 is the name of a mine and is an example of a the dynamic construction of placeholders, and that you can still perform a search with them.  The search patters can be any String fragment found in either the placeholder, or it's alias.  
+This is an example of searching for placeholders using a player's name plus two search patterns: *temp5* and *format*. The term temp5 is the name of a mine and is an example of a the dynamic construction of placeholders, and that you can still perform a search with them.  The search patterns can be any String fragment found in either the placeholder, or it's alias.  
 
 If more than one search pattern is provided, then all patters must hit on the same placeholder to be included in the results.  They behave as a logical AND relationship. 
 
+A player's is provided, but results do not include any player, rank, or ladder entries.  This shows that if a player's name is provide, it is recognized as a player and will not prevent valid hits.
+
+
+The following example shows what the command is like when specifying the player's name, a page numer for the results, and three search parameters:
+
+```
+/prison placeholders search RoyalCoffeeBeans 1 rankup cost default
+```
+
+This example shows the current placeholder values for that player, including an example of a bar graph.
+
+<img src="images/prison_docs_310_guide_placeholders_3b.png" alt="Prison Placeholder Search" title="Prison Placeholder Search" width="600" />
 
 
 <h3>Prison Placeholder Listings - All Placeholders</h3>
 
-<img src="images/prison_docs_310_guide_placeholders_4.png" alt="Prison Placeholder Listing" title="Prison Placeholder Listing" width="500" />
+<img src="images/prison_docs_310_guide_placeholders_4.png" alt="Prison Placeholder Listing" title="Prison Placeholder Listing" width="600" />
 
 In this contrived example, since all placeholders begin with "prison", this search returns a listing of all placeholders. In this example, using the current Prison v3.2.1-alpha.13 release, it has generated 65 pages of results, at 6 placeholders per page which includes the alias.  
+
+The following shows an example of all placeholders that are active with Prison_v3.2.2-alpha.10.jar.  It includes a total of 1,294 placeholders, on 108 pages.  This is based upon 4 ladders, 13 ranks, and 41 mines.
+
+
+<img src="images/prison_docs_310_guide_placeholders_4b.png" alt="Prison Placeholder Listing" title="Prison Placeholder Listing" width="600" />
+
+
 
 
 <h3>Prison Placeholder Listings</h3>
@@ -251,6 +306,7 @@ temp5:
   - 'Welcome to Prison Mine: temp5'
   - 'Reset Interval: {slowest}%prison_mines_interval_temp5% - {slowest}%prison_mines_interval_formatted_temp5%'
   - 'Reset Time Left: {medium}%prison_mines_timeleft_temp5% - {fast}%prison_mtlf_temp5%'
+  - 'Reset Time Left: {slowest}%prison_mines_timeleft_bar_temp5%'
   - 'Reset Count: {medium}%prison_mines_reset_count_temp5%'
   - 'Mine Size: {slowest}%prison_mines_size_temp5%'
   - 'Blocks Remaining: {slowest}%prison_mr_temp5% {slowest}%prison_mp_temp5%%'
@@ -258,6 +314,10 @@ temp5:
 ```
 
 Notice that the prison placeholders are wrapped in the % % escape characters.  The prefixed placeholders such as {slowest} and {fast} are for the plugin HolographicExtensions and they control how frequently the placeholders are refreshed.
+
+This is an example of the above settings, including the bar graph.  Notice that the bar graph's properties can be adjusted for both the characters that are used, and the total number of characters (width).  See the configuration within the file `/plugins/Prison/config.yml`.
+<img src="images/prison_docs_310_guide_placeholders_6.png" alt="Prison Holographic Displays" title="Prison Placeholder Listing" width="600" />
+
 
 Once you update and save the database.yml file, you can have HolographicDisaplys reload from the files:
 

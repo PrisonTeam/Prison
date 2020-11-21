@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -22,6 +23,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
     private final Player p;
 	private final Mine mine;
     private final String mineName;
+    private final Configuration messages = messages();
 
     public SpigotMineInfoGUI(Player p, Mine mine, String mineName){
         this.p = p;
@@ -34,19 +36,15 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         int dimension = 45;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> MineInfo"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
-        if (guiBuilder(inv, GuiConfig)) return;
+        if (guiBuilder(inv)) return;
 
         // Opens the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -55,58 +53,54 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig) {
+    private void buttonsSetup(Inventory inv) {
+
+
         // The Reset Mine button and lore
-        List<String> resetminelore = createLore(
-                guiConfig.getString("Gui.Lore.LeftClickToReset"),
+        List<String> resetMineLore = createLore(
+                messages.getString("Lore.LeftClickToReset"),
                 "",
-                guiConfig.getString("Gui.Lore.RightClickToToggle"),
-                guiConfig.getString("Gui.Lore.SkipReset1"),
-                guiConfig.getString("Gui.Lore.SkipReset2"),
-                guiConfig.getString("Gui.Lore.SkipReset3"),
+                messages.getString("Lore.RightClickToToggle"),
+                messages.getString("Lore.SkipReset1"),
+                messages.getString("Lore.SkipReset2"),
+                messages.getString("Lore.SkipReset3"),
                 "",
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToToggle"),
-                guiConfig.getString("Gui.Message.ZeroBlocksReset1"),
-                guiConfig.getString("Gui.Message.ZeroBlocksReset2"),
-                guiConfig.getString("Gui.Message.ZeroBlocksReset3")
+                messages.getString("Lore.ShiftAndRightClickToToggle"),
+                messages.getString("Message.ZeroBlocksReset1"),
+                messages.getString("Message.ZeroBlocksReset2"),
+                messages.getString("Message.ZeroBlocksReset3")
         );
-
-        // Set the Mine spawn at your location
-        List<String> MineSpawnlore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToUse"),
-                guiConfig.getString("Gui.Lore.SpawnPoint2")
+        List<String> MineSpawnLore = createLore(
+                messages.getString("Lore.ClickToUse"),
+                messages.getString("Lore.SpawnPoint2")
         );
-
-        // Lore and button
         List<String> MinesNotificationsLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
-                guiConfig.getString("Gui.Lore.Notifications")
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.Notifications")
         );
-
-        // Lore and button
         List<String> MinesTpLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToTeleport"),
-                guiConfig.getString("Gui.Lore.Tp")
+                messages.getString("Lore.ClickToTeleport"),
+                messages.getString("Lore.Tp")
+        );
+        List<String> blocksOfTheMineLore = createLore(
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.Blocks2"));
+        List<String> mineResetTimeLore = createLore(
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.ManageResetTime"),
+                messages.getString("Lore.ResetTime") + mine.getResetTime());
+        List<String> mineRenameLore = createLore(
+                messages.getString("Lore.ClickToRename"),
+                messages.getString("Lore.MineName") + mineName
+        );
+        List<String> closeGUILore = createLore(
+                messages.getString("Lore.ClickToClose")
         );
 
-        // Blocks of the mine button and lore
-        List<String> blocksoftheminelore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
-                guiConfig.getString("Gui.Lore.Blocks2"));
-
-        // Blocks of the mine button and lore
-        List<String> mineResetTimeLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
-                guiConfig.getString("Gui.Lore.ManageResetTime"),
-                guiConfig.getString("Gui.Lore.ResetTime") + mine.getResetTime());
-
-        // Create the button, set up the material, amount, lore and name
-        ItemStack resetmine = createButton(Material.EMERALD_BLOCK, 1, resetminelore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
-
-        // Create the button
-        ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnlore, SpigotPrison.format("&3" + "Mine_Spawn: " + mineName));
-
-        // Create the button
+        // Create the button, set the material, amount, lore and name
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        ItemStack resetMine = createButton(Material.EMERALD_BLOCK, 1, resetMineLore, SpigotPrison.format("&3" + "Reset_Mine: " + mineName));
+        ItemStack MineSpawn = createButton(Material.COMPASS, 1, MineSpawnLore, SpigotPrison.format("&3" + "Mine_Spawn: " + mineName));
         ItemStack MinesNotifications = createButton(Material.SIGN, 1, MinesNotificationsLore, SpigotPrison.format("&3" + "Mine_notifications: " + mineName));
 
         // Create the button
@@ -117,7 +111,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         ItemStack MinesTP = createButton(bed, 1, MinesTpLore, SpigotPrison.format("&3" + "TP_to_the_Mine: " + mineName));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack blocksofthemine = createButton(Material.COAL_ORE, 1, blocksoftheminelore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + mineName));
+        ItemStack blocksOfTheMine = createButton(Material.COAL_ORE, 1, blocksOfTheMineLore, SpigotPrison.format("&3" + "Blocks_of_the_Mine: " + mineName));
 
         // Create the button, set up the material, amount, lore and name
         Material watch = Material.matchMaterial( "watch" );
@@ -128,23 +122,17 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         }
         ItemStack mineResetTime = createButton(watch, 1, mineResetTimeLore, SpigotPrison.format("&3" + "Reset_Time: " + mineName));
 
-        // Position of the button
-        inv.setItem(10, resetmine);
+        ItemStack mineRename = createButton(Material.FEATHER, 1, mineRenameLore, SpigotPrison.format("&3" + "Mine_Name: " + mineName));
 
         // Position of the button
-        inv.setItem(13, MineSpawn);
-
-        // Position of the button
-        inv.setItem(16, MinesNotifications);
-
-        // Position of the button
-        inv.setItem(28, MinesTP);
-
-        // Position of the button
-        inv.setItem(31, blocksofthemine);
-
-        // Position of the button
-        inv.setItem(34, mineResetTime);
+        inv.setItem(10, resetMine);
+        inv.setItem(12, MineSpawn);
+        inv.setItem(14, MinesNotifications);
+        inv.setItem(16, MinesTP);
+        inv.setItem(29, blocksOfTheMine);
+        inv.setItem(31, mineResetTime);
+        inv.setItem(33, mineRename);
+        inv.setItem(44, closeGUI);
     }
 
 }

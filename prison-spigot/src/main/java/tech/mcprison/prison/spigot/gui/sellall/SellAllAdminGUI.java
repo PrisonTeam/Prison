@@ -21,6 +21,8 @@ import java.util.Set;
 public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration conf = sellAll();
+    private final Configuration messages = messages();
 
     public SellAllAdminGUI(Player p){
         this.p = p;
@@ -28,26 +30,23 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Load configs
-        Configuration conf = SpigotPrison.getSellAllConfig();
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         Inventory inv;
 
-        if (guiBuilder(conf, GuiConfig)) return;
+        if (guiBuilder()) return;
 
-        inv = buttonsSetup(conf, GuiConfig);
+        inv = buttonsSetup();
         if (inv == null) return;
 
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private Inventory buttonsSetup(Configuration conf, Configuration guiConfig) {
+    private Inventory buttonsSetup() {
+
 
         boolean emptyInv = false;
 
         try {
+            assert conf != null;
             if (conf.getConfigurationSection("Items") == null) {
                 emptyInv = true;
             }
@@ -56,7 +55,6 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.NoSellAllItems")));
             p.closeInventory();
             return null;
         }
@@ -68,7 +66,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(guiConfig.getString("Gui.Message.TooManySellAllItems")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
             return null;
         }
 
@@ -86,9 +84,9 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         return inv;
     }
 
-    private boolean guiBuilder(Configuration conf, Configuration guiConfig) {
+    private boolean guiBuilder() {
         try {
-            buttonsSetup(conf, guiConfig);
+            buttonsSetup();
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();

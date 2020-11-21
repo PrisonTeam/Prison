@@ -18,53 +18,120 @@
 
 package tech.mcprison.prison.commands;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.output.Output;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
 
 
-public class RegisteredCommand {
+public class RegisteredCommand
+		implements Comparable<RegisteredCommand>  {
 
     private String label;
+    private CommandHandler handler;
     private RegisteredCommand parent;
+    private boolean alias = false;
+    
+    private String junitTest = null;
+    
     private String description;
     private String[] permissions;
     private String[] altPermissions;
+    private String[] aliases;
+    private List<RegisteredCommand> registeredAliases;
+    private RegisteredCommand parentOfAlias;
+    
     private boolean onlyPlayers;
     private Method method;
     private Object methodInstance;
-    private CommandHandler handler;
 
     private boolean set = false;
 
     private ArrayList<ExecutableArgument> methodArguments = new ArrayList<ExecutableArgument>();
     private ArrayList<CommandArgument> arguments = new ArrayList<CommandArgument>();
-    private ArrayList<RegisteredCommand> suffixes = new ArrayList<RegisteredCommand>();
-    private ArrayList<Flag> flags = new ArrayList<Flag>();
-    private WildcardArgument wildcard;
-    private Map<String, Flag> flagsByName = new LinkedHashMap<String, Flag>();
-    private Map<String, RegisteredCommand> suffixesByName =
-        new HashMap<String, RegisteredCommand>();
 
-    RegisteredCommand(String label, CommandHandler handler, RegisteredCommand parent) {
+    private WildcardArgument wildcard;
+    
+    private ArrayList<Flag> flags = new ArrayList<Flag>();
+    private Map<String, Flag> flagsByName = new LinkedHashMap<String, Flag>();
+
+    private ArrayList<RegisteredCommand> suffixes = new ArrayList<RegisteredCommand>();
+    private Map<String, RegisteredCommand> suffixesByName = new HashMap<String, RegisteredCommand>();
+
+    
+    public RegisteredCommand(String label, CommandHandler handler, RegisteredCommand parent) {
         this.label = label;
         this.handler = handler;
         this.parent = parent;
+        
+        this.registeredAliases = new ArrayList<>();
     }
 
+    /**
+     * For JUnit testing ONLY!  Never use for anything else!
+     */
+    private RegisteredCommand( String jUnitUsage ) {
+    	
+    	this.junitTest = jUnitUsage;
+    	
+    	this.label = "junitTest";
+    	this.handler = null;
+    	this.parent = null;
+    	
+    	this.registeredAliases = new ArrayList<>();
+    }
+    
+    protected static RegisteredCommand junitTest( String jUnitUsage ) {
+    	RegisteredCommand results = new RegisteredCommand( jUnitUsage );
+    	
+    	return results;
+    }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( getUsage() )
+    			.append( "  isRoot: " ).append( this instanceof RootCommand )
+    			.append( "  isAlias: " ).append( isAlias() )
+    			.append( "  suffixCnt: " ).append( getSuffixes().size() )
+    			.append( "  hasAliasParent: " ).append( getParentOfAlias() != null );
+    	
+    	if ( getParentOfAlias() != null ) {
+    		sb.append( " (" ).append( getParentOfAlias().getUsage() ).append( ")" );
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    /**
+     * The suffix is converted to all lowercase before adding to the map.
+     *  
+     * @param suffix
+     * @param command
+     */
     void addSuffixCommand(String suffix, RegisteredCommand command) {
-        suffixesByName.put(suffix.toLowerCase(), command);
+        suffixesByName.put( suffix.toLowerCase(), command);
         suffixes.add(command);
     }
-
+    
+    /**
+     * The suffix is converted to all lowercase before checking to see if it exists in the map.
+     * 
+     * @param suffix
+     * @return if the suffix exists
+     */
     boolean doesSuffixCommandExist(String suffix) {
-        return suffixesByName.get(suffix) != null;
+        return suffixesByName.containsKey( suffix.toLowerCase() );
     }
     
     public String getCompleteLabel() {
@@ -75,7 +142,7 @@ public class RegisteredCommand {
     void execute(CommandSender sender, String[] args) {
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             
             Output.get().logInfo( "&cLack of Permission Error: &7Player &3%s &7lacks permission to " +
             		"run the command &3%s&7. Permissions needed: [&3%s&7]. Alt Permissions: [&3%s&7]", 
@@ -88,13 +155,19 @@ public class RegisteredCommand {
 
         if (args.length > 0) {
             String suffixLabel = args[0].toLowerCase();
-            if (suffixLabel.equals(handler.getHelpSuffix())) {
+            if (suffixLabel.equals( CommandHandler.COMMAND_HELP_TEXT )) {
                 sendHelpMessage(sender);
                 return;
             }
 
             RegisteredCommand command = suffixesByName.get(suffixLabel);
             if (command == null) {
+                
+//                Output.get().logError( "### #### RegisteredCommands.execute : 1  " +
+//                		"if(command == null) ::  args.length = " + 
+//                			(args == null ? "null" : args.length) +
+//                			"  args[0] == " + args[0]);
+
                 executeMethod(sender, args);
             } else {
                 String[] nargs = new String[args.length - 1];
@@ -138,21 +211,43 @@ public class RegisteredCommand {
 
         try {
             try {
-                method.invoke(methodInstance, resultArgs.toArray());
-            } catch (InvocationTargetException e) {
+                method.invoke(getMethodInstance(), resultArgs.toArray());
+            } 
+            catch ( IllegalArgumentException | InvocationTargetException e) {
                 if (e.getCause() instanceof CommandError) {
                     CommandError ce = (CommandError) e.getCause();
                     Output.get().sendError(sender, ce.getColorizedMessage());
                     if (ce.showUsage()) {
                         sender.sendMessage(getUsage());
                     }
-                } else {
+                } 
+                else {
+    				StringBuilder sb = new StringBuilder();
+    				
+    				for ( Object arg : resultArgs ) {
+    					sb.append( "[" );
+    					sb.append( arg.toString() );
+    					sb.append( "] " );
+    				}
+
+                	String message = "RegisteredCommand.executeMethod(): Invoke error: [" +
+                				e.getMessage() + "] cause: [" +
+                				(e.getCause() == null ? "" : e.getCause().getMessage()) + "] " + 
+                				" target instance: [methodName= " +
+                				method.getName() + "  parmCnt=" + method.getParameterCount() + "  methodInstance=" + 
+                				getMethodInstance().getClass().getCanonicalName() + "] " +
+                				"command arguments: " + sb.toString()
+                				;
+                	Output.get().sendError( sender, message );
+
+                	// Generally these errors are major and require program fixes, so throw
+                	// the exception so the stacklist is logged.
                     throw e;
                 }
             }
         } catch (Exception e) {
             Prison.get().getLocaleManager().getLocalizable("internalErrorOccurred")
-                .sendTo(sender, Localizable.Level.ERROR);
+                .sendTo(sender, LogLevel.ERROR);
             e.printStackTrace();
         }
     }
@@ -192,12 +287,38 @@ public class RegisteredCommand {
         return parent;
     }
 
+    public boolean isAlias() {
+		return alias;
+	}
+	public void setAlias( boolean alias ) {
+		this.alias = alias;
+	}
+
     public String[] getPermissions() {
         return permissions;
     }
 
     public String[] getAltPermissions() {
 		return altPermissions;
+	}
+
+    public String[] getAliases() {
+		return aliases;
+	}
+
+	public List<RegisteredCommand> getRegisteredAliases() {
+		return registeredAliases;
+	}
+	
+	public RegisteredCommand getParentOfAlias() {
+		return parentOfAlias;
+	}
+	public void setParentOfAlias( RegisteredCommand parentOfAlias ) {
+		this.parentOfAlias = parentOfAlias;
+	}
+
+	private Object getMethodInstance() {
+		return methodInstance;
 	}
 
     public RegisteredCommand getSuffixCommand(String suffix) {
@@ -209,7 +330,10 @@ public class RegisteredCommand {
     }
 
     public String getUsage() {
-        return handler.getHelpHandler().getUsage(this);
+        return 
+        		junitTest == null ?
+        				handler.getHelpHandler().getUsage(this) : 
+        				junitTest;
     }
 
     public WildcardArgument getWildcard() {
@@ -241,6 +365,8 @@ public class RegisteredCommand {
         this.description = command.description();
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
+        this.aliases = command.aliases();
+        
         this.onlyPlayers = command.onlyPlayers();
 
         Class<?>[] methodParameters = method.getParameterTypes();
@@ -367,4 +493,11 @@ public class RegisteredCommand {
         return handler.getPermissionHandler().hasPermission(sender, permissions);
     }
 
+
+	@Override
+	public int compareTo( RegisteredCommand arg0 )
+	{
+		return getUsage().compareTo( arg0.getUsage() );
+	}
+	
 }

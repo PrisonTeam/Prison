@@ -67,11 +67,17 @@ public class Mine
     	super();
     	
     	setName(name);
-    	setBounds(selection.asBounds());
-    	
-    	setWorldName( getBounds().getMin().getWorld().getName());
-    	
-    	setEnabled( true );
+    	if ( selection == null ) {
+    		setVirtual( true );
+    	}
+    	else {
+    		
+    		setBounds(selection.asBounds());
+    		
+    		setWorldName( getBounds().getMin().getWorld().getName());
+    		
+    		setEnabled( true );
+    	}
         
         // Kick off the initialize:
         initialize();
@@ -171,45 +177,66 @@ public class Mine
 		String worldName = (String) document.get("world");
         setWorldName( worldName );
         setName((String) document.get("name")); // Mine name:
-		
+
+        
+        String tag = (String) document.get("tag");
+        setTag( tag );
+
+        
+        setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
+        
+        
+        Double sortOrder = (Double) document.get( "sortOrder" );
+        setSortOrder( sortOrder == null ? 0 : sortOrder.intValue() );
+
+        
 		World world = null;
 		
-		if ( worldName == null ) {
-			Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
-					"Contact support on how to fix.",  
-					getName());
-		}
+		if ( !isVirtual() ) {
+			if ( worldName == null ) {
+				Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
+						"Contact support on how to fix.",  
+						getName());
+			}
+			
+			Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
+			if (!worldOptional.isPresent()) {
+				MineManager mineMan = PrisonMines.getInstance().getMineManager();
+				
+				// Store this mine and the world in MineManager's unavailableWorld for later
+				// processing and hooking up to the world object. Print an error message upon
+				// the first mine's world not existing.
+				mineMan.addUnavailableWorld( worldName, this );
+				
+				setEnabled( false );
+			}
+			else {
+				world = worldOptional.get();
+				setEnabled( true );
+			}
+
+			//        World world = worldOptional.get();
+			
 		
-		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
-        if (!worldOptional.isPresent()) {
-            MineManager mineMan = PrisonMines.getInstance().getMineManager();
-            
-            // Store this mine and the world in MineManager's unavailableWorld for later
-            // processing and hooking up to the world object. Print an error message upon
-            // the first mine's world not existing.
-            mineMan.addUnavailableWorld( worldName, this );
-            
-            setEnabled( false );
-        }
-        else {
-        	world = worldOptional.get();
-        	setEnabled( true );
-        }
+			
+			Location locMin = getLocation(document, world, "minX", "minY", "minZ");
+			Location locMax = getLocation(document, world, "maxX", "maxY", "maxZ");
+			
+			setBounds( new Bounds( 
+					locMin,
+					locMax));
+			
+			setHasSpawn((boolean) document.get("hasSpawn"));
+			if (isHasSpawn()) {
+				setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
+			}
+			
+		}
         
-//        World world = worldOptional.get();
 
         
         Double resetTimeDouble = (Double) document.get("resetTime");
         setResetTime( resetTimeDouble != null ? resetTimeDouble.intValue() : PrisonMines.getInstance().getConfig().resetTime );
-
-        setBounds( new Bounds( 
-        			getLocation(document, world, "minX", "minY", "minZ"),
-        			getLocation(document, world, "maxX", "maxY", "maxZ")));
-        
-        setHasSpawn((boolean) document.get("hasSpawn"));
-        if (isHasSpawn()) {
-        	setSpawn(getLocation(document, world, "spawnX", "spawnY", "spawnZ", "spawnPitch", "spawnYaw"));
-        }
 
         
         setNotificationMode( MineNotificationMode.fromString( (String) document.get("notificationMode")) ); 
@@ -232,6 +259,12 @@ public class Mine
         // When loading, skipResetBypassCount must be set to zero:
         setSkipResetBypassCount( 0 );
         
+        
+        String rankString = (String) document.get( "rank" );
+        setRank( null );
+        setRankString( rankString );
+        
+        
         // This is a validation set to ensure only one block type is loaded file system.
         // Must keep the first one loaded.
         Set<String> validateBlockNames = new HashSet<>();
@@ -247,6 +280,44 @@ public class Mine
             	// Use the BlockType.name() load the block type:
             	BlockType blockType = BlockType.getBlock(blockTypeName);
             	if ( blockType != null ) {
+            		
+            		
+            		/**
+            		 * <p>The following is code to correct the use of items being used as a
+            		 * block in a mine, which will cause a failure in trying to place an 
+            		 * item as a block.
+            		 * </p>
+            		 * 
+            		 * <p>This is intended for the old block model and is temp code to ensure 
+            		 * that there are less errors the end user will experience.
+            		 * </p>
+            		 */
+            		String errorMessage = "Warning! An invalid block type of %s was " +
+            				"detect when loading blocks for " +
+        					"mine %s. %s is not a valid block type. Using " +
+        					"%s instead. If this is incorrect please fix manually.";
+            		
+            		if ( blockType == BlockType.REDSTONE ) {
+            			BlockType itemType = blockType;
+            			blockType = BlockType.REDSTONE_ORE;
+            			
+            			Output.get().logError( 
+            					String.format( errorMessage, itemType.name(), getName(), 
+            							"Redstone dust", blockType.name()) );
+            					            			
+            			dirty = true;
+            		}
+            		else if ( blockType == BlockType.NETHER_BRICK ) {
+            			BlockType itemType = blockType;
+            			blockType = BlockType.DOUBLE_NETHER_BRICK_SLAB;
+            			
+            			Output.get().logError( 
+            					String.format( errorMessage, itemType.name(), getName(), 
+            							"Individual nether brick", blockType.name()) );
+            			
+            			dirty = true;
+            		}
+            		
             		Block block = new Block(blockType, chance);
             		getBlocks().add(block);
             	}
@@ -355,15 +426,33 @@ public class Mine
     
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("world", getWorldName());
+        
+        // If world name is not set, try to get it from the bounds:
+        String worldName = getWorldName();
+        if ( worldName == null || worldName.trim().length() == 0 &&
+        		getBounds() != null && getBounds().getMin() != null &&
+        		getBounds().getMin().getWorld() != null ) {
+        	worldName = getBounds().getMin().getWorld().getName();
+        	setWorldName( worldName );
+        }
+        ret.put("world", worldName );
         ret.put("name", getName());
-        ret.put("minX", getBounds().getMin().getX());
-        ret.put("minY", getBounds().getMin().getY());
-        ret.put("minZ", getBounds().getMin().getZ());
-        ret.put("maxX", getBounds().getMax().getX());
-        ret.put("maxY", getBounds().getMax().getY());
-        ret.put("maxZ", getBounds().getMax().getZ());
-        ret.put("hasSpawn", isHasSpawn());
+        
+        ret.put( "isVirtual", isVirtual() );
+        
+        ret.put( "tag", getTag() );
+        ret.put( "sortOrder", getSortOrder() );
+        
+        if ( !isVirtual() ) {
+        	ret.put("minX", getBounds().getMin().getX());
+        	ret.put("minY", getBounds().getMin().getY());
+        	ret.put("minZ", getBounds().getMin().getZ());
+        	ret.put("maxX", getBounds().getMax().getX());
+        	ret.put("maxY", getBounds().getMax().getY());
+        	ret.put("maxZ", getBounds().getMax().getZ());
+        	ret.put("hasSpawn", isHasSpawn());
+        	
+        }
         
         ret.put("resetTime", getResetTime() );
         ret.put("notificationMode", getNotificationMode().name() );
@@ -418,9 +507,22 @@ public class Mine
         
         ret.put( "usePagingOnReset", isUsePagingOnReset() );
         
+        
+        if ( getRank() != null ) {
+        	String rank = getRank().getModuleElementType() + "," + getRank().getName() + "," + 
+        			getRank().getId() + "," + getRank().getTag();
+        	ret.put("rank", rank );
+        }
+
+        
         return ret;
     }
 
+    @Override
+    public String toString() {
+    	return getName() + "  " + getTotalBlocksMined();
+    }
+    
     private Location getLocation(Document doc, World world, String x, String y, String z) {
     	return new Location(world, (double) doc.get(x), (double) doc.get(y), (double) doc.get(z));
     }
@@ -442,5 +544,35 @@ public class Mine
     public int hashCode() {
         return getName().hashCode();
     }
+
+
+	public String getBlockListString()
+	{
+		StringBuilder sb = new StringBuilder();
+
+       if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	for ( PrisonBlock block : getPrisonBlocks()) {
+        		if ( sb.length() > 0 ) {
+        			sb.append( ", " );
+        		}
+        		sb.append( block.toString() );
+        	}
+        }
+        else {
+        	for ( Block block : getBlocks() ) {
+        		if ( sb.length() > 0 ) {
+        			sb.append( ", " );
+        		}
+        		sb.append( block.toString() );
+        	}
+        }
+
+		sb.insert( 0, ": [" );
+		sb.append( "]" );
+		sb.insert( 0, getName() );
+		sb.insert( 0, "Mine " );
+		
+		return sb.toString();
+	}
 
 }

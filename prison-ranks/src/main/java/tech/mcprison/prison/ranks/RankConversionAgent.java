@@ -50,7 +50,7 @@ public class RankConversionAgent implements ConversionAgent {
                         prefix = prefix + "&3]";
                     }
 
-                    if(PrisonRanks.getInstance().getRankManager().getRank(name).isPresent()) {
+                    if(PrisonRanks.getInstance().getRankManager().getRank(name) != null) {
                         break; // Already added
                     }
 
@@ -67,15 +67,15 @@ public class RankConversionAgent implements ConversionAgent {
                         break; // It failed
                     }
 
-                    try {
+//                    try {
                         PrisonRanks.getInstance().getRankManager().saveRank(ourRank.get());
-                    } catch (IOException e) {
-                        String nonNullName = name == null ? "null" : name;
-                        PrisonRanks.getInstance().getErrorManager().throwError(
-                            new Error("while converting ranks")
-                                .appendStackTrace("while saving rank " + nonNullName, e));
-                        break; // Skip this...
-                    }
+//                    } catch (IOException e) {
+//                        String nonNullName = name == null ? "null" : name;
+//                        PrisonRanks.getInstance().getErrorManager().throwError(
+//                            new Error("while converting ranks")
+//                                .appendStackTrace("while saving rank " + nonNullName, e));
+//                        break; // Skip this...
+//                    }
 
                     rankLadderOptional.get().addRank(ourRank.get());
                     try {

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.autofeatures;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -21,6 +22,8 @@ import java.util.List;
 public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final AutoFeaturesFileConfig afConfig = AutoFeaturesFileConfig();
+    private final Configuration messages = messages();
 
     public SpigotAutoSmeltGUI(Player p){
         this.p = p;
@@ -29,24 +32,17 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = 27;
+        int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
+        if (guiBuilder(inv)) return;
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
-        if (guiBuilder(inv, GuiConfig, afConfig)) return;
-
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(inv, guiConfig, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -55,20 +51,26 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Configuration guiConfig, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv) {
+
         List<String> enabledLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                messages.getString("Lore.ShiftAndRightClickToDisable")
+        );
+        List<String> disabledLore = createLore(
+                messages.getString("Lore.RightClickToEnable")
+        );
+        List<String> closeGUILore = createLore(
+                messages.getString("Lore.ClickToClose")
         );
 
-        List<String> disabledLore = createLore(
-                guiConfig.getString("Gui.Lore.RightClickToEnable")
-        );
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(35, closeGUI);
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltAllBlocks ) ) {
-            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
+            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
+            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
             inv.addItem(Disabled);
         }
 
@@ -88,5 +90,4 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
     }
-
 }

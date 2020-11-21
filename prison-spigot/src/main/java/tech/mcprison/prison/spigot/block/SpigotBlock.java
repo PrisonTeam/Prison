@@ -47,7 +47,10 @@ public class SpigotBlock implements Block {
     }
 
     @Override public Block getRelative(BlockFace face) {
-        return new SpigotBlock(bBlock.getRelative(org.bukkit.block.BlockFace.valueOf(face.name())));
+        return new SpigotBlock(
+        		bBlock.getRelative(
+        				org.bukkit.block.BlockFace.valueOf(
+        						face.name())));
     }
 
     @Override public BlockType getType() {
@@ -66,6 +69,11 @@ public class SpigotBlock implements Block {
 				updateSpigotBlock( prisonBlock, bBlock );
     }
     
+    public void setBlockFace( BlockFace blockFace ) {
+    	
+    	SpigotPrison.getInstance().getCompatibility()
+					.setBlockFace( bBlock, blockFace );
+    }
     /**
      * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
      * by about 1/3.  Really do not need to apply physics in the mines especially if no air blocks and nothing

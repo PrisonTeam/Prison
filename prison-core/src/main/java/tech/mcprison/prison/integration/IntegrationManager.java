@@ -96,9 +96,11 @@ public class IntegrationManager {
 		prison_r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rcr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcrf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 
@@ -106,9 +108,11 @@ public class IntegrationManager {
 		prison_rank(prison_r, PlaceHolderFlags.PLAYER),
 		prison_rank_tag(prison_rt, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost(prison_rc, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_formatted(prison_rcf, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_bar(prison_rcb, PlaceHolderFlags.PLAYER),
 		prison_rankup_cost_remaining(prison_rcr, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_remaining_formatted(prison_rcrf, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
 		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
 		
@@ -117,9 +121,11 @@ public class IntegrationManager {
 		prison_r_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rc_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rcr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcrf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_rrt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		
@@ -127,14 +133,28 @@ public class IntegrationManager {
 		prison_rank_laddername(prison_r_laddername, PlaceHolderFlags.LADDERS),
 		prison_rank_tag_laddername(prison_rt_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_laddername(prison_rc_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_formatted_laddername(prison_rcf_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_bar_laddername(prison_rcb_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_cost_remaining_laddername(prison_rcr_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_remaining_formatted_laddername(prison_rcrf_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_laddername(prison_rr_laddername, PlaceHolderFlags.LADDERS),
 		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceHolderFlags.LADDERS),
+	
+		
+		
+		// player
+		prison_pb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_player_balance(prison_pb, PlaceHolderFlags.PLAYER),
+		
+		prison_pb_laddername(prison_pb, PlaceHolderFlags.LADDERS),
+		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
+
 		
 		
 		// Mine aliases:
+		prison_mn_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mt_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mif_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
@@ -152,6 +172,8 @@ public class IntegrationManager {
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
 		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
+		prison_mines_name_minename(prison_mn_minename, PlaceHolderFlags.MINES),
+		prison_mines_tag_minename(prison_mt_minename, PlaceHolderFlags.MINES),
 		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
 		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceHolderFlags.MINES),
 		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
@@ -168,6 +190,8 @@ public class IntegrationManager {
 		
 		
 		// PlayerMine aliases:
+		prison_mn_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mt_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mi_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mif_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mtl_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
@@ -182,6 +206,8 @@ public class IntegrationManager {
 		prison_mrc_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 
 		
+		prison_mines_name_playermines(prison_mn_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_tag_playermines(prison_mt_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_interval_playermines(prison_mi_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_interval_formatted_playermines(prison_mif_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_timeleft_playermines(prison_mtl_pm, PlaceHolderFlags.PLAYERMINES),
@@ -543,6 +569,11 @@ public class IntegrationManager {
     	}
     	integrations.get(iType).add(i);
     }
+    
+    public EconomyIntegration getEconomy() {
+    	return (EconomyIntegration) getForType(IntegrationType.ECONOMY)
+							.orElse( null );
+    }
 
     public EconomyCurrencyIntegration getEconomyForCurrency(String currency) {
     	EconomyCurrencyIntegration results = null;
@@ -567,12 +598,12 @@ public class IntegrationManager {
         return results;
     }
     
-    public String getIntegrationDetails( IntegrationType intType ) {
+    public String getIntegrationDetails( IntegrationType integrationType ) {
     	StringBuilder sb = new StringBuilder();
     	Set<IntegrationType> keys = integrations.keySet();
     	
     	for ( IntegrationType key : keys ) {
-    		if ( key == intType ) {
+    		if ( key == integrationType ) {
     			sb.append( key.name() );
     			sb.append( ": [" );
     			
@@ -616,21 +647,30 @@ public class IntegrationManager {
     public List<DisplayComponent> getIntegrationComponents() {
     	List<DisplayComponent> results = new ArrayList<>();
     	
-        for ( IntegrationType integType : IntegrationType.values() )
+        for ( IntegrationType integrationType : IntegrationType.values() )
 		{
-        	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integType.name() ) ));
+        	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integrationType.name() ) ));
 
         	// Generates the placeholder list for the /prison version command, printing
         	// two placeholders per line.
-			if ( integType ==  IntegrationType.PLACEHOLDER ) {
-				getPlaceholderTemplateList( results );
+			if ( integrationType ==  IntegrationType.PLACEHOLDER ) {
+				results.add(  new TextComponent( "    &7To list all or search for placeholders see: " +
+						"&a/prison placeholders") );
+//				getPlaceholderTemplateList( results );
 			}
 			
-			List<Integration> plugins = getAllForType( integType );
+			List<Integration> plugins = getAllForType( integrationType );
 			
-			if ( plugins == null || plugins.size() == 0 ) {
+			if ( integrationType == IntegrationType.WORLDGUARD && 
+					(plugins == null || plugins.size() == 0 ) ) {
+				results.add( new TextComponent( "    &e&oWorldGuard integration has not been added " +
+						"to Prison yet.&3 WorldGuard can still be used normally since this " +
+						"is not an error." ));
+			} 
+			else if ( plugins == null || plugins.size() == 0 ) {
 				results.add( new TextComponent( "    &e&onone" ));
-			} else {
+			} 
+			else {
 				for ( Integration plugin : plugins ) {
 					String pluginUrl = plugin.getPluginSourceURL();
 					String msg = String.format( "    &a%s &7<%s&7> %s", plugin.getDisplayName(),
@@ -647,7 +687,7 @@ public class IntegrationManager {
 						results.add( new TextComponent( "        " + altInfo ));
 					}
 					
-					if ( integType ==  IntegrationType.ECONOMY && 
+					if ( integrationType ==  IntegrationType.ECONOMY && 
 							plugin instanceof EconomyCurrencyIntegration ) {
 						EconomyCurrencyIntegration econ = (EconomyCurrencyIntegration) plugin;
 						

@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.gui.autofeatures;
 
+import java.util.List;
+
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -10,11 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.GUIListener;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -22,6 +22,8 @@ import java.util.List;
 public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration messages = messages();
+    private final AutoFeaturesFileConfig afConfig = AutoFeaturesFileConfig();
 
     public SpigotAutoBlockGUI(Player p){
         this.p = p;
@@ -29,25 +31,18 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = 27;
+        int dimension = 36;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoBlock"));
 
-        // Config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        if (guiBuilder(inv)) return;
 
-        if (guiBuilder(GuiConfig, inv, afConfig)) return;
-
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private boolean guiBuilder(Inventory inv) {
         try {
-            buttonsSetup(guiConfig, inv, afConfig);
+            buttonsSetup(inv);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -56,20 +51,27 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, AutoFeaturesFileConfig afConfig) {
+    private void buttonsSetup(Inventory inv) {
+
+
         List<String> enabledLore = createLore(
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDisable")
+                messages.getString("Lore.ShiftAndRightClickToDisable")
+        );
+        List<String> disabledLore = createLore(
+                messages.getString("Lore.RightClickToEnable")
+        );
+        List<String> closeGUILore = createLore(
+                messages.getString("Lore.ClickToClose")
         );
 
-        List<String> disabledLore = createLore(
-                guiConfig.getString("Gui.Lore.RightClickToEnable")
-        );
+        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        inv.setItem(35, closeGUI);
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoBlockAllBlocks ) ) {
-            ItemStack Enabled = createButton(Material.EMERALD_BLOCK, 1, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
+            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.REDSTONE_BLOCK, 1, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
+            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
             inv.addItem(Disabled);
         }
 
@@ -161,5 +163,4 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
     }
-
 }

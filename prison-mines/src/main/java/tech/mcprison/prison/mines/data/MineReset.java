@@ -14,10 +14,13 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds;
+import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -121,8 +124,11 @@ public abstract class MineReset
 	protected void initialize() {
     	super.initialize();
     	
-    	// Once the mine has been loaded, MUST get a count of all air blocks.
-    	refreshBlockBreakCountUponStartup();
+    	if ( !isVirtual() ) {
+    		
+    		// Once the mine has been loaded, MUST get a count of all air blocks.
+    		refreshBlockBreakCountUponStartup();
+    	}
     }
     
     /**
@@ -162,6 +168,11 @@ public abstract class MineReset
 
 	private void resetSynchonouslyInternal() {
 		try {
+			
+			if ( isVirtual() ) {
+				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+				return;
+			}
 			
 			if ( !isEnabled() ) {
 				Output.get().logError(
@@ -389,6 +400,10 @@ public abstract class MineReset
     private long teleportAllPlayersOut(int targetY) {
     	long start = System.currentTimeMillis();
     	
+    	if ( isVirtual() ) {
+    		return 0;
+    	}
+    	
     	World world = getBounds().getCenter().getWorld();
 
     	if ( isEnabled() && world != null ) {
@@ -432,7 +447,11 @@ public abstract class MineReset
      * @param player
      */
     public void teleportPlayerOut(Player player) {
-		
+    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
 		if ( !isEnabled() ) {
 			player.sendMessage( 
 					String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
@@ -470,7 +489,7 @@ public abstract class MineReset
 	public int getPlayerCount() {
 		int count = 0;
 		
-		if ( isEnabled() ) {
+		if ( !isVirtual() && isEnabled() ) {
 
 			World world = getWorld().get();
 			
@@ -524,6 +543,10 @@ public abstract class MineReset
      */
     protected void generateBlockListAsync() {
 		
+    	if ( isVirtual() ) {
+    		// ignore and generate no error messages:
+    		return;
+    	}
 		if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: Block count failure: Mine is not enabled. " +
@@ -597,8 +620,11 @@ public abstract class MineReset
     	
 //		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
 
+    	if ( isVirtual() ) {
+    		canceled = true;
+    	}
     	
-    	if ( getResetPage() == 0 ) {
+    	if ( !canceled && getResetPage() == 0 ) {
     		generateBlockListAsync();   		
     		
     		canceled = resetAsynchonouslyInitiate();
@@ -740,6 +766,10 @@ public abstract class MineReset
     private boolean resetAsynchonouslyInitiate() {
     	boolean canceled = false;
 		
+    	if ( isVirtual()) {
+    		canceled = true;
+    	}
+    	else 
 		if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: resetAsynchonouslyInitiate failure: Mine is not enabled. " +
@@ -797,7 +827,10 @@ public abstract class MineReset
      *  
      */
     private void resetAsynchonouslyUpdate() {
-    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
     	if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: resetAsynchonouslyUpdate failure: Mine is not enabled. " +
@@ -948,6 +981,10 @@ public abstract class MineReset
 	{
     	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
     	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else 
     	if ( !isEnabled() ) {
 			Output.get().logError(
 					String.format( "MineReset: refreshAirCountAsyncTask failure: Mine is not enabled. " +
@@ -1060,6 +1097,9 @@ public abstract class MineReset
 	}
 	
 	public double getPercentRemainingBlockCount() {
+		if ( isVirtual() ) {
+			return 0;
+		}
 		int totalCount = getBounds().getTotalBlockCount();
 		int remainingCount = getRemainingBlockCount();
 		double percentRemaining = (totalCount == 0d ? 0d : (remainingCount * 100d) / (double) totalCount);
@@ -1177,6 +1217,10 @@ public abstract class MineReset
     private void broadcastResetMessageToAllPlayersWithRadius() {
     	long start = System.currentTimeMillis();
     	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else 
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
     		
@@ -1215,6 +1259,11 @@ public abstract class MineReset
     }
     
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
+    	
+    	if ( isVirtual() ) {
+    		// ignore:
+    	}
+    	else
     	if ( getNotificationMode() != MineNotificationMode.disabled ) {
     		World world = getBounds().getCenter().getWorld();
     		
@@ -1250,6 +1299,76 @@ public abstract class MineReset
     	}
     }
 
+    
+    /**
+     * This clears the mine, then provides particle tracers around the outer corners.
+     */
+    public void enableTracer() {
+    	
+    	// First clear the mine:
+    	clearMine( true );
+
+//    	Prison.get().getPlatform().enableMineTracer( 
+//    				getWorldName(),
+//    				getBounds().getMin(), 
+//    				getBounds().getMax());
+
+    	
+    	
+    }
+    
+    /**
+     * <p>This will adjust the size of the existing mine's area.
+     * Any voids left due to reductions in size will not be auto
+     * filled.
+     * </p>
+     * 
+     * @param edge
+     * @param amount
+     */
+    public void adjustSize( Edges edge, int amount ) {
+    	
+    	// First clear the mine:
+    	clearMine( false );
+		
+    	if ( amount < 0 ) {
+    		while ( amount++ < 0 ) {
+    			
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
+
+    			Bounds newBounds = new Bounds( getBounds(), edge, -1 );
+    			setBounds( newBounds );
+    			
+    			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
+    		}
+    	}
+    	else {
+    		new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
+    		
+    		Bounds newBounds = new Bounds( getBounds(), edge, amount );
+    		setBounds( newBounds );
+    	}
+
+		
+		// Finally trace the mine:
+		clearMine( true );
+    }
+    
+    
+    public void moveMine( Edges edge, int amount ) {
+    	
+    	MineMover moveMine = new MineMover();
+    	moveMine.moveMine( (Mine) this, edge, amount );
+    }
+    
+    
+    public void clearMine( boolean tracer ) {
+		
+    	MineTracerBuilder tracerBuilder = new MineTracerBuilder();
+    	tracerBuilder.clearMine( (Mine) this, tracer );
+    }
+    
+    
 	@Deprecated
 	public List<BlockType> getRandomizedBlocks()
 	{

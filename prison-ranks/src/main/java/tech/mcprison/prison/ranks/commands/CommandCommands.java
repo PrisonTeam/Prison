@@ -1,38 +1,37 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.util.ArrayList;
+
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.localization.Localizable.Level;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-
 /**
  * @author Faizaan A. Datoo
  */
-public class CommandCommands {
+public class CommandCommands
+				extends BaseCommands {
 	
 	public CommandCommands() {
-		super();
+		super( "CommandCommands" );
 		
-		// Now this is slight strange. Once in a while I've been seeing exceptions that the 
+		// Now this is slightly strange. Once in a while I've been seeing exceptions that the 
 		// following class cannot be resolved.  So I don't know why it can't, but it was not
 		// being used directly within this Ranks module, so it's being added here just to 
 		// allow the compiler to add it, and so hopefully the class loaders at run time can
 		// finally access it consistently.
 		@SuppressWarnings( "unused" )
-		Level force = Localizable.Level.ERROR;
+		LogLevel force = LogLevel.ERROR;
 	}
 
     @Command(identifier = "ranks command add", 
@@ -47,27 +46,26 @@ public class CommandCommands {
             command = command.replaceFirst("/", "");
         }
 
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null) {
             rank.rankUpCommands = new ArrayList<>();
         }
         rank.rankUpCommands.add(command);
     	
-        try {
+//        try {
         	PrisonRanks.getInstance().getRankManager().saveRank( rank );
         	
         	Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.name);
-        } catch (IOException e) {
-            Output.get().sendError(sender,
-                "The new command for the rank could not be saved to disk. Check the console for details.");
-            Output.get().logError("Rank could not be written to disk.", e);
-        }
+//        } catch (IOException e) {
+//            Output.get().sendError(sender,
+//                "The new command for the rank could not be saved to disk. Check the console for details.");
+//            Output.get().logError("Rank could not be written to disk.", e);
+//        }
 
 
     }
@@ -83,12 +81,11 @@ public class CommandCommands {
             command = command.replaceFirst("/", "");
         }
 
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null) {
             rank.rankUpCommands = new ArrayList<>();
@@ -96,16 +93,16 @@ public class CommandCommands {
         
         if ( rank.rankUpCommands.remove(command) ) {
         	
-            try {
+//            try {
             	PrisonRanks.getInstance().getRankManager().saveRank( rank );
             	
             	Output.get()
             		.sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.name);
-            } catch (IOException e) {
-                Output.get().sendError(sender,
-                    "The updated rank could not be saved to disk. Check the console for details.");
-                Output.get().logError("Rank could not be written to disk.", e);
-            }
+//            } catch (IOException e) {
+//                Output.get().sendError(sender,
+//                    "The updated rank could not be saved to disk. Check the console for details.");
+//                Output.get().logError("Rank could not be written to disk.", e);
+//            }
         } else {
         	Output.get()
         		.sendWarn(sender, "The rank doesn't contain that command. Nothing was changed.");
@@ -117,12 +114,11 @@ public class CommandCommands {
     public void commandList(CommandSender sender, 
     		@Arg(name = "rankName") String rankName) {
     	
-        Optional<Rank> rankOptional = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-        if (!rankOptional.isPresent()) {
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
             return;
         }
-        Rank rank = rankOptional.get();
 
         if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
             Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.name);

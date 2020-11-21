@@ -243,7 +243,7 @@ public class RankPlayer {
             return Optional.empty();
         }
         int id = ranks.get(ladder.name);
-        return PrisonRanks.getInstance().getRankManager().getRank(id);
+        return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
     }
     
     /**
@@ -256,10 +256,7 @@ public class RankPlayer {
     	Rank results = null;
     	if (ladder != null && ranks.containsKey(ladder)) {
     		int id = ranks.get(ladder);
-    		Optional<Rank> ladderOpt = PrisonRanks.getInstance().getRankManager().getRank(id);
-    		if ( ladderOpt.isPresent() ) {
-    			results =  ladderOpt.get();
-    		}
+    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
     	}
     	return results;
     }
@@ -278,13 +275,12 @@ public class RankPlayer {
                 continue; // Skip it
             }
 
-            Optional<Rank> rank =
-                PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
-            if (!rank.isPresent()) {
+            Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
+            if ( rank == null ) {
                 continue; // Skip it
             }
 
-            ret.put(ladder.get(), rank.get());
+            ret.put(ladder.get(), rank);
         }
 
         return ret;

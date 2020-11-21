@@ -17,12 +17,15 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
-
-import java.util.List;
 
 /**
  * Represents a single rank.
@@ -30,7 +33,8 @@ import java.util.List;
  * @author Faizaan A. Datoo
  */
 public class Rank
-		implements PrisonSortable {
+		implements PrisonSortable,
+					ModuleElement {
 
     /*
      * Fields & Constants
@@ -64,11 +68,22 @@ public class Rank
     public transient Rank rankPrior;
     public transient Rank rankNext;
     
+    
+    private List<ModuleElement> mines;
+    private List<String> mineStrings;
+    
+    
     /*
      * Document-related
      */
 
     public Rank() {
+    	super();
+    	
+    	this.rankUpCommands = new ArrayList<>();
+    	
+    	this.mines = new ArrayList<>();
+    	this.mineStrings = new ArrayList<>();
     }
     
     /**
@@ -92,10 +107,25 @@ public class Rank
 			this.name = (String) document.get("name");
 			this.tag = (String) document.get("tag");
 			this.cost = (double) document.get("cost");
+			
 			String currency = (String) document.get("currency");
 			this.currency = (currency == null || 
 					"null".equalsIgnoreCase( currency ) ? null : currency);
-			this.rankUpCommands = (List<String>) document.get("commands");
+
+			getRankUpCommands().clear();
+			Object cmds = document.get("commands");
+			if ( cmds != null ) {
+				this.rankUpCommands = (List<String>) cmds;
+			}
+			
+			getMines().clear();
+			getMineStrings().clear();
+			Object minesObj = document.get("mines");
+			if ( minesObj != null ) {
+				List<String> mineStrings = (List<String>) minesObj;
+				setMineStrings( mineStrings );
+			}
+			
 		}
 		catch ( Exception e )
 		{
@@ -105,6 +135,7 @@ public class Rank
 					Integer.toString( this.id ), (this.name == null ? "null" : this.name ),
 					e.getMessage())
 					);
+			
 		}
     }
 
@@ -116,6 +147,17 @@ public class Rank
         ret.put("cost", this.cost);
         ret.put("currency", this.currency);
         ret.put("commands", this.rankUpCommands);
+        
+        List<String> mineStrings = new ArrayList<>();
+        if ( getMines() != null ) {
+        	for ( ModuleElement mine : getMines() ) {
+        		 String mineString = mine.getModuleElementType() + "," + mine.getName() + "," + 
+        				 mine.getId() + "," + mine.getTag();
+        		 mineStrings.add( mineString );
+			}
+        }
+        ret.put("mines", mineStrings);
+        
         return ret;
     }
     
@@ -129,12 +171,13 @@ public class Rank
     	return "rank_" + id;
     }
     
-
+    
     /*
      * equals() and hashCode()
      */
 
-    @Override public boolean equals(Object o) {
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -163,7 +206,8 @@ public class Rank
         return tag != null ? tag.equals(rank.tag) : rank.tag == null;
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         int result;
         long temp;
         result = id;
@@ -175,4 +219,89 @@ public class Rank
         return result;
     }
 
+	public int getId() {
+		return id;
+	}
+	public void setId( int id ) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+	public void setTag( String tag ) {
+		this.tag = tag;
+	}
+
+	public double getCost() {
+		return cost;
+	}
+	public void setCost( double cost ) {
+		this.cost = cost;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+	public void setCurrency( String currency ) {
+		this.currency = currency;
+	}
+
+	public List<String> getRankUpCommands() {
+		if ( rankUpCommands == null ) {
+			rankUpCommands = new ArrayList<>();
+		}
+		return rankUpCommands;
+	}
+	public void setRankUpCommands( List<String> rankUpCommands ) {
+		this.rankUpCommands = rankUpCommands;
+	}
+
+	public Rank getRankPrior() {
+		return rankPrior;
+	}
+	public void setRankPrior( Rank rankPrior ) {
+		this.rankPrior = rankPrior;
+	}
+
+	public Rank getRankNext() {
+		return rankNext;
+	}
+	public void setRankNext( Rank rankNext ) {
+		this.rankNext = rankNext;
+	}
+
+	@Override
+	public ModuleElementType getModuleElementType() {
+		return ModuleElementType.RANK;
+	}
+
+	public List<ModuleElement> getMines() {
+		if ( mines == null ) {
+			this.mines = new ArrayList<>();
+		}
+		return mines;
+	}
+	public void setMines( List<ModuleElement> mines ) {
+		this.mines = mines;
+	}
+
+	public List<String> getMineStrings() {
+		if ( mineStrings == null ) {
+			this.mineStrings = new ArrayList<>();
+		}
+		return mineStrings;
+	}
+	public void setMineStrings( List<String> mineStrings ) {
+		this.mineStrings = mineStrings;
+	}
+    
+	
 }

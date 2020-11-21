@@ -1,5 +1,10 @@
 package tech.mcprison.prison.spigot.sellall;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -9,10 +14,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -20,11 +25,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author GABRYCA
@@ -173,14 +173,14 @@ public class SellAllCommands implements CommandExecutor {
                 return true;
             }
 
-            boolean isARank = rankPlugin.getRankManager().getRank(args[1]).isPresent();
+            boolean isARank = rankPlugin.getRankManager().getRank(args[1]) != null; 
 
             if (!isARank) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cCan't find the Prestige/Rank: " + args[2]));
                 return true;
             }
 
-            boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(args[1]).get().id);
+            boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(args[1]).id);
 
             if (!isInPrestigeLadder) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cThe -prestiges- ladder doesn't contains the Rank: " + args[2]));
@@ -391,7 +391,8 @@ public class SellAllCommands implements CommandExecutor {
             }
 
             // Get economy
-            EconomyIntegration economy = (EconomyIntegration) PrisonAPI.getIntegrationManager().getForType(IntegrationType.ECONOMY).orElseThrow(IllegalStateException::new);
+    		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+
             // Add balance
             economy.addBalance(sPlayer, moneyToGive);
             if (moneyToGive<0.001){

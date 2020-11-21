@@ -26,7 +26,6 @@ import java.util.UUID;
 
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
@@ -34,6 +33,8 @@ import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
@@ -110,8 +111,12 @@ public interface Platform {
      *
      * @param command The command to unregister, without the preceding '/'.
      */
-    void unregisterCommand(String command);
+    public void unregisterCommand(String command);
 
+    
+    public void unregisterAllCommands();
+
+    
     /**
      * Returns a list of all registered commands.
      */
@@ -142,9 +147,7 @@ public interface Platform {
      *
      * @param title   The title of the GUI.
      * @param numRows The number of rows in the GUI; must be divisible by 9.
-     * @return The {@link GUI}, ready for use.
      */
-    GUI createGUI(String title, int numRows);
 
     /**
      * If an iron door is open, this method closes it.
@@ -160,8 +163,10 @@ public interface Platform {
      * @param message The message. May include color codes, amp-prefixed.
      * @param format  The objects inserted via {@link String#format(String, Object...)}.
      */
-    void log(String message, Object... format);
+    public void log(String message, Object... format);
 
+    public void logCore( String message );
+    
     /**
      * Logs a debug message to the console if the user has debug messages enabled.
      *
@@ -254,9 +259,27 @@ public interface Platform {
 	public String getConfigString( String key );
 	
 	
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value.  If the key does
+	 * not exist, then it returns a value of false. Default value is false.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public boolean getConfigBooleanFalse( String key );
 	
 
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value, but if the key does
+	 * not exist, then it returns a value of true.  Default value is true.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public boolean getConfigBooleanTrue( String key );
 	
 	
@@ -264,7 +287,21 @@ public interface Platform {
 	
 	
 	public PrisonBlock getPrisonBlock( String blockName );
+	
+	
+	public boolean linkModuleElements( ModuleElement sourceElement, ModuleElementType targetElementType, String name );
+	
+	
+	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB );
 
+
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag );
 
 	
+	public int getModuleElementCount( ModuleElementType elementType );
+	
+	
+	public void autoCreateMineBlockAssignment();
+	
+
 }

@@ -205,6 +205,12 @@ public abstract class MineScheduler
 	{
 		List<MineJob> workflow = new ArrayList<>();
 		
+		// if the mine is virtual, set the resetTime to four hours.  It won't reset, but it will stay active
+		// in the workflow:
+		if ( isVirtual() ) {
+			resetTime = 60 * 60 * 4; // one hour * 4
+		}
+		
 		// Determine if the sync or async reset action should be used for this workflow.
 		MineJobAction resetAction = isUsePagingOnReset() ? MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
 		
@@ -348,6 +354,10 @@ public abstract class MineScheduler
 	@SuppressWarnings( "unused" )
 	private void checkWorld()
 	{
+		if ( isVirtual() ) {
+			// ignore:
+		}
+		else
 		if ( !isEnabled() ) {
 			// Must try to load world again:
 			Optional<World> worldOptional = Prison.get().getPlatform().getWorld( getWorldName() );
@@ -436,7 +446,10 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void manualReset() {
-		manualReset( MineResetType.FORCED, 0 );
+		
+		if ( !isVirtual() ) {
+			manualReset( MineResetType.FORCED, 0 );
+		}
 	}
 	
 	
@@ -445,7 +458,8 @@ public abstract class MineScheduler
 		
 		// Reset if the mine runs out of blocks:
 		
-		if ( getRemainingBlockCount() == 0 && !isZeroBlockResetDisabled() || 
+		if ( !isVirtual() &&
+				getRemainingBlockCount() == 0 && !isZeroBlockResetDisabled() || 
 				getResetThresholdPercent() > 0 && 
 				getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
 												getResetThresholdPercent() / 100.0d)) {
@@ -469,6 +483,12 @@ public abstract class MineScheduler
 	 * 
 	 */
 	private void manualReset( MineResetType resetType, double delayActionSec ) {
+		
+		if ( isVirtual() ) {
+			// Nope... nothing to reset... 
+			return;
+		}
+		
 		// cancel existing job:
 		if ( getTaskId() != null ) {
 			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );

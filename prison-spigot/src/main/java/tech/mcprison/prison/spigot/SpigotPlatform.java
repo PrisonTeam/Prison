@@ -42,6 +42,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XBlock;
+import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
@@ -51,7 +52,6 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.gui.GUI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
@@ -60,41 +60,65 @@ import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElement;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.spigot.gui.SpigotGUI;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
+import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author Faizaan A. Datoo
  */
-class SpigotPlatform implements Platform {
+class SpigotPlatform 
+	implements Platform {
 
     private SpigotPrison plugin;
     private List<PluginCommand> commands = new ArrayList<>();
     private Map<String, World> worlds = new HashMap<>();
-    private List<Player> players = new ArrayList<>();
+    
+//    @Deprecated
+//    private List<Player> players = new ArrayList<>();
 
     private ScoreboardManager scoreboardManager;
     private Storage storage;
     
     private SpigotPlaceholders placeholders;
 
-    SpigotPlatform(SpigotPrison plugin) {
+    /**
+     * This is only for junit testing.
+     */
+    protected SpigotPlatform() {
+    	super();
+    	
+    	this.plugin = null;
+    	//this.scoreboardManager = new SpigotScoreboardManager();
+    	//this.storage = initStorage();
+    	
+    	//this.placeholders = new SpigotPlaceholders();
+    	
+    	//ActionBarUtil.init(plugin);
+    }
+    
+    public SpigotPlatform(SpigotPrison plugin) {
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
         this.storage = initStorage();
@@ -118,6 +142,11 @@ class SpigotPlatform implements Platform {
         return storage;
     }
 
+    
+    public org.bukkit.World getBukkitWorld(String name ) {
+    	return Bukkit.getWorld(name);
+    }
+    
     @Override 
     public Optional<World> getWorld(String name) {
         if (name != null && worlds.containsKey(name)) {
@@ -165,31 +194,45 @@ class SpigotPlatform implements Platform {
     }
     
     @Override public Optional<Player> getPlayer(String name) {
-        return Optional.ofNullable(
-            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
-                .orElseGet(() -> {
-                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
-                    if (playerBukkit == null) {
-                        return null;
-                    }
-                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-                    players.add(player);
-                    return player;
-                }));
+    	
+    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+
+    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
+    	
+//        return Optional.ofNullable(
+//            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
+//                .orElseGet(() -> {
+//                	
+//           // ### getting the bukkit player here!
+//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+//                    if (playerBukkit == null) {
+//                        return null;
+//                    }
+//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
+//                    players.add(player);
+//                    return player;
+//                }));
     }
 
     @Override public Optional<Player> getPlayer(UUID uuid) {
-        return Optional.ofNullable(
-            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
-                .orElseGet(() -> {
-                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
-                    if (playerBukkit == null) {
-                        return null;
-                    }
-                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-                    players.add(player);
-                    return player;
-                }));
+    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+
+    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
+    	
+//        return Optional.ofNullable(
+//            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
+//                .orElseGet(() -> {
+//                	
+//                	
+//    	// ### getting the bukkit player here!
+//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+//                    if (playerBukkit == null) {
+//                        return null;
+//                    }
+//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
+//                    players.add(player);
+//                    return player;
+//                }));
     }
 
     @Override public List<Player> getOnlinePlayers() {
@@ -209,16 +252,47 @@ class SpigotPlatform implements Platform {
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
     	SpigotOfflinePlayer player = null;
     	
-    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
-    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
-					  uuid != null && offP.getUniqueId().equals(uuid) ) {
-    			player = new SpigotOfflinePlayer( offP );
-    			
-	  			players.add(player);
-	              break;
-	  		}
-		}
+    	if ( uuid != null ) {
+    		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
+    		player = (oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
+    		
+    	}
     	
+    	if ( player == null && name != null && name.trim().length() > 0 ) {
+    		
+    		// No hits on uuid so only compare names:
+    		for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
+    			if ( oPlayer != null && oPlayer.getName() != null && 
+    					oPlayer.getName().equalsIgnoreCase( name.trim() ) ) {
+    				
+    				player = new SpigotOfflinePlayer( oPlayer );
+    				break;
+    			}
+    			else if ( oPlayer == null || oPlayer.getName() == null ) {
+    				Output.get().logWarn( "SpigotPlatform.getOfflinePlayer: Bukkit return a " +
+    						"bad player: OfflinePlayer == null? " + (oPlayer == null) + 
+    						( oPlayer == null ? "" : 
+    							"  name= " + (oPlayer.getName() == null ? "null" : 
+    								oPlayer.getName())));
+    				
+    			}
+    		}
+    	}
+    	
+    	return Optional.ofNullable( player );
+    	
+    	
+//    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
+//    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
+//					  uuid != null && offP.getUniqueId().equals(uuid) ) {
+//    			
+//	// ### getting the offline bukkit player here!
+//    			player = new SpigotOfflinePlayer( offP );
+//	  			players.add(player);
+//	              break;
+//	  		}
+//		}
+//    	
 //    	List<OfflinePlayer> olPlayers = Arrays.asList( Bukkit.getOfflinePlayers() );
 //    	for ( OfflinePlayer offlinePlayer : olPlayers ) {
 //    		if ( name != null && offlinePlayer.getName().equals(name) ||
@@ -228,7 +302,7 @@ class SpigotPlatform implements Platform {
 //                break;
 //    		}
 //		}
-    	return Optional.ofNullable( player );
+//    	return Optional.ofNullable( player );
     }
     
     @Override public String getPluginVersion() {
@@ -241,45 +315,59 @@ class SpigotPlatform implements Platform {
 
     @Override public void registerCommand(PluginCommand command) {
         try {
-        	Command cmd = new Command(command.getLabel(), command.getDescription(), command.getUsage(),
-                    Collections.emptyList()) {
+        	Command cmd = new Command(
+    				command.getLabel(),
+    				command.getDescription(), 
+    				command.getUsage(),
+    				Collections.emptyList() ) {
 
-                    @Override public boolean execute(CommandSender sender, String commandLabel,
-                        String[] args) {
-                        if (sender instanceof org.bukkit.entity.Player) {
-                            return Prison.get().getCommandHandler()
-                                .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
-                                    command, commandLabel, args);
-                        }
+                @Override 
+                public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+                    if (sender instanceof org.bukkit.entity.Player) {
                         return Prison.get().getCommandHandler()
-                            .onCommand(new SpigotCommandSender(sender), command, commandLabel,
-                                args);
-                        
-                        /*
-                         * ###Tab-Complete###
-                         * 
-                         * Disabled for now until a full solution can be implemented for tab complete.
-                         * 
-	//                  Output.get().logInfo( "SpigotPlatform.registerCommand: Command: %s :: %s", 
-	//                  		command.getLabel(), command.getUsage() );
-						@Override
-						public List<String> tabComplete( CommandSender sender, String[] args )
-						{
-					    	Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 1" );
-							// TODO Auto-generated method stub
-							return super.tabComplete( sender, args );
-						}
+                            .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
+                                command, commandLabel, args);
+                    }
+                    
+                    return Prison.get().getCommandHandler()
+                    				.onCommand(new SpigotCommandSender(sender), command, commandLabel, args);
+                }    
+                
+       			
+    			@Override
+				public List<String> tabComplete( CommandSender sender, String alias, String[] args )
+						throws IllegalArgumentException
+				{
+    				
+    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( alias, args );
+    				
+    				
+//    				StringBuilder sb = new StringBuilder();
+//    				for ( String arg : args ) {
+//    					sb.append( "[" ).append( arg ).append( "] " );
+//    				}
+//    				
+//    				StringBuilder sbR = new StringBuilder();
+//    				for ( String result : results ) {
+//    					sbR.append( "[" ).append( result ).append( "] " );
+//    				}
+//
+//    				plugin.logDebug( "### registerCommand: Command.tabComplete() : alias= %s  args= %s   results= %s", 
+//    						alias, sb.toString(), sbR.toString() );
 
-						@Override
-						public List<String> tabComplete( CommandSender sender, String alias, String[] args )
-								throws IllegalArgumentException
-						{
-							Output.get().logInfo( "SpigotPlatform.registerCommand: Command.tabComplete 2" );
-							// TODO Auto-generated method stub
-							return super.tabComplete( sender, alias, args );
-						}
-                         */
-                    }       
+    				
+    				return results;
+				}
+
+
+				//@Override
+				public List<String> tabComplete( CommandSender sender, String alias, String[] args, 
+										org.bukkit.Location location )
+						throws IllegalArgumentException
+				{
+    				return tabComplete( sender, alias, args );
+				}
+
             };
         	
             @SuppressWarnings( "unused" )
@@ -287,7 +375,12 @@ class SpigotPlatform implements Platform {
             			((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
             				.register(command.getLabel(), "prison", cmd );
             
-            commands.add(command);
+         // Always record the registered label:
+ 			if ( cmd != null ) {
+ 				command.setLabelRegistered( cmd.getLabel() );
+ 			}
+        
+ 			getCommands().add(command);
             
 //            if ( !success ) {
 //            	Output.get().logInfo( "SpigotPlatform.registerCommand: %s  " +
@@ -299,16 +392,42 @@ class SpigotPlatform implements Platform {
         }
     }
 
-    @SuppressWarnings("unchecked") @Override public void unregisterCommand(String command) {
+    @SuppressWarnings("unchecked") @Override 
+    public void unregisterCommand(String command) {
         try {
             ((Map<String, Command>) plugin.knownCommands
                 .get(plugin.commandMap.get(Bukkit.getServer()))).remove(command);
-            this.commands.removeIf(pluginCommand -> pluginCommand.getLabel().equals(command));
+            getCommands().removeIf(pluginCommand -> pluginCommand.getLabel().equals(command));
         } catch (IllegalAccessException e) {
             e.printStackTrace(); // This should only happen if something's wrong up there.
         }
     }
 
+    
+    @Override
+    public void unregisterAllCommands() {
+    	List<String> cmds = new ArrayList<>();
+    	for ( PluginCommand pluginCommand : getCommands() ) {
+    		cmds.add( pluginCommand.getLabel() );
+		}
+    	
+    	for ( String lable : cmds ) {
+    		unregisterCommand( lable );
+		}
+    }
+    
+    public PluginCommand findCommand( String label ) {
+    	PluginCommand results = null;
+    	
+    	for ( PluginCommand command : getCommands() ) {
+    		if (command.getLabel().equalsIgnoreCase(label)) {
+    			results = command;
+    			break;
+    		}
+		}
+    	return results;
+    }
+    
     @Override public List<PluginCommand> getCommands() {
         return commands;
     }
@@ -325,9 +444,10 @@ class SpigotPlatform implements Platform {
         return plugin.scheduler;
     }
 
-    @Override public GUI createGUI(String title, int numRows) {
-        return new SpigotGUI(title, numRows);
-    }
+    // Old method removed
+    // @Override public GUI createGUI(String title, int numRows) {
+    //    return new SpigotGUI(title, numRows);
+    // }
 
 //    @SuppressWarnings( "deprecation" )
 	public void toggleDoor(Location doorLocation) {
@@ -352,30 +472,38 @@ class SpigotPlatform implements Platform {
         					.playIronDoorSound(block.getLocation());
     }
 
-    @Override public void log(String message, Object... format) {
+    @Override 
+    public void log(String message, Object... format) {
         message = Text.translateAmpColorCodes(String.format(message, format));
 
-        ConsoleCommandSender sender = Bukkit.getConsoleSender();
+        logCore( message );
+    }
+
+    @Override 
+	public void logCore( String message )
+	{
+		ConsoleCommandSender sender = Bukkit.getConsoleSender();
         if (sender == null) {
             Bukkit.getLogger().info(ChatColor.stripColor(message));
         } else {
             sender.sendMessage(message);
         }
-    }
+	}
 
     @Override public void debug(String message, Object... format) {
         if (!plugin.debug) {
             return;
         }
 
-        log(Output.get().gen("&eDebug") + " &7", message, format);
+        log( Output.get().format( message, LogLevel.DEBUG), format );
     }
 
     @Override public String runConverter() {
         File file = new File(plugin.getDataFolder().getParent(), "Prison.old");
         if (!file.exists()) {
             return Output.get().format(
-                "I could not find a 'Prison.old' folder to convert. You probably haven't had Prison 2 installed before, so you don't need to convert :)",
+                "Could not find a 'Prison.old' folder to convert. Prison 2 may not have been installed " +
+                "before, so there is nothing that can be converted :)",
                 LogLevel.WARNING);
         }
 
@@ -464,6 +592,8 @@ class SpigotPlatform implements Platform {
 		 
         // Finally print the version after loading the prison plugin:
 //        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+		 
+		 boolean isPlugManPresent = false;
         
         // Store all loaded plugins within the PrisonCommand for later inclusion:
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
@@ -473,11 +603,31 @@ class SpigotPlatform implements Platform {
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );
+        	
+        	if ( "PlugMan".equalsIgnoreCase( name ) ) {
+        		isPlugManPresent = true;
+        	}
 		}
+        
+        if ( isPlugManPresent ) {
+        	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
+        	chatDisplay.text( "&7The use of PlugMan on this Prison server will corrupt internals" );
+        	chatDisplay.text( "&7of Prison and may lead to a non-functional state, or even total" );
+        	chatDisplay.text( "&7corruption of the internal settings, the saved files, and maybe" );
+        	chatDisplay.text( "&7even the mines and surrounding areas too." );
+        	chatDisplay.text( "&7The only safe way to restart Prison is through a server restart." );
+        	chatDisplay.text( "&7Use of PlugMan at your own risk.  You have been warned. " );
+        	chatDisplay.text( "&7Prison support team has no obligation to help recover, or repair," );
+        	chatDisplay.text( "&7any troubles that may result of the use of PlugMan." );
+        	chatDisplay.text( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
+        	chatDisplay.text( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	
+        	chatDisplay.sendtoOutputLogInfo();;
+        }
 
         // NOTE: The following code does not actually get all of the commands that have been
         //       registered with the bukkit plugin registry.  So commenting this out and may revisit
-        //       in the future.  Only tested with 1.8.8 so may work better with more cent version.
+        //       in the future.  Only tested with 1.8.8 so may work better with more recent version.
 //        SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
 //        
 //        try {
@@ -562,7 +712,7 @@ class SpigotPlatform implements Platform {
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value.  If the key does
-	 * not exist, then it returns a value of false.
+	 * not exist, then it returns a value of false. Default value is false.
 	 * </p>
 	 * 
 	 * @param key
@@ -578,8 +728,8 @@ class SpigotPlatform implements Platform {
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
-	 * It has to match on true to return a true value.  If the key does
-	 * not exist, then it returns a value of true.
+	 * It has to match on true to return a true value, but if the key does
+	 * not exist, then it returns a value of true. Default value is true.
 	 * </p>
 	 * 
 	 * @param key
@@ -609,5 +759,439 @@ class SpigotPlatform implements Platform {
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		
 		return SpigotUtil.getPrisonBlock( blockName );
+	}
+	
+	
+	/**
+	 * ModuleElements are Mines or Ranks, and sometimes maybe even ladders.
+	 * 
+	 * The purpose of this function is to link together Mines and rank (and maybe even
+	 * ladders) when they cannot reference each other within their native modules. So
+	 * this external linking is required.
+	 * 
+	 * Currently, the only linkage that is supported are:
+	 * 
+	 * Mine to one rank
+	 * rank has many mines
+	 * 
+	 * 
+	 */
+	@Override
+	public boolean linkModuleElements( ModuleElement sourceElement, 
+					ModuleElementType targetElementType, String name ) {
+		boolean results = false;
+		
+		if ( sourceElement != null) {
+			
+			if ( sourceElement.getModuleElementType() == ModuleElementType.MINE && 
+					sourceElement instanceof Mine ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( targetElementType != null && targetElementType == ModuleElementType.RANK &&
+						PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+					
+					RankManager rm = PrisonRanks.getInstance().getRankManager();
+					if ( rm != null ) {
+						Rank rank = rm.getRank( name );
+						
+						if ( rank != null ) {
+							Mine mine = (Mine) sourceElement;
+							
+							// Add the mine to the rank, and the rank to the mine:
+							mine.setRank( rank );
+							rank.getMines().add( mine );
+							
+							// save both the mine and the rank:
+							MineManager mm = PrisonMines.getInstance().getMineManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+							
+							results = true;
+						}
+					}
+				}
+			}
+			
+			else if ( sourceElement.getModuleElementType() == ModuleElementType.RANK && 
+					sourceElement instanceof Rank ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( targetElementType != null && targetElementType == ModuleElementType.MINE &&
+						PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+					MineManager mm = PrisonMines.getInstance().getMineManager();
+					if ( mm != null ) {
+						Mine mine = mm.getMine( name );
+						
+						if ( mine != null ) {
+							Rank rank = (Rank) sourceElement;
+							
+							mine.setRank( rank );
+							rank.getMines().add( mine );
+
+							// save both the mine and the rank:
+							RankManager rm = PrisonRanks.getInstance().getRankManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+
+							results = true;
+						}
+							
+					}
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+
+	@Override
+	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB ) {
+		boolean results = false;
+		
+		unlinkModuleElement( elementA, elementB );
+		
+		return results;
+	}
+	
+	
+	private boolean unlinkModuleElement( ModuleElement elementA, ModuleElement elementB ) {
+		boolean results = false;
+		
+		
+		if ( elementA != null) {
+			
+			if ( elementA.getModuleElementType() == ModuleElementType.MINE && 
+					elementA instanceof Mine ) {
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( elementB != null && elementB.getModuleElementType() == ModuleElementType.RANK ) {
+					
+					RankManager rm = PrisonRanks.getInstance().getRankManager();
+					if ( rm != null ) {
+						// To remove the rank from the mine, just set the value to null:
+						Mine mine = (Mine) elementA;
+						mine.setRank( null );
+						
+						Rank rank = (Rank) elementB;
+						rank.getMines().remove( mine );
+
+						// save both the mine and the rank:
+						MineManager mm = PrisonMines.getInstance().getMineManager();
+						mm.saveMine( mine );
+						rm.saveRank( rank );
+
+					}
+				}
+			}
+			
+			else if ( elementA.getModuleElementType() == ModuleElementType.RANK && 
+					elementA instanceof Rank ) {
+				// If we have an instance of a mine, then we know that module has been
+				// enabled.
+				
+				// We need to confirm targetElementType is ranks, then we need to check to
+				// ensure the rank module is active, then search for a rank with the given
+				// name.  If found, then link.
+				if ( elementB != null && elementB.getModuleElementType() == ModuleElementType.MINE ) {
+					MineManager mm = PrisonMines.getInstance().getMineManager();
+					if ( mm != null ) {
+						Mine mine = (Mine) elementB;
+						
+						if ( mine != null ) {
+							Rank rank = (Rank) elementA;
+							
+							mine.setRank( rank );
+							rank.getMines().remove( mine );
+
+							// save both the mine and the rank:
+							RankManager rm = PrisonRanks.getInstance().getRankManager();
+							mm.saveMine( mine );
+							rm.saveRank( rank );
+
+							results = true;
+						}
+							
+					}
+				}
+			}
+		}
+
+		
+		return results;
+	}
+	
+	/**
+	 * <p>This function will create the specified ModuleElement.  It will create the minimal 
+	 * possible element, of which, the settings can then be changed.  If the create was
+	 * successful, then it will return the element, otherwise it will return a null.
+	 * </p>
+	 * 
+	 * <p>Minimal mines will be a virtual mine, but with the tag set.
+	 * </p>
+	 * 
+	 * <p>Minimal rank will be placed on the default ladder with a cost of zero.
+	 * </p>
+	 * 
+	 */
+	public ModuleElement createModuleElement( tech.mcprison.prison.internal.CommandSender sender, 
+					ModuleElementType elementType, String name, String tag ) {
+		ModuleElement results = null;
+		
+		if ( elementType == ModuleElementType.MINE ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			Mine mine = mm.getMine( name );
+			if ( mine == null ) {
+				PrisonMines.getInstance().getMinesCommands().createCommand( sender, "virtual", name );
+				mine = mm.getMine( name );
+				mine.setTag( tag );
+				
+				results = mine;
+			}
+		}
+		else if ( elementType == ModuleElementType.RANK ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
+			
+			Rank rank = rm.getRank( name );
+			
+			results = rank;
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public int getModuleElementCount( ModuleElementType elementType ) {
+		int results = 0;
+		
+		if ( elementType == ModuleElementType.MINE ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			results = mm.getMines().size();
+		}
+		else if ( elementType == ModuleElementType.RANK ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			results = rm.getRanks().size();
+		}
+		
+		return results;
+	}
+	
+	
+	/**
+	 * <p>This function assigns blocks to all of the generated mines.  It is intended that
+	 * these mines were just created by the autoCreate function which will ensure that
+	 * no blocks have yet been assigned to any mines.  Because it is assumed that no 
+	 * blocks are in any of these mines, no check is performed to eliminate possible 
+	 * duplicates or to prevent total chance from exceeding 100.0%.
+	 * </p>
+	 * 
+	 * <p>This function uses a sliding window of X number of block types to assign.  
+	 * The number of block types is defined by the percents List in both the number of
+	 * blocks, but also the percentage for each block.  
+	 * The current List has 6 types per mine, with the first few and last few having less.
+	 * The percents are assigned to the most valuable to the least valuable blocks:
+	 * 5%, 10%, 20%, 20%, 20%, and 25%.
+	 * </p>
+	 * 
+	 * <p>This function works with the old and new prison block models, and uses the
+	 * exact same blocks for consistency.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void autoCreateMineBlockAssignment() {
+		List<String> blockList = null; 
+		
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        	blockList = buildBlockListXMaterial();
+        }
+        else {
+        	blockList = buildBlockListBlockType();
+        }
+		
+		MineManager mm = PrisonMines.getInstance().getMineManager();
+		List<Mine> mines = mm.getMines();
+		
+		List<Double> percents = new ArrayList<>();
+		percents.add(5d);
+		percents.add(10d);
+		percents.add(20d);
+		percents.add(20d);
+		percents.add(20d);
+		percents.add(25d);
+		int mineBlockSize = percents.size();
+		
+		int startPos = 1;
+		for ( Mine mine : mines ) {
+			
+			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
+			
+			 // If startPos > percents.size(), which means we are past the initial 
+			 // ramp up to the full variety of blocks per mine.  At that point, if 
+			 // percents is grater than mBlocks, then we must trim the first entry
+			 // from percents so that the most valuable block is able to have more
+			 // than just 5% allocation. 
+			 // This should only happen at the tail end of processing and will only
+			 // have a decrease by one per mine so there should never be a need to
+			 // to check more than once, or remove more than one.
+			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+				 percents.remove( 0 );
+			 }
+			 
+			double total = 0;
+			for ( int i = 0; i < mBlocks.size(); i++ )
+			{
+				
+				tech.mcprison.prison.mines.data.Block block = 
+						new tech.mcprison.prison.mines.data.Block( 
+								mBlocks.get( i ), percents.get( i ) );
+				
+				mine.getBlocks().add( block );
+
+				total += block.getChance();
+				
+				// If this is the last block and the totals are not 100%, then
+				// add the balance to the last block.
+				if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+					double remaining = 100.0d - total;
+					block.setChance( remaining + block.getChance() );
+				}
+				
+			}
+			
+			mm.saveMine( mine );
+			
+			String mineBlockListing = mine.getBlockListString();
+			Output.get().logInfo( mineBlockListing );
+		}
+	}
+	
+	/**
+	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
+	 * up to the specified length. The result set will be less than the specified length if at
+	 * the beginning of the list, or at the end.
+	 *  
+	 * @param blockList
+	 * @param startPos
+	 * @param length
+	 * @return
+	 */
+	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
+
+		List<String> results = new ArrayList<>();
+		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
+			results.add( blockList.get( i ) );
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * This listing of blocks is based strictly upon XMaterial. 
+	 * This is the preferred list to use with the new block model.
+	 * 
+	 * @return
+	 */
+	protected List<String> buildBlockListXMaterial() {
+		List<String> blockList = new ArrayList<>();
+		
+		blockList.add( XMaterial.COBBLESTONE.name() );
+		blockList.add( XMaterial.ANDESITE.name() );
+		blockList.add( XMaterial.DIORITE.name() );
+		blockList.add( XMaterial.COAL_ORE.name() );
+
+		blockList.add( XMaterial.GRANITE.name() );
+		blockList.add( XMaterial.STONE.name() );
+		blockList.add( XMaterial.IRON_ORE.name() );
+		blockList.add( XMaterial.POLISHED_ANDESITE.name() );
+
+//		blockList.add( XMaterial.POLISHED_DIORITE.name() );
+//		blockList.add( XMaterial.POLISHED_GRANITE.name() );
+		blockList.add( XMaterial.GOLD_ORE.name() );
+
+		
+		blockList.add( XMaterial.MOSSY_COBBLESTONE.name() );
+		blockList.add( XMaterial.COAL_BLOCK.name() );
+		blockList.add( XMaterial.NETHER_QUARTZ_ORE.name() );
+		blockList.add( XMaterial.IRON_BLOCK.name() );
+
+		blockList.add( XMaterial.LAPIS_ORE.name() );
+		blockList.add( XMaterial.REDSTONE_ORE.name() );
+		blockList.add( XMaterial.DIAMOND_ORE.name() );
+
+		blockList.add( XMaterial.QUARTZ_BLOCK.name() );
+		blockList.add( XMaterial.EMERALD_ORE.name() );
+
+		blockList.add( XMaterial.GOLD_BLOCK.name() );
+		blockList.add( XMaterial.LAPIS_BLOCK.name() );
+		blockList.add( XMaterial.REDSTONE_BLOCK.name() );
+		
+//		blockList.add( XMaterial.SLIME_BLOCK.name() );
+		blockList.add( XMaterial.DIAMOND_BLOCK.name() );
+		blockList.add( XMaterial.EMERALD_BLOCK.name() );
+		
+		return blockList;
+	}
+	
+	/**
+	 * This listing of blocks is based strictly upon the old prison's block
+	 * model.
+	 * 
+	 * Please note, that right now these names match exactly with XMaterial only
+	 * because I renamed a few of them to make them match.  But if more are added
+	 * in the future, then there may be mismatches.
+	 * 
+	 * @return
+	 */
+	protected List<String> buildBlockListBlockType() {
+		List<String> blockList = new ArrayList<>();
+		
+		blockList.add( BlockType.COBBLESTONE.name() );
+		blockList.add( BlockType.ANDESITE.name() );
+		blockList.add( BlockType.DIORITE.name() );
+		blockList.add( BlockType.COAL_ORE.name() );
+		
+		blockList.add( BlockType.GRANITE.name() );
+		blockList.add( BlockType.STONE.name() );
+		blockList.add( BlockType.IRON_ORE.name() );
+		blockList.add( BlockType.POLISHED_ANDESITE.name() );
+		
+//		blockList.add( BlockType.POLISHED_DIORITE.name() );
+//		blockList.add( BlockType.POLISHED_GRANITE.name() );
+		blockList.add( BlockType.GOLD_ORE.name() );
+		
+		
+		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
+		blockList.add( BlockType.COAL_BLOCK.name() );
+		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
+		blockList.add( BlockType.IRON_BLOCK.name() );
+		
+		blockList.add( BlockType.LAPIS_ORE.name() );
+		blockList.add( BlockType.REDSTONE_ORE.name() );
+		blockList.add( BlockType.DIAMOND_ORE.name() );
+		
+		blockList.add( BlockType.QUARTZ_BLOCK.name() );
+		blockList.add( BlockType.EMERALD_ORE.name() );
+		
+		blockList.add( BlockType.GOLD_BLOCK.name() );
+		blockList.add( BlockType.LAPIS_BLOCK.name() );
+		blockList.add( BlockType.REDSTONE_BLOCK.name() );
+		
+//		blockList.add( BlockType.SLIME_BLOCK.name() );
+		blockList.add( BlockType.DIAMOND_BLOCK.name() );
+		blockList.add( BlockType.EMERALD_BLOCK.name() );
+		
+		return blockList;
 	}
 }

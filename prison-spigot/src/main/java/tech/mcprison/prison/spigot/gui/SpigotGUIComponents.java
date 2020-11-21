@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -24,14 +27,30 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(display);
-        try {
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        } catch (NoClassDefFoundError ignored){}
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+        if ( meta != null ) {
+        	meta.setDisplayName(SpigotPrison.format(display));
+        	try {
+        		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        	} catch (NoClassDefFoundError ignored){}
+        	meta.setLore(lore);
+        	item.setItemMeta(meta);
+        }
 
         return item;
+    }
+    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    	
+    	ItemMeta meta = item.getItemMeta();
+    	if ( meta != null ) {
+    		meta.setDisplayName(SpigotPrison.format(display));
+    		try {
+    			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    		} catch (NoClassDefFoundError ignored){}
+    		meta.setLore(lore);
+    		item.setItemMeta(meta);
+    	}
+    	
+    	return item;
     }
 
     // createLore method (create a lore for the button)
@@ -53,5 +72,28 @@ public abstract class SpigotGUIComponents {
         return module instanceof PrisonRanks;
     }
 
+
+    protected static Configuration messages(){
+        return SpigotPrison.getInstance().getMessagesConfig();
+    }
+
+    protected static Configuration sellAll(){
+        return SpigotPrison.getInstance().getSellAllConfig();
+    }
+
+    protected static Configuration guiConfig(){
+        return SpigotPrison.getInstance().getGuiConfig();
+    }
+
+    protected static AutoFeaturesFileConfig AutoFeaturesFileConfig() {
+        return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    }
+
+    protected void openGUI(Player p, Inventory inv){
+
+        // Open the inventory
+        p.openInventory(inv);
+        ListenersPrisonManager.get().addToGUIBlocker(p);
+    }
 
 }

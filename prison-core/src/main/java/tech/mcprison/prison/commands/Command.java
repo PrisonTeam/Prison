@@ -25,13 +25,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) 
+
+@Retention(RetentionPolicy.RUNTIME) 
+@Target(ElementType.METHOD) 
 public @interface Command {
 
     /**
      * The description of this command
      */
-    String description() default "";
+    public String description() default "";
 
     /**
      * The identifier describes what command definition this will bind to. Spliced by spaces, you can
@@ -41,21 +43,21 @@ public @interface Command {
      * command by writing (if the root command does not choose an alias instead):<br> {@code /root
      * sub1 sub2}<br>
      */
-    String identifier();
+    public String identifier();
 
     /**
      * If this command can only be executed by players (default true).<br> If you turn this to false,
      * the first parameter in the method must be the {@link CommandSender} to avoid {@link
      * ClassCastException}
      */
-    boolean onlyPlayers() default true;
+    public boolean onlyPlayers() default true;
 
     /**
      * The permissions to check if the user have before execution. If it is empty the command does not
      * require any permission.<br><br> If the user don't have one of the permissions, they will get an
      * error message stating that they do not have permission to use the command.
      */
-    String[] permissions() default {};
+    public String[] permissions() default {};
 
     
     /**
@@ -77,5 +79,16 @@ public @interface Command {
      * was not available before.
      * 
      */
-    String[] altPermissions() default {};
+    public String[] altPermissions() default {};
+    
+    
+    /**
+     * The aliases field provides the ability to define one or more aliases to register a given 
+     * command with Bukkit.
+     * 
+     * @return
+     */
+    public String[] aliases() default {};
+    
+    
 }

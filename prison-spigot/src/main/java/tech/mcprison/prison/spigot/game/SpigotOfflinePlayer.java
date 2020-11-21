@@ -129,4 +129,8 @@ public class SpigotOfflinePlayer
 		return null;
 	}
 
+	@Override
+	public void printDebugInventoryInformationToConsole() {
+		
+	}
 }

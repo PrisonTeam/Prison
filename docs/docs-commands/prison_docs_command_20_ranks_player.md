@@ -1,24 +1,24 @@
-### Prison Documentation - **WORK-IN-PROGRESS**
+### Prison Documentation
 [Prison Documents - Table of Contents](../prison_docs_000_toc.md)
 
 ## Description:
 
-Short description of the command will be here
+Shows a player their rank.
+
+## Permission:
+
+- `ranks.admin`
 
 ## SubCommands:
 
-- List
-- Of
-- Sub
-- Commands
-- With
-- Short
-- Description
+- none
 
 ## How to use the command
 
+Execute the command itself adding the player Name like in the example: `/ranks player GABRYCA`.
+
 ### Command Format
 
-`/prison`
+`/ranks player [playerName]`
 
 **END of the command INFO**

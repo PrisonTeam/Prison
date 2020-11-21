@@ -22,6 +22,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final Configuration messages = messages();
 
     public SpigotLaddersGUI(Player p){
         this.p = p;
@@ -43,19 +44,16 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
 
-        // Load config
-        Configuration GuiConfig = SpigotPrison.getGuiConfig();
-
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.NoLadders")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoLadders")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(GuiConfig.getString("Gui.Message.TooManyLadders")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyLadders")));
             p.closeInventory();
             return;
         }
@@ -66,18 +64,17 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Make for every ladder a button
         for (RankLadder ladder : lm.getLadders()){
 
-            if (guiBuilder(GuiConfig, inv, ladder)) return;
+            if (guiBuilder(inv, ladder)) return;
 
         }
 
         // Open the inventory
-        this.p.openInventory(inv);
-        ListenersPrisonManager.get().addToGUIBlocker(p);
+        openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+    private boolean guiBuilder(Inventory inv, RankLadder ladder) {
         try {
-            buttonsSetup(guiConfig, inv, ladder);
+            buttonsSetup(inv, ladder);
         } catch (NullPointerException ex){
             p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -86,12 +83,15 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Configuration guiConfig, Inventory inv, RankLadder ladder) {
+    private void buttonsSetup(Inventory inv, RankLadder ladder) {
+
+        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
+
         ItemStack itemLadder;
         // Init the lore array with default values for ladders
         List<String> laddersLore = createLore(
-                guiConfig.getString("Gui.Lore.ClickToOpen"),
-                guiConfig.getString("Gui.Lore.ShiftAndRightClickToDelete"));
+                messages.getString("Lore.ClickToOpen"),
+                messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
         itemLadder = createButton(Material.LADDER, 1, laddersLore, SpigotPrison.format("&3" + ladder.name));

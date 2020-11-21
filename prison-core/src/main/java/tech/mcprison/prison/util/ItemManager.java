@@ -18,16 +18,6 @@
 
 package tech.mcprison.prison.util;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import tech.mcprison.prison.Prison;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * This class takes care of the items.csv containing 8000+ different name combinations for blocks.
  *
@@ -36,50 +26,60 @@ import java.util.Map;
  */
 public class ItemManager {
 
-    private Multimap<BlockType, String> items;
+//    private Multimap<BlockType, String> items;
 
-    public ItemManager() throws Exception {
-        File file = new File(Prison.get().getDataFolder(), "/items.csv");
-        items = ArrayListMultimap.create();
-
-        if (!file.exists()) {
-        	try (
-        			// make sure the InputStream is properly closed. May not be 100% needed here:
-        			InputStream inputStream = getClass().getResourceAsStream("/items.csv");
-        			)
-        	{
-        		Files.copy(inputStream, Paths.get(file.getPath()));
-        	}
-            catch (Exception e) {
-            	throw new IOException("Error while copying items.csv from the jar resource to a " +
-            			"file within the plugins directory:", e);
-            }
-        }
-        try (
-        		// Was a memory leak... always must be closed, so the try with resource ensures that it is:
-        		BufferedReader in = new BufferedReader(new FileReader(file));
-        		)
-        {
-        	String inputLine;
-        	
-        	while ((inputLine = in.readLine()) != null) {
-    			if (!inputLine.startsWith("#")) {
-    				String[] array = inputLine.split(",");
-    				String itemName = array[0];
-    				int id = Integer.parseInt(array[1]);
-    				short data = Short.parseShort(array[2]);
-    				items.put(BlockType.getBlockWithData(id, data), itemName.toLowerCase());
-    			}
-        	}
-        	
-        }
-        catch (Exception e) {
-        	throw new IOException("Error while reading items.csv -- it's probably invalid", e);
-        }
-    }
-
-    public Map<BlockType, Collection<String>> getItems() {
-        return items.asMap();
-    }
+    
+    /**
+     * This has not been used for a while.  Will need to provide an alternative way to 
+     * add custom blocks.
+     * 
+     * @throws Exception
+     */
+//    @Deprecated
+//    public ItemManager() throws Exception {
+//    	items = ArrayListMultimap.create();
+//    /*
+//        File file = new File(Prison.get().getDataFolder(), "/items.csv");
+//
+//        if (!file.exists()) {
+//        	try (
+//        			// make sure the InputStream is properly closed. May not be 100% needed here:
+//        			InputStream inputStream = getClass().getResourceAsStream("/items.csv");
+//        			)
+//        	{
+//        		Files.copy(inputStream, Paths.get(file.getPath()));
+//        	}
+//            catch (Exception e) {
+//            	throw new IOException("Error while copying items.csv from the jar resource to a " +
+//            			"file within the plugins directory:", e);
+//            }
+//        }
+//        try (
+//        		// Was a memory leak... always must be closed, so the try with resource ensures that it is:
+//        		BufferedReader in = new BufferedReader(new FileReader(file));
+//        		)
+//        {
+//        	String inputLine;
+//        	
+//        	while ((inputLine = in.readLine()) != null) {
+//    			if (!inputLine.startsWith("#")) {
+//    				String[] array = inputLine.split(",");
+//    				String itemName = array[0];
+//    				int id = Integer.parseInt(array[1]);
+//    				short data = Short.parseShort(array[2]);
+//    				items.put(BlockType.getBlockWithData(id, data), itemName.toLowerCase());
+//    			}
+//        	}
+//        	
+//        }
+//        catch (Exception e) {
+//        	throw new IOException("Error while reading items.csv -- it's probably invalid", e);
+//        }
+//       */
+//    }
+//
+//    public Map<BlockType, Collection<String>> getItems() {
+//        return items.asMap();
+//    }
 
 }

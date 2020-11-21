@@ -2,6 +2,7 @@ package tech.mcprison.prison.internal.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 
@@ -14,6 +15,7 @@ import tech.mcprison.prison.Prison;
 public class PrisonBlockTypes {
 	
 	private List<PrisonBlock> blockTypes;
+	private TreeMap<String, PrisonBlock> blockTypesByName;
 	
 	public enum InternalBlockTypes {
 		IGNORE,
@@ -25,6 +27,7 @@ public class PrisonBlockTypes {
 		
 		this.blockTypes = new ArrayList<>();
 		
+		this.blockTypesByName = new TreeMap<>();
 		
 	}
 	
@@ -33,17 +36,15 @@ public class PrisonBlockTypes {
 		// First clear the blockTypes:
 		getBlockTypes().clear();
 		
-		// Add in the internal block types and mark them as not mineable.
-		for ( InternalBlockTypes iBlockType : InternalBlockTypes.values() ) {
-			PrisonBlock block = new PrisonBlock( iBlockType.name() );
-			block.setMineable( false );
-			
-			getBlockTypes().add( block );
-		}
+		getBlockTypes().add( PrisonBlock.IGNORE );
 		
 		// Next using the server's platform, load all of the available blockTypes.
 		Prison.get().getPlatform().getAllPlatformBlockTypes( getBlockTypes() );
-		
+
+		// Map all available blocks to the blockTypesByName map:
+		for ( PrisonBlock pb : getBlockTypes() ) {
+			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
+		}
 	}
 
 	public List<PrisonBlock> getBlockTypes() {
@@ -51,6 +52,13 @@ public class PrisonBlockTypes {
 	}
 	public void setBlockTypes( List<PrisonBlock> blockTypes ) {
 		this.blockTypes = blockTypes;
+	}
+
+	public TreeMap<String, PrisonBlock> getBlockTypesByName() {
+		return blockTypesByName;
+	}
+	public void setBlockTypesByName( TreeMap<String, PrisonBlock> blockTypesByName ) {
+		this.blockTypesByName = blockTypesByName;
 	}
 	
 }

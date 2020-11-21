@@ -78,9 +78,9 @@ public class RankLadder
         	Rank rankPrison = null;
         	
         	if ( rankManager != null &&  
-    				rankManager.getRank( rRankId ).isPresent() ) {
+    				rankManager.getRank( rRankId ) !=  null) {
 
-        		rankPrison = rankManager.getRank( rRankId ).get();
+        		rankPrison = rankManager.getRank( rRankId );
         		
         		// if null look it up from loaded ranks:
         		if ( rRankName == null  ) {
@@ -118,9 +118,9 @@ public class RankLadder
     	
     	for ( PositionRank rank : ranks ) {
     		
-    		if ( rank.rank == null ) {
-    			
-    			Rank rnk = rankManager.getRank( rank.rankId ).get();
+    		if ( rank != null && rank.rank == null ) {
+    			//
+    			Rank rnk = rankManager.getRank( rank.rankId );
     			if ( rnk != null ) {
     				rank.rank = rnk;
     			}
@@ -288,7 +288,7 @@ public class RankLadder
     public Optional<Rank> getByPosition(int position) {
         for (PositionRank posRank : ranks) {
             if (posRank.getPosition() == position) {
-                return PrisonRanks.getInstance().getRankManager().getRank(posRank.getRankId());
+                return PrisonRanks.getInstance().getRankManager().getRankOptional(posRank.getRankId());
             }
         }
 
@@ -314,7 +314,7 @@ public class RankLadder
             }
         }
 
-        return PrisonRanks.getInstance().getRankManager().getRank(lowest.getRankId());
+        return PrisonRanks.getInstance().getRankManager().getRankOptional(lowest.getRankId());
     }
 
     /**
