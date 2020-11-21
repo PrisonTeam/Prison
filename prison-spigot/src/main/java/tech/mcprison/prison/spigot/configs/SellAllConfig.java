@@ -1,14 +1,14 @@
 package tech.mcprison.prison.spigot.configs;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
  * @author GABRYCA
@@ -20,11 +20,13 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public SellAllConfig(){
 
-        if (!Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("sellall")).equalsIgnoreCase("true")){
-            return;
-        }
-
-        initialize();
+    	// Do not use requireNonNull. Should never throw an exception if they don't have
+    	// it configured.
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
+    		
+    		initialize();
+    	}
+    	
     }
 
     private void initialize(){

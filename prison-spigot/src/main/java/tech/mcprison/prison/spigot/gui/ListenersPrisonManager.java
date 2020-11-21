@@ -66,7 +66,11 @@ public class ListenersPrisonManager implements Listener {
     public String mineNameOfChat = null;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-    private final Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    
+    // NOTE: sellAllConfig will be null if sellall is not enbled.
+    @SuppressWarnings( "unused" )
+	private final Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
     public String mode;

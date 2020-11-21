@@ -55,7 +55,9 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -153,44 +155,36 @@ public class SpigotPrison extends JavaPlugin {
         initCommandMap();
         initCompatibility();
         initUpdater();
+        
         this.scheduler = new SpigotScheduler(this);
 
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
 
+        
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
 
-        PrisonSpigotCommands spigotCommands = new PrisonSpigotCommands();
-        Prison.get().getCommandHandler().registerCommands( spigotCommands );
+        Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
-		if ( !isPrisonConfig( "prestiges") ) {
-			// Enable the setup of the prestige related commands only if prestiges is enabled:
-			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
-		}
-
-        new SellAllConfig();
-        new GuiConfig();
-        new SpigotListener().init();
-
-
-        // Prison.get().getCommandHandler().registerCommands(new PrisonShortcutCommands());
         
         initIntegrations();
-        initModules();
+
+        
+        // NOTE: Put all commands within the initModulesAndCommands() function.
+        initModulesAndCommands();
+        
         applyDeferredIntegrationInitializations();
         initMetrics();
+        
         Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
+        
         PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 
 
-        // Only register the command if not enabled so it will not conflict with other sellall plugins:
-        if ( SellAllCommands.isEnabled() ) {
-            new SellAllConfig();
-            getCommand("sellall").setExecutor(new SellAllCommands());
-        }
+
 
 //        if (doAlertAboutConvert) {
 //            Alerts.getInstance().sendAlert(
@@ -236,14 +230,15 @@ public class SpigotPrison extends JavaPlugin {
         return guiConfig.getFileGuiConfig();
     }
 
-    public FileConfiguration getSellAllConfig(){
-        if (sellAllConfig == null) {
+    public FileConfiguration getSellAllConfig() {
+        if (sellAllConfig == null && SellAllCommands.isEnabled() ) {
+        		
             sellAllConfig = new SellAllConfig();
         }
-        return sellAllConfig.getFileSellAllConfig();
+        return sellAllConfig == null ? null : sellAllConfig.getFileSellAllConfig();
     }
 
-    public FileConfiguration getMessagesConfig(){
+    public FileConfiguration getMessagesConfig() {
     	if (messagesConfig == null) {
     		messagesConfig = new MessagesConfig();
     	}
@@ -417,7 +412,13 @@ public class SpigotPrison extends JavaPlugin {
     	PrisonAPI.getIntegrationManager().register(integration);
     }
 
-    private void initModules() {
+    /**
+     * This function registers all of the modules in prison.  It should also manage
+     * the registration of "extra" commands that are outside of the modules, such
+     * as gui related commands.
+     * 
+     */
+    private void initModulesAndCommands() {
 
         YamlConfiguration modulesConf = loadConfig("modules.yml");
 
@@ -425,6 +426,9 @@ public class SpigotPrison extends JavaPlugin {
         if (modulesConf.getBoolean("mines")) {
             Prison.get().getModuleManager()
                     .registerModule(new PrisonMines(getDescription().getVersion()));
+
+            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+            
         } else {
             Output.get().logInfo("&7Modules: &cPrison Mines are disabled and were not Loaded. ");
             Output.get().logInfo("&7  Prison Mines have been disabled in &2plugins/Prison/modules.yml&7.");
@@ -434,8 +438,18 @@ public class SpigotPrison extends JavaPlugin {
         if (modulesConf.getBoolean("ranks")) {
             Prison.get().getModuleManager()
                     .registerModule(new PrisonRanks(getDescription().getVersion()));
+
+            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+            
+            // NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+            if ( !isPrisonConfig( "prestiges") ) {
+            	// Enable the setup of the prestige related commands only if prestiges is enabled:
+            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            }
+            
         } else {
         	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
+        	Output.get().logInfo("&7  Prestiges cannot be enabled without ranks being enabled. ");
         	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
         	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
@@ -445,6 +459,18 @@ public class SpigotPrison extends JavaPlugin {
         if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
         	linkMinesAndRanks();
         }
+        
+        // Only register the command if it is enabled so it will not conflict with other sellall plugins if they are used:
+        if ( SellAllCommands.isEnabled() ) {
+        	
+        	// Do not hit this function here. It will lazy initialize if needed:
+        	//getSellAllConfig();
+            getCommand("sellall").setExecutor(new SellAllCommands());
+        }
+        
+        // This registers the admin's /gui commands
+        Prison.get().getCommandHandler().registerCommands( new PrisonSpigotCommands() );
+
     }
 
     private void linkMinesAndRanks() {
