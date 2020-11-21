@@ -9,8 +9,13 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 
 public class PrisonSpigotBaseCommands {
 
-    
-    protected boolean isConfig( String configId ) {
+	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+
+    public Configuration getMessages() {
+		return messages;
+	}
+
+	protected boolean isConfig( String configId ) {
     	
     	String config = getConfig().getString( configId );
     	boolean results = config != null && config.equalsIgnoreCase( "true" );
