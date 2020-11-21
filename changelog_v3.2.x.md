@@ -8,7 +8,20 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.13 - 2020-11-19
+## tag v3.2.2-alpha.14 - 2020-11-21
+
+
+* **v3.2.2-alpha.14 - 2020-11-21**
+Bump version... preparing for v3.2.2 bug fix.
+
+
+* **Refactored where the commands that are outside of the modules are registered.**
+They are now registered within the function where the modules are registered to allow the related commands to either be registered or not, based upon the modules.
+Refactored how some of the commands/configs are setup to be more flexible, or to better follow the standards of how prison has been instantiating them (ListenersPrisonManager).
+
+
+* **Split out the gui ranks and gui mines commands** from the main spigot gui commands. This allows them to be enabled on their own, or more importantly, prevent them from being registered if the modules are not loaded.
+
 
 
 * **Changes to the gui commands to prevent console from running a few gui commands.**
