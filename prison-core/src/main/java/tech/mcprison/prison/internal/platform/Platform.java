@@ -259,9 +259,27 @@ public interface Platform {
 	public String getConfigString( String key );
 	
 	
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value.  If the key does
+	 * not exist, then it returns a value of false. Default value is false.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public boolean getConfigBooleanFalse( String key );
 	
 
+	/**
+	 * <p>This returns the boolean value that is associated with the key.
+	 * It has to match on true to return a true value, but if the key does
+	 * not exist, then it returns a value of true.  Default value is true.
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public boolean getConfigBooleanTrue( String key );
 	
 	
