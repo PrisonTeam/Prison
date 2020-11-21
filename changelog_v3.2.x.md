@@ -8,10 +8,31 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.13 - 2020-11-13
+## tag v3.2.2-alpha.13 - 2020-11-19
 
 
-* **v3.2.2-alpha.13 - 2020-11-13**
+* **Changes to the gui commands to prevent console from running a few gui commands.**
+Also remove the alias of "prisonmanager" for "gui".  
+It was reported that when a non-admin tried to use /mines that it was giving the error message associated with /gui.  Cannot see a direct relationship there, but hard linked /mines to /gui mines by calling the function directly instead of resubmitting the command.  Not sure if this fixes the issue, but I was unable to reproduce it.
+
+
+* **Minor changes**
+Add more to the BaseCommands and start to hook them up. Fix usage of getting the current economy. 
+
+
+* **To prevent prestige related commands from being registered with bukkit**, 
+pulled prestige related commands in to their own command class and then conditionally register them if prestiges are enabled. Cleaned up a few other things such as remove use of deprecated functions and 
+moving the implementation of isPrisonConfig to SpigotPrison to simplify a few things and eliminate duplication.
+
+
+* **Fixed a problem with bukkit on a paper v1.16.4 server where the Bukkit.getOfflinePlayers() was returning either a null player, or a player had a name that was null.**
+
+
+* **v3.2.2-alpha.13 - 2020-11-15**
+
+
+* **Updates to the GUI: many.** 
+Moving configs to a common package to better manage them, or to prepare to merge them in the future. Many other fixes and enhancements.
 
 
 * **Updated the SpigotMineBlockPercentageGUI to include a Close button and to show the selected block top and center.**

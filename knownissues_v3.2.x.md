@@ -10,6 +10,17 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.2
 
 
+* **Get new block model working**
+  *  Start to enable and test various functions
+  *  Add in Custom Items Integration
+     *  Code Integration for CI - Key to specific version due to api changes
+     *  Pull in custom blocks from CI API
+     *  Place blocks with CI api
+     *  Not sure how block break would work with CI api?
+     *  Setup sellall to work with CI api
+     
+
+
 * **Combine a few commands & Other short Notes:**
  - Combine `/mines set rank` and `/mines set norank`
  - Combine `/mines set notificationPerm` with `/mines set notification`.  Add an option to enable perms.  Allow the perm to be changed? Maybe even use as a default the same permission that is used in `/ranks autoConfigure`.
