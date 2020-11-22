@@ -11,6 +11,13 @@ that you need.
 ## tag v3.2.2 - 2020-11-21
 
 
+* **Bug fix: Fix an NPE with /sellall**
+Remove of many NPE Objects and new messages for sellAll.  New messages added for sellAll in the messageConfig config
+
+
+* **v3.2.3-alpha.1 2020-11-22**
+
+
 * **Bug fix: Allows blocks to be added to mines now.**
 Thought for sure I removed this code before.  Not sure what happened, but must have missed testing with adding blocks. :(
 Will re-release the v3.2.2 version.
