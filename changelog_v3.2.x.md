@@ -11,6 +11,10 @@ that you need.
 ## tag v3.2.2 - 2020-11-21
 
 
+* **Bug fix: Allows blocks to be added to mines now.**
+Thought for sure I removed this code before.  Not sure what happened, but must have missed testing with adding blocks. :(
+Will re-release the v3.2.2 version.
+
 
 * **V3.2.2 Release - 2020-11-21**
 This version is being released to fix outstanding bugs and to provide a better end user experience.  Preparing for a few other changes, so want to get this released before possibly changing the stability of any feature.

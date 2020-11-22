@@ -711,9 +711,6 @@ public class MinesCommands
 			}
 		}
     	
-    	if ( results.getOldBlock() == null ) {
-    		results.setOldBlock( new Block(blockType, chance) );
-    	}
     	return results;
     }
     
