@@ -8,7 +8,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.14 - 2020-11-21
+## tag v3.2.2 - 2020-11-21
+
+
+
+* **V3.2.2 Release - 2020-11-21**
+This version is being released to fix outstanding bugs and to provide a better end user experience.  Preparing for a few other changes, so want to get this released before possibly changing the stability of any feature.
 
 
 * **v3.2.2-alpha.14 - 2020-11-21**
