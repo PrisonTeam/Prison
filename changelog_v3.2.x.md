@@ -8,7 +8,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2 - 2020-11-21
+## tag v3.2.2-alpha.2 - 2020-11-23
+
+* **v3.2.2-alpha.2 - 2020-11-23**
+Bump version because of a lot of improvements to the new block model. It actually appears to be working very well.  Still need to do more testing and will not enable by default for a while.  It will have to be an opt in feature for now.
+
+
+* **Found a typo in the old block model for weeping_vines** so it was not being recognized.  It's working now.
 
 * **Some fixes to get more of the new block model functional.**
 Added some support to help fall back to the correct XMaterial for a few block types such as WATER and STATIONARY_WATER which is not mapping for 1.8.8 because of the data value representing the flow height, but yet, XMaterial is trying to map it to an resource using data (it shouldn't though).
