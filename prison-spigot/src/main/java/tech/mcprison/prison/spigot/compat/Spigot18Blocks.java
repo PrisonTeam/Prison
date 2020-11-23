@@ -59,7 +59,7 @@ public abstract class Spigot18Blocks
 					
 					if ( results == null ) {
 						
-						Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
+						Output.get().logWarn( "Spigot18Blocks.getBlockType() : " +
 								"Spigot block cannot be mapped to a prison BlockType : " +
 								spigotBlock.getType().name() + 
 								" id = " + id + " data = " + data +
@@ -83,6 +83,12 @@ public abstract class Spigot18Blocks
 		
 		if ( xMat != null ) {
 			pBlock = new PrisonBlock( xMat.name() );
+		}
+		else {
+			Output.get().logWarn( "Spigot18Blocks.getPrisonBlock() : " +
+					"Spigot block cannot be mapped to a PrisonBlock : " +
+					spigotBlock.getType().name() + 
+					"  BlockType = " + ( pBlock == null ? "null" : pBlock.getBlockName()));
 		}
 		
 		return pBlock;

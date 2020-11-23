@@ -12,6 +12,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
@@ -48,6 +49,12 @@ public abstract class Spigot113Blocks
 		
 		if ( xMat != null ) {
 			pBlock = new PrisonBlock( xMat.name() );
+		}
+		else {
+			Output.get().logWarn( "Spigot113Blocks.getPrisonBlock() : " +
+					"Spigot block cannot be mapped to a PrisonBlock : " +
+					spigotBlock.getType().name() + 
+					"  PrisonBlock = " + ( pBlock == null ? "null" : pBlock.getBlockName()));
 		}
 		
 		return pBlock;
