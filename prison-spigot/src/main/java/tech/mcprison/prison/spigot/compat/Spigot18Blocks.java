@@ -36,7 +36,7 @@ public abstract class Spigot18Blocks
 	 */
 	@SuppressWarnings( "deprecation" )
 	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = null;
+		BlockType results = BlockType.NULL_BLOCK;
 		
 		if ( spigotBlock != null ) {
 			
@@ -84,12 +84,8 @@ public abstract class Spigot18Blocks
 		if ( xMat != null ) {
 			pBlock = new PrisonBlock( xMat.name() );
 		}
-		else {
-			Output.get().logWarn( "Spigot18Blocks.getPrisonBlock() : " +
-					"Spigot block cannot be mapped to a PrisonBlock : " +
-					spigotBlock.getType().name() + 
-					"  BlockType = " + ( pBlock == null ? "null" : pBlock.getBlockName()));
-		}
+		// ignore nulls because errors were logged in getXMaterial() so they only
+		// are logged once
 		
 		return pBlock;
 	}
@@ -97,7 +93,7 @@ public abstract class Spigot18Blocks
 	
 	@SuppressWarnings( "deprecation" )
 	public BlockType getBlockType( ItemStack spigotStack ) {
-		BlockType results = null;
+		BlockType results = BlockType.NULL_BLOCK;
 		
 		if ( spigotStack != null ) {
 			
@@ -117,43 +113,60 @@ public abstract class Spigot18Blocks
 	
 	@SuppressWarnings( "deprecation" )
 	public XMaterial getXMaterial( Block spigotBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( spigotBlock != null ) {
-//			int id = spigotBlock.getType().getId();
-			short data = spigotBlock.getData();
+			byte data = spigotBlock.getData();
 			
-			results = getCachedXMaterial( spigotBlock, (byte) data );
+			results = getCachedXMaterial( spigotBlock, data );
 			if ( results == null ) {
-								
-				String blockName =  spigotBlock.getType().name() +
-		    			( data > 0 ? ":" + data : "" );
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				String blockName = spigotBlock.getType().name() + ":" + data;
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
-				putCachedXMaterial( spigotBlock, (byte) data, results );
+				if ( results == null ) {
+					// Last chance: try to match by id:
+					int id = spigotBlock.getType().getId();
+					results = XMaterial.matchXMaterial( id, data ).orElse( null );
+				}
+				
+				if ( results == null ) {
+					// Last chance, try to match without data. If it matches, then
+					// the cache will be setup with a data appended so as to bypass all this
+					// extra checks:
+					results = getCachedXMaterial( spigotBlock, (byte) 0 );
+				}
+				
+				putCachedXMaterial( spigotBlock, data, results );
+				
+				if ( results == null ) {
+					Output.get().logWarn( "Spigot18Blocks.getXMaterial() : " +
+							"Spigot block cannot be mapped to a XMaterial : " +
+							spigotBlock.getType().name() + 
+							"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
+								spigotBlock.getType().name()) +
+							" data = " + data );
+				}
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;
 	}
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( prisonBlock != null ) {
 			
 			results = getCachedXMaterial( prisonBlock );
 			if ( results == null ) {
 				
-				String blockName =  prisonBlock.getBlockName();
+				String blockName = prisonBlock.getBlockName();
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
 				putCachedXMaterial( prisonBlock, results );
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;
@@ -162,7 +175,7 @@ public abstract class Spigot18Blocks
 
 
 	public XMaterial getXMaterial( BlockType blockType ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( blockType != null && blockType != BlockType.IGNORE ) {
 			short data = blockType.getData();

@@ -1074,7 +1074,8 @@ public abstract class MineReset
 							
 							if ( useNewBlockModel ) {
 								
-								if ( targetBlock.getBlockAt().getPrisonBlock().getBlockName().equalsIgnoreCase( "AIR" ) ) {
+								if ( targetBlock.getBlockAt().getPrisonBlock() == null ||
+										targetBlock.getBlockAt().getPrisonBlock().equals( PrisonBlock.AIR ) ) {
 									airCount++;
 								}
 							}

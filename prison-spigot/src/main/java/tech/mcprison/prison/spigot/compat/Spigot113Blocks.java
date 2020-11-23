@@ -50,12 +50,8 @@ public abstract class Spigot113Blocks
 		if ( xMat != null ) {
 			pBlock = new PrisonBlock( xMat.name() );
 		}
-		else {
-			Output.get().logWarn( "Spigot113Blocks.getPrisonBlock() : " +
-					"Spigot block cannot be mapped to a PrisonBlock : " +
-					spigotBlock.getType().name() + 
-					"  PrisonBlock = " + ( pBlock == null ? "null" : pBlock.getBlockName()));
-		}
+		// ignore nulls because errors were logged in getXMaterial() so they only
+		// are logged once
 		
 		return pBlock;
 	}
@@ -76,35 +72,46 @@ public abstract class Spigot113Blocks
 	}
 	
 	public XMaterial getXMaterial( Block spigotBlock ) {
-		XMaterial results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
-		
-		if ( results == null ) {
-			if ( spigotBlock != null ) {
-				results =  XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+		XMaterial results = NULL_TOKEN;
+
+		if ( spigotBlock != null ) {
+			results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
+			
+			if ( results == null ) {
+				results =  XMaterial.matchXMaterial( spigotBlock.getType() );
 				
 				putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				
+				if ( results == null ) {
+					Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
+							"Spigot block cannot be mapped to a XMaterial : " +
+							spigotBlock.getType().name() + 
+							"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
+								spigotBlock.getType().name()));
+				}
+
 			}
 		}
+		
 		
 		return results == NULL_TOKEN ? null : results;
 	}
 	
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( prisonBlock != null ) {
 			
 			results = getCachedXMaterial( prisonBlock );
 			if ( results == null ) {
 				
-				String blockName =  prisonBlock.getBlockName();
+				String blockName = prisonBlock.getBlockName();
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
 				putCachedXMaterial( prisonBlock, results );
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;

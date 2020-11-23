@@ -29,13 +29,29 @@ public class CompatibilityCache {
 	
 	private Map<String, XMaterial> xMaterialCache;
 	
+	
 	public CompatibilityCache() {
 		super();
 		
 		this.blockTypeCache = new TreeMap<>();
 		this.xMaterialCache = new TreeMap<>();
+		
+		initializeForcedCache();
 	}
 
+	/**
+	 * If a block is not being mapped to a specific type, then it can be 
+	 * forced by assigning it here at server startup.  This should only be used
+	 * as a last ditch effort to assign the correct block types.
+	 * 
+	 */
+	private void initializeForcedCache() {
+		
+		xMaterialCache.put( "STATIONARY_WATER", XMaterial.WATER );
+		xMaterialCache.put( "WATER", XMaterial.WATER );
+		
+	}
+	
 	
 	public BlockType getCachedBlockType( Block spigotBlock, byte data ) {
 		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
@@ -82,7 +98,7 @@ public class CompatibilityCache {
 		XMaterial xMat = xMaterialCache.get( key );
 		
 		// Using VOID_AIR as temp placeholder for null values:
-		return xMat; // xMat == XMaterial.VOID_AIR ? null : xMat;
+		return xMat; // xMat == NULL_TOKEN ? null : xMat;
 	}
 	
 	public void putCachedXMaterial( PrisonBlock prisonBlock, XMaterial xMat )
@@ -90,8 +106,8 @@ public class CompatibilityCache {
 		String key = prisonBlock.getBlockName();
 			
 		if ( !xMaterialCache.containsKey( key ) ) {
-			// Using VOID_AIR as temp placeholder for null values:
-			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
+			// Using NULL_TOKEN as temp placeholder for null values:
+			xMaterialCache.put( key, xMat == null ? NULL_TOKEN : xMat );
 		}
 	}
 
@@ -100,15 +116,15 @@ public class CompatibilityCache {
 		
 		XMaterial xMat = xMaterialCache.get( key );
 		
-		// Using VOID_AIR as temp placeholder for null values:
-		return xMat; // xMat == XMaterial.VOID_AIR ? null : xMat;
+		// Do not use NULL_TOKEN since this must return null if it does not exist:
+		return xMat; 
 	}
 	public void putCachedXMaterial( Block spigotBlock, byte data, XMaterial xMat ) {
 		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
 			
 		if ( !xMaterialCache.containsKey( key ) ) {
 			// Using VOID_AIR as temp placeholder for null values:
-			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
+			xMaterialCache.put( key, xMat == null ? NULL_TOKEN : xMat );
 		}
 	}
 	
@@ -125,7 +141,7 @@ public class CompatibilityCache {
 			
 			if ( !xMaterialCache.containsKey( key ) ) {
 			// Using VOID_AIR as temp placeholder for null values:
-			xMaterialCache.put( key, xMat == null ? XMaterial.VOID_AIR : xMat );
+			xMaterialCache.put( key, xMat == null ? NULL_TOKEN : xMat );
 		}
 	}
 	
