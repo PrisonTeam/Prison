@@ -160,7 +160,6 @@ public class SpigotPrison extends JavaPlugin {
 
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
-
         
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
@@ -169,9 +168,7 @@ public class SpigotPrison extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
-        
         initIntegrations();
-
         
         // NOTE: Put all commands within the initModulesAndCommands() function.
         initModulesAndCommands();
@@ -182,9 +179,6 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
         
         PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
-
-
-
 
 //        if (doAlertAboutConvert) {
 //            Alerts.getInstance().sendAlert(

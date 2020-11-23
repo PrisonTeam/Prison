@@ -26,7 +26,6 @@ public class SellAllConfig extends SpigotConfigComponents {
     		
     		initialize();
     	}
-    	
     }
 
     private void initialize(){
