@@ -12,6 +12,7 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 public class PrisonBlock
 			implements Comparable<PrisonBlock> {
 	
+	public static PrisonBlock AIR;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
@@ -25,6 +26,7 @@ public class PrisonBlock
 	private boolean legacyBlock = false;
 	
 	static {
+		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}

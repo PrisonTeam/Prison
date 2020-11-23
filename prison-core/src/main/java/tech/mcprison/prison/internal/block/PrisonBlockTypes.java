@@ -18,6 +18,7 @@ public class PrisonBlockTypes {
 	private TreeMap<String, PrisonBlock> blockTypesByName;
 	
 	public enum InternalBlockTypes {
+		AIR,
 		IGNORE,
 		NULL_BLOCK
 	}

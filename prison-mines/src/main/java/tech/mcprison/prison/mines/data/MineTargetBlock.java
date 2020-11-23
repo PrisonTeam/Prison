@@ -8,10 +8,14 @@ public class MineTargetBlock
 	
 	private BlockType blockType;
 	
-	public MineTargetBlock( BlockType blockType, int x, int y, int z ) {
-		super();
+	protected MineTargetBlock( int x, int y, int z ) {
 		
 		this.blockKey = new MineTargetBlockKey( x, y, z );
+	}
+	
+	public MineTargetBlock( BlockType blockType, int x, int y, int z ) {
+		this( x, y, z );
+		
 		this.blockType = blockType;
 	}
 
