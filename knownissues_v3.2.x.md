@@ -10,6 +10,11 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.2
 
 
+* **Sellall - Hook up to prison command handler** 
+Currently sellall is not hooked up to the prison command handler and it needs to be.
+
+
+
 * **Get new block model working**
   *  Start to enable and test various functions
   *  Add in Custom Items Integration
@@ -84,7 +89,7 @@ Implement and have a fully functional new block handling mechanism that operate 
  
  
 
-* **DONE? Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
+* **DONE! Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
  Blue should work on this.
 
 

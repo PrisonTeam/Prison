@@ -10,6 +10,16 @@ that you need.
 
 ## tag v3.2.2 - 2020-11-21
 
+* **Some fixes to get more of the new block model functional.**
+Added some support to help fall back to the correct XMaterial for a few block types such as WATER and STATIONARY_WATER which is not mapping for 1.8.8 because of the data value representing the flow height, but yet, XMaterial is trying to map it to an resource using data (it shouldn't though).
+
+
+* **For the new prison block model, when dealing with PrisonBlocks**, it needs to record invalid block types so they can be logged and hopefully fixed.
+
+
+* **Setup more of the new prison block model to work with paged mine resets.**
+Sharing the MineTargetBlock behavior through the use of MineTargetPrisonBlock to reduce complexity and reuse existing structures. Still a work in progress.
+
 
 * **Bug fix: Fix an NPE with /sellall**
 Remove of many NPE Objects and new messages for sellAll.  New messages added for sellAll in the messageConfig config
