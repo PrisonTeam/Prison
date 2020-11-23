@@ -410,7 +410,10 @@ public class MinesCommands
 //        	return;
 //        }
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+
+        
+        if ( useNewBlockModel ) {
         	
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
@@ -489,7 +492,7 @@ public class MinesCommands
         		.withReplacements(block, mineName).sendTo(sender);
         }
 
-        getBlocksList(m, null).send(sender);
+        getBlocksList(m, null, useNewBlockModel).send(sender);
 
         //pMines.getMineManager().clearCache();
     }
@@ -572,7 +575,9 @@ public class MinesCommands
 //        	return;
 //        }
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+
+        if ( useNewBlockModel ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -690,7 +695,7 @@ public class MinesCommands
         }
         
         
-        getBlocksList(m, null).send(sender);
+        getBlocksList(m, null, useNewBlockModel ).send(sender);
 
         //pMines.getMineManager().clearCache();
 
@@ -784,8 +789,9 @@ public class MinesCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( useNewBlockModel ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -827,7 +833,7 @@ public class MinesCommands
         	deleteBlock( sender, pMines, m, blockType );
         }
         
-        getBlocksList(m, null).send(sender);
+        getBlocksList(m, null, useNewBlockModel).send(sender);
     }
 
     /**
@@ -1116,7 +1122,7 @@ public class MinesCommands
     public void infoCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
         @Arg(name = "page", def = "1", 
-        				description = "Page of search results (optional) [1-n, ALL]") String page 
+        				description = "Page of search results (optional) [1-n, ALL, DEBUG]") String page 
     		) {
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -1384,37 +1390,60 @@ public class MinesCommands
         	
         }
         
-        if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        	chatDisplay.text("&3Blocks:");
-        	chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
-        	BulletedListComponent list = getBlocksList(m, cmdPageData);
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+        if ( useNewBlockModel ) {
         	
-        	chatDisplay.addComponent(list);
+        	if ( cmdPageData.isDebug() ) {
+        		chatDisplay.text( "&7Block model: &3New" );
+        	}
+        	
+        	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
+        		chatDisplay.text("&3Blocks:");
+        		chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
+        		BulletedListComponent list = getBlocksList(m, cmdPageData, true );
+        		
+        		chatDisplay.addComponent(list);
+        	}
+        	
+        	int blockSize =  m.getPrisonBlocks().size();
+        	
+        	String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        	cmdPageData.generatePagedCommandFooter( chatDisplay, message );
+        	
+        }
+        if ( !useNewBlockModel || useNewBlockModel && cmdPageData.isDebug() ) {
+        	
+        	if ( cmdPageData.isDebug() ) {
+        		chatDisplay.text( "&7Block model: &3Old" );
+        	}
+        	
+        	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
+        		chatDisplay.text("&3Blocks:");
+        		chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
+        		BulletedListComponent list = getBlocksList(m, cmdPageData, false );
+        		
+        		chatDisplay.addComponent(list);
+        	}
+        	
+        	int blockSize = m.getBlocks().size();
+        	
+        	String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        	cmdPageData.generatePagedCommandFooter( chatDisplay, message );
         }
         
-        int blockSize = 0;
-        
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
-        	blockSize = m.getPrisonBlocks().size();
-        }
-        else {
-        	blockSize = m.getBlocks().size();
-        }
-        
-        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
-        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
 
         chatDisplay.send(sender);
     }
 
-    private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData) {
+    private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, boolean useNewBlockModel) {
         BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
         int count = 0;
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( useNewBlockModel ) {
 
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -1433,7 +1462,8 @@ public class MinesCommands
         		}
         	}
         }
-        else {
+        if ( !useNewBlockModel || 
+        		!useNewBlockModel && cmdPageData != null && cmdPageData.isDebug() ) {
         	
         	for (Block block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
