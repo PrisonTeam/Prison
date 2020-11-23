@@ -8,7 +8,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.2 - 2020-11-23
+## tag v3.2.2-alpha.3 - 2020-11-23
+
+
+* **v3.2.3-alpha.3 - 2020-11-23**
+
+
+* **Fixes to sellall**
+Optimization of sellAll and fix of unloaded configs when updated. Fixed configs when edited didn't load with the updated one.
+
 
 * **v3.2.2-alpha.2 - 2020-11-23**
 Bump version because of a lot of improvements to the new block model. It actually appears to be working very well.  Still need to do more testing and will not enable by default for a while.  It will have to be an opt in feature for now.
