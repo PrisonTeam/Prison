@@ -6,6 +6,9 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotMinesCommands
 				extends PrisonSpigotBaseCommands {
 	

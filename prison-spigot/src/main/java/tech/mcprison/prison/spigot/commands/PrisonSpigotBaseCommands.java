@@ -7,6 +7,9 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotBaseCommands {
 
 	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
@@ -60,6 +63,5 @@ public class PrisonSpigotBaseCommands {
         }
         return player;
 	}
-    
 
 }

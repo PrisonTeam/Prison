@@ -7,6 +7,9 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotRanksCommands
 				extends PrisonSpigotBaseCommands {
 

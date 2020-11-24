@@ -30,23 +30,20 @@ public class GuiConfig extends SpigotConfigComponents{
 
     	// Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
-
     	fileMaker(file);
-    	
     	conf = YamlConfiguration.loadConfiguration(file);
     	
-        // Everything's here (not anymore...)
+        // Values to write down into the config
         values();
 
+        // Count and save
         if (changeCount > 0) {
         	try {
 				conf.save(file);
-				Output.get().logInfo("&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s",
-						changeCount, file.getAbsoluteFile());
+				Output.get().logInfo("&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile());
 			}
 			catch (IOException e) {
-				Output.get().logInfo("&4Failed to save &b%d &4new values to the GuiConfig.yml file located at " +
-                        "&b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage());
+				Output.get().logInfo("&4Failed to save &b%d &4new values to the GuiConfig.yml file located at " + "&b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage());
 			}
         }
     }

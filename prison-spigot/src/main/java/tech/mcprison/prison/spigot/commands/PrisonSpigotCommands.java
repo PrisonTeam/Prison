@@ -22,7 +22,7 @@ public class PrisonSpigotCommands extends PrisonSpigotBaseCommands implements Li
     		  aliases = {"prisonmanager gui", "gui admin"},
     		  permissions = {"prison.admin", "prison.prisonmanagergui"},
     		  onlyPlayers = false
-    		)
+    )
     private void prisonManagerGUI(CommandSender sender) {
 
         Player player = getSpigotPlayer(sender);

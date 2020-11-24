@@ -16,6 +16,9 @@ import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotPrestigeCommands
 				extends PrisonSpigotBaseCommands {
 

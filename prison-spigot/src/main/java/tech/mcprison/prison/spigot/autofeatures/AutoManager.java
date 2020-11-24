@@ -114,12 +114,11 @@ public class AutoManager
 		}
 	}
 
-	private void applyAutoEvents( BlockBreakEvent e, Mine mine ) {
+	private void applyAutoEvents(BlockBreakEvent e, Mine mine) {
 		
-		if ( isBoolean( AutoFeatures.isAutoManagerEnabled ) && !e.isCancelled() ) {
+		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
 			
 			Player player = e.getPlayer();
-			
 			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
 			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
 			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
@@ -132,20 +131,15 @@ public class AutoManager
 						getMessage( AutoFeatures.permissionAutoSmelt ) ) ||
 					loreSmelt == 100.0 ||
 					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-			boolean permBlock = player.hasPermission( 
-						getMessage( AutoFeatures.permissionAutoBlock ) ) ||
+			boolean permBlock = player.hasPermission(getMessage( AutoFeatures.permissionAutoBlock ) ) ||
 					loreBlock == 100.0 ||
 					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
-
-			//
-					
 			
 			// AutoPickup
 			if ( permPickup || isBoolean( AutoFeatures.autoPickupEnabled )) {
 				
 				autoFeaturePickup(e, player );
 			}
-			
 			
 			// AutoSmelt
 			if ( permSmelt ||  isBoolean( AutoFeatures.autoSmeltEnabled )){
@@ -180,17 +174,14 @@ public class AutoManager
 			
 			
 			// A block was broke... so record that event on the tool:	
-			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && 
-					e.isCancelled()) {
+			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && e.isCancelled()) {
+
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
 				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-				
-				itemLoreCounter( itemInHand, 
-						getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
+				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			}
 		}
-
 	}
 
 
@@ -236,20 +227,12 @@ public class AutoManager
 //				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
 //		if ( permPickup || permSmelt || permBlock ||
-//				isAreEnabledFeatures()) 
-		{
-			
-			
-			ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( p );
-			
-			
-			if ( e.isCancelled() ) {
-				// The event was canceled, so the block was successfully broke, so increment the name counter:
-				
-			itemLoreCounter( itemInHand, 
-					getMessage( AutoFeatures.loreBlockExplosionCountName ), blockCount );
-			}
-		}			
-	}
+//				isAreEnabledFeatures())
 
+		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand(p);
+		if (e.isCancelled()) {
+			// The event was canceled, so the block was successfully broke, so increment the name counter:
+			itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), blockCount);
+		}
+	}
 }
