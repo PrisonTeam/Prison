@@ -51,7 +51,6 @@ public class SellAllCommands implements CommandExecutor {
         }
 
     	new SellAllConfig();
-
     	sellAllConfig = new SellAllConfig().getFileSellAllConfig();
 
     	// Get the config and file
@@ -60,10 +59,10 @@ public class SellAllCommands implements CommandExecutor {
 
     	// If the args are 0 and the player's a prison admin or OP he'll get an help message, else will be like a shortcut of the /sellall sell command
         if (args.length == 0){
-            if (sender.hasPermission("prison.admin") || sender.isOp()) {
+            if (sender.hasPermission("prison.admin")) {
                 sender.sendMessage(SpigotPrison.format("&3[PRISON WARN]&c Please use a command like /sellall sell-gui-add-delete-multiplier-setdefault"));
             } else {
-                return sellallCommandSell(sender, conf);
+                return sellAllCommandSell(sender, conf);
             }
             return true;
         }
@@ -71,22 +70,22 @@ public class SellAllCommands implements CommandExecutor {
         // Open the GUI
         if (args[0].equalsIgnoreCase("gui")){
 
-            return sellallCommandGUI(sender, conf);
+            return sellAllCommandGUI(sender, conf);
 
         // sellall sell
         } else if (args[0].equalsIgnoreCase("sell")){
 
-            return sellallCommandSell(sender, conf);
+            return sellAllCommandSell(sender, conf);
 
         // sellall add <ITEM_ID> <VALUE>
         } else if (args[0].equalsIgnoreCase("add")){
 
-            return sellallCommandAdd(sender, args, file, conf);
+            return sellAllCommandAdd(sender, args, file, conf);
 
         // sellall delete <ITEM_ID>
         } else if (args[0].equalsIgnoreCase("delete")){
 
-            return sellallCommandDelete(sender, args, file, conf);
+            return sellAllCommandDelete(sender, args, file, conf);
 
         // sellall edit <ITEM_ID> <VALUE>
         } else if (args[0].equalsIgnoreCase("edit")){
@@ -308,7 +307,7 @@ public class SellAllCommands implements CommandExecutor {
     }
 
 
-    private boolean sellallCommandDelete(CommandSender sender, String[] args, File file, FileConfiguration conf) {
+    private boolean sellAllCommandDelete(CommandSender sender, String[] args, File file, FileConfiguration conf) {
 
         if (sellAllConfig.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")) {
             if (!sender.hasPermission("Options.Delete_Permission")) {
@@ -336,16 +335,12 @@ public class SellAllCommands implements CommandExecutor {
         return true;
     }
 
-
-
     // Essentially an edited shortcut
-    private boolean sellallCommandAdd(CommandSender sender, String[] args, File file, FileConfiguration conf) {
+    private boolean sellAllCommandAdd(CommandSender sender, String[] args, File file, FileConfiguration conf) {
         return sellAllCommandEdit(sender, args, file, conf, messages.getString("Message.SellAllCommandEditSuccess"));
     }
 
-
-
-    private boolean sellallCommandSell(CommandSender sender, FileConfiguration conf) {
+    private boolean sellAllCommandSell(CommandSender sender, FileConfiguration conf) {
 
         if (!(sender instanceof Player)){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllYouArentPlayer")));
@@ -363,8 +358,8 @@ public class SellAllCommands implements CommandExecutor {
 
             // Get the Items config section
             Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-
             double moneyToGive = 0;
+
             for (String key : items) {
                 double amount = 0;
                 while (p.getInventory().contains(Material.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")))){
@@ -376,10 +371,8 @@ public class SellAllCommands implements CommandExecutor {
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
-
             ModuleManager modMan = Prison.get().getModuleManager();
             Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-
             PrisonRanks rankPlugin = (PrisonRanks) module;
 
             if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
@@ -390,13 +383,11 @@ public class SellAllCommands implements CommandExecutor {
                 if (rankPlugin != null) {
                     if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
                         String playerRankName;
-
                         try {
                             playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
                         } catch (NullPointerException ex){
                             playerRankName = null;
                         }
-
                         if (playerRankName != null) {
                             hasPlayerPrestige = true;
                             multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
@@ -404,7 +395,6 @@ public class SellAllCommands implements CommandExecutor {
                         }
                     }
                 }
-
                 if (!hasPlayerPrestige) {
                     moneyToGive = moneyToGive * multiplier;
                 }
@@ -412,22 +402,21 @@ public class SellAllCommands implements CommandExecutor {
 
             // Get economy
     		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-
             // Add balance
             economy.addBalance(sPlayer, moneyToGive);
+
             if (moneyToGive<0.001){
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
             } else {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + moneyToGive));
             }
         }
-
         return true;
-    }
+	}
 
 
 
-    private boolean sellallCommandGUI(CommandSender sender, FileConfiguration conf) {
+    private boolean sellAllCommandGUI(CommandSender sender, FileConfiguration conf) {
 
         if (!(sender instanceof Player)){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllYouArentPlayer")));
@@ -462,7 +451,6 @@ public class SellAllCommands implements CommandExecutor {
 
         SellAllAdminGUI gui = new SellAllAdminGUI(p);
         gui.open();
-
         return true;
     }
 }

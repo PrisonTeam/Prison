@@ -11,16 +11,14 @@ import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class PrisonSpigotCommands
-				extends PrisonSpigotBaseCommands
-				implements Listener {
+public class PrisonSpigotCommands extends PrisonSpigotBaseCommands implements Listener {
 
     /**
      * NOTE: onlyPlayers needs to be false so players can use /gui help on the command, even from console.
      *
      * @param sender
      */
-    @Command( identifier = "gui", description = "The GUI",
+    @Command( identifier = "gui", description = "The Prison's GUI",
     		  aliases = {"prisonmanager gui", "gui admin"},
     		  permissions = {"prison.admin", "prison.prisonmanagergui"},
     		  onlyPlayers = false
