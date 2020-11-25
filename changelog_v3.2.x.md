@@ -11,6 +11,15 @@ that you need.
 ## tag v3.2.2-alpha.3 - 2020-11-23
 
 
+* **Hook up the new Custom Items integrations and tie them in to the prison new block model**
+so if the the Custom Items plugin is active, it will automatically add the custom blocks to the available list of block types. 
+This is working and the custom blocks show up in the block search.
+
+
+* **Setup a new Custom Block integration type and added CustomItems integration.**
+
+
+
 * **v3.2.3-alpha.3 - 2020-11-23**
 
 
