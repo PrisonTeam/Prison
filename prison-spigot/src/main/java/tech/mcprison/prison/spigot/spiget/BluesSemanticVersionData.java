@@ -80,9 +80,9 @@ public class BluesSemanticVersionData
 		
 		Pattern r = Pattern.compile(patternNamed);
 	//	Pattern r = Pattern.compile(pattern);
-		Matcher m = r.matcher(semVerStr);
+		Matcher m = ( semVerStr == null ? null : r.matcher(semVerStr) );
 		
-		this.valid = m.find();
+		this.valid = ( semVerStr == null ? false : m.find() );
 		
 		if ( isValid() ) {
 			this.major = parseInt(m, GroupNames.major);
@@ -135,16 +135,18 @@ public class BluesSemanticVersionData
 	{
 		Integer result = null;
 		
-		String grp = parseString(m, groupName);
-		if ( grp != null ) {
-			
-			try {
-				result = Integer.parseInt( grp );
-			}
-			catch ( NumberFormatException e ) {
-				// Should be an integer.... let the null be returned, record in messages:
-				getMessages().add( "### BluesSemanticVersionData.parseInt :: group " + groupName.name() + " = " +
-						grp + " ### Error Parsing int value ### " );
+		if ( m != null ) {
+			String grp = parseString(m, groupName);
+			if ( grp != null ) {
+				
+				try {
+					result = Integer.parseInt( grp );
+				}
+				catch ( NumberFormatException e ) {
+					// Should be an integer.... let the null be returned, record in messages:
+					getMessages().add( "### BluesSemanticVersionData.parseInt :: group " + groupName.name() + " = " +
+							grp + " ### Error Parsing int value ### " );
+				}
 			}
 		}
 		
@@ -164,13 +166,16 @@ public class BluesSemanticVersionData
 	private String parseString( Matcher m, GroupNames groupName ) {
 		String result = null;
 		
-		try {
-			result = m.group( groupName.name() ); 
+		if ( m != null ) {
+			try {
+				result = m.group( groupName.name() ); 
+			}
+			catch ( IllegalArgumentException e ) {
+				getMessages().add( "### BluesSemanticVersionData.parseString :: group " + groupName.name() + " = ?? " +
+						" ### Error Capture Group Doesn't Exist in the Regular Expression ### " );
+			}
 		}
-		catch ( IllegalArgumentException e ) {
-			getMessages().add( "### BluesSemanticVersionData.parseString :: group " + groupName.name() + " = ?? " +
-					" ### Error Capture Group Doesn't Exist in the Regular Expression ### " );
-		}
+		
 		
 		return result;
 	}

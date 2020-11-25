@@ -40,6 +40,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -65,6 +66,7 @@ import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
+import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
@@ -103,6 +105,9 @@ public class SpigotPrison extends JavaPlugin {
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
 
+    private PrisonBlockTypes prisonBlockTypes;
+    
+    
     private static SpigotPrison config;
 
     public static SpigotPrison getInstance(){
@@ -174,6 +179,22 @@ public class SpigotPrison extends JavaPlugin {
         initModulesAndCommands();
         
         applyDeferredIntegrationInitializations();
+        
+        
+        
+        
+        // Setup hooks in to the valid prison block types, which must be done
+        // after all the integrations have been initialized.  This will be only
+        // the block types that have tested to be valid on the server that is
+        // running prison.  This provides full compatibility to the admins that
+        // if a block is listed, then it's usable.  No more guessing or finding
+        // out after the fact that a block that was used was invalid for
+        // their version of minecraft.
+        this.prisonBlockTypes = new PrisonBlockTypes();
+        this.prisonBlockTypes.addBlockTypes( SpigotUtil.getAllPlatformBlockTypes() );
+        this.prisonBlockTypes.addBlockTypes( SpigotUtil.getAllCustomBlockTypes() );
+        
+        
         initMetrics();
         
         Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
@@ -376,6 +397,8 @@ public class SpigotPrison extends JavaPlugin {
         registerIntegration(new MVdWPlaceholderIntegration());
         registerIntegration(new PlaceHolderAPIIntegration());
         
+        registerIntegration(new CustomItems());
+
 //        registerIntegration(new WorldGuard6Integration());
 //        registerIntegration(new WorldGuard7Integration());
     }
@@ -401,9 +424,12 @@ public class SpigotPrison extends JavaPlugin {
     
     private void registerIntegration(Integration integration) {
 
-    	integration.setRegistered(Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName()));
-    	integration.integrate();
-    	PrisonAPI.getIntegrationManager().register(integration);
+    	boolean isRegistered = Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+    	String version = ( isRegistered ? Bukkit.getPluginManager()
+    									.getPlugin( integration.getProviderName() )
+    											.getDescription().getVersion() : null );
+    	
+    	PrisonAPI.getIntegrationManager().register(integration, isRegistered, version );
     }
 
     /**
@@ -541,4 +567,15 @@ public class SpigotPrison extends JavaPlugin {
     	boolean results = config != null && config.equalsIgnoreCase( "true" );
     	return results;
     }
+    
+    /**
+     * Setup hooks in to the valid prison block types.  This will be only the 
+     * block types that have tested to be valid on the server that is running 
+     * prison.  This provides full compatibility to the admins that if a block 
+     * is listed, then it's usable.  No more guessing or finding out after the 
+     * fact that a block that was used was invalid for their version of minecraft.
+     */
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return prisonBlockTypes;
+	}
 }

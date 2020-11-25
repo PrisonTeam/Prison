@@ -33,6 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
@@ -167,7 +171,8 @@ public class SpigotUtil {
 	 * 
 	 * @param blockTypes
 	 */
-	public static void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+	public static List<PrisonBlock> getAllPlatformBlockTypes() {
+		List<PrisonBlock> blockTypes = new ArrayList<>();
 		
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
@@ -206,7 +211,37 @@ public class SpigotUtil {
 				}
 			}
 		}
+		
+		return blockTypes;
 	}
+	
+	public static List<PrisonBlock> getAllCustomBlockTypes() {
+		List<PrisonBlock> blockTypes = new ArrayList<>();
+		
+		List<Integration> customBlockInterfaces = 
+				Prison.get().getIntegrationManager().getAllForType( IntegrationType.CUSTOMBLOCK );
+
+		for ( Integration integration : customBlockInterfaces )
+		{
+			if ( integration.hasIntegrated() && integration instanceof CustomBlockIntegration ) {
+				CustomBlockIntegration blkInt = (CustomBlockIntegration) integration;
+				
+				List<PrisonBlock> blocks = blkInt.getCustomBlockList();
+				
+				if ( blocks.size() > 0 ) {
+					blockTypes.addAll( blocks );
+				}
+				
+				Output.get().logInfo( "&3Custom Block Integration: &7%s &3registered &7%d &3blocks with a " +
+						"prefix of &7%s &3and the type of &7%s&3.",
+						blkInt.getDisplayName(), blocks.size(), 
+						blkInt.getBlockPrefix(), blkInt.getType().name() );
+			}
+		}
+
+		return blockTypes;
+	}
+	
 	
 	/**
 	 * <p>This will take a string name of a block, and convert it to the

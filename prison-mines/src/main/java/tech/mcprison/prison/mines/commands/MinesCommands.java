@@ -38,6 +38,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
@@ -418,8 +419,10 @@ public class MinesCommands
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
         	
-        	if ( block != null && Prison.get().getPrisonBlockTypes().getBlockTypesByName().containsKey( block ) ) {
-        		prisonBlock = Prison.get().getPrisonBlockTypes().getBlockTypesByName().get( block );
+        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+        	
+        	if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
+        		prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
         	}
         	
         	if ( prisonBlock == null ) {
@@ -583,8 +586,10 @@ public class MinesCommands
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
         	
-        	if ( block != null && Prison.get().getPrisonBlockTypes().getBlockTypesByName().containsKey( block ) ) {
-        		prisonBlock = Prison.get().getPrisonBlockTypes().getBlockTypesByName().get( block );
+        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+        	
+        	if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
+        		prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
         	}
         	
         	
@@ -797,8 +802,11 @@ public class MinesCommands
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
         	
-        	if ( block != null && Prison.get().getPrisonBlockTypes().getBlockTypesByName().containsKey( block ) ) {
-        		prisonBlock = Prison.get().getPrisonBlockTypes().getBlockTypesByName().get( block );
+        	
+        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+        	
+        	if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
+        		prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
         	}
         	
         	// Cannot delete a block if it does not exist:
@@ -917,7 +925,9 @@ public class MinesCommands
     {
     	List<PrisonBlock> blocks = new ArrayList<>();
     	
-    	for ( PrisonBlock pBlock : Prison.get().getPrisonBlockTypes().getBlockTypes() ) {
+    	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+    	
+    	for ( PrisonBlock pBlock : prisonBlockTypes.getBlockTypes() ) {
     		if ( pBlock.isBlock() && pBlock.getBlockName().contains( search.toLowerCase()  )) {
     			blocks.add( pBlock );
     		}

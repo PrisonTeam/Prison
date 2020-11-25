@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import tech.mcprison.prison.Prison;
-
 /**
  * <p>This class is a new way of dealing with blocks within prison.
  * All blocks will be stored and used as string values.
@@ -30,21 +28,29 @@ public class PrisonBlockTypes {
 		
 		this.blockTypesByName = new TreeMap<>();
 		
+		initializeBlockTypes();
 	}
 	
-	public void loadServerBlockTypes() {
+	private void initializeBlockTypes() {
 		
 		// First clear the blockTypes:
 		getBlockTypes().clear();
 		
 		getBlockTypes().add( PrisonBlock.IGNORE );
-		
-		// Next using the server's platform, load all of the available blockTypes.
-		Prison.get().getPlatform().getAllPlatformBlockTypes( getBlockTypes() );
 
 		// Map all available blocks to the blockTypesByName map:
 		for ( PrisonBlock pb : getBlockTypes() ) {
 			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
+		}
+	}
+	
+	
+	public void addBlockTypes( List<PrisonBlock> blockTypes ) {
+		
+		// Map all available blocks to the blockTypesByName map:
+		for ( PrisonBlock pb : blockTypes ) {
+			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
+			getBlockTypes().add( pb );
 		}
 	}
 

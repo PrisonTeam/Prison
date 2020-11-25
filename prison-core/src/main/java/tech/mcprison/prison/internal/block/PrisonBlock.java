@@ -16,6 +16,8 @@ public class PrisonBlock
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
+	private PrisonBlockType blockType;
+	
 	private String blockName;
 	
 	private double chance;
@@ -31,6 +33,11 @@ public class PrisonBlock
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}
 	
+	public enum PrisonBlockType {
+		minecraft,
+		CustomItems
+	}
+	
 	/**
 	 * The name of this block should be based upon the XMaterial name in all 
 	 * lower case.
@@ -38,10 +45,14 @@ public class PrisonBlock
 	 * @param blockName
 	 */
 	public PrisonBlock( String blockName ) {
-		this( blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0);
 	}
+	public PrisonBlock( PrisonBlockType blockType, String blockName ) {
+		this( blockType, blockName, 0);
+	}
+	
 	public PrisonBlock( String blockName, boolean block ) {
-		this( blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0);
 		this.block = block;
 	}
 
@@ -51,19 +62,30 @@ public class PrisonBlock
 	 * @param blockName
 	 * @param chance
 	 */
-	public PrisonBlock( String blockName, double chance ) {
+	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance ) {
 		super();
+
+		this.blockType = blockType;
 		
 		this.blockName = blockName.toLowerCase();
 		this.chance = chance;
+		
 	}
 	
 	
 	@Override
 	public String toString() {
-		return getBlockName() + " " + Double.toString( getChance() );
+		return getBlockName() + " Type:" + getBlockType().name() + 
+				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
 	}
 	
+	public PrisonBlockType getBlockType() {
+		return blockType;
+	}
+	public void setBlockType( PrisonBlockType blockType ) {
+		this.blockType = blockType;
+	}
+
 	public String getBlockName() {
 		return blockName;
 	}

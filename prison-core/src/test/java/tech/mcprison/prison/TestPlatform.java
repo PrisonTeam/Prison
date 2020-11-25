@@ -38,6 +38,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -240,10 +241,9 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
-		
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return null;
 	}
-	
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {

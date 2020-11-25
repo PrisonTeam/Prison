@@ -13,9 +13,9 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 public class SpigotBlocksListGUI extends SpigotGUIComponents {
@@ -47,7 +47,9 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
         );
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
-        List<PrisonBlock> blockTypes = Prison.get().getPrisonBlockTypes().getBlockTypes();
+    	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+    	
+        List<PrisonBlock> blockTypes = prisonBlockTypes.getBlockTypes();
         
         // Only loop over the blocks that we need to show:
         int i = counter;

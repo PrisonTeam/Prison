@@ -56,6 +56,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -102,6 +103,8 @@ class SpigotPlatform
     private Storage storage;
     
     private SpigotPlaceholders placeholders;
+    
+    
 
     /**
      * This is only for junit testing.
@@ -743,17 +746,29 @@ class SpigotPlatform
 		return ( val == null || val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	/**
-	 * This listing that is returned, should be the XMaterial enum name
-	 * for the blocks that are valid on the server.
-	 * 
-	 * @return
-	 */
-	@Override
-	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
-		
-		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
+    /**
+     * Setup hooks in to the valid prison block types.  This will be only the 
+     * block types that have tested to be valid on the server that is running 
+     * prison.  This provides full compatibility to the admins that if a block 
+     * is listed, then it's usable.  No more guessing or finding out after the 
+     * fact that a block that was used was invalid for their version of minecraft.
+     */
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return SpigotPrison.getInstance().getPrisonBlockTypes();
 	}
+//	/**
+//	 * This listing that is returned, should be the XMaterial enum name
+//	 * for the blocks that are valid on the server.
+//	 * 
+//	 * @return
+//	 */
+//	@Override
+//	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+//		
+//		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
+//		
+//		SpigotUtil.getAllCustomBlockTypes( blockTypes );
+//	}
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
