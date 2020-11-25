@@ -121,6 +121,10 @@ public interface Integration {
     public String getPluginSourceURL();
     
     
+    public String getVersion();
+    public void setVersion( String version );
+    
+    
 	public String getDebugInfo();
 	public void setDebugInfo( String debugInfo );
 	public void addDebugInfo( String debugInfo );

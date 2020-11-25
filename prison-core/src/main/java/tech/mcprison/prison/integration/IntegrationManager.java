@@ -754,4 +754,15 @@ public class IntegrationManager {
 		getDeferredIntegrations().add( defferedIntegration );
 	}
 
+	public void register( Integration integration, boolean isRegistered, String version )
+	{
+    	integration.setRegistered( isRegistered );
+    	integration.setVersion( version );
+
+    	integration.integrate();
+    	
+    	register(integration );
+	}
+
+
 }
