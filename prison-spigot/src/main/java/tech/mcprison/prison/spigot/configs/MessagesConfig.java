@@ -26,7 +26,7 @@ public class MessagesConfig extends SpigotConfigComponents{
     public void initialize() {
 
     	// Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/configs/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/lang/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
 
         // Check if the config exists
         fileMaker(file);

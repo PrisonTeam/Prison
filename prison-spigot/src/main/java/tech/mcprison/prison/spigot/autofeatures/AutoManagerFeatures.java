@@ -1411,7 +1411,7 @@ public class AutoManagerFeatures
 	 * @param drops
 	 */
 	private void calculateDropAdditionsGravelFlint(ItemStack itemInHand, ItemStack itemStack, Collection<ItemStack> drops ) {
-		if (itemStack.getType() == Material.GRAVEL && !hasSilkTouch( itemInHand)) {
+		if (itemStack.getType() == Material.GRAVEL && !hasSilkTouch(itemInHand)) {
 			
 			int quantity = 1;
 			int threshold = 10;
@@ -1437,7 +1437,7 @@ public class AutoManagerFeatures
 			}
 			
 			// If zero, then 10% chance of 1 out of 10.
-			if (getRandom().nextInt( 100 ) <= threshold) {
+			if (getRandom().nextInt(100) <= threshold) {
 				
 				// If fortune is >= 3, then add one to the quantity drop, plus a 
 				// random chance to add floor(fortune / 5).
