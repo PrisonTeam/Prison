@@ -274,7 +274,8 @@ public class RankUtil {
     		PromoteForceCharge pForceCharge) {
     	
     	
-        Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
+        Player prisonPlayer = player;
+//        Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
         if( prisonPlayer == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER, RankupTransactions.failed_player );
         	return;
@@ -294,8 +295,9 @@ public class RankUtil {
 
         
 
-        Optional<Rank> currentRankOptional = player.getRank(ladder);
-        Rank originalRank = currentRankOptional.orElse( null );
+        Rank originalRank = player.getRank(ladder.name);
+//        Optional<Rank> currentRankOptional = player.getRank(ladder);
+//        Rank originalRank = currentRankOptional.orElse( null );
         
         results.addTransaction( RankupTransactions.orginal_rank );
         results.setOriginalRank( originalRank );
@@ -306,7 +308,7 @@ public class RankUtil {
         // For all commands except for setrank, if the player does not have a current rank, then
         // set it to the default and skip all other rank processing:
         
-        if (!currentRankOptional.isPresent() && 
+        if ( originalRank == null && 
         		( command == RankupCommands.rankup || 
         		  command == RankupCommands.promote ||
         		  command == RankupCommands.demote )) {
@@ -369,31 +371,30 @@ public class RankUtil {
         
         if ( targetRank == null ) {
 
-        	Optional<Rank> nextRankOptional = null;
         	if ( command ==  RankupCommands.rankup || command == RankupCommands.promote ) {
         		// Trying to promote: 
-        		nextRankOptional = ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
+//        		nextRankOptional = ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
         		
-        		if (!nextRankOptional.isPresent()) {
+        		if ( originalRank.getRankNext() == null ) {
         			// We're already at the highest rank.
         			results.addTransaction( RankupStatus.RANKUP_HIGHEST, 
         								RankupTransactions.no_higher_rank_found );
         			return;
         		}
-        		targetRank = nextRankOptional.get();
+        		targetRank = originalRank.getRankNext();
         		results.addTransaction( RankupTransactions.set_to_next_higher_rank );
 
         	} else if ( command == RankupCommands.demote ) {
         		// Trying to demote:
-        		nextRankOptional = ladder.getPrevious(ladder.getPositionOfRank(currentRankOptional.get()));
+//        		nextRankOptional = ladder.getPrevious(ladder.getPositionOfRank(currentRankOptional.get()));
         		
-        		if (!nextRankOptional.isPresent()) {
+        		if ( originalRank.getRankPrior() == null ) {
         			// We're already at the lowest rank.
         			results.addTransaction( RankupStatus.RANKUP_LOWEST, 
         								RankupTransactions.no_lower_rank_found );
         			return;
         		}
-        		targetRank = nextRankOptional.get();
+        		targetRank = originalRank.getRankPrior();
         		results.addTransaction( RankupTransactions.set_to_prior_lower_rank );
         	}
         }
@@ -525,8 +526,10 @@ public class RankUtil {
 
         
         results.addTransaction( RankupTransactions.fireRankupEvent );
-        Prison.get().getEventBus().post(
-            new RankUpEvent(player, currentRankOptional.orElse(null), targetRank, nextRankCost));
+        
+        // Nothing can cancel a RankUpEvent:
+        RankUpEvent rankupEvent = new RankUpEvent(player, originalRank, targetRank, nextRankCost);
+        Prison.get().getEventBus().post(rankupEvent);
         
         
         results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );

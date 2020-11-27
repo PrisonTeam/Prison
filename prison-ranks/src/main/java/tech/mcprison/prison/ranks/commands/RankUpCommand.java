@@ -114,12 +114,13 @@ public class RankUpCommand
 
         RankPlayer rankPlayer = getPlayer( sender, player.getUUID(), player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
-		Rank pRankSecond = rankPlayer.getRank("default");
+        // gets the rank on the default ladder. Used if ladder is not default.
+		Rank pRankSecond = rankPlayer.getRank("default"); 
 		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 		boolean willPrestige = false;
 
-		// If the ladder's the prestige one, it'll execute all of this
+		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
 		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
 
 			if (!(lm.getLadder("default").isPresent())){
@@ -151,10 +152,13 @@ public class RankUpCommand
 		boolean rankupWithSuccess = false;
 
         if ( ladder != null && rankPlayer != null ) {
+        	
+        	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
+        	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
         									!ladder.equals("prestiges")) {
         		rankUpPrivate( sender, ladder, mode, permission );
