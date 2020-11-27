@@ -8,7 +8,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.3 - 2020-11-27
+## tag v3.2.2-alpha.4 - 2020-11-27
+
+
+* **v3.2.3-alpha.4 - 2020-11-27**
+
+
+* **Bug Fix: Fixed a typo on enabling prestiges based upon the config.yml setting.**
+
+
+* **For prestige this gets rid of the requirement that perms exist for the player to use prestige**
+the rankup on the prestige ladder.  All that is needed is to have prestige enabled in the config.yml
+
+
+* **Simplify some of the rankup code so it's directly using rankNext and rankPrior.** 
+Get rid of some optionals to simplify the code too.
 
 
 * **Significant change: RankPlayer now extends from the Player interface.**
