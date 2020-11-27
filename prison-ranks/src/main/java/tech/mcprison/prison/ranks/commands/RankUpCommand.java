@@ -85,8 +85,9 @@ public class RankUpCommand
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
-        if (!ladder.equalsIgnoreCase("default") && !sender
-            .hasPermission(permission + ladder.toLowerCase())) {
+        if (!(ladder.equalsIgnoreCase("prestiges") && Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) ) && 
+        	!ladder.equalsIgnoreCase("default") && 
+        	!sender.hasPermission(permission + ladder.toLowerCase())) {
             Output.get()
                 .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
                 		permission + ladder.toLowerCase());
