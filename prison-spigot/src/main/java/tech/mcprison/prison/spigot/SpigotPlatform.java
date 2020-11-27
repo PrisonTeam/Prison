@@ -290,7 +290,9 @@ class SpigotPlatform
     			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     			
     			RankPlayer rankPlayer = pm.getPlayer( uuid, name ).orElse( null );
-    			if ( rankPlayer != null ) {
+    			if ( rankPlayer != null && 
+    				 uuid != null && rankPlayer.getUUID().equals( uuid ) || 
+    				 uuid == null && name != null && rankPlayer.getName().equalsIgnoreCase( name )) {
     				
     				player = rankPlayer;
     			}
