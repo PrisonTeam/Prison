@@ -413,9 +413,25 @@ public class RankUpCommand
                 break;
             case RANKUP_FAILURE:
                 Output.get().sendError(sender,
-                    "Failed to retrieve or write data. Your files may be corrupted. " +
-                														"Alert a server administrator.");
+                    "Generic rankup failure. Review rankup details to identify why.");
                 break;
+            case RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER:
+            	Output.get().sendError(sender,
+            			"Failed to load player.");
+            	break;
+            case RANKUP_FAILURE_COULD_NOT_LOAD_LADDER:
+            	Output.get().sendError(sender,
+            			"Failed to load ladder.");
+            	break;
+            case RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK:
+            	Output.get().sendError(sender,
+            			"Failed to assign a rank.  Review rankup details to identify why.");
+            	break;
+            case RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE:
+            	Output.get().sendError(sender,
+            			"Failed to retrieve or write data. Your files may be corrupted. " +
+            			"Alert a server administrator.");
+            	break;
             case RANKUP_NO_RANKS:
                 Output.get().sendError(sender, "There are no ranks in this ladder.");
                 break;

@@ -57,6 +57,11 @@ public class RankUtil {
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
 		RANKUP_FAILURE,
+		RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER,
+		RANKUP_FAILURE_COULD_NOT_LOAD_LADDER,
+		RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK,
+		RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE,
+		
 		RANKUP_FAILURE_RANK_DOES_NOT_EXIST,
 		RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER,
 		RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED,
@@ -271,7 +276,7 @@ public class RankUtil {
     	
         Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
         if( prisonPlayer == null ) {
-        	results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_player );
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER, RankupTransactions.failed_player );
         	return;
         }
         
@@ -283,7 +288,7 @@ public class RankUtil {
         
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
         if( ladder == null ) {
-        	results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_ladder );
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_LADDER, RankupTransactions.failed_ladder );
         	return;
         }
 
@@ -395,7 +400,7 @@ public class RankUtil {
         
         // Target rank is still null, so something failed so terminate:
         if ( targetRank == null ) {
-        	results.addTransaction( RankupStatus.RANKUP_FAILURE, RankupTransactions.failed_unable_to_assign_rank );
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK, RankupTransactions.failed_unable_to_assign_rank );
         	return;
         }
         
@@ -498,7 +503,7 @@ public class RankUtil {
         } catch (IOException e) {
             Output.get().logError("An error occurred while saving player files.", e);
             
-            results.addTransaction( RankupStatus.RANKUP_FAILURE, 
+            results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
             			RankupTransactions.failure_cannot_save_player_file );
             return;
         }
