@@ -8,7 +8,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.3 - 2020-11-23
+## tag v3.2.2-alpha.3 - 2020-11-27
+
+
+* **Significant change: RankPlayer now extends from the Player interface.**
+This allows using RankPlayers when cannot get an OfflinePlayer so admins can perform more function on players when they are offline.  For example promote and demote.
+This resulted in some major internal changes on how RankPlayers are tracked and managed.
+
+
+* **Rank up commands were using a misleading generic RANKUP_FAILURE**
+which had an associate error message that was misleading and was reporting that there was a failure with reading or writing data and that the files may be corrupt.
+Such a situation was not true.  Added other error messages to better explain the situation.
 
 
 * **Hook up the new Custom Items integrations and tie them in to the prison new block model**

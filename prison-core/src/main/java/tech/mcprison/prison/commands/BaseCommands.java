@@ -31,6 +31,10 @@ public abstract class BaseCommands
      * the offline player list. If not one is found, then return a null.
      * </p>
      * 
+     * <p>The getOfflinePlayer() will now include RankPlayer as a fall back to help
+     * ensure a player is always returned, if its a valid player.
+     * </p>
+     * 
      * @param sender
      * @param playerName is optional, if not supplied, then sender will be used
      * @return Player if found, or null.
@@ -50,6 +54,7 @@ public abstract class BaseCommands
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}
+			
 		}
 		return result;
 	}

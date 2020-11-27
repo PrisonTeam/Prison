@@ -260,45 +260,51 @@ public class RankManager {
      */
     public boolean removeRank(Rank rank) {
         // ... remove it from each user, bumping them down to the next lowest rank...
+    	
+    	final Rank newRank = ( rank.getRankPrior() != null ? 
+    								rank.getRankPrior() : 
+    									rank.getRankNext() );
+    	if ( newRank == null ) {
+    		 Output.get().logError("Remove Rank Warning: No fallback rank exists so players with " +
+    		 		"the rank that is being removed will have no rank on that ladder.");
+    	}
+
+    	
+    	final boolean[] success = {true};
         for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager()
-            .getLaddersWithRank(rank.id)) {
-            int next =
-                Math.max(0, ladder.getPositionOfRank(rank) - 1); // either one less, or the bottom
-
-            Optional<Rank> newRank = ladder.getByPosition(next);
-            if (!newRank.isPresent()) {
-                // TODO Do something here ... default rank!
-                return false;
-            }
-
+        						.getLaddersWithRank(rank.id)) {
+        	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-                if (rankPlayer.getRank(ladder).isPresent()) {
-                    rankPlayer.removeRank(rankPlayer.getRank(ladder).get());
-                    rankPlayer.addRank(ladder, newRank.get());
+            	Rank curRank = rankPlayer.getRank(ladder.name);
+                if ( curRank != null && rank.equals( curRank ) ) {
+                    rankPlayer.removeRank(curRank);
+                    if ( newRank != null ) {
+                    	rankPlayer.addRank(ladder, newRank);
+                    }
+                    
                     try {
                         PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
                     } catch (IOException e) {
-                        Output.get().logError("Couldn't save player file.", e);
+                        Output.get().logError("RemoveRank: Couldn't save player file.", e);
                     }
-                    PrisonAPI.debug("Player %s is now %s", rankPlayer.uid.getLeastSignificantBits(),
-                        newRank.get().name);
+                    PrisonAPI.debug("Player %s is now %s", rankPlayer.getName(),
+                        newRank.name);
                 }
             });
+            
+            
+            // ... remove it from each ladder it was in...
+            ladder.removeRank(ladder.getPositionOfRank(rank));
+            try {
+            	PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
+            } catch (IOException e) {
+            	success[0] = false;
+            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.name + ".", e);
+            }
+            
         }
 
-        // ... remove it from each ladder it was in...
-        final boolean[] success = {true};
-        PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.id)
-            .forEach(rankLadder -> {
-                rankLadder.removeRank(rankLadder.getPositionOfRank(rank));
-                try {
-                    PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
-                } catch (IOException e) {
-                    success[0] = false;
-                    Output.get().logError("Could not save ladder.", e);
-                }
-            });
         if(!success[0]) {
             return false;
         }

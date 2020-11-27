@@ -26,16 +26,24 @@ import java.util.UUID;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.inventory.Inventory;
+import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.util.Gamemode;
+import tech.mcprison.prison.util.Location;
 
 /**
  * Represents a player with ranks.
  *
  * @author Faizaan A. Datoo
  */
-public class RankPlayer {
+public class RankPlayer 
+			implements Player {
 
     /*
      * Fields & Constants
@@ -56,6 +64,21 @@ public class RankPlayer {
 
     public RankPlayer() {
     	super();
+    	
+        this.ranks = new HashMap<>();
+        this.prestige = new HashMap<>();
+    }
+    
+    public RankPlayer( UUID uid ) {
+    	this();
+    	
+    	this.uid = uid;
+    }
+    
+    public RankPlayer( UUID uid, String playerName ) {
+    	this( uid );
+    	
+    	checkName( playerName );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -125,22 +148,60 @@ public class RankPlayer {
      * Methods
      */
     
+    public UUID getUUID() {
+    	return uid;
+    }
     
+    public String getDisplayName() {
+    	return getLastName();
+    }
     
+    public void setDisplayName(String newDisplayName) {
+    	checkName( newDisplayName );
+    }
+    
+    public boolean isOnline() {
+    	return false;
+    }
+    
+    /**
+     * <p>Check to see what the last instance of the player's name was, if it 
+     * is a new name, then go ahead and add it to the player's name list.
+     * If a check was ran from the CONSOLE then it could feed in the name
+     * CONSOLE so exclude that.
+     * </p>
+     * 
+     * @param playerName
+     * @return
+     */
     public boolean checkName( String playerName ) {
     	boolean added = false;
     	
-    	// Check if the last name in the list is not the same as the name passed:
-    	if ( getNames().size() == 0 ||
-    			!getNames().get( getNames().size() - 1 ).getName().equalsIgnoreCase( playerName ) ) {
+    	// If the playerName is not valid, don't try to add it:
+    	if ( playerName != null && playerName.trim().length() > 0 && 
+    			!"CONSOLE".equalsIgnoreCase( playerName ) ) {
     		
-    		RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
-    		getNames().add( rpn );
+    		String name = getLastName();
     		
-    		added = true;
+    		// Check if the last name in the list is not the same as the name passed:
+    		if ( name != null && !name.equalsIgnoreCase( playerName ) ) {
+    			
+    			RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
+    			getNames().add( rpn );
+    			
+    			added = true;
+    		}
     	}
     	
     	return added;
+    }
+    
+    private String getLastName() {
+    	String name = getNames().size() == 0 ?
+    			null :
+    			getNames().get( getNames().size() - 1 ).getName();
+    	
+    	return name;
     }
     
 
@@ -238,6 +299,7 @@ public class RankPlayer {
      * @param ladder The ladder to check.
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
+    @Deprecated
     public Optional<Rank> getRank(RankLadder ladder) {
         if (!ranks.containsKey(ladder.name)) {
             return Optional.empty();
@@ -306,5 +368,104 @@ public class RankPlayer {
     @Override public int hashCode() {
         return uid.hashCode();
     }
+
+	@Override
+	public String getName()
+	{
+		String name = getLastName();
+		
+		if ( name == null ) {
+			name = Long.toString( uid.getLeastSignificantBits() );
+		}
+		return name;
+	}
+
+	@Override
+	public void dispatchCommand( String command )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean hasPermission( String perm ) {
+		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
+		return false;
+	}
+	
+	@Override
+	public void sendMessage( String message ) {
+		Output.get().logError( "SpigotOfflinePlayer.sendMessage: Cannot send messages to offline players." );
+	}
+	
+	@Override
+	public void sendMessage( String[] messages ) {
+		Output.get().logError( "SpigotOfflinePlayer.sendMessage: Cannot send messages to offline players." );
+	}
+	
+	@Override
+	public void sendRaw( String json ) {
+		Output.get().logError( "SpigotOfflinePlayer.sendRaw: Cannot send messages to offline players." );
+	}
+
+	@Override
+	public boolean doesSupportColors() {
+		return false;
+	}
+
+	@Override
+	public void give( ItemStack itemStack ) {
+		Output.get().logError( "SpigotOfflinePlayer.give: Cannot give to offline players." );
+	}
+
+	@Override
+	public Location getLocation() {
+		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
+		return null;
+	}
+
+	@Override
+	public void teleport( Location location ) {
+		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );
+	}
+
+	@Override
+	public void setScoreboard( Scoreboard scoreboard ) {
+		Output.get().logError( "SpigotOfflinePlayer.setScoreboard: Offline players cannot use scoreboards." );
+	}
+
+	@Override
+	public Gamemode getGamemode() {
+		Output.get().logError( "SpigotOfflinePlayer.getGamemode: Offline is not a valid gamemode." );
+		return null;
+	}
+
+	@Override
+	public void setGamemode( Gamemode gamemode ) {
+	}
+
+	@Override
+	public Optional<String> getLocale() {
+		Output.get().logError( "SpigotOfflinePlayer.getLocale: Offline is not a valid gamemode." );
+		return null;
+	}
+
+	@Override
+	public boolean isOp() {
+		return false;
+	}
+
+	@Override
+	public void updateInventory() {
+	}
+
+	@Override
+	public Inventory getInventory() {
+		return null;
+	}
+
+	@Override
+	public void printDebugInventoryInformationToConsole() {
+		
+	}
 
 }

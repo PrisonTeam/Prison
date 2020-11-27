@@ -72,6 +72,8 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
@@ -253,7 +255,7 @@ class SpigotPlatform
     	return getOfflinePlayer(null, uuid);
     }
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
-    	SpigotOfflinePlayer player = null;
+    	Player player = null;
     	
     	if ( uuid != null ) {
     		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
@@ -278,6 +280,19 @@ class SpigotPlatform
     							"  name= " + (oPlayer.getName() == null ? "null" : 
     								oPlayer.getName())));
     				
+    			}
+    		}
+    	}
+    	
+    	// If player is not available, then try to get a RankPlayer instance of the player:
+    	if ( player == null ) {
+    		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    			
+    			RankPlayer rankPlayer = pm.getPlayer( uuid, name ).orElse( null );
+    			if ( rankPlayer != null ) {
+    				
+    				player = rankPlayer;
     			}
     		}
     	}

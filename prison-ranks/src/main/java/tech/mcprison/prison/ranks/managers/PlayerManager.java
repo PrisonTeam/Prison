@@ -20,10 +20,11 @@ package tech.mcprison.prison.ranks.managers;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.eventbus.Subscribe;
@@ -35,7 +36,6 @@ import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.Player;
@@ -66,10 +66,13 @@ public class PlayerManager
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
+    private transient Set<String> playerErrors;
 
     public PlayerManager(Collection collection) {
         this.collection = collection;
         this.players = new ArrayList<>();
+        
+        this.playerErrors = new HashSet<>();
 
         Prison.get().getEventBus().register(this);
     }
@@ -134,6 +137,12 @@ public class PlayerManager
 			{
 				String message = "An error occurred while saving the player files: "  +
 						player.filename();
+				
+    			if ( !getPlayerErrors().contains( message ) ) {
+    				getPlayerErrors().add( message );
+    				Output.get().logError( message );
+    			}
+    			
 				Output.get().logError(message, e);
 			}
         }
@@ -147,7 +156,11 @@ public class PlayerManager
         return players;
     }
 
-    /** 
+    public Set<String> getPlayerErrors() {
+		return playerErrors;
+	}
+
+	/** 
      * <p>Get the player, if they don't exist, add them.
      * </p>
      * 
@@ -155,22 +168,51 @@ public class PlayerManager
      * @return
      */
     public Optional<RankPlayer> getPlayer(UUID uid, String playerName) {
-    	Optional<RankPlayer> results = players.stream().filter(player -> player.uid.equals(uid)).findFirst();
+    	
+    	Optional<RankPlayer> results = Optional.ofNullable( null );
+    	boolean dirty = false;
+    	
+    	for ( RankPlayer rankPlayer : players ) {
+			if ( uid != null && rankPlayer.uid.equals(uid) || 
+				 uid == null && playerName != null && playerName.trim().length() > 0 &&
+				 rankPlayer.getDisplayName() != null &&
+				 rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
+				
+				// This checks to see if they have a new name, if so, then adds it to the history:
+				// But the UID must match:
+				if ( uid != null && rankPlayer.uid.equals(uid) ) {
+					dirty = rankPlayer.checkName( playerName );
+				}
+				
+				results = Optional.ofNullable( rankPlayer );
+				break;
+			}
+		}
+    	
+//    	Optional<RankPlayer> results = players.stream().filter(
+//    			player -> (uid != null ? 
+//    					player.uid.equals(uid) : 
+//    						( playerName != null || playerName.trim().length() == 0 ? false :
+//    							player.checkName( playerName )))).findFirst();
     	
     	if ( !results.isPresent() ) {
     		results = Optional.ofNullable( addPlayer(uid, playerName) );
+    		dirty = results.isPresent();
     	}
     	
-    	// check to see if the name has changed, if so, then save because the new name was added:
-    	if ( playerName != null && playerName.trim().length() > 0 && 
-    				results.get().checkName( playerName ) ) {
+    	// Save if dirty (change or new):
+    	if ( dirty && results.isPresent() ) {
     		try {
 				savePlayer( results.get() );
 			}
 			catch ( IOException e ) {
-				Output.get().logWarn( 
-					String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
-									playerName, e.getMessage()) );
+				String message = String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
+									playerName, e.getMessage());
+    			if ( !getPlayerErrors().contains( message ) ) {
+    				
+    				getPlayerErrors().add( message );
+    				Output.get().logError( message );
+    			}
 			}
     	}
     	
@@ -180,36 +222,41 @@ public class PlayerManager
     
     
     private RankPlayer addPlayer( UUID uid, String playerName ) {
-    	// We need to create a new player data file.
-        RankPlayer newPlayer = new RankPlayer();
-        newPlayer.uid = uid;
-        newPlayer.ranks = new HashMap<>();
-        newPlayer.prestige = new HashMap<>();
+        RankPlayer newPlayer = null; 
 
-        players.add(newPlayer);
-
-        try {
-            savePlayer(newPlayer);
-
-            // Assign the player to the default rank:
-            String ladder = null; // will set to the "default" ladder
-            String rank = null;   // will set to the "default" rank
-            
-            // Set the rank to the default ladder and the default rank.  The results are logged
-            // before the results are returned, so can ignore the results:
-            @SuppressWarnings( "unused" )
-            RankupResults results = new RankUtil().setRank(newPlayer, ladder, rank, 
-            							playerName, "FirstJoinEvent");
-            
-            
-            Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
-        } 
-        catch (IOException e) {
-            Output.get().logError(
-                "Failed to create new player data file for player " + 
-                		(playerName == null ? "<NoNameAvailable>" : playerName) + 
-                		"  target filename: " + newPlayer.filename(), e);
+        if ( uid != null && playerName != null && playerName.trim().length() > 0 && 
+        		!"CONSOLE".equalsIgnoreCase( playerName ) ) {
+        	
+        	// We need to create a new player data file.
+        	newPlayer = new RankPlayer( uid, playerName );
+        	
+        	
+        	players.add(newPlayer);
+        	
+        	try {
+        		savePlayer(newPlayer);
+        		
+        		// Assign the player to the default rank:
+        		String ladder = null; // will set to the "default" ladder
+        		String rank = null;   // will set to the "default" rank
+        		
+        		// Set the rank to the default ladder and the default rank.  The results are logged
+        		// before the results are returned, so can ignore the results:
+        		@SuppressWarnings( "unused" )
+        		RankupResults results = new RankUtil().setRank(newPlayer, ladder, rank, 
+        				playerName, "FirstJoinEvent");
+        		
+        		
+        		Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+        	} 
+        	catch (IOException e) {
+        		Output.get().logError(
+        				"Failed to create new player data file for player " + 
+        						(playerName == null ? "<NoNameAvailable>" : playerName) + 
+        						"  target filename: " + newPlayer.filename(), e);
+        	}
         }
+        
         
         return newPlayer;
     }
@@ -332,8 +379,13 @@ public class PlayerManager
     	
         Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
         if( prisonPlayer == null ) {
-        	Output.get().logError( String.format( "getPlayerNextRankCostPercent: " +
-        			"Could not load player: %s", rankPlayer.uid) );
+        	String message = String.format( "getPlayerNextRankCostPercent: " +
+        			"Could not load player: %s", rankPlayer.uid);
+			
+        	if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
         	return "0";
         }
     	
@@ -371,8 +423,14 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
     	if( prisonPlayer == null ) {
-    		Output.get().logError( String.format( "getPlayerNextRankCostBar: " +
-    				"Could not load player: %s", rankPlayer.uid) );
+    		String message = String.format( "getPlayerNextRankCostBar: " +
+    				"Could not load player: %s", rankPlayer.uid);
+
+    		if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
+			
     		return "0";
     	}
     	
@@ -405,13 +463,31 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    /**
+     * <p>This function will use the player's current balance in the currency that the next ranks
+     * uses, and will subtract the cost of the next rank from their current balance.  This 
+     * function returns what would remain after the transaction.  If this return a negative value
+     * then it's an indicator that the player cannot yet afford the next rank.
+     * </p>
+     * 
+     * @param rankPlayer
+     * @param ladderName
+     * @param formatted
+     * @return
+     */
     public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName, boolean formatted ) {
     	StringBuilder sb = new StringBuilder();
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
     	if( prisonPlayer == null ) {
-    		Output.get().logError( String.format( "getPlayerNextRankCostRemaining: " +
-    				"Could not load player: %s", rankPlayer.uid) );
+    		String message = String.format( "getPlayerNextRankCostRemaining: " +
+    				"Could not load player: %s", rankPlayer.uid);
+    		
+			if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
+			
     		return "0";
     	}
     	
@@ -431,11 +507,11 @@ public class PlayerManager
     					double cost = rank.cost;
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
-    					double remaining = cost - balance;
+    					double remaining = balance - cost;
     					
-    					if ( remaining < 0 ) {
-    						remaining = 0;
-    					}
+//    					if ( remaining < 0 ) {
+//    						remaining = 0;
+//    					}
     					
     					if ( formatted ) {
     						sb.append( PlaceholdersUtil.formattedSize( remaining ));
@@ -451,13 +527,31 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    /**
+     * <p>This gets the player's balance as a formatted String based upon the ranks' 
+     * custom currency, if it's set.  If there is a problem getting the custom 
+     * currency, then it will return a value of zero for the player's balance, which
+     * will prevent the player from ranking up due to insufficient funds.
+     * </p>
+     * 
+     * @param rankPlayer
+     * @param ladderName
+     * @param formatted
+     * @return
+     */
     private String getPlayerBalance( RankPlayer rankPlayer, String ladderName, boolean formatted ) {
     	StringBuilder sb = new StringBuilder();
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
     	if( prisonPlayer == null ) {
-    		Output.get().logError( String.format( "getPlayerBalance: " +
-    				"Could not load player: %s", rankPlayer.uid) );
+    		String message = String.format( "getPlayerBalance: " +
+    				"Could not load player: %s", rankPlayer.uid);
+    		
+			if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
+			
     		return "0";
     	}
     	
@@ -490,19 +584,35 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    /**
+     * <p>This gets the player's balance, and if the rank is provided, it will check to 
+     * see if there is a custom currency that needs to be used for that rank.  If there
+     * is a custom currency, then it will check the balance for that player using that
+     * currency.
+     * </p>
+     * 
+     * @param player
+     * @param rank
+     * @return
+     */
     private double getPlayerBalance(Player player, Rank rank) {
     	double playerBalance = 0;
         	
-    	if ( rank.currency != null ) {
+    	if ( rank != null && rank.currency != null ) {
     		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
     						.getEconomyForCurrency( rank.currency );
     		if ( currencyEcon != null ) {
         		playerBalance = currencyEcon.getBalance( player, rank.currency );
     		} else {
-    			Output.get().logError( 
-    					String.format( "Failed to load Economy to get the balance for " +
-    							"player %s with a currency of %s.",
-    							player.getName(), rank.currency ));
+    			String message = String.format( "Failed to load Economy to get the balance for " +
+						"player %s with a currency of %s.",
+						player.getName(), rank.currency );
+    			
+    			if ( !getPlayerErrors().contains( message ) ) {
+    				getPlayerErrors().add( message );
+    				Output.get().logError( message );
+    			}
+    			
     		}
     		
     	} else {
@@ -512,9 +622,15 @@ public class PlayerManager
     		if ( economy != null ) {
     			playerBalance = economy.getBalance( player );
     		} else {
-    			Output.get().logError( 
-    					String.format( "Failed to load Economy to get the balance for player %s.",
-    							player.getName() ));
+    			String message = String.format( "Failed to load Economy to get the balance for player %s.",
+						player.getName() );
+    			Output.get().logError( message );
+    			if ( !getPlayerErrors().contains( message ) ) {
+    				
+    				getPlayerErrors().add( message );
+    				Output.get().logError( message );
+    			}
+    			
     		}
     	}
 
