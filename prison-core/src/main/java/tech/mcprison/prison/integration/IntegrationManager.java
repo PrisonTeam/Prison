@@ -143,11 +143,11 @@ public class IntegrationManager {
 	
 		
 		
-		// player
+		// player balances.  Both with and without ladders.
 		prison_pb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
 		prison_player_balance(prison_pb, PlaceHolderFlags.PLAYER),
 		
-		prison_pb_laddername(prison_pb, PlaceHolderFlags.LADDERS),
+		prison_pb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
 
 		
