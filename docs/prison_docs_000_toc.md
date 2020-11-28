@@ -135,9 +135,8 @@ Prison now has a new set of features that can help you get up and running faster
 
 
 
-* **Setting up Vault** - (coming soon)
+* [Setting up Vault](prison_docs_016_setting_up_Vault.md)
     Including Vault is Strongly Suggested.
-    Hint: Download from spigotmc.org and copy jar to plugin folder. Zero setup.
 
 
 * [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md) - 

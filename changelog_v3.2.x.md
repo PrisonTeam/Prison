@@ -11,6 +11,16 @@ that you need.
 ## tag v3.2.2-alpha.4 - 2020-11-27
 
 
+* **Updated a few documents**
+Added a document on setting up Vault.  Added more information on how to reload the placeholders in a few documents.  Added a few screen prints.
+
+
+* **Bug fix: Found a couple of placeholders were mis-configured.  **
+
+
+* **Upgrade Cryotomorin XSeries to v7.6.0.0.1**
+
+
 * **v3.2.3-alpha.4 - 2020-11-27**
 
 
