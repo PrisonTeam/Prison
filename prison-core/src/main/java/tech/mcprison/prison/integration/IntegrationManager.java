@@ -714,33 +714,39 @@ public class IntegrationManager {
     	return results;
     }
 
+    /**
+     * This adds the list of placeholders to the results List.
+     * @param results
+     */
 	public void getPlaceholderTemplateList( List<DisplayComponent> results )
 	{
 		results.add( new TextComponent( "  &7Available PlaceHolders: " ));
 
 		List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
-		StringBuilder sb = new StringBuilder();
+//		StringBuilder sb = new StringBuilder();
 		for ( String placeholder : placeholders ) {
-			if ( sb.length() == 0) {
-				sb.append( "      " );
-				sb.append( placeholder );
-			} 
-			else if ( (sb.length() + placeholder.length()) > 90) {
-				// will be too long combined so write existing sb then start over:
-				results.add( new TextComponent( sb.toString() ));
-				sb.setLength( 0 );
-				
-				sb.append( "      " );
-				sb.append( placeholder );
-			} else {
-				sb.append( placeholder );
-				results.add( new TextComponent( sb.toString() ));
-				sb.setLength( 0 );
-			}
+			results.add( new TextComponent( "      " + placeholder ));
+			
+//			if ( sb.length() == 0) {
+//				sb.append( "      " );
+//				sb.append( placeholder );
+//			} 
+//			else if ( (sb.length() + placeholder.length()) > 90) {
+//				// will be too long combined so write existing sb then start over:
+//				results.add( new TextComponent( sb.toString() ));
+//				sb.setLength( 0 );
+//				
+//				sb.append( "      " );
+//				sb.append( placeholder );
+//			} else {
+//				sb.append( placeholder );
+//				results.add( new TextComponent( sb.toString() ));
+//				sb.setLength( 0 );
+//			}
 		}
-		if ( sb.length() > 0 ) {
-			results.add( new TextComponent( sb.toString() ));
-		}
+//		if ( sb.length() > 0 ) {
+//			results.add( new TextComponent( sb.toString() ));
+//		}
 	}
 
 	public List<Integration> getDeferredIntegrations() {
