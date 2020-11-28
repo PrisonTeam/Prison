@@ -1700,7 +1700,7 @@ public class MinesCommands
             	
             	if ( m.isUsePagingOnReset() ) {
             		row.addFancy( 
-            				new FancyMessage("&5Pgd ")
+            				new FancyMessage("&5Paged ")
             				.tooltip("&7Paging Used during Mine Reset"));
             	}
 
