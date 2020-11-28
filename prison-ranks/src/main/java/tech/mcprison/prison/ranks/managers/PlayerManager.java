@@ -348,7 +348,7 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if ( ladderName == null ||
@@ -390,7 +390,7 @@ public class PlayerManager
         }
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if ( ladderName == null ||
@@ -492,7 +492,7 @@ public class PlayerManager
     	}
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if ( ladderName == null ||
@@ -556,7 +556,7 @@ public class PlayerManager
     	}
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
     			RankLadder key = entry.getKey();
     			if ( ladderName == null ||
