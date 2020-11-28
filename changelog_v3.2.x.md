@@ -8,7 +8,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.4 - 2020-11-27
+## tag v3.2.2-alpha.4 - 2020-11-28
+
+
+* **Changed Pgd to Paged so it makes more sense in /mines list.**
+
+
+* **Clean up placeholders list.**
+Very few placeholders are able to be shown on the same line as another.  So eliminate the code that is trying to add to same line.  This also makes it more difficult to find a placeholder.
+
+
+* **Fixed an issue with the logic statement when using RankPlayers for substitution of offline players**
 
 
 * **Updated a few documents**
