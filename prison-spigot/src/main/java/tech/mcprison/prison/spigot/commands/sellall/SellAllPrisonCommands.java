@@ -46,13 +46,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         if (sender.hasPermission("prison.admin")) {
-            sender.sendMessage(SpigotPrison.format("&7[&3Prison&7] &3SellAll Commands: " +
-                    "\n &7- &3/sellAll sell" +
-                    "\n &7- &3/sellall gui" +
-                    "\n &7- &3/sellall add" +
-                    "\n &7- &3/sellall delete" +
-                    "\n &7- &3/sellall multiplier" +
-                    "\n &7- &3/sellall setdefault"));
+            sender.dispatchCommand("sellall help");
         } else {
             sender.dispatchCommand("sellall sell");
         }
@@ -418,8 +412,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", onlyPlayers = false)
-    private void sellAllDeleteMultipluerCommand(CommandSender sender,
-                                             @Arg(name = "Prestige", description = "Prestige hooked to the multiplier.") String prestige){
+    private void sellAllDeleteMultiplierCommand(CommandSender sender,
+                                                @Arg(name = "Prestige", description = "Prestige hooked to the multiplier.") String prestige){
 
         if (prestige == null){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierFormat")));
