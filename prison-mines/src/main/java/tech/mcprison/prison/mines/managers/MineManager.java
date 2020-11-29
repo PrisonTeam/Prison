@@ -212,13 +212,16 @@ public class MineManager
 
         this.coll = collOptional.get();
 
-        int offsetTiming = 5;
-        loadMines(offsetTiming);
+        
+        // Default value of 5 seconds:
+        long offsetTimingMs = Prison.get().getPlatform()
+        							.getConfigInt( "prison-mines-reset-gap", 5000 );
+        loadMines(offsetTimingMs);
         
 
         Output.get().logInfo( String.format("Loaded %d mines and submitted with a %d " +
-        		"second offset timing for auto resets.", 
-        			getMines().size(), offsetTiming));
+        		"millisecond offset timing for auto resets.", 
+        			getMines().size(), offsetTimingMs));
         
         
 //        // When finished loading the mines, then if there are any worlds that
@@ -265,9 +268,10 @@ public class MineManager
      * @param mine the mine instance
      * @param save - bypass the option to save. Useful for when initially loading the mines since
      *               no data has changed.
+     * @param offsetTiming in milliseconds 
      * @return if the add was successful
      */
-    private boolean add(Mine mine, boolean save, int offsetTiming ) {
+    private boolean add(Mine mine, boolean save, int offsetTimingMs ) {
     	boolean results = false;
         if (!getMines().contains(mine)){
         	if ( save ) {
@@ -278,7 +282,7 @@ public class MineManager
             getMinesByName().put( mine.getName().toLowerCase(), mine );
             
             // Start its scheduling:
-            mine.submit(offsetTiming);
+            mine.submit( offsetTimingMs / 1000d );
         }
         return results;
     }
@@ -308,15 +312,15 @@ public class MineManager
 
 
 
-    private void loadMines( int offsetTiming ) {
+    private void loadMines( long offsetTimingMs ) {
         List<Document> mineDocuments = coll.getAll();
 
-        int offset = 0;
+        int offsetMs = 0;
         for (Document document : mineDocuments) {
             try {
                 Mine m = new Mine(document);
-                add(m, false, offset);
-                offset += offsetTiming;
+                add(m, false, offsetMs);
+                offsetMs += offsetTimingMs;
                 
             } catch (Exception e) {
                 Output.get()

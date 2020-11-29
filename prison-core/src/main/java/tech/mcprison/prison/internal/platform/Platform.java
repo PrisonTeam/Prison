@@ -284,6 +284,8 @@ public interface Platform {
 	public boolean getConfigBooleanTrue( String key );
 	
 	
+	public int getConfigInt( String key, int defaultValue );
+	
 
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 

@@ -418,13 +418,13 @@ public abstract class MineScheduler
 		Prison.get().getPlatform().getScheduler().cancelTask( taskId );
 	}
 	
-	public void submit( int offset ) {
-		submitNextAction(offset);
+	public void submit( double offsetSeconds ) {
+		submitNextAction(offsetSeconds);
 	}
 	private void submitNextAction() {
 		submitNextAction(0);
 	}
-	private void submitNextAction(int offset) {
+	private void submitNextAction(double offsetSeconds) {
 		if ( getJobStack().size() == 0 ) {
 			resetJobStack();
 		}
@@ -432,8 +432,8 @@ public abstract class MineScheduler
 		setCurrentJob( getJobStack().pop() );
 		
 		// Offset tries to stagger the mine resets, assuming most will have the same delays:
-		if ( offset > 0 ) {
-			getCurrentJob().setDelayActionSec( getCurrentJob().getDelayActionSec() + offset );
+		if ( offsetSeconds > 0 ) {
+			getCurrentJob().setDelayActionSec( getCurrentJob().getDelayActionSec() + offsetSeconds );
 		}
 		
 		// Submit currentJob using delay in the job. Must be a one time run, no repeats.

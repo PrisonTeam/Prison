@@ -150,5 +150,12 @@ storageType: "json"
 
 
 # NEW: Non-functional. Coming soon!
+# Prison mines reset gap is the number of milliseconds that are used to 
+# space out the mine resets when starting the server.  This value should 
+# not be changed unless you understand what you are doing. This value
+# is converted to ticks, so should use 50 millisecond increments. If too 
+# small of a value is used then it could produce a large amount of lag 
+# if more than one mine tries to reset at the same time, or close to each
+# other.  This may be changed to ticks in the near future.
 #prison-mines-reset-gap: 5000
 

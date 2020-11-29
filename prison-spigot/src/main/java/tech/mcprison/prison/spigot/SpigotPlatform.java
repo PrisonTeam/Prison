@@ -765,6 +765,30 @@ class SpigotPlatform
 		return ( val == null || val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
+	@Override
+	public int getConfigInt( String key, int defaultValue ) {
+		int results = defaultValue;
+		
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+
+			try {
+				results = Integer.parseInt( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an integer but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
+	}
+	
+
+	
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 
      * block types that have tested to be valid on the server that is running 
