@@ -45,6 +45,19 @@ public abstract class MineReset
 	 * </p>
 	 */
 	public static final long MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS = 75;
+
+	
+	/**
+	 * <p>This is the time in ticks that is used when submitting 
+	 * the reset jobs. A value of 0 could cause the server to lock up since
+	 * it does not have enough time to deal with other tasks.  
+	 * </p>
+	 * 
+	 * <p>One tick is 50 milliseconds, 2 is 100 milliseconds or 1/10 of 
+	 * a second.
+	 * </p>
+	 */
+	public static final long MINE_RESET__PAGE_SUBMIT_DELAY_TICKS = 1;
 	
 	/**
 	 * <p>When placing blocks, this is the block count that is used to check for
@@ -351,8 +364,10 @@ public abstract class MineReset
     	sb.append( "&3 ResetPages: &7" );
     	sb.append( iFmt.format(getStatsResetPages() ));
     	
-    	double avgBlocks = getStatsResetPageBlocks() / getStatsResetPages();
-    	double avgMs = getStatsResetPageMs() / getStatsResetPages();
+    	double avgBlocks = getStatsResetPages() == 0 ? 0 : 
+    			getStatsResetPageBlocks() / getStatsResetPages();
+    	double avgMs = getStatsResetPages() == 0 ? 0 :
+    			getStatsResetPageMs() / getStatsResetPages();
     	
     	sb.append( "&3 avgBlocks: &7" );
     	sb.append( dFmt.format(avgBlocks));
@@ -951,11 +966,11 @@ public abstract class MineReset
      * @param callbackAsync
      */
     public void submitAsyncTask( PrisonRunnable callbackAsync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 0L );
+    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
     }
     
     public void submitSyncTask( PrisonRunnable callbackSync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 0L );
+    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
     }
 
 //    /**
