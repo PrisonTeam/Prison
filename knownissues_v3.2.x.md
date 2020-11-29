@@ -10,6 +10,16 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.2
 
 
+
+* **Rework rank permissions to eliminate need to put perms in rank commands**
+- Enhance the PermissionIntegration abstract class to also work with group perms.
+- Add to ranks two new fields: permissions and permissionGroups.  Save and load.
+- Add a new boolean field to ranks: usePermissions. Save and load.
+- Add support for these perms within rank commands
+- Rewrite rankups to use these perms when ranking up, promote, demote, and also for prestiges
+
+
+
 * **Sellall - Hook up to prison command handler** 
 Currently sellall is not hooked up to the prison command handler and it needs to be.
 

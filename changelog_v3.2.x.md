@@ -8,7 +8,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.4 - 2020-11-28
+## tag v3.2.2-alpha.5 - 2020-11-29
+
+
+* **v3.2.2-alpha.5 - 2020-11-29**
+
+* **Bug fix: Tried to reset a mine with over 400,000 blocks**
+and ran in to issues.  Had to set a delay of one tick when resubmitting the next page of blocks.  Works fine now, but the one tick delay does add to the overall time, which is not bad considering.
+
+
+* **More enhancements to hook up custom blocks and enabling the new block model.**
+Have them loading and being added to the PrisonBlockTypes as valid blocks.  Also hooked up to be used with block search and can be assigned to the mines.  These custom blocks are also being saved.
+
+
+* **Changed the offset time from seconds to milliseconds.**
+Enabled the config.yml setting prison-mines-reset-gap. This will allow better tuning of the mine gaps, but could cause server lag problems if the gap is too small.
 
 
 * **Changed Pgd to Paged so it makes more sense in /mines list.**
@@ -25,10 +39,14 @@ Very few placeholders are able to be shown on the same line as another.  So elim
 Added a document on setting up Vault.  Added more information on how to reload the placeholders in a few documents.  Added a few screen prints.
 
 
+* **Prison's placeholders are now fully registered on PlaceholderAPI's wiki**
+Prison still dynamically registers its plugins upon startup because everyone has to be generated and expanded.
+
+
 * **Bug fix: Found a couple of placeholders were mis-configured.  **
 
 
-* **Upgrade Cryotomorin XSeries to v7.6.0.0.1**
+* **Upgrade Cryptomorin XSeries to v7.6.0.0.1**
 
 
 * **v3.2.3-alpha.4 - 2020-11-27**
