@@ -923,15 +923,9 @@ public class MinesCommands
     
     private ChatDisplay prisonBlockSearchBuilder(String search, String page)
     {
-    	List<PrisonBlock> blocks = new ArrayList<>();
     	
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
-    	
-    	for ( PrisonBlock pBlock : prisonBlockTypes.getBlockTypes() ) {
-    		if ( pBlock.isBlock() && pBlock.getBlockName().contains( search.toLowerCase()  )) {
-    			blocks.add( pBlock );
-    		}
-    	}
+    	List<PrisonBlock> blocks = prisonBlockTypes.getBlockTypes( search );
     	
     	CommandPagedData cmdPageData = new CommandPagedData(
     			"/mines block search " + search, blocks.size(),
@@ -965,11 +959,11 @@ public class MinesCommands
     		FancyMessage msg =
     				new FancyMessage(
     						String.format("&7%s %s", 
-    								Integer.toString(i), block.getBlockName()
+    								Integer.toString(i), block.getBlockNameSearch()
 //    								block.getAltName(),
     								))
     				.suggest("/mines block add " + getLastMineReferenced() + 
-    									" " + block.getBlockName() + " %")
+    									" " + block.getBlockNameSearch() + " %")
     				.tooltip("&7Click to add block to a mine.");
     		builder.add(msg);
     	}

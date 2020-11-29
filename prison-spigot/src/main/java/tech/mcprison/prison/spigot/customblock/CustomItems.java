@@ -90,7 +90,7 @@ public class CustomItems
 		
 		for ( String block : customItemsWrapper.getCustomBlockList() ) {
 			
-			PrisonBlock prisonBlock = new PrisonBlock( getBlockType(), getBlockPrefix() + block );
+			PrisonBlock prisonBlock = new PrisonBlock( getBlockType(), block );
 
 			prisonBlock.setValid( true );
 			prisonBlock.setBlock( true );

@@ -232,10 +232,10 @@ public class SpigotUtil {
 					blockTypes.addAll( blocks );
 				}
 				
-				Output.get().logInfo( "&3Custom Block Integration: &7%s &3registered &7%d &3blocks with a " +
-						"prefix of &7%s &3and the type of &7%s&3.",
+				Output.get().logInfo( "&3Custom Block Integration: &7%s &3registered &7%d &3blocks " +
+						"&with the PrisonBlockType of &7%s&3.",
 						blkInt.getDisplayName(), blocks.size(), 
-						blkInt.getBlockPrefix(), blkInt.getType().name() );
+						blkInt.getBlockType().name() );
 			}
 		}
 

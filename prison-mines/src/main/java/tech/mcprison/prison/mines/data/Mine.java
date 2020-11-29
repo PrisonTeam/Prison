@@ -495,8 +495,8 @@ public class Mine
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
         	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
-        		prisonBlockStrings.add(pBlock.getBlockName() + "-" + pBlock.getChance());
-        		validateBlockNames.add( pBlock.getBlockName() );
+        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
+        		validateBlockNames.add( pBlock.getBlockNameFormal() );
         	}
         }
         

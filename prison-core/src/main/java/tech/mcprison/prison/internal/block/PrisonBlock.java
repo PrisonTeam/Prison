@@ -17,6 +17,7 @@ public class PrisonBlock
 	public static PrisonBlock NULL_BLOCK;
 	
 	private PrisonBlockType blockType;
+	private boolean useBlockTypeAsPrefix = false;
 	
 	private String blockName;
 	
@@ -72,10 +73,18 @@ public class PrisonBlock
 		
 	}
 	
+	public PrisonBlock( PrisonBlock clonable ) {
+		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance() );
+		
+		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
+		this.valid = clonable.isValid();
+		this.block = clonable.isBlock();
+		this.legacyBlock = clonable.isLegacyBlock();
+	}
 	
 	@Override
 	public String toString() {
-		return getBlockName() + " Type:" + getBlockType().name() + 
+		return getBlockType().name() + ": " + getBlockName() +
 				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
 	}
 	
@@ -92,7 +101,50 @@ public class PrisonBlock
 	public void setBlockName( String blockName ) {
 		this.blockName = blockName;
 	}
+	
+	/**
+	 * <p>This function always prefixes the block name with the BlockType.
+	 * This is critical when saving the block to a file because there 
+	 * are no guarantees that when the server restarts the environment
+	 * will be the same.  There is a good chance that if new blocks are 
+	 * added, or if new plugins are added with new collection of custom 
+	 * blocks, then there could be a conflict.  There is also the 
+	 * chance that a plugin could be removed for a block that's in a 
+	 * mine too.
+	 * </p>
+	 * 
+	 * <p>So having the BlockType as a prefix will help correctly align
+	 * the blocks back to their proper source.  This is critical because
+	 * the correct plugin must handle both the block placements, and also
+	 * the correct plugin must be used when breaking the blocks.
+	 * </p>
+	 *  
+	 * @return
+	 */
+	public String getBlockNameFormal() {
+		return getBlockType().name() + ":" + getBlockName();
+	}
+	
+	public String getBlockNameSearch() {
+		return getBlockType() != PrisonBlockType.minecraft ? 
+					getBlockType().name() + ":" + getBlockName() : getBlockName();
+	}
 
+	/**
+	 * When adding custom blocks to prison, there is a check to ensure 
+	 * that the name is not in conflict with a preexisting block name.
+	 * If there is a conflict, then this field will be set to true and
+	 * then the BlockType will be used as the prefix.
+	 * 
+	 * @return
+	 */
+	public boolean isUseBlockTypeAsPrefix() {
+		return useBlockTypeAsPrefix;
+	}
+	public void setUseBlockTypeAsPrefix( boolean useBlockTypeAsPrefix ) {
+		this.useBlockTypeAsPrefix = useBlockTypeAsPrefix;
+	}
+	
 	public double getChance() {
 		return chance;
 	}
@@ -139,6 +191,10 @@ public class PrisonBlock
 		this.legacyBlock = legacyBlock;
 	}
 
+	public PrisonBlock clone() {
+		return new PrisonBlock( this );
+	}
+	
 	@Override
 	public boolean equals( Object block ) {
 		boolean results = false;

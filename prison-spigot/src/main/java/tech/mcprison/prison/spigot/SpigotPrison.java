@@ -181,18 +181,7 @@ public class SpigotPrison extends JavaPlugin {
         applyDeferredIntegrationInitializations();
         
         
-        
-        
-        // Setup hooks in to the valid prison block types, which must be done
-        // after all the integrations have been initialized.  This will be only
-        // the block types that have tested to be valid on the server that is
-        // running prison.  This provides full compatibility to the admins that
-        // if a block is listed, then it's usable.  No more guessing or finding
-        // out after the fact that a block that was used was invalid for
-        // their version of minecraft.
-        this.prisonBlockTypes = new PrisonBlockTypes();
-        this.prisonBlockTypes.addBlockTypes( SpigotUtil.getAllPlatformBlockTypes() );
-        this.prisonBlockTypes.addBlockTypes( SpigotUtil.getAllCustomBlockTypes() );
+
         
         
         initMetrics();
@@ -576,6 +565,27 @@ public class SpigotPrison extends JavaPlugin {
      * fact that a block that was used was invalid for their version of minecraft.
      */
 	public PrisonBlockTypes getPrisonBlockTypes() {
+		
+		if ( prisonBlockTypes == null ) {
+			synchronized ( PrisonBlockTypes.class ) {
+				if ( prisonBlockTypes == null ) {
+					
+					// Setup hooks in to the valid prison block types, which must be done
+					// after all the integrations have been initialized.  This will be only
+					// the block types that have tested to be valid on the server that is
+					// running prison.  This provides full compatibility to the admins that
+					// if a block is listed, then it's usable.  No more guessing or finding
+					// out after the fact that a block that was used was invalid for
+					// their version of minecraft.
+					PrisonBlockTypes pbt = new PrisonBlockTypes();
+					pbt.addBlockTypes( SpigotUtil.getAllPlatformBlockTypes() );
+					pbt.addBlockTypes( SpigotUtil.getAllCustomBlockTypes() );
+					this.prisonBlockTypes = pbt;
+					
+				}
+			}
+		}
+		
 		return prisonBlockTypes;
 	}
 }

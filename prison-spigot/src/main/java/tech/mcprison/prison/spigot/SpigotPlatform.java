@@ -816,7 +816,8 @@ class SpigotPlatform
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		
-		return SpigotUtil.getPrisonBlock( blockName );
+		return getPrisonBlockTypes().getBlockTypesByName( blockName );
+//		return SpigotUtil.getPrisonBlock( blockName );
 	}
 	
 	
