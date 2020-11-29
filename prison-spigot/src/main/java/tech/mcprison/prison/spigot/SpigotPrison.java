@@ -55,10 +55,8 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
+import tech.mcprison.prison.spigot.commands.*;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -78,7 +76,6 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
-import tech.mcprison.prison.spigot.sellall.SellAllCommands;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 /**
@@ -228,15 +225,15 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public FileConfiguration getGuiConfig() {
-    	if ( guiConfig == null ) {
+    	if (guiConfig == null) {
     		guiConfig = new GuiConfig();
     	}
         return guiConfig.getFileGuiConfig();
     }
 
     public FileConfiguration getSellAllConfig() {
-        if (sellAllConfig == null && SellAllCommands.isEnabled() ) {
-        		
+        // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
+        if (SellAllPrisonCommands.isEnabled()) {
             sellAllConfig = new SellAllConfig();
         }
         return sellAllConfig == null ? null : sellAllConfig.getFileSellAllConfig();
@@ -468,13 +465,12 @@ public class SpigotPrison extends JavaPlugin {
         if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
         	linkMinesAndRanks();
         }
-        
-        // Only register the command if it is enabled so it will not conflict with other sellall plugins if they are used:
-        if ( SellAllCommands.isEnabled() ) {
-        	
-        	// Do not hit this function here. It will lazy initialize if needed:
-        	//getSellAllConfig();
-            getCommand("sellall").setExecutor(new SellAllCommands());
+
+        // Load sellAll if enabled
+        if (SellAllPrisonCommands.isEnabled()){
+
+            Prison.get().getCommandHandler().registerCommands(new SellAllPrisonCommands());
+
         }
         
         // This registers the admin's /gui commands

@@ -220,14 +220,15 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllWrongFormatCommand", "&7[&3PRISON WARN&7] &cWrong format, try /sellall for a list of commands.");
         dataConfig("Message.SellAllPleaseAddItem", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall add COAL_ORE <price>]");
         dataConfig("Message.SellAllAddPrice", "&7[&3PRISON WARN&7] &cPlease add a price or value for the item [example: /sellall add COAL_ORE 100]");
-        dataConfig("Message.SellAllWrongID", "&7[&3PRISON WARN&7] &cSorry but the ITEM_ID's wrong, please check it [/sellall");
+        dataConfig("Message.SellAllWrongID", "&7[&3PRISON WARN&7] &cSorry but the ITEM_ID's wrong, please check it!");
         dataConfig("Message.SellAllValueNotNumber", "&7[&3PRISON WARN&7] &cSorry but the value isn't a number [/sellall");
         dataConfig("Message.SellAllMissingID", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall delete COAL_ORE]");
         dataConfig("Message.SellAllTagWarn", "&7[&3PRISON WARN&7] &c");
         dataConfig("Message.SellAllNotFoundStringConfig", " not found in the config or got already deleted");
         dataConfig("Message.SellAllPrisonTag", "&7[&3PRISON&7]&a ");
         dataConfig("Message.SellAllDeletedSuccess", " Deleted with success!");
-        dataConfig("Message.SellAllCommandEditSuccess", "] added with success!");
+        dataConfig("Message.SellAllAddSuccess", "] added with success!");
+        dataConfig("Message.SellAllCommandEditSuccess", "] edited with success!");
         dataConfig("Message.SellAllYouArentPlayer", "&7[&3PRISON ERROR&7]&c You aren't a player");
         dataConfig("Message.SellAllNothingToSell", "&7[&3PRISON&7]&c You have nothing to sell!");
         dataConfig("Message.SellAllYouGotMoney", "&7[&3PRISON&7]&a You got $");

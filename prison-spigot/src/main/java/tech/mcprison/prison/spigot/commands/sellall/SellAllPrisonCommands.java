@@ -1,0 +1,453 @@
+package tech.mcprison.prison.spigot.commands.sellall;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.commands.Arg;
+import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.EconomyIntegration;
+import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Set;
+
+public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
+
+    private final Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+    private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+
+    public static boolean isEnabled(){
+        return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+    }
+
+    @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
+    private void sellAllCommands(CommandSender sender) {
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (sender.hasPermission("prison.admin")) {
+            sender.sendMessage(SpigotPrison.format("&7[&3Prison&7] &3SellAll Commands: " +
+                    "\n &7- &3/sellAll sell" +
+                    "\n &7- &3/sellall gui" +
+                    "\n &7- &3/sellall add" +
+                    "\n &7- &3/sellall delete" +
+                    "\n &7- &3/sellall multiplier" +
+                    "\n &7- &3/sellall setdefault"));
+        } else {
+            sender.dispatchCommand("sellall sell");
+        }
+    }
+
+    @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
+    private void SellAllSellCommand(CommandSender sender){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        Player p = getSpigotPlayer(sender);
+
+        if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
+            if (!p.hasPermission("Options.Sell_Permission")){
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Sell_Permission") + "]"));
+            }
+        } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
+
+            // Get the Items config section
+            Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
+            double moneyToGive = 0;
+
+            for (String key : items) {
+                double amount = 0;
+                while (p.getInventory().contains(Material.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")))){
+                    p.getInventory().removeItem(new ItemStack(Material.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")),1));
+                    amount++;
+                }
+                moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
+            }
+
+            // Get Spigot Player
+            SpigotPlayer sPlayer = new SpigotPlayer(p);
+            ModuleManager modMan = Prison.get().getModuleManager();
+            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+
+            if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
+
+                boolean hasPlayerPrestige = false;
+                double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+
+                if (rankPlugin != null) {
+                    if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
+                        String playerRankName;
+                        try {
+                            playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                        } catch (NullPointerException ex){
+                            playerRankName = null;
+                        }
+                        if (playerRankName != null) {
+                            hasPlayerPrestige = true;
+                            multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
+                            moneyToGive = moneyToGive * multiplier;
+                        }
+                    }
+                }
+                if (!hasPlayerPrestige) {
+                    moneyToGive = moneyToGive * multiplier;
+                }
+            }
+
+            // Get economy
+            EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+            // Add balance
+            economy.addBalance(sPlayer, moneyToGive);
+
+            if (moneyToGive<0.001){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
+            } else {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + moneyToGive));
+            }
+        }
+        // Add here info message, there aren't blocks in the config so the player can't sell
+    }
+
+    @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)
+    private void sellAllGuiCommand(CommandSender sender){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        Player p = getSpigotPlayer(sender);
+
+        if (!sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+            if (p.isOp() || p.hasPermission("prison.admin")) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
+                return;
+            }
+        }
+
+        if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
+            if (!p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))){
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.GUI_Permission") + "]"));
+                return;
+            } else if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
+                if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
+                    if (!p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
+                        p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
+                        return;
+                    }
+                }
+                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                gui.open();
+                return;
+            }
+        }
+
+        SellAllAdminGUI gui = new SellAllAdminGUI(p);
+        gui.open();
+    }
+
+    @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", onlyPlayers = false)
+    private void sellAllAddCommand(CommandSender sender,
+                                   @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
+                                   @Arg(name = "Value", description = "The value of the item.") Double value){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
+            if (!sender.hasPermission("Options.Add_Permission")) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
+                return;
+            }
+        }
+
+        if (itemID == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
+            return;
+        }
+
+        if (value == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
+            return;
+        }
+
+        if (Material.getMaterial(itemID) == null) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+            return;
+        }
+
+        conf.set("Items." + itemID + ".ITEM_ID", itemID);
+        conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        try {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        sender.sendMessage(SpigotPrison.format("&3[PRISON]&a ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
+    }
+
+    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", onlyPlayers = false)
+    private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")) {
+            if (!sender.hasPermission("Options.Delete_Permission")) {
+                return;
+            }
+        }
+
+        if (itemID == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingID")));
+        }
+
+        if (sellAllConfig.getConfigurationSection("Items." + itemID) == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllTagWarn") + itemID + messages.getString("Message.SellAllNotFoundStringConfig")));
+            return;
+        }
+
+        conf.set("Items." + itemID + ".ITEM_ID", null);
+        conf.set("Items." + itemID + ".ITEM_VALUE", null);
+        conf.set("Items." + itemID, null);
+        try {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrisonTag") + itemID + messages.getString("Message.SellAllDeletedSucces")));
+    }
+
+    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)
+    private void sellAllEditCommand(CommandSender sender,
+                                    @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
+                                    @Arg(name = "Value", description = "The value of the item.") Double value){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
+            if (!sender.hasPermission("Options.Add_Permission")) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
+                return;
+            }
+        }
+
+        if (itemID == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
+            return;
+        }
+
+        if (value == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
+            return;
+        }
+
+        if (Material.getMaterial(itemID) == null) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+            return;
+        }
+
+        conf.set("Items." + itemID + ".ITEM_ID", itemID);
+        conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        try {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        sender.sendMessage(SpigotPrison.format("&3[PRISON]&a ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllCommandEditSuccess")));
+    }
+
+    @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", onlyPlayers = false)
+    private void sellAllMultiplierCommand(CommandSender sender){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled")).equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Command_Permission"))))){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
+                return;
+            }
+        }
+
+        if (!(Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return;
+        }
+
+        sender.sendMessage("&7[&3Prison&7] &3Multipliers commands: " +
+                "\n &7- &3/sellall multiplier add" +
+                "\n &7- &3/sellall multiplier delete");
+    }
+
+    @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier.", onlyPlayers = false)
+    private void sellAllAddMultiplierCommand(CommandSender sender,
+                                             @Arg(name = "Prestige", description = "Prestige to hook to the multiplier.") String prestige,
+                                             @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
+
+        if (!isEnabled()){
+            return;
+        }
+
+        if (Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled")).equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Command_Permission"))))){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
+                return;
+            }
+        }
+
+        if (!(Objects.requireNonNull(sellAllConfig.getString("Options.Multiplier_Enabled")).equalsIgnoreCase("true"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return;
+        }
+
+        if (prestige == null){
+
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+
+            return;
+        }
+
+        if (multiplier == null){
+
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+
+            return;
+        }
+
+        ModuleManager modMan = Prison.get().getModuleManager();
+        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
+        PrisonRanks rankPlugin = (PrisonRanks) module;
+
+        if (rankPlugin == null) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
+            return;
+        }
+
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
+
+        if (!isPrestigeLadder) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
+            return;
+        }
+
+        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
+
+        if (!isARank) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
+            return;
+        }
+
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).id);
+
+        if (!isInPrestigeLadder) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
+            return;
+        }
+
+        conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
+        conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
+        try {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            return;
+        }
+
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierEditSaveSuccess")));
+    }
+
+    @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", onlyPlayers = false)
+    private void sellAllDeleteMultipluerCommand(CommandSender sender,
+                                             @Arg(name = "Prestige", description = "Prestige hooked to the multiplier.") String prestige){
+
+        if (prestige == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierFormat")));
+            return;
+        }
+
+        if (sellAllConfig.getConfigurationSection("Multiplier." + prestige) == null){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllCantFindMultiplier") + prestige + messages.getString("Message.SellAllCantFindMultiplier2")));
+            return;
+        }
+
+        conf.set("Multiplier." + prestige, null);
+        try {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            return;
+        }
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierDeleteSuccess")));
+    }
+
+    @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", onlyPlayers = false)
+    private void sellAllSetDefaultCommand(CommandSender sender){
+
+        if (sender.hasPermission("prison.admin")){
+            valueSaver("COBBLESTONE", 50, sender);
+            valueSaver("STONE", 50, sender);
+            valueSaver("COAL",50, sender);
+            valueSaver("COAL_BLOCK", 450, sender);
+            valueSaver("IRON_INGOT",75, sender);
+            valueSaver("IRON_BLOCK",600, sender);
+            valueSaver("REDSTONE", 101, sender);
+            valueSaver("REDSTONE_BLOCK", 909, sender);
+            valueSaver("GOLD_INGOT", 122, sender);
+            valueSaver("GOLD_BLOCK", 1100, sender);
+            valueSaver("DIAMOND", 200, sender);
+            valueSaver("DIAMOND_BLOCK", 1800, sender);
+            valueSaver("EMERALD", 300, sender);
+            valueSaver("EMERALD_BLOCK", 2700, sender);
+            valueSaver("LAPIS_LAZULI", 70, sender);
+            valueSaver("LAPIS_BLOCK", 630, sender);
+
+            sender.sendMessage(SpigotPrison.format("&7[&3Prison&7] &aDefault Values added with success!"));
+        } else {
+            sender.sendMessage(SpigotPrison.format("&7[&3Prison Error&7] &cSorry but you're missing the permission [prison.admin]!"));
+        }
+    }
+
+    private void valueSaver(String material, int value, CommandSender sender){
+        Material materialM = Material.matchMaterial(material);
+        if (materialM == null){
+            return;
+        } else {
+            material = materialM.name();
+        }
+        sender.dispatchCommand( "sellall add " + material + " " + value);
+    }
+}
