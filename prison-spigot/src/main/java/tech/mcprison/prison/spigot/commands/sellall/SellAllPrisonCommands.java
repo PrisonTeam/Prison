@@ -197,17 +197,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-
         if (sellAllConfig.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")) {
             if (!sender.hasPermission("Options.Delete_Permission")) {
                 return;
             }
         }
-
         if (itemID == null){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingID")));
         }
-
         if (sellAllConfig.getConfigurationSection("Items." + itemID) == null){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllTagWarn") + itemID + messages.getString("Message.SellAllNotFoundStringConfig")));
             return;
@@ -223,7 +220,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             e.printStackTrace();
         }
 
-        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrisonTag") + itemID + messages.getString("Message.SellAllDeletedSucces")));
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrisonTag") + itemID + messages.getString("Message.SellAllDeletedSuccess")));
     }
 
     @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)

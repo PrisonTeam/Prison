@@ -82,39 +82,6 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
         											"&7Prior &0" + mineName + " " + (i - (pageSize * 2) - 1) );
         	inv.setItem(51, priorPageButton);
         }
-        
-        
-//        for (PrisonBlock prisonBlock : blockTypes){
-//
-//        	BlockType block = SpigotUtil.prisonBlockToBlockType( prisonBlock );
-//        	
-//            try {
-//                if (secondCounter >= counter) {
-//                	Material material = ( block == BlockType.IGNORE ?
-//                		Material.BARRIER : SpigotUtil.getXMaterial( block ).parseMaterial() );
-//                	if ( material == null ) {
-//                		material = XMaterial.STONE.parseMaterial();
-//                	}
-//                    ItemStack button = createButton(material, 1, blockLoreSetup, SpigotPrison.format("&a" + block.name().toUpperCase() + " " + mineName));
-//                    inv.addItem(button);
-//                }
-//            } catch (NullPointerException ignored){}
-//
-//            secondCounter++;
-//            counter++;
-//
-//            if (counter >= counter + 44){
-//
-//                List<String> nextPageLore = createLore(
-//                        messages.getString("Lore.ClickToNextPage")
-//                );
-//
-//                ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "Next " + mineName + " " + counter);
-//                inv.setItem(53, nextPageButton);
-//
-//            }
-//
-//        }
 
         // Open the inventory
         openGUI(p, inv);

@@ -78,6 +78,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
                     "&aLeft-Click to edit value",
                     "&3value: &a$" + conf.getString("Items." + key + ".ITEM_VALUE")
             );
+
             ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
         }
