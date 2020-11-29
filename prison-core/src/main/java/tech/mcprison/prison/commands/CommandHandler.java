@@ -30,7 +30,11 @@ import java.util.TreeSet;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.handlers.BlockArgumentHandler;
 import tech.mcprison.prison.commands.handlers.DoubleArgumentHandler;
+import tech.mcprison.prison.commands.handlers.DoubleClassArgumentHandler;
 import tech.mcprison.prison.commands.handlers.IntegerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.IntegerClassArgumentandler;
+import tech.mcprison.prison.commands.handlers.LongArgumentHandler;
+import tech.mcprison.prison.commands.handlers.LongClassArgumentHandler;
 import tech.mcprison.prison.commands.handlers.PlayerArgumentHandler;
 import tech.mcprison.prison.commands.handlers.StringArgumentHandler;
 import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
@@ -76,9 +80,15 @@ public class CommandHandler {
       this.tabCompleaterData = new TabCompleaterData();
         
         
-      registerArgumentHandler(String.class, new StringArgumentHandler());
       registerArgumentHandler(int.class, new IntegerArgumentHandler());
       registerArgumentHandler(double.class, new DoubleArgumentHandler());
+      registerArgumentHandler(long.class, new LongArgumentHandler());
+      
+      registerArgumentHandler(Integer.class, new IntegerClassArgumentandler());
+      registerArgumentHandler(Double.class, new DoubleClassArgumentHandler());
+      registerArgumentHandler(Long.class, new LongClassArgumentHandler());
+
+      registerArgumentHandler(String.class, new StringArgumentHandler());
       registerArgumentHandler(Player.class, new PlayerArgumentHandler());
       registerArgumentHandler(World.class, new WorldArgumentHandler());
       registerArgumentHandler(BlockType.class, new BlockArgumentHandler());

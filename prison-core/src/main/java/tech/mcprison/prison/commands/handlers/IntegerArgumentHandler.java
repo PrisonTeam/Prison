@@ -23,12 +23,14 @@ import tech.mcprison.prison.commands.CommandArgument;
 import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 
-public class IntegerArgumentHandler extends NumberArgumentHandler<Integer> {
+public class IntegerArgumentHandler 
+		extends NumberArgumentHandler<Integer> {
 
     public IntegerArgumentHandler() {
     }
 
-    @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)
+    @Override 
+    public Integer transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         try {
             return Integer.parseInt(value);
