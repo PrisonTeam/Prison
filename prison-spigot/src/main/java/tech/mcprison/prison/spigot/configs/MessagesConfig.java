@@ -209,7 +209,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllPrestigeLadderNotFound", "&7[&3PRISON WARN&7] &cCan't find the prestiges ladder, they might be disabled in the config.yml!");
         dataConfig("Message.SellAllCantFindPrestigeOrRank", "&7[&3PRISON WARN&7] &cCan't find the Prestige/Rank: ");
         dataConfig("Message.SellAllRankNotFoundInPrestigeLadder", "&7[&3PRISON WARN&7] &cThe -prestiges- ladder doesn't contain the Rank: ");
-        dataConfig("Message.SellAllMultiplierNotANumber", "&7[&3PRISON WARN&7] &cSorry but the multiplier isn't a number [/sellall multiplier add ");
+        dataConfig("Message.SellAllMultiplierNotANumber", "&7[&3PRISON WARN&7] &cSorry but the multiplier isn't a number!");
         dataConfig("Message.SellAllMultiplierNotNumber2", " Here-> ");
         dataConfig("Message.SellAllConfigSaveFail", "&7[&3PRISON ERROR&7] &cSorry, something went wrong while saving the config!");
         dataConfig("Message.SellAllMultiplierEditSaveSuccess", "&7[&3PRISON&7] &aMultiplier got added or edited with success!");
@@ -221,7 +221,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllPleaseAddItem", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall add COAL_ORE <price>]");
         dataConfig("Message.SellAllAddPrice", "&7[&3PRISON WARN&7] &cPlease add a price or value for the item [example: /sellall add COAL_ORE 100]");
         dataConfig("Message.SellAllWrongID", "&7[&3PRISON WARN&7] &cSorry but the ITEM_ID's wrong, please check it!");
-        dataConfig("Message.SellAllValueNotNumber", "&7[&3PRISON WARN&7] &cSorry but the value isn't a number [/sellall");
+        dataConfig("Message.SellAllValueNotNumber", "&7[&3PRISON WARN&7] &cSorry but the value isn't a number!");
         dataConfig("Message.SellAllMissingID", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall delete COAL_ORE]");
         dataConfig("Message.SellAllTagWarn", "&7[&3PRISON WARN&7] &c");
         dataConfig("Message.SellAllNotFoundStringConfig", " not found in the config or got already deleted");

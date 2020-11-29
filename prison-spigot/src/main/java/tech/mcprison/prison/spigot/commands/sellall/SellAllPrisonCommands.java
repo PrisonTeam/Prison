@@ -171,7 +171,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", onlyPlayers = false)
     private void sellAllAddCommand(CommandSender sender,
                                    @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
-                                   @Arg(name = "Value", description = "The value of the item.") Double value){
+                                   @Arg(name = "Value", description = "The value of the item.") String value){
 
         if (!isEnabled()){
             return;
@@ -199,8 +199,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        double realValue;
+
+        try {
+            realValue = Double.parseDouble(value);
+        } catch (NumberFormatException e){
+            sender.sendMessage(SpigotPrison.format("Message.SellAllMultiplierNotANumber"));
+            return;
+        }
+
         conf.set("Items." + itemID + ".ITEM_ID", itemID);
-        conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        conf.set("Items." + itemID + ".ITEM_VALUE", realValue);
         try {
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -249,7 +258,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)
     private void sellAllEditCommand(CommandSender sender,
                                     @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
-                                    @Arg(name = "Value", description = "The value of the item.") Double value){
+                                    @Arg(name = "Value", description = "The value of the item.") String value){
 
         if (!isEnabled()){
             return;
@@ -277,8 +286,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        double realValue;
+
+        try {
+            realValue = Double.parseDouble(value);
+        } catch (NumberFormatException e){
+            sender.sendMessage(SpigotPrison.format("Message.SellAllValueNotNumber"));
+            return;
+        }
+
         conf.set("Items." + itemID + ".ITEM_ID", itemID);
-        conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        conf.set("Items." + itemID + ".ITEM_VALUE", realValue);
         try {
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -316,7 +334,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier.", onlyPlayers = false)
     private void sellAllAddMultiplierCommand(CommandSender sender,
                                              @Arg(name = "Prestige", description = "Prestige to hook to the multiplier.") String prestige,
-                                             @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
+                                             @Arg(name = "multiplier", description = "Multiplier value.") String multiplier){
 
         if (!isEnabled()){
             return;
@@ -345,6 +363,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
 
+            return;
+        }
+
+        double realValue;
+
+        try {
+            realValue = Double.parseDouble(multiplier);
+        } catch (NumberFormatException e){
+            sender.sendMessage(SpigotPrison.format("Message.SellAllValueNotNumber"));
             return;
         }
 
@@ -379,7 +406,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
-        conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
+        conf.set("Multiplier." + prestige + ".MULTIPLIER", realValue);
         try {
             conf.save(sellAllFile);
         } catch (IOException e) {
