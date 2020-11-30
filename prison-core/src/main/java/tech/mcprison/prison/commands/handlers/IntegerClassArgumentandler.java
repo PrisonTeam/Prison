@@ -18,7 +18,7 @@ public class IntegerClassArgumentandler
     
     	if ( value != null ) {
     		
-    		//value = value.replace("$|%", "");
+    		//value = value.replaceAll("$|%", "");
     		if ( value.trim().length() > 0 ) {
     			try {
     				results = Integer.parseInt(value);

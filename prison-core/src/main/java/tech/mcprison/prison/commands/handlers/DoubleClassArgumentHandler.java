@@ -17,7 +17,7 @@ public class DoubleClassArgumentHandler extends NumberArgumentHandler<Double> {
     
     	if ( value != null ) {
     		
-    		value = value.replace("$|%", "");
+    		value = value.replaceAll( "$|%", "" );
     		if ( value.trim().length() > 0 ) {
     			try {
     				results = Double.parseDouble(value);
