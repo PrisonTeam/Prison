@@ -10,6 +10,7 @@ import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
@@ -597,6 +598,35 @@ public class IntegrationManager {
         }
         return results;
     }
+    
+    
+
+	public CustomBlockIntegration getCustomBlockIntegration( PrisonBlockType blockType )
+	{
+    	CustomBlockIntegration results = null;
+    	
+        if(integrations.containsKey(IntegrationType.CUSTOMBLOCK)) {
+        	
+        	List<Integration> cbIntegrations = getAllForType(IntegrationType.CUSTOMBLOCK);
+
+        	for ( Integration cbIntegration : cbIntegrations ) {
+				if ( cbIntegration.hasIntegrated() && cbIntegration instanceof CustomBlockIntegration ) {
+					
+					CustomBlockIntegration customBlock = (CustomBlockIntegration) cbIntegration;
+					
+					if ( customBlock.getBlockType() == blockType ) {
+						results = customBlock;
+						break;
+					}
+				}
+			}
+        
+        }
+        return results;
+		
+	}
+
+	
     
     public String getIntegrationDetails( IntegrationType integrationType ) {
     	StringBuilder sb = new StringBuilder();

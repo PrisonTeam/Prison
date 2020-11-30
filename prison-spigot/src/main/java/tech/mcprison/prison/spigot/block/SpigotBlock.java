@@ -21,11 +21,14 @@ package tech.mcprison.prison.spigot.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
@@ -65,8 +68,39 @@ public class SpigotBlock implements Block {
     }
     
     public void setPrisonBlock( PrisonBlock prisonBlock ) {
-    	SpigotPrison.getInstance().getCompatibility().
-				updateSpigotBlock( prisonBlock, bBlock );
+    	
+    	switch ( prisonBlock.getBlockType() )
+		{
+			case minecraft:
+				{
+					SpigotPrison.getInstance().getCompatibility().
+									updateSpigotBlock( prisonBlock, bBlock );
+				}
+				
+				
+				break;
+
+			case CustomItems:
+				{
+					CustomBlockIntegration customItemsIntegration = 
+									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );
+					
+					Block results = customItemsIntegration.setCustomBlockId( this, prisonBlock.getBlockName(), false );
+					if ( results != null ) {
+						this.bBlock = ((SpigotBlock) results).getWrapper();
+					}
+					else {
+						Output.get().logInfo( "SpigotBLock.setPrisonBlock: Failed to set a custom block %s ", prisonBlock.getBlockNameFormal() );
+					}
+				}
+				
+				break;
+				
+			default:
+				break;
+		}
+    	
+    	
     }
     
     public void setBlockFace( BlockFace blockFace ) {

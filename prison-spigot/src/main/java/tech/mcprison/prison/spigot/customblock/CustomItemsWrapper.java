@@ -23,8 +23,8 @@ public class CustomItemsWrapper {
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate ) {
 
 		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();
-		CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, customId, doBlockUpdate );
-		return null;
+		org.bukkit.block.Block resultBlock = CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, customId, doBlockUpdate );
+		return new SpigotBlock( resultBlock );
 	}
 
 	public List<String> getCustomBlockList() {
