@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.commands.sellall;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,7 +23,6 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Set;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
