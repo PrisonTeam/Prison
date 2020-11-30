@@ -200,7 +200,7 @@ public class PrisonBlock
 		boolean results = false;
 
 		if ( block != null && block instanceof PrisonBlock) {
-			results = getBlockName().equalsIgnoreCase( ((PrisonBlock) block).getBlockName() );
+			results = getBlockNameFormal().equalsIgnoreCase( ((PrisonBlock) block).getBlockNameFormal() );
 		}
 		
 		return results;

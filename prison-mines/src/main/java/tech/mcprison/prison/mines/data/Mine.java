@@ -359,7 +359,7 @@ public class Mine
 						if ( prisonBlock.isLegacyBlock() ) {
 							dirty = true;
 						}
-						getPrisonBlocks().add( prisonBlock );
+						addPrisonBlock( prisonBlock );
 						
 						validateBlockNames.add( blockTypeName );
 					}
@@ -383,7 +383,7 @@ public class Mine
             	if ( prisonBlock != null ) {
             		
             		prisonBlock.setChance( block.getChance() );
-            		getPrisonBlocks().add( prisonBlock );
+            		addPrisonBlock( prisonBlock );
 
             		dirty = true;
             	}

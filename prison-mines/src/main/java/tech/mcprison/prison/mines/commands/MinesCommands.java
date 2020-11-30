@@ -529,7 +529,7 @@ public class MinesCommands
 			
 			if ( chance <= 0 ) {
 				// remove the block since it has zero chance
-				m.getPrisonBlocks().remove( existingPrisonBlock );
+				m.removePrisonBlock( existingPrisonBlock );
 			}
 			else {
 				// update chance for the prisonBlock. This block is
@@ -544,7 +544,7 @@ public class MinesCommands
 		}
 		else {
 			prisonBlock.setChance( chance );
-			m.getPrisonBlocks().add( prisonBlock );
+			m.addPrisonBlock( prisonBlock );
 
 			pMines.getMineManager().saveMine( m );
 
@@ -852,16 +852,8 @@ public class MinesCommands
      * @param m
      * @param prisonBlock
      */
-	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, PrisonBlock prisonBlock )
-	{
-		PrisonBlock rBlock = null;
-		for ( PrisonBlock block : m.getPrisonBlocks() ) {
-			if (block.getBlockName().equalsIgnoreCase( prisonBlock.getBlockName() )) {
-				rBlock = block;
-				break;
-    		}
-		}
-		if ( m.getPrisonBlocks().remove( rBlock )) {
+	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, PrisonBlock prisonBlock ) {
+		if ( m.removePrisonBlock( prisonBlock ) ) {
 			pMines.getMineManager().saveMine( m );
 			
 			pMines.getMinesMessages().getLocalizable("block_deleted").

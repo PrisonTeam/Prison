@@ -2,13 +2,16 @@ package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
@@ -54,8 +57,29 @@ public abstract class MineData
 	private long targetResetTime;
 	private int resetCount = 0;
 	
+	/**
+	 * This list of blocks represents the old Prison block model. It is being
+	 * phased out since it has limited flexibility and complex issues with 
+	 * supporting magic values with the older bukkit versions.
+	 */
     private List<Block> blocks;
+    
+    /**
+     * This list of PrisonBlocks represents the new Prison block model. Its 
+     * more flexible and able to support other plugins's custom blocks and
+     * the core bukkit blocks are based upon Cryptomorin's XSeries' XMaterial
+     * for greater flexibility and cross version support.
+     */
     private List<PrisonBlock> prisonBlocks;
+    
+    /**
+     * To better identify if custom blocks need to be checked upon block break 
+     * events since the custom plugins will have to identify their own blocks, 
+     * this set contains the collection of non-minecraft PrisonBlockTypes that
+     * are used in this mine.  That way it's a simple and fast check to see if,
+     * and more importantly, which custom block plugin needs to be checked.
+     */
+    private transient Set<PrisonBlockType> prisonBlockTypes;
     
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
@@ -114,6 +138,8 @@ public abstract class MineData
     	
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
+    	this.prisonBlockTypes = new HashSet<>();
+    	
     	
     	this.enabled = false;
     	this.virtual = false;
@@ -353,7 +379,41 @@ public abstract class MineData
 		return prisonBlocks;
 	}
 
+    
+	public Set<PrisonBlockType> getPrisonBlockTypes() {
+		return prisonBlockTypes;
+	}
+	
+	public void addPrisonBlock( PrisonBlock prisonBlock ) {
+		if ( prisonBlock != null && !isInMine( prisonBlock )) {
+			
+			getPrisonBlocks().add( prisonBlock );
+			addPrisonBlockType( prisonBlock );
+		}
+	}
+	
+	private void addPrisonBlockType( PrisonBlock prisonBlock ) {
+		if ( !getPrisonBlockTypes().contains( prisonBlock.getBlockType() )) {
+			getPrisonBlockTypes().add( prisonBlock.getBlockType() );
+		}
+	}
 
+	public boolean removePrisonBlock( PrisonBlock prisonBlock ) {
+		boolean results = false;
+		
+		if ( prisonBlock != null && isInMine( prisonBlock ) ) {
+			
+			results = getPrisonBlocks().remove( prisonBlock );
+
+			// regenerate the PrisonBlockTypes in case the removed block was the last type in the mine
+			getPrisonBlockTypes().clear();
+			for ( PrisonBlock pBlock : getPrisonBlocks() ) {
+				addPrisonBlockType( pBlock );
+			}
+		}
+		return results;
+	}
+	
 	/**
 	 * This is only used in an obsolete conversion utility.
 	 * 
@@ -387,6 +447,7 @@ public abstract class MineData
     }
     
     public boolean isInMine(BlockType blockType) {
+    	//TODO Not sure if virtual should return false... they do have blocks.
     	if ( isVirtual() ) {
     		return false;
     	}
@@ -397,13 +458,14 @@ public abstract class MineData
         }
         return false;
     }
-    
+
     public boolean isInMine(PrisonBlock blockType) {
+    	//TODO Not sure if virtual should return false... they do have blocks.
     	if ( isVirtual() ) {
     		return false;
     	}
     	for (PrisonBlock block : getPrisonBlocks()) {
-    		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
+    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
     			return true;
     		}
     	}
@@ -414,7 +476,7 @@ public abstract class MineData
     	PrisonBlock results = null;
     	
     	for (PrisonBlock block : getPrisonBlocks()) {
-    		if (blockType.getBlockName().equalsIgnoreCase( block.getBlockName())) {
+    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
     			results = block;
     			break;
     		}
