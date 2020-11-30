@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +14,7 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 
 /**
@@ -96,8 +98,8 @@ public class AutoManager
     
     
     @Override
-	public void doAction( Mine mine, BlockBreakEvent e ) {
-    	applyAutoEvents( e, mine );
+	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
+    	applyAutoEvents( block, e, mine );
 	}
     
     
@@ -114,8 +116,9 @@ public class AutoManager
 		}
 	}
 
-	private void applyAutoEvents(BlockBreakEvent e, Mine mine) {
-		
+	//TODO Use the SpigotBlock within these functions so it can use the new block model and the custom blocks if they exist
+	private void applyAutoEvents( SpigotBlock block, BlockBreakEvent e, Mine mine) {
+
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
 			
 			Player player = e.getPlayer();
@@ -142,7 +145,7 @@ public class AutoManager
 			}
 			
 			// AutoSmelt
-			if ( permSmelt ||  isBoolean( AutoFeatures.autoSmeltEnabled )){
+			if ( permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled )){
 				
 				autoFeatureSmelt( e, player );
 			}

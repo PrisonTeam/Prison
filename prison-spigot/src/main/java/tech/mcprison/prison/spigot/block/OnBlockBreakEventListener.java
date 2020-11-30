@@ -149,9 +149,27 @@ public class OnBlockBreakEventListener
     	genericBlockExplodeEvent( e );
     }
 
+    /**
+     * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
+     * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
+     * function.
+     * </p>
+     * 
+     * <p>For this class only. the doAction() is only counting the block break event, but does
+     * nothing with the actual block such that there is no need to have knowledge as to if 
+     * it is a custom block.  In other doAction() functions that would exist in other classes 
+     * that extend from this one, it may need that information.  The hooks to find the custom
+     * blocks is within the Block's getPrisonBlock() function. 
+     * </p>
+     * 
+     * @param e
+     */
 	private void genericBlockEvent( BlockBreakEvent e ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( getPrisonMineManager() != null ) {
+		// Not sure if this is correct... might need to always count the block breaks for the mine, 
+		// even if the prison manager is not enabled.
+    	//if ( getPrisonMineManager() != null ) 
+    	{
     		
     		// long startNano = System.nanoTime();
     		
@@ -183,7 +201,12 @@ public class OnBlockBreakEventListener
     			
     			// This is where the processing actually happens:
     			if ( mine != null ) {
-    				doAction( mine, e );
+    				
+    				// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
+    				// Needed since processing of the block will lose track of which mine it came from.
+    				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
+    				
+    				doAction( block, mine, e );
     			}
     		}
     		
@@ -282,7 +305,7 @@ public class OnBlockBreakEventListener
 	}
 
 	
-	public void doAction( Mine mine, BlockBreakEvent e ) {
+	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
 		mine.incrementBlockBreakCount();
 		mine.incrementTotalBlocksMined();
 		
