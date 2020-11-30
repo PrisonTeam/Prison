@@ -10,6 +10,23 @@ that you need.
 
 ## tag v3.2.2-alpha.5 - 2020-11-29
 
+* **More updates to better support block break events for custom blocks.**
+Not yet hooked up, but getting there.
+
+
+* **Changed the name of a block from pillar_quartz_block to quartz_pillar so it would be supported in both XMaterial and the old prison's BlockTypes.**
+
+
+* **Fix the way DoubleArgumentHandler and DoubleClassArgumentHandler deals with replacement of the $ and % symbols.**
+Needed to use replaceAll() instead of replace().
+
+
+* **Updates to the /sellall command** 
+Hooked /sellall up to the prison command handler.
+
+
+* **Expanded the command handlers to include more types** to allow a greater variety of parameter types on all prison commands.
+
 
 * **v3.2.2-alpha.5 - 2020-11-29**
 
