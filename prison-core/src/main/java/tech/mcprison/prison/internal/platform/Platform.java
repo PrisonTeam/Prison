@@ -167,6 +167,8 @@ public interface Platform {
     public void log(String message, Object... format);
 
     public void logCore( String message );
+
+    public void logPlain( String message );
     
     /**
      * Logs a debug message to the console if the user has debug messages enabled.

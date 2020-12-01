@@ -511,6 +511,20 @@ class SpigotPlatform
             sender.sendMessage(message);
         }
 	}
+    
+    /**
+     * This does not translate any color codes.
+     */
+    @Override 
+    public void logPlain( String message )
+    {
+    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
+    	if (sender == null) {
+    		Bukkit.getLogger().info(message);
+    	} else {
+    		sender.sendMessage(message);
+    	}
+    }
 
     @Override public void debug(String message, Object... format) {
         if (!plugin.debug) {
