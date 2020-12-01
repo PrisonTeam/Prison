@@ -1,6 +1,7 @@
 package tech.mcprison.prison.commands;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -40,6 +41,9 @@ public abstract class BaseCommands
      * @return Player if found, or null.
      */
 	public Player getPlayer( CommandSender sender, String playerName ) {
+		return getPlayer( sender, playerName, null );
+	}
+	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
 		Player result = null;
 		
 		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
@@ -51,6 +55,9 @@ public abstract class BaseCommands
 			if ( !opt.isPresent() ) {
 				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
 			}
+			if ( !opt.isPresent() ) {
+				opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
+			}
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}
@@ -58,6 +65,7 @@ public abstract class BaseCommands
 		}
 		return result;
 	}
+	
 	
 	public double getPlayerBalance( Player player ) {
 		

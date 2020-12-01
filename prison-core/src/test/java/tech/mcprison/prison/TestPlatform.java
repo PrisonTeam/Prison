@@ -153,6 +153,11 @@ public class TestPlatform implements Platform {
     	System.out.println(ChatColor.stripColor(message));
     }
     
+    @Override
+    public void logPlain( String message ) {
+    	System.out.println(message);
+    }
+    
     @Override public void debug(String message, Object... format) {
         log(message, format);
     }
