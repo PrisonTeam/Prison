@@ -31,6 +31,7 @@ import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.integration.IntegrationManager;
@@ -58,6 +59,7 @@ import tech.mcprison.prison.util.PlaceholdersUtil;
  * @author Faizaan A. Datoo
  */
 public class PlayerManager
+	extends BaseCommands
 	implements ManagerPlaceholders {
 
 
@@ -69,6 +71,8 @@ public class PlayerManager
     private transient Set<String> playerErrors;
 
     public PlayerManager(Collection collection) {
+    	super("PlayerMangager");
+    	
         this.collection = collection;
         this.players = new ArrayList<>();
         
@@ -236,6 +240,8 @@ public class PlayerManager
         	try {
         		savePlayer(newPlayer);
         		
+        		Player player = getPlayer( null, playerName, uid );
+        		
         		// Assign the player to the default rank:
         		String ladder = null; // will set to the "default" ladder
         		String rank = null;   // will set to the "default" rank
@@ -243,7 +249,7 @@ public class PlayerManager
         		// Set the rank to the default ladder and the default rank.  The results are logged
         		// before the results are returned, so can ignore the results:
         		@SuppressWarnings( "unused" )
-        		RankupResults results = new RankUtil().setRank(newPlayer, ladder, rank, 
+        		RankupResults results = new RankUtil().setRank(player, newPlayer, ladder, rank, 
         				playerName, "FirstJoinEvent");
         		
         		

@@ -113,7 +113,7 @@ public class RankUpCommand
 			return;
 		}
 
-        RankPlayer rankPlayer = getPlayer( sender, player.getUUID(), player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         // gets the rank on the default ladder. Used if ladder is not default.
 		Rank pRankSecond = rankPlayer.getRank("default"); 
@@ -155,7 +155,7 @@ public class RankUpCommand
         if ( ladder != null && rankPlayer != null ) {
         	
         	// Performs the actual rankup here:
-        	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
+        	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
@@ -238,7 +238,7 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -247,7 +247,7 @@ public class RankUpCommand
         
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().promotePlayer(rankPlayer, ladder, 
+        	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, true, null, ladder, currency );
@@ -284,14 +284,14 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().demotePlayer(rankPlayer, ladder, 
+        	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, false, null, ladder, currency );
@@ -323,14 +323,14 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().setRank(rankPlayer, ladder, rank, 
+        	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
         												player.getName(), sender.getName());
         	
         	processResults( sender, player, results, true, rank, ladder, currency );
@@ -355,9 +355,10 @@ public class RankUpCommand
 	}
 
 
-	public RankPlayer getPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
+	public RankPlayer getRankPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
+		
 		Optional<RankPlayer> playerOptional =
-            PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
+							PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {

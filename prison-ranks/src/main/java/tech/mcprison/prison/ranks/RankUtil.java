@@ -160,26 +160,26 @@ public class RankUtil {
 
     
     
-    public RankupResults rankupPlayer(RankPlayer player, String ladderName, String playerName) {
-    	return rankupPlayer(RankupCommands.rankup, player, ladderName, null, 
+    public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName) {
+    	return rankupPlayer(RankupCommands.rankup, player, rankPlayer, ladderName, null, 
     					playerName, null, PromoteForceCharge.charge_player );
     }
     
-    public RankupResults promotePlayer(RankPlayer player, String ladderName, 
+    public RankupResults promotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
     										String playerName, String executorName, PromoteForceCharge pForceCharge) {
-    	return rankupPlayer(RankupCommands.promote, player, ladderName, null, 
+    	return rankupPlayer(RankupCommands.promote, player, rankPlayer, ladderName, null, 
     					playerName, executorName, pForceCharge);
     }
     
-    public RankupResults demotePlayer(RankPlayer player, String ladderName, 
+    public RankupResults demotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
     										String playerName, String executorName, PromoteForceCharge pForceCharge) {
-    	return rankupPlayer(RankupCommands.demote, player, ladderName, null, 
+    	return rankupPlayer(RankupCommands.demote, player, rankPlayer, ladderName, null, 
     					playerName, executorName, pForceCharge);
     }
     
-    public RankupResults setRank(RankPlayer player, String ladderName, String rankName, 
+    public RankupResults setRank(Player player, RankPlayer rankPlayer, String ladderName, String rankName, 
     										String playerName, String executorName) {
-    	return rankupPlayer(RankupCommands.setrank, player, ladderName, rankName, 
+    	return rankupPlayer(RankupCommands.setrank, player, rankPlayer, ladderName, rankName, 
     					playerName, executorName, PromoteForceCharge.no_charge );
     }
     
@@ -198,7 +198,7 @@ public class RankUtil {
      * @param executorName
      * @return
      */
-    private RankupResults rankupPlayer(RankupCommands command, RankPlayer player, String ladderName, 
+    private RankupResults rankupPlayer(RankupCommands command, Player player, RankPlayer rankPlayer, String ladderName, 
     				String rankName, String playerName, String executorName, 
     				PromoteForceCharge pForceCharge ) {
     	
@@ -245,7 +245,7 @@ public class RankUtil {
     	
 
     	try {
-    		rankupPlayerInternal(results, command, player, ladderName, 
+    		rankupPlayerInternal(results, command, player, rankPlayer, ladderName, 
     				rankName, playerName, executorName, pForceCharge );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
@@ -269,12 +269,12 @@ public class RankUtil {
      * @param ladderName The name of the ladder to rank up this player on.
      */
     private void rankupPlayerInternal(RankupResults results, 
-    		RankupCommands command, RankPlayer player, String ladderName, 
+    		RankupCommands command, Player prisonPlayer, RankPlayer rankPlayer, String ladderName, 
     		String rankName, String playerName, String executorName, 
     		PromoteForceCharge pForceCharge) {
     	
     	
-        Player prisonPlayer = player;
+//        Player prisonPlayer = rankPlayer;
 //        Player prisonPlayer = PrisonAPI.getPlayer(player.uid).orElse(null);
         if( prisonPlayer == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER, RankupTransactions.failed_player );
@@ -295,7 +295,7 @@ public class RankUtil {
 
         
 
-        Rank originalRank = player.getRank(ladder.name);
+        Rank originalRank = rankPlayer.getRank(ladder.name);
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
         
@@ -497,10 +497,10 @@ public class RankUtil {
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
-        player.addRank(ladder, targetRank);
+        rankPlayer.addRank(ladder, targetRank);
 
         try {
-            PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
+            PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
         } catch (IOException e) {
             Output.get().logError("An error occurred while saving player files.", e);
             
@@ -517,7 +517,12 @@ public class RankUtil {
         int count = 0;
         for (String cmd : targetRank.rankUpCommands) {
             String formatted = cmd.replace("{player}", prisonPlayer.getName())
-                .replace("{player_uid}", player.uid.toString());
+                .replace("{player_uid}", rankPlayer.uid.toString());
+            
+//            Prison.get().getPlatform().logPlain(
+//            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
+//            					formatted ));
+            
             PrisonAPI.dispatchCommand(formatted);
             count++;
         }
@@ -528,7 +533,7 @@ public class RankUtil {
         results.addTransaction( RankupTransactions.fireRankupEvent );
         
         // Nothing can cancel a RankUpEvent:
-        RankUpEvent rankupEvent = new RankUpEvent(player, originalRank, targetRank, nextRankCost);
+        RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, originalRank, targetRank, nextRankCost);
         Prison.get().getEventBus().post(rankupEvent);
         
         
