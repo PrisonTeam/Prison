@@ -8,7 +8,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.5 - 2020-11-29
+## tag v3.2.2-alpha.6 - 2020-12-01
+
+
+* **v3.2.2-alpha.6 - 2020-12-01**
+
+
+* **Added UUID to the player look up options which hits the bukkit offline players.**
+
+
+* **Added a logPlain function to the platform that bypasses color code translations** and removal.  Used for debugging situations.
+
+
+* **Minor changes to address some issues with the new block model.**
+For MineReset.resetSynchonouslyInternal() the way the Block is created to a variable now, eliminates a lot overhead since it was being called multiple times, of which it has to go through the construction of that object each time.  So it should be better performance this way.
+
 
 * **More updates to better support block break events for custom blocks.**
 Not yet hooked up, but getting there.
