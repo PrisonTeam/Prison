@@ -119,7 +119,12 @@ public class PrisonBlockTypes {
 	}
 
 	public PrisonBlock getBlockTypesByName( String blockName ) {
-		PrisonBlock block = blockTypesByName.get( blockName.toLowerCase() );
+		blockName = blockName.toLowerCase();
+		if ( blockName.startsWith( PrisonBlockType.minecraft.name() + ":" )) {
+			blockName = blockName.replaceAll( PrisonBlockType.minecraft.name() + ":", "" );
+		}
+		
+		PrisonBlock block = blockTypesByName.get( blockName );
 		return block == null ? null : block.clone();
 	}
 	public TreeMap<String, PrisonBlock> getBlockTypesByName() {

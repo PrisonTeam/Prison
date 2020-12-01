@@ -458,11 +458,13 @@ public abstract class MineScheduler
 		
 		// Reset if the mine runs out of blocks:
 		
-		if ( !isVirtual() &&
-				getRemainingBlockCount() == 0 && !isZeroBlockResetDisabled() || 
+		
+		if ( !isVirtual() && (
+				getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
 				getResetThresholdPercent() > 0 && 
 				getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-												getResetThresholdPercent() / 100.0d)) {
+												getResetThresholdPercent() / 100.0d)
+				)) {
 			
 			// submit a manual reset since the mine is empty:
 			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );

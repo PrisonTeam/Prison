@@ -240,24 +240,26 @@ public abstract class MineReset
 //    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
 				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
 					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
-						Location targetBlock = new Location(world, x, y, z);
+						Location targetLocation = new Location(world, x, y, z);
+						
+						tech.mcprison.prison.internal.block.Block targetBlock = targetLocation.getBlockAt();
 						
 						if ( useNewBlockModel ) {
 							
-							PrisonBlock prisonBlock = targetBlock.getBlockAt().isEmpty() ? null :
-														targetBlock.getBlockAt().getPrisonBlock();
+							PrisonBlock prisonBlock = targetBlock.isEmpty() ? null :
+																	targetBlock.getPrisonBlock();
 							
 							if (!isFillMode || 
 									isFillMode && prisonBlock == null ||
-									isFillMode && targetBlock.equals(altTp) && 
+									isFillMode && targetLocation.equals(altTp) && 
 											prisonBlock.getBlockName().equalsIgnoreCase( "GLASS" ) || 
-									isFillMode && targetBlock.equals(altTp) && 
+									isFillMode && targetLocation.equals(altTp) && 
 											prisonBlock.getBlockName().equalsIgnoreCase( "AIR" ) ) {
 								
 								PrisonBlock targetPrisonBlock = randomlySelectPrisonBlock( random );
 								if ( !targetPrisonBlock.equals( PrisonBlock.IGNORE ) ) {
 									
-									targetBlock.getBlockAt().setPrisonBlock( randomlySelectPrisonBlock( random ));
+									targetBlock.setPrisonBlock( randomlySelectPrisonBlock( random ));
 								}
 								i++;
 								
@@ -272,16 +274,16 @@ public abstract class MineReset
 						else {
 							
 							if (!isFillMode || 
-									isFillMode && targetBlock.getBlockAt().isEmpty() ||
-									isFillMode && targetBlock.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
+									isFillMode && targetBlock.isEmpty() ||
+									isFillMode && targetLocation.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
 								
 								
-								targetBlock.getBlockAt().setType(randomlySelectBlock( random ));
+								targetBlock.setType(randomlySelectBlock( random ));
 								i++;
 //							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
 							}
 							
-							if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+							if ( targetBlock.getType() == BlockType.AIR ) {
 								incrementBlockBreakCount();
 							}
 						}
