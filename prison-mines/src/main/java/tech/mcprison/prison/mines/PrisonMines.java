@@ -36,7 +36,6 @@ import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
-import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
@@ -60,7 +59,7 @@ public class PrisonMines extends Module {
     private JsonFileIO jsonFileIO;
 
     private MineManager mineManager;
-    private PlayerManager player;
+//    private PlayerManager player;
     
     private MinesCommands minesCommands;
 
@@ -108,7 +107,8 @@ public class PrisonMines extends Module {
         this.mineManager = new MineManager();
         getMineManager().loadFromDbCollection(this);
         
-        player = new PlayerManager();
+        // Player manager for mines is not used.
+//        this.player = new PlayerManager();
         
 //        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
@@ -255,9 +255,9 @@ public class PrisonMines extends Module {
 //        return worlds;
 //    }
 
-    public PlayerManager getPlayerManager() {
-        return player;
-    }
+//    public PlayerManager getPlayerManager() {
+//        return player;
+//    }
 
 	public MinesCommands getMinesCommands() {
 		return minesCommands;
