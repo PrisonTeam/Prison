@@ -513,7 +513,7 @@ public class PlayerManager
     					double cost = rank.cost;
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
-    					double remaining = balance - cost;
+    					double remaining = cost - balance;
     					
 //    					if ( remaining < 0 ) {
 //    						remaining = 0;
