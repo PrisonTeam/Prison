@@ -8,7 +8,22 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-## tag v3.2.2-alpha.6 - 2020-12-01
+## tag v3.2.2-alpha.6 - 2020-12-04
+
+
+* **Setup modules to have a deferredStartup() function.**
+This allows code that is dependent upon other integrations to be ran after the integrations are fully setup.
+Mines have to load after the integrations are loaded due to the new block model and specifically the new support for custom blocks, which means all custom block integrations must be loaded before anything tries to use the blocks, such as loading of mines.
+Placeholders have to be reloaded after the deferredStartup() function is finished.
+
+
+
+* **Disable unused code dealing with MinesPlayer and the auto pickup and smelt and block within the Mines module.**
+
+
+
+* **Setup the file I/O to be specifically UTF-8 enabled.**
+The old file I/O would default to the platform defaults, which may not have been UTF-8.  This code has been tested and works with UTF-8 encoded characters, although Prison is unable to display them.  It is unclear if this is a limitation of Prison or Spigot.  This has been tested with Spigot v1.8.8, v1.12.2, and v1.13.3.  The test consisted of directly adding a UTF-8 character to a rank save file with a utf-8 compliant editor (not WordPad), starting the server, making a change to the rank to force a save with the new data, then inspecting the contents of the new rank file to confirm that the utf-8 character is still encoded as utf-8.  All tests were successful.  Future work will be done to see if there are any other ways to enable it, but for now, at least the file I/O has been fixed and proven to be good and working.
 
 
 * **v3.2.2-alpha.6 - 2020-12-01**
