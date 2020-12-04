@@ -99,14 +99,22 @@ public abstract class Module implements PluginEntity {
     /**
      * Called when the module is to be enabled.
      */
-    public void enable() {
-    }
+    abstract public void enable();
+    
+    
+    /**
+     * This function is called after the modules are enabled and after
+     * the integrations are enabled.  Content in this deferred startup will
+     * have access to the all of the integrations.
+     */
+    abstract public void deferredStartup();
 
+    
     /**
      * Called when a module is to be disabled.
      */
-    public void disable() {
-    }
+    abstract public void disable();
+    
 
     /**
      * Tell the module loader that this module failed to start.

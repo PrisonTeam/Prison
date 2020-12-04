@@ -163,6 +163,7 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
         
+        // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
@@ -178,12 +179,17 @@ public class SpigotPrison extends JavaPlugin {
         applyDeferredIntegrationInitializations();
         
         
-
+        // After all the integrations have been loaded and the deferred tasks ran, 
+        // then run the deferred Module setups:
+        initDeferredModules();
         
         
         initMetrics();
         
-        Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
+        
+        // These stats are displayed within the initDeferredModules():
+        //Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
+        
         
         PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 
@@ -460,11 +466,14 @@ public class SpigotPrison extends JavaPlugin {
         	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
         
-        // Try to load the mines and ranks that have the ModuleElement placeholders:
-        // Both the mine and ranks modules must be enabled.
-        if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
-        	linkMinesAndRanks();
-        }
+        
+        // The following linkMinesAndRanks() function must be called only after the 
+        // Module deferred tasks are ran.
+//        // Try to load the mines and ranks that have the ModuleElement placeholders:
+//        // Both the mine and ranks modules must be enabled.
+//        if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
+//        	linkMinesAndRanks();
+//        }
 
         // Load sellAll if enabled
         if (SellAllPrisonCommands.isEnabled()){
@@ -478,10 +487,39 @@ public class SpigotPrison extends JavaPlugin {
 
     }
 
+
+    /**
+     * This will initialize any process that has been setup in the modules that
+     * needs to be ran after all of the integrations have been fully loaded and initialized.
+     *  
+     */
+    private void initDeferredModules() {
+    	
+    	for ( Module module : Prison.get().getModuleManager().getModules() ) {
+    		
+    		module.deferredStartup();
+    	}
+    	
+    	
+    	// Reload placeholders:
+    	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+    	
+    	
+    	// Finally link mines and ranks if both are loaded:
+    	linkMinesAndRanks();
+    }
+    
+    
+    /**
+     * Try to link the mines and ranks that have the ModuleElement placeholders:
+     * Both the mine and ranks modules must be enabled to try to link them all
+     * together.
+     */
     private void linkMinesAndRanks() {
 
     	
-    	if (PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()) {
+    	if (PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
+    			PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()) {
 
     		RankManager rm = PrisonRanks.getInstance().getRankManager();
     		MineManager mm = PrisonMines.getInstance().getMineManager();
