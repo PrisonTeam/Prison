@@ -7,6 +7,22 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag 3.2.2-alpha.7 - 2020-12-05
+
+* **SellAll Material support**
+This should make sellall support all material, from legacy to 1.16 (all XMaterials).
+  
+* **SellAll signs**
+Added the ability to make SellAll signs. 
+The **sign** should have the **first line** as `[SellAll]` to make this works, also when clicked it's
+  Just a shortcut to the **/sellall sell** command, very simple (also to use the sign you must RIGHT CLICK IT).
+    - To create a sign you need to have the permission`prison.sign`.
+This feature needs to be enabled from the `config.yml`
+by editing or adding (if missing you should add this line manually or delete the config, then
+restart the server) this like from:
+`sellall-sign: false` to `sellall-sign: true`.
+It's possible to edit the tag of the sign when generated from the `config.yml` by editing this:
+  - `sellall-sign-visible-tag: "&7[&3SellAll&7]"`
 
 ## tag v3.2.2-alpha.6 - 2020-12-04
 

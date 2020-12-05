@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,11 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import org.bukkit.event.player.PlayerInteractEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -109,6 +114,61 @@ public class ListenersPrisonManager implements Listener {
 
         if (!chatEventPlayer.contains(p.getName())){
             chatEventPlayer.add(p.getName());
+        }
+    }
+
+    @EventHandler
+    public void onSignEditing(SignChangeEvent e){
+
+        // Check if the feature's enabled
+        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+            return;
+        }
+
+        Player p = e.getPlayer();
+        String signTag = config.getString("sellall-sign-visible-tag");
+        if (signTag == null){
+            signTag = "&7[&3SellAll&7]";
+        }
+
+        try {
+            if (e.getLine(0).equalsIgnoreCase("[SellAll]")) {
+                if (p.hasPermission("prison.sign")){
+                    e.setLine(0, SpigotPrison.format(signTag));
+                } else {
+                    e.setLine(0, SpigotPrison.format("&cNo perm"));
+                    e.setLine(1, SpigotPrison.format("prison.sign"));
+                }
+            }
+        } catch (IndexOutOfBoundsException ignored){}
+    }
+
+    @EventHandler
+    public void onPlayerClickSign(PlayerInteractEvent e){
+
+        // Check if the feature's enabled
+        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+            return;
+        }
+
+        // Get parameters
+        Player p = e.getPlayer();
+        Material clickedBlock = e.getClickedBlock().getType();
+        String signTag = config.getString("sellall-sign-visible-tag");
+        if (signTag == null){
+            signTag = "&7[&3SellAll&7]";
+        }
+
+        // On clicking the sign or a block
+        if (clickedBlock == XMaterial.matchXMaterial(Material.SIGN).parseMaterial() || clickedBlock == XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial()){
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+                Sign sign = (Sign) e.getClickedBlock().getState();
+                try {
+                    if (sign.getLine(0).equalsIgnoreCase(signTag)) {
+                        Bukkit.dispatchCommand(p, "sellall sell");
+                    }
+                } catch (IndexOutOfBoundsException ignored){}
+            }
         }
     }
 
