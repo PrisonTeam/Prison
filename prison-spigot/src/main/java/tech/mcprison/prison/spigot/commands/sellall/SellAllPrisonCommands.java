@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.commands.sellall;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,7 +55,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
-
+        
         if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
             if (!p.hasPermission("Options.Sell_Permission")){
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Sell_Permission") + "]"));
@@ -67,8 +68,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             for (String key : items) {
                 double amount = 0;
-                while (p.getInventory().contains(Material.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")))){
-                    p.getInventory().removeItem(new ItemStack(Material.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")),1));
+                while (p.getInventory().contains(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial())){
+                    p.getInventory().removeItem(new ItemStack(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial(),1));
                     amount++;
                 }
                 moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
@@ -173,7 +174,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
-        if (Material.getMaterial(itemID) == null) {
+        if (XMaterial.valueOf(itemID).parseMaterial() == null) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
         }
@@ -242,7 +243,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
-        if (Material.getMaterial(itemID) == null) {
+        if (XMaterial.valueOf(itemID).parseMaterial() == null) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
         }
@@ -285,52 +286,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
-
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
-                return;
-            }
-        }
-        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
-
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return;
-        }
-        if (prestige == null){
-
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return;
-        }
-        if (multiplier == null){
-
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return;
-        }
-
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
-        if (rankPlugin == null) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
-            return;
-        }
-
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
-        if (!isPrestigeLadder) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
-            return;
-        }
-
-        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
-        if (!isARank) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
-            return;
-        }
-
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).id);
-        if (!isInPrestigeLadder) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
-            return;
-        }
+        if (addMultiplierConditions(sender, prestige, multiplier)) return;
 
         try {
             conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
@@ -342,6 +298,57 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierEditSaveSuccess")));
+    }
+
+    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
+
+        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
+
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
+                return true;
+            }
+        }
+        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return true;
+        }
+        if (prestige == null){
+
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+        if (multiplier == null){
+
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        if (rankPlugin == null) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
+            return true;
+        }
+
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
+        if (!isPrestigeLadder) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
+            return true;
+        }
+
+        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
+        if (!isARank) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
+            return true;
+        }
+
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).id);
+        if (!isInPrestigeLadder) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
+            return true;
+        }
+        return false;
     }
 
     @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", onlyPlayers = false)
