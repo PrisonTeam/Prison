@@ -168,8 +168,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
 
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
-        Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
+        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
@@ -190,7 +190,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (Objects.requireNonNull(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
+                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
                         itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }

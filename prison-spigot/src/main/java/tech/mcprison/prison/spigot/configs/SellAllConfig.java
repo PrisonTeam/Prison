@@ -20,8 +20,6 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public SellAllConfig(){
 
-    	// Do not use requireNonNull. Should never throw an exception if they don't have
-    	// it configured.
     	//if ( Prison.get().getPlatform().getConfigBooleanFalse("sellall")) {
         initialize();
     	//}
