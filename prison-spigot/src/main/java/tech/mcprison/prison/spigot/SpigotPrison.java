@@ -239,10 +239,8 @@ public class SpigotPrison extends JavaPlugin {
 
     public FileConfiguration getSellAllConfig() {
         // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
-        if (SellAllPrisonCommands.isEnabled()) {
-            sellAllConfig = new SellAllConfig();
-        }
-        return sellAllConfig == null ? null : sellAllConfig.getFileSellAllConfig();
+        sellAllConfig = new SellAllConfig();
+        return sellAllConfig.getFileSellAllConfig();
     }
 
     public FileConfiguration getMessagesConfig() {

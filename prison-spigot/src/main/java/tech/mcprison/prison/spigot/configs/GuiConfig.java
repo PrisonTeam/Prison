@@ -21,9 +21,8 @@ public class GuiConfig extends SpigotConfigComponents{
 
     // Check if the GuiConfig's enabled
     public GuiConfig() {
-        if (Objects.requireNonNull(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled")).equalsIgnoreCase("true")){
-            initialize();
-        }
+        // Will make ALWAYS the config even if GUIs are disabled
+        initialize();
     }
 
     public void initialize() {
