@@ -132,7 +132,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         try {
-            if (e.getLine(0).equalsIgnoreCase("[SellAll]")) {
+            if (e.getLine(0).equalsIgnoreCase("[SellAll]") || e.getLine(0).equalsIgnoreCase(signTag)) {
                 if (p.hasPermission("prison.sign")){
                     e.setLine(0, SpigotPrison.format(signTag));
                 } else {
