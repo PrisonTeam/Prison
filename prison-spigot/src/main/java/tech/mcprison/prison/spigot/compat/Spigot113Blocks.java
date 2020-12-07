@@ -13,6 +13,7 @@ import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
@@ -240,19 +241,19 @@ public abstract class Spigot113Blocks
 	}
 	
 	
-	public int getDurabilityMax( ItemStack itemInHand ) {
-		return itemInHand.getType().getMaxDurability();
+	public int getDurabilityMax( SpigotItemStack itemInHand ) {
+		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
 	
-	public int getDurability( ItemStack itemInHand ) {
+	public int getDurability( SpigotItemStack itemInHand ) {
 		
-		Damageable damage = (Damageable) itemInHand.getItemMeta();
+		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
 		return damage.getDamage();
 	}
 	
-	public void setDurability( ItemStack itemInHand, int newDamage ) {
+	public void setDurability( SpigotItemStack itemInHand, int newDamage ) {
 		
-		Damageable damage = (Damageable) itemInHand.getItemMeta();
+		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
 		damage.setDamage( newDamage );
 	}
 	

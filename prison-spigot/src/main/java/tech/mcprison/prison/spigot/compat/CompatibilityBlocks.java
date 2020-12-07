@@ -7,6 +7,7 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public interface CompatibilityBlocks {
@@ -31,11 +32,11 @@ public interface CompatibilityBlocks {
 	public BlockTestStats testCountAllBlockTypes();
 	
 
-    public int getDurabilityMax( ItemStack itemInHand );
+    public int getDurabilityMax( SpigotItemStack itemInHand );
 	
-	public int getDurability( ItemStack itemInHand );
+	public int getDurability( SpigotItemStack itemInHand );
 	
-	public void setDurability( ItemStack itemInHand, int newDurability );
+	public void setDurability( SpigotItemStack itemInHand, int newDurability );
 	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	

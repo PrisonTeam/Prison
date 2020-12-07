@@ -10,6 +10,8 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot18Blocks 
@@ -82,7 +84,8 @@ public abstract class Spigot18Blocks
 		XMaterial xMat = getXMaterial( spigotBlock );
 		
 		if ( xMat != null ) {
-			pBlock = new PrisonBlock( xMat.name() );
+			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
+//			pBlock = new PrisonBlock( xMat.name() );
 		}
 		// ignore nulls because errors were logged in getXMaterial() so they only
 		// are logged once
@@ -123,6 +126,13 @@ public abstract class Spigot18Blocks
 				
 				String blockName = spigotBlock.getType().name() + ":" + data;
 				results = XMaterial.matchXMaterial( blockName ).orElse( null );
+				
+//				if ( results == null ) {
+//					
+//					Output.get().logInfo( "####  Spigot18Blocks.getXMaterial(Block) : %s => %s ",
+//							blockName, (results == null ? "null" : results.name() ));
+//				}
+						
 				
 				if ( results == null ) {
 					// Last chance: try to match by id:
@@ -370,18 +380,18 @@ public abstract class Spigot18Blocks
 	
 	
 	
-	public int getDurabilityMax( ItemStack itemInHand ) {
-		return itemInHand.getType().getMaxDurability();
+	public int getDurabilityMax( SpigotItemStack itemInHand ) {
+		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
 	
 	@SuppressWarnings( "deprecation" )
-	public int getDurability( ItemStack itemInHand ) {
-		return itemInHand.getDurability();
+	public int getDurability( SpigotItemStack itemInHand ) {
+		return itemInHand.getBukkitStack().getDurability();
 	}
 	
 	@SuppressWarnings( "deprecation" )
-	public void setDurability( ItemStack itemInHand, int newDurability ) {
-		itemInHand.setDurability( (short) newDurability );
+	public void setDurability( SpigotItemStack itemInHand, int newDurability ) {
+		itemInHand.getBukkitStack().setDurability( (short) newDurability );
 	}
 	
 	

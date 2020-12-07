@@ -25,6 +25,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+
 /**
  * @author Faizaan A. Datoo
  */
@@ -50,6 +53,16 @@ public class Spigot18
     public ItemStack getItemInMainHand(Player player ) {
     	return player.getItemInHand();
     }
+    
+    
+    public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
+    }
+    
+    public SpigotItemStack getPrisonItemInMainHand(Player player) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
+
     
     @Override 
     public void playIronDoorSound(Location loc) {

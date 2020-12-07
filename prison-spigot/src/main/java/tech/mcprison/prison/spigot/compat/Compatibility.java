@@ -23,6 +23,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+
 /**
  * Different Spigot versions have different methods.
  * The compatibility system ensures that each version can be used with the same code.
@@ -38,6 +40,10 @@ public interface Compatibility
     public ItemStack getItemInMainHand(PlayerInteractEvent e);
 
     public ItemStack getItemInMainHand(Player player);
+    
+    public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e);
+    
+    public SpigotItemStack getPrisonItemInMainHand(Player player);
     
     public void breakItemInMainHand(Player player);
     
