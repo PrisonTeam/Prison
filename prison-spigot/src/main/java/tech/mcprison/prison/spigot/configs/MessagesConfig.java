@@ -227,12 +227,13 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllNotFoundStringConfig", " not found in the config or got already deleted");
         dataConfig("Message.SellAllPrisonTag", "&7[&3PRISON&7]&a ");
         dataConfig("Message.SellAllDeletedSuccess", " Deleted with success!");
-        dataConfig("Message.SellAllAddSuccess", "] added with success!");
-        dataConfig("Message.SellAllCommandEditSuccess", "] edited with success!");
+        dataConfig("Message.SellAllAddSuccess", "]&a added with success!");
+        dataConfig("Message.SellAllCommandEditSuccess", "]&a edited with success!");
         dataConfig("Message.SellAllYouArentPlayer", "&7[&3PRISON ERROR&7]&c You aren't a player");
         dataConfig("Message.SellAllNothingToSell", "&7[&3PRISON&7]&c You have nothing to sell!");
         dataConfig("Message.SellAllYouGotMoney", "&7[&3PRISON&7]&a You got $");
-        dataConfig("Message.SellAllGUIDisabled", "&7[&3PRISON ERROR&7] Sorry but the GUI's disabled in the SellAllConfig.yml");
+        dataConfig("Message.SellAllGUIDisabled", "&7[&3PRISON ERROR&7] &cSorry but the GUI's disabled in the SellAllConfig.yml");
+        dataConfig("Message.SellAllAutoSell", "&7[&3PRISON INFO&7] Your inventory's full, AutoSell activated!");
         dataConfig("Setup.Message.MissingPermission", "&7[&3PRISON ERROR&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "&7[&3PRISON ERROR&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3PRISON INFO&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");

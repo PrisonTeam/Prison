@@ -70,6 +70,8 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Player_GUI_Enabled","true");
         dataConfig("Options.Player_GUI_Permission_Enabled","false");
         dataConfig("Options.Player_GUI_Permission","prison.sellall.playergui");
+        dataConfig("Options.Full_Inv_AutoSell", "false");
+        dataConfig("Options.Full_Inv_AutoSell_Notification", "true");
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
         dataConfig("Options.Multiplier_Command_Permission_Enabled", "true");

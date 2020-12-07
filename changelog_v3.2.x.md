@@ -51,6 +51,17 @@ restart the server) this like from:
 `sellall-sign: false` to `sellall-sign: true`.
 It's possible to edit the tag of the sign when generated from the `config.yml` by editing this:
   - `sellall-sign-visible-tag: "&7[&3SellAll&7]"`
+  
+* **SellAll AutoSell**
+Added the ability to enable the autoSell, autosell's a feature (also needs autoFeatures to be enabled and AutoPickup) with
+  the goal of triggering the SellAll command when the player inventory's full.
+  You can enable this feature from the SellAllConfig.yml and by default's disabled, to `enable` it
+  just turn edit this under the Options config section from `Full_Inv_AutoSell: false` to `Full_Inv_AutoSell: true`.
+  It's also possible to enable or disable a notification telling the player that the AutoSell got triggered, by default
+  it's under the Options section sellAllConfig.yml section like this: `Full_Inv_AutoSell_Notification: true`, to disable it
+  just turn it to `false`, you can also edit this message by editing the Messages en_US.yml at this path `/module_conf/lang/`,
+  in other worlds you can find the messages config en_US.yml in the Prison folder, then open the module_cong and the lang
+  folders, the line to edit's under the `Message` section with the name of `SellAllAutoSell`.
 
 ## tag v3.2.2-alpha.6 - 2020-12-04
 
