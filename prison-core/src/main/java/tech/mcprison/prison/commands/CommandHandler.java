@@ -603,7 +603,19 @@ public class CommandHandler {
         
         else {
 
-        	rootCommand.execute(sender, args);
+        	try {
+        		rootCommand.execute(sender, args);
+        	}
+        	catch ( Exception e ) {
+        		String message = "Prison CommandHander: onCommand: " + e.getMessage() + 
+        				" [" + e.getCause() == null ? "cause not reported" : e.getCause() + "]"; 
+        		
+        		Output.get().logError( message );
+        		for ( StackTraceElement ste : e.getStackTrace() ) {
+        			Output.get().logError( ste.toString() );
+				}
+        		
+        	}
         }
         
 
