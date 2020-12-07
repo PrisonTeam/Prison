@@ -19,14 +19,16 @@
 package tech.mcprison.prison.spigot;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,6 +43,8 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
@@ -161,6 +165,59 @@ public class SpigotUtil {
 		ItemStack bukkitStack = xMaterial.parseItem();
 		bukkitStack.setAmount( amount );
 		return bukkitStack;
+	}
+	
+	public static SpigotItemStack getSpigotItemStack( XMaterial xMaterial, int amount ) {
+		SpigotItemStack itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+		
+		return itemStack;
+	}
+	
+	/**
+	 * Used in AutoManagerFeatures.
+	 * 
+	 * @param player
+	 * @param itemStack
+	 * @return
+	 */
+	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory( 
+			Player player, SpigotItemStack itemStack ) {
+		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
+		
+		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+		Set<Integer> keys = overflow.keySet();
+		for ( Integer key : keys ) {
+			results.put( key, new SpigotItemStack( overflow.get( key ) ));
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * Used in AutoManagerFeatures.
+	 * @param player
+	 * @param itemStack
+	 */
+	public static void dropPlayerItems( Player player, SpigotItemStack itemStack ) {
+		
+		org.bukkit.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+		
+		player.getWorld().dropItem( dropPoint, itemStack.getBukkitStack() );
+		
+	}
+	
+	public static boolean playerInventoryContainsAtLeast( Player player, 
+						SpigotItemStack itemStack, int quantity ) {
+		boolean results = player.getInventory().containsAtLeast( 
+								itemStack.getBukkitStack(), quantity );
+		
+		return results;
+	}
+	
+	public static HashMap<Integer, ItemStack> playerInventoryRemoveItem( Player player, SpigotItemStack itemStack ) {
+		HashMap<Integer, ItemStack> results = player.getInventory().removeItem( itemStack.getBukkitStack() );
+		
+		return results;
 	}
 	
 	/**
@@ -509,36 +566,10 @@ public class SpigotUtil {
    * ItemStack
    */
 
-    public static tech.mcprison.prison.internal.ItemStack bukkitItemStackToPrison(
-    				ItemStack bukkitStack) {
+    public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
     	
-        if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
-            return new tech.mcprison.prison.internal.ItemStack(0, BlockType.AIR);
-        }
-
-        ItemMeta meta;
-        if (!bukkitStack.hasItemMeta()) {
-            meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
-        } else {
-            meta = bukkitStack.getItemMeta();
-        }
-
-        String displayName = null;
-
-        if (meta.hasDisplayName()) {
-            displayName = meta.getDisplayName();
-        }
-
-        int amount = bukkitStack.getAmount();
-        
-        BlockType type = SpigotPrison.getInstance().getCompatibility()
-        					.getBlockType( bukkitStack );
-//        BlockType type = materialToBlockType(bukkitStack.getType());
-
-        List<String> lore = meta.hasLore() ? meta.getLore() : Collections.emptyList();
-        String[] lore_arr = lore.toArray(new String[lore.size()]);
-
-        return new tech.mcprison.prison.internal.ItemStack(displayName, amount, type, lore_arr);
+    	SpigotItemStack results = new SpigotItemStack( bukkitStack );
+    	return results;
     }
 
     public static ItemStack prisonItemStackToBukkit(
@@ -575,13 +606,21 @@ public class SpigotUtil {
 
         return bukkitStack;
     }
-
+    
+  public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
+	List<SpigotItemStack> ret = new ArrayList<>();
+	
+	block.getWrapper().getDrops( tool.getBukkitStack() )
+			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+	
+	return ret;
+}
+    
   /*
    * InventoryType
    */
 
-    public static InventoryType bukkitInventoryTypeToPrison(
-        org.bukkit.event.inventory.InventoryType type) {
+    public static InventoryType bukkitInventoryTypeToPrison( org.bukkit.event.inventory.InventoryType type) {
         return InventoryType.valueOf(type.name());
     }
 

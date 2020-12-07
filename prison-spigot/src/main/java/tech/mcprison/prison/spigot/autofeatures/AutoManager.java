@@ -1,13 +1,11 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.inventory.ItemStack;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
@@ -15,6 +13,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 
 
 /**
@@ -86,13 +85,23 @@ public class AutoManager
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
-    	super.onBlockBreak(e);
+    	
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		
+//    		Output.get().logInfo( "####  AutoManager.OnBlockBreak: " + 
+//    				" x: " + e.getBlock().getX() + " y: " + e.getBlock().getY() +
+//    				" z: " + e.getBlock().getZ() + " cancelled: " + e.isCancelled());
+    		
+    		genericBlockEvent( e );
+    	}
     }
     
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplode(TEBlockExplodeEvent e) {
-    	super.onTEBlockExplode(e);
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		genericBlockExplodeEvent( e );
+    	}
     }
     
     
@@ -122,6 +131,11 @@ public class AutoManager
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
 			
 			Player player = e.getPlayer();
+			
+			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
+			
+			
 			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
 			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
 			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
@@ -141,19 +155,20 @@ public class AutoManager
 			// AutoPickup
 			if ( permPickup || isBoolean( AutoFeatures.autoPickupEnabled )) {
 				
-				autoFeaturePickup(e, player );
+				int count = autoFeaturePickup( block, player, itemInHand );
+				autoPickupCleanup( player, itemInHand, count, e );
 			}
 			
 			// AutoSmelt
 			if ( permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled )){
 				
-				autoFeatureSmelt( e, player );
+				autoFeatureSmelt( block, player, itemInHand );
 			}
 			
 			// AutoBlock
 			if ( permBlock || isBoolean( AutoFeatures.autoBlockEnabled )) {
 				
-				autoFeatureBlock( e, player );
+				autoFeatureBlock( block, player, itemInHand );
 			}
 			
 			// NOTE: This may be in duplication... durability is calculated in auto pickup:
@@ -181,7 +196,7 @@ public class AutoManager
 
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
 				
-				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+//				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
 				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			}
 		}
@@ -213,7 +228,7 @@ public class AutoManager
 	 */
 	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, int blockCount ) {
 		
-		Player p = e.getPlayer();
+		Player player = e.getPlayer();
 		
 //		double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
 //		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
@@ -232,7 +247,9 @@ public class AutoManager
 //		if ( permPickup || permSmelt || permBlock ||
 //				isAreEnabledFeatures())
 
-		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand(p);
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
 		if (e.isCancelled()) {
 			// The event was canceled, so the block was successfully broke, so increment the name counter:
 			itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), blockCount);
