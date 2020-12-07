@@ -1003,23 +1003,28 @@ public class AutoManagerFeatures
 	
 	private void calculateXP(Player player, SpigotBlock block, int count) {
 		
-		if (isBoolean(AutoFeatures.isCalculateXPEnabled)) {
+		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && block != null ) {
 			
-			int xp = 0;
-			for ( int i = 0; i < count; i++ ) {
-				xp += calculateXP( block.getPrisonBlock().getBlockName() );
-			}
+			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
 			
-			if (xp > 0) {
+			if ( blockName != null ) {
 				
-				if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
-					
-					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-					((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
-
+				int xp = 0;
+				for ( int i = 0; i < count; i++ ) {
+					xp += calculateXP( blockName );
 				}
-				else {
-					player.giveExp( xp );
+				
+				if (xp > 0) {
+					
+					if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
+						
+						Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+						((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
+						
+					}
+					else {
+						player.giveExp( xp );
+					}
 				}
 			}
 		}
