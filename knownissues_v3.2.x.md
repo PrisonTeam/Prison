@@ -7,8 +7,12 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.2
+# To Do Items - During Alpha v3.2.3
 
+
+* **Custom block issues**
+- If CustomItems is loaded successfully but yet not using new block model, show error message
+- Show a message at startup indicating that the new block model is enabled or not enabled
 
 
 * **Rework rank permissions to eliminate need to put perms in rank commands**
@@ -19,6 +23,23 @@ issues, and/or to serve as items that should be added, or fixed.
 - Rewrite rankups to use these perms when ranking up, promote, demote, and also for prestiges
 
 
+* **Prestige Options**
+ - Reset money on prestige - boolean option
+ - Auto Prestige - server setting or player setting?
+ - prestigemax - keep applying prestiges until run out of funds
+ - rankmax - keep applying rankups until run out of funds
+ - Eliminate prestige ranks - (optional)
+   * Would need ladder commands
+   * Need to define an upper limit of how many
+   * tags may have a placeholder: `&7[&3P&a{p_level}&7]`
+   * Have a base cost of prestige: example 100,000,000
+   * Have a cost multiplier for ranks: example: 10% more expensive each rank with each prestige
+   * Have a cost multiplier for prestiging: example: 20% more expensive each prestige
+   * Have a cost multiplier for /sellall: Example: 0.005% (1/2 increase in sale price) or -0.015% (1.5% decrease in sale price to make it even more difficult per prestige)
+   * Have a list of permissions and permission groups
+   * The above settings are pretty general and would apply to all generated prestige levels, but to allow for customizations, then ladder ranks, perms and perm groups could be setup to accept a level parameter to be applied at a specific level.  Tags set at a given level could also be applied to higher levels until another tag takes it place.
+   
+ 
 
 * **Sellall - Hook up to prison command handler** 
 Currently sellall is not hooked up to the prison command handler and it needs to be.

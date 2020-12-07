@@ -7,7 +7,20 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.2-alpha.7 - 2020-12-05
+## tag 3.2.2-alpha.6 - 2020-12-07
+
+
+* **Major changes to the Auto Manager to remove as much bukkit/spigot specific code as possible**
+since that will be limiting support for custom blocks.  This is the first phase of changes, and the change to support custom blocks will come later.
+Due to the major changes that occurred, there could be bugs so an alpha release should not be generated without more testing.
+
+
+* **Changes to some of the functions in the compatibility classes to prepare for changes with auto manager.**
+
+
+* **Additional functionality and changes in the way block related things are used and processed.**
+This is preparing for changes to auto manager.
+
 
 * **SellAll Material support**
 This should make sellall support all material, from legacy to 1.16 (all XMaterials).
