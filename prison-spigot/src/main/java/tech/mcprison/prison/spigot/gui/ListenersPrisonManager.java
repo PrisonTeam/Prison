@@ -153,23 +153,27 @@ public class ListenersPrisonManager implements Listener {
 
         // Get parameters
         Player p = e.getPlayer();
-        Material clickedBlock = e.getClickedBlock().getType();
-        String signTag = config.getString("sellall-sign-visible-tag");
-        if (signTag == null){
-            signTag = "&7[&3SellAll&7]";
-        }
 
-        // On clicking the sign or a block
-        if (clickedBlock == XMaterial.matchXMaterial(Material.SIGN).parseMaterial() || clickedBlock == XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial()){
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-                Sign sign = (Sign) e.getClickedBlock().getState();
-                try {
-                    if (sign.getLine(0).equalsIgnoreCase(signTag)) {
-                        Bukkit.dispatchCommand(p, "sellall sell");
-                    }
-                } catch (IndexOutOfBoundsException ignored){}
+        try {
+            Material clickedBlock = e.getClickedBlock().getType();
+            String signTag = config.getString("sellall-sign-visible-tag");
+            if (signTag == null) {
+                signTag = "&7[&3SellAll&7]";
             }
-        }
+
+            // On clicking the sign or a block
+            if (clickedBlock == XMaterial.matchXMaterial(Material.SIGN).parseMaterial() || clickedBlock == XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial()) {
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    Sign sign = (Sign) e.getClickedBlock().getState();
+                    try {
+                        if (sign.getLine(0).equalsIgnoreCase(signTag)) {
+                            Bukkit.dispatchCommand(p, "sellall sell");
+                        }
+                    } catch (IndexOutOfBoundsException ignored) {
+                    }
+                }
+            }
+        } catch (NullPointerException ignored){}
     }
 
     public void removeChatEventPlayer(Player p){
