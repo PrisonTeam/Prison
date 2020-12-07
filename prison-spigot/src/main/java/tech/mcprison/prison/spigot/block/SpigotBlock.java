@@ -124,7 +124,6 @@ public class SpigotBlock implements Block {
     }
 
     
-    
 	public Set<PrisonBlockType> getPrisonBlockTypes() {
 		return prisonBlockTypes;
 	}
@@ -267,7 +266,9 @@ public class SpigotBlock implements Block {
         return ret;
     }
 
-    @Override public List<ItemStack> getDrops(ItemStack tool) {
+	
+    @Override 
+    public List<ItemStack> getDrops(ItemStack tool) {
         List<ItemStack> ret = new ArrayList<>();
 
         bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
@@ -275,9 +276,19 @@ public class SpigotBlock implements Block {
 
         return ret;
     }
+    
+//    public List<SpigotItemStack> getDrops(SpigotItemStack tool) {
+//    	List<SpigotItemStack> ret = new ArrayList<>();
+//    	
+//    	bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
+//    	.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+//    	
+//    	return ret;
+//    }
 
     public org.bukkit.block.Block getWrapper() {
         return bBlock;
     }
+
 
 }

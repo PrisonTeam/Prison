@@ -164,15 +164,12 @@ public class OnBlockBreakEventListener
      * 
      * @param e
      */
-	private void genericBlockEvent( BlockBreakEvent e ) {
+	protected void genericBlockEvent( BlockBreakEvent e ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-		// Not sure if this is correct... might need to always count the block breaks for the mine, 
-		// even if the prison manager is not enabled.
-    	//if ( getPrisonMineManager() != null ) 
+    	if ( getPrisonMineManager() != null ) 
     	{
     		
     		// long startNano = System.nanoTime();
-    		
     		
     		boolean isAir = e.getBlock().getType() != null && e.getBlock().getType() == Material.AIR;
 
@@ -231,7 +228,7 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e )
+	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
     	if ( getPrisonMineManager() != null ) {
@@ -355,7 +352,7 @@ public class OnBlockBreakEventListener
 		return getPrisonMineManager().getPlayerCache();
 	}
 
-	private PrisonMines getPrisonMineManager() {
+	public PrisonMines getPrisonMineManager() {
 		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
 			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
 			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {

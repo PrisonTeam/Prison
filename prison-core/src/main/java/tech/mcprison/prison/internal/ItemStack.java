@@ -18,11 +18,16 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
+
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
-
-import java.util.*;
 
 /**
  * Represents an item stack. An item stack is a uniquely named stack in a player's inventory.
@@ -38,6 +43,14 @@ public class ItemStack {
     private List<String> lore;
     private Map<Integer, Integer> enchantments;
 
+    
+    protected ItemStack() {
+    	super();
+    	
+    	this.lore = new ArrayList<>();
+    	this.enchantments = new HashMap<>();
+    }
+    
     public ItemStack(String displayName, int amount, BlockType material, String... lore) {
         this.displayName = displayName;
         this.amount = amount;
@@ -65,7 +78,6 @@ public class ItemStack {
     public String getDisplayName() {
         return displayName;
     }
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -76,19 +88,28 @@ public class ItemStack {
     public int getAmount() {
         return amount;
     }
+    public void setAmount( int amount ) {
+		this.amount = amount;
+	}
 
-    /**
+	/**
      * Returns the type of items in this stack.
      */
     public BlockType getMaterial() {
         return material;
     }
+    public void setMaterial( BlockType material ) {
+		this.material = material;
+	}
 
-    public List<String> getLore() {
+	public List<String> getLore() {
         return lore;
     }
+    public void setLore( List<String> lore ) {
+		this.lore = lore;
+	}
 
-    public Map<Integer, Integer> getEnchantments() {
+	public Map<Integer, Integer> getEnchantments() {
         return enchantments;
     }
 

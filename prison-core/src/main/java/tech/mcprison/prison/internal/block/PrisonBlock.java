@@ -125,6 +125,13 @@ public class PrisonBlock
 		return getBlockType().name() + ":" + getBlockName();
 	}
 	
+	/**
+	 * <p>This provides the blockName prefixed with the block type if it is not
+	 * a type of minecraft. 
+	 * </p>
+	 * 
+	 * @return
+	 */
 	public String getBlockNameSearch() {
 		return getBlockType() != PrisonBlockType.minecraft ? 
 					getBlockType().name() + ":" + getBlockName() : getBlockName();
