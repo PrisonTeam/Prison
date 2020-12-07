@@ -341,7 +341,8 @@ public abstract class MineData
     	this.bounds = bounds;
     	
     	if ( bounds != null && ( isVirtual() || !getWorld().isPresent() ||
-    			getWorldName() == null || getWorldName().trim().length() == 0 ) ) {
+    			getWorldName() == null || getWorldName().trim().length() == 0 ||
+    			getWorldName().equalsIgnoreCase( "Virtually-Undefined" )) ) {
     		 
         	World world = bounds.getMin().getWorld();
         	
