@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -151,29 +152,64 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        // Get parameters
-        Player p = e.getPlayer();
+        Material clickedBlock;
+        Material signMaterial;
+        Material signWallMaterial;
 
+        // Check if the clickedBlock's a block
         try {
-            Material clickedBlock = e.getClickedBlock().getType();
+            clickedBlock = e.getClickedBlock().getType();
+        } catch (NullPointerException ex){
+            return;
+        }
+
+        // Not sure which one will work better
+        try {
+            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseItem().getType();
+        } catch (NullPointerException ex) {
+            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseMaterial();
+        }
+        try {
+            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseItem().getType();
+        } catch (NullPointerException ex){
+            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial();
+        }
+
+        // Check if the clicked block's a sign
+        if (clickedBlock == signMaterial || clickedBlock == signWallMaterial){
+
+            // Get the player
+            Player p = e.getPlayer();
             String signTag = config.getString("sellall-sign-visible-tag");
             if (signTag == null) {
                 signTag = "&7[&3SellAll&7]";
             }
 
-            // On clicking the sign or a block
-            if (clickedBlock == XMaterial.matchXMaterial(Material.SIGN).parseMaterial() || clickedBlock == XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial()) {
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    Sign sign = (Sign) e.getClickedBlock().getState();
-                    try {
-                        if (sign.getLine(0).equalsIgnoreCase(signTag)) {
-                            Bukkit.dispatchCommand(p, "sellall sell");
+            // Get the action
+            Action action = e.getAction();
+
+            // Check if the action's a click
+            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK){
+
+                // Get sign
+                Sign sign = (Sign) e.getClickedBlock().getState();
+
+                // If there aren't lines in the sign this will void an error
+                try {
+
+                    // Check if the first like of the sign have the right tag
+                    if (sign.getLine(0).equalsIgnoreCase(signTag)){
+
+                        if (config.getString("sellall-sign-notify").equalsIgnoreCase("true")){
+                            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
                         }
-                    } catch (IndexOutOfBoundsException ignored) {
+
+                        // Execute the sellall command
+                        Bukkit.dispatchCommand(p, "sellall sell");
                     }
-                }
+                } catch (IndexOutOfBoundsException ignored){}
             }
-        } catch (NullPointerException ignored){}
+        }
     }
 
     public void removeChatEventPlayer(Player p){

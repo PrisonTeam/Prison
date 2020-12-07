@@ -234,6 +234,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllYouGotMoney", "&7[&3PRISON&7]&a You got $");
         dataConfig("Message.SellAllGUIDisabled", "&7[&3PRISON ERROR&7] &cSorry but the GUI's disabled in the SellAllConfig.yml");
         dataConfig("Message.SellAllAutoSell", "&7[&3PRISON INFO&7] Your inventory's full, AutoSell activated!");
+        dataConfig("Message.SellAllSignNotify", "&7[&3Prison&7] &aUsing SellAll from a sign with success!");
         dataConfig("Setup.Message.MissingPermission", "&7[&3PRISON ERROR&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "&7[&3PRISON ERROR&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3PRISON INFO&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
