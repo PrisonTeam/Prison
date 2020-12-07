@@ -175,6 +175,7 @@ public class ListenersPrisonManager implements Listener {
             signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial();
         }
 
+
         // Check if the clicked block's a sign
         if (clickedBlock == signMaterial || clickedBlock == signWallMaterial){
 
@@ -198,7 +199,7 @@ public class ListenersPrisonManager implements Listener {
                 try {
 
                     // Check if the first like of the sign have the right tag
-                    if (sign.getLine(0).equalsIgnoreCase(signTag)){
+                    if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))){
 
                         if (config.getString("sellall-sign-notify").equalsIgnoreCase("true")){
                             p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
