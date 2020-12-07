@@ -9,6 +9,21 @@ that you need.
 
 ## tag 3.2.2-alpha.6 - 2020-12-07
 
+* **A strange error was found where a virtual mine has its area set, that it fails to load when restarting the server.**
+This situation appeared to be related to the world name not being correctly saved and as such, when reloading the mine, it would result in a failure to initialize the mine.  Actions were taken to try to ensure that if the mine is corrupted in memory, then it is still able to be saved correctly so upon loading it is no longer corrupted.
+
+
+* **Found an issue that when a custom blocks plugin is added, used, then the plugin is removed while the blocks are still defined in the mines.** 
+It was resulting in nulls for the integration handling.
+This deals better with the loss of the integration so it does not cause problems.
+
+
+* **Fixed a few issues with blocks returning null PrisonBlocks, or at least deal with the null blocks better.**
+
+
+* **Attempts to better handle exceptions when running the commands.**
+So far, without being able to produce many failures, it does not appear like this is capturing any exceptions? Will have to wait and see if it is able to provide better error messages.
+
 
 * **Major changes to the Auto Manager to remove as much bukkit/spigot specific code as possible**
 since that will be limiting support for custom blocks.  This is the first phase of changes, and the change to support custom blocks will come later.
