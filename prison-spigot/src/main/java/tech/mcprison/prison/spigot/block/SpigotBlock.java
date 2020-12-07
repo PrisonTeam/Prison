@@ -110,8 +110,11 @@ public class SpigotBlock implements Block {
 				{
 					CustomBlockIntegration customItemsIntegration = 
 									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( blockType );
-					
-					results = customItemsIntegration.getCustomBlock( this );
+					// NOTE: This would be the situation where the admin added the Custom Items plugin, added blocks
+					//       then removed the plugin.  So if it's null, ignore it.
+					if ( customItemsIntegration != null ) {
+						results = customItemsIntegration.getCustomBlock( this );
+					}
 				}
 				
 				break;
