@@ -83,6 +83,33 @@ How Multipliers work -> they'll just multiply the value of what you sold, for ex
 so ```1000 * 1 = 1000``` is what you'll get (by default this's the value in the sellallconfig.yml), but if you've a Prestige with a multiplier of maybe ```1.5```, then
 you'll get ```1000 * 1.5 = 1500```, this isn't even hard math but could make you some confusion. 
 
+**SellaAll Signs:**
+
+Open your config.yml and turn on true the sellall sign like this: 
+```
+# NEW: SellAll sign
+# New sellall feature which enable a sign with the name of [SellAll] to execute the command /sellall sell of Prison
+# To make a sign, give yourself the permission prison.admin and then add as the first line of a sign the tag [SellAll]
+sellall-sign: true
+sellall-sign-notify: true
+sellall-sign-visible-tag: "&7[&3SellAll&7]"
+```
+You can also turn on or off a notification when clicking the sign, you can edit that in the module-conf/lang/en_US.yml file, and you can edit
+the tag from the config.yml which's shown in the sign.
+
+To make a Sign, just place a sign and add as the first line ```[SellAll]```, also be sure to have the permissions ```prison.sign```.
+If everything's right, the sign will look like the sellall-sign-visible-tag from the config.yml, and will work on right clicking it.
+
+**SellAll Auto**
+
+You can turn on or off from the SellAllConfig.yml file the SellAll Auto feature, which will sell everything sellable from the player inventory when it's full.
+Just edit these config lines like this:
+```
+  Full_Inv_AutoSell: 'true'
+  Full_Inv_AutoSell_Notification: 'false'
+```
+You can edit the autoSell notification as you want.
+
 # LIST OF COMMANDS
 ```
 /sellall
