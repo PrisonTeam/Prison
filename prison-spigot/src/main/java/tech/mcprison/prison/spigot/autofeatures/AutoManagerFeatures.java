@@ -622,7 +622,7 @@ public class AutoManagerFeatures
 	 * @return Percent chance of Lore enablement.
 	 */
 	protected double doesItemHaveAutoFeatureLore( ItemLoreEnablers loreEnabler, Player player ) {
-		double results = 100.0;
+		double results = 0.0;
 
 		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
 		if (itemInHand.hasItemMeta()) {
@@ -631,9 +631,15 @@ public class AutoManagerFeatures
 				for (String lore : meta.getLore()) {
 					if (lore.startsWith( loreEnabler.name())) {
 
+						// Lore detected so set default to 100%:
+						results = 100.0;
+						
 						String value = lore.replace( loreEnabler.name(), "" ).trim();
 
 						if (value.length() > 0) {
+							
+							// Content has been found after the lore's name. If it is a number, then
+							// use that to set the lore's percentage.  If it fails at parsing then use 100%.
 
 							try {
 								results = Double.parseDouble( value );
@@ -645,10 +651,12 @@ public class AutoManagerFeatures
 								results = 100.0;
 							}
 
+							// Clean up the parsed number.  Less than zero is zero (disabled).
 							if ( results < 0.0 ) {
 								results = 0.0;
 							}
 
+							// Cannot exceed 100%
 							if ( results > 100.0 ) {
 								results = 100.0;
 							}
