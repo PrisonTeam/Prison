@@ -7,7 +7,10 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.2-alpha.7 - 2020-12-07
+## tag 3.2.2-alpha.8 - 2020-12-08
+
+
+* **3.2.2-alpha.8 - 2020-12-08**
 
 
 * **New Feature: Mine BlockEvent Commands!**  
