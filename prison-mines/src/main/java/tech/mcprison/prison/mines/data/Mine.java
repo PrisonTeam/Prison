@@ -439,9 +439,8 @@ public class Mine
         
         // If world name is not set, try to get it from the bounds:
         String worldName = getWorldName();
-        if ( worldName == null || 
-        		"Virtually-Undefined".equalsIgnoreCase( worldName ) ||
-        		worldName.trim().length() == 0 &&
+        if ( (worldName == null || worldName.trim().length() == 0 ||
+        		"Virtually-Undefined".equalsIgnoreCase( worldName )) &&
         		getBounds() != null && getBounds().getMin() != null &&
         		getBounds().getMin().getWorld() != null ) {
         	worldName = getBounds().getMin().getWorld().getName();

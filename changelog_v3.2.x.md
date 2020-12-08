@@ -10,6 +10,10 @@ that you need.
 ## tag 3.2.3-alpha.8 2020-12-08
 
 
+* **Bug with the saving of the world name** Parenthesis were not used correctly.
+
+
+
 * **Fixed an issue with the lore being "set" when it really wasn't.**
 This was forcing the auto block and auto smelt to be used, and also probably auto pickup too.
 
