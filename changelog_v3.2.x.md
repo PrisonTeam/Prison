@@ -7,9 +7,9 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 2020-12-08
+## tag 3.2.3-alpha.8 2020-12-08
 
-* **3.2.3-alpha.9 - 2020-12-08**
+
 
 * **SellAll fix** 
 Fixed the sellAll sell bug, it wasn't updating the configs when it should've, now it'll update (even if less efficiently than
