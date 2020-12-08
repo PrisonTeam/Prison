@@ -16,6 +16,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -308,6 +309,11 @@ public class OnBlockBreakEventListener
 		
 		// Other possible processing:
 		
+		// Process mine block break events:
+		SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+		mine.processBlockBreakEventCommands( 1, player );
+		
+		
 		// Checks to see if the mine ran out of blocks, and if it did, then
 		// it will reset the mine:
 		mine.checkZeroBlockReset();
@@ -319,6 +325,11 @@ public class OnBlockBreakEventListener
 		mine.addTotalBlocksMined( blockCount );
 		
 		// Other possible processing:
+		
+		// Process mine block break events:
+		SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+		mine.processBlockBreakEventCommands( blockCount, player );
+		
 		
 		// Checks to see if the mine ran out of blocks, and if it did, then
 		// it will reset the mine:

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Stack;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.output.Output;
@@ -452,6 +455,50 @@ public abstract class MineScheduler
 		}
 	}
 	
+	
+	/**
+	 * <p>This function checks if the block break event should execute a 
+	 * given command or not.
+	 * @param blockCount
+	 * @param player 
+	 */
+	public void processBlockBreakEventCommands( int blockCount, Player player ) {
+		
+		if ( getBlockEvents().size() > 0 ) {
+			Random random = new Random();
+			
+			for ( int i = 0; i < blockCount; i ++ ) {
+				double chance = random.nextDouble() * 100;
+				
+				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+					
+					// If perms are set, check them, otherwise ignore perm check:
+					if ( blockEvent.getPermission() != null && blockEvent.getPermission().trim().length() > 0 &&
+							player.hasPermission( blockEvent.getPermission() ) ||
+							blockEvent.getPermission() == null && blockEvent.getPermission().trim().length() == 0
+						) {
+						
+						chance -= blockEvent.getChance();
+							
+						if ( chance <= 0 ) {
+								
+							String formatted = blockEvent.getCommand().
+										replace("{player}", player.getName())
+										.replace("{player_uid}", player.getUUID().toString());
+								
+	//		                Prison.get().getPlatform().logPlain(
+	//		                		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
+	//		                					formatted ));
+								
+							PrisonAPI.dispatchCommand(formatted);
+							break;
+						}
+					}
+				}
+				
+			}
+		}
+	}
 	
 	public boolean checkZeroBlockReset() {
 		boolean reset = false;

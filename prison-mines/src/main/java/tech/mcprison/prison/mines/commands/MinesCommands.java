@@ -42,6 +42,7 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineBlockEvent;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.data.MineLinerBuilder;
@@ -2804,6 +2805,158 @@ public class MinesCommands
     	
     	player.printDebugInventoryInformationToConsole();
     }
+
+
+
+	@Command(identifier = "mines set blockEventList", description = "Lists the blockEvent commands for a mine.", 
+    						onlyPlayers = false, permissions = "mines.set")
+    public void blockEventList(CommandSender sender, 
+    				@Arg(name = "mineName") String mineName) {
+    	
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if (m.getBlockEvents() == null || m.getBlockEvents().size() == 0) {
+            Output.get().sendInfo(sender, "The mine '%s' contains no BlockEvent commands.", m.getName());
+            return;
+        }
+
+
+        ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getName());
+        display.text("&8Click a BlockEvent command to remove it.");
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
+
+        DecimalFormat dFmt = new DecimalFormat("0.0000");
+        
+        for (MineBlockEvent blockEvent : m.getBlockEvents()) {
+        	
+        	String chance = dFmt.format( blockEvent.getChance() );
+        	
+        	String message = String.format( "%s%% [%s] &a'&7%s&a'", 
+        						chance, blockEvent.getPermission(), blockEvent.getCommand() );
+        	
+            FancyMessage msg = new FancyMessage( message )
+                .command("/mines set blockEvent remove " + mineName + " " + blockEvent.getCommand() )
+                .tooltip("Click to remove.");
+            builder.add(msg);
+        }
+
+        display.addComponent(builder.build());
+        display.addComponent(new FancyMessageComponent(
+            new FancyMessage("&7[&a+&7] Add").suggest("/mines set BlockEvent add " + mineName + " /")
+                .tooltip("&7Add a new BockEvent command.")));
+        display.send(sender);
+    }
+
+
+	@Command(identifier = "mines set blockEventRemove", description = "Removes a BlockEvent command from a mine.", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventRemove(CommandSender sender, 
+    				@Arg(name = "mineName") String mineName,
+    				@Arg(name = "command", description = "Exact BlockEvent command to remove") 
+    						@Wildcard String command) {
+    	
+        if (command.startsWith("/")) {
+            command = command.replaceFirst("/", "");
+        }
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+        
+        if (m.getBlockEvents() == null || m.getBlockEvents().size() == 0) {
+            Output.get().sendInfo(sender, "The mine '%s' contains no BlockEvent commands.", m.getName());
+            return;
+        }
+
+        if ( m.getBlockEventsRemove(command) ) {
+        	
+        	pMines.getMineManager().saveMine( m );
+            	
+        	Output.get().sendInfo(sender, "Removed BlockEvent command '%s' from the mine '%s'.", 
+        				command, m.getName());
+        } else {
+        	Output.get().sendWarn(sender, 
+        			String.format("The mine %s doesn't contain that BlockEvent command. Nothing was changed.", 
+        						m.getName()));
+        }
+    }
+
+
+
+	@Command(identifier = "mines set blockEventAdd", description = "Adds a BlockBreak command to a mine. " +
+			"Can use placeholders {player} and {player_uid}.", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventAdd(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "percent",
+    					description = "Percent chance between 0.0000 and 100.0") double chance,
+    			@Arg(name = "permission", def = "none",
+    					description = "Optional permission that the player must have, " +
+    							"or [none] for no perm." ) String perm,
+    			@Arg(name = "command") @Wildcard String command) {
+    	
+
+    	if (command.startsWith("/")) {
+            command = command.replaceFirst("/", "");
+        }
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        if ( chance <= 0d || chance > 100.0d ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid value for chance " +
+        								"between 0.0000 and 100.0. Was state=[&b%d&7]",
+        			chance ));
+        	return;
+        }
+        
+        if ( perm == null || perm.trim().length() == 0 || "none".equalsIgnoreCase( perm ) ) {
+        	perm = "";
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( command == null || command.trim().length() == 0 ) {
+        	sender.sendMessage( 
+        			String.format( "&7Please provide a valid BlockEvent command: command=[%s]", command) );
+        	return;
+        }
+        
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command );
+        m.getBlockEvents().add( blockEvent );
+
+        pMines.getMineManager().saveMine( m );
+        
+        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' to the mine '&b%s&7' with " +
+        		"the optional permission %s.", 
+        		command, m.getName(), 
+        		perm == null || perm.trim().length() > 0 ? "&3none&7" : "'&3" + perm + "&7'" );
+
+    }
+
 
 
 

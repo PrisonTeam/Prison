@@ -103,6 +103,9 @@ public abstract class MineData
      * The rankString are the components of the ModuleElement.
      */
     private String rankString;
+
+    
+    private List<MineBlockEvent> blockEvents;
     
 
     public enum MineNotificationMode {
@@ -172,6 +175,8 @@ public abstract class MineData
         
         this.rank = null;
         this.rankString = null;
+        
+        this.blockEvents = new ArrayList<>();
     }
 
     /**
@@ -692,6 +697,29 @@ public abstract class MineData
 	}
 	public void setRankString( String rankString ) {
 		this.rankString = rankString;
+	}
+
+	public List<MineBlockEvent> getBlockEvents() {
+		return blockEvents;
+	}
+	public void setBlockEvents( List<MineBlockEvent> blockEvents ) {
+		this.blockEvents = blockEvents;
+	}
+	
+	public boolean getBlockEventsRemove( String command ) {
+		boolean results = false;
+		MineBlockEvent blockEvent = null;
+		for ( MineBlockEvent be : getBlockEvents() ) {
+			if ( be.getCommand().equalsIgnoreCase( command ) ) {
+				blockEvent = be;
+			}
+		}
+		
+		if ( blockEvent != null ) {
+			results = getBlockEvents().remove( blockEvent );
+		}
+		
+		return results;
 	}
 	
 }

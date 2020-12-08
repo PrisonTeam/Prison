@@ -402,6 +402,15 @@ public class Mine
         Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
         setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
 
+        
+        List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
+        if ( mineBlockEvents != null ) {
+        	for ( String blockEvent : mineBlockEvents ) {
+        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent ) );
+        	}
+        }
+        
+        
         if ( dirty ) {
 			
         	// Resave the mine data since an update to the mine format was detected and
@@ -517,6 +526,11 @@ public class Mine
         	ret.put("rank", rank );
         }
 
+        List<String> mineBlockEvents = new ArrayList<>();
+        for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+			mineBlockEvents.add( blockEvent.toSaveString() );
+		}
+        ret.put("mineBlockEvents", mineBlockEvents);
         
         return ret;
     }
