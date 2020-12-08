@@ -10,6 +10,8 @@ that you need.
 ## tag 3.2.3-alpha.8 2020-12-08
 
 
+* **Corrected a typo in an add message on the add BlockEvent**
+
 
 * **SellAll fix** 
 Fixed the sellAll sell bug, it wasn't updating the configs when it should've, now it'll update (even if less efficiently than

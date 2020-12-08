@@ -2953,7 +2953,7 @@ public class MinesCommands
         Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' to the mine '&b%s&7' with " +
         		"the optional permission %s.", 
         		command, m.getName(), 
-        		perm == null || perm.trim().length() > 0 ? "&3none&7" : "'&3" + perm + "&7'" );
+        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'" );
 
     }
 
