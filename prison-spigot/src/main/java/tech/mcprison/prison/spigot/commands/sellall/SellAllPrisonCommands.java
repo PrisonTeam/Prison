@@ -18,6 +18,7 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
+import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -28,7 +29,7 @@ import java.util.Set;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
-    private final Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -55,6 +56,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
+
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
         
         if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
             if (!p.hasPermission("Options.Sell_Permission")){
@@ -115,8 +120,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             } else {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + moneyToGive));
             }
+        } else {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
-        // Add here info message, there aren't blocks in the config so the player can't sell
     }
 
     @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)
@@ -180,6 +186,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemID + ".ITEM_ID", itemID);
             conf.set("Items." + itemID + ".ITEM_VALUE", value);
             conf.save(sellAllFile);
@@ -210,6 +218,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemID + ".ITEM_ID", null);
             conf.set("Items." + itemID + ".ITEM_VALUE", null);
             conf.set("Items." + itemID, null);
@@ -249,6 +259,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemID + ".ITEM_ID", itemID);
             conf.set("Items." + itemID + ".ITEM_VALUE", value);
             conf.save(sellAllFile);
@@ -289,6 +301,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (addMultiplierConditions(sender, prestige, multiplier)) return;
 
         try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
             conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
             conf.save(sellAllFile);
@@ -367,6 +381,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Multiplier." + prestige, null);
             conf.save(sellAllFile);
         } catch (IOException e) {

@@ -25,7 +25,7 @@ public class SellAllConfig extends SpigotConfigComponents {
     	//}
     }
 
-    private void initialize(){
+    public void initialize(){
 
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
@@ -48,6 +48,8 @@ public class SellAllConfig extends SpigotConfigComponents {
                 Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + "used by the SellAllConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
             }
         }
+
+        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     public void dataConfig(String key, String value){

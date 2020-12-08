@@ -45,6 +45,8 @@ public class GuiConfig extends SpigotConfigComponents{
 				Output.get().logInfo("&4Failed to save &b%d &4new values to the GuiConfig.yml file located at " + "&b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage());
 			}
         }
+
+        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     private void dataConfig(String key, String value){

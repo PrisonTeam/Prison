@@ -240,6 +240,7 @@ public class SpigotPrison extends JavaPlugin {
     public FileConfiguration getSellAllConfig() {
         // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
+        sellAllConfig.initialize();
         return sellAllConfig.getFileSellAllConfig();
     }
 
