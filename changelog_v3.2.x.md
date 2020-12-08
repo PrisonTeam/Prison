@@ -7,17 +7,25 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag 3.2.2-alpha.9 2020-12-08
+
+* **3.2.3-alpha.9 - 2020-12-08**
+
+* **SellAll fix** 
+Fixed the sellAll sell bug, it wasn't updating the configs when it should've, now it'll update (even if less efficiently than
+before) and it's working.
+
 ## tag 3.2.2-alpha.8 - 2020-12-08
 
 
-* **3.2.2-alpha.8 - 2020-12-08**
+* **3.2.3-alpha.8 - 2020-12-08**
 
 
 * **New Feature: Mine BlockEvent Commands!**  
 Now define events to run on block break events within a mine.  Each BlockEvent has a chance and an optional permission.  The chance is based upon a range between 0.0000 and 100.0.  One command will be chosen out of many that may be defined for the mine.  If a TokenEnchant explosion event is handled, then for each block broken it will try for a BlockEvent, so an explosion event could produce multiple BlockEvents.  These commands are able to use {player} and {player_uid} within the commands.
 
 
-* **3.2.2-alpha.7 - 2020-12-07**
+* **3.2.3-alpha.7 - 2020-12-07**
 
 
 * **Bug fix: Fixes a bug that prevents comparison between ItemStack and SpigotItemStack objects, which should be equalable.**
@@ -78,7 +86,7 @@ Added the ability to enable the autoSell, autosell's a feature (also needs autoF
   in other worlds you can find the messages config en_US.yml in the Prison folder, then open the module_cong and the lang
   folders, the line to edit's under the `Message` section with the name of `SellAllAutoSell`.
 
-## tag v3.2.2-alpha.6 - 2020-12-04
+## tag v3.2.3-alpha.6 - 2020-12-04
 
 
 * **Setup modules to have a deferredStartup() function.**
