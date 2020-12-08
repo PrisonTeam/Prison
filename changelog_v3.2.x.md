@@ -9,6 +9,11 @@ that you need.
 
 ## tag 3.2.2-alpha.6 - 2020-12-07
 
+
+* **Bug fix: Fixes a bug that prevents comparison between ItemStack and SpigotItemStack objects, which should be equalable.**
+One of the side effects of this bug is the failure of the selection wand to be used since it was not able to  able to identify that it is actually a selection wand.
+
+
 * **A strange error was found where a virtual mine has its area set, that it fails to load when restarting the server.**
 This situation appeared to be related to the world name not being correctly saved and as such, when reloading the mine, it would result in a failure to initialize the mine.  Actions were taken to try to ensure that if the mine is corrupted in memory, then it is still able to be saved correctly so upon loading it is no longer corrupted.
 
