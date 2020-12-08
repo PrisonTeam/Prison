@@ -10,6 +10,10 @@ that you need.
 ## tag 3.2.3-alpha.8 2020-12-08
 
 
+* **Fixed the links to the add and remove blockEvent commands.**
+Had a space in there from an earlier version.
+
+
 * **Bug with the saving of the world name** Parenthesis were not used correctly.
 
 
