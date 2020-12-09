@@ -304,36 +304,41 @@ public class OnBlockBreakEventListener
 
 	
 	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
-		mine.incrementBlockBreakCount();
-		mine.incrementTotalBlocksMined();
-		
-		// Other possible processing:
-		
-		// Process mine block break events:
-		SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-		mine.processBlockBreakEventCommands( 1, player );
-		
-		
-		// Checks to see if the mine ran out of blocks, and if it did, then
-		// it will reset the mine:
-		mine.checkZeroBlockReset();
+		if ( mine != null ) {
+			
+			mine.incrementBlockBreakCount();
+			mine.incrementTotalBlocksMined();
+			
+			// Other possible processing:
+			
+			// Process mine block break events:
+			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+			mine.processBlockBreakEventCommands( 1, player );
+			
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
 	}
 	
 	public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount ) {
-		
-		mine.addBlockBreakCount( blockCount );
-		mine.addTotalBlocksMined( blockCount );
-		
-		// Other possible processing:
-		
-		// Process mine block break events:
-		SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-		mine.processBlockBreakEventCommands( blockCount, player );
-		
-		
-		// Checks to see if the mine ran out of blocks, and if it did, then
-		// it will reset the mine:
-		mine.checkZeroBlockReset();
+		if ( mine != null ) {
+			
+			mine.addBlockBreakCount( blockCount );
+			mine.addTotalBlocksMined( blockCount );
+			
+			// Other possible processing:
+			
+			// Process mine block break events:
+			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+			mine.processBlockBreakEventCommands( blockCount, player );
+			
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
 	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
