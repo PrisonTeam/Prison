@@ -98,5 +98,4 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10000"));
         inv.setItem(43, increaseOf100);
     }
-
 }

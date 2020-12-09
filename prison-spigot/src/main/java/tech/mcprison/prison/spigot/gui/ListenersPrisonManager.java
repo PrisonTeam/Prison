@@ -563,7 +563,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions
-            case "PrisonManager -> SellAll-Admin":{
+            case "Prison -> SellAll-Admin":{
 
                 sellAllAdminGUI(e, p, buttonNameMain);
 
@@ -579,7 +579,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions
-            case "PrisonManager -> SellAll-Player":{
+            case "Prison -> SellAll-Player":{
 
                 p.closeInventory();
                 e.setCancelled(true);

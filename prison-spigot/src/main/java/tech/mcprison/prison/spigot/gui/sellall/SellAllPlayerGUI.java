@@ -69,7 +69,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             return null;
         }
 
-        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Player"));
+        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison -> SellAll-Player"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(

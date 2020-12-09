@@ -70,7 +70,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             return null;
         }
 
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Admin"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison -> SellAll-Admin"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(
