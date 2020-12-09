@@ -9,11 +9,14 @@ that you need.
 
 ## tag 3.2.3-alpha.9 09-12-2020
 
+
+* **3.2.3-alpha.9 2020-12-08**  Version increase.
+
+
 * **Broadcast rankup messages changes:**
 Disabled white text by default of prison Broadcast for now, they'll be again available in the future when
   we'll update the lang support.
 
-## tag 3.2.3-alpha.8 2020-12-08
 
 * **Start to setup the ability to use auto features outside of the mines.**
 It's not fully enabled yet, so this won't work if it is tried to be used.
