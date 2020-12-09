@@ -7,6 +7,12 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag 3.2.3-alpha.9 09-12-2020
+
+* **Broadcast rankup messages changes:**
+Disabled white text by default of prison Broadcast for now, they'll be again available in the future when
+  we'll update the lang support.
+
 ## tag 3.2.3-alpha.8 2020-12-08
 
 

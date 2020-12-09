@@ -388,7 +388,7 @@ public class RankUpCommand
             		String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
             				(player == null ? "Someone" : player.getName()),
             				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		broadcastToWholeServer( sender, messageGlobal );
+            		// broadcastToWholeServer( sender, messageGlobal );
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
@@ -400,7 +400,7 @@ public class RankUpCommand
             		String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
             				(player == null ? "Someone" : player.getName()),
             				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		broadcastToWholeServer( sender, messageGlobal );
+            		// broadcastToWholeServer( sender, messageGlobal );
 				}
                 break;
             case RANKUP_CANT_AFFORD:
