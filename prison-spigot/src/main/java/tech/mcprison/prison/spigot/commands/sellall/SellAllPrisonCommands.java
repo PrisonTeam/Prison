@@ -56,7 +56,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
-
         SellAllConfig sellAllConfigClass = new SellAllConfig();
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
@@ -71,14 +70,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
             double moneyToGive = 0;
 
-            for (String key : items) {
-                double amount = 0;
-                while (p.getInventory().contains(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial())){
-                    p.getInventory().removeItem(new ItemStack(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial(),1));
-                    amount++;
-                }
-                moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
-            }
+            // Get money to give
+            moneyToGive = getMoneyToGive(p, items, moneyToGive);
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
@@ -86,30 +79,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
             PrisonRanks rankPlugin = (PrisonRanks) module;
 
-            if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
-
-                boolean hasPlayerPrestige = false;
-                double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
-
-                if (rankPlugin != null) {
-                    if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
-                        String playerRankName;
-                        try {
-                            playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
-                        } catch (NullPointerException ex){
-                            playerRankName = null;
-                        }
-                        if (playerRankName != null) {
-                            hasPlayerPrestige = true;
-                            multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
-                            moneyToGive = moneyToGive * multiplier;
-                        }
-                    }
-                }
-                if (!hasPlayerPrestige) {
-                    moneyToGive = moneyToGive * multiplier;
-                }
-            }
+            // Get money to give + multiplier
+            moneyToGive = getMoneyWithMultiplier(moneyToGive, sPlayer, rankPlugin);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -123,6 +94,46 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } else {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
+    }
+
+    private double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer, PrisonRanks rankPlugin) {
+        if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
+
+            boolean hasPlayerPrestige = false;
+            double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+
+            if (rankPlugin != null) {
+                if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
+                    String playerRankName;
+                    try {
+                        playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                    } catch (NullPointerException ex){
+                        playerRankName = null;
+                    }
+                    if (playerRankName != null) {
+                        hasPlayerPrestige = true;
+                        multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
+                        moneyToGive = moneyToGive * multiplier;
+                    }
+                }
+            }
+            if (!hasPlayerPrestige) {
+                moneyToGive = moneyToGive * multiplier;
+            }
+        }
+        return moneyToGive;
+    }
+
+    private double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
+        for (String key : items) {
+            double amount = 0;
+            while (p.getInventory().contains(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial())){
+                p.getInventory().removeItem(new ItemStack(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial(),1));
+                amount++;
+            }
+            moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
+        }
+        return moneyToGive;
     }
 
     @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)
@@ -297,7 +308,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                                              @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
 
         if (!isEnabled()) return;
-
         if (addMultiplierConditions(sender, prestige, multiplier)) return;
 
         try {
