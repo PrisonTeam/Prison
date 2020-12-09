@@ -203,9 +203,12 @@ public class OnBlockBreakEventListener
     				// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
     				// Needed since processing of the block will lose track of which mine it came from.
     				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
-    				
+
     				doAction( block, mine, e );
     			}
+    				
+    			// future change to allow auto features outside of mines:
+//    			doAction( block, mine, e );
     		}
     		
     		// for debug use: Uncomment to use.

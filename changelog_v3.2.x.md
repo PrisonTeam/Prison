@@ -15,6 +15,16 @@ Disabled white text by default of prison Broadcast for now, they'll be again ava
 
 ## tag 3.2.3-alpha.8 2020-12-08
 
+* **Start to setup the ability to use auto features outside of the mines.**
+It's not fully enabled yet, so this won't work if it is tried to be used.
+
+
+* **Able to dynamically toggle a debug mode to dynamically control logging at the debug level.**
+
+
+* **Had a few issues with players modifying the contents of the save files for ranks, mines, etc, and the result was invalid json which would fail to load.**
+These failure would not normally be encountered if using Prison's commands.  Due to amount of time chasing down bugs that don't exist, I added this catch statement to catch malformed json and then generate an error in the console.
+
 
 * **Fixed the links to the add and remove blockEvent commands.**
 Had a space in there from an earlier version.

@@ -9,6 +9,9 @@ issues, and/or to serve as items that should be added, or fixed.
 
 # To Do Items - During Alpha v3.2.3
 
+- auto manager - durability not working even when feature is enabled
+- autoConfigure - fixed?
+
 
 * **Custom block issues**
 - If CustomItems is loaded successfully but yet not using new block model, show error message
