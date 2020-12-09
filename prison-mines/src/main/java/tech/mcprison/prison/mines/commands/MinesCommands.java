@@ -2846,14 +2846,14 @@ public class MinesCommands
         						chance, blockEvent.getPermission(), blockEvent.getCommand() );
         	
             FancyMessage msg = new FancyMessage( message )
-                .command("/mines set blockEvent remove " + mineName + " " + blockEvent.getCommand() )
+                .command("/mines set blockEventRemove " + mineName + " " + blockEvent.getCommand() )
                 .tooltip("Click to remove.");
             builder.add(msg);
         }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/mines set BlockEvent add " + mineName + " /")
+            new FancyMessage("&7[&a+&7] Add").suggest("/mines set blockEventAdd " + mineName + " [chance] [perm] [cmd] /")
                 .tooltip("&7Add a new BockEvent command.")));
         display.send(sender);
     }
@@ -2953,7 +2953,7 @@ public class MinesCommands
         Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' to the mine '&b%s&7' with " +
         		"the optional permission %s.", 
         		command, m.getName(), 
-        		perm == null || perm.trim().length() > 0 ? "&3none&7" : "'&3" + perm + "&7'" );
+        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'" );
 
     }
 

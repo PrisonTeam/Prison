@@ -7,15 +7,27 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 2020-12-08
+## tag 3.2.3-alpha.8 2020-12-08
 
-* **3.2.3-alpha.9 - 2020-12-08**
+
+* **Fixed the links to the add and remove blockEvent commands.**
+Had a space in there from an earlier version.
+
+
+* **Bug with the saving of the world name** Parenthesis were not used correctly.
+
+
+
+* **Fixed an issue with the lore being "set" when it really wasn't.**
+This was forcing the auto block and auto smelt to be used, and also probably auto pickup too.
+
+
+* **Corrected a typo in an add message on the add BlockEvent**
+
 
 * **SellAll fix** 
 Fixed the sellAll sell bug, it wasn't updating the configs when it should've, now it'll update (even if less efficiently than
 before) and it's working.
-
-## tag 3.2.3-alpha.8 - 2020-12-08
 
 
 * **3.2.3-alpha.8 - 2020-12-08**

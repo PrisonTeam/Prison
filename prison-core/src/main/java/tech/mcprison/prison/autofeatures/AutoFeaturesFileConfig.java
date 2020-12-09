@@ -67,6 +67,7 @@ public class AutoFeaturesFileConfig {
 				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
+		    	autoPickupLimitToMines(autoPickup, true),
 		    	autoPickupAllBlocks(autoPickup, true),
 		    	
 		    	autoPickupCobbleStone(autoPickup, true),
@@ -85,6 +86,7 @@ public class AutoFeaturesFileConfig {
     	
 	    	autoSmelt(options),
 		    	autoSmeltEnabled(autoSmelt, true),
+		    	autoSmeltLimitToMines(autoSmelt, true),
 		    	autoSmeltAllBlocks(autoSmelt, true),
 
 		    	
@@ -94,6 +96,7 @@ public class AutoFeaturesFileConfig {
 	    	
 	    	autoBlock(options),
 		    	autoBlockEnabled(autoBlock, true),
+		    	autoBlockLimitToMines(autoBlock, true),
 		    	autoBlockAllBlocks(autoBlock, true),
 
 		    	
