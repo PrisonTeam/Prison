@@ -95,5 +95,4 @@ public abstract class SpigotGUIComponents {
         p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
-
 }

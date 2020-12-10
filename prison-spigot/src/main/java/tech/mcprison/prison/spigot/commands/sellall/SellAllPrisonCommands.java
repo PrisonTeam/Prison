@@ -26,7 +26,6 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {

@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
