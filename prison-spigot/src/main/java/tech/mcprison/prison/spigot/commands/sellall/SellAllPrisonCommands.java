@@ -6,6 +6,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -125,14 +126,48 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     private double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
-        for (String key : items) {
-            double amount = 0;
-            while (p.getInventory().contains(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial())){
-                p.getInventory().removeItem(new ItemStack(XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial(),1));
-                amount++;
+
+        // Get the player inventory
+        Inventory inv = p.getInventory();
+
+        // Get the items from the player inventory and for each of them check the conditions.
+        for (ItemStack itemStack : inv.getContents()){
+
+            // Get the items strings from config and for each of them get the Material and value.
+            for (String key : items){
+                Material itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+                double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
+                int amount = 0;
+
+                // Check if the item from the player inventory's on the config of items sellable
+                // So it gets the amount and then remvoe it from the inventory
+                if (itemMaterial != null && itemMaterial == itemStack.getType()) {
+                    amount = itemStack.getAmount();
+                    p.getInventory().remove(itemStack);
+                }
+                // Get the new amount of money to give
+                if (amount != 0) {
+                    moneyToGive = moneyToGive + (value * amount);
+                }
             }
-            moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
         }
+
+        // Old but improved SellAll
+        //for (String key : items) {
+        //    double amount = 0;
+        //    Material item = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+        //
+        //    if (item != null) {
+        //
+        //        ItemStack itemToRemove = new ItemStack(item, 1);
+        //
+        //        while (p.getInventory().contains(item)) {
+        //            p.getInventory().removeItem(itemToRemove);
+        //            amount++;
+        //        }
+        //        moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
+        //    }
+        //}
         return moneyToGive;
     }
 
