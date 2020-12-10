@@ -229,7 +229,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
-        if (XMaterial.valueOf(itemID).parseMaterial() == null) {
+
+        ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
+        if (blockAdd == null) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
         }
@@ -237,7 +239,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", itemID);
+            conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
             conf.set("Items." + itemID + ".ITEM_VALUE", value);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -302,7 +304,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
-        if (XMaterial.valueOf(itemID).parseMaterial() == null) {
+
+        ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
+        if (blockAdd == null) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
         }
@@ -310,7 +314,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", itemID);
+            conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
             conf.set("Items." + itemID + ".ITEM_VALUE", value);
             conf.save(sellAllFile);
         } catch (IOException e) {
