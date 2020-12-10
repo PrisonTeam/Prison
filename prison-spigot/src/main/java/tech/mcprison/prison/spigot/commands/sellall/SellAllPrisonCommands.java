@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
@@ -136,13 +137,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             if (itemStack != null) {
                 // Get the items strings from config and for each of them get the Material and value.
                 for (String key : items) {
-                    Material itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+                    String itemMaterial = sellAllConfig.getString("Items." + key + ".ITEM_ID");
                     double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
                     int amount = 0;
 
                     // Check if the item from the player inventory's on the config of items sellable
                     // So it gets the amount and then remove it from the inventory
-                    if (itemMaterial != null && itemMaterial == itemStack.getType()) {
+                    if (itemMaterial != null && itemMaterial.equalsIgnoreCase(itemStack.getType().toString())) {
                         amount = itemStack.getAmount();
                         p.getInventory().remove(itemStack);
                     }
