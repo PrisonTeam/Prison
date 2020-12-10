@@ -575,9 +575,9 @@ public class AutoManagerFeatures
 		double results = 0.0;
 
 		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-		if (itemInHand.hasItemMeta()) {
+		if ( itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
 			ItemMeta meta = itemInHand.getItemMeta();
-			if (meta.hasLore()) {
+			if ( meta != null && meta.hasLore()) { 
 				for (String lore : meta.getLore()) {
 					if (lore.startsWith( loreEnabler.name())) {
 

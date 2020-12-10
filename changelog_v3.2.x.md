@@ -9,9 +9,13 @@ that you need.
 
 ## tag 3.2.3-alpha.9 2020-12-10
 
+* **Issues with ItemMeta not working correctly with auto features.**
+Need to do more testing to see if this works, but initial tests are not looking too good.
+
 
 * **Bug Fix: fixed issue with calculating and applying the durability.**
 Turned out there were a few issues, but mostly after the durability was set, the itemMeta was not being resaved to the tool.
+
 
 * **3.2.3-alpha.9 2020-12-08**  Version increase.
 
