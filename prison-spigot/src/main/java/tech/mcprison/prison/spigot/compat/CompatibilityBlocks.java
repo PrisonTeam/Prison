@@ -34,9 +34,15 @@ public interface CompatibilityBlocks {
 
     public int getDurabilityMax( SpigotItemStack itemInHand );
 	
-	public int getDurability( SpigotItemStack itemInHand );
-	
-	public void setDurability( SpigotItemStack itemInHand, int newDurability );
+    public boolean hasDurability( SpigotItemStack itemStack );
+    
+    public int getDurability( SpigotItemStack itemInHand );
+    
+    public boolean setDurability( SpigotItemStack itemInHand, int newDurability );
+    
+//	public int getDurability( SpigotItemStack itemInHand );
+//	
+//	public void setDurability( SpigotItemStack itemInHand, int newDurability );
 	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	

@@ -7,8 +7,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 09-12-2020
+## tag 3.2.3-alpha.9 2020-12-10
 
+
+* **Bug Fix: fixed issue with calculating and applying the durability.**
+Turned out there were a few issues, but mostly after the durability was set, the itemMeta was not being resaved to the tool.
 
 * **3.2.3-alpha.9 2020-12-08**  Version increase.
 

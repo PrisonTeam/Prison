@@ -6,6 +6,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -245,17 +246,60 @@ public abstract class Spigot113Blocks
 		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
 	
-	public int getDurability( SpigotItemStack itemInHand ) {
+
+	@Override
+	public boolean hasDurability( SpigotItemStack itemInHand )
+	{
+		boolean results = false;
 		
-		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
-		return damage.getDamage();
+		if ( itemInHand != null && itemInHand.getBukkitStack().hasItemMeta() &&
+				itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			results = item.hasDamage();
+		}
+			
+		return results;	
+	}
+
+	@Override
+	public int getDurability( SpigotItemStack itemInHand )
+	{
+		int results = 0;
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack().hasItemMeta() &&
+						itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			results = item.getDamage();
+		}
+		
+		return results;
+	}
+
+	@Override
+	public boolean setDurability( SpigotItemStack itemInHand, int newDamage ) {
+		boolean results = false;
+		if ( itemInHand != null && itemInHand.getBukkitStack().getItemMeta() != null &&
+						itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			
+			item.setDamage( newDamage );
+			results = itemInHand.getBukkitStack().setItemMeta((ItemMeta) item);
+		}
+		return results;
 	}
 	
-	public void setDurability( SpigotItemStack itemInHand, int newDamage ) {
-		
-		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
-		damage.setDamage( newDamage );
-	}
+//	public int getDurability( SpigotItemStack itemInHand ) {
+//		
+//		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+//		return damage.getDamage();
+//	}
+//	
+//	public void setDurability( SpigotItemStack itemInHand, int newDamage ) {
+//		
+//		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+//		damage.setDamage( newDamage );
+//	}
 	
 	/**
 	 * This is called setBlockFace, but it is really intended for use with ladders. 

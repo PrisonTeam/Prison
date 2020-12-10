@@ -385,14 +385,49 @@ public abstract class Spigot18Blocks
 	}
 	
 	@SuppressWarnings( "deprecation" )
-	public int getDurability( SpigotItemStack itemInHand ) {
-		return itemInHand.getBukkitStack().getDurability();
+	@Override
+	public boolean hasDurability( SpigotItemStack itemStack ) {
+		boolean results = false;
+		
+		if ( itemStack != null ) {
+			results = itemStack.getBukkitStack().getDurability() > 0;
+		}
+		
+		return results;	
+	}
+
+	@SuppressWarnings( "deprecation" )
+	@Override
+	public int getDurability( SpigotItemStack itemStack ) {
+		int results = 0;
+		
+		if ( itemStack != null ) {
+			results = itemStack.getBukkitStack().getDurability();
+		}
+		
+		return results;
+	}
+
+	@SuppressWarnings( "deprecation" )
+	@Override
+	public boolean setDurability( SpigotItemStack itemStack, int damage ) {
+		boolean results = false;
+		if ( itemStack != null ) {
+			itemStack.getBukkitStack().setDurability( (short) damage );
+			results = true;
+		}
+		return results;
 	}
 	
-	@SuppressWarnings( "deprecation" )
-	public void setDurability( SpigotItemStack itemInHand, int newDurability ) {
-		itemInHand.getBukkitStack().setDurability( (short) newDurability );
-	}
+//	@SuppressWarnings( "deprecation" )
+//	public int getDurability( SpigotItemStack itemInHand ) {
+//		return itemInHand.getBukkitStack().getDurability();
+//	}
+//	
+//	@SuppressWarnings( "deprecation" )
+//	public void setDurability( SpigotItemStack itemInHand, int newDurability ) {
+//		itemInHand.getBukkitStack().setDurability( (short) newDurability );
+//	}
 	
 	
 
