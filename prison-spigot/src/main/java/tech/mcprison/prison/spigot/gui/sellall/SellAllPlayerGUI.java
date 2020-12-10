@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -75,7 +76,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             List<String> itemsLore = createLore(
                     messages.getString("Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
-            ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+            ItemStack item = createButton(XMaterial.valueOf(conf.getString("Items." + key + ".ITEM_ID")).parseMaterial(), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
         }
         return inv;

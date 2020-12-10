@@ -133,21 +133,23 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         // Get the items from the player inventory and for each of them check the conditions.
         for (ItemStack itemStack : inv.getContents()){
 
-            // Get the items strings from config and for each of them get the Material and value.
-            for (String key : items){
-                Material itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
-                double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
-                int amount = 0;
+            if (itemStack != null) {
+                // Get the items strings from config and for each of them get the Material and value.
+                for (String key : items) {
+                    Material itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+                    double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
+                    int amount = 0;
 
-                // Check if the item from the player inventory's on the config of items sellable
-                // So it gets the amount and then remvoe it from the inventory
-                if (itemMaterial != null && itemMaterial == itemStack.getType()) {
-                    amount = itemStack.getAmount();
-                    p.getInventory().remove(itemStack);
-                }
-                // Get the new amount of money to give
-                if (amount != 0) {
-                    moneyToGive = moneyToGive + (value * amount);
+                    // Check if the item from the player inventory's on the config of items sellable
+                    // So it gets the amount and then remove it from the inventory
+                    if (itemMaterial != null && itemMaterial == itemStack.getType()) {
+                        amount = itemStack.getAmount();
+                        p.getInventory().remove(itemStack);
+                    }
+                    // Get the new amount of money to give
+                    if (amount != 0) {
+                        moneyToGive = moneyToGive + (value * amount);
+                    }
                 }
             }
         }
@@ -178,6 +180,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         Player p = getSpigotPlayer(sender);
 
+        if (p.isOp() || p.hasPermission("prison.admin")){
+            SellAllAdminGUI gui = new SellAllAdminGUI(p);
+            gui.open();
+            return;
+        }
+
         if (!sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
             if (p.isOp() || p.hasPermission("prison.admin")) {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
@@ -188,7 +196,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
             if (!p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))){
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.GUI_Permission") + "]"));
-                return;
             } else if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
                 if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
                     if (!p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
@@ -198,12 +205,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 }
                 SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
                 gui.open();
-                return;
             }
         }
-
-        SellAllAdminGUI gui = new SellAllAdminGUI(p);
-        gui.open();
     }
 
     @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", onlyPlayers = false)
