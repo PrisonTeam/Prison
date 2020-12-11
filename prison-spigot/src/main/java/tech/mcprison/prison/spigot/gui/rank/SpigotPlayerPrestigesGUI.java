@@ -163,7 +163,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         Rank rank = ladderData.getLowestRank().get();
 
-        Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
+        Rank playerRank = getRankPlayer().getRank("prestiges");
 
         // Not sure how you want to represent this:
         Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
@@ -206,5 +206,4 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));
         inv.setItem(dimension - 5, rankupButton);
     }
-
 }

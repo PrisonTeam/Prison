@@ -129,7 +129,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Get many parameters
         RankLadder ladderData = ladder.get();
         Rank rank = ladderData.getLowestRank().get();
-        Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
+        Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Call the whole GUI and build it
         if (guiBuilder(dimension, inv, rank, playerRank)) return;
