@@ -1,6 +1,7 @@
 package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import java.util.Random;
 import java.util.Stack;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -458,7 +458,10 @@ public abstract class MineScheduler
 	
 	/**
 	 * <p>This function checks if the block break event should execute a 
-	 * given command or not.
+	 * given command or not. If it needs to, then it will submit them to run as 
+	 * a task instead of running them in this thread.
+	 * </p>
+	 * 
 	 * @param blockCount
 	 * @param player 
 	 */
@@ -473,25 +476,43 @@ public abstract class MineScheduler
 				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 					
 					// If perms are set, check them, otherwise ignore perm check:
-					if ( blockEvent.getPermission() != null && blockEvent.getPermission().trim().length() > 0 &&
-							player.hasPermission( blockEvent.getPermission() ) ||
-							blockEvent.getPermission() == null && blockEvent.getPermission().trim().length() == 0
+					String perms = blockEvent.getPermission();
+					if ( perms != null && perms.trim().length() > 0 && player.hasPermission( perms ) ||
+							perms == null || 
+							perms.trim().length() == 0
 						) {
 						
 						chance -= blockEvent.getChance();
 							
 						if ( chance <= 0 ) {
-								
+							
 							String formatted = blockEvent.getCommand().
-										replace("{player}", player.getName())
-										.replace("{player_uid}", player.getUUID().toString());
+									replace("{player}", player.getName())
+									.replace("{player_uid}", player.getUUID().toString());
+
+							List<String> tasks = new ArrayList<>( 
+													Arrays.asList( formatted.split( ";" ) ));
+
+							String errorMessage = "BlockEvent: Player: " + player.getName();
+							
+							PrisonDispatchCommandTask dispatchable = 
+									new PrisonDispatchCommandTask( tasks, errorMessage );
 								
 	//		                Prison.get().getPlatform().logPlain(
 	//		                		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
 	//		                					formatted ));
 								
-							PrisonAPI.dispatchCommand(formatted);
-							break;
+							// submit task: 
+							@SuppressWarnings( "unused" )
+							int taskId = 0;
+							if ( blockEvent.isAsync() ) {
+								taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
+							}
+							else {
+								taskId = Prison.get().getPlatform().getScheduler().runTaskLater(dispatchable, 0);
+							}
+							
+//							PrisonAPI.dispatchCommand(formatted);
 						}
 					}
 				}

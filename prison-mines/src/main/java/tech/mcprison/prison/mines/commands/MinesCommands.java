@@ -2842,8 +2842,9 @@ public class MinesCommands
         	
         	String chance = dFmt.format( blockEvent.getChance() );
         	
-        	String message = String.format( "%s%% [%s] &a'&7%s&a'", 
-        						chance, blockEvent.getPermission(), blockEvent.getCommand() );
+        	String message = String.format( "%s%% [%s] (%s) &a'&7%s&a'", 
+        						chance, blockEvent.getPermission(), 
+        						(blockEvent.isAsync() ? "async" : "sync"), blockEvent.getCommand() );
         	
             FancyMessage msg = new FancyMessage( message )
                 .command("/mines set blockEventRemove " + mineName + " " + blockEvent.getCommand() )
@@ -2901,7 +2902,7 @@ public class MinesCommands
 
 
 	@Command(identifier = "mines set blockEventAdd", description = "Adds a BlockBreak command to a mine. " +
-			"Can use placeholders {player} and {player_uid}.", 
+			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventAdd(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
@@ -2910,6 +2911,8 @@ public class MinesCommands
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, " +
     							"or [none] for no perm." ) String perm,
+    			@Arg(name = "mode", description = "Processing mode to run the task: [sync, async]",
+    					def = "sync") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
 
@@ -2929,6 +2932,14 @@ public class MinesCommands
         	return;
         }
         
+        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"async".equalsIgnoreCase( mode ) ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid mode for running the commands. " +
+        					"[sync, async]  mode=[&b%s&7]",
+        					mode ));
+        	return;
+        }
+        
         if ( perm == null || perm.trim().length() == 0 || "none".equalsIgnoreCase( perm ) ) {
         	perm = "";
         }
@@ -2945,7 +2956,8 @@ public class MinesCommands
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command );
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, 
+        													"async".equalsIgnoreCase( mode ) );
         m.getBlockEvents().add( blockEvent );
 
         pMines.getMineManager().saveMine( m );
