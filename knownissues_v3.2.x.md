@@ -12,6 +12,15 @@ issues, and/or to serve as items that should be added, or fixed.
 - auto manager - durability not working even when feature is enabled
 - autoConfigure - fixed?
 
+- mines - add storage for liner so it can be regenerated
+- mine liner - add bedrock
+- BlockEvents - submit to run synch or async.
+- BlockEvents - multiple on same command.  Use ; as separators
+- auto features - fixed - durabilty not working
+- auto features - cannot turn off smelt or blocking
+- auto features - issue with lore
+- world guard - not working properly
+
 
 * **Custom block issues**
 - If CustomItems is loaded successfully but yet not using new block model, show error message
@@ -44,7 +53,7 @@ issues, and/or to serve as items that should be added, or fixed.
    
  
 
-* **Sellall - Hook up to prison command handler** 
+* **DONE: Sellall - Hook up to prison command handler** 
 Currently sellall is not hooked up to the prison command handler and it needs to be.
 
 

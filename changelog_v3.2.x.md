@@ -7,7 +7,13 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 2020-12-10
+## tag 3.2.3-alpha.9 2020-12-11
+
+
+* **Change MineBlockEvents to submitted so they do not run in the same process as the block break event.**
+It was causing lag, and now its much better.
+Also added async submission.  And the player can add more than one command per task.
+
 
 * **Issues with ItemMeta not working correctly with auto features.**
 Need to do more testing to see if this works, but initial tests are not looking too good.
