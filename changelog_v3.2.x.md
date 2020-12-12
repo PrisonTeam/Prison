@@ -10,7 +10,7 @@ that you need.
 ## tag 3.2.3-alpha.10 2020-12-12
 
 * **Added SellAllAuto per-User toggleable**: the instructions to use this feature are on the SellAll Guidebook,
-  the user will be able to enable or disable the sellAll auto on its own by running the command `/sellall auto sell` if
+  the user will be able to enable or disable the sellAll auto on its own by running the command `/sellall auto toggle` if
   this option's enabled in the `SellAllConfig.yml`.
 
 ## tag 3.2.3-alpha.9 2020-12-12

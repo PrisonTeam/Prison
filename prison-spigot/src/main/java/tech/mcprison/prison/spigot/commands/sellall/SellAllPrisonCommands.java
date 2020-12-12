@@ -221,7 +221,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
             }
         } else {
-            // Enable it
+            // Enable it for the first time
 
             try {
                 sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
