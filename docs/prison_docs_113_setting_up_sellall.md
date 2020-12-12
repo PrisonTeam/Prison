@@ -110,6 +110,15 @@ Just edit these config lines like this:
 ```
 You can edit the autoSell notification as you want.
 
+It's also possible to enable or disable sellAll per-User, it'll be them to choose if enable it or not.
+They'll need to use the command: `/sellall auto toggle`, it'll let them enable or disable it, when used
+for the first time, the user will be stored in the `users` section of the `sellAllConfig.yml`.
+
+The admin can enable this feature from the `sellAllConfig.yml`, by changing this option from `false` to `true`:
+```
+    Options.Full_Inv_AutoSell_perUserToggleable: false
+```
+
 # LIST OF COMMANDS
 ```
 /sellall

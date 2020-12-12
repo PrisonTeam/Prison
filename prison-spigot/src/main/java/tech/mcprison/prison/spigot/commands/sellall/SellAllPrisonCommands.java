@@ -27,6 +27,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
@@ -171,6 +172,70 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         //    }
         //}
         return moneyToGive;
+    }
+
+    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
+    private void sellAllAutoEnableUser(CommandSender sender){
+
+        if (!isEnabled()) return;
+
+        Player p = getSpigotPlayer(sender);
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        if (!sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+            return;
+        }
+
+        UUID playerUUID = p.getUniqueId();
+
+        if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
+            if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+                // Disable it
+
+                try {
+                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                    conf.set("Users." + playerUUID + ".isEnabled", false);
+                    conf.save(sellAllFile);
+                } catch (IOException e) {
+                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                    e.printStackTrace();
+                }
+
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoDisabled")));
+            } else if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("false")){
+                // Enable it
+
+                try {
+                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                    conf.set("Users." + playerUUID + ".isEnabled", "true");
+                    conf.save(sellAllFile);
+                } catch (IOException e) {
+                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                    e.printStackTrace();
+                }
+
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+            }
+        } else {
+            // Enable it
+
+            try {
+                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Users." + playerUUID + ".isEnabled", "true");
+                conf.set("Users." + playerUUID + ".name", p.getName());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+            }
+
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+        }
     }
 
     @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)

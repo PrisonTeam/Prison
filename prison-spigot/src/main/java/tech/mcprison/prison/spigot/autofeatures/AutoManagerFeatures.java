@@ -1,10 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -445,6 +441,17 @@ public class AutoManagerFeatures
 		if ( extra != null && extra.size() > 0 ) {
 
 			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
+
+				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+
+					UUID playerUUID = player.getUniqueId();
+
+					if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
+						if (!sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+							return;
+						}
+					}
+				}
 
 				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
 					player.sendMessage(SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));

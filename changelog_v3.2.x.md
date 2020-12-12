@@ -7,6 +7,12 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag 3.2.3-alpha.10 2020-12-12
+
+* **Added SellAllAuto per-User toggleable**: the instructions to use this feature are on the SellAll Guidebook,
+  the user will be able to enable or disable the sellAll auto on its own by running the command `/sellall auto sell` if
+  this option's enabled in the `SellAllConfig.yml`.
+
 ## tag 3.2.3-alpha.9 2020-12-12
 
 
