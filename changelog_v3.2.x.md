@@ -7,7 +7,13 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 2020-12-11
+## tag 3.2.3-alpha.9 2020-12-12
+
+
+* **To fix the reported issue of smelt and blocking always being performed when auto pickup is enabled**, changed the hasPermission to isPermissionSet so OPs will not just blindly trigger these features.
+
+
+* **Some adjustments to the BlockEvent task submission.**
 
 
 * **Change MineBlockEvents to submitted so they do not run in the same process as the block break event.**

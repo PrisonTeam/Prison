@@ -136,9 +136,9 @@ public class AutoManager
 
 			
 			
-			double lorePickup = 0.0; // doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
-			double loreSmelt = 0.0; // doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
-			double loreBlock = 0.0; // doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
+			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
+			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
+			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
 			
 			boolean permPickup = 
 					lorePickup == 100.0 ||
@@ -150,10 +150,14 @@ public class AutoManager
 					loreBlock == 100.0 ||
 					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 			
+			
+			// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
+			//       Ops will have to have the perms set to actually use them.
+					
 			// AutoPickup
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
 					(permPickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-							player.hasPermission( getMessage( AutoFeatures.permissionAutoPickup ) )) ) {
+							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ) )) ) {
 				
 				int count = autoFeaturePickup( block, player, itemInHand );
 				autoPickupCleanup( player, itemInHand, count, e );
@@ -162,7 +166,7 @@ public class AutoManager
 			// AutoSmelt
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
 					(permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-							player.hasPermission( getMessage( AutoFeatures.permissionAutoSmelt ) )) ){
+							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ) )) ){
 				
 				autoFeatureSmelt( block, player, itemInHand );
 			}
@@ -170,7 +174,7 @@ public class AutoManager
 			// AutoBlock
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
 					(permBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-							player.hasPermission(getMessage( AutoFeatures.permissionAutoBlock ) ) ) ) {
+							player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ) ) ) {
 				
 //				Output.get().logInfo( "AutoManager.applyAutoEnvents: AutoBlock  enabled = %b   " +
 //						"%s hasPerm = %b  isSet = %b   has lore = %b ",
@@ -246,13 +250,13 @@ public class AutoManager
 //		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
 //		double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
 //		
-//		boolean permPickup = p.hasPermission( "prison.autofeatures.pickup" ) ||
+//		boolean permPickup = p.isPermissionSet( "prison.autofeatures.pickup" ) ||
 //				lorePickup == 100.0 ||
 //				lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-//		boolean permSmelt = p.hasPermission( "prison.autofeatures.smelt" ) ||
+//		boolean permSmelt = p.isPermissionSet( "prison.autofeatures.smelt" ) ||
 //				loreSmelt == 100.0 ||
 //				loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-//		boolean permBlock = p.hasPermission( "prison.autofeatures.block" ) ||
+//		boolean permBlock = p.isPermissionSet( "prison.autofeatures.block" ) ||
 //				loreBlock == 100.0 ||
 //				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
 
