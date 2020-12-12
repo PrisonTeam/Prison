@@ -482,14 +482,13 @@ public abstract class MineScheduler
 							perms.trim().length() == 0
 						) {
 						
-						chance -= blockEvent.getChance();
-							
-						if ( chance <= 0 ) {
+						if ( chance <= blockEvent.getChance() ) {
 							
 							String formatted = blockEvent.getCommand().
 									replace("{player}", player.getName())
 									.replace("{player_uid}", player.getUUID().toString());
 
+							// Split multiple commands in to a List of indivual tasks:
 							List<String> tasks = new ArrayList<>( 
 													Arrays.asList( formatted.split( ";" ) ));
 
@@ -498,19 +497,18 @@ public abstract class MineScheduler
 							PrisonDispatchCommandTask dispatchable = 
 									new PrisonDispatchCommandTask( tasks, errorMessage );
 								
-	//		                Prison.get().getPlatform().logPlain(
-	//		                		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
-	//		                					formatted ));
-								
-							// submit task: 
-							@SuppressWarnings( "unused" )
-							int taskId = 0;
-							if ( blockEvent.isAsync() ) {
-								taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
+							if ( tasks.size() > 1 ) {
+								// submit task: 
+								@SuppressWarnings( "unused" )
+								int taskId = 0;
+								if ( blockEvent.isAsync() ) {
+									taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
+								}
+								else {
+									taskId = Prison.get().getPlatform().getScheduler().runTaskLater(dispatchable, 0);
+								}
 							}
-							else {
-								taskId = Prison.get().getPlatform().getScheduler().runTaskLater(dispatchable, 0);
-							}
+							
 							
 //							PrisonAPI.dispatchCommand(formatted);
 						}
