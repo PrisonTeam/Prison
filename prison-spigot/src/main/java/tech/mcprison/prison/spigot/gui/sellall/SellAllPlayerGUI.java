@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -73,8 +74,24 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             List<String> itemsLore = createLore(
                     messages.getString("Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
-            ItemStack item = createButton(XMaterial.valueOf(conf.getString("Items." + key + ".ITEM_ID")).parseMaterial(), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
-            inv.addItem(item);
+
+            Material material = XMaterial.valueOf(conf.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+            Material invalidMaterial = XMaterial.BARRIER.parseMaterial();
+
+            try {
+                material.getData();
+            } catch (NullPointerException ex){
+                material = invalidMaterial;
+            }
+
+            try {
+                ItemStack item = createButton(material, 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+                inv.addItem(item);
+            } catch (IllegalArgumentException ex){
+                material = invalidMaterial;
+                ItemStack item = createButton(material, 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+                inv.addItem(item);
+            }
         }
         return inv;
     }

@@ -2,10 +2,12 @@ package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -76,9 +78,24 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
                     "&aLeft-Click to edit value",
                     "&3value: &a$" + conf.getString("Items." + key + ".ITEM_VALUE")
             );
+            
+            Material material = XMaterial.valueOf(conf.getString("Items." + key + ".ITEM_ID")).parseMaterial();
+            Material invalidMaterial = XMaterial.BARRIER.parseMaterial();
 
-            ItemStack item = createButton(XMaterial.valueOf(conf.getString("Items." + key + ".ITEM_ID")).parseMaterial(), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
-            inv.addItem(item);
+            try {
+                material.getData();
+            } catch (NullPointerException ex){
+                material = invalidMaterial;
+            }
+
+            try {
+                ItemStack item = createButton(material, 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+                inv.addItem(item);
+            } catch (IllegalArgumentException ex){
+                material = invalidMaterial;
+                ItemStack item = createButton(material, 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+                inv.addItem(item);
+            }
         }
         return inv;
     }
