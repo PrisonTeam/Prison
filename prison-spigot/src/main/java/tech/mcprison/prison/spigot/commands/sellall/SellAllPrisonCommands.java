@@ -154,23 +154,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 }
             }
         }
-
-        // Old but improved SellAll
-        //for (String key : items) {
-        //    double amount = 0;
-        //    Material item = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseMaterial();
-        //
-        //    if (item != null) {
-        //
-        //        ItemStack itemToRemove = new ItemStack(item, 1);
-        //
-        //        while (p.getInventory().contains(item)) {
-        //            p.getInventory().removeItem(itemToRemove);
-        //            amount++;
-        //        }
-        //        moneyToGive = moneyToGive + (Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE")) * amount);
-        //    }
-        //}
         return moneyToGive;
     }
 
