@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -25,6 +26,10 @@ public abstract class SpigotGUIComponents {
     // createButton method (create a button for the GUI - item)
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
+        if (id == null){
+            id = XMaterial.BARRIER.parseMaterial();
+        }
+
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
         if ( meta != null ) {
@@ -39,8 +44,17 @@ public abstract class SpigotGUIComponents {
         return item;
     }
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+
+        if (item == null){
+            item = XMaterial.BARRIER.parseItem();
+        }
     	
     	ItemMeta meta = item.getItemMeta();
+
+        if (meta == null){
+            meta = XMaterial.BARRIER.parseItem().getItemMeta();
+        }
+
     	if ( meta != null ) {
     		meta.setDisplayName(SpigotPrison.format(display));
     		try {

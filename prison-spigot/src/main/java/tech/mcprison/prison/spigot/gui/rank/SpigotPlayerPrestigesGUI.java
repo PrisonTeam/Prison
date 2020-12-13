@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -203,7 +204,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));
+        ItemStack rankupButton = createButton(XMaterial.EMERALD_BLOCK.parseItem(), rankupLore, SpigotPrison.format("&aPrestige"));
         inv.setItem(dimension - 5, rankupButton);
     }
 }
