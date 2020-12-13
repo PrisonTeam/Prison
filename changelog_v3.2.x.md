@@ -7,13 +7,20 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.10 2020-12-12
+## tag 3.2.3-alpha.9 2020-12-13
+
+
+* **Added a new feature to this config: a List of String values.**
+Appears to work, but not yet hooked up to anything that would use it yet.  Needs more testing too.
+The intended purpose of this is to provide dynamic blocks lists for auto features.
+
 
 * **Added SellAllAuto per-User toggleable**: the instructions to use this feature are on the SellAll Guidebook,
   the user will be able to enable or disable the sellAll auto on its own by running the command `/sellall auto toggle` if
   this option's enabled in the `SellAllConfig.yml`.
 
-## tag 3.2.3-alpha.9 2020-12-12
+
+* **3.2.3-alpha.9 2020-12-12**
 
 
 * **To fix the reported issue of smelt and blocking always being performed when auto pickup is enabled**, changed the hasPermission to isPermissionSet so OPs will not just blindly trigger these features.
