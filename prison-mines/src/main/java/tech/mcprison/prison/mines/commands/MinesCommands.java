@@ -2911,11 +2911,13 @@ public class MinesCommands
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, " +
     							"or [none] for no perm." ) String perm,
-    			@Arg(name = "mode", description = "Processing mode to run the task: [sync, async]",
-    					def = "sync") String mode,
+//    			@Arg(name = "mode", description = "Processing mode to run the task: [sync, async]",
+//    					def = "sync") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
-
+		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
+		String mode = "sync";
+		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
