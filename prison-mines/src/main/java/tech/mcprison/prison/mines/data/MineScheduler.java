@@ -497,16 +497,19 @@ public abstract class MineScheduler
 							PrisonDispatchCommandTask dispatchable = 
 									new PrisonDispatchCommandTask( tasks, errorMessage );
 								
-							if ( tasks.size() > 1 ) {
+							if ( tasks.size() > 0 ) {
 								// submit task: 
-								@SuppressWarnings( "unused" )
-								int taskId = 0;
-								if ( blockEvent.isAsync() ) {
-									taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
-								}
-								else {
+								
+								// Warning: Cannot submit an async task since the dispatch command will
+								//          have to run in the main sync thread:
+//								@SuppressWarnings( "unused" )
+//								int taskId = 0;
+//								if ( blockEvent.isAsync() ) {
+//									taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
+//								}
+//								else {
 									taskId = Prison.get().getPlatform().getScheduler().runTaskLater(dispatchable, 0);
-								}
+//								}
 							}
 							
 							

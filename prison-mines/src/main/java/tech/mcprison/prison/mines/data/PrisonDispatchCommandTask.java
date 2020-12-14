@@ -27,7 +27,7 @@ public class PrisonDispatchCommandTask
 				}
 				catch ( Exception e ) {
 
-					Output.get().logError( "PrisonDispatchCommand: " + errorMessage + 
+					Output.get().logError( "PrisonDispatchCommand: Error trying to run task: " + errorMessage + 
 							"  Task: [" + task + "] " + e.getMessage() );
 				}
 			}
