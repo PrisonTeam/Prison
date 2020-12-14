@@ -7,7 +7,17 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.9 2020-12-13
+## tag 3.2.3-alpha.10 2020-12-14
+
+
+* **3.2.3-alpha.10 2020-12-14**
+
+
+* **Bug fix: BlockEvents were not being submitted** unless there was more than one command that was being ran.
+
+
+* **For the BlockEvent commands, disabled async mode**
+since the it will submit an async task to run in the future, then it will try to run a sync dispatch command and will fail.  So impossible to run commands async.
 
 
 * **Added a new feature to this config: a List of String values.**
