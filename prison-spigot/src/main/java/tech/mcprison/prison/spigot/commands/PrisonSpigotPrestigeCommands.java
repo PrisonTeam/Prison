@@ -24,7 +24,7 @@ public class PrisonSpigotPrestigeCommands
 
 	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 	
-	@Command(identifier = "prestiges", onlyPlayers = true, altPermissions = {"-none-", "prison.admin"})
+	@Command(identifier = "prestiges", onlyPlayers = true)
 	public void prestigesGUICommand(CommandSender sender) {
 
 		if ( !isPrisonConfig( "prestiges") ) {
@@ -40,16 +40,13 @@ public class PrisonSpigotPrestigeCommands
 		}
 	}
 
-
-	@Command(identifier = "prestige", onlyPlayers = true, altPermissions = "-none-")
+	@Command(identifier = "prestige", onlyPlayers = true)
 	public void prestigesPrestigeCommand(CommandSender sender) {
 
 		if ( isPrisonConfig( "prestiges" ) ) {
-			sender.dispatchCommand("gui prestige");
+			sender.dispatchCommand("rankup prestiges");
 		}
 	}
-
-
 
     @Command( identifier = "gui prestige", description = "GUI Prestige",
   		  aliases = {"prisonmanager prestige"} )
@@ -165,6 +162,4 @@ public class PrisonSpigotPrestigeCommands
         SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player );
         gui.open();
     }
-
- 
 }
