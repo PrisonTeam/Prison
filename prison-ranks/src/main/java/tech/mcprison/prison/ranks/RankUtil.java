@@ -71,6 +71,10 @@ public class RankUtil {
 		RANKUP_CANT_AFFORD,
 		RANKUP_NO_RANKS,
 		
+		RANKUP_LADDER_REMOVED,
+		RANKUP_FAILURE_REMOVING_LADDER,
+		
+		
 		IN_PROGRESS
 		;
 	}
@@ -120,6 +124,12 @@ public class RankUtil {
 		player_balance_increased,
 		player_balance_final,
 		zero_cost_to_player,
+		
+		attempting_to_delete_ladder_from_player,
+		cannot_delete_default_ladder,
+		ladder_was_removed_from_player,
+		could_not_delete_ladder,
+		
 		
 		failure_cannot_save_player_file,
 		
@@ -334,7 +344,29 @@ public class RankUtil {
         // If default ladder and rank is null at this point, that means use the "default" rank:
         if ( command == RankupCommands.setrank ) {
         	
-        	if ("default".equalsIgnoreCase( ladderName ) && rankName == null ) {
+        	if ( "-remove-".equalsIgnoreCase( rankName ) ) {
+        		results.addTransaction(RankupTransactions.attempting_to_delete_ladder_from_player);
+        		
+        		if ("default".equalsIgnoreCase( ladderName ) ) {
+        			results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
+        		}
+        		else {
+        			boolean success = rankPlayer.removeLadder( ladder.name );
+        			
+        			if ( success ) {
+        				results.addTransaction( RankupStatus.RANKUP_LADDER_REMOVED, 
+        									RankupTransactions.ladder_was_removed_from_player );
+        				return;
+        			}
+        		}
+        		
+        		results.addTransaction( RankupStatus.RANKUP_FAILURE_REMOVING_LADDER, 
+        				RankupTransactions.could_not_delete_ladder );
+        		
+        		return;
+        	}
+        	 
+        	else if ("default".equalsIgnoreCase( ladderName ) && rankName == null ) {
 	        	Optional<Rank> lowestRank = ladder.getLowestRank();
 	        	if ( lowestRank.isPresent() ) {
 	        		targetRank = lowestRank.get();

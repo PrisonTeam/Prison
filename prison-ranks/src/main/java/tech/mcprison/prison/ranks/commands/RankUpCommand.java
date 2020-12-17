@@ -303,7 +303,8 @@ public class RankUpCommand
     			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-    	@Arg(name = "rankName", description = "The rank to assign to the player") String rank,
+    	@Arg(name = "rankName", description = "The rank to assign to the player, or [-remove-] " +
+    						"to deleete the player from the rank.") String rank,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
 
     	Player player = getPlayer( sender, playerName );
@@ -451,6 +452,15 @@ public class RankUpCommand
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
 				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
 													"loaded economies.", results.getTargetRank().currency);
+				break;
+				
+			case RANKUP_LADDER_REMOVED:
+				Output.get().sendError(sender, "The ladder %s was removed.", ladder);
+				break;
+				
+			case RANKUP_FAILURE_REMOVING_LADDER:
+				Output.get().sendError(sender, "The ladder %s could not be removed.", ladder);
+				
 				break;
 				
 			case IN_PROGRESS:

@@ -279,14 +279,17 @@ public class RankPlayer
 
     /**
      * Removes a ladder from this player, including whichever rank this player had in it.
+     * Cannot remove the default ladder.
      *
      * @param ladderName The ladder's name.
      */
-    public void removeLadder(String ladderName) {
-        if (ladderName.equalsIgnoreCase("default")) {
-            return;
+    public boolean removeLadder(String ladderName) {
+    	boolean results = false;
+        if ( !ladderName.equalsIgnoreCase("default") ) {
+        	Integer id = ranks.remove(ladderName);
+        	results = (id != null);
         }
-        ranks.remove(ladderName);
+        return results;
     }
 
     /*
