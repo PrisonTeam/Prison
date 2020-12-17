@@ -7,7 +7,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.10 2020-12-14
+## tag 3.2.3-alpha.10 2020-12-16
+
+
+* **Added the ability to remove a ladder from a player** 
+using /ranks set rank help using the rank "name" of -remove-.
 
 
 * **3.2.3-alpha.10 2020-12-14**
