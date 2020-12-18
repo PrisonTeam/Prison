@@ -18,13 +18,14 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
-
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Represents a player on the Minecraft server.
@@ -124,5 +125,11 @@ public interface Player extends CommandSender, InventoryHolder {
      * 
      */
     public void printDebugInventoryInformationToConsole();
+    
+    
+    public List<String> getPermissions();
+
+    
+    public List<String> getPermissions( String prefix );
     
 }

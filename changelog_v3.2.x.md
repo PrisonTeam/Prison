@@ -10,6 +10,9 @@ that you need.
 ## tag 3.2.3-alpha.10 2020-12-18
 
 
+* **To SpigotPlayer I added a function to get a list of all perms the player has, and also a function to fliter by prefix.**
+
+
 * **Changed the MineBlockEvent to have an inline mode and sync mode to run the given commands.**
 Changed around the save and load for the BlockEvent to support these changes.**
 
