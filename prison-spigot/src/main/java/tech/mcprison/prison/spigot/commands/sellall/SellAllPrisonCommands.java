@@ -273,26 +273,33 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
             return;
         }
+        itemID = itemID.toUpperCase();
+
         if (value == null){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
 
-        ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
-        if (blockAdd == null) {
+        try {
+            ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
+            if (blockAdd == null) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+                return;
+            }
+
+            try {
+                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
+                conf.set("Items." + itemID + ".ITEM_VALUE", value);
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+            }
+        } catch (IllegalArgumentException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
-        }
-
-        try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
-            conf.set("Items." + itemID + ".ITEM_VALUE", value);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-            e.printStackTrace();
         }
 
         sender.sendMessage(SpigotPrison.format("&3[PRISON]&a ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
@@ -348,27 +355,35 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
             return;
         }
+        itemID = itemID.toUpperCase();
+
         if (value == null){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
             return;
         }
 
-        ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
-        if (blockAdd == null) {
+        try {
+            ItemStack blockAdd = XMaterial.valueOf(itemID).parseItem();
+            if (blockAdd == null) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+                return;
+            }
+
+            try {
+                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
+                conf.set("Items." + itemID + ".ITEM_VALUE", value);
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+            }
+        } catch (IllegalArgumentException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
             return;
         }
 
-        try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
-            conf.set("Items." + itemID + ".ITEM_VALUE", value);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-            e.printStackTrace();
-        }
 
         sender.sendMessage(SpigotPrison.format("&3[PRISON]&a ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllCommandEditSuccess")));
     }
