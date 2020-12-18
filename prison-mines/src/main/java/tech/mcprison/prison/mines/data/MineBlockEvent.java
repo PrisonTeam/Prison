@@ -2,22 +2,20 @@ package tech.mcprison.prison.mines.data;
 
 import java.text.DecimalFormat;
 
-import tech.mcprison.prison.integration.PermissionIntegration;
-
 public class MineBlockEvent {
 
 	private double chance;
 	private String permission;
 	private String command;
-	private boolean async = false;
+	private String mode;
 	
-	public MineBlockEvent( double chance, String permission, String command, boolean async ) {
+	public MineBlockEvent( double chance, String permission, String command, String mode ) {
 		super();
 		
 		this.chance = chance;
 		this.permission = permission;
 		this.command = command;
-		this.async = async;
+		this.mode = mode;
 	}
 
 	
@@ -26,7 +24,7 @@ public class MineBlockEvent {
 		return dFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
-				getCommand() + "|" + isAsync();
+				getCommand() + "|" + getMode();
 	}
 	
 	public static MineBlockEvent fromSaveString( String chancePermCommand ) {
@@ -44,13 +42,17 @@ public class MineBlockEvent {
 			
 			String command = cpc.length >= 3 ? cpc[2] : "";
 
-			String asyncStr = cpc.length >= 4 ? cpc[3] : "false";
-			boolean async = (asyncStr != null && 
-											"true".equalsIgnoreCase( asyncStr ) );
+			String mode = cpc.length >= 4 ? cpc[3] : "inline";
+			
+			if ( !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
+				mode = "sync";
+			}
+//			boolean async = (asyncStr != null && 
+//											"true".equalsIgnoreCase( asyncStr ) );
 			
 			if ( command != null && command.trim().length() > 0 ) {
 				
-				results = new MineBlockEvent( chance, permission, command, async );
+				results = new MineBlockEvent( chance, permission, command, mode );
 			}
 		}
 		
@@ -79,11 +81,21 @@ public class MineBlockEvent {
 		this.command = command;
 	}
 
-	public boolean isAsync() {
-		return async;
+	public String getMode() {
+		return mode;
 	}
-	public void setAsync( boolean async ) {
-		this.async = async;
+	public void setMode( String mode ) {
+		this.mode = mode;
+	}
+
+	public boolean isInline() {
+		return "inline".equalsIgnoreCase( getMode() );
+	}
+	public boolean isSync() {
+		return "sync".equalsIgnoreCase( getMode() );
+	}
+	public boolean isAsync() {
+		return "async".equalsIgnoreCase( getMode() );
 	}
 	
 }

@@ -491,25 +491,35 @@ public abstract class MineScheduler
 							// Split multiple commands in to a List of indivual tasks:
 							List<String> tasks = new ArrayList<>( 
 													Arrays.asList( formatted.split( ";" ) ));
-
-							String errorMessage = "BlockEvent: Player: " + player.getName();
 							
-							PrisonDispatchCommandTask dispatchable = 
-									new PrisonDispatchCommandTask( tasks, errorMessage );
-								
+							
 							if ( tasks.size() > 0 ) {
-								// submit task: 
 								
-								// Warning: Cannot submit an async task since the dispatch command will
-								//          have to run in the main sync thread:
-//								@SuppressWarnings( "unused" )
-//								int taskId = 0;
-//								if ( blockEvent.isAsync() ) {
-//									taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(dispatchable, 0);
-//								}
-//								else {
-									taskId = Prison.get().getPlatform().getScheduler().runTaskLater(dispatchable, 0);
-//								}
+								String errorMessage = "BlockEvent: Player: " + player.getName();
+
+								PrisonDispatchCommandTask task = 
+										new PrisonDispatchCommandTask( tasks, errorMessage );
+								
+								
+								switch ( blockEvent.getMode() )
+								{
+									case "inline":
+										// Don't submit, but run it here within this thread:
+										task.run();
+										break;
+										
+									case "sync":
+									case "async": // async will cause failures so run as sync:
+										
+										// submit task: 
+										@SuppressWarnings( "unused" ) 
+										int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(task, 0);
+										break;
+									
+									default:
+										break;
+								}
+								
 							}
 							
 							

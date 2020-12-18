@@ -7,7 +7,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.10 2020-12-16
+## tag 3.2.3-alpha.10 2020-12-18
+
+
+* **Changed the MineBlockEvent to have an inline mode and sync mode to run the given commands.**
+Changed around the save and load for the BlockEvent to support these changes.**
 
 
 * **Added the ability to remove a ladder from a player** 

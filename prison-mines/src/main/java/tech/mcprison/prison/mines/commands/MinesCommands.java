@@ -2844,7 +2844,7 @@ public class MinesCommands
         	
         	String message = String.format( "%s%% [%s] (%s) &a'&7%s&a'", 
         						chance, blockEvent.getPermission(), 
-        						(blockEvent.isAsync() ? "async" : "sync"), blockEvent.getCommand() );
+        						blockEvent.getMode(), blockEvent.getCommand() );
         	
             FancyMessage msg = new FancyMessage( message )
                 .command("/mines set blockEventRemove " + mineName + " " + blockEvent.getCommand() )
@@ -2911,12 +2911,12 @@ public class MinesCommands
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, " +
     							"or [none] for no perm." ) String perm,
-//    			@Arg(name = "mode", description = "Processing mode to run the task: [sync, async]",
-//    					def = "sync") String mode,
+    			@Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
+    					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
 		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
-		String mode = "sync";
+		//String mode = "sync";
 		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -2934,10 +2934,10 @@ public class MinesCommands
         	return;
         }
         
-        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"async".equalsIgnoreCase( mode ) ) {
+        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
         	sender.sendMessage( 
         			String.format("&7Please provide a valid mode for running the commands. " +
-        					"[sync, async]  mode=[&b%s&7]",
+        					"[inline, sync]  mode=[&b%s&7]",
         					mode ));
         	return;
         }
@@ -2958,16 +2958,16 @@ public class MinesCommands
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, 
-        													"async".equalsIgnoreCase( mode ) );
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode );
         m.getBlockEvents().add( blockEvent );
 
         pMines.getMineManager().saveMine( m );
         
         Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' to the mine '&b%s&7' with " +
-        		"the optional permission %s.", 
+        		"the optional permission %s, and use the mode %s", 
         		command, m.getName(), 
-        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'" );
+        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
+        		mode );
 
     }
 
