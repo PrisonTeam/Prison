@@ -470,5 +470,26 @@ public class RankPlayer
 	public void printDebugInventoryInformationToConsole() {
 		
 	}
+	
+    @Override
+    public List<String> getPermissions() {
+    	List<String> results = new ArrayList<>();
+    	
+    	return results;
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	for ( String perm : getPermissions() ) {
+			if ( perm.startsWith( prefix ) ) {
+				results.add( perm );
+			}
+		}
+    	
+    	return results;
+    }
+    
 
 }

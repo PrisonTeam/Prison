@@ -18,14 +18,18 @@
 
 package tech.mcprison.prison;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
-
-import java.util.*;
 
 /**
  * @author Faizaan A. Datoo
@@ -124,4 +128,25 @@ public class TestPlayer implements Player {
     public void printDebugInventoryInformationToConsole() {
     	
     }
+    
+    @Override
+    public List<String> getPermissions() {
+    	List<String> results = new ArrayList<>();
+    	
+    	return results;
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	for ( String perm : getPermissions() ) {
+			if ( perm.startsWith( prefix ) ) {
+				results.add( perm );
+			}
+		}
+    	
+    	return results;
+    }
+    
 }
