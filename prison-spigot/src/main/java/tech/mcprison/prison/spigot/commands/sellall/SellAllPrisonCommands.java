@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -101,7 +102,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer, PrisonRanks rankPlugin) {
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
-            boolean hasPlayerPrestige = false;
             double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
 
             if (rankPlugin != null) {
@@ -113,16 +113,20 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                         playerRankName = null;
                     }
                     if (playerRankName != null) {
-                        hasPlayerPrestige = true;
                         multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
-                        moneyToGive = moneyToGive * multiplier;
                     }
                 }
             }
-            if (!hasPlayerPrestige) {
-                moneyToGive = moneyToGive * multiplier;
+            List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+            double multiplierExtraByPerms = 0;
+            for (String multByPerm : perms){
+                sPlayer.sendMessage(multByPerm.substring(26));
+                multiplierExtraByPerms += Double.parseDouble(multByPerm.substring(26));
             }
+            multiplier += multiplierExtraByPerms;
+            moneyToGive = moneyToGive * multiplier;
         }
+
         return moneyToGive;
     }
 
@@ -168,6 +172,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
 
         if (!sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermissionToToggleAutoSell") + " [" + sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission") + "]"));
             return;
         }
 

@@ -207,6 +207,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllMultipliersAreDisabled", "&7[&3PRISON WARN&7] &cMultipliers are disabled in the SellAll config!");
         dataConfig("Message.SellAllMultiplierWrongFormat", "&7[&3PRISON WARN&7] &cWrong format, please use /sellall multiplier add/delete <Prestige> <Multiplier>");
         dataConfig("Message.SellAllMissingPermission", "&7[&3PRISON WARN&7] &cSorry, but you don't have the permission [");
+        dataConfig("Message.SellAllMissingPermissionToToggleAutoSell", "&7[&3PRISON WARN&7] &cSorry but you're missing the permission to use that! ");
         dataConfig("Message.SellAllRanksDisabled", "&7[&3PRISON ERROR&7] &cThe Ranks module's disabled or not found!");
         dataConfig("Message.SellAllPrestigeLadderNotFound", "&7[&3PRISON WARN&7] &cCan't find the prestiges ladder, they might be disabled in the config.yml!");
         dataConfig("Message.SellAllCantFindPrestigeOrRank", "&7[&3PRISON WARN&7] &cCan't find the Prestige/Rank: ");

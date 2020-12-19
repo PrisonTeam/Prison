@@ -7,6 +7,20 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+## tag 3.2.3-alpha.11 2020-12-19
+
+* **SellAll auto toggle permission**, added the ability to enable or disable a permission in the SellAllConfig.yml for the full
+inventory SellAll auto per-user toggleable.
+  
+* **SellAll Sell Multiplier Permission**, added the ability to give multipliers to players by adding to the user
+the permission prison.sellall.multiplier.valueOfTheMultiplier here, example: prison.sellall.multiplier.2 will add a
+  2x multiplier to the 1x of the default, so the total multiplier will be 3x, this multiplier system will add to 
+  your already added multiplier, or more multipliers permission, the value, so if you add to a player 2 multiplier permissions,
+  he'll have the default one from the sellallconfig.yml (you can set this to 0 but be careful because if a player doesn't
+  have a multiplier permission of at least 1, he won't get any money), they'll get more, exaple: GABRYCA have prison.sellall.multiplier.2
+  , then prison.sellall.multiplier.3 and the default one of 1, the total multiplier will be 2+3+1=6x, so if I sell one 1
+  COAL with the value of 10 (still an example), I'll get 60 cash.
+
 ## tag 3.2.3-alpha.10 2020-12-18
 
 
