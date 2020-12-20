@@ -393,10 +393,13 @@ public class RankUpCommand
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             		
-            		String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
-            				(player == null ? "Someone" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		// broadcastToWholeServer( sender, messageGlobal );
+            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+            			
+            			String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
+            					(player == null ? "Someone" : player.getName()),
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            			broadcastToWholeServer( sender, messageGlobal );
+            		}
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
@@ -405,10 +408,13 @@ public class RankUpCommand
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             		
-            		String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
-            				(player == null ? "Someone" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		// broadcastToWholeServer( sender, messageGlobal );
+            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+            			
+            			String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
+            					(player == null ? "Someone" : player.getName()),
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            			 broadcastToWholeServer( sender, messageGlobal );
+            		}
 				}
                 break;
             case RANKUP_CANT_AFFORD:

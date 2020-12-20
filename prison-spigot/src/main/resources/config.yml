@@ -94,7 +94,7 @@ sellall-sign-visible-tag: "&7[&3SellAll&7]"
 # NEW: Broadcast rankups and demotions to the whole server, in all worlds.
 # If this value does not exist, or has a true value, it will be broadcasted.
 # Any other value besides true, or non-existant, will be treated as false.
-broadcast-rankups: true
+broadcast-rankups: false
 
 
 

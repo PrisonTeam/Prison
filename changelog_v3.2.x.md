@@ -9,6 +9,10 @@ that you need.
 
 ## tag 3.2.3-alpha.10 2020-12-19
 
+
+* **Reenabled the global broadcast of rankups**, which this time it's hooked p to the config setting broadcast-rankups in the config.yml file.
+
+
 * **Enabled new feature prestige.resetMoney** 
 that will control if the player's money is reset upon presetiging. The new permission is `presetige.resetMoney`.  If the permission is not set, then it will default to true.  This also changes the configs in config.yml with prestiges being deprecated but will remain for a while.
 
