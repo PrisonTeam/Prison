@@ -120,8 +120,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
             double multiplierExtraByPerms = 0;
             for (String multByPerm : perms){
-                sPlayer.sendMessage(multByPerm.substring(26));
-                multiplierExtraByPerms += Double.parseDouble(multByPerm.substring(26));
+                double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+                if (!sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true")) {
+                    multiplierExtraByPerms += multByPermDouble;
+                } else if (sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true") && multByPermDouble > multiplierExtraByPerms){
+                    multiplierExtraByPerms = multByPermDouble;
+                }
             }
             multiplier += multiplierExtraByPerms;
             moneyToGive = moneyToGive * multiplier;

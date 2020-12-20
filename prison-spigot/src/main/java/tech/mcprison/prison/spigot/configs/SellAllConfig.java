@@ -79,6 +79,7 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Full_Inv_AutoSell_PerUserToggleable_Permission", "prison.sellall.toggle");
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
+        dataConfig("Options.Multiplier_Permission_Only_Higher", "false");
         dataConfig("Options.Multiplier_Command_Permission_Enabled", "true");
         dataConfig("Options.Multiplier_Command_Permission", "prison.admin");
     }
