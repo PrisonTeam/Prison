@@ -453,7 +453,7 @@ public class SpigotPrison extends JavaPlugin {
             Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
             
             // NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-            if ( isPrisonConfig( "prestiges") ) {
+            if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
             	// Enable the setup of the prestige related commands only if prestiges is enabled:
             	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
             }

@@ -85,7 +85,9 @@ public class RankUpCommand
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
-        if (!(ladder.equalsIgnoreCase("prestiges") && Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) ) && 
+        if (!(ladder.equalsIgnoreCase("prestiges") && 
+        		(Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+        				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
         	!ladder.equalsIgnoreCase("default") && 
         	!sender.hasPermission(permission + ladder.toLowerCase())) {
             Output.get()
@@ -194,10 +196,15 @@ public class RankUpCommand
 				// Get economy
 				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 				
-				if ( economy != null ) {
+				boolean resetBalance = Prison.get().getPlatform().getConfigBooleanTrue( "prestige.resetMoney" );
+				
+				if ( economy != null || !resetBalance ) {
 					
-					// Set the player balance to 0 (reset)
-					economy.setBalance(player, 0);
+					if ( resetBalance ) {
+						// Set the player balance to 0 (reset)
+						economy.setBalance(player, 0);
+					}
+						
 					// Send a message to the player because he did prestige!
 					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!");
 				}

@@ -27,7 +27,7 @@ public class PrisonSpigotPrestigeCommands
 	@Command(identifier = "prestiges", onlyPlayers = true)
 	public void prestigesGUICommand(CommandSender sender) {
 
-		if ( !isPrisonConfig( "prestiges") ) {
+		if ( !isPrisonConfig( "prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
 			sender.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigesDisabledDefault")));
 			return;
 		}
@@ -43,7 +43,7 @@ public class PrisonSpigotPrestigeCommands
 	@Command(identifier = "prestige", onlyPlayers = true)
 	public void prestigesPrestigeCommand(CommandSender sender) {
 
-		if ( isPrisonConfig( "prestiges" ) ) {
+		if ( isPrisonConfig( "prestiges" ) || isPrisonConfig( "prestige.enabled" ) ) {
 			sender.dispatchCommand("rankup prestiges");
 		}
 	}
@@ -52,7 +52,7 @@ public class PrisonSpigotPrestigeCommands
   		  aliases = {"prisonmanager prestige"} )
     public void prisonManagerPrestige(CommandSender sender ) {
 
-        if ( isPrisonConfig("prestiges") ) {
+        if ( isPrisonConfig("prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
 
             if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
@@ -137,7 +137,7 @@ public class PrisonSpigotPrestigeCommands
     		  onlyPlayers = true )
     private void prisonManagerPrestiges( CommandSender sender ) {
 
-        if ( !isPrisonConfig("prestiges") ) {
+        if ( !isPrisonConfig("prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigesAreDisabled")));
             return;
         }
