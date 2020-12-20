@@ -7,7 +7,10 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.10 2020-12-19
+## tag 3.2.3-alpha.11 2020-12-19
+
+
+* **3.2.3-alpha.11 2020-12-19**
 
 
 * **Reenabled the global broadcast of rankups**, which this time it's hooked p to the config setting broadcast-rankups in the config.yml file.

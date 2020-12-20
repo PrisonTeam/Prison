@@ -9,8 +9,15 @@ issues, and/or to serve as items that should be added, or fixed.
 
 # To Do Items - During Alpha v3.2.3
 
+
+- Possible issue with auto features preventing WorldGuard from protecting a
+  mine.  In the auto features GUI, when the bottom three features are turned 
+  off then WG won't protect the region.
+  
+
 - auto manager - durability not working even when feature is enabled
 - autoConfigure - fixed?
+
 
 - mines - add storage for liner so it can be regenerated
 - mine liner - add bedrock
