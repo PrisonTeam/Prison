@@ -495,15 +495,18 @@ public class RankUtil {
         
         int count = 0;
         for (String cmd : targetRank.rankUpCommands) {
-            String formatted = cmd.replace("{player}", prisonPlayer.getName())
-                .replace("{player_uid}", rankPlayer.uid.toString());
-            
+        	if ( cmd != null ) {
+        		
+        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+        				.replace("{player_uid}", rankPlayer.uid.toString());
+        		
 //            Prison.get().getPlatform().logPlain(
 //            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
 //            					formatted ));
-            
-            PrisonAPI.dispatchCommand(formatted);
-            count++;
+        		
+        		PrisonAPI.dispatchCommand(formatted);
+        		count++;
+        	}
         }
         results.setRankupCommandsExecuted( count );
         results.addTransaction( RankupTransactions.rankupCommandsCompleted );
