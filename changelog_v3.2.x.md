@@ -9,6 +9,9 @@ that you need.
 
 ## tag 3.2.3-alpha.11 2020-12-19
 
+* **RankUpEvent now contains more information and can now cancel a rankup.**
+As a result to allow the canceling of a rankup, the rankup code had to be modified to fire the event before anything is applied to the rankup.
+
 
 * **3.2.3-alpha.11 2020-12-19**
 
