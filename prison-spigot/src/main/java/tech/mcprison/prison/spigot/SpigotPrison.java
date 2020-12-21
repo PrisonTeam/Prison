@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -57,7 +55,10 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.*;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
@@ -262,7 +263,6 @@ public class SpigotPrison extends JavaPlugin {
 		this.autoFeatures = autoFeatures;
 	}
 
-    private final Pattern hexPattern = Pattern.compile("<#([A-Fa-f0-9]){6}>");
 
     public static String format(String format){
 

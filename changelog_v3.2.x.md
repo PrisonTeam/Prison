@@ -7,8 +7,15 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.11 2020-12-21
+## tag 3.2.3-alpha.12 2020-12-21
 
+
+* **Initial support for hex colors.**
+Works, but its a pain until I can auto parse the hex automatically.  But for now it can be entered and will work well with v1.16.x and will degrade to something reasonable for even v1.8.8.
+So instead of using &#abcdef for right now, you need to enter it as &x&a&b&c&d&e&f.  I'll hook up the proper translator later, but the expanded format should always work.
+
+
+* **3.2.3-alpha.12 2020-12-21**
 
 * **Fixes a potential issue where players are attempted to be added in an async thread which will end with a failure since the commands on rankup cannot be ran in an async thread.**
 This now detects if the thread is async (not the primary bukkit thread) and then submits a future sync task to run in zero ticks that will add the new player to Prison, which will result in a rankup.
