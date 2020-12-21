@@ -34,7 +34,7 @@ public interface Scheduler {
      * @param delay The time to wait, in ticks, until the task is run.
      * @return The task ID.
      */
-    int runTaskLater(Runnable run, long delay);
+    public int runTaskLater(Runnable run, long delay);
 
     /**
      * Run a task on its own thread, after a certain amount of time.
@@ -43,7 +43,7 @@ public interface Scheduler {
      * @param delay The time to wait, in ticks, until the task is run.
      * @return The task ID.
      */
-    int runTaskLaterAsync(Runnable run, long delay);
+    public int runTaskLaterAsync(Runnable run, long delay);
 
     /**
      * Run a task on the server thread, at the specified interval.
@@ -53,7 +53,7 @@ public interface Scheduler {
      * @param interval The time between runs, in ticks.
      * @return The task ID.
      */
-    int runTaskTimer(Runnable run, long delay, long interval);
+    public int runTaskTimer(Runnable run, long delay, long interval);
 
     /**
      * Run a task on its own thread, at the specified interval.
@@ -63,18 +63,19 @@ public interface Scheduler {
      * @param interval The time between runs, in ticks.
      * @return The task ID.
      */
-    int runTaskTimerAsync(Runnable run, long delay, long interval);
+    public int runTaskTimerAsync(Runnable run, long delay, long interval);
 
     /**
      * Cancel a certain task.
      *
      * @param taskId The task's ID.
      */
-    void cancelTask(int taskId);
+    public void cancelTask(int taskId);
 
     /**
      * Cancels all tasks registered through this scheduler.
      */
-    void cancelAll();
+    public void cancelAll();
 
+    public boolean isPrimaryThread();
 }

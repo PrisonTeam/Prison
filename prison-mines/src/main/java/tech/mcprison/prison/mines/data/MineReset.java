@@ -17,6 +17,7 @@ import tech.mcprison.prison.mines.data.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;

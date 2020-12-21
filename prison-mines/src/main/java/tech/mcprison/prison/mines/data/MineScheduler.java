@@ -13,6 +13,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.tasks.PrisonRunnable;
 
 public abstract class MineScheduler
 		extends MineReset

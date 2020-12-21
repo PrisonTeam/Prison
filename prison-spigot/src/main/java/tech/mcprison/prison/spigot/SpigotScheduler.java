@@ -34,28 +34,39 @@ public class SpigotScheduler implements Scheduler {
         this.scheduler = plugin.getServer().getScheduler();
     }
 
-    @Override public int runTaskLater(Runnable run, long delay) {
+    @Override 
+    public int runTaskLater(Runnable run, long delay) {
         return scheduler.runTaskLater(plugin, run, delay).getTaskId();
     }
 
-    @Override public int runTaskLaterAsync(Runnable run, long delay) {
+    @Override 
+    public int runTaskLaterAsync(Runnable run, long delay) {
         return scheduler.runTaskLaterAsynchronously(plugin, run, delay).getTaskId();
     }
 
-    @Override public int runTaskTimer(Runnable run, long delay, long interval) {
+    @Override 
+    public int runTaskTimer(Runnable run, long delay, long interval) {
         return scheduler.runTaskTimer(plugin, run, delay, interval).getTaskId();
     }
 
-    @Override public int runTaskTimerAsync(Runnable run, long delay, long interval) {
+    @Override 
+    public int runTaskTimerAsync(Runnable run, long delay, long interval) {
         return scheduler.runTaskTimerAsynchronously(plugin, run, delay, interval).getTaskId();
     }
 
-    @Override public void cancelTask(int taskId) {
+    @Override 
+    public void cancelTask(int taskId) {
         scheduler.cancelTask(taskId);
     }
 
-    @Override public void cancelAll() {
+    @Override 
+    public void cancelAll() {
         scheduler.cancelTasks(plugin);
+    }
+    
+    @Override
+    public boolean isPrimaryThread() {
+    	return this.plugin.getServer().isPrimaryThread();
     }
 
 }

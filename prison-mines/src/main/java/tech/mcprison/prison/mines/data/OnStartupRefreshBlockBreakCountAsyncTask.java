@@ -1,5 +1,7 @@
 package tech.mcprison.prison.mines.data;
 
+import tech.mcprison.prison.tasks.PrisonRunnable;
+
 public class OnStartupRefreshBlockBreakCountAsyncTask
 	implements PrisonRunnable {
 		
