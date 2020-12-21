@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import com.google.common.eventbus.Subscribe;
@@ -51,6 +52,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.PlaceholdersUtil;
 
 /**
@@ -65,6 +67,7 @@ public class PlayerManager
 
     private Collection collection;
     private List<RankPlayer> players;
+    private TreeMap<String, RankPlayer> playersByName;
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
@@ -75,6 +78,7 @@ public class PlayerManager
     	
         this.collection = collection;
         this.players = new ArrayList<>();
+        this.playersByName = new TreeMap<>();
         
         this.playerErrors = new HashSet<>();
 
@@ -93,7 +97,18 @@ public class PlayerManager
      */
     public void loadPlayer(String playerFile) throws IOException {
         Document document = collection.get(playerFile).orElseThrow(IOException::new);
-        players.add(new RankPlayer(document));
+        RankPlayer rankPlayer = new RankPlayer(document);
+        
+        players.add( rankPlayer );
+        
+        // add by uuid:
+        playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
+        
+        // add by name:
+        if ( rankPlayer.getNames().size() > 0 ) {
+        	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
+        	
+        }
     }
 
     /**
@@ -160,7 +175,11 @@ public class PlayerManager
         return players;
     }
 
-    public Set<String> getPlayerErrors() {
+    public TreeMap<String, RankPlayer> getPlayersByName() {
+		return playersByName;
+	}
+
+	public Set<String> getPlayerErrors() {
 		return playerErrors;
 	}
 
@@ -226,40 +245,74 @@ public class PlayerManager
     
     
     private RankPlayer addPlayer( UUID uid, String playerName ) {
-        RankPlayer newPlayer = null; 
+    	RankPlayer results = null;
 
-        if ( uid != null && playerName != null && playerName.trim().length() > 0 && 
-        		!"CONSOLE".equalsIgnoreCase( playerName ) ) {
+    	// addPlayer can only be rank in the primary thread:
+    	if ( PrisonTaskSubmitter.isPrimaryThread() ) {
+    		results = addPlayerSyncTask( uid, playerName );
+    	}
+    	else if ( !getPlayersByName().containsKey( playerName )) {
+    		
+    		// Submit the sync task to add player.  But since this is an 
+    		// async thread, we can only return a null.  Future requests
+    		// for this player's placeholder will resolve successfully
+    		// and a return value of null is perfectly acceptable.
+    		NewRankPlayerSyncTask syncTask = new NewRankPlayerSyncTask( uid, playerName );
+    		PrisonTaskSubmitter.runTaskLater( syncTask, 0 );
+    	}
+    	return results;
+    }
+    
+    protected RankPlayer addPlayerSyncTask( UUID uid, String playerName ) {
+        RankPlayer newPlayer = null; 
+        
+        // Treat this like how we setup a singleton with sychronization with a 
+        // check before and after to see if the object has been inserted:
+        
+        if ( uid != null && playerName != null && 
+        		playerName.trim().length() > 0 && !"CONSOLE".equalsIgnoreCase( playerName ) &&
+        		!getPlayersByName().containsKey( playerName )) {
         	
-        	// We need to create a new player data file.
-        	newPlayer = new RankPlayer( uid, playerName );
-        	
-        	
-        	players.add(newPlayer);
-        	
-        	try {
-        		savePlayer(newPlayer);
+        	synchronized( getPlayersByName() ) {
         		
-        		Player player = getPlayer( null, playerName, uid );
+        		// recheck to ensure that the player's name is not in the getPlayersByName()
+        		// collection... it could have been added since submitting the sync task:
         		
-        		// Assign the player to the default rank:
-        		String ladder = null; // will set to the "default" ladder
-        		String rank = null;   // will set to the "default" rank
+        		if ( !getPlayersByName().containsKey( playerName ) ) {
+        			
+        			// We need to create a new player data file.
+        			newPlayer = new RankPlayer( uid, playerName );
+        			newPlayer.checkName( playerName );
+        			
+        			players.add(newPlayer);
+        			getPlayersByName().put( playerName, newPlayer );
+        			
+        			try {
+        				savePlayer(newPlayer);
+        				
+        				Player player = getPlayer( null, playerName, uid );
+        				
+        				// Assign the player to the default rank:
+        				String ladder = null; // will set to the "default" ladder
+        				String rank = null;   // will set to the "default" rank
+        				
+        				// Set the rank to the default ladder and the default rank.  The results are logged
+        				// before the results are returned, so can ignore the results:
+        				@SuppressWarnings( "unused" )
+        				RankupResults results = new RankUtil().setRank(player, newPlayer, ladder, rank, 
+        						playerName, "FirstJoinEvent");
+        				
+        				
+        				Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
+        			} 
+        			catch (IOException e) {
+        				Output.get().logError(
+        						"Failed to create new player data file for player " + 
+        								(playerName == null ? "<NoNameAvailable>" : playerName) + 
+        								"  target filename: " + newPlayer.filename(), e);
+        			}
+        		}
         		
-        		// Set the rank to the default ladder and the default rank.  The results are logged
-        		// before the results are returned, so can ignore the results:
-        		@SuppressWarnings( "unused" )
-        		RankupResults results = new RankUtil().setRank(player, newPlayer, ladder, rank, 
-        				playerName, "FirstJoinEvent");
-        		
-        		
-        		Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
-        	} 
-        	catch (IOException e) {
-        		Output.get().logError(
-        				"Failed to create new player data file for player " + 
-        						(playerName == null ? "<NoNameAvailable>" : playerName) + 
-        						"  target filename: " + newPlayer.filename(), e);
         	}
         }
         
@@ -275,9 +328,10 @@ public class PlayerManager
     	
     	Player player = event.getPlayer();
     	
-        if (!getPlayer(player.getUUID(), player.getName()).isPresent()) {
-        	addPlayer( player.getUUID(), player.getName() );
-        }
+    	// Player is auto added if they do not exist when calling getPlayer so don't try to
+    	// add them a second time.
+        getPlayer(player.getUUID(), player.getName());
+        
     }
 
     

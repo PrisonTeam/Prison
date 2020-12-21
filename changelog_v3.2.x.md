@@ -7,7 +7,15 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-## tag 3.2.3-alpha.11 2020-12-19
+## tag 3.2.3-alpha.11 2020-12-21
+
+
+* **Fixes a potential issue where players are attempted to be added in an async thread which will end with a failure since the commands on rankup cannot be ran in an async thread.**
+This now detects if the thread is async (not the primary bukkit thread) and then submits a future sync task to run in zero ticks that will add the new player to Prison, which will result in a rankup.
+
+
+* **Move the PrisonRunnable out of the Mines module and placed it in core since it needs to be used elsewhere.**
+
 
 * **RankUpEvent now contains more information and can now cancel a rankup.**
 As a result to allow the canceling of a rankup, the rankup code had to be modified to fire the event before anything is applied to the rankup.

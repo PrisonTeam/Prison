@@ -152,6 +152,11 @@ public class RankPlayer
     	return uid;
     }
     
+    /**
+     * If the player has any names in the getNames() collection, of which they may not,
+     * then getDisaplyName() will return the last one set, otherwise it will return
+     * a null.
+     */
     public String getDisplayName() {
     	return getLastName();
     }

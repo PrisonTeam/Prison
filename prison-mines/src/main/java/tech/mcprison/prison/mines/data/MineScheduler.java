@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public abstract class MineScheduler
 		extends MineReset
@@ -398,7 +399,7 @@ public abstract class MineScheduler
 			
 			
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
-			int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(this, ticksToWait);
+			int taskId = PrisonTaskSubmitter.runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
 		} else {
 			Output.get().logError("Mine " + getName() +
@@ -419,7 +420,7 @@ public abstract class MineScheduler
 		
 		int taskId = getTaskId();
 		
-		Prison.get().getPlatform().getScheduler().cancelTask( taskId );
+		PrisonTaskSubmitter.cancelTask( taskId );
 	}
 	
 	public void submit( double offsetSeconds ) {
@@ -514,7 +515,7 @@ public abstract class MineScheduler
 										
 										// submit task: 
 										@SuppressWarnings( "unused" ) 
-										int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(task, 0);
+										int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
 										break;
 									
 									default:
@@ -573,7 +574,7 @@ public abstract class MineScheduler
 		
 		// cancel existing job:
 		if ( getTaskId() != null ) {
-			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );
+			PrisonTaskSubmitter.cancelTask( getTaskId() );
 		}
 		
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
