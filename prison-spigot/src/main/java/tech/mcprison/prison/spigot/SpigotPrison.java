@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -259,8 +261,22 @@ public class SpigotPrison extends JavaPlugin {
 	public void setAutoFeatures( AutoManagerFeatures autoFeatures ) {
 		this.autoFeatures = autoFeatures;
 	}
-	
+
+    private final Pattern hexPattern = Pattern.compile("<#([A-Fa-f0-9]){6}>");
+
     public static String format(String format){
+
+        // This might be enabled in the future
+        // Check if version's higher than 1.16
+        //if (new BluesSpigetSemVerComparator().compareMCVersionTo("1.16.0") > 0){
+        //    Matcher matcher = hexPattern.matcher(format);
+        //    while (matcher.find()) {
+        //        String color = format.substring(matcher.start(), matcher.end());
+        //        format = format.replace(color, ChatColor.valueOf(color) + "");
+        //        matcher = hexPattern.matcher(format);
+        //    }
+        //}
+
         return format == null ? "" : ChatColor.translateAlternateColorCodes('&', format);
     }
 
