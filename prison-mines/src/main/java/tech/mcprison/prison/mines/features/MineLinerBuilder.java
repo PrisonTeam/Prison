@@ -1,4 +1,4 @@
-package tech.mcprison.prison.mines.data;
+package tech.mcprison.prison.mines.features;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;

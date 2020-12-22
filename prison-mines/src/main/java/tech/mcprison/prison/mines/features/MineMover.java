@@ -1,6 +1,7 @@
-package tech.mcprison.prison.mines.data;
+package tech.mcprison.prison.mines.features;
 
-import tech.mcprison.prison.mines.data.MineLinerBuilder.LinerPatterns;
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 

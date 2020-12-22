@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.util.Bounds.Edges;
 
 public class MineLinerBuilderTest
