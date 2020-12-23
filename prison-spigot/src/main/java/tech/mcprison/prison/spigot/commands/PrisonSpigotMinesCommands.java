@@ -19,7 +19,7 @@ public class PrisonSpigotMinesCommands
 
 			prisonManagerMines( sender );
 
-            if ( !(!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled")) ){
+            if (isPrisonConfig("prison-gui-enabled") && isConfig("Options.Mines.GUI_Enabled")){
                 sender.dispatchCommand("gui mines");
             }
 		}
