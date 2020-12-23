@@ -18,6 +18,10 @@ that you need.
 # V3.2.3-alpha.12 2020-12-22
 
 
+* **Hooking up the saving of mine liners so they can eventually be used to regenerate themselves when resizing or moving the mine.**
+Still needs more work, but getting closer.
+
+
 * **Update some of the changelog docs.**
 It was getting very long, so broke them out in by release version for easier tracking of changes.
 

@@ -1226,6 +1226,39 @@ public class MinesCommands
         		}
         	}
         	
+
+        	
+//          chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+//              Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
+          	
+          	if ( !m.isVirtual() ) {
+          		RowComponent row = new RowComponent();
+          		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+          				Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
+          		
+          		row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
+          				dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
+          		chatDisplay.addComponent( row );
+          	}
+          	
+          	
+          	if ( !m.isVirtual() ) {
+          		RowComponent row = new RowComponent();
+          		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
+          				dFmt.format( m.getRemainingBlockCount() ), 
+          				fFmt.format( m.getPercentRemainingBlockCount() ) );
+          		
+          		chatDisplay.addComponent( row );
+          	}
+        	
+          	
+          	{
+          		RowComponent row = new RowComponent();
+          		row.addTextComponent( "&3Liner: &7%s", 
+        				m.getLinerData().toInfoString() );
+        		chatDisplay.addComponent( row );
+          	}
+        	
         	
         	{
         		RowComponent row = new RowComponent();
@@ -1288,29 +1321,7 @@ public class MinesCommands
         	
         	
         	
-        	
-//        chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-//            Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
-        	
-        	if ( !m.isVirtual() ) {
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
-        				Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
-        		
-        		row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
-        				dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
-        		chatDisplay.addComponent( row );
-        	}
-        	
-        	
-        	if ( !m.isVirtual() ) {
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
-        				dFmt.format( m.getRemainingBlockCount() ), 
-        				fFmt.format( m.getPercentRemainingBlockCount() ) );
-        		
-        		chatDisplay.addComponent( row );
-        	}
+
         	
         	{
         		RowComponent row = new RowComponent();
@@ -2548,6 +2559,7 @@ public class MinesCommands
     		return;
     	}
     	
+    	mine.getLinerData().setLiner( e, linerPattern, isForced );
     	
     	new MineLinerBuilder( mine, e, linerPattern, isForced );
     	

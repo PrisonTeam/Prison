@@ -30,6 +30,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
@@ -412,6 +413,11 @@ public class Mine
         }
         
         
+        String mineLinerData = (String) document.get("mineLinerData");
+        setLinerData( MineLinerData.fromSaveString( mineLinerData ) );
+
+        
+        
         if ( dirty ) {
 			
         	// Resave the mine data since an update to the mine format was detected and
@@ -531,6 +537,11 @@ public class Mine
 			mineBlockEvents.add( blockEvent.toSaveString() );
 		}
         ret.put("mineBlockEvents", mineBlockEvents);
+        
+        
+        String mineLinerData = getLinerData().toSaveString();
+        ret.put("mineLinerData", mineLinerData );
+        
         
         return ret;
     }

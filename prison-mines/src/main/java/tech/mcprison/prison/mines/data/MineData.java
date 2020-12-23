@@ -13,6 +13,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
@@ -108,6 +109,8 @@ public abstract class MineData
     
     private List<MineBlockEvent> blockEvents;
     
+    private MineLinerData linerData;
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -178,6 +181,8 @@ public abstract class MineData
         this.rankString = null;
         
         this.blockEvents = new ArrayList<>();
+        
+        this.linerData = new MineLinerData();
     }
 
     /**
@@ -721,6 +726,13 @@ public abstract class MineData
 		}
 		
 		return results;
+	}
+
+	public MineLinerData getLinerData() {
+		return linerData;
+	}
+	public void setLinerData( MineLinerData linerData ) {
+		this.linerData = linerData;
 	}
 	
 }

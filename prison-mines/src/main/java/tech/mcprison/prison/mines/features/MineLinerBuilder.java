@@ -36,7 +36,8 @@ public class MineLinerBuilder {
 		
 		blackAndWhite,
 		seaEchos,
-		obby, 
+		obby,
+		bedrock,
 		glowingPlanks,
 		darkOakPrismarine,
 		beacon,
@@ -553,6 +554,15 @@ public class MineLinerBuilder {
 						{ "obsidian" }
 				};
 				pattern2d = obby;
+				break;
+				
+				
+			case bedrock:
+				String[][] bedrock =
+				{
+						{ "bedrock" }
+				};
+				pattern2d = bedrock;
 				break;
 				
 				
