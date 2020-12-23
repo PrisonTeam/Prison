@@ -2423,10 +2423,10 @@ public class MinesCommands
     
     @Command(identifier = "mines set size", permissions = "mines.set", description = "Change the size of the mine")
     public void setSizeCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName,
+    		@Arg(name = "mineName", description = "The name of the mine to resize.") String mineName,
     		@Arg(name = "edge", description = "Edge to adjust [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
-    		@Arg(name = "amount", description = "amount to adjust, [-1, 1]", def = "1") int amount 
+    		@Arg(name = "amount", description = "amount to adjust, [-1, 0, 1]. Zero will refresh liner.", def = "1") int amount 
     		
     		) {
     	
@@ -2441,8 +2441,8 @@ public class MinesCommands
     	}
     	
     	if ( amount == 0 ) {
-    		sender.sendMessage( "&cInvalid amount. Cannot be zero." );
-    		return;
+    		sender.sendMessage( "&cSize of mine will not be changed. Will refresh the liner." );
+//    		return;
     	}
 
 //    	if ( adjustment == null || "smaller".equalsIgnoreCase( adjustment ) || "larger".equalsIgnoreCase( adjustment ) ) {
@@ -2554,16 +2554,16 @@ public class MinesCommands
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine mine = pMines.getMine(mineName);
     	
-    	if ( mine.isVirtual() ) {
-    		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
-    		return;
-    	}
+//    	if ( mine.isVirtual() ) {
+//    		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
+//    		return;
+//    	}
     	
     	mine.getLinerData().setLiner( e, linerPattern, isForced );
     	
     	new MineLinerBuilder( mine, e, linerPattern, isForced );
     	
-    	// NOTE: The mine itself was not changed, so nothing to save:
+    	pMines.getMineManager().saveMine( mine );
     	
     }
     

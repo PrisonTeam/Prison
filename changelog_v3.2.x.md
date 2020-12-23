@@ -18,6 +18,10 @@ that you need.
 # V3.2.3-alpha.12 2020-12-22
 
 
+* **More work on the mine liner.  Pretty much working well with /mines set size.**
+Still need to hook up to a few other areas.
+
+
 * **Hooking up the saving of mine liners so they can eventually be used to regenerate themselves when resizing or moving the mine.**
 Still needs more work, but getting closer.
 

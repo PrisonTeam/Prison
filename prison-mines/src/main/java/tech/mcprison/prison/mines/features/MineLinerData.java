@@ -72,7 +72,7 @@ public class MineLinerData {
 		String results = generateStringValue(" &2", " &7");
 		
 		if ( results.trim().isEmpty() ) {
-			results = "&3None";
+			results = "&dNone";
 		}
 		
 		return results;
@@ -195,8 +195,93 @@ public class MineLinerData {
 
 	public void setLiner( Edges edge, LinerPatterns linerPattern, boolean isForced ) {
 		
+		setLiner( edge, linerPattern.name(), isForced );
 	}
 	
+	public boolean hasEdge( Edges edge ) {
+		
+		return getEdge( edge ) != null;
+	}
+	
+	public String getEdge( Edges edge ) {
+		String results = null;
+		
+		switch ( edge )
+		{
+			case north:
+				results = getNorth() != null ? getNorth() : getWalls();
+				break;
+
+			case east:
+				results = getEast() != null ? getEast() : getWalls();
+				break;
+				
+			case south:
+				results = getSouth() != null ? getSouth() : getWalls();
+				break;
+				
+			case west:
+				results = getWest() != null ? getWest() : getWalls();
+				break;
+				
+			case walls:
+				results = getWalls();
+				break;
+				
+			case top:
+				results = getTop();
+				break;
+				
+			case bottom:
+				results = getBottom();
+				break;
+				
+			default:
+				break;
+		}
+		
+		return results;
+	}
+	
+	public boolean getForce( Edges edge ) {
+		boolean results = false;
+		
+		switch ( edge )
+		{
+			case north:
+				results = isForceNorth() || isForceWalls();
+				break;
+
+			case east:
+				results = isForceEast() || isForceWalls();
+				break;
+				
+			case south:
+				results = isForceSouth() || isForceWalls();
+				break;
+				
+			case west:
+				results = isForceWest() || isForceWalls();
+				break;
+				
+			case walls:
+				results = isForceWalls();
+				break;
+				
+			case top:
+				results = isForceTop();
+				break;
+				
+			case bottom:
+				results = isForceBottom();
+				break;
+				
+			default:
+				break;
+		}
+		return results;
+	}
+		
 	public String getNorth() {
 		return north;
 	}
@@ -294,6 +379,7 @@ public class MineLinerData {
 	public void setForceBottom( boolean forceBottom ) {
 		this.forceBottom = forceBottom;
 	}
+
 
 	
 }

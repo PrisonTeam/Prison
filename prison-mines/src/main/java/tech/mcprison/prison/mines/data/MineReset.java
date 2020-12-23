@@ -1397,6 +1397,8 @@ public abstract class MineReset
     	// First clear the mine:
     	clearMine( false );
 		
+    	// if amount is zero, then just refresh the liner:
+    	
     	if ( amount < 0 ) {
     		while ( amount++ < 0 ) {
     			
@@ -1408,13 +1410,24 @@ public abstract class MineReset
     			new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
     		}
     	}
-    	else {
+    	else if ( amount > 0 ) {
     		new MineLinerBuilder( (Mine) this, edge, LinerPatterns.repair, false );
     		
     		Bounds newBounds = new Bounds( getBounds(), edge, amount );
     		setBounds( newBounds );
     	}
 
+    	// Rebuild the liner if it exists:
+    	for ( Edges targtEdge : Edges.values() ) {
+			
+    		if ( getLinerData().hasEdge( targtEdge ) ) {
+    			
+    			LinerPatterns pattern = LinerPatterns.fromString( getLinerData().getEdge( targtEdge ) );
+    			boolean force = getLinerData().getForce( targtEdge );
+    			
+    			new MineLinerBuilder( (Mine) this, targtEdge, pattern, force );
+    		}
+		}
 		
 		// Finally trace the mine:
 		clearMine( true );
