@@ -45,6 +45,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
@@ -1260,6 +1261,24 @@ public class MinesCommands
           	}
         	
         	
+          	
+          	{
+          		RowComponent row = new RowComponent();
+          		row.addTextComponent( "&3Mine Command Count: &7%d", 
+          				m.getResetCommands().size() );
+          		chatDisplay.addComponent( row );
+          	}
+          	
+          	
+          	
+          	{
+          		RowComponent row = new RowComponent();
+          		row.addTextComponent( "&3Mine BlockEvent Count: &7%d", 
+          				m.getBlockEvents().size() );
+          		chatDisplay.addComponent( row );
+          	}
+          	
+          	
         	{
         		RowComponent row = new RowComponent();
         		double rtMinutes = m.getResetTime() / 60.0D;
@@ -2819,8 +2838,9 @@ public class MinesCommands
     }
 
 
+    
 
-	@Command(identifier = "mines set blockEventList", description = "Lists the blockEvent commands for a mine.", 
+	@Command(identifier = "mines blockEvent list", description = "Lists the blockEvent commands for a mine.", 
     						onlyPlayers = false, permissions = "mines.set")
     public void blockEventList(CommandSender sender, 
     				@Arg(name = "mineName") String mineName) {
@@ -2854,25 +2874,26 @@ public class MinesCommands
         	
         	String chance = dFmt.format( blockEvent.getChance() );
         	
-        	String message = String.format( "%s%% [%s] (%s) &a'&7%s&a'", 
+        	String message = String.format( "%s%% [%s] %s (%s) &a'&7%s&a'", 
         						chance, blockEvent.getPermission(), 
+        						blockEvent.getEventType().name(),
         						blockEvent.getMode(), blockEvent.getCommand() );
         	
             FancyMessage msg = new FancyMessage( message )
-                .command("/mines set blockEventRemove " + mineName + " " + blockEvent.getCommand() )
+                .command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
                 .tooltip("Click to remove.");
             builder.add(msg);
         }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/mines set blockEventAdd " + mineName + " [chance] [perm] [cmd] /")
+            new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + mineName + " [chance] [perm] [cmd] /")
                 .tooltip("&7Add a new BockEvent command.")));
         display.send(sender);
     }
 
 
-	@Command(identifier = "mines set blockEventRemove", description = "Removes a BlockEvent command from a mine.", 
+	@Command(identifier = "mines blockEvent remove", description = "Removes a BlockEvent command from a mine.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
@@ -2911,9 +2932,9 @@ public class MinesCommands
         }
     }
 
+	
 
-
-	@Command(identifier = "mines set blockEventAdd", description = "Adds a BlockBreak command to a mine. " +
+	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine. " +
 			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventAdd(CommandSender sender, 
@@ -2921,8 +2942,11 @@ public class MinesCommands
     			@Arg(name = "percent",
     					description = "Percent chance between 0.0000 and 100.0") double chance,
     			@Arg(name = "permission", def = "none",
-    					description = "Optional permission that the player must have, " +
-    							"or [none] for no perm." ) String perm,
+    					description = "Optional permission that the player must have, or [none] for no perm." 
+    								) String perm,
+    			@Arg(name = "eventType", def = "eventTypeAll",
+    					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
+    								) String eventType,
     			@Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
     					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
@@ -2958,6 +2982,17 @@ public class MinesCommands
         	perm = "";
         }
         
+        
+        BlockEventType eType = BlockEventType.fromString( eventType );
+        if ( !eType.name().equalsIgnoreCase( eventType ) ) {
+        	sender.sendMessage( 
+        			String.format("&7Notice: The supplied eventType does not match the list of valid " +
+        					"BlockEventTypes therefore defaulting to eventTypeAll. Valid eventTypes are: " +
+        					"[eventTypeAll, eventBlockBreak, eventTEXplosion]",
+        					eventType ));
+        }
+        
+        
         setLastMineReferenced(mineName);
         
         PrisonMines pMines = PrisonMines.getInstance();
@@ -2970,7 +3005,7 @@ public class MinesCommands
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode );
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode, eType );
         m.getBlockEvents().add( blockEvent );
 
         pMines.getMineManager().saveMine( m );

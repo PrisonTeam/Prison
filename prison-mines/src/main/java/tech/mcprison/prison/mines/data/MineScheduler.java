@@ -13,6 +13,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -468,7 +469,7 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( int blockCount, Player player ) {
+	public void processBlockBreakEventCommands( int blockCount, Player player, BlockEventType eventType ) {
 		
 		if ( getBlockEvents().size() > 0 ) {
 			Random random = new Random();
@@ -478,59 +479,68 @@ public abstract class MineScheduler
 				
 				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 					
-					// If perms are set, check them, otherwise ignore perm check:
-					String perms = blockEvent.getPermission();
-					if ( perms != null && perms.trim().length() > 0 && player.hasPermission( perms ) ||
-							perms == null || 
-							perms.trim().length() == 0
-						) {
-						
-						if ( chance <= blockEvent.getChance() ) {
-							
-							String formatted = blockEvent.getCommand().
-									replace("{player}", player.getName())
-									.replace("{player_uid}", player.getUUID().toString());
-
-							// Split multiple commands in to a List of indivual tasks:
-							List<String> tasks = new ArrayList<>( 
-													Arrays.asList( formatted.split( ";" ) ));
-							
-							
-							if ( tasks.size() > 0 ) {
-								
-								String errorMessage = "BlockEvent: Player: " + player.getName();
-
-								PrisonDispatchCommandTask task = 
-										new PrisonDispatchCommandTask( tasks, errorMessage );
-								
-								
-								switch ( blockEvent.getMode() )
-								{
-									case "inline":
-										// Don't submit, but run it here within this thread:
-										task.run();
-										break;
-										
-									case "sync":
-									case "async": // async will cause failures so run as sync:
-										
-										// submit task: 
-										@SuppressWarnings( "unused" ) 
-										int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
-										break;
-									
-									default:
-										break;
-								}
-								
-							}
-							
-							
-//							PrisonAPI.dispatchCommand(formatted);
-						}
-					}
+					processBlockEventDetails( player, eventType, chance, blockEvent );
 				}
 				
+			}
+		}
+	}
+
+	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, MineBlockEvent blockEvent )
+	{
+		if ( blockEvent.getEventType() == BlockEventType.eventTypeAll || 
+				blockEvent.getEventType() == eventType ) {
+			
+			// If perms are set, check them, otherwise ignore perm check:
+			String perms = blockEvent.getPermission();
+			if ( perms != null && perms.trim().length() > 0 && player.hasPermission( perms ) ||
+					perms == null || 
+					perms.trim().length() == 0
+					) {
+				
+				if ( chance <= blockEvent.getChance() ) {
+					
+					String formatted = blockEvent.getCommand().
+							replace("{player}", player.getName())
+							.replace("{player_uid}", player.getUUID().toString());
+					
+					// Split multiple commands in to a List of indivual tasks:
+					List<String> tasks = new ArrayList<>( 
+							Arrays.asList( formatted.split( ";" ) ));
+					
+					
+					if ( tasks.size() > 0 ) {
+						
+						String errorMessage = "BlockEvent: Player: " + player.getName();
+						
+						PrisonDispatchCommandTask task = 
+								new PrisonDispatchCommandTask( tasks, errorMessage );
+						
+						
+						switch ( blockEvent.getMode() )
+						{
+							case "inline":
+								// Don't submit, but run it here within this thread:
+								task.run();
+								break;
+								
+							case "sync":
+							case "async": // async will cause failures so run as sync:
+								
+								// submit task: 
+								@SuppressWarnings( "unused" ) 
+								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
+								break;
+								
+							default:
+								break;
+						}
+						
+					}
+					
+					
+//							PrisonAPI.dispatchCommand(formatted);
+				}
 			}
 		}
 	}

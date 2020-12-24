@@ -15,6 +15,7 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
@@ -316,7 +317,7 @@ public class OnBlockBreakEventListener
 			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( 1, player );
+			mine.processBlockBreakEventCommands( 1, player, BlockEventType.eventBlockBreak );
 			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
@@ -335,7 +336,7 @@ public class OnBlockBreakEventListener
 			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( blockCount, player );
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion );
 			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then

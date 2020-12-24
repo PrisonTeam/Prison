@@ -9,13 +9,38 @@ public class MineBlockEvent {
 	private String command;
 	private String mode;
 	
-	public MineBlockEvent( double chance, String permission, String command, String mode ) {
+	private BlockEventType eventType;
+	
+	
+	public enum BlockEventType {
+		eventTypeAll,
+		eventBlockBreak,
+		eventTEXplosion;
+		
+		public static BlockEventType fromString( String type ) {
+			BlockEventType results = eventTypeAll;
+			
+			for ( BlockEventType eType : values() ) {
+				if ( eType.name().equalsIgnoreCase( type ) ) {
+					results = eType;
+					break;
+				}
+			}
+			
+			return results;
+		}
+	}
+	
+	public MineBlockEvent( double chance, String permission, 
+								String command, String mode, BlockEventType eventType ) {
 		super();
 		
 		this.chance = chance;
 		this.permission = permission;
 		this.command = command;
 		this.mode = mode;
+		
+		this.eventType = eventType;
 	}
 
 	
@@ -24,7 +49,7 @@ public class MineBlockEvent {
 		return dFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
-				getCommand() + "|" + getMode();
+				getCommand() + "|" + getMode() + "|" + getEventType().name();
 	}
 	
 	public static MineBlockEvent fromSaveString( String chancePermCommand ) {
@@ -50,9 +75,12 @@ public class MineBlockEvent {
 //			boolean async = (asyncStr != null && 
 //											"true".equalsIgnoreCase( asyncStr ) );
 			
+			BlockEventType eventType = cpc.length >= 5 ? BlockEventType.fromString( cpc[4] ) :
+											BlockEventType.eventTypeAll;
+			
 			if ( command != null && command.trim().length() > 0 ) {
 				
-				results = new MineBlockEvent( chance, permission, command, mode );
+				results = new MineBlockEvent( chance, permission, command, mode, eventType );
 			}
 		}
 		
@@ -87,6 +115,14 @@ public class MineBlockEvent {
 	public void setMode( String mode ) {
 		this.mode = mode;
 	}
+
+	public BlockEventType getEventType() {
+		return eventType;
+	}
+	public void setEventType( BlockEventType eventType ) {
+		this.eventType = eventType;
+	}
+
 
 	public boolean isInline() {
 		return "inline".equalsIgnoreCase( getMode() );
