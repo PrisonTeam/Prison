@@ -17,6 +17,15 @@ that you need.
 
 # V3.2.3-alpha.12 2020-12-22
 
+
+* **Added the ability to tie a BlockEvent to either a normal block break event, or a TE Explosion event, or both.**
+This allows a more focused approach and flexibility.
+Hooked this up to a few more things and finalized more of it.
+
+
+* **Found some obscure bugs with the command handler and fixed it. Was generating a NPE.**
+
+
 * **Changes to ranks autoConfigure to force a generation if ranks and mines already exist.**
 If there is a conflict with a preexisting rank, it iwill be skipped and so will the generation of the mine by the same name.
 
