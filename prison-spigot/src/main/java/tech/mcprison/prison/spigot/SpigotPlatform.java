@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -85,6 +87,7 @@ import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -1148,6 +1151,31 @@ class SpigotPlatform
 			String mineBlockListing = mine.getBlockListString();
 			Output.get().logInfo( mineBlockListing );
 		}
+	}
+	
+	@Override
+	public void autoCreateMineLinerAssignment() {
+		
+		MineManager mm = PrisonMines.getInstance().getMineManager();
+		List<Mine> mines = mm.getMines();
+		
+		for ( Mine mine : mines ) {
+			
+			if ( mine.getLinerData().toSaveString().trim().isEmpty() ) {
+				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), true );
+				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), true );
+
+				mm.saveMine( mine );
+			}
+		}	
+	}
+	
+	private LinerPatterns getRandomLinerType() {
+		LinerPatterns[] liners = LinerPatterns.values();
+		
+		// Exclude the last LinerPattern since it is "repair".
+		int pos = new Random().nextInt( liners.length - 1 );
+		return liners[pos];
 	}
 	
 	/**

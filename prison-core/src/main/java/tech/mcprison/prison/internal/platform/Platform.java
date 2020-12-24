@@ -314,6 +314,9 @@ public interface Platform {
 	
 	
 	public void autoCreateMineBlockAssignment();
+
+
+	public void autoCreateMineLinerAssignment();
 	
 
 }

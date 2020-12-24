@@ -286,4 +286,9 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+	@Override
+	public void autoCreateMineLinerAssignment() {
+		
+	}
+	
 }
