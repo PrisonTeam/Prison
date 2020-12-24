@@ -223,7 +223,7 @@ public class CommandHandler {
                 	String subCmd = scommand.getUsage();
 
                 	int subCmdSubCnt = scommand.getSuffixes().size();
-                	String subCommands = (subCmdSubCnt <= 1 ? "" : 
+                	String subCommands = (subCmdSubCnt == 0 ? "" : 
             							ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
                 	
                 	String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
@@ -537,18 +537,20 @@ public class CommandHandler {
         RegisteredCommand mainCommand = getRootCommands().get( rootPluginCommand );
         
             for (int i = 1; i < identifiers.length; i++) {
+            	
                 String suffix = identifiers[i];
-                if (mainCommand.doesSuffixCommandExist(suffix)) {
+                if ( mainCommand.doesSuffixCommandExist(suffix) ) {
                     mainCommand = mainCommand.getSuffixCommand(suffix);
-                } else {
+                } 
+                else {
                     RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
-                newCommand.setAlias( alias != null );
+                    newCommand.setAlias( alias != null );
                     mainCommand.addSuffixCommand(suffix, newCommand);
                 
-                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
-                // getTabCompleterData().
-                getAllRegisteredCommands().add( newCommand );
-                getTabCompleaterData().add( newCommand );
+	                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
+	                // getTabCompleterData().
+	                getAllRegisteredCommands().add( newCommand );
+	                getTabCompleaterData().add( newCommand );
 
                     mainCommand = newCommand;
                 }
