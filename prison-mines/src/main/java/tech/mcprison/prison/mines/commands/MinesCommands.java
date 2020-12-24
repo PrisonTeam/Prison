@@ -2868,21 +2868,49 @@ public class MinesCommands
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
-        DecimalFormat dFmt = new DecimalFormat("0.0000");
+        DecimalFormat dFmt = new DecimalFormat("0.00000");
         
+        int rowNumber = 1;
         for (MineBlockEvent blockEvent : m.getBlockEvents()) {
+        	
+        	RowComponent row = new RowComponent();
         	
         	String chance = dFmt.format( blockEvent.getChance() );
         	
-        	String message = String.format( "%s%% [%s] %s (%s) &a'&7%s&a'", 
-        						chance, blockEvent.getPermission(), 
-        						blockEvent.getEventType().name(),
-        						blockEvent.getMode(), blockEvent.getCommand() );
+        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
         	
-            FancyMessage msg = new FancyMessage( message )
-                .command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
-                .tooltip("Click to remove.");
-            builder.add(msg);
+        	FancyMessage msgPercent = new FancyMessage( String.format( "&7%s%% ", chance ) )
+        			.command( "/mines blockEvent percent " + mineName + " " + rowNumber + " " )
+        			.tooltip("Percent Chance - Click to Edit");
+        	row.addFancy( msgPercent );
+        	
+        	FancyMessage msgPerm = new FancyMessage( String.format( "&3[&7%s&3] ", 
+        													blockEvent.getPermission() ) )
+        			.command( "/mines blockEvent permission " + mineName + " " + rowNumber + " " )
+        			.tooltip("Permission - Click to Edit");
+        	row.addFancy( msgPerm );
+        	
+        	FancyMessage msgEventType = new FancyMessage( String.format( "&7%s ", 
+        													blockEvent.getEventType().name() ) )
+        			.command( "/mines blockEvent eventType " + mineName + " " + rowNumber + " " )
+        			.tooltip("Event Type - Click to Edit");
+        	row.addFancy( msgEventType );
+        	
+        	FancyMessage msgMode = new FancyMessage( String.format( "&3(&7%s&3) ", 
+        			blockEvent.getMode() ) )
+        			.command( "/mines blockEvent mode " + mineName + " " + rowNumber + " " )
+        			.tooltip("Event Mode - Click to Edit");
+        	row.addFancy( msgMode );
+        	
+        	FancyMessage msgCommand = new FancyMessage( String.format( " &a'&7%s&a'", 
+        			blockEvent.getCommand() ) )
+        			.command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
+        			.tooltip("Event Commands - Click to Delete");
+        	row.addFancy( msgCommand );
+        	
+        	
+	
+            builder.add( row );
         }
 
         display.addComponent(builder.build());
@@ -2930,6 +2958,9 @@ public class MinesCommands
         			String.format("The mine %s doesn't contain that BlockEvent command. Nothing was changed.", 
         						m.getName()));
         }
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
     }
 
 	
@@ -2940,7 +2971,7 @@ public class MinesCommands
     public void blockEventAdd(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
     			@Arg(name = "percent",
-    					description = "Percent chance between 0.0000 and 100.0") double chance,
+    					description = "Percent chance between 0.0000 and 100.0") Double chance,
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, or [none] for no perm." 
     								) String perm,
@@ -3010,13 +3041,287 @@ public class MinesCommands
 
         pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' to the mine '&b%s&7' with " +
-        		"the optional permission %s, and use the mode %s", 
-        		command, m.getName(), 
+        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' for eventTypes of " +
+        		"&b%s &7to the mine '&b%s&7' with " +
+        		"the optional permission %s. Using the mode %s.", 
+        		command, eType.name(), m.getName(), 
         		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
         		mode );
 
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
+
     }
+
+
+	@Command(identifier = "mines blockEvent percent", 
+			description = "Edits the percentage amount", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventPercent(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "row") Integer row,
+    			@Arg(name = "percent",
+    					description = "Percent chance between 0.0000 and 100.0") Double chance) {
+    	
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        if ( chance <= 0d || chance > 100.0d ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid value for chance " +
+        					"between 0.0000 and 100.0. Was state=[&b%d&7]",
+        					chance ));
+        	return;
+        }
+                
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+        
+        double chanceOld = blockEvent.getChance();
+        
+        // Update percent:
+        blockEvent.setChance( chance );
+
+        // Save the mine:
+        pMines.getMineManager().saveMine( m );
+        
+        DecimalFormat dFmt = new DecimalFormat("0.00000");
+        Output.get().sendInfo(sender, "&7BlockEvent percentage &b%s&7 was changed for mine '&b%s&7'. " +
+        		"Was &b%s&7. Command '&b%s&7'", 
+        		dFmt.format( chance ), m.getName(), 
+        		dFmt.format( chanceOld ), blockEvent.getCommand() );
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
+
+    }
+
+
+	@Command(identifier = "mines blockEvent permission", description = "Edits a BlockBreak permisson.", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventPermission(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "row") Integer row,
+    			@Arg(name = "permission", def = "none",
+    					description = "Optional permission that the player must have, or [none] for no perm." 
+    								) String perm
+    			) {
+    	
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        
+        if ( perm == null || perm.trim().length() == 0 || "none".equalsIgnoreCase( perm ) ) {
+        	perm = "";
+        }
+        
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+
+        String permissionOld = blockEvent.getPermission();
+        
+        blockEvent.setPermission( perm );
+
+        pMines.getMineManager().saveMine( m );
+        
+        
+        Output.get().sendInfo(sender, "&7BlockEvent permission &b%s&7 was changed for mine '&b%s&7'. " +
+        		"Was &b%s&7. Command '&b%s&7'", 
+        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'", 
+        		m.getName(), 
+        		permissionOld == null || permissionOld.trim().length() == 0 ? "&3none&7" : 
+        														"'&3" + permissionOld + "&7'", 
+        		blockEvent.getCommand() );
+
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
+
+    }
+
+
+	@Command(identifier = "mines blockEvent eventType", description = "Edits a BlockBreak EventType.", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventEventType(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "row") Integer row,
+    			@Arg(name = "eventType", def = "eventTypeAll",
+					description = "EventType to trigger BlockEvent: " +
+										"[eventTypeAll, eventBlockBreak, eventTEXplosion]"
+							) String eventType
+    			) {
+    	
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        
+        BlockEventType eType = BlockEventType.fromString( eventType );
+        if ( !eType.name().equalsIgnoreCase( eventType ) ) {
+        	sender.sendMessage( 
+        			String.format("&7Notice: The supplied eventType does not match the list of valid " +
+        					"BlockEventTypes therefore defaulting to eventTypeAll. Valid eventTypes are: " +
+        					"[eventTypeAll, eventBlockBreak, eventTEXplosion]",
+        					eventType ));
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+
+        BlockEventType eTypeOld = blockEvent.getEventType();
+        
+        blockEvent.setEventType( eType );
+
+        pMines.getMineManager().saveMine( m );
+        
+        
+        Output.get().sendInfo(sender, "&7BlockEvent EventType &b%s&7 was changed for mine '&b%s&7'. " +
+        		"Was &b%s&7. Command '&b%s&7'", 
+        		eType.name(), m.getName(), eTypeOld.name(), blockEvent.getCommand() );
+
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
+
+    }
+
+
+	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak mode type: [inline, sync].", 
+    		onlyPlayers = false, permissions = "mines.set")
+    public void blockEventJobMode(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "row") Integer row,
+    	        @Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
+    					def = "inline") String mode
+    			) {
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid mode for running the commands. " +
+        					"[inline, sync]  mode=[&b%s&7]",
+        					mode ));
+        	return;
+        }
+        
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+
+        String modeOld = blockEvent.getMode();
+        
+        blockEvent.setMode( mode );
+
+        pMines.getMineManager().saveMine( m );
+        
+        
+        Output.get().sendInfo(sender, "&7BlockEvent mode &b%s&7 was changed for mine '&b%s&7'. " +
+        		"Was &b%s&7. Command '&b%s&7'", 
+        		mode, m.getName(), modeOld, blockEvent.getCommand() );
+
+        
+        // Redisplay the event list:
+        blockEventList( sender, mineName );
+
+    }
+
+
 
 
 

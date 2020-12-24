@@ -18,6 +18,9 @@ that you need.
 # V3.2.3-alpha.13 2020-12-24
 
 
+* **Setup editing options for BlockEvents**
+so there are now an add, eventType, list, mode, percent, permission, and remove options to work with the BlockEvents so once created they can be better maintained without having to delete them and readd them.
+
 
 * **V3.2.3-alpha.13 2020-12-24**
 
