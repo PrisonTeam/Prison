@@ -145,20 +145,26 @@ public class RanksCommands
 	@Command(identifier = "ranks autoConfigure", description = "Auto configures Ranks and Mines using " +
 			"single letters A through Z for both the rank and mine names. If both ranks and mines are " +
 			"generated, they will also be linked together automatically. To set the starting price use " +
-			"price=x. To set multiplier mult=x. " +
+			"price=x. To set multiplier mult=x. Cannot autoConfigure if any ranks or mines are defined, " +
+			"but 'force' will attempt it but at your risk. " +
 			"Default values [full price=50000 mult=1.5]", 
 			onlyPlayers = false, permissions = "ranks.set")
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 
-				description = "Options: [full ranks mines price=x mult=x]", 
+				description = "Options: [full ranks mines price=x mult=x force]", 
 				def = "full") String options
 			) {
+		
+		boolean force = options != null && options.contains( "force" );
+		if ( force ) {
+			options = options.replace( "force", "" );
+		}
 		
 		int rankCount = PrisonRanks.getInstance().getRankManager().getRanks().size();
 		int mineCount = Prison.get().getPlatform().getModuleElementCount( ModuleElementType.MINE );
 		
-		if ( rankCount > 0 || mineCount > 0 ) {
+		if (!force && ( rankCount > 0 || mineCount > 0 ) ) {
 			String message = String.format( "&3Cannot run &7/ranks autoConfigure &3 with any " +
 					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d", 
 					rankCount, mineCount );
@@ -166,6 +172,11 @@ public class RanksCommands
 			return;
 		}
 		
+		if ( force ) {
+			String message = String.format( "&aWarning! &3Running autoConfigure with &7force&3 enabled. " +
+					"Not responsible if mines or ranks collide. ");
+			Output.get().logWarn( message );
+		}
 		
 		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx&b]";
 		boolean ranks = false;
@@ -320,6 +331,11 @@ public class RanksCommands
 	        				}
 	        			}
 	        		}
+	        	}
+	        	else {
+	        		String message = String.format( "&aWarning! &3Rank &7%s &3already exists and is being skipped " +
+	        				"along with generating the mine if enabled, along with all of the other features. ", cRank );
+	    			Output.get().logWarn( message );
 	        	}
 
 	            if (price == 0){
