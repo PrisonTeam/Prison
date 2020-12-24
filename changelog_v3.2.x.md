@@ -17,6 +17,17 @@ that you need.
 
 # V3.2.3-alpha.12 2020-12-22
 
+* **Changes to ranks autoConfigure to force a generation if ranks and mines already exist.**
+If there is a conflict with a preexisting rank, it iwill be skipped and so will the generation of the mine by the same name.
+
+
+* **Hook up the auto assignment of mine liners to the mines when running the ranks autoConfigure command.**
+The selection of the liners is random and are applied to the walls and bottom using the force setting to ensure they generate in a void world.
+
+
+* **Add support for assigning random liners to the auto generated mines.**
+Does not include the last LinerPattern since it is for repair. 
+
 
 * **More work on the mine liner.  Pretty much working well with /mines set size.**
 Still need to hook up to a few other areas.

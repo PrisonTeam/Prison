@@ -352,6 +352,10 @@ public class RanksCommands
 			Prison.get().getPlatform().autoCreateMineBlockAssignment();
 		}
 		
+		if ( countMines > 0 ) {
+			Prison.get().getPlatform().autoCreateMineLinerAssignment();
+		}
+		
 		if ( countRanks == 0 ) {
 			Output.get().logInfo( "Ranks autoConfigure: No ranks were created.");
 		}
