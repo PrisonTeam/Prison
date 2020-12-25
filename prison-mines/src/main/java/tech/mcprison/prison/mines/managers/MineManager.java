@@ -26,11 +26,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.integration.PlaceholderManager;
+import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -544,8 +544,8 @@ public class MineManager
     	String results = null;
     	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     	
-		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
 		}
     	
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
@@ -658,7 +658,7 @@ public class MineManager
 						int totalBlocks = mine.getBounds().getTotalBlockCount();
 						int blocksRemaining = mine.getRemainingBlockCount();
 						
-						results = Prison.get().getIntegrationManager().
+						results = Prison.get().getPlaceholderManager().
 									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), false );
 						break;
 						
@@ -709,8 +709,8 @@ public class MineManager
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     		
-    		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-    			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
@@ -791,7 +791,7 @@ public class MineManager
     	double timeRemaining = mine.getRemainingTimeSec();
     	int time = mine.getResetTime();
     	
-    	return Prison.get().getIntegrationManager().
+    	return Prison.get().getPlaceholderManager().
     					getProgressBar( timeRemaining, ((double) time), true );
 	}
 
@@ -821,13 +821,13 @@ public class MineManager
     		for ( Mine mine : getMines() ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    						PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
     						toLowerCase();
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
     				if ( ph.getAlias() != null ) {
     					String aliasName = ph.getAlias().name().replace( 
-    							IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    							PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
     							toLowerCase();
     					placeholder.setAliasName( aliasName );
     				}

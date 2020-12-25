@@ -18,6 +18,9 @@ that you need.
 # V3.2.3-alpha.13 2020-12-24
 
 
+* **Placeholder refactoring to prepare for the use of dynamic customization by the users**, such as customizing each and every bar graph, or number formatting, where each use of the same placeholder could have different settings.
+
+
 * **Added 4 new placeholders for rank number**
 The new placeholders identifies the ladder position of a rank on their ladder.  The lowest rank has a value of 1.  These prison_rn, prison_rank_name, prison_rn_laddername, and prison_rank_number_laddername.
 

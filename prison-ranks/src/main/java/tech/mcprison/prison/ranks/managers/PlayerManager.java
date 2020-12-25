@@ -35,11 +35,11 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
-import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.integration.PlaceholderManager;
+import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
@@ -554,7 +554,7 @@ public class PlayerManager
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     				   	
-    			    	sb.append( Prison.get().getIntegrationManager().
+    			    	sb.append( Prison.get().getPlaceholderManager().
     			    					getProgressBar( balance, cost, false ));
 
     				}
@@ -783,6 +783,14 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    /**
+     * <p>Entry point for translating placeholders.
+     * </p>
+     * @param playerUuid
+     * @param playerName
+     * @param identifier
+     * @return
+     */
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
     	String results = null;
 
@@ -790,8 +798,8 @@ public class PlayerManager
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     		
-    		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-    			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
@@ -945,13 +953,13 @@ public class PlayerManager
     		for ( RankLadder ladder : ladders ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
+    						PlaceholderManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
     							toLowerCase();
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, ladder.name );
     				if ( ph.getAlias() != null ) {
     					String aliasName = ph.getAlias().name().replace( 
-    							IntegrationManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
+    							PlaceholderManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.name ).
     								toLowerCase();
     					placeholder.setAliasName( aliasName );
     				}

@@ -27,6 +27,7 @@ import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.integration.PlaceholderManager;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
@@ -82,6 +83,9 @@ public class Prison
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
+    
+    private PlaceholderManager placeholderManager;
+    
     private Database metaDatabase;
     
     
@@ -366,5 +370,13 @@ public class Prison
         return integrationManager;
     }
 
+    
+    /**
+     * Returns the integration manager, which returns {@link tech.mcprison.prison.integration.Integration}s.
+     */
+    public PlaceholderManager getPlaceholderManager() {
+    	return placeholderManager;
+    }
+    
     
 }
