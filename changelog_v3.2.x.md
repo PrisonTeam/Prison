@@ -15,7 +15,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.3-alpha.13 2020-12-24
+# V3.2.3 2020-12-25
+
+
+
+
+# V3.2.3 2020-12-25 
+**Merry Christmas!!**
+Release of next bug update.
+
+
+* **fix for placeholdermanager's setup**
 
 
 * **Placeholder refactoring to prepare for the use of dynamic customization by the users**, such as customizing each and every bar graph, or number formatting, where each use of the same placeholder could have different settings.

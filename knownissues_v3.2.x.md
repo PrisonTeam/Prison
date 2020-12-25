@@ -10,6 +10,21 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
+- Placeholder Attributes:
+  A way for placeholders to be customized dynamically other plugin configs.
+  Example would be a scoreboard that uses bar graphs but customizes each one to different colors, characters, and size. 
+  Use :: to identify the start of an attribute followed by the type of attribute.
+    Examples:  ::nFormat:    and   ::bar:  
+  Use of : to separate each parameter.
+  
+
+
+- Hex colors:
+  https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
+  https://regex101.com/
+  (?i)&#[A-Fa-f0-9]{6}|&[0-9A-FK-OR]
+  
+
 - Possible issue with auto features preventing WorldGuard from protecting a
   mine.  In the auto features GUI, when the bottom three features are turned 
   off then WG won't protect the region.
