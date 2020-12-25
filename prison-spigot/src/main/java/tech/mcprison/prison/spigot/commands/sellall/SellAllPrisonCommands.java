@@ -36,6 +36,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+    private double multiplier;
 
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
@@ -78,12 +79,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
-            ModuleManager modMan = Prison.get().getModuleManager();
-            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-            PrisonRanks rankPlugin = (PrisonRanks) module;
 
             // Get money to give + multiplier
-            moneyToGive = getMoneyWithMultiplier(moneyToGive, sPlayer, rankPlugin);
+            moneyToGive = getMoneyWithMultiplier(moneyToGive, sPlayer);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -99,39 +97,55 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    private double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer, PrisonRanks rankPlugin) {
+    private double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer) {
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
-            double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
-
-            if (rankPlugin != null) {
-                if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
-                    String playerRankName;
-                    try {
-                        playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
-                    } catch (NullPointerException ex){
-                        playerRankName = null;
-                    }
-                    if (playerRankName != null) {
-                        multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
-                    }
-                }
-            }
-            List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
-            double multiplierExtraByPerms = 0;
-            for (String multByPerm : perms){
-                double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-                if (!sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true")) {
-                    multiplierExtraByPerms += multByPermDouble;
-                } else if (sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true") && multByPermDouble > multiplierExtraByPerms){
-                    multiplierExtraByPerms = multByPermDouble;
-                }
-            }
-            multiplier += multiplierExtraByPerms;
+            getMultiplier(sPlayer);
             moneyToGive = moneyToGive * multiplier;
         }
 
         return moneyToGive;
+    }
+
+    /**
+     * Get the player multiplier, requires SpigotPlayer.
+     * */
+    private void getMultiplier(SpigotPlayer sPlayer) {
+
+        // Get Ranks module.
+        ModuleManager modMan = Prison.get().getModuleManager();
+        Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+        PrisonRanks rankPlugin = (PrisonRanks) module;
+
+        // Get default multiplier
+        multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+
+        // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
+        // the actual default multiplier.
+        if (rankPlugin != null) {
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
+                String playerRankName;
+                try {
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                } catch (NullPointerException ex){
+                    playerRankName = null;
+                }
+                if ((playerRankName != null) && (sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER") != null)) {
+                    multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
+                }
+            }
+        }
+        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+        double multiplierExtraByPerms = 0;
+        for (String multByPerm : perms){
+            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+            if (!sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true")) {
+                multiplierExtraByPerms += multByPermDouble;
+            } else if (sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true") && multByPermDouble > multiplierExtraByPerms){
+                multiplierExtraByPerms = multByPermDouble;
+            }
+        }
+        multiplier += multiplierExtraByPerms;
     }
 
     private double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
