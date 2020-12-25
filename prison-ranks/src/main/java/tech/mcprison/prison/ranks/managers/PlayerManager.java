@@ -355,7 +355,49 @@ public class PlayerManager
 		return sb.toString();
     }
     
-    public String getPlayerRankTag( RankPlayer rankPlayer, String ladderName ) {
+    
+    public String getPlayerRankNumber( RankPlayer rankPlayer, String ladderName ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ( !rankPlayer.getRanks().isEmpty()) {
+    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getRanks().entrySet()) {
+    			if ( ladderName == null ||
+    					ladderName != null && entry.getKey().name.equalsIgnoreCase( ladderName )) {
+    				
+    				if ( sb.length() > 0 ) {
+    					sb.append(" ");
+    				}
+    				
+    				int rankNumber = rankNumber(entry.getValue());
+    				sb.append( Integer.toString( rankNumber ) );
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    /**
+     * <p>This counts how many ranks there are from the bottom to the 
+     * current rank level.  The lowest rank has a value of 1, no rank
+     * will be zero.
+     * </p>
+     * @param value
+     * @return
+     */
+    private int rankNumber( Rank value ) {
+    	int results = 0;
+    	if ( value != null ) {
+    		Rank r = value;
+    		while ( r != null ) {
+    			results++;
+    			r = r.getRankPrior();
+    		}
+    	}
+		return results;
+	}
+
+	public String getPlayerRankTag( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getRanks().isEmpty()) {
@@ -783,6 +825,13 @@ public class PlayerManager
 					case prison_r_laddername:
 					case prison_rank_laddername:
 						results = getPlayerRankName( rankPlayer, ladderName );
+						break;
+						
+					case prison_rn:
+					case prison_rank_number:
+					case prison_rn_laddername:
+					case prison_rank_number_laddername:
+						results = getPlayerRankNumber( rankPlayer, ladderName );
 						break;
 						
 					case prison_rt:
