@@ -212,6 +212,7 @@ public class Prison
         this.selectionManager = new SelectionManager();
         this.troubleshootManager = new TroubleshootManager();
         this.integrationManager = new IntegrationManager();
+        this.placeholderManager = new PlaceholderManager();
         
 
 //        try {
