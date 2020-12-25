@@ -30,6 +30,10 @@ public class PlaceholderManager {
     	;
     }
     
+    public enum PlaceHolderAttributePrefixes {
+    	nFormat
+    }
+    
     /**
      * <p>The given place holders should have both the prison prefix and without,
      * with the without having the suppress value set.  The suppressable items 
@@ -354,6 +358,29 @@ public class PlaceholderManager {
 			return sb.toString();
 		}
 		
+	}
+	
+	
+	/**
+	 * <p>This will extract attributes from dynamic placeholders and will return. 
+	 * </p>
+	 * 
+	 * <p>Planning on using : as separators.  :: for identifying each attribute, and then
+	 * within each attribute : will separate the individual fields and values.  
+	 * For example it a number format attribute could look like this: 
+	 * </p>
+	 * 
+	 * <pre>::nFormat:0.00{unit}</pre> for no spaces.  
+	 * <pre>::nFormat:#,##0.0+{unit}</pre> for spaces since + will be converted to spaces.
+	 * 
+	 * @param placeholder
+	 * @return
+	 */
+	public List<PlaceholderAttribute> placeholderExtractAttribute( String placeholder ) {
+		List<PlaceholderAttribute> results = new ArrayList<>();
+		
+		
+		return results;
 	}
 	
 	
