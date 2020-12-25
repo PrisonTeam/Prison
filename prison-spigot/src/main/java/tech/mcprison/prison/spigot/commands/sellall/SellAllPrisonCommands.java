@@ -110,7 +110,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the player multiplier, requires SpigotPlayer.
      * */
-    private void getMultiplier(SpigotPlayer sPlayer) {
+    public void getMultiplier(SpigotPlayer sPlayer) {
 
         // Get Ranks module.
         ModuleManager modMan = Prison.get().getModuleManager();
