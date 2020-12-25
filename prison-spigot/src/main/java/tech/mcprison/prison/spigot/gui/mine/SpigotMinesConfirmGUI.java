@@ -1,13 +1,12 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -53,14 +52,14 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
 
         // Blocks of the mine
-        List<String> confirmlore = createLore(
+        List<String> confirmLore = createLore(
                 messages.getString("Lore.ClickToConfirm"));
-        List<String> cancelore = createLore(
+        List<String> cancelLore = createLore(
                 messages.getString("Lore.ClickToCancel"));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack confirm = createButton(Material.EMERALD_BLOCK, 1, confirmlore, SpigotPrison.format("&3" + "Confirm: " + mineName));
-        ItemStack cancel = createButton(Material.REDSTONE_BLOCK, 1, cancelore, SpigotPrison.format("&3" + "Cancel: " + mineName));
+        ItemStack confirm = createButton(XMaterial.EMERALD_BLOCK.parseItem(), confirmLore, SpigotPrison.format("&3" + "Confirm: " + mineName));
+        ItemStack cancel = createButton(XMaterial.REDSTONE_BLOCK.parseItem(), cancelLore, SpigotPrison.format("&3" + "Cancel: " + mineName));
 
         // Position of the button
         inv.setItem(2, confirm);

@@ -41,7 +41,9 @@ import tech.mcprison.prison.store.Database;
 /**
  * @author Faizaan A. Datoo
  */
-public class PrisonRanks extends Module {
+public class PrisonRanks 
+	extends Module {
+	
 	public static final String MODULE_NAME = "Ranks";
     /*
      * Fields & Constants
@@ -76,7 +78,8 @@ public class PrisonRanks extends Module {
         return instance;
     }
 
-    @Override public void enable() {
+    @Override 
+    public void enable() {
         instance = this;
 
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
@@ -178,7 +181,32 @@ public class PrisonRanks extends Module {
         
     }
 
-    private Collection initCollection(String collName) {
+
+    /**
+     * This function deferredStartup() will be called after the integrations have been
+     * loaded.  
+     * 
+     */
+    @Override
+	public void deferredStartup() {
+	}
+
+    /**
+     * <p>Do not save ranks upon server shutdown or plugin disable events.  The 
+     * ranks should be saved every time there is a modification to them.
+     * </p>
+     */
+    @Override 
+    public void disable() {
+//        try {
+//            rankManager.saveRanks();
+//        } catch (IOException e) {
+//            Output.get().logError("A ranks file failed to save.", e);
+//        }
+    }
+    
+
+	private Collection initCollection(String collName) {
         Optional<Collection> collectionOptional = database.getCollection(collName);
         if (!collectionOptional.isPresent()) {
             database.createCollection(collName);
@@ -236,19 +264,7 @@ public class PrisonRanks extends Module {
      * Getters & Setters
      */
 
-    /**
-     * <p>Do not save ranks upon server shutdown or plugin disable events.  The 
-     * ranks should be saved every time there is a modification to them.
-     * </p>
-     */
-    @Override 
-    public void disable() {
-//        try {
-//            rankManager.saveRanks();
-//        } catch (IOException e) {
-//            Output.get().logError("A ranks file failed to save.", e);
-//        }
-    }
+
 
     public RankManager getRankManager() {
         return rankManager;

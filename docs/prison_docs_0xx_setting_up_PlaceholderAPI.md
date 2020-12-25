@@ -40,6 +40,8 @@ Setting up PlaceholderAPI just need couple of steps:
 
 * Restart your server. Do not use **/reload** or you'll break Prison Placeholders. Prison registers all of the placeholders upon server startup so the registrations will be lost.
 
+* NOTE: Prison now has placeholders reload feature, but the first time you install PlaceholderAPI you will have to restart the server for everything to be properly registered.
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
@@ -52,9 +54,28 @@ Use the command **/prison placeholders** for a listing the placeholder commands.
 * **/prison placeholders search <playerName> <pageNumber> <searchPatterns>**
 * **/prison placeholders test <text>**
 
-* **/prison version**
 
-The listing of all the placeholders is available within the Prison startup information, and through `/prison version`.
+* **/prison placeholders reload** or **/prison reload placeholders**
+    - This will reload all placeholders and will re-register them with the proper placeholder plugins.  Both of these commands are exactly the same.
+
+
+Example of reloading prison's placeholders with stats on what was registered.
+
+<img src="images/prison_docs_310_guide_placeholders_7.png" alt="Reloading Prison Placeholders" title="Reload Prison Placeholders" width="600" />  
+
+
+
+* **/prison version**
+    - The prison version command is useful for reviewing that placeholder plugins are correctly registered.
+    
+
+* **Prison startup logs**
+    - The Prison startup messages provides a detailed list of stats pertaining to placeholders, such as the break down of how many were registered and available.
+    
+
+<img src="images/prison_docs_0xx_placeholderapi_01.png" alt="Start up placeholder stats" title="Start up placeholder stats" width="600" />  
+
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -76,9 +97,18 @@ The solution was to download from PlaceholderAPI, their modified version of Vaul
 /papi reload
 ```
 
-As a note, I'm not sure how well Prison behaves with the use of `/papi reload`.  It may be good to test with, but safer to just restart the server, once everything appears to be working and looks good.  The point is that any plugin reload is good to test with, but if you're going to let your server run for months, its probably best to do a clean restart.
+If you use `/papi reload`/ then you will have to reload the placeholders in prison so they are registered with papi.  When papi reloads, it forgets everything that was registered before.
 
-With this example of installing the PlaceholderAPI and downloading their version of Vault and Essentials, the player reported that once the economy placeholder was working, another placeholder stopped working.  Their solution was to reinstall all of the papi (PlaceholderAPI) plugins (not sure if that includes reinstalling papi's version of Vault and Essentials) and then restarted the server.  The point here, is a clean start is probably helpful.
+
+You can use either one of the following commands to reload and re-register all of prison's placeholders.  Both commands are exactly the same.
+
+```
+/prison placeholders reload
+/prison reload placeholders
+```
+
+If you create new ranks or mines you will also have to reload the prison placeholders.  You don't have to reload papi in these situations, just prison.
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

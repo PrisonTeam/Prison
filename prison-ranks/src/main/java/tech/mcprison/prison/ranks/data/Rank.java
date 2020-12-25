@@ -115,7 +115,16 @@ public class Rank
 			getRankUpCommands().clear();
 			Object cmds = document.get("commands");
 			if ( cmds != null ) {
-				this.rankUpCommands = (List<String>) cmds;
+
+				List<String> commands = (List<String>) cmds;
+				for ( String cmd : commands ) {
+					if ( cmd != null ) {
+						getRankUpCommands().add( cmd );
+					}
+				}
+				
+				// This was allowing nulls to be added to the live commands... 
+//				this.rankUpCommands = (List<String>) cmds;
 			}
 			
 			getMines().clear();
@@ -146,7 +155,15 @@ public class Rank
         ret.put("tag", this.tag);
         ret.put("cost", this.cost);
         ret.put("currency", this.currency);
-        ret.put("commands", this.rankUpCommands);
+        
+        List<String> cmds = new ArrayList<>();
+        for ( String cmd : getRankUpCommands() ) {
+        	// Filters out possible nulls:
+			if ( cmd != null ) {
+				cmds.add( cmd );
+			}
+		}
+        ret.put("commands", cmds);
         
         List<String> mineStrings = new ArrayList<>();
         if ( getMines() != null ) {

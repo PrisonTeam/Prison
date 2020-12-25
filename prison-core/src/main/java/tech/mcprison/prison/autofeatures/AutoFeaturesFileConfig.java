@@ -2,11 +2,13 @@ package tech.mcprison.prison.autofeatures;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.ValueNode.NodeType;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.output.Output;
 
@@ -17,7 +19,7 @@ public class AutoFeaturesFileConfig {
 //    private FileConfiguration config;
     
     private Map<String, ValueNode> config;
-
+    
     public enum AutoFeatures {
 
     	
@@ -67,7 +69,11 @@ public class AutoFeaturesFileConfig {
 				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
+		    	autoPickupLimitToMines(autoPickup, true),
 		    	autoPickupAllBlocks(autoPickup, true),
+		    	
+		    	autoPickupBlockNameList(autoPickup, NodeType.STRING_LIST,
+		    				"coal_block", "iron_ore"),
 		    	
 		    	autoPickupCobbleStone(autoPickup, true),
 		    	autoPickupStone(autoPickup, true),
@@ -85,6 +91,7 @@ public class AutoFeaturesFileConfig {
     	
 	    	autoSmelt(options),
 		    	autoSmeltEnabled(autoSmelt, true),
+		    	autoSmeltLimitToMines(autoSmelt, true),
 		    	autoSmeltAllBlocks(autoSmelt, true),
 
 		    	
@@ -94,6 +101,7 @@ public class AutoFeaturesFileConfig {
 	    	
 	    	autoBlock(options),
 		    	autoBlockEnabled(autoBlock, true),
+		    	autoBlockLimitToMines(autoBlock, true),
 		    	autoBlockAllBlocks(autoBlock, true),
 
 		    	
@@ -119,6 +127,7 @@ public class AutoFeaturesFileConfig {
     	private final boolean isInteger;
     	private final boolean isLong;
     	private final boolean isDouble;
+    	private final boolean isStringList;
     	
     	private final String path;
     	private final String message;
@@ -126,6 +135,7 @@ public class AutoFeaturesFileConfig {
     	private final Integer intValue;
     	private final Long longValue;
     	private final Double doubleValue;
+    	private final List<String> listValue;
     	
     	private AutoFeatures() {
     		this.parent = null;
@@ -135,12 +145,15 @@ public class AutoFeaturesFileConfig {
     		this.isInteger = false;
     		this.isLong = false;
     		this.isDouble = false;
+    		this.isStringList = false;
+    		
     		this.path = null;
     		this.message = null;
     		this.value = null;
     		this.intValue = null;
     		this.longValue = null;
     		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
     	}
     	private AutoFeatures(AutoFeatures section) {
     		this.parent = section;
@@ -150,12 +163,15 @@ public class AutoFeaturesFileConfig {
     		this.isInteger = false;
     		this.isLong = false;
     		this.isDouble = false;
+    		this.isStringList = false;
+
     		this.path = section.getKey();
     		this.message = null;
     		this.value = null;
     		this.intValue = null;
     		this.longValue = null;
     		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
     		this.parent = section;
@@ -165,12 +181,15 @@ public class AutoFeaturesFileConfig {
     		this.isInteger = false;
     		this.isLong = false;
     		this.isDouble = false;
+    		this.isStringList = false;
+
     		this.path = section.getKey();
     		this.message = message;
     		this.value = null;
     		this.intValue = null;
     		this.longValue = null;
     		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
     		this.parent = section;
@@ -180,12 +199,38 @@ public class AutoFeaturesFileConfig {
     		this.isInteger = false;
     		this.isLong = false;
     		this.isDouble = false;
+    		this.isStringList = false;
+
     		this.path = section.getKey();
     		this.message = null;
     		this.value = value == null ? Boolean.FALSE : value;
     		this.intValue = null;
     		this.longValue = null;
     		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+    	}
+    	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = false;
+    		this.isStringList = (nodeType == NodeType.STRING_LIST);
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+    		
+    		if ( values != null && values.length > 0 ) {
+    			
+    			this.listValue.addAll( Arrays.asList( values ));
+    		}
     	}
     	
 		public AutoFeatures getParent() {
@@ -209,6 +254,9 @@ public class AutoFeaturesFileConfig {
 		public boolean isDouble() {
 			return isDouble;
 		}
+		public boolean isStringList() {
+			return isStringList;
+		}
 		
 		public String getPath() {
 			return path;
@@ -228,6 +276,9 @@ public class AutoFeaturesFileConfig {
 		}
 		public Double getDoubleValue() {
 			return doubleValue;
+		}
+		public List<String> getListValue() {
+			return listValue;
 		}
 		
 		public String getKey() {
@@ -305,7 +356,23 @@ public class AutoFeaturesFileConfig {
     		}
     		
     		return results;
+    	}    	
+    	
+    	public List<String> getStringList( Map<String, ValueNode> conf  ) {
+    		List<String> results = null;
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isStringListNode() ) {
+    			StringListNode list = (StringListNode) conf.get( getKey() );
+    			results = list.getValue();
+    		}
+    		else if ( getValue() != null ) {
+    			results = new ArrayList<>();
+    		}
+    		
+    		return results;
     	}
+    	
+    	
 
     	/**
     	 * <p>Get the children nodes to the given item.
@@ -372,6 +439,11 @@ public class AutoFeaturesFileConfig {
 //					key, value.toString() );
 //		}
 		
+		List<String> blockNames = getFeatureStringList( AutoFeatures.autoPickupBlockNameList );
+		StringBuilder sbBlockName = new StringBuilder( String.join( ", ", blockNames ) ).insert( 0, "[" ).append( "]" );
+		Output.get().logInfo( "###--### AutoFeaturesFileConfig: test autoPickupBlockNameList: length = %d  value = %s ", 
+				blockNames.size(), sbBlockName.toString() );
+
     }
 
 
@@ -458,6 +530,11 @@ public class AutoFeaturesFileConfig {
 	
 	public String getFeatureMessage( AutoFeatures feature ) {
 		return feature.getMessage( getConfig() );
+	}
+	
+	public List<String> getFeatureStringList( AutoFeatures feature ) {
+		
+		return feature.getStringList( getConfig() );
 	}
 	
 	public boolean saveConf() {

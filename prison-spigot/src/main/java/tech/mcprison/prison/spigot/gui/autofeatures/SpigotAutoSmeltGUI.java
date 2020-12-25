@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui.autofeatures;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -75,18 +73,18 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltGoldOre ) ) {
-            ItemStack Enabled = createButton(Material.GOLD_ORE, 1, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
+            ItemStack Enabled = createButton(XMaterial.GOLD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.GOLD_ORE, 1, disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled"));
+            ItemStack Disabled = createButton(XMaterial.GOLD_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled"));
             inv.addItem(Disabled);
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.autoSmeltIronOre ) ) {
-            ItemStack Enabled = createButton(Material.IRON_ORE, 1, enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
+            ItemStack Enabled = createButton(XMaterial.IRON_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
-            ItemStack Disabled = createButton(Material.IRON_ORE, 1, disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled"));
+            ItemStack Disabled = createButton(XMaterial.IRON_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled"));
             inv.addItem(Disabled);
         }
     }

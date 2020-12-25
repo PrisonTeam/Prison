@@ -10,6 +10,8 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot18Blocks 
@@ -36,7 +38,7 @@ public abstract class Spigot18Blocks
 	 */
 	@SuppressWarnings( "deprecation" )
 	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = null;
+		BlockType results = BlockType.NULL_BLOCK;
 		
 		if ( spigotBlock != null ) {
 			
@@ -59,7 +61,7 @@ public abstract class Spigot18Blocks
 					
 					if ( results == null ) {
 						
-						Output.get().logWarn( "Spigot1.8Blocks.getBlockType() : " +
+						Output.get().logWarn( "Spigot18Blocks.getBlockType() : " +
 								"Spigot block cannot be mapped to a prison BlockType : " +
 								spigotBlock.getType().name() + 
 								" id = " + id + " data = " + data +
@@ -82,8 +84,11 @@ public abstract class Spigot18Blocks
 		XMaterial xMat = getXMaterial( spigotBlock );
 		
 		if ( xMat != null ) {
-			pBlock = new PrisonBlock( xMat.name() );
+			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
+//			pBlock = new PrisonBlock( xMat.name() );
 		}
+		// ignore nulls because errors were logged in getXMaterial() so they only
+		// are logged once
 		
 		return pBlock;
 	}
@@ -91,7 +96,7 @@ public abstract class Spigot18Blocks
 	
 	@SuppressWarnings( "deprecation" )
 	public BlockType getBlockType( ItemStack spigotStack ) {
-		BlockType results = null;
+		BlockType results = BlockType.NULL_BLOCK;
 		
 		if ( spigotStack != null ) {
 			
@@ -111,43 +116,67 @@ public abstract class Spigot18Blocks
 	
 	@SuppressWarnings( "deprecation" )
 	public XMaterial getXMaterial( Block spigotBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( spigotBlock != null ) {
-//			int id = spigotBlock.getType().getId();
-			short data = spigotBlock.getData();
+			byte data = spigotBlock.getData();
 			
-			results = getCachedXMaterial( spigotBlock, (byte) data );
+			results = getCachedXMaterial( spigotBlock, data );
 			if ( results == null ) {
-								
-				String blockName =  spigotBlock.getType().name() +
-		    			( data > 0 ? ":" + data : "" );
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				String blockName = spigotBlock.getType().name() + ":" + data;
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
-				putCachedXMaterial( spigotBlock, (byte) data, results );
+//				if ( results == null ) {
+//					
+//					Output.get().logInfo( "####  Spigot18Blocks.getXMaterial(Block) : %s => %s ",
+//							blockName, (results == null ? "null" : results.name() ));
+//				}
+						
+				
+				if ( results == null ) {
+					// Last chance: try to match by id:
+					int id = spigotBlock.getType().getId();
+					results = XMaterial.matchXMaterial( id, data ).orElse( null );
+				}
+				
+				if ( results == null ) {
+					// Last chance, try to match without data. If it matches, then
+					// the cache will be setup with a data appended so as to bypass all this
+					// extra checks:
+					results = getCachedXMaterial( spigotBlock, (byte) 0 );
+				}
+				
+				putCachedXMaterial( spigotBlock, data, results );
+				
+				if ( results == null ) {
+					Output.get().logWarn( "Spigot18Blocks.getXMaterial() : " +
+							"Spigot block cannot be mapped to a XMaterial : " +
+							spigotBlock.getType().name() + 
+							"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
+								spigotBlock.getType().name()) +
+							" data = " + data );
+				}
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;
 	}
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( prisonBlock != null ) {
 			
 			results = getCachedXMaterial( prisonBlock );
 			if ( results == null ) {
 				
-				String blockName =  prisonBlock.getBlockName();
+				String blockName = prisonBlock.getBlockName();
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
 				putCachedXMaterial( prisonBlock, results );
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;
@@ -156,7 +185,7 @@ public abstract class Spigot18Blocks
 
 
 	public XMaterial getXMaterial( BlockType blockType ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( blockType != null && blockType != BlockType.IGNORE ) {
 			short data = blockType.getData();
@@ -351,19 +380,54 @@ public abstract class Spigot18Blocks
 	
 	
 	
-	public int getDurabilityMax( ItemStack itemInHand ) {
-		return itemInHand.getType().getMaxDurability();
+	public int getDurabilityMax( SpigotItemStack itemInHand ) {
+		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
 	
 	@SuppressWarnings( "deprecation" )
-	public int getDurability( ItemStack itemInHand ) {
-		return itemInHand.getDurability();
+	@Override
+	public boolean hasDurability( SpigotItemStack itemStack ) {
+		boolean results = false;
+		
+		if ( itemStack != null ) {
+			results = itemStack.getBukkitStack().getDurability() > 0;
+		}
+		
+		return results;	
+	}
+
+	@SuppressWarnings( "deprecation" )
+	@Override
+	public int getDurability( SpigotItemStack itemStack ) {
+		int results = 0;
+		
+		if ( itemStack != null ) {
+			results = itemStack.getBukkitStack().getDurability();
+		}
+		
+		return results;
+	}
+
+	@SuppressWarnings( "deprecation" )
+	@Override
+	public boolean setDurability( SpigotItemStack itemStack, int damage ) {
+		boolean results = false;
+		if ( itemStack != null ) {
+			itemStack.getBukkitStack().setDurability( (short) damage );
+			results = true;
+		}
+		return results;
 	}
 	
-	@SuppressWarnings( "deprecation" )
-	public void setDurability( ItemStack itemInHand, int newDurability ) {
-		itemInHand.setDurability( (short) newDurability );
-	}
+//	@SuppressWarnings( "deprecation" )
+//	public int getDurability( SpigotItemStack itemInHand ) {
+//		return itemInHand.getBukkitStack().getDurability();
+//	}
+//	
+//	@SuppressWarnings( "deprecation" )
+//	public void setDurability( SpigotItemStack itemInHand, int newDurability ) {
+//		itemInHand.getBukkitStack().setDurability( (short) newDurability );
+//	}
 	
 	
 

@@ -36,7 +36,12 @@ show-alerts: true
 
 # NEW: Prison now has prestiges! 
 # https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_107_setting_up_pestiges.md
+# Note: "prestiges: true" is deprecated and will be removed in the future. 
 prestiges: true
+
+prestige:
+  enabled: true
+  resetMoney: true
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can
@@ -77,12 +82,19 @@ prestige-confirm-gui: true
 # New feature so setting to false since it will override other shop plugins.
 sellall: false
 
+# NEW: SellAll sign
+# New sellall feature which enable a sign with the name of [SellAll] to execute the command /sellall sell of Prison
+# To make a sign, give yourself the permission prison.admin and then add as the first line of a sign the tag [SellAll]
+sellall-sign: false
+sellall-sign-notify: false
+sellall-sign-visible-tag: "&7[&3SellAll&7]"
+
 
 
 # NEW: Broadcast rankups and demotions to the whole server, in all worlds.
 # If this value does not exist, or has a true value, it will be broadcasted.
 # Any other value besides true, or non-existant, will be treated as false.
-broadcast-rankups: true
+broadcast-rankups: false
 
 
 
@@ -150,5 +162,12 @@ storageType: "json"
 
 
 # NEW: Non-functional. Coming soon!
+# Prison mines reset gap is the number of milliseconds that are used to 
+# space out the mine resets when starting the server.  This value should 
+# not be changed unless you understand what you are doing. This value
+# is converted to ticks, so should use 50 millisecond increments. If too 
+# small of a value is used then it could produce a large amount of lag 
+# if more than one mine tries to reset at the same time, or close to each
+# other.  This may be changed to ticks in the near future.
 #prison-mines-reset-gap: 5000
 

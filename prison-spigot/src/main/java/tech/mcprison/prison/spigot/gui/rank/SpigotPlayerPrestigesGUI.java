@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -19,11 +20,9 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -165,11 +164,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         Rank rank = ladderData.getLowestRank().get();
 
-        Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
+        Rank playerRank = getRankPlayer().getRank("prestiges");
 
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_gotten_rank")));
-        Material materialHasNot = Material.getMaterial(Objects.requireNonNull(guiConfig.getString("Options.Ranks.Item_not_gotten_rank")));
+        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
@@ -190,7 +189,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (Objects.requireNonNull(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank")).equalsIgnoreCase("true")) {
+                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
                         itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }
@@ -205,8 +204,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format("&aPrestige"));
+        ItemStack rankupButton = createButton(XMaterial.EMERALD_BLOCK.parseItem(), rankupLore, SpigotPrison.format("&aPrestige"));
         inv.setItem(dimension - 5, rankupButton);
     }
-
 }

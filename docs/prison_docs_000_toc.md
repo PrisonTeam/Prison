@@ -15,6 +15,12 @@
 * **[Most Recent Version of Prison Documentation](https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md)** Docs change frequently, but GITHUG's master versions do not. These are the latest docs!
 
 
+## Build logs
+ - **[v3.2.3-alpha - Current](changelog_v3.2.x.md)**
+ - **[v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)**
+ - **[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)**
+ - **[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)**
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 # New! Prison Fast Start
@@ -135,9 +141,8 @@ Prison now has a new set of features that can help you get up and running faster
 
 
 
-* **Setting up Vault** - (coming soon)
+* [Setting up Vault](prison_docs_016_setting_up_Vault.md)
     Including Vault is Strongly Suggested.
-    Hint: Download from spigotmc.org and copy jar to plugin folder. Zero setup.
 
 
 * [Setting up EssentialsX](prison_docs_0xx_setting_up_EssentialsX.md) - 

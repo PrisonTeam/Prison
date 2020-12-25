@@ -26,7 +26,7 @@ public class MessagesConfig extends SpigotConfigComponents{
     public void initialize() {
 
     	// Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/configs/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/lang/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
 
         // Check if the config exists
         fileMaker(file);
@@ -40,12 +40,14 @@ public class MessagesConfig extends SpigotConfigComponents{
         if (changeCount > 0) {
         	try {
 				conf.save(file);
-				Output.get().logInfo( "&aThere were &b%d &anew values added for the language files " + "used by the GuiConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile() );
+				Output.get().logInfo("&aThere were &b%d &anew values added for the language files " + "used by the GuiConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile());
 			}
 			catch (IOException e) {
-				Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + "used by the GuiConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
+				Output.get().logInfo("&4Failed to save &b%d &4new values for the language files " + "used by the GuiConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage());
 			}
         }
+
+        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     private void dataConfig(String key, String value){
@@ -154,56 +156,96 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.noRanksFoundSetup6", "&1/ranks autoConfigure full <price=x> <mult=x>!");
         dataConfig("Lore.noRanksFoundSetup7", "&3Please replace the X with the starting price and");
         dataConfig("Lore.noRanksFoundSetup8", "&3multiplier, default price = 50000, multiplier = 1.5.");
-        dataConfig("Message.CantGetRanksAdmin", "&3[PRISON WARN] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled.");
-        dataConfig("Message.CantRunGUIFromConsole", "&7[&3Info&7] You cannot run the GUI from the console.");
-        dataConfig("Message.DefaultLadderEmpty", "&7[&cError&7] &cThe default ladder has no rank.");
-        dataConfig("Message.NoSellAllItems", "&cSorry but there aren't SellAll Items to show.");
-        dataConfig("Message.EmptyGui","&cSorry, the GUI looks empty.");
-        dataConfig("Message.NoBlocksMine","&cSorry but there aren't blocks inside this Mine.");
-        dataConfig("Message.NoMines", "&cSorry but there aren't Mines to show.");
-        dataConfig("Message.NoRankupCommands", "&cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!");
-        dataConfig("Message.NoLadders", "&cSorry but there aren't ladders to show.");
+        dataConfig("Message.CantGetRanksAdmin", "&7[&3PRISON WARN&7] &cCan't get Ranks, there might be no ranks or the Ranks module's disabled.");
+        dataConfig("Message.CantRunGUIFromConsole", "&7[&3PRISON INFO&7] You cannot run the GUI from the console.");
+        dataConfig("Message.DefaultLadderEmpty", "&7[&3PRISON ERROR&7] &cThe default ladder has no rank.");
+        dataConfig("Message.NoSellAllItems", "&7[&3PRISON WARN&7] &cSorry but there aren't SellAll Items to show.");
+        dataConfig("Message.EmptyGui","&7[&3PRISON WARN&7] &cSorry, the GUI looks empty.");
+        dataConfig("Message.NoBlocksMine","&7[&3PRISON WARN&7] &cSorry but there aren't blocks inside this Mine.");
+        dataConfig("Message.NoMines", "&7[&3PRISON WARN&7] &cSorry but there aren't Mines to show.");
+        dataConfig("Message.NoRankupCommands", "&7[&3PRISON WARN&7] &cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!");
+        dataConfig("Message.NoLadders", "&7[&3PRISON WARN&7] &cSorry but there aren't ladders to show.");
         dataConfig("Message.NoRanksPrestigesLadder", "&3[PRISON WARN] &cThere aren't ranks in the -prestiges- ladder!");
-        dataConfig("Message.NoRanksFoundAdmin", "&cSorry, but before using this GUI you should create a Rank in this ladder!");
-        dataConfig("Message.NoRanksFound", "&cSorry, but there aren't Ranks in the default or selected ladder!");
-        dataConfig("Message.NoRanksFoundHelp1", "&cSorry, but there aren't Ranks in the default or selected ladder or the ladder &3[");
+        dataConfig("Message.NoRanksFoundAdmin", "&7[&3PRISON WARN&7] &cSorry, but before using this GUI you should create a Rank in this ladder!");
+        dataConfig("Message.NoRanksFound", "&7[&3PRISON WARN&7] &cSorry, but there aren't Ranks in the default or selected ladder!");
+        dataConfig("Message.NoRanksFoundHelp1", "&7[&3PRISON WARN&7] &cSorry, but there aren't Ranks in the default or selected ladder or the ladder &3[");
         dataConfig("Message.NoRanksFoundHelp2", "]&c isn't found!");
-        dataConfig("Message.LadderPrestigesNotFound", "&3[PRISON WARN] &cLadder -prestiges- not found!");
-        dataConfig("Message.TooManyBlocks","&cSorry, but there're too many Blocks and the max's 54 for the GUI");
-        dataConfig("Message.TooManyLadders","&cSorry, but there're too many ladders and the max's 54 for the GUI");
-        dataConfig("Message.TooManyMines","&cSorry, but there're too many mines and the max's 54 for the GUI");
-        dataConfig("Message.TooManyRankupCommands","&cSorry, but there're too many RankupCommands and the max's 54 for the GUI");
-        dataConfig("Message.TooManyRanks", "&cSorry, but there're too many ranks and the max's 54 for the GUI");
-        dataConfig("Message.TooManySellAllItems", "&3[PRISON WARN] &cThere are too many items and the MAX for the GUI's 54!");
+        dataConfig("Message.LadderPrestigesNotFound", "&7[&3PRISON WARN&7] &cLadder -prestiges- not found!");
+        dataConfig("Message.TooManyBlocks","&7[&3PRISON WARN&7] &cSorry, but there're too many Blocks and the max's 54 for the GUI");
+        dataConfig("Message.TooManyLadders","&7[&3PRISON WARN&7] &cSorry, but there're too many ladders and the max's 54 for the GUI");
+        dataConfig("Message.TooManyMines","&7[&3PRISON WARN&7] &cSorry, but there're too many mines and the max's 54 for the GUI");
+        dataConfig("Message.TooManyRankupCommands","&7[&3PRISON WARN&7] &cSorry, but there're too many RankupCommands and the max's 54 for the GUI");
+        dataConfig("Message.TooManyRanks", "&7[&3PRISON WARN&7] &cSorry, but there're too many ranks and the max's 54 for the GUI");
+        dataConfig("Message.TooManySellAllItems", "&7[&3PRISON WARN&7] &cThere are too many items and the MAX for the GUI's 54!");
         dataConfig("Message.ZeroBlocksReset1","&8Set a mine's delay ");
         dataConfig("Message.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Message.ZeroBlocksReset3","&8reaches zero blocks.");
-        dataConfig("Message.mineNameRename", "&7[&3Info&7] &3Please write the &6mineName &3you'd like to use and &6submit&3.");
-        dataConfig("Message.mineNameRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
-        dataConfig("Message.mineNameRenameClosed", "&7[&3Info&7] &cRename mine closed, nothing got changed!");
-        dataConfig("Message.mineOrGuiDisabled", "&7[&3Info&7] &cGUI and/or GUI Mines is not enabled. Check GuiConfig.yml.");
-        dataConfig("Message.mineMissingGuiPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI mines");
-        dataConfig("Message.OutOfTimeNoChanges", "&cYou ran out of time, nothing changed.");
-        dataConfig("Message.PrestigeCancelled", "&7[&3Info&7] &cPrestige cancelled!");
-        dataConfig("Message.PrestigeCancelledWrongKeyword", "&7[&3Info&7] &cPrestige cancelled, you didn't type the word: confirm");
-        dataConfig("Message.PrestigeRanOutOfTime", "&7[&3Info&7] &cYou ran out of time, prestige cancelled.");
-        dataConfig("Message.PrestigesDisabledDefault", "&7[&3Info&7] &cPrestiges are disabled by default, please edit it in your config.yml!");
-        dataConfig("Message.ConfirmPrestige", "&7[&3Info&7] &aConfirm&3: Type the word &aconfirm &3 to confirm");
-        dataConfig("Message.CancelPrestige", "&7[&3Info&7] &cCancel&3: Type the word &ccancel &3to cancel, &cyou've 30 seconds.");
-        dataConfig("Message.PrestigesAreDisabled", "&7[&3Info&7] &cPrestiges are disabled. Check config.yml.");
-        dataConfig("Message.GuiOrPrestigesDisabled", "&7[&3Info&7] &cGUI and/or GUI Prestiges is not enabled. Check GuiConfig.yml.");
-        dataConfig("Message.CantFindPrestiges", "&7[&cError&7] &cThe prestige ladder has no prestiges!");
-        dataConfig("Message.missingGuiPrestigesPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI prestiges");
-        dataConfig("Message.rankTagRename", "&7[&3Info&7] &3Please write the &6tag &3you'd like to use and &6submit&3.");
-        dataConfig("Message.rankTagRenameClose", "&7[&3Info&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
-        dataConfig("Message.rankTagRenameClosed", "&7[&3Info&7] &cRename tag closed, nothing got changed!");
-        dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3Info&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
-        dataConfig("Message.rankGuiMissingPermission", "&7[&3Info&7] &cYou lack the permissions to use GUI ranks");
-        dataConfig("Setup.Message.MissingPermission", "&7[&cError&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
-        dataConfig("Setup.Message.WrongFormat", "&7[&cError&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
-        dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3Info&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
-        dataConfig("Setup.Message.SuccessRanksSetup", "&7[&3Info&7] &3The ranks setup got completed with &asuccess&3 and the ranks got added to the default ladder,\n please check the logs if something's missing!");
-        dataConfig("Setup.Message.Aborted", "&7[&3Info&7] &3Prison Setup Cancelled.");
+        dataConfig("Message.mineNameRename", "&7[&3PRISON INFO&7] &3Please write the &6mineName &3you'd like to use and &6submit&3.");
+        dataConfig("Message.mineNameRenameClose", "&7[&3PRISON INFO&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Message.mineNameRenameClosed", "&7[&3PRISON INFO&7] &cRename mine closed, nothing got changed!");
+        dataConfig("Message.mineOrGuiDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI Mines is not enabled. Check GuiConfig.yml.");
+        dataConfig("Message.mineMissingGuiPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI mines");
+        dataConfig("Message.OutOfTimeNoChanges", "&7[&3PRISON&7] &cYou ran out of time, nothing changed.");
+        dataConfig("Message.PrestigeCancelled", "&7[&3PRISON INFO&7] &cPrestige cancelled!");
+        dataConfig("Message.PrestigeCancelledWrongKeyword", "&7[&3PRISON INFO&7] &cPrestige cancelled, you didn't type the word: confirm");
+        dataConfig("Message.PrestigeRanOutOfTime", "&7[&3PRISON INFO&7] &cYou ran out of time, prestige cancelled.");
+        dataConfig("Message.PrestigesDisabledDefault", "&7[&3PRISON INFO&7] &cPrestiges are disabled by default, please edit it in your config.yml!");
+        dataConfig("Message.ConfirmPrestige", "&7[&3PRISON INFO&7] &aConfirm&3: Type the word &aconfirm &3 to confirm");
+        dataConfig("Message.CancelPrestige", "&7[&3PRISON INFO&7] &cCancel&3: Type the word &ccancel &3to cancel, &cyou've 30 seconds.");
+        dataConfig("Message.PrestigesAreDisabled", "&7[&3PRISON INFO&7] &cPrestiges are disabled. Check config.yml.");
+        dataConfig("Message.GuiOrPrestigesDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI Prestiges is not enabled. Check GuiConfig.yml.");
+        dataConfig("Message.CantFindPrestiges", "&7[&3PRISON ERROR&7] &cThe prestige ladder has no prestiges!");
+        dataConfig("Message.missingGuiPrestigesPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI prestiges");
+        dataConfig("Message.rankTagRename", "&7[&3PRISON INFO&7] &3Please write the &6tag &3you'd like to use and &6submit&3.");
+        dataConfig("Message.rankTagRenameClose", "&7[&3PRISON INFO&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
+        dataConfig("Message.rankTagRenameClosed", "&7[&3PRISON INFO&7] &cRename tag closed, nothing got changed!");
+        dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
+        dataConfig("Message.rankGuiMissingPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI ranks");
+        dataConfig("Message.SellAllIsDisabled", "&7[&3PRISON ERROR&7] &cSorry but the SellAll Feature's disabled in the config.yml");
+        dataConfig("Message.SellAllEditedWithSuccess", "] edited with success!");
+        dataConfig("Message.SellAllSubCommandNotFound", "&7[&3PRISON WARN&7] &cSub-command not found, check with /sellall for a list!");
+        dataConfig("Message.SellAllMultipliersAreDisabled", "&7[&3PRISON WARN&7] &cMultipliers are disabled in the SellAll config!");
+        dataConfig("Message.SellAllMultiplierWrongFormat", "&7[&3PRISON WARN&7] &cWrong format, please use /sellall multiplier add/delete <Prestige> <Multiplier>");
+        dataConfig("Message.SellAllMissingPermission", "&7[&3PRISON WARN&7] &cSorry, but you don't have the permission [");
+        dataConfig("Message.SellAllMissingPermissionToToggleAutoSell", "&7[&3PRISON WARN&7] &cSorry but you're missing the permission to use that! ");
+        dataConfig("Message.SellAllRanksDisabled", "&7[&3PRISON ERROR&7] &cThe Ranks module's disabled or not found!");
+        dataConfig("Message.SellAllPrestigeLadderNotFound", "&7[&3PRISON WARN&7] &cCan't find the prestiges ladder, they might be disabled in the config.yml!");
+        dataConfig("Message.SellAllCantFindPrestigeOrRank", "&7[&3PRISON WARN&7] &cCan't find the Prestige/Rank: ");
+        dataConfig("Message.SellAllRankNotFoundInPrestigeLadder", "&7[&3PRISON WARN&7] &cThe -prestiges- ladder doesn't contain the Rank: ");
+        dataConfig("Message.SellAllMultiplierNotANumber", "&7[&3PRISON WARN&7] &cSorry but the multiplier isn't a number!");
+        dataConfig("Message.SellAllMultiplierNotNumber2", " Here-> ");
+        dataConfig("Message.SellAllConfigSaveFail", "&7[&3PRISON ERROR&7] &cSorry, something went wrong while saving the config!");
+        dataConfig("Message.SellAllMultiplierEditSaveSuccess", "&7[&3PRISON&7] &aMultiplier got added or edited with success!");
+        dataConfig("Message.SellAllMultiplierFormat", "&7[&3PRISON WARN&7] &cPlease use this format: /sellall multiplier delete <Prestige>");
+        dataConfig("Message.SellAllCantFindMultiplier", "&7[&3PRISON WARN&7] &cCan't find the Multiplier of the prestige ");
+        dataConfig("Message.SellAllCantFindMultiplier2", " in the sellallconfig.yml");
+        dataConfig("Message.SellAllMultiplierDeleteSuccess", "&7[&3PRISON WARN&7] &aMultiplier deleted with success!");
+        dataConfig("Message.SellAllWrongFormatCommand", "&7[&3PRISON WARN&7] &cWrong format, try /sellall for a list of commands.");
+        dataConfig("Message.SellAllPleaseAddItem", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall add COAL_ORE <price>]");
+        dataConfig("Message.SellAllAddPrice", "&7[&3PRISON WARN&7] &cPlease add a price or value for the item [example: /sellall add COAL_ORE 100]");
+        dataConfig("Message.SellAllWrongID", "&7[&3PRISON WARN&7] &cSorry but the ITEM_ID's wrong, please check it!");
+        dataConfig("Message.SellAllValueNotNumber", "&7[&3PRISON WARN&7] &cSorry but the value isn't a number!");
+        dataConfig("Message.SellAllMissingID", "&7[&3PRISON WARN&7] &cPlease add an ITEM_ID [example: /sellall delete COAL_ORE]");
+        dataConfig("Message.SellAllTagWarn", "&7[&3PRISON WARN&7] &c");
+        dataConfig("Message.SellAllNotFoundStringConfig", " not found in the config or got already deleted");
+        dataConfig("Message.SellAllPrisonTag", "&7[&3PRISON&7]&a ");
+        dataConfig("Message.SellAllDeletedSuccess", " Deleted with success!");
+        dataConfig("Message.SellAllAddSuccess", "]&a added with success!");
+        dataConfig("Message.SellAllCommandEditSuccess", "]&a edited with success!");
+        dataConfig("Message.SellAllYouArentPlayer", "&7[&3PRISON ERROR&7]&c You aren't a player");
+        dataConfig("Message.SellAllNothingToSell", "&7[&3PRISON&7]&c You have nothing to sell!");
+        dataConfig("Message.SellAllYouGotMoney", "&7[&3PRISON&7]&a You got $");
+        dataConfig("Message.SellAllGUIDisabled", "&7[&3PRISON ERROR&7] &cSorry but the GUI's disabled in the SellAllConfig.yml");
+        dataConfig("Message.SellAllAutoSell", "&7[&3PRISON INFO&7] Your inventory's full, AutoSell activated!");
+        dataConfig("Message.SellAllSignNotify", "&7[&3PRISON&7] &aUsing SellAll from a sign with success!");
+        dataConfig("Message.SellAllEmpty", "&7[&3PRISON ERROR&7] &cThere aren't items in the sellall config,\n please add them and maybe restart the server, this might need it sometimes!");
+        dataConfig("Message.SellAllAutoEnabled", "&7[&3PRISON&7] &3SellAll-Auto &aenabled &3with success!");
+        dataConfig("Message.SellAllAutoDisabled", "&7[&3PRISON&7] &3SellAll-Auto &cdisabled &3with success!");
+        dataConfig("Setup.Message.MissingPermission", "&7[&3PRISON ERROR&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
+        dataConfig("Setup.Message.WrongFormat", "&7[&3PRISON ERROR&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
+        dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3PRISON INFO&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");
+        dataConfig("Setup.Message.SuccessRanksSetup", "&7[&3PRISON INFO&7] &3The ranks setup got completed with &asuccess&3 and the ranks got added to the default ladder,\n please check the logs if something's missing!");
+        dataConfig("Setup.Message.Aborted", "&7[&3PRISON INFO&7] &3Prison Setup Cancelled.");
     }
 
     public FileConfiguration getFileGuiMessagesConfig(){

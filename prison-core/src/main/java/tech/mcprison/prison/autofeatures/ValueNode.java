@@ -17,7 +17,8 @@ public abstract class ValueNode
 		BOOLEAN,
 		LONG,
 		INTEGER,
-		DOUBLE
+		DOUBLE,
+		STRING_LIST
 		;
 	}
 	
@@ -32,6 +33,8 @@ public abstract class ValueNode
 	public boolean isLongNode() { return false; }
 	
 	public boolean isDoubleNode() { return false; }
+	
+	public boolean isStringListNode() { return false; }
 	
 	
     public abstract NodeType getNodeType();

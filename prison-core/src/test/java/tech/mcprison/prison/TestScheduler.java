@@ -29,4 +29,9 @@ public class TestScheduler implements Scheduler {
     @Override public void cancelAll() {
 
     }
+    
+    @Override
+    public boolean isPrimaryThread() {
+    	return false;
+    }
 }

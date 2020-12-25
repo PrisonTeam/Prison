@@ -16,7 +16,6 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -147,7 +146,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
         // Make the item
-        ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
+        ItemStack block1 = createButton(XMaterial.valueOf(blockmaterial).parseItem(), blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         inv.addItem(block1);
     }
 
@@ -178,7 +177,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	blockslore.add(SpigotPrison.format(messages.getString("Lore.BlockType") + blockmaterial));
 
     	// Make the item
-    	ItemStack block1 = createButton(Material.valueOf(blockmaterial), 1, blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
+    	ItemStack block1 = createButton(XMaterial.valueOf(blockmaterial).parseItem(), blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
 
     	// Add the item to the inventory
     	inv.addItem(block1);

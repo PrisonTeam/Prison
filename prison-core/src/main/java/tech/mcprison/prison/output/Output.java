@@ -41,6 +41,8 @@ public class Output {
     public String ERROR_PREFIX = gen("Error");
     public String DEBUG_PREFIX = gen("Debug");
 
+    private boolean debug = false;
+    
     // Constructor
 
     private Output() {
@@ -190,8 +192,21 @@ public class Output {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
         }
     }
+    
+    public void logDebug(String message, Object... args) {
+    	if ( isDebug() ) {
+    		log(message, LogLevel.DEBUG, args);
+    	}
+    }
+    
+    public boolean isDebug() {
+		return debug;
+	}
+	public void setDebug( boolean debug ) {
+		this.debug = debug;
+	}
 
-    /**
+	/**
      * Send a message to a {@link CommandSender}
      */
     public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {

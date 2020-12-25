@@ -673,6 +673,19 @@ public class PrisonCommand {
     }
     
     
+    @Command(identifier = "prison debug", 
+    		description = "For internal use only. Do not use until instructed since this is not hookedup.", 
+    		onlyPlayers = false )
+    public void toggleDebug(CommandSender sender ) {
+    	
+    	Output.get().setDebug( !Output.get().isDebug() );
+    	
+    	String message = "Debug logging: " + (Output.get().isDebug() ? "enabled" : "disabled");
+
+    	sender.sendMessage( message );
+    }
+    
+    
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
 //							    then they must first upgrade to

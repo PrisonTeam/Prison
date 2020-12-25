@@ -124,12 +124,12 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusUnlockedMine")));
             minesLore.add(SpigotPrison.format(messages.getString("Lore.ClickToTeleport")));
         } else {
-            material = Material.REDSTONE_BLOCK;
+            material = XMaterial.REDSTONE_BLOCK.parseMaterial();
             minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
         }
 
         // Create the button
-        itemMines = createButton(material, 1, minesLore, SpigotPrison.format("&3" + m.getName()));
+        itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + m.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemMines);

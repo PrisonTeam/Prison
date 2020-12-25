@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.modules.ModuleStatus;
+import tech.mcprison.prison.output.Output;
 
 public class JsonFileIO
 		extends FileIO
@@ -65,7 +66,22 @@ public class JsonFileIO
 		
 		if ( json != null )
 		{
-			results = getGson().fromJson( json, data.getClass() );
+			try
+			{
+				results = getGson().fromJson( json, data.getClass() );
+			}
+			catch ( Exception e ) {
+				
+				String message = String.format( 
+						"JsonFileIO.readJsonFile: JsonParse failure: file: [%s] " +
+						"error: [%s]  json: [%s] ", 
+						file.getAbsoluteFile(), e.getMessage(), 
+						json );
+				
+				Output.get().logError( message );
+
+				// e.printStackTrace();
+			}
 		}
 		
 		return results;

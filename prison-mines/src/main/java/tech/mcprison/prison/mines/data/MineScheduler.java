@@ -1,15 +1,22 @@
 package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Stack;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.tasks.PrisonRunnable;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public abstract class MineScheduler
 		extends MineReset
@@ -394,7 +401,7 @@ public abstract class MineScheduler
 			
 			
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
-			int taskId = Prison.get().getPlatform().getScheduler().runTaskLater(this, ticksToWait);
+			int taskId = PrisonTaskSubmitter.runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
 		} else {
 			Output.get().logError("Mine " + getName() +
@@ -415,16 +422,16 @@ public abstract class MineScheduler
 		
 		int taskId = getTaskId();
 		
-		Prison.get().getPlatform().getScheduler().cancelTask( taskId );
+		PrisonTaskSubmitter.cancelTask( taskId );
 	}
 	
-	public void submit( int offset ) {
-		submitNextAction(offset);
+	public void submit( double offsetSeconds ) {
+		submitNextAction(offsetSeconds);
 	}
 	private void submitNextAction() {
 		submitNextAction(0);
 	}
-	private void submitNextAction(int offset) {
+	private void submitNextAction(double offsetSeconds) {
 		if ( getJobStack().size() == 0 ) {
 			resetJobStack();
 		}
@@ -432,8 +439,8 @@ public abstract class MineScheduler
 		setCurrentJob( getJobStack().pop() );
 		
 		// Offset tries to stagger the mine resets, assuming most will have the same delays:
-		if ( offset > 0 ) {
-			getCurrentJob().setDelayActionSec( getCurrentJob().getDelayActionSec() + offset );
+		if ( offsetSeconds > 0 ) {
+			getCurrentJob().setDelayActionSec( getCurrentJob().getDelayActionSec() + offsetSeconds );
 		}
 		
 		// Submit currentJob using delay in the job. Must be a one time run, no repeats.
@@ -453,16 +460,103 @@ public abstract class MineScheduler
 	}
 	
 	
+	/**
+	 * <p>This function checks if the block break event should execute a 
+	 * given command or not. If it needs to, then it will submit them to run as 
+	 * a task instead of running them in this thread.
+	 * </p>
+	 * 
+	 * @param blockCount
+	 * @param player 
+	 */
+	public void processBlockBreakEventCommands( int blockCount, Player player, BlockEventType eventType ) {
+		
+		if ( getBlockEvents().size() > 0 ) {
+			Random random = new Random();
+			
+			for ( int i = 0; i < blockCount; i ++ ) {
+				double chance = random.nextDouble() * 100;
+				
+				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+					
+					processBlockEventDetails( player, eventType, chance, blockEvent );
+				}
+				
+			}
+		}
+	}
+
+	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, MineBlockEvent blockEvent )
+	{
+		if ( blockEvent.getEventType() == BlockEventType.eventTypeAll || 
+				blockEvent.getEventType() == eventType ) {
+			
+			// If perms are set, check them, otherwise ignore perm check:
+			String perms = blockEvent.getPermission();
+			if ( perms != null && perms.trim().length() > 0 && player.hasPermission( perms ) ||
+					perms == null || 
+					perms.trim().length() == 0
+					) {
+				
+				if ( chance <= blockEvent.getChance() ) {
+					
+					String formatted = blockEvent.getCommand().
+							replace("{player}", player.getName())
+							.replace("{player_uid}", player.getUUID().toString());
+					
+					// Split multiple commands in to a List of indivual tasks:
+					List<String> tasks = new ArrayList<>( 
+							Arrays.asList( formatted.split( ";" ) ));
+					
+					
+					if ( tasks.size() > 0 ) {
+						
+						String errorMessage = "BlockEvent: Player: " + player.getName();
+						
+						PrisonDispatchCommandTask task = 
+								new PrisonDispatchCommandTask( tasks, errorMessage );
+						
+						
+						switch ( blockEvent.getMode() )
+						{
+							case "inline":
+								// Don't submit, but run it here within this thread:
+								task.run();
+								break;
+								
+							case "sync":
+							case "async": // async will cause failures so run as sync:
+								
+								// submit task: 
+								@SuppressWarnings( "unused" ) 
+								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
+								break;
+								
+							default:
+								break;
+						}
+						
+					}
+					
+					
+//							PrisonAPI.dispatchCommand(formatted);
+				}
+			}
+		}
+	}
+	
 	public boolean checkZeroBlockReset() {
 		boolean reset = false;
 		
 		// Reset if the mine runs out of blocks:
 		
-		if ( !isVirtual() &&
-				getRemainingBlockCount() == 0 && !isZeroBlockResetDisabled() || 
+		
+		if ( !isVirtual() && (
+				getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
 				getResetThresholdPercent() > 0 && 
 				getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-												getResetThresholdPercent() / 100.0d)) {
+												getResetThresholdPercent() / 100.0d)
+				)) {
 			
 			// submit a manual reset since the mine is empty:
 			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );
@@ -491,7 +585,7 @@ public abstract class MineScheduler
 		
 		// cancel existing job:
 		if ( getTaskId() != null ) {
-			Prison.get().getPlatform().getScheduler().cancelTask( getTaskId() );
+			PrisonTaskSubmitter.cancelTask( getTaskId() );
 		}
 		
 		// Clear jobStack and set currentJob to run the RESET with zero delay:

@@ -1,17 +1,15 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -59,7 +57,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         }
 
         // Get the Items config section
-        Set<String> items = Objects.requireNonNull(conf.getConfigurationSection("Items")).getKeys(false);
+        Set<String> items = conf.getConfigurationSection("Items").getKeys(false);
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
@@ -69,13 +67,14 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             return null;
         }
 
-        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager -> SellAll-Player"));
+        inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison -> SellAll-Player"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(
                     messages.getString("Lore.Value") + conf.getString("Items." + key + ".ITEM_VALUE")
             );
-            ItemStack item = createButton(Material.valueOf(conf.getString("Items." + key + ".ITEM_ID")), 1, itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
+
+            ItemStack item = createButton(SpigotUtil.getItemStack(SpigotUtil.getXMaterial(conf.getString("Items." + key + ".ITEM_ID")), 1), itemsLore, SpigotPrison.format("&3" + conf.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
         }
         return inv;

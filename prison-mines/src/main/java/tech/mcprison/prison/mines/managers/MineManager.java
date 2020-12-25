@@ -26,11 +26,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
-import tech.mcprison.prison.integration.IntegrationManager.PrisonPlaceHolders;
 import tech.mcprison.prison.integration.ManagerPlaceholders;
 import tech.mcprison.prison.integration.PlaceHolderKey;
+import tech.mcprison.prison.integration.PlaceholderManager;
+import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -212,13 +212,16 @@ public class MineManager
 
         this.coll = collOptional.get();
 
-        int offsetTiming = 5;
-        loadMines(offsetTiming);
+        
+        // Default value of 5 seconds:
+        long offsetTimingMs = Prison.get().getPlatform()
+        							.getConfigInt( "prison-mines-reset-gap", 5000 );
+        loadMines(offsetTimingMs);
         
 
         Output.get().logInfo( String.format("Loaded %d mines and submitted with a %d " +
-        		"second offset timing for auto resets.", 
-        			getMines().size(), offsetTiming));
+        		"millisecond offset timing for auto resets.", 
+        			getMines().size(), offsetTimingMs));
         
         
 //        // When finished loading the mines, then if there are any worlds that
@@ -265,9 +268,10 @@ public class MineManager
      * @param mine the mine instance
      * @param save - bypass the option to save. Useful for when initially loading the mines since
      *               no data has changed.
+     * @param offsetTiming in milliseconds 
      * @return if the add was successful
      */
-    private boolean add(Mine mine, boolean save, int offsetTiming ) {
+    private boolean add(Mine mine, boolean save, int offsetTimingMs ) {
     	boolean results = false;
         if (!getMines().contains(mine)){
         	if ( save ) {
@@ -278,7 +282,7 @@ public class MineManager
             getMinesByName().put( mine.getName().toLowerCase(), mine );
             
             // Start its scheduling:
-            mine.submit(offsetTiming);
+            mine.submit( offsetTimingMs / 1000d );
         }
         return results;
     }
@@ -308,15 +312,15 @@ public class MineManager
 
 
 
-    private void loadMines( int offsetTiming ) {
+    private void loadMines( long offsetTimingMs ) {
         List<Document> mineDocuments = coll.getAll();
 
-        int offset = 0;
+        int offsetMs = 0;
         for (Document document : mineDocuments) {
             try {
                 Mine m = new Mine(document);
-                add(m, false, offset);
-                offset += offsetTiming;
+                add(m, false, offsetMs);
+                offsetMs += offsetTimingMs;
                 
             } catch (Exception e) {
                 Output.get()
@@ -540,8 +544,8 @@ public class MineManager
     	String results = null;
     	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     	
-		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
 		}
     	
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
@@ -654,7 +658,7 @@ public class MineManager
 						int totalBlocks = mine.getBounds().getTotalBlockCount();
 						int blocksRemaining = mine.getRemainingBlockCount();
 						
-						results = Prison.get().getIntegrationManager().
+						results = Prison.get().getPlaceholderManager().
 									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), false );
 						break;
 						
@@ -705,8 +709,8 @@ public class MineManager
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     		
-    		if ( !identifier.startsWith( IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-    			identifier = IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
@@ -787,7 +791,7 @@ public class MineManager
     	double timeRemaining = mine.getRemainingTimeSec();
     	int time = mine.getResetTime();
     	
-    	return Prison.get().getIntegrationManager().
+    	return Prison.get().getPlaceholderManager().
     					getProgressBar( timeRemaining, ((double) time), true );
 	}
 
@@ -817,13 +821,13 @@ public class MineManager
     		for ( Mine mine : getMines() ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
     				String key = ph.name().replace( 
-    						IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    						PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
     						toLowerCase();
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
     				if ( ph.getAlias() != null ) {
     					String aliasName = ph.getAlias().name().replace( 
-    							IntegrationManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+    							PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
     							toLowerCase();
     					placeholder.setAliasName( aliasName );
     				}

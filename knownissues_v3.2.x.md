@@ -7,7 +7,77 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.2
+# To Do Items - During Alpha v3.2.3
+
+
+- Placeholder Attributes:
+  A way for placeholders to be customized dynamically other plugin configs.
+  Example would be a scoreboard that uses bar graphs but customizes each one to different colors, characters, and size. 
+  Use :: to identify the start of an attribute followed by the type of attribute.
+    Examples:  ::nFormat:    and   ::bar:  
+  Use of : to separate each parameter.
+  
+
+
+- Hex colors:
+  https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
+  https://regex101.com/
+  (?i)&#[A-Fa-f0-9]{6}|&[0-9A-FK-OR]
+  
+
+- Possible issue with auto features preventing WorldGuard from protecting a
+  mine.  In the auto features GUI, when the bottom three features are turned 
+  off then WG won't protect the region.
+  
+
+- auto manager - durability not working even when feature is enabled
+- autoConfigure - fixed?
+
+
+- mines - add storage for liner so it can be regenerated
+- mine liner - add bedrock
+- BlockEvents - submit to run synch or async.
+- BlockEvents - multiple on same command.  Use ; as separators
+- auto features - fixed - durabilty not working
+- auto features - cannot turn off smelt or blocking
+- auto features - issue with lore
+- world guard - not working properly
+
+
+* **Custom block issues**
+- If CustomItems is loaded successfully but yet not using new block model, show error message
+- Show a message at startup indicating that the new block model is enabled or not enabled
+
+
+* **Rework rank permissions to eliminate need to put perms in rank commands**
+- Enhance the PermissionIntegration abstract class to also work with group perms.
+- Add to ranks two new fields: permissions and permissionGroups.  Save and load.
+- Add a new boolean field to ranks: usePermissions. Save and load.
+- Add support for these perms within rank commands
+- Rewrite rankups to use these perms when ranking up, promote, demote, and also for prestiges
+
+
+* **Prestige Options**
+ - Reset money on prestige - boolean option
+ - Auto Prestige - server setting or player setting?
+ - prestigemax - keep applying prestiges until run out of funds
+ - rankmax - keep applying rankups until run out of funds
+ - Eliminate prestige ranks - (optional)
+   * Would need ladder commands
+   * Need to define an upper limit of how many
+   * tags may have a placeholder: `&7[&3P&a{p_level}&7]`
+   * Have a base cost of prestige: example 100,000,000
+   * Have a cost multiplier for ranks: example: 10% more expensive each rank with each prestige
+   * Have a cost multiplier for prestiging: example: 20% more expensive each prestige
+   * Have a cost multiplier for /sellall: Example: 0.005% (1/2 increase in sale price) or -0.015% (1.5% decrease in sale price to make it even more difficult per prestige)
+   * Have a list of permissions and permission groups
+   * The above settings are pretty general and would apply to all generated prestige levels, but to allow for customizations, then ladder ranks, perms and perm groups could be setup to accept a level parameter to be applied at a specific level.  Tags set at a given level could also be applied to higher levels until another tag takes it place.
+   
+ 
+
+* **DONE: Sellall - Hook up to prison command handler** 
+Currently sellall is not hooked up to the prison command handler and it needs to be.
+
 
 
 * **Get new block model working**
@@ -84,7 +154,7 @@ Implement and have a fully functional new block handling mechanism that operate 
  
  
 
-* **DONE? Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
+* **DONE! Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
  Blue should work on this.
 
 

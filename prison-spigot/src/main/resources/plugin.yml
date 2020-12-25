@@ -3,7 +3,7 @@ main: tech.mcprison.prison.spigot.SpigotPrison
 version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://prison.jar-mc.com
-softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, GemsEconomy, TokenEnchant]
+softdepend: [Essentials, Vault, LuckPerms, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, GemsEconomy, TokenEnchant, CMI]
 
 # Older versions than 1.13 will ignore this, but this will allow 1.13 and up to use newer block types?
 api-version: 1.13
@@ -11,14 +11,6 @@ api-version: 1.13
   # ======================================================
   # New commands compatible only with spigot
   # ======================================================
-commands:
-  #prisonmanager:
-    #description: Call a fancy GUI where manage the ranks and mines
-    #usage: /<command> gui
-  sellall:
-    description: SellAll Command and SubCommands
-    usage: /<command>
-
 
 permissions:
 

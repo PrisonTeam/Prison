@@ -20,16 +20,12 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public SellAllConfig(){
 
-    	// Do not use requireNonNull. Should never throw an exception if they don't have
-    	// it configured.
-    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
-    		
-    		initialize();
-    	}
-    	
+    	//if ( Prison.get().getPlatform().getConfigBooleanFalse("sellall")) {
+        initialize();
+    	//}
     }
 
-    private void initialize(){
+    public void initialize(){
 
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
@@ -52,6 +48,8 @@ public class SellAllConfig extends SpigotConfigComponents {
                 Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + "used by the SellAllConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
             }
         }
+
+        conf = YamlConfiguration.loadConfiguration(file);
     }
 
     public void dataConfig(String key, String value){
@@ -74,8 +72,14 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Player_GUI_Enabled","true");
         dataConfig("Options.Player_GUI_Permission_Enabled","false");
         dataConfig("Options.Player_GUI_Permission","prison.sellall.playergui");
+        dataConfig("Options.Full_Inv_AutoSell", "false");
+        dataConfig("Options.Full_Inv_AutoSell_Notification", "true");
+        dataConfig("Options.Full_Inv_AutoSell_perUserToggleable", "false");
+        dataConfig("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm", "false");
+        dataConfig("Options.Full_Inv_AutoSell_PerUserToggleable_Permission", "prison.sellall.toggle");
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
+        dataConfig("Options.Multiplier_Permission_Only_Higher", "false");
         dataConfig("Options.Multiplier_Command_Permission_Enabled", "true");
         dataConfig("Options.Multiplier_Command_Permission", "prison.admin");
     }

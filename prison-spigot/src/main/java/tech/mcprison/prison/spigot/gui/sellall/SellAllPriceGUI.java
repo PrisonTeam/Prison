@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -7,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -67,36 +67,39 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToIncrease")
         );
 
+        Material decreaseMat = XMaterial.REDSTONE_BLOCK.parseMaterial();
+        ItemStack decreaseStack = XMaterial.REDSTONE_BLOCK.parseItem();
 
         // Decrease button
-        ItemStack decreaseOf1 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1" ));
+        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1" ));
         inv.setItem(1, decreaseOf1);
-        ItemStack decreaseOf5 = createButton(Material.REDSTONE_BLOCK, 10, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10"));
+        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10"));
         inv.setItem(10, decreaseOf5);
-        ItemStack decreaseOf10 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 100"));
+        ItemStack decreaseOf10 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 100"));
         inv.setItem(19, decreaseOf10);
-        ItemStack decreaseOf50 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1000"));
+        ItemStack decreaseOf50 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 1000"));
         inv.setItem(28, decreaseOf50);
-        ItemStack decreaseOf100 = createButton(Material.REDSTONE_BLOCK, 1, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10000"));
+        ItemStack decreaseOf100 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10000"));
         inv.setItem(37, decreaseOf100);
 
 
         // Create a button and set the position
-        ItemStack confirmButton = createButton(Material.TRIPWIRE_HOOK, 1, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + itemID + " " + val));
+        ItemStack confirmButton = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + itemID + " " + val));
         inv.setItem(22, confirmButton);
 
+        Material increaseMat = XMaterial.EMERALD_BLOCK.parseMaterial();
+        ItemStack increaseStack = XMaterial.EMERALD_BLOCK.parseItem();
 
         // Increase button
-        ItemStack increseOf1 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1" ));
+        ItemStack increseOf1 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1" ));
         inv.setItem(7, increseOf1);
-        ItemStack increaseOf5 = createButton(Material.EMERALD_BLOCK, 10, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10"));
+        ItemStack increaseOf5 = createButton(new ItemStack(increaseMat, 10), changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10"));
         inv.setItem(16, increaseOf5);
-        ItemStack increaseOf10 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 100"));
+        ItemStack increaseOf10 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 100"));
         inv.setItem(25, increaseOf10);
-        ItemStack increaseOf50 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1000"));
+        ItemStack increaseOf50 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1000"));
         inv.setItem(34, increaseOf50);
-        ItemStack increaseOf100 = createButton(Material.EMERALD_BLOCK, 1, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10000"));
+        ItemStack increaseOf100 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 10000"));
         inv.setItem(43, increaseOf100);
     }
-
 }

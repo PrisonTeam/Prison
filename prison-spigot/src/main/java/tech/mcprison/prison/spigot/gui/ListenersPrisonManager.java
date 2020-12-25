@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,11 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import org.bukkit.event.player.PlayerInteractEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -109,6 +114,101 @@ public class ListenersPrisonManager implements Listener {
 
         if (!chatEventPlayer.contains(p.getName())){
             chatEventPlayer.add(p.getName());
+        }
+    }
+
+    @EventHandler
+    public void onSignEditing(SignChangeEvent e){
+
+        // Check if the feature's enabled
+        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+            return;
+        }
+
+        Player p = e.getPlayer();
+        String signTag = config.getString("sellall-sign-visible-tag");
+        if (signTag == null){
+            signTag = "&7[&3SellAll&7]";
+        }
+
+        try {
+            if (e.getLine(0).equalsIgnoreCase("[SellAll]") || e.getLine(0).equalsIgnoreCase(signTag)) {
+                if (p.hasPermission("prison.sign")){
+                    e.setLine(0, SpigotPrison.format(signTag));
+                } else {
+                    e.setLine(0, SpigotPrison.format("&cNo perm"));
+                    e.setLine(1, SpigotPrison.format("prison.sign"));
+                }
+            }
+        } catch (IndexOutOfBoundsException ignored){}
+    }
+
+    @EventHandler
+    public void onPlayerClickSign(PlayerInteractEvent e){
+
+        // Check if the feature's enabled
+        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+            return;
+        }
+
+        Material clickedBlock;
+        Material signMaterial;
+        Material signWallMaterial;
+
+        // Check if the clickedBlock's a block
+        try {
+            clickedBlock = e.getClickedBlock().getType();
+        } catch (NullPointerException ex){
+            return;
+        }
+
+        // Not sure which one will work better
+        try {
+            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseItem().getType();
+        } catch (NullPointerException ex) {
+            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseMaterial();
+        }
+        try {
+            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseItem().getType();
+        } catch (NullPointerException ex){
+            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial();
+        }
+
+
+        // Check if the clicked block's a sign
+        if (clickedBlock == signMaterial || clickedBlock == signWallMaterial){
+
+            // Get the player
+            Player p = e.getPlayer();
+            String signTag = config.getString("sellall-sign-visible-tag");
+            if (signTag == null) {
+                signTag = "&7[&3SellAll&7]";
+            }
+
+            // Get the action
+            Action action = e.getAction();
+
+            // Check if the action's a click
+            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK){
+
+                // Get sign
+                Sign sign = (Sign) e.getClickedBlock().getState();
+
+                // If there aren't lines in the sign this will void an error
+                try {
+
+                    // Check if the first like of the sign have the right tag
+                    if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))){
+
+                        if (config.getString("sellall-sign-notify").equalsIgnoreCase("true")){
+                            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
+                        }
+
+                        // Execute the sellall command
+                        Bukkit.dispatchCommand(p, "sellall sell");
+                    }
+                } catch (IndexOutOfBoundsException ignored){}
+            }
         }
     }
 
@@ -462,7 +562,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions
-            case "PrisonManager -> SellAll-Admin":{
+            case "Prison -> SellAll-Admin":{
 
                 sellAllAdminGUI(e, p, buttonNameMain);
 
@@ -478,7 +578,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions
-            case "PrisonManager -> SellAll-Player":{
+            case "Prison -> SellAll-Player":{
 
                 p.closeInventory();
                 e.setCancelled(true);

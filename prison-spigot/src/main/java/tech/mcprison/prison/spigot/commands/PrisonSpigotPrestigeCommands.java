@@ -16,15 +16,18 @@ import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotPrestigeCommands
 				extends PrisonSpigotBaseCommands {
 
 	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 	
-	@Command(identifier = "prestiges", onlyPlayers = true, altPermissions = {"-none-", "prison.admin"})
+	@Command(identifier = "prestiges", onlyPlayers = true)
 	public void prestigesGUICommand(CommandSender sender) {
 
-		if ( !isPrisonConfig( "prestiges") ) {
+		if ( !isPrisonConfig( "prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
 			sender.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigesDisabledDefault")));
 			return;
 		}
@@ -37,22 +40,19 @@ public class PrisonSpigotPrestigeCommands
 		}
 	}
 
-
-	@Command(identifier = "prestige", onlyPlayers = true, altPermissions = "-none-")
+	@Command(identifier = "prestige", onlyPlayers = true)
 	public void prestigesPrestigeCommand(CommandSender sender) {
 
-		if ( isPrisonConfig( "prestiges" ) ) {
-			sender.dispatchCommand("gui prestige");
+		if ( isPrisonConfig( "prestiges" ) || isPrisonConfig( "prestige.enabled" ) ) {
+			sender.dispatchCommand("rankup prestiges");
 		}
 	}
-
-
 
     @Command( identifier = "gui prestige", description = "GUI Prestige",
   		  aliases = {"prisonmanager prestige"} )
     public void prisonManagerPrestige(CommandSender sender ) {
 
-        if ( isPrisonConfig("prestiges") ) {
+        if ( isPrisonConfig("prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
 
             if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
@@ -137,7 +137,7 @@ public class PrisonSpigotPrestigeCommands
     		  onlyPlayers = true )
     private void prisonManagerPrestiges( CommandSender sender ) {
 
-        if ( !isPrisonConfig("prestiges") ) {
+        if ( !isPrisonConfig("prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigesAreDisabled")));
             return;
         }
@@ -162,6 +162,4 @@ public class PrisonSpigotPrestigeCommands
         SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player );
         gui.open();
     }
-
- 
 }

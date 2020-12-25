@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.integration.PlaceholderManager;
 
 public class PlaceHolderAPIIntegrationWrapper
 	extends PlaceholderExpansion 
@@ -49,7 +49,7 @@ public class PlaceHolderAPIIntegrationWrapper
 	 */
 	@Override
 	public String getIdentifier(){
-		return IntegrationManager.PRISON_PLACEHOLDER_PREFIX;
+		return PlaceholderManager.PRISON_PLACEHOLDER_PREFIX;
 	}
 
 	@Override

@@ -1049,7 +1049,7 @@ public enum BlockType {
 	
 	
 	TWISTING_VINES( "minecraft:twisting_vines", MaterialType.BLOCK, MaterialVersion.v1_16 ),
-	WEAPING_VINES( "minecraft:weaping_vines", MaterialType.BLOCK, MaterialVersion.v1_16 ),
+	WEEPING_VINES( "minecraft:weeping_vines", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	
 	
 	

@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -69,10 +68,10 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(Material.TRIPWIRE_HOOK, 1, ranksLore, SpigotPrison.format("&3" + "Ranks"));
-        ItemStack autoManager = createButton(Material.IRON_PICKAXE, 1, prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
-        ItemStack mines = createButton(Material.DIAMOND_ORE, 1, minesLore, SpigotPrison.format("&3" + "Mines"));
-        ItemStack sellAll = createButton(Material.CHEST, 1 ,  sellAllLore, SpigotPrison.format("&3" + "SellAll"));
+        ItemStack ranks = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + "Ranks"));
+        ItemStack autoManager = createButton(XMaterial.IRON_PICKAXE.parseItem(), prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
+        ItemStack mines = createButton(XMaterial.DIAMOND_ORE.parseItem(), minesLore, SpigotPrison.format("&3" + "Mines"));
+        ItemStack sellAll = createButton(XMaterial.CHEST.parseItem(), sellAllLore, SpigotPrison.format("&3" + "SellAll"));
 
         // Position of the button
         inv.setItem(10, ranks);

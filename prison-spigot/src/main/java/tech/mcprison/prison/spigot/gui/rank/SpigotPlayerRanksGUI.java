@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.gui.rank;
 import java.util.List;
 import java.util.Optional;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -23,7 +24,6 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -130,7 +130,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Get many parameters
         RankLadder ladderData = ladder.get();
         Rank rank = ladderData.getLowestRank().get();
-        Rank playerRank = getRankPlayer().getRank( ladderData ).orElse( null );
+        Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Call the whole GUI and build it
         if (guiBuilder(dimension, inv, rank, playerRank)) return;
@@ -194,7 +194,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(Material.EMERALD_BLOCK, 1, rankupLore, SpigotPrison.format(messages.getString("Lore.Rankup")));
+        ItemStack rankupButton = createButton(XMaterial.EMERALD_BLOCK.parseItem(), rankupLore, SpigotPrison.format(messages.getString("Lore.Rankup")));
         inv.setItem(dimension - 5, rankupButton);
     }
 }

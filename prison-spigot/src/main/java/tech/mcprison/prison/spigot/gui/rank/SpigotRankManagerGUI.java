@@ -9,7 +9,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -95,9 +94,9 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         // Create the button
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
-        ItemStack rankupCommands = createButton(commandMinecart, 1, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
-        ItemStack rankPrice = createButton(Material.GOLD_NUGGET, 1, editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.name));
-        ItemStack rankTag = createButton(Material.NAME_TAG, 1, editTagLore, SpigotPrison.format("&3" + "RankTag" +  " " + rank.name));
+        ItemStack rankupCommands = createButton(XMaterial.matchXMaterial(commandMinecart).parseItem(), rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.name));
+        ItemStack rankPrice = createButton(XMaterial.GOLD_NUGGET.parseItem(), editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.name));
+        ItemStack rankTag = createButton(XMaterial.NAME_TAG.parseItem(), editTagLore, SpigotPrison.format("&3" + "RankTag" +  " " + rank.name));
 
         // Set the position and add it to the inventory
         inv.setItem(10, rankupCommands);

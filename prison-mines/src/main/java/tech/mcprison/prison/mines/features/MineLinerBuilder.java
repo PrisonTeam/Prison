@@ -1,4 +1,4 @@
-package tech.mcprison.prison.mines.data;
+package tech.mcprison.prison.mines.features;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -35,7 +36,8 @@ public class MineLinerBuilder {
 		
 		blackAndWhite,
 		seaEchos,
-		obby, 
+		obby,
+		bedrock,
 		glowingPlanks,
 		darkOakPrismarine,
 		beacon,
@@ -555,6 +557,15 @@ public class MineLinerBuilder {
 				break;
 				
 				
+			case bedrock:
+				String[][] bedrock =
+				{
+						{ "bedrock" }
+				};
+				pattern2d = bedrock;
+				break;
+				
+				
 			case glowingPlanks:
 				String[][] glowingPlanks =
 				{
@@ -612,9 +623,9 @@ public class MineLinerBuilder {
 							{ "end_stone", "glowstone" },
 							{ "iron_block", "end_stone" },
 
-							{ "chiseled_quartz_block", "pillar_quartz_block" },
+							{ "chiseled_quartz_block", "quartz_pillar" },
 							{ "glowstone", "quartz_block" },
-							{ "chiseled_quartz_block", "pillar_quartz_block" }
+							{ "chiseled_quartz_block", "quartz_pillar" }
 						};
 				pattern2d = bright;
 				

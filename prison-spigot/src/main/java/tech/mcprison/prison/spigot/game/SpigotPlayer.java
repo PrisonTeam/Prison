@@ -21,12 +21,16 @@ package tech.mcprison.prison.spigot.game;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
@@ -119,6 +123,32 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         bukkitPlayer.updateInventory();
     }
 
+    @Override
+    public List<String> getPermissions() {
+    	List<String> results = new ArrayList<>();
+    	
+    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
+    	for ( PermissionAttachmentInfo perm : perms )
+		{
+			results.add( perm.getPermission() );
+		}
+    	
+    	return results;
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	for ( String perm : getPermissions() ) {
+			if ( perm.startsWith( prefix ) ) {
+				results.add( perm );
+			}
+		}
+    	
+    	return results;
+    }
+    
     /**
      * This class is an adaptation of the NmsHelper class in the Rosetta library by Max Roncace. The
      * library is licensed under the New BSD License. See the {@link tech.mcprison.prison.localization}

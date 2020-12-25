@@ -2,8 +2,8 @@ package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -100,7 +99,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         commandsLore.add(SpigotPrison.format(messages.getString("Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
-        itemCommand = createButton(Material.TRIPWIRE_HOOK, 1, commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));
+        itemCommand = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));
 
         // Add the button to the inventory
         inv.addItem(itemCommand);

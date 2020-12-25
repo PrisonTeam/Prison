@@ -1,4 +1,4 @@
-package tech.mcprison.prison.mines.data;
+package tech.mcprison.prison.mines.features;
 
 public class MineTargetBlockKey
 	implements Comparable<Object>

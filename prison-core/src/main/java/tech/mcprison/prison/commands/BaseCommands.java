@@ -1,6 +1,7 @@
 package tech.mcprison.prison.commands;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -31,11 +32,18 @@ public abstract class BaseCommands
      * the offline player list. If not one is found, then return a null.
      * </p>
      * 
+     * <p>The getOfflinePlayer() will now include RankPlayer as a fall back to help
+     * ensure a player is always returned, if its a valid player.
+     * </p>
+     * 
      * @param sender
      * @param playerName is optional, if not supplied, then sender will be used
      * @return Player if found, or null.
      */
 	public Player getPlayer( CommandSender sender, String playerName ) {
+		return getPlayer( sender, playerName, null );
+	}
+	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
 		Player result = null;
 		
 		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
@@ -47,12 +55,17 @@ public abstract class BaseCommands
 			if ( !opt.isPresent() ) {
 				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
 			}
+			if ( !opt.isPresent() ) {
+				opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
+			}
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}
+			
 		}
 		return result;
 	}
+	
 	
 	public double getPlayerBalance( Player player ) {
 		

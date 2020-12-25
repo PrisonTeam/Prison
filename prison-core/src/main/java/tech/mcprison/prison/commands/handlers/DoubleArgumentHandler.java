@@ -28,11 +28,14 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
     public DoubleArgumentHandler() {
     }
 
-    @Override public Double transform(CommandSender sender, CommandArgument argument, String value)
+    @Override 
+    public Double transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
-        value = value.replace("$", "");
-        value = value.replace("%", "");
+        value = value.replaceAll( "$|%", "" );
         try {
+//        	if ( value == null || value.trim().length() == 0 ) {
+//        		return null;
+//        	}
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
             throw new TransformError(

@@ -19,13 +19,19 @@
 package tech.mcprison.prison.spigot.block;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.BlockType;
@@ -38,8 +44,19 @@ public class SpigotBlock implements Block {
 
     private org.bukkit.block.Block bBlock;
 
+    /**
+     * If this block was identified as being within a specific mine, then 
+     * keep track of the mine's PrisonBlockTypes to ensure the
+     * correct custom block integration is able to identify it if it
+     * is a custom block type.
+     */
+    private transient Set<PrisonBlockType> prisonBlockTypes;
+
+
     public SpigotBlock(org.bukkit.block.Block bBlock) {
         this.bBlock = bBlock;
+        
+        this.prisonBlockTypes = new HashSet<>();
     }
 
     @Override public Location getLocation() {
@@ -60,13 +77,97 @@ public class SpigotBlock implements Block {
 
     @Override
     public PrisonBlock getPrisonBlock() {
-    	return SpigotPrison.getInstance().getCompatibility().getPrisonBlock( bBlock );
+    	PrisonBlock results = null;
     	
+    	if ( getPrisonBlockTypes() != null ) {
+    		
+    		// Need to see if any PrisonBlockTypes exist in the mine where this block is located.
+    		for ( PrisonBlockType blockType : getPrisonBlockTypes() ) {
+    			
+    			results = getPrisonBlockFromCustomBlockIntegration( blockType );
+    			if ( results != null ) {
+    				break;
+    			}
+    		}
+    	}
+
+    	if ( results == null ) {
+    		results = SpigotPrison.getInstance().getCompatibility().getPrisonBlock( bBlock );
+    	}
+    	
+    	return results;
     }
     
-    public void setPrisonBlock( PrisonBlock prisonBlock ) {
-    	SpigotPrison.getInstance().getCompatibility().
-				updateSpigotBlock( prisonBlock, bBlock );
+	private PrisonBlock getPrisonBlockFromCustomBlockIntegration( PrisonBlockType blockType ) {
+		PrisonBlock results = null;
+    	
+    	switch ( blockType )
+		{
+			case minecraft:
+				// No special processing for minecraft types since that will be the fallback later on:
+
+			case CustomItems:
+				{
+					CustomBlockIntegration customItemsIntegration = 
+									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( blockType );
+					// NOTE: This would be the situation where the admin added the Custom Items plugin, added blocks
+					//       then removed the plugin.  So if it's null, ignore it.
+					if ( customItemsIntegration != null ) {
+						results = customItemsIntegration.getCustomBlock( this );
+					}
+				}
+				
+				break;
+				
+			default:
+				break;
+		}
+    	
+    	return results;
+    }
+
+    
+	public Set<PrisonBlockType> getPrisonBlockTypes() {
+		return prisonBlockTypes;
+	}
+    public void setPrisonBlockTypes( Set<PrisonBlockType> prisonBlockTypes ) {
+		this.prisonBlockTypes = prisonBlockTypes;
+	}
+
+	public void setPrisonBlock( PrisonBlock prisonBlock ) {
+    	
+    	switch ( prisonBlock.getBlockType() )
+		{
+			case minecraft:
+				{
+					SpigotPrison.getInstance().getCompatibility().
+									updateSpigotBlock( prisonBlock, bBlock );
+				}
+				
+				
+				break;
+
+			case CustomItems:
+				{
+					CustomBlockIntegration customItemsIntegration = 
+									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );
+					
+					Block results = customItemsIntegration.setCustomBlockId( this, prisonBlock.getBlockName(), false );
+					if ( results != null ) {
+						this.bBlock = ((SpigotBlock) results).getWrapper();
+					}
+					else {
+						Output.get().logInfo( "SpigotBLock.setPrisonBlock: Failed to set a custom block %s ", prisonBlock.getBlockNameFormal() );
+					}
+				}
+				
+				break;
+				
+			default:
+				break;
+		}
+    	
+    	
     }
     
     public void setBlockFace( BlockFace blockFace ) {
@@ -168,7 +269,9 @@ public class SpigotBlock implements Block {
         return ret;
     }
 
-    @Override public List<ItemStack> getDrops(ItemStack tool) {
+	
+    @Override 
+    public List<ItemStack> getDrops(ItemStack tool) {
         List<ItemStack> ret = new ArrayList<>();
 
         bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
@@ -176,9 +279,19 @@ public class SpigotBlock implements Block {
 
         return ret;
     }
+    
+//    public List<SpigotItemStack> getDrops(SpigotItemStack tool) {
+//    	List<SpigotItemStack> ret = new ArrayList<>();
+//    	
+//    	bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
+//    	.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+//    	
+//    	return ret;
+//    }
 
     public org.bukkit.block.Block getWrapper() {
         return bBlock;
     }
+
 
 }

@@ -6,12 +6,15 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
@@ -49,6 +52,8 @@ public abstract class Spigot113Blocks
 		if ( xMat != null ) {
 			pBlock = new PrisonBlock( xMat.name() );
 		}
+		// ignore nulls because errors were logged in getXMaterial() so they only
+		// are logged once
 		
 		return pBlock;
 	}
@@ -69,35 +74,46 @@ public abstract class Spigot113Blocks
 	}
 	
 	public XMaterial getXMaterial( Block spigotBlock ) {
-		XMaterial results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
-		
-		if ( results == null ) {
-			if ( spigotBlock != null ) {
-				results =  XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+		XMaterial results = NULL_TOKEN;
+
+		if ( spigotBlock != null ) {
+			results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
+			
+			if ( results == null ) {
+				results =  XMaterial.matchXMaterial( spigotBlock.getType() );
 				
 				putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				
+				if ( results == null ) {
+					Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
+							"Spigot block cannot be mapped to a XMaterial : " +
+							spigotBlock.getType().name() + 
+							"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
+								spigotBlock.getType().name()));
+				}
+
 			}
 		}
+		
 		
 		return results == NULL_TOKEN ? null : results;
 	}
 	
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
-		XMaterial results = null;
+		XMaterial results = NULL_TOKEN;
 		
 		if ( prisonBlock != null ) {
 			
 			results = getCachedXMaterial( prisonBlock );
 			if ( results == null ) {
 				
-				String blockName =  prisonBlock.getBlockName();
+				String blockName = prisonBlock.getBlockName();
 				
-				results =  XMaterial.matchXMaterial( blockName ).orElse( null );
+				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
 				putCachedXMaterial( prisonBlock, results );
 			}
-			
 		}
 		
 		return results == NULL_TOKEN ? null : results;
@@ -226,21 +242,64 @@ public abstract class Spigot113Blocks
 	}
 	
 	
-	public int getDurabilityMax( ItemStack itemInHand ) {
-		return itemInHand.getType().getMaxDurability();
+	public int getDurabilityMax( SpigotItemStack itemInHand ) {
+		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
 	
-	public int getDurability( ItemStack itemInHand ) {
+
+	@Override
+	public boolean hasDurability( SpigotItemStack itemInHand )
+	{
+		boolean results = false;
 		
-		Damageable damage = (Damageable) itemInHand.getItemMeta();
-		return damage.getDamage();
+		if ( itemInHand != null && itemInHand.getBukkitStack().hasItemMeta() &&
+				itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			results = item.hasDamage();
+		}
+			
+		return results;	
+	}
+
+	@Override
+	public int getDurability( SpigotItemStack itemInHand )
+	{
+		int results = 0;
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack().hasItemMeta() &&
+						itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			results = item.getDamage();
+		}
+		
+		return results;
+	}
+
+	@Override
+	public boolean setDurability( SpigotItemStack itemInHand, int newDamage ) {
+		boolean results = false;
+		if ( itemInHand != null && itemInHand.getBukkitStack().getItemMeta() != null &&
+						itemInHand.getBukkitStack().getItemMeta() instanceof Damageable ) {
+			Damageable item = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+			
+			item.setDamage( newDamage );
+			results = itemInHand.getBukkitStack().setItemMeta((ItemMeta) item);
+		}
+		return results;
 	}
 	
-	public void setDurability( ItemStack itemInHand, int newDamage ) {
-		
-		Damageable damage = (Damageable) itemInHand.getItemMeta();
-		damage.setDamage( newDamage );
-	}
+//	public int getDurability( SpigotItemStack itemInHand ) {
+//		
+//		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+//		return damage.getDamage();
+//	}
+//	
+//	public void setDurability( SpigotItemStack itemInHand, int newDamage ) {
+//		
+//		Damageable damage = (Damageable) itemInHand.getBukkitStack().getItemMeta();
+//		damage.setDamage( newDamage );
+//	}
 	
 	/**
 	 * This is called setBlockFace, but it is really intended for use with ladders. 

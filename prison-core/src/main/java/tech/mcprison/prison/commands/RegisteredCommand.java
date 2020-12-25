@@ -322,7 +322,7 @@ public class RegisteredCommand
 	}
 
     public RegisteredCommand getSuffixCommand(String suffix) {
-        return suffixesByName.get(suffix);
+        return suffixesByName.get(suffix.toLowerCase());
     }
 
     public List<RegisteredCommand> getSuffixes() {

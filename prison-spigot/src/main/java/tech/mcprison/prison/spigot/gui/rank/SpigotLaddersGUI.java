@@ -2,8 +2,8 @@ package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,7 +13,6 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -94,7 +93,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
-        itemLadder = createButton(Material.LADDER, 1, laddersLore, SpigotPrison.format("&3" + ladder.name));
+        itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.name));
 
         // Add the button to the inventory
         inv.addItem(itemLadder);

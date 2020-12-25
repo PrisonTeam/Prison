@@ -17,6 +17,8 @@ public class IntegrationCore
 	private final IntegrationType type;
 	private boolean registered = false;
 	
+	private String version;
+	
 	private String debugInfo;
 	
 	public IntegrationCore( String keyName, String providerName, IntegrationType type ) {
@@ -103,8 +105,16 @@ public class IntegrationCore
     	return null;
     }
 
-    
     @Override
+    public String getVersion() {
+		return version;
+	}
+    @Override
+	public void setVersion( String version ) {
+		this.version = version;
+	}
+
+	@Override
 	public String getDebugInfo() {
 		return debugInfo;
 	}
@@ -117,5 +127,5 @@ public class IntegrationCore
 		this.debugInfo = (this.debugInfo == null ? "" : this.debugInfo) +
 				"(" + debugInfo + ")";
 	}
-
+    
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
 
 public interface Placeholders {
 	

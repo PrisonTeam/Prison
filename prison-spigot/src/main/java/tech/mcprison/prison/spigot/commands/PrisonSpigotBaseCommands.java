@@ -7,6 +7,9 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotBaseCommands {
 
 	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
@@ -18,9 +21,8 @@ public class PrisonSpigotBaseCommands {
 	protected boolean isConfig( String configId ) {
     	
     	String config = getConfig().getString( configId );
-    	boolean results = config != null && config.equalsIgnoreCase( "true" );
-    	
-    	return results;
+
+		return config != null && config.equalsIgnoreCase( "true" );
     }
     
     protected boolean isPrisonConfig( String configId ) {
@@ -31,21 +33,17 @@ public class PrisonSpigotBaseCommands {
     protected String getConfig( String configId ) {
     	
     	String config = getConfig().getString( configId );
-    	
+
     	return config == null ? "" : config;
     }
     
     
     protected String getPrisonConfig( String configId ) {
-    	
-    	String config = SpigotPrison.getInstance().getConfig().getString( configId );
-    	
-    	return config;
+		return SpigotPrison.getInstance().getConfig().getString( configId );
     }
     
     protected Configuration getConfig() {
-    	Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-    	return guiConfig;
+		return SpigotPrison.getInstance().getGuiConfig();
     }
 
     protected Player getSpigotPlayer( CommandSender sender ) {
@@ -60,6 +58,5 @@ public class PrisonSpigotBaseCommands {
         }
         return player;
 	}
-    
 
 }

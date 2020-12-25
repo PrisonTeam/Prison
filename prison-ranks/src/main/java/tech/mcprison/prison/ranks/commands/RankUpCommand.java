@@ -85,8 +85,11 @@ public class RankUpCommand
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
-        if (!ladder.equalsIgnoreCase("default") && !sender
-            .hasPermission(permission + ladder.toLowerCase())) {
+        if (!(ladder.equalsIgnoreCase("prestiges") && 
+        		(Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+        				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
+        	!ladder.equalsIgnoreCase("default") && 
+        	!sender.hasPermission(permission + ladder.toLowerCase())) {
             Output.get()
                 .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
                 		permission + ladder.toLowerCase());
@@ -112,14 +115,15 @@ public class RankUpCommand
 			return;
 		}
 
-        RankPlayer rankPlayer = getPlayer( sender, player.getUUID(), player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
-		Rank pRankSecond = rankPlayer.getRank("default");
+        // gets the rank on the default ladder. Used if ladder is not default.
+		Rank pRankSecond = rankPlayer.getRank("default"); 
 		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 		boolean willPrestige = false;
 
-		// If the ladder's the prestige one, it'll execute all of this
+		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
 		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
 
 			if (!(lm.getLadder("default").isPresent())){
@@ -151,10 +155,13 @@ public class RankUpCommand
 		boolean rankupWithSuccess = false;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().rankupPlayer(rankPlayer, ladder, sender.getName());
+        	
+        	// Performs the actual rankup here:
+        	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, null, results, true, null, ladder, currency );
 
+        	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
         									!ladder.equals("prestiges")) {
         		rankUpPrivate( sender, ladder, mode, permission );
@@ -189,10 +196,15 @@ public class RankUpCommand
 				// Get economy
 				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 				
-				if ( economy != null ) {
+				boolean resetBalance = Prison.get().getPlatform().getConfigBooleanTrue( "prestige.resetMoney" );
+				
+				if ( economy != null || !resetBalance ) {
 					
-					// Set the player balance to 0 (reset)
-					economy.setBalance(player, 0);
+					if ( resetBalance ) {
+						// Set the player balance to 0 (reset)
+						economy.setBalance(player, 0);
+					}
+						
 					// Send a message to the player because he did prestige!
 					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!");
 				}
@@ -233,7 +245,7 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -242,7 +254,7 @@ public class RankUpCommand
         
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().promotePlayer(rankPlayer, ladder, 
+        	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, true, null, ladder, currency );
@@ -279,14 +291,14 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().demotePlayer(rankPlayer, ladder, 
+        	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
         	processResults( sender, player, results, false, null, ladder, currency );
@@ -298,7 +310,8 @@ public class RankUpCommand
     			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-    	@Arg(name = "rankName", description = "The rank to assign to the player") String rank,
+    	@Arg(name = "rankName", description = "The rank to assign to the player, or [-remove-] " +
+    						"to deleete the player from the rank.") String rank,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
 
     	Player player = getPlayer( sender, playerName );
@@ -318,14 +331,14 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
-        RankPlayer rankPlayer = getPlayer( sender, playerUuid, player.getName() );
+        RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
 
         if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().setRank(rankPlayer, ladder, rank, 
+        	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
         												player.getName(), sender.getName());
         	
         	processResults( sender, player, results, true, rank, ladder, currency );
@@ -350,9 +363,10 @@ public class RankUpCommand
 	}
 
 
-	public RankPlayer getPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
+	public RankPlayer getRankPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
+		
 		Optional<RankPlayer> playerOptional =
-            PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
+							PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
         if (!playerOptional.isPresent()) {
@@ -379,10 +393,13 @@ public class RankUpCommand
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             		
-            		String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
-            				(player == null ? "Someone" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		broadcastToWholeServer( sender, messageGlobal );
+            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+            			
+            			String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
+            					(player == null ? "Someone" : player.getName()),
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            			broadcastToWholeServer( sender, messageGlobal );
+            		}
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
@@ -391,10 +408,13 @@ public class RankUpCommand
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
             		
-            		String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
-            				(player == null ? "Someone" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
-            		broadcastToWholeServer( sender, messageGlobal );
+            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+            			
+            			String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
+            					(player == null ? "Someone" : player.getName()),
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            			 broadcastToWholeServer( sender, messageGlobal );
+            		}
 				}
                 break;
             case RANKUP_CANT_AFFORD:
@@ -413,9 +433,25 @@ public class RankUpCommand
                 break;
             case RANKUP_FAILURE:
                 Output.get().sendError(sender,
-                    "Failed to retrieve or write data. Your files may be corrupted. " +
-                														"Alert a server administrator.");
+                    "Generic rankup failure. Review rankup details to identify why.");
                 break;
+            case RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER:
+            	Output.get().sendError(sender,
+            			"Failed to load player.");
+            	break;
+            case RANKUP_FAILURE_COULD_NOT_LOAD_LADDER:
+            	Output.get().sendError(sender,
+            			"Failed to load ladder.");
+            	break;
+            case RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK:
+            	Output.get().sendError(sender,
+            			"Failed to assign a rank.  Review rankup details to identify why.");
+            	break;
+            case RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE:
+            	Output.get().sendError(sender,
+            			"Failed to retrieve or write data. Your files may be corrupted. " +
+            			"Alert a server administrator.");
+            	break;
             case RANKUP_NO_RANKS:
                 Output.get().sendError(sender, "There are no ranks in this ladder.");
                 break;
@@ -429,6 +465,15 @@ public class RankUpCommand
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
 				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
 													"loaded economies.", results.getTargetRank().currency);
+				break;
+				
+			case RANKUP_LADDER_REMOVED:
+				Output.get().sendError(sender, "The ladder %s was removed.", ladder);
+				break;
+				
+			case RANKUP_FAILURE_REMOVING_LADDER:
+				Output.get().sendError(sender, "The ladder %s could not be removed.", ladder);
+				
 				break;
 				
 			case IN_PROGRESS:

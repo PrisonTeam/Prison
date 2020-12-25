@@ -31,13 +31,14 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.integration.IntegrationManager.PlaceHolderFlags;
+import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
@@ -152,6 +153,11 @@ public class TestPlatform implements Platform {
     	System.out.println(ChatColor.stripColor(message));
     }
     
+    @Override
+    public void logPlain( String message ) {
+    	System.out.println(message);
+    }
+    
     @Override public void debug(String message, Object... format) {
         log(message, format);
     }
@@ -240,10 +246,14 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
-		
+	public int getConfigInt( String key, int defaultValue ) {
+		return defaultValue;
 	}
 	
+	@Override
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return null;
+	}
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
@@ -273,6 +283,11 @@ public class TestPlatform implements Platform {
 	
 	@Override
 	public void autoCreateMineBlockAssignment() {
+		
+	}
+	
+	@Override
+	public void autoCreateMineLinerAssignment() {
 		
 	}
 	

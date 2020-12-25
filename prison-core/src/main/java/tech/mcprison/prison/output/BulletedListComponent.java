@@ -57,9 +57,14 @@ public class BulletedListComponent extends DisplayComponent {
         public BulletedListBuilder() {
             this.bullets = new ArrayList<>();
         }
-
+        
         public BulletedListBuilder add(FancyMessage message) {
-            bullets.add(message);
+        	bullets.add(message);
+        	return this;
+        }
+
+        public BulletedListBuilder add(RowComponent row) {
+            bullets.add( row.getFancy() );
             return this;
         }
 

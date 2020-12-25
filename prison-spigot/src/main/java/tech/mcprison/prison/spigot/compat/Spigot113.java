@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+
 public class Spigot113
 	extends Spigot113GUI
 	implements Compatibility {
@@ -29,6 +32,16 @@ public class Spigot113
     public ItemStack getItemInMainHand(Player player) {
     	return player.getInventory().getItemInMainHand();
     }
+    
+    
+    public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
+    }
+    
+    public SpigotItemStack getPrisonItemInMainHand(Player player) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
+    
     
     @Override 
     public void playIronDoorSound(Location loc) {

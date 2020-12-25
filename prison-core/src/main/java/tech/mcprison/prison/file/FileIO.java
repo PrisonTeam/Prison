@@ -2,9 +2,12 @@ package tech.mcprison.prison.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
@@ -46,7 +49,14 @@ public abstract class FileIO
 			try
 			{
 				// Write as a .tmp file:
-				Files.write( tempFile.toPath(), data.getBytes() );
+				
+				// Add json data to lines, splitting on \n:
+				List<String> lines = Arrays.asList( data.split( "\n" ));
+				
+				// Write as an UTF-8 stream:
+				Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
+				
+//				Files.write( tempFile.toPath(), data.getBytes() );
 				
 				// If original target exists, then delete it:
 				if ( file.exists() )
@@ -66,19 +76,26 @@ public abstract class FileIO
 
 	protected String readFile( File file )
 	{
-		String results = null;
+		StringBuilder results = new StringBuilder();
+//		String results = null;
 		
 		try
 		{
-			byte[] bytes = Files.readAllBytes( file.toPath() );
-			results = new String(bytes);
+			List<String> lines = Files.readAllLines( file.toPath(), StandardCharsets.UTF_8 );
+
+			for ( String line : lines ) {
+				results.append( line ).append( "\n" );
+			}
+			
+//			byte[] bytes = Files.readAllBytes( file.toPath() );
+//			results = new String(bytes);
 		}
 		catch ( IOException e )
 		{
 			logException( "Failed to load file", file, e );
 		}
 		
-		return results;
+		return results.toString();
 	}
 
 	private void logException( String description, File file, IOException e )

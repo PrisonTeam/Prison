@@ -42,11 +42,25 @@ public class Text {
             millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
             millisPerSecond);
     private static String headingLine = repeat("-", 52);
+    
     private static final char COLOR_CHAR = '\u00A7';
-    private static final Pattern STRIP_COLOR_PATTERN =
-        Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+    private static final String COLOR_ = String.valueOf(COLOR_CHAR);
+    
+    public static final Pattern STRIP_COLOR_PATTERN =
+    						Pattern.compile("(?i)" + COLOR_ + "#[A-Fa-f0-9]{6}|" + 
+    												 COLOR_ + "[0-9A-FK-OR]");
 
-    private Text() {
+   
+    public static final Pattern STRIP_COLOR_PATTERN_ORIGINAL =
+    		Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+    
+    
+    //#([A-Fa-f0-9]){6}
+    
+    
+    protected Text() {
+    	super();
+    	
     }
 
     /**
@@ -205,14 +219,16 @@ public class Text {
         }
         char[] b = text.toCharArray();
 
+        boolean dirty = false;
         for (int i = 0; i < b.length - 1; ++i) {
-            if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+            if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
                 b[i] = 167; // Section symbol
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
+                dirty = true;
             }
         }
 
-        return new String(b);
+        return dirty ? new String(b) : text;
     }
 
     /**

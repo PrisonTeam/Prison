@@ -30,7 +30,11 @@ import java.util.TreeSet;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.handlers.BlockArgumentHandler;
 import tech.mcprison.prison.commands.handlers.DoubleArgumentHandler;
+import tech.mcprison.prison.commands.handlers.DoubleClassArgumentHandler;
 import tech.mcprison.prison.commands.handlers.IntegerArgumentHandler;
+import tech.mcprison.prison.commands.handlers.IntegerClassArgumentandler;
+import tech.mcprison.prison.commands.handlers.LongArgumentHandler;
+import tech.mcprison.prison.commands.handlers.LongClassArgumentHandler;
 import tech.mcprison.prison.commands.handlers.PlayerArgumentHandler;
 import tech.mcprison.prison.commands.handlers.StringArgumentHandler;
 import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
@@ -76,9 +80,15 @@ public class CommandHandler {
       this.tabCompleaterData = new TabCompleaterData();
         
         
-      registerArgumentHandler(String.class, new StringArgumentHandler());
       registerArgumentHandler(int.class, new IntegerArgumentHandler());
       registerArgumentHandler(double.class, new DoubleArgumentHandler());
+      registerArgumentHandler(long.class, new LongArgumentHandler());
+      
+      registerArgumentHandler(Integer.class, new IntegerClassArgumentandler());
+      registerArgumentHandler(Double.class, new DoubleClassArgumentHandler());
+      registerArgumentHandler(Long.class, new LongClassArgumentHandler());
+
+      registerArgumentHandler(String.class, new StringArgumentHandler());
       registerArgumentHandler(Player.class, new PlayerArgumentHandler());
       registerArgumentHandler(World.class, new WorldArgumentHandler());
       registerArgumentHandler(BlockType.class, new BlockArgumentHandler());
@@ -213,7 +223,7 @@ public class CommandHandler {
                 	String subCmd = scommand.getUsage();
 
                 	int subCmdSubCnt = scommand.getSuffixes().size();
-                	String subCommands = (subCmdSubCnt <= 1 ? "" : 
+                	String subCommands = (subCmdSubCnt == 0 ? "" : 
             							ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
                 	
                 	String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
@@ -527,18 +537,20 @@ public class CommandHandler {
         RegisteredCommand mainCommand = getRootCommands().get( rootPluginCommand );
         
             for (int i = 1; i < identifiers.length; i++) {
+            	
                 String suffix = identifiers[i];
-                if (mainCommand.doesSuffixCommandExist(suffix)) {
+                if ( mainCommand.doesSuffixCommandExist(suffix) ) {
                     mainCommand = mainCommand.getSuffixCommand(suffix);
-                } else {
+                } 
+                else {
                     RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
-                newCommand.setAlias( alias != null );
+                    newCommand.setAlias( alias != null );
                     mainCommand.addSuffixCommand(suffix, newCommand);
                 
-                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
-                // getTabCompleterData().
-                getAllRegisteredCommands().add( newCommand );
-                getTabCompleaterData().add( newCommand );
+	                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
+	                // getTabCompleterData().
+	                getAllRegisteredCommands().add( newCommand );
+	                getTabCompleaterData().add( newCommand );
 
                     mainCommand = newCommand;
                 }
@@ -593,7 +605,19 @@ public class CommandHandler {
         
         else {
 
-        	rootCommand.execute(sender, args);
+        	try {
+        		rootCommand.execute(sender, args);
+        	}
+        	catch ( Exception e ) {
+        		String message = "Prison CommandHander: onCommand: " + e.getMessage() + 
+        				" [" + e.getCause() == null ? "cause not reported" : e.getCause() + "]"; 
+        		
+        		Output.get().logError( message );
+        		for ( StackTraceElement ste : e.getStackTrace() ) {
+        			Output.get().logError( ste.toString() );
+				}
+        		
+        	}
         }
         
 

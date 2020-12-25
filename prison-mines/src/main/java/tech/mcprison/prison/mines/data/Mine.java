@@ -29,6 +29,8 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.features.MineBlockEvent;
+import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
@@ -193,10 +195,11 @@ public class Mine
 		World world = null;
 		
 		if ( !isVirtual() ) {
-			if ( worldName == null ) {
-				Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine file. mine= %s " +
+			if ( worldName == null || "Virtually-Undefined".equalsIgnoreCase( worldName ) ) {
+				Output.get().logInfo( "Mines.loadFromDocument: Failure: World does not exist in Mine " +
+						"file. mine= %s  world= %s " +
 						"Contact support on how to fix.",  
-						getName());
+						getName(), (world == null ? "null" : world ));
 			}
 			
 			Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
@@ -359,7 +362,7 @@ public class Mine
 						if ( prisonBlock.isLegacyBlock() ) {
 							dirty = true;
 						}
-						getPrisonBlocks().add( prisonBlock );
+						addPrisonBlock( prisonBlock );
 						
 						validateBlockNames.add( blockTypeName );
 					}
@@ -383,7 +386,7 @@ public class Mine
             	if ( prisonBlock != null ) {
             		
             		prisonBlock.setChance( block.getChance() );
-            		getPrisonBlocks().add( prisonBlock );
+            		addPrisonBlock( prisonBlock );
 
             		dirty = true;
             	}
@@ -401,6 +404,20 @@ public class Mine
         Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
         setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
 
+        
+        List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
+        if ( mineBlockEvents != null ) {
+        	for ( String blockEvent : mineBlockEvents ) {
+        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent ) );
+        	}
+        }
+        
+        
+        String mineLinerData = (String) document.get("mineLinerData");
+        setLinerData( MineLinerData.fromSaveString( mineLinerData ) );
+
+        
+        
         if ( dirty ) {
 			
         	// Resave the mine data since an update to the mine format was detected and
@@ -429,7 +446,8 @@ public class Mine
         
         // If world name is not set, try to get it from the bounds:
         String worldName = getWorldName();
-        if ( worldName == null || worldName.trim().length() == 0 &&
+        if ( (worldName == null || worldName.trim().length() == 0 ||
+        		"Virtually-Undefined".equalsIgnoreCase( worldName )) &&
         		getBounds() != null && getBounds().getMin() != null &&
         		getBounds().getMin().getWorld() != null ) {
         	worldName = getBounds().getMin().getWorld().getName();
@@ -495,8 +513,8 @@ public class Mine
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
         	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
-        		prisonBlockStrings.add(pBlock.getBlockName() + "-" + pBlock.getChance());
-        		validateBlockNames.add( pBlock.getBlockName() );
+        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
+        		validateBlockNames.add( pBlock.getBlockNameFormal() );
         	}
         }
         
@@ -514,6 +532,16 @@ public class Mine
         	ret.put("rank", rank );
         }
 
+        List<String> mineBlockEvents = new ArrayList<>();
+        for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+			mineBlockEvents.add( blockEvent.toSaveString() );
+		}
+        ret.put("mineBlockEvents", mineBlockEvents);
+        
+        
+        String mineLinerData = getLinerData().toSaveString();
+        ret.put("mineLinerData", mineLinerData );
+        
         
         return ret;
     }

@@ -12,8 +12,12 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 public class PrisonBlock
 			implements Comparable<PrisonBlock> {
 	
+	public static PrisonBlock AIR;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
+	
+	private PrisonBlockType blockType;
+	private boolean useBlockTypeAsPrefix = false;
 	
 	private String blockName;
 	
@@ -25,8 +29,14 @@ public class PrisonBlock
 	private boolean legacyBlock = false;
 	
 	static {
+		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
+	}
+	
+	public enum PrisonBlockType {
+		minecraft,
+		CustomItems
 	}
 	
 	/**
@@ -36,10 +46,14 @@ public class PrisonBlock
 	 * @param blockName
 	 */
 	public PrisonBlock( String blockName ) {
-		this( blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0);
 	}
+	public PrisonBlock( PrisonBlockType blockType, String blockName ) {
+		this( blockType, blockName, 0);
+	}
+	
 	public PrisonBlock( String blockName, boolean block ) {
-		this( blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0);
 		this.block = block;
 	}
 
@@ -49,26 +63,95 @@ public class PrisonBlock
 	 * @param blockName
 	 * @param chance
 	 */
-	public PrisonBlock( String blockName, double chance ) {
+	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance ) {
 		super();
+
+		this.blockType = blockType;
 		
 		this.blockName = blockName.toLowerCase();
 		this.chance = chance;
+		
 	}
 	
+	public PrisonBlock( PrisonBlock clonable ) {
+		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance() );
+		
+		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
+		this.valid = clonable.isValid();
+		this.block = clonable.isBlock();
+		this.legacyBlock = clonable.isLegacyBlock();
+	}
 	
 	@Override
 	public String toString() {
-		return getBlockName() + " " + Double.toString( getChance() );
+		return getBlockType().name() + ": " + getBlockName() +
+				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
 	}
 	
+	public PrisonBlockType getBlockType() {
+		return blockType;
+	}
+	public void setBlockType( PrisonBlockType blockType ) {
+		this.blockType = blockType;
+	}
+
 	public String getBlockName() {
 		return blockName;
 	}
 	public void setBlockName( String blockName ) {
 		this.blockName = blockName;
 	}
+	
+	/**
+	 * <p>This function always prefixes the block name with the BlockType.
+	 * This is critical when saving the block to a file because there 
+	 * are no guarantees that when the server restarts the environment
+	 * will be the same.  There is a good chance that if new blocks are 
+	 * added, or if new plugins are added with new collection of custom 
+	 * blocks, then there could be a conflict.  There is also the 
+	 * chance that a plugin could be removed for a block that's in a 
+	 * mine too.
+	 * </p>
+	 * 
+	 * <p>So having the BlockType as a prefix will help correctly align
+	 * the blocks back to their proper source.  This is critical because
+	 * the correct plugin must handle both the block placements, and also
+	 * the correct plugin must be used when breaking the blocks.
+	 * </p>
+	 *  
+	 * @return
+	 */
+	public String getBlockNameFormal() {
+		return getBlockType().name() + ":" + getBlockName();
+	}
+	
+	/**
+	 * <p>This provides the blockName prefixed with the block type if it is not
+	 * a type of minecraft. 
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public String getBlockNameSearch() {
+		return getBlockType() != PrisonBlockType.minecraft ? 
+					getBlockType().name() + ":" + getBlockName() : getBlockName();
+	}
 
+	/**
+	 * When adding custom blocks to prison, there is a check to ensure 
+	 * that the name is not in conflict with a preexisting block name.
+	 * If there is a conflict, then this field will be set to true and
+	 * then the BlockType will be used as the prefix.
+	 * 
+	 * @return
+	 */
+	public boolean isUseBlockTypeAsPrefix() {
+		return useBlockTypeAsPrefix;
+	}
+	public void setUseBlockTypeAsPrefix( boolean useBlockTypeAsPrefix ) {
+		this.useBlockTypeAsPrefix = useBlockTypeAsPrefix;
+	}
+	
 	public double getChance() {
 		return chance;
 	}
@@ -115,12 +198,16 @@ public class PrisonBlock
 		this.legacyBlock = legacyBlock;
 	}
 
+	public PrisonBlock clone() {
+		return new PrisonBlock( this );
+	}
+	
 	@Override
 	public boolean equals( Object block ) {
 		boolean results = false;
 
 		if ( block != null && block instanceof PrisonBlock) {
-			results = getBlockName().equalsIgnoreCase( ((PrisonBlock) block).getBlockName() );
+			results = getBlockNameFormal().equalsIgnoreCase( ((PrisonBlock) block).getBlockNameFormal() );
 		}
 		
 		return results;

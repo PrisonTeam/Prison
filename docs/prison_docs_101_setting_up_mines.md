@@ -24,7 +24,7 @@ Items to add to this document:
 # New! Prison Fast Start
 
 Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.   
- -  `/ranks autoConfigure`
+ - `/ranks autoConfigure`
  - `/mines set area help`
  - `/mines set tracer help`
  - `/mines set size help`
@@ -264,6 +264,26 @@ Note: The new command `/mines set move` is not yet enabled. It is still in devel
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+# Large Mines - Preventing Lag
+
+Large mines present their special own special challenges, one of which is that they can take a long time to reset.  Since bukkit cannot handle async resets of blocks because of world corruption, the updates must happen synchronously in the main server thread.  For large mines, that can mean causing a significant amount of lag. 
+
+To prevent lagging the server, Prison has a feature that can prevent any lag from happening while performing the reset.  This feature is called **Reset Paging**.  This feature doesn't have to be used with just large mines, but the reset process is a little more complex. When testing, it was actually found to be slightly faster than the normal reset method.
+
+To enable reset paging use the following commands to enable and disable it.
+
+```
+/mines set resetPaging <mineName> enable
+/mines set resetPaging <mineName> disable
+```
+
+The way it works, is that it performs small pages of block updates and keeps an eye on how long it's taking.  If the update goes beyond a set amount of time, such as 50 milliseconds, it stops the updates, and then schedules the remaining updates to run later, with no delay.  That means if nothing else is trying to run within the main server thread, then it will continue to perform block updates.  But if something else was waiting to run, then the mine update will pause and allow the other process to finish.  This will prevent vital tasks from backing up because the mine reset yields to other tasks that need to run.
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Next Steps - Skipping Resets, Notifications, and Zero Blocks

@@ -15,7 +15,9 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -149,12 +151,27 @@ public class OnBlockBreakEventListener
     	genericBlockExplodeEvent( e );
     }
 
-	private void genericBlockEvent( BlockBreakEvent e ) {
+    /**
+     * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
+     * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
+     * function.
+     * </p>
+     * 
+     * <p>For this class only. the doAction() is only counting the block break event, but does
+     * nothing with the actual block such that there is no need to have knowledge as to if 
+     * it is a custom block.  In other doAction() functions that would exist in other classes 
+     * that extend from this one, it may need that information.  The hooks to find the custom
+     * blocks is within the Block's getPrisonBlock() function. 
+     * </p>
+     * 
+     * @param e
+     */
+	protected void genericBlockEvent( BlockBreakEvent e ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( getPrisonMineManager() != null ) {
+    	if ( getPrisonMineManager() != null ) 
+    	{
     		
     		// long startNano = System.nanoTime();
-    		
     		
     		boolean isAir = e.getBlock().getType() != null && e.getBlock().getType() == Material.AIR;
 
@@ -183,8 +200,16 @@ public class OnBlockBreakEventListener
     			
     			// This is where the processing actually happens:
     			if ( mine != null ) {
-    				doAction( mine, e );
+    				
+    				// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
+    				// Needed since processing of the block will lose track of which mine it came from.
+    				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
+
+    				doAction( block, mine, e );
     			}
+    				
+    			// future change to allow auto features outside of mines:
+//    			doAction( block, mine, e );
     		}
     		
     		// for debug use: Uncomment to use.
@@ -208,7 +233,7 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e )
+	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
     	if ( getPrisonMineManager() != null ) {
@@ -282,27 +307,42 @@ public class OnBlockBreakEventListener
 	}
 
 	
-	public void doAction( Mine mine, BlockBreakEvent e ) {
-		mine.incrementBlockBreakCount();
-		mine.incrementTotalBlocksMined();
-		
-		// Other possible processing:
-		
-		// Checks to see if the mine ran out of blocks, and if it did, then
-		// it will reset the mine:
-		mine.checkZeroBlockReset();
+	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
+		if ( mine != null ) {
+			
+			mine.incrementBlockBreakCount();
+			mine.incrementTotalBlocksMined();
+			
+			// Other possible processing:
+			
+			// Process mine block break events:
+			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+			mine.processBlockBreakEventCommands( 1, player, BlockEventType.eventBlockBreak );
+			
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
 	}
 	
 	public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount ) {
-		
-		mine.addBlockBreakCount( blockCount );
-		mine.addTotalBlocksMined( blockCount );
-		
-		// Other possible processing:
-		
-		// Checks to see if the mine ran out of blocks, and if it did, then
-		// it will reset the mine:
-		mine.checkZeroBlockReset();
+		if ( mine != null ) {
+			
+			mine.addBlockBreakCount( blockCount );
+			mine.addTotalBlocksMined( blockCount );
+			
+			// Other possible processing:
+			
+			// Process mine block break events:
+			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion );
+			
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
 	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
@@ -332,7 +372,7 @@ public class OnBlockBreakEventListener
 		return getPrisonMineManager().getPlayerCache();
 	}
 
-	private PrisonMines getPrisonMineManager() {
+	public PrisonMines getPrisonMineManager() {
 		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
 			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
 			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {

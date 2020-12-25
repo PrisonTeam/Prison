@@ -6,6 +6,9 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 
+/**
+ * @author RoyalBlueRanger
+ */
 public class PrisonSpigotMinesCommands
 				extends PrisonSpigotBaseCommands {
 	
@@ -15,7 +18,10 @@ public class PrisonSpigotMinesCommands
 		if (!sender.hasPermission("mines.admin") && isPrisonConfig("mines-gui-enabled") ) {
 
 			prisonManagerMines( sender );
-//			sender.dispatchCommand("gui mines");
+
+            if (isPrisonConfig("prison-gui-enabled") && isConfig("Options.Mines.GUI_Enabled")){
+                sender.dispatchCommand("gui mines");
+            }
 		}
 		else {
 			sender.dispatchCommand("mines help");

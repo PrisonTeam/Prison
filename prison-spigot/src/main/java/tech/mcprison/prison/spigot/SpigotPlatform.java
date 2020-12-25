@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -56,11 +57,13 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -71,6 +74,8 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
@@ -82,6 +87,7 @@ import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -102,6 +108,8 @@ class SpigotPlatform
     private Storage storage;
     
     private SpigotPlaceholders placeholders;
+    
+    
 
     /**
      * This is only for junit testing.
@@ -250,7 +258,7 @@ class SpigotPlatform
     	return getOfflinePlayer(null, uuid);
     }
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
-    	SpigotOfflinePlayer player = null;
+    	Player player = null;
     	
     	if ( uuid != null ) {
     		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
@@ -275,6 +283,23 @@ class SpigotPlatform
     							"  name= " + (oPlayer.getName() == null ? "null" : 
     								oPlayer.getName())));
     				
+    			}
+    		}
+    	}
+    	
+    	// If player is not available, then try to get a RankPlayer instance of the player:
+    	if ( player == null ) {
+    		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    			
+    			RankPlayer rankPlayer = pm.getPlayer( uuid, name ).orElse( null );
+    			if ( rankPlayer != null ) {
+    				if ( uuid != null && rankPlayer.getUUID().equals( uuid ) || 
+    					 uuid == null && name != null && rankPlayer.getName() != null && 
+    						rankPlayer.getName().equalsIgnoreCase( name )) {
+    					
+    					player = rankPlayer;
+    				}
     			}
     		}
     	}
@@ -489,6 +514,20 @@ class SpigotPlatform
             sender.sendMessage(message);
         }
 	}
+    
+    /**
+     * This does not translate any color codes.
+     */
+    @Override 
+    public void logPlain( String message )
+    {
+    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
+    	if (sender == null) {
+    		Bukkit.getLogger().info(message);
+    	} else {
+    		sender.sendMessage(message);
+    	}
+    }
 
     @Override public void debug(String message, Object... format) {
         if (!plugin.debug) {
@@ -743,22 +782,59 @@ class SpigotPlatform
 		return ( val == null || val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	/**
-	 * This listing that is returned, should be the XMaterial enum name
-	 * for the blocks that are valid on the server.
-	 * 
-	 * @return
-	 */
 	@Override
-	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+	public int getConfigInt( String key, int defaultValue ) {
+		int results = defaultValue;
 		
-		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+
+			try {
+				results = Integer.parseInt( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an integer but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
 	}
+	
+
+	
+    /**
+     * Setup hooks in to the valid prison block types.  This will be only the 
+     * block types that have tested to be valid on the server that is running 
+     * prison.  This provides full compatibility to the admins that if a block 
+     * is listed, then it's usable.  No more guessing or finding out after the 
+     * fact that a block that was used was invalid for their version of minecraft.
+     */
+	public PrisonBlockTypes getPrisonBlockTypes() {
+		return SpigotPrison.getInstance().getPrisonBlockTypes();
+	}
+//	/**
+//	 * This listing that is returned, should be the XMaterial enum name
+//	 * for the blocks that are valid on the server.
+//	 * 
+//	 * @return
+//	 */
+//	@Override
+//	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
+//		
+//		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
+//		
+//		SpigotUtil.getAllCustomBlockTypes( blockTypes );
+//	}
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		
-		return SpigotUtil.getPrisonBlock( blockName );
+		return getPrisonBlockTypes().getBlockTypesByName( blockName );
+//		return SpigotUtil.getPrisonBlock( blockName );
 	}
 	
 	
@@ -1075,6 +1151,31 @@ class SpigotPlatform
 			String mineBlockListing = mine.getBlockListString();
 			Output.get().logInfo( mineBlockListing );
 		}
+	}
+	
+	@Override
+	public void autoCreateMineLinerAssignment() {
+		
+		MineManager mm = PrisonMines.getInstance().getMineManager();
+		List<Mine> mines = mm.getMines();
+		
+		for ( Mine mine : mines ) {
+			
+			if ( mine.getLinerData().toSaveString().trim().isEmpty() ) {
+				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), true );
+				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), true );
+
+				mm.saveMine( mine );
+			}
+		}	
+	}
+	
+	private LinerPatterns getRandomLinerType() {
+		LinerPatterns[] liners = LinerPatterns.values();
+		
+		// Exclude the last LinerPattern since it is "repair".
+		int pos = new Random().nextInt( liners.length - 1 );
+		return liners[pos];
 	}
 	
 	/**

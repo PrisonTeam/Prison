@@ -25,7 +25,6 @@ import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.Player;
@@ -36,7 +35,6 @@ import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
-import tech.mcprison.prison.mines.managers.PlayerManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
@@ -60,7 +58,7 @@ public class PrisonMines extends Module {
     private JsonFileIO jsonFileIO;
 
     private MineManager mineManager;
-    private PlayerManager player;
+//    private PlayerManager player;
     
     private MinesCommands minesCommands;
 
@@ -93,6 +91,7 @@ public class PrisonMines extends Module {
     	return "&7/&2mines";
     }
     
+    @Override
     public void enable() {
         i = this;
 
@@ -106,9 +105,10 @@ public class PrisonMines extends Module {
 //        initWorlds();
         
         this.mineManager = new MineManager();
-        getMineManager().loadFromDbCollection(this);
+//        getMineManager().loadFromDbCollection(this);
         
-        player = new PlayerManager();
+        // Player manager for mines is not used.
+//        this.player = new PlayerManager();
         
 //        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
@@ -118,11 +118,40 @@ public class PrisonMines extends Module {
         Prison.get().getCommandHandler().registerCommands( getMinesCommands() );
         //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
 
-        ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
+        
+        // This is obsolete and was part of converting from pre-v3.0:
+        // ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }
 
 
-    private void initDb() {
+    /**
+     * This function deferredStartup() will be called after the integrations have been
+     * loaded.  
+     * 
+     */
+    @Override
+	public void deferredStartup() {
+    	// Load the mines at this time.
+    	getMineManager().loadFromDbCollection(this);
+    	
+	}
+    
+    /**
+     * <p>Mines are now saved whenever changes are made.  Do not save the Mines on server
+     * shutdown since they will never be in a dirty state; they will always be saved.
+     * </p>
+     * 
+     * <p>This should shutdown all active mines.  Future to do item.
+     * </p>
+     * 
+     */
+    @Override
+	public void disable() {
+		// Nothing to do...
+    }
+	
+	
+	private void initDb() {
         Optional<Database> dbOptional =
             Prison.get().getPlatform().getStorage().getDatabase("mines");
 
@@ -213,15 +242,6 @@ public class PrisonMines extends Module {
 		return jsonFileIO;
 	}
 
-    /**
-     * <p>Mines are now saved whenever changes are made.  Do not save the Mines on server
-     * shutdown since they will never be in a dirty state; they will always be saved.
-     * </p>
-     * 
-     */
-	public void disable() {
-		// Nothing to do...
-    }
 
     public MinesConfig getConfig() {
         return config;
@@ -255,9 +275,9 @@ public class PrisonMines extends Module {
 //        return worlds;
 //    }
 
-    public PlayerManager getPlayerManager() {
-        return player;
-    }
+//    public PlayerManager getPlayerManager() {
+//        return player;
+//    }
 
 	public MinesCommands getMinesCommands() {
 		return minesCommands;

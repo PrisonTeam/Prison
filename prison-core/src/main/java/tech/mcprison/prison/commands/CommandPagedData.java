@@ -14,6 +14,7 @@ public class CommandPagedData {
 	
 	private int curPage = 1;
 	private boolean showAll = false;
+	private boolean debug = false;
 	
 	private int pageSize = MAX_PAGE_SIZE;
 	private int pages = 1;
@@ -40,8 +41,12 @@ public class CommandPagedData {
 		
 		this.pageCommand = pageCommand;
 		
-		if ( "all".equalsIgnoreCase( page )) {
-			this.showAll = true;
+		if ( "all".equalsIgnoreCase( page ) ) {
+			setShowAll( true );;
+		} 
+		else if ( "debug".equalsIgnoreCase( page ) ) {
+			setShowAll( true );;
+			setDebug( true );
 		} 
 
 		this.curPage = 1;
@@ -138,6 +143,13 @@ public class CommandPagedData {
 	}
 	public void setShowAll( boolean showAll ) {
 		this.showAll = showAll;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+	public void setDebug( boolean debug ) {
+		this.debug = debug;
 	}
 
 	public int getPageSize() {
