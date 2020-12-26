@@ -1,4 +1,4 @@
-package tech.mcprison.prison.integration;
+package tech.mcprison.prison.placeholders;
 
 import java.util.List;
 

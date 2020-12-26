@@ -6,11 +6,12 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.PlaceHolderKey;
-import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceHolderKey;
+import tech.mcprison.prison.placeholders.PlaceholderIntegration;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
@@ -67,6 +68,7 @@ public class MVdWPlaceholderIntegration
     @Override
 	public void deferredInitialization()
 	{
+    	boolean registered = false;
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		if ( pm != null ) {
@@ -77,8 +79,12 @@ public class MVdWPlaceholderIntegration
     					registerPlaceholder(placeHolderKey.getKey(),
     							player -> Text.translateAmpColorCodes(
     									pm.getTranslatePlayerPlaceHolder( 
-    											player.getUUID(), player.getName(), placeHolderKey )
+    											player.getUUID(), player.getName(),
+    											placeHolderKey, null )
     									));
+    					if ( !registered ) {
+    						registered = true;
+    					}
     				}
     			}
     		}
@@ -94,11 +100,22 @@ public class MVdWPlaceholderIntegration
     				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
     					registerPlaceholder(placeHolderKey.getKey(),
     							player -> Text.translateAmpColorCodes(
-    									mm.getTranslateMinesPlaceHolder( placeHolderKey )
+    									mm.getTranslateMinesPlaceHolder( placeHolderKey, null )
     									));
+    					if ( !registered ) {
+    						registered = true;
+    					}
     				}
     			}
     		}
+    	}
+    	
+    	if ( registered ) {
+    		Output.get().logWarn( "Prison registered all placeholders with MVdWPlaceholderAPI, " +
+    						"but unfortunately MVdWPlaceholderAPI does not support dynamic placeholders " +
+    						"that are available for customizations within prison.  Please try adding " +
+    						"Vault and PlaceholderAPI (papi) to your setup, if they do not already exist, " +
+    						"to enable these features.");
     	}
 	}
 

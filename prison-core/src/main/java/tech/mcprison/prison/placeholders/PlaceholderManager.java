@@ -1,4 +1,4 @@
-package tech.mcprison.prison.integration;
+package tech.mcprison.prison.placeholders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,10 @@ public class PlaceholderManager {
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
     
-    public static final String PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR = ":";
+    public static final String PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR = ":";
+    public static final String PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR = 
+								    		PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR + 
+								    		PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR;
     
     private PlaceholderProgressBarConfig progressBarConfig;
     
@@ -30,8 +33,41 @@ public class PlaceholderManager {
     	;
     }
     
-    public enum PlaceHolderAttributePrefixes {
-    	nFormat
+    public enum PlaceholderAttributePrefixes {
+    	nFormat;
+    	
+    	public static PlaceholderAttributePrefixes fromString( String value ) {
+    		PlaceholderAttributePrefixes pap = null;
+    		
+    		if ( value != null ) {
+    			for ( PlaceholderAttributePrefixes attrPrefix : values() ) {
+    				if ( attrPrefix.name().equalsIgnoreCase( value ) ) {
+    					pap = attrPrefix;
+    				}
+    			}
+    		}
+    		
+    		return pap;
+    	}
+    }
+    
+    public enum NumberTransformationUnitTypes {
+    	none,
+    	kmg;
+    	
+    	public static NumberTransformationUnitTypes fromString( String value ) {
+    		NumberTransformationUnitTypes pap = none;
+    		
+    		if ( value != null ) {
+    			for ( NumberTransformationUnitTypes nTrans : values() ) {
+    				if ( nTrans.name().equalsIgnoreCase( value ) ) {
+    					pap = nTrans;
+    				}
+    			}
+    		}
+    		
+    		return pap;
+    	}
     }
     
     /**
@@ -323,7 +359,7 @@ public class PlaceholderManager {
 			return getAllChatTexts(true);
 		}
 		
-		static List<String> getAllChatList( boolean omitSuppressable) {
+		public static List<String> getAllChatList( boolean omitSuppressable) {
 			List<String> results = new ArrayList<>();
 			
 			boolean hasDeprecated = false;
@@ -376,13 +412,71 @@ public class PlaceholderManager {
 	 * @param placeholder
 	 * @return
 	 */
-	public List<PlaceholderAttribute> placeholderExtractAttribute( String placeholder ) {
-		List<PlaceholderAttribute> results = new ArrayList<>();
+	public static PlaceholderAttribute extractPlaceholderExtractAttribute( String placeholder ) {
+		PlaceholderAttribute attribute = null;
 		
+		if ( placeholder != null ) {
+			String[] attributes = placeholder.split( PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR );
+			
+			// attributes[0] will be the placeholder, so ignore:
+			if ( attributes != null && attributes.length > 1 ) {
+				for ( int i = 1; i < attributes.length ; i++ ) {
+					String rawAttribute = attributes[i];
+					
+					if ( rawAttribute != null ) {
+						attribute = attributeFactory( rawAttribute );
+						break;
+					}
+				}
+			}
+		}
+		
+		return attribute;
+	}
+	
+
+	private static PlaceholderAttribute attributeFactory( String rawAttribute ) {
+		PlaceholderAttribute attribute = null;
+		
+		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
+			String[] parts = rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR );
+			
+			if ( parts.length > 1 ) {
+				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts[0] );
+				
+				switch ( pap )
+				{
+					case nFormat:
+						attribute = new PlaceholderAttributeNumberFormat( parts );
+						break;
+
+					default:
+						break;
+				}
+				
+			}
+			
+		}
+		
+		return attribute;
+	}
+
+
+	public static String extractPlaceholderString( String identifier ) {
+		String results = null;
+		
+		int idx = identifier == null ? -1 :
+					identifier.indexOf( PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR );
+					
+		if ( idx >= 0 ) {
+			results = identifier.substring( 0, idx );
+		}
+		else {
+			results = identifier;
+		}
 		
 		return results;
 	}
-	
 	
 	public void reloadPlaceholderBarConfig() {
 		setProgressBarConfig( loadPlaceholderBarConfig() );
@@ -528,6 +622,8 @@ public class PlaceholderManager {
     	
     	return sb.toString();
 	}
+
+
 	
 	
 }

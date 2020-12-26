@@ -1,4 +1,4 @@
-package tech.mcprison.prison.integration;
+package tech.mcprison.prison.placeholders;
 
 public class PlaceholderProgressBarConfig {
 

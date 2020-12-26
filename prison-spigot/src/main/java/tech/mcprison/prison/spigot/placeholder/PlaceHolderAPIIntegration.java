@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 
-import tech.mcprison.prison.integration.PlaceholderIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.placeholders.PlaceholderIntegration;
 
 public class PlaceHolderAPIIntegration 
 	extends PlaceholderIntegration {

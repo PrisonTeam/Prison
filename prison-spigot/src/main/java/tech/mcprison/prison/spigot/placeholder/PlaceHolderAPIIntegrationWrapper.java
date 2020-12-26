@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.PlaceholderManager;
+import tech.mcprison.prison.placeholders.PlaceholderManager;
 
 public class PlaceHolderAPIIntegrationWrapper
 	extends PlaceholderExpansion 

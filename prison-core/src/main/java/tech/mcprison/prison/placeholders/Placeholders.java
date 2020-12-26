@@ -1,10 +1,10 @@
-package tech.mcprison.prison.integration;
+package tech.mcprison.prison.placeholders;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 
 public interface Placeholders {
 	

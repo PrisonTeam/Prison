@@ -1,6 +1,6 @@
-package tech.mcprison.prison.integration;
+package tech.mcprison.prison.placeholders;
 
-import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 
 public class PlaceHolderKey {
 	

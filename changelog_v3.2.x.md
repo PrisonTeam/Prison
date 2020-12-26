@@ -18,6 +18,18 @@ that you need.
 # V3.2.4-alpha.1 2020-12-26
 
 
+* **New feature: Placeholder attributes. Dynamic placeholder customizations.**
+Allows for dynamic customization of different placeholders.  
+The first placeholder attribute that is supported is the number format: nFormat.  This allows for full customization to be defined within a placeholder itself, so each use of that placeholder could be configured differently.
+For example this placeholder provides the number of blocks remaining in a mine: %prison_mr_temp5%'
+This can be customized with the following examples: 
+  %prison_mr_temp5::nFormat:0.000:1:kmg% 
+  %prison_mr_temp5::nFormat:#,##0.##:0:kmg%
+  %prison_mr_temp5::nFormat:'&4$&2'#,##0.00'&7':3:kmg:debug%
+The last example shows that formatting codes could be enclosed within the placeholder too, but probably shouldn't be use this way, but it can. 
+The placeholder attributes also suports the debug parameter so as to provide detailed information in the log for admins to help diagnose possible issues when testing different settings.
+
+
 * **v3.2.4-alpha1 2020-12-26**
 Setup the alpha release.
 

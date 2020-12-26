@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
+
 public class PlaceholdersUtilTest
 		extends
 		PlaceholdersUtil

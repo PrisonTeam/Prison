@@ -8,13 +8,13 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.PlaceHolderKey;
-import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
-import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
-import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceHolderKey;
+import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -174,16 +174,37 @@ public class SpigotPlaceholders
     public String placeholderTranslateText( String text) {
 		String results = text;
 
-		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+		if ( results != null && PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			
-			List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
-			
-			for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-				String key = "{" + placeHolderKey.getKey() + "}";
-				if ( results.contains( key )) {
-					results = results.replace(key, 
-							mm.getTranslateMinesPlaceHolder( placeHolderKey ) );
+			if ( mm != null ) {
+				
+				List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
+				
+				for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+					
+					String key1 = "{" + placeHolderKey.getKey();
+					String key2 = "}";
+					
+					int idx = results.indexOf( key1 );
+					int idx2 = idx == -1 ? -1 : results.indexOf( key2, idx );
+					if ( idx > -1 && idx2 > -1 ) {
+						
+						String identifier = results.substring( idx + 1, idx2 );
+						
+//						String msg = "&a##^^##  &7key1=" + key1 + " key2=" + key2 + "  idx=" + idx + 
+//								"idx2= " + idx2 + " identifier=[" + identifier + "] ";
+//						Output.get().logInfo( msg );
+						
+						results = results.replace("{" + identifier + "}", 
+								mm.getTranslateMinesPlaceHolder( identifier ) );
+					}
+					
+					//String key = "{" + placeHolderKey.getKey() + "}";
+//					if ( results.contains( key )) {
+//						results = results.replace(key, 
+//								mm.getTranslateMinesPlaceHolder( placeHolderKey ) );
+//					}
 				}
 			}
 		}
@@ -216,11 +237,21 @@ public class SpigotPlaceholders
     		List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
     		
     		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-    			String key = "{" + placeHolderKey.getKey() + "}";
-    			if ( results.contains( key )) {
-    				results = results.replace(key, 
-    						pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey.getKey() ) );
-    			}
+    			
+				
+	    		String key1 = "{" + placeHolderKey.getKey();
+	    		String key2 = "}";
+	    		
+	    		int idx = results.indexOf( key1 );
+	    		if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
+	    			
+	    			String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
+	    			
+	    			results = results.replace("{" + identifier + "}", 
+	    							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
+	    		}
+
+    			
     		}
     	}
 
@@ -256,15 +287,26 @@ public class SpigotPlaceholders
 			if ( placeHolderKey.isPrimary() && 
 											placeholderKeyContains(placeHolderKey, patterns) ) {
 				String placeholder = "{" + placeHolderKey.getKey() + "}";
+				
+//	    		String key1 = "{" + placeHolderKey.getKey();
+//	    		String key2 = "}";
+//	    		
+//	    		int idx = newFormat.indexOf( key1 );
+//	    		if ( idx > -1 && newFormat.indexOf( key2, idx ) > -1 ) {
+//	    			
+//	    			String identifier = newFormat.substring( idx + 1, newFormat.indexOf( key2, idx ) );
+//	    			
+//	    		}
+				
 				String value = null;
 				
 				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ))) {
-					value = mm.getTranslateMinesPlaceHolder( placeHolderKey );
+					value = mm.getTranslateMinesPlaceHolder( placeHolderKey, null );
 				}
 				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER ) || 
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {
-					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey );
+					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 

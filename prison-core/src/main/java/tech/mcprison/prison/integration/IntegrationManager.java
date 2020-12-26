@@ -9,11 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import tech.mcprison.prison.chat.FancyMessage;
-import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.TextComponent;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 
 /**
  * The IntegrationManager stores instances of each {@link Integration} and allows

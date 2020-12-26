@@ -1,4 +1,4 @@
-package tech.mcprison.prison.util;
+package tech.mcprison.prison.placeholders;
 
 import java.text.DecimalFormat;
 
@@ -54,14 +54,18 @@ public class PlaceholdersUtil {
 	 * @param amount
 	 * @return
 	 */
-	public static String formattedSize( double amount ) {
+	public static String formattedSize( double amount ) { 
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		return formattedSize( amount, dFmt, " " );
+	}
+	
+	public static String formattedSize( double amount, DecimalFormat dFmt, String spaces  ) { 
     	StringBuilder unit = new StringBuilder();
-    	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     	
     	amount = divBy1000( amount, unit, " kMGTPEZY" );
     	
-    	String results = dFmt.format( amount ) + " " + unit.toString();
+    	String results = dFmt.format( amount ) + spaces + unit.toString();
 
 		return results.trim();
 	}
