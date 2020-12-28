@@ -61,6 +61,24 @@ public class PlaceholderAttributeBar
 		
 		this.debug = debug;
 
+		
+		if ( isDebug() ) {
+			
+			// Reconstruct the attribute from the parts:
+			String rawBar = PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR + 
+					String.join( PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR, 
+							parts );
+
+			Output.get().logInfo( 
+					String.format( "Placeholder Attribute bar: " +
+							"&7%s  &7Raw: [\\Q%s\\E&7] " +
+							"(remove :debug from placeholder to disable this message)", 
+							
+							getBarConfig().toString(), rawBar
+							));
+		}
+
+
 	}
 
 

@@ -30,6 +30,24 @@ public class PlaceholderProgressBarConfig {
 		this.negativeSegment = negativeSegment;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "bar config: segments: " ).append( getSegments() )
+		
+			.append(" &7Pos: \\Q" ).append( getPositiveColor() )
+			.append( "\\E [" ).append( getPositiveColor() )
+			.append( getPositiveSegment()).append( "&7]" )
+			
+			.append(" Neg: \\Q" ).append( getNegativeColor() )
+			.append( "\\E [" ).append( getNegativeColor() )
+			.append( getNegativeSegment()).append( "&7]" )
+			;
+		
+		return sb.toString();
+	}
+	
 	public int getSegments(){
 		return segments;
 	}
