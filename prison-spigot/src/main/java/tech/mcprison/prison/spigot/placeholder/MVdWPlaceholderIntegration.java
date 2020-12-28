@@ -9,7 +9,6 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderIntegration;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -110,13 +109,13 @@ public class MVdWPlaceholderIntegration
     		}
     	}
     	
-    	if ( registered ) {
-    		Output.get().logWarn( "Prison registered all placeholders with MVdWPlaceholderAPI, " +
-    						"but unfortunately MVdWPlaceholderAPI does not support dynamic placeholders " +
-    						"that are available for customizations within prison.  Please try adding " +
-    						"Vault and PlaceholderAPI (papi) to your setup, if they do not already exist, " +
-    						"to enable these features.");
-    	}
+//    	if ( registered ) {
+//    		Output.get().logWarn( "Prison registered all placeholders with MVdWPlaceholderAPI, " +
+//    						"but unfortunately MVdWPlaceholderAPI does not support dynamic placeholders " +
+//    						"that are available for customizations within prison.  Please try adding " +
+//    						"Vault and PlaceholderAPI (papi) to your setup, if they do not already exist, " +
+//    						"to enable these features.");
+//    	}
 	}
 
     

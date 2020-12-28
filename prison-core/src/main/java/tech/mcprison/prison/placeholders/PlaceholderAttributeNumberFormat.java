@@ -69,11 +69,6 @@ public class PlaceholderAttributeNumberFormat
 		
 		this.parts = parts;
 		
-		parseParts( parts );
-	}
-
-	private void parseParts( String[] parts ) {
-
 		// ::nFormat:format:spaces:unitType:debug
 		
 		int len = 1;
@@ -90,7 +85,17 @@ public class PlaceholderAttributeNumberFormat
 				spaces = Integer.parseInt( spacesStr );
 			}
 			catch (NumberFormatException e ) {
-				// invalid supplied format. Ignore.
+				// invalid supplied format. 
+				// Ignore unless in debug mode:
+				if ( isDebug() ) {
+					Output.get().logError( 
+							String.format( "Error parsing spaces to an Integer. String value= [%s] " +
+									"ERRROR: %s", 
+									
+									spacesStr, e.getMessage()
+									));
+				}
+
 			}
 		}
 		
@@ -103,7 +108,7 @@ public class PlaceholderAttributeNumberFormat
 		String debugStr = parts.length > len ? parts[len++] : null;
 		boolean debug = debugStr != null && "debug".equalsIgnoreCase( debugStr );
 		
-		
+
 		this.format = format;
 		this.spaces = spaces;
 		this.unitType = unitType;

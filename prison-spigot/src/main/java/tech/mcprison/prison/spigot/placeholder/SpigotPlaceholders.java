@@ -158,7 +158,9 @@ public class SpigotPlaceholders
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() && 
 					results == null ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
-			results = mm.getTranslateMinesPlaceHolder( identifier );
+			if ( mm != null ) {
+				results = mm.getTranslateMinesPlaceHolder( identifier );
+			}
 		}
 		
 		return results;
