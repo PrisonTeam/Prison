@@ -34,7 +34,8 @@ public class PlaceholderManager {
     }
     
     public enum PlaceholderAttributePrefixes {
-    	nFormat;
+    	nFormat,
+    	bar;
     	
     	public static PlaceholderAttributePrefixes fromString( String value ) {
     		PlaceholderAttributePrefixes pap = null;
@@ -412,7 +413,7 @@ public class PlaceholderManager {
 	 * @param placeholder
 	 * @return
 	 */
-	public static PlaceholderAttribute extractPlaceholderExtractAttribute( String placeholder ) {
+	public PlaceholderAttribute extractPlaceholderExtractAttribute( String placeholder ) {
 		PlaceholderAttribute attribute = null;
 		
 		if ( placeholder != null ) {
@@ -435,7 +436,7 @@ public class PlaceholderManager {
 	}
 	
 
-	private static PlaceholderAttribute attributeFactory( String rawAttribute ) {
+	private PlaceholderAttribute attributeFactory( String rawAttribute ) {
 		PlaceholderAttribute attribute = null;
 		
 		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
@@ -450,6 +451,10 @@ public class PlaceholderManager {
 						attribute = new PlaceholderAttributeNumberFormat( parts );
 						break;
 
+					case bar:
+						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig() );
+						break;
+						
 					default:
 						break;
 				}
@@ -462,7 +467,7 @@ public class PlaceholderManager {
 	}
 
 
-	public static String extractPlaceholderString( String identifier ) {
+	public String extractPlaceholderString( String identifier ) {
 		String results = null;
 		
 		int idx = identifier == null ? -1 :
@@ -573,9 +578,11 @@ public class PlaceholderManager {
 	 * 				set to valueTotal if greater than that amount. 
 	 * @param valueTotal The target value that is non-changing.
 	 * @param reverse Changes the growth direction of the progress bar.
+	 * @param attribute 
 	 * @return
 	 */
-	public String getProgressBar( double value, double valueTotal, boolean reverse ) {
+	public String getProgressBar( double value, double valueTotal, boolean reverse, 
+															PlaceholderAttribute attribute ) {
 		StringBuilder sb = new StringBuilder();
 		
 		// value cannot be greater than valueTotal:
@@ -593,8 +600,16 @@ public class PlaceholderManager {
 		
     	double percent = value / valueTotal * 100.0;
     	
+    	PlaceholderAttributeBar barAttribute = attribute == null || 
+    							!(attribute instanceof PlaceholderAttributeBar) ? null : 
+    								(PlaceholderAttributeBar) attribute;
+    	
+//    	Output.get().logInfo( "### @@@ ### getProgressBar: barAttribute: " + 
+//    				( barAttribute != null ? "true" : "false"));
+    	
     	PlaceholderProgressBarConfig barConfig = 
-				Prison.get().getPlaceholderManager().getProgressBarConfig();
+    								barAttribute != null ? barAttribute.getBarConfig() :
+    									getProgressBarConfig();
 
 		String lastColorCode = null;
 		for ( int i = 0; i < barConfig.getSegments(); i++ ) {

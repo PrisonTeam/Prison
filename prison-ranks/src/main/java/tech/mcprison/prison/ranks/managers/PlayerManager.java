@@ -538,7 +538,8 @@ public class PlayerManager
     	return sb.toString();
     }
     
-    public String getPlayerNextRankCostBar( RankPlayer rankPlayer, String ladderName ) {
+    public String getPlayerNextRankCostBar( RankPlayer rankPlayer, String ladderName, 
+    														PlaceholderAttribute attribute ) {
     	StringBuilder sb = new StringBuilder();
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.uid).orElse(null);
@@ -573,7 +574,7 @@ public class PlayerManager
     					
     				   	
     			    	sb.append( Prison.get().getPlaceholderManager().
-    			    					getProgressBar( balance, cost, false ));
+    			    					getProgressBar( balance, cost, false, attribute ));
 
     				}
     			}
@@ -834,9 +835,10 @@ public class PlayerManager
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
-    		// placeholder Attributes:
-    		String placeholder = PlaceholderManager.extractPlaceholderString( identifier );
-    		PlaceholderAttribute attribute = PlaceholderManager.extractPlaceholderExtractAttribute( identifier );
+    		// placeholder Attributes: 
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
     			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
@@ -911,7 +913,7 @@ public class PlayerManager
 					case prison_rankup_cost_bar:
 					case prison_rcb_laddername:
 					case prison_rankup_cost_bar_laddername:
-						results = getPlayerNextRankCostBar( rankPlayer, ladderName );
+						results = getPlayerNextRankCostBar( rankPlayer, ladderName, attribute );
 						break;
 						
 					case prison_rcr:

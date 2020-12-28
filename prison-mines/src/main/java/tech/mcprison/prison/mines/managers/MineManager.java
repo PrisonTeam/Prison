@@ -551,8 +551,9 @@ public class MineManager
 		}
     	
 		// placeholder Attributes:
-		String placeholder = PlaceholderManager.extractPlaceholderString( identifier );
-		PlaceholderAttribute attribute = PlaceholderManager.extractPlaceholderExtractAttribute( identifier );
+		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+		String placeholder = pman.extractPlaceholderString( identifier );
+		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
 		
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
 			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
@@ -631,7 +632,7 @@ public class MineManager
 					case prison_mines_timeleft_bar_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
-						results = getRemainingTimeBar( mine );
+						results = getRemainingTimeBar( mine, attribute );
 						break;
 						
 					case prison_mtlf_minename:
@@ -688,7 +689,8 @@ public class MineManager
 						int blocksRemaining = mine.getRemainingBlockCount();
 						
 						results = Prison.get().getPlaceholderManager().
-									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), false );
+									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), 
+											false, attribute );
 						break;
 						
 					case prison_mp_minename:
@@ -765,8 +767,9 @@ public class MineManager
     		}
     		
     		// placeholder Attributes:
-    		String placeholder = PlaceholderManager.extractPlaceholderString( identifier );
-    		PlaceholderAttribute attribute = PlaceholderManager.extractPlaceholderExtractAttribute( identifier );
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
     			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
@@ -842,13 +845,13 @@ public class MineManager
 	}
 
 
-	private String getRemainingTimeBar( Mine mine ) {
+	private String getRemainingTimeBar( Mine mine, PlaceholderAttribute attribute ) {
 
     	double timeRemaining = mine.getRemainingTimeSec();
     	int time = mine.getResetTime();
     	
     	return Prison.get().getPlaceholderManager().
-    					getProgressBar( timeRemaining, ((double) time), true );
+    					getProgressBar( timeRemaining, ((double) time), true, attribute );
 	}
 
 
