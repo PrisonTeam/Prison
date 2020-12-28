@@ -410,7 +410,7 @@ public class PrisonCommand {
     	
     	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
     	builder.add( String.format( "&a    Use { } to escape the placeholders."));
-    	builder.add( String.format( "&7  Original:   %s", text));
+    	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
     	display.addComponent(builder.build());

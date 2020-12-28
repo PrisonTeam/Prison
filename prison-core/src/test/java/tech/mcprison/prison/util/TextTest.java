@@ -46,4 +46,48 @@ public class TextTest
 
 		
 	}
+	
+	@Test
+	public void testTranslateColorCodesQuotedText() {
+		
+		// Test no translations:
+		assertEquals("This is a test", replaceColorCodeWithx( 
+												translateColorCodes("This is a test", '&')));
+		
+		// test simple translations:
+		assertEquals("This x7is a test", replaceColorCodeWithx( 
+												translateColorCodes("This &7is a test", '&')));
+		assertEquals("This x7is xra test", replaceColorCodeWithx( 
+												translateColorCodes("This &7is &Ra test", '&')));
+
+		// Test without quotes:
+		assertEquals("This x7is xra x1tx2ex3sx4t", replaceColorCodeWithx( 
+												translateColorCodes("This &7is &Ra &1t&2e&3s&4t", '&')));
+
+		
+		// Test with quotes:
+		assertEquals("This x7is xra &1t&2e&3s&4t", replaceColorCodeWithx( 
+												translateColorCodes("This &7is &Ra \\Q&1t&2e&3s&4t\\E", '&')));
+		
+	}
+	
+	/**
+	 * <p>Running the junit test above in the IDE works well using the actual character that is
+	 * referred to with the char code 167.  But running through gradle it has an issue with translation
+	 * on the character code set and is not always the same character. </p>
+	 * 
+	 * <p>So to provide consistency and eliminate the UTF junk, we are converting it to a lower
+	 * case x so it can at least test the function and not the character encoding of gradle.
+	 * <p>
+	 * 
+	 * @param text
+	 * @return
+	 */
+	private String replaceColorCodeWithx( String text ) {
+		
+		char code = 167;
+		
+		return text.replace( code, 'x' );
+		
+	}
 }

@@ -202,13 +202,22 @@ public class Text {
     }
 
     /**
+     * <p>
      * Translates the color codes (a-f) (A-F) (0-9), prefixed by a certain character, into
      * Minecraft-readable color codes. <p> <p>Use of this method is discouraged. Implementations are
      * recommended to translate color codes using their native internal's APIs. This assumes that the
      * server mod will accept vanilla Minecraft color codes, although implementations such as Sponge
      * do not do this. However, because there are some practical uses for a method like this, it
      * exists in a non-deprecated but discouraged state.
-     *
+     * </p>
+     * 
+     * <p>Borrowing from regular expressions on quoting, \Q quotes through either the
+     * end of the text, or until it reaches an \E.  This function has been modified to
+     * honor such quotes so as to allow selected use of character codes to pass through
+     * without being translated.  Prior to leaving this function, all traces of \Q and \E
+     * will be removed.
+     * <p>
+     * 
      * @param text   The text to translate color codes in.
      * @param prefix The color code prefix, which comes before the color codes.
      * @return The translated string.
@@ -219,16 +228,36 @@ public class Text {
         }
         char[] b = text.toCharArray();
 
+        int len = b.length;
         boolean dirty = false;
-        for (int i = 0; i < b.length - 1; ++i) {
-            if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
+        boolean quote = false;
+        boolean quoted = false;
+        
+        for (int i = 0; i < len - 1; ++i) {
+        	if ( !quote && b[i] == '\\' && i < len && b[i + 1] == 'Q' ) {
+        		// Encountered a \Q: Start quoting.
+        		quote = true;
+        		quoted = true;
+        	}
+        	else if ( quote && b[i] == '\\' && i < len && b[i + 1] == 'E'  ) {
+        		// Encountered a \E: End quoting.
+        		quote = false;
+        	}
+        	else if ( quote ) {
+        		// skip processing:
+        	}
+        	else if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
                 b[i] = 167; // Section symbol
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
                 dirty = true;
             }
         }
 
-        return dirty ? new String(b) : text;
+        String results = dirty ? new String(b) : text;
+        if ( quoted ) {
+        	results = results.replace( "\\Q", "" ).replace( "\\E", "" );
+        }
+        return results;
     }
 
     /**
