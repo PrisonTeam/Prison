@@ -18,6 +18,14 @@ that you need.
 
 # V3.2.4-alpha.2 2020-12-29
 
+* **Placeholder Attributes: Changed how debug works so hex can be added too.**  Instead of using a String array, converted it over to use a list.  The value of hex and debug are extracted prior to extracting any other parameters since those two values are now non-positional and can appear in any parameter location.
+Debug statement now includes the original raw string that is non-converted to the spigot color codes so you can see what the original raw codes were for debugging purposes.  The parameter hex now will convert the color codes before sending the resulting placeholder value back to the plugin that is requesting it.  This may allow the successful use of hex colors in plugins that do not yet support them since the hex codes would have already been correctly converted.
+
+
+* **Full support for hex color codes.**
+The use of #abcdef will be converted to the correct color codes.  This applies only to prison messages and will not provide any translation for placeholders that are sent back to the requesting plugins that are using them.  They would have to support hex colors on their own.
+This is only a feature that works with minecraft v1.16.x and newer.  Older versions of minecraft and spigot may produce undesireabl artifacts.
+
 
 * **V3.2.4-alpha.2 2020-12-29**
 Bump version.

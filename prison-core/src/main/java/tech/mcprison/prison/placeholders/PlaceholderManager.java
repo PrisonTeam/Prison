@@ -1,6 +1,7 @@
 package tech.mcprison.prison.placeholders;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tech.mcprison.prison.Prison;
@@ -441,19 +442,19 @@ public class PlaceholderManager {
 		PlaceholderAttribute attribute = null;
 		
 		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
-			String[] parts = rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR );
+			List<String> parts = Arrays.asList( rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR ));
 			
-			if ( parts.length > 1 ) {
-				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts[0] );
+			if ( parts.size() > 1 ) {
+				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts.get( 0 ) );
 				
 				switch ( pap )
 				{
 					case nFormat:
-						attribute = new PlaceholderAttributeNumberFormat( parts );
+						attribute = new PlaceholderAttributeNumberFormat( parts, rawAttribute );
 						break;
 
 					case bar:
-						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig() );
+						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig(), rawAttribute );
 						break;
 						
 					default:

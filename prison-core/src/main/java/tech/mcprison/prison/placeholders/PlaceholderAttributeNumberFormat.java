@@ -1,11 +1,13 @@
 package tech.mcprison.prison.placeholders;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformationUnitTypes;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>This takes the placeholder attribute for number formatting
@@ -42,7 +44,14 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformation
  *        			</li>
  *   	</ul>
  *   </li>
- *   <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
+ *   
+ *   <li><b>hex</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "hex". When enabled it will translate
+ *   				hex color codes, and other color codes before sending the placeholder
+ *   				results back to the requestor. This is useful for plugins that
+ *   				do not directly support hex color codes.
+ *   <li><b>debug</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "debug". When enabled it
  *    				will log to the console the status of this attribute, along with
  *    				any error messages that may occur when applying the attribute.
  *   </li>
@@ -55,28 +64,35 @@ public class PlaceholderAttributeNumberFormat
 
 	public static final String FORMAT_DEFAULT = "#,##0.00";
 	
-	private String[] parts;
+	private List<String> parts;
+	private String raw;
 	
 	private String format;
 	private int spaces = 1;
 	private NumberTransformationUnitTypes unitType;
 	
+	private boolean hex = false;
 	private boolean debug = false;
 	
-	public PlaceholderAttributeNumberFormat( String[] parts ) {
+	public PlaceholderAttributeNumberFormat( List<String> parts, String raw ) {
 		super();
 		
 		this.parts = parts;
+		this.raw = raw;
 		
-		// ::nFormat:format:spaces:unitType:debug
+		// ::nFormat:format:spaces:unitType:hex:debug
+		
+		// Extract hex and debug first, since they are non-positional
+		this.hex = parts.remove( "hex" );
+		this.debug = parts.remove( "debug" );
 		
 		int len = 1;
 		
 		// format:
-		String format = parts.length > len ? parts[len++] : FORMAT_DEFAULT;
+		String format = parts.size() > len ? parts.get( len++ ) : FORMAT_DEFAULT;
 		
 		// spaces:
-		String spacesStr = parts.length > len ? parts[len++] : "1";
+		String spacesStr = parts.size() > len ? parts.get( len++ ) : "1";
 		int spaces = 1;
 		if ( spacesStr != null && !spacesStr.trim().isEmpty() ) {
 			
@@ -99,19 +115,19 @@ public class PlaceholderAttributeNumberFormat
 		}
 		
 		// unitType:
-		String unitTypeStr = parts.length > len ? parts[len++] : null;
+		String unitTypeStr = parts.size() > len ? parts.get( len++ ) : null;
 		NumberTransformationUnitTypes unitType = 
 									NumberTransformationUnitTypes.fromString( unitTypeStr );
 		
-		// Debug:
-		String debugStr = parts.length > len ? parts[len++] : null;
-		boolean debug = debugStr != null && "debug".equalsIgnoreCase( debugStr );
+//		// Debug:
+//		String debugStr = parts.size() > len ? parts.get( len++ ) : null;
+//		boolean debug = debugStr != null && "debug".equalsIgnoreCase( debugStr );
 		
 
 		this.format = format;
 		this.spaces = spaces;
 		this.unitType = unitType;
-		this.debug = debug;
+//		this.debug = debug;
 	}
 
 	@Override
@@ -185,14 +201,20 @@ public class PlaceholderAttributeNumberFormat
 			}
 		}
 		
+		
+		if ( isHex() ) {
+			results = Text.translateAmpColorCodes( results );
+		}
+		
 		if ( isDebug() ) {
 			Output.get().logInfo( 
 					String.format( "Placeholder Attribute nFormat: double value= %s " +
 							"format=[%s] spaces=%d unitType=%s  Results: [%s] " +
+							"raw: &7[&3\\R%s\\E&7]" +
 							"(remove :debug from placeholder to disable this message)", 
 							
 							Double.toString( value ), getFormat(), getSpaces(), 
-							getUnitType(), results
+							getUnitType(), results, getRaw()
 							));
 		}
 		
@@ -205,11 +227,15 @@ public class PlaceholderAttributeNumberFormat
 		return format( (double) value );
 	}
 
-	public String[] getParts() {
+	public List<String> getParts() {
 		return parts;
 	}
-	public void setParts( String[] parts ) {
+	public void setParts( List<String> parts ) {
 		this.parts = parts;
+	}
+
+	public String getRaw() {
+		return raw;
 	}
 
 	public String getFormat() {
@@ -231,6 +257,13 @@ public class PlaceholderAttributeNumberFormat
 	}
 	public void setUnitType( NumberTransformationUnitTypes unitType ) {
 		this.unitType = unitType;
+	}
+
+	public boolean isHex() {
+		return hex;
+	}
+	public void setHex( boolean hex ) {
+		this.hex = hex;
 	}
 
 	public boolean isDebug() {

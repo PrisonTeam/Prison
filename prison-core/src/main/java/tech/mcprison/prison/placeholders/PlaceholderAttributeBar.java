@@ -1,6 +1,9 @@
 package tech.mcprison.prison.placeholders;
 
+import java.util.List;
+
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>This takes the placeholder attribute for bar graph customization, and is then used
@@ -26,7 +29,14 @@ import tech.mcprison.prison.output.Output;
  *   						Color codes should start with an &.</li>
  *   <li><b>Negative Segment</b>: The value that will be used for the negative
  *   						segment.</li>
- *   <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
+ *   
+ *   <li><b>hex</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "hex". When enabled it will translate
+ *   				hex color codes, and other color codes before sending the placeholder
+ *   				results back to the requestor. This is useful for plugins that
+ *   				do not directly support hex color codes.
+ *   <li><b>debug</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "debug". When enabled it
  *    				will log to the console the status of this attribute, along with
  *    				any error messages that may occur when applying the attribute.
  *   </li>
@@ -36,23 +46,31 @@ import tech.mcprison.prison.output.Output;
 public class PlaceholderAttributeBar
 		implements PlaceholderAttribute {
 	
-	private String[] parts;
+	private List<String> parts;
+	private String raw;
 	
 	private PlaceholderProgressBarConfig barConfig;
 	
+	private boolean hex = false;
 	private boolean debug = false;
 	
-	public PlaceholderAttributeBar( String[] parts, PlaceholderProgressBarConfig defaultBarConfig ) {
+	public PlaceholderAttributeBar(List<String> parts, 
+					PlaceholderProgressBarConfig defaultBarConfig, String raw ) {
 		super();
 
 		this.parts = parts;
+		this.raw = raw;
 
-		// ::bar:size:posColor:posSeg:negColor:negSeg:debug
+		// ::bar:size:posColor:posSeg:negColor:negSeg:hex:debug
 		
+		// Extract hex and debug first, since they are non-positional
+		this.hex = parts.remove( "hex" );
+		this.debug = parts.remove( "debug" );
+
 		int len = 1;
 		
 		// format:
-		String segStr = parts.length > len ? parts[len++] : null;
+		String segStr = parts.size() > len ? parts.get( len++ ) : null;
 		int seg = defaultBarConfig.getSegments();
 		if ( segStr != null && !segStr.trim().isEmpty() ) {
 			
@@ -75,37 +93,39 @@ public class PlaceholderAttributeBar
 		}
 		
 
-		String pCol = parts.length > len ? parts[len++] : defaultBarConfig.getPositiveColor();
+		String pCol = parts.size() > len ? parts.get( len++ ) : defaultBarConfig.getPositiveColor();
 		
-		String pSeg = parts.length > len ? parts[len++] : defaultBarConfig.getPositiveSegment();
+		String pSeg = parts.size() > len ? parts.get( len++ ) : defaultBarConfig.getPositiveSegment();
 		
-		String nCol = parts.length > len ? parts[len++] : defaultBarConfig.getNegativeColor();
+		String nCol = parts.size() > len ? parts.get( len++ ) : defaultBarConfig.getNegativeColor();
 
-		String nSeg = parts.length > len ? parts[len++] : defaultBarConfig.getNegativeSegment();
+		String nSeg = parts.size() > len ? parts.get( len++ ) : defaultBarConfig.getNegativeSegment();
 
+		// If hex, then convert the color codes before storing in the config:
+		if ( isHex() ) {
+			pCol = Text.translateAmpColorCodes( pCol );
+			nCol = Text.translateAmpColorCodes( nCol );
+		}
+		
+		
 		this.barConfig = new PlaceholderProgressBarConfig( seg, pCol, pSeg, nCol, nSeg );
 		
-		// Debug:
-		String debugStr = parts.length > len ? parts[len++] : null;
-		boolean debug = debugStr != null && "debug".equalsIgnoreCase( debugStr );
+//		// Debug:
+//		String debugStr = parts.length > len ? parts[len++] : null;
+//		boolean debug = debugStr != null && "debug".equalsIgnoreCase( debugStr );
 		
 		
-		this.debug = debug;
+//		this.debug = debug;
 
 		
 		if ( isDebug() ) {
-			
-			// Reconstruct the attribute from the parts:
-			String rawBar = PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR + 
-					String.join( PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR, 
-							parts );
 
 			Output.get().logInfo( 
 					String.format( "Placeholder Attribute bar: " +
-							"&7%s  &7Raw: [\\Q%s\\E&7] " +
+							"&7%s  &7Raw: &7[&3\\Q%s\\E&7] " +
 							"(remove :debug from placeholder to disable this message)", 
 							
-							getBarConfig().toString(), rawBar
+							getBarConfig().toString(), getRaw()
 							));
 		}
 
@@ -113,11 +133,22 @@ public class PlaceholderAttributeBar
 	}
 
 
-	public String[] getParts() {
+	public List<String> getParts() {
 		return parts;
 	}
-	public void setParts( String[] parts ) {
+	public void setParts( List<String> parts ) {
 		this.parts = parts;
+	}
+
+	public String getRaw() {
+		return raw;
+	}
+
+	public boolean isHex() {
+		return hex;
+	}
+	public void setHex( boolean hex ) {
+		this.hex = hex;
 	}
 
 	public boolean isDebug() {
