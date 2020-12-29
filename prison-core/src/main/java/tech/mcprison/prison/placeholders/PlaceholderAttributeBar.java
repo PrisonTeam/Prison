@@ -1,6 +1,6 @@
 package tech.mcprison.prison.placeholders;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
@@ -46,7 +46,7 @@ import tech.mcprison.prison.util.Text;
 public class PlaceholderAttributeBar
 		implements PlaceholderAttribute {
 	
-	private List<String> parts;
+	private ArrayList<String> parts;
 	private String raw;
 	
 	private PlaceholderProgressBarConfig barConfig;
@@ -54,7 +54,7 @@ public class PlaceholderAttributeBar
 	private boolean hex = false;
 	private boolean debug = false;
 	
-	public PlaceholderAttributeBar(List<String> parts, 
+	public PlaceholderAttributeBar(ArrayList<String> parts, 
 					PlaceholderProgressBarConfig defaultBarConfig, String raw ) {
 		super();
 
@@ -133,10 +133,10 @@ public class PlaceholderAttributeBar
 	}
 
 
-	public List<String> getParts() {
+	public ArrayList<String> getParts() {
 		return parts;
 	}
-	public void setParts( List<String> parts ) {
+	public void setParts( ArrayList<String> parts ) {
 		this.parts = parts;
 	}
 

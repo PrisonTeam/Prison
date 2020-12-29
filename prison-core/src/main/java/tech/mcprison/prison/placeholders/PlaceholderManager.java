@@ -442,7 +442,8 @@ public class PlaceholderManager {
 		PlaceholderAttribute attribute = null;
 		
 		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
-			List<String> parts = Arrays.asList( rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR ));
+			ArrayList<String> parts = new ArrayList<>();
+			parts.addAll( Arrays.asList( rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR )) );
 			
 			if ( parts.size() > 1 ) {
 				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts.get( 0 ) );

@@ -1,7 +1,7 @@
 package tech.mcprison.prison.placeholders;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -64,7 +64,7 @@ public class PlaceholderAttributeNumberFormat
 
 	public static final String FORMAT_DEFAULT = "#,##0.00";
 	
-	private List<String> parts;
+	private ArrayList<String> parts;
 	private String raw;
 	
 	private String format;
@@ -74,7 +74,7 @@ public class PlaceholderAttributeNumberFormat
 	private boolean hex = false;
 	private boolean debug = false;
 	
-	public PlaceholderAttributeNumberFormat( List<String> parts, String raw ) {
+	public PlaceholderAttributeNumberFormat( ArrayList<String> parts, String raw ) {
 		super();
 		
 		this.parts = parts;
@@ -227,10 +227,10 @@ public class PlaceholderAttributeNumberFormat
 		return format( (double) value );
 	}
 
-	public List<String> getParts() {
+	public ArrayList<String> getParts() {
 		return parts;
 	}
-	public void setParts( List<String> parts ) {
+	public void setParts( ArrayList<String> parts ) {
 		this.parts = parts;
 	}
 
