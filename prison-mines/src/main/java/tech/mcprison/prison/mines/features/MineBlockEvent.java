@@ -11,6 +11,7 @@ public class MineBlockEvent {
 	
 	private BlockEventType eventType;
 	
+	private String triggered;
 	
 	public enum BlockEventType {
 		eventTypeAll,
@@ -32,7 +33,8 @@ public class MineBlockEvent {
 	}
 	
 	public MineBlockEvent( double chance, String permission, 
-								String command, String mode, BlockEventType eventType ) {
+								String command, String mode, 
+								BlockEventType eventType, String triggered ) {
 		super();
 		
 		this.chance = chance;
@@ -41,6 +43,8 @@ public class MineBlockEvent {
 		this.mode = mode;
 		
 		this.eventType = eventType;
+		
+		this.triggered = triggered;
 	}
 
 	
@@ -49,7 +53,8 @@ public class MineBlockEvent {
 		return dFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
-				getCommand() + "|" + getMode() + "|" + getEventType().name();
+				getCommand() + "|" + getMode() + "|" + getEventType().name() + "|" + 
+				(getTriggered() == null ? "none" : getTriggered());
 	}
 	
 	public static MineBlockEvent fromSaveString( String chancePermCommand ) {
@@ -78,9 +83,12 @@ public class MineBlockEvent {
 			BlockEventType eventType = cpc.length >= 5 ? BlockEventType.fromString( cpc[4] ) :
 											BlockEventType.eventTypeAll;
 			
+			String triggered = cpc.length >= 6 && !"none".equals(cpc[5]) ? cpc[5] : null;
+			
+			
 			if ( command != null && command.trim().length() > 0 ) {
 				
-				results = new MineBlockEvent( chance, permission, command, mode, eventType );
+				results = new MineBlockEvent( chance, permission, command, mode, eventType, triggered );
 			}
 		}
 		
@@ -121,6 +129,13 @@ public class MineBlockEvent {
 	}
 	public void setEventType( BlockEventType eventType ) {
 		this.eventType = eventType;
+	}
+
+	public String getTriggered() {
+		return triggered;
+	}
+	public void setTriggered( String triggered ) {
+		this.triggered = triggered;
 	}
 
 

@@ -17,6 +17,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -106,11 +107,15 @@ public class OnBlockBreakEventListener
 	private int uses = 0;
 	private long usesElapsedTimeNano = 0L;
 	
+	private boolean teExplosionTriggerEnabled;
+	
 	public OnBlockBreakEventListener() {
 		super();
 		
 //		this.playerCache = new TreeMap<>();
 		this.prisonMineManager = null;
+		
+		this.teExplosionTriggerEnabled = true;
 	}
 	
     /**
@@ -317,7 +322,8 @@ public class OnBlockBreakEventListener
 			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( 1, player, BlockEventType.eventBlockBreak );
+			String triggered = null;
+			mine.processBlockBreakEventCommands( 1, player, BlockEventType.eventBlockBreak, triggered );
 			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
@@ -334,9 +340,34 @@ public class OnBlockBreakEventListener
 			
 			// Other possible processing:
 			
+			String triggered = null;
+			
+			if ( isTeExplosionTriggerEnabled() ) {
+				
+				try {
+					triggered = e.getTrigger();
+				}
+				catch ( Exception ex ) {
+					// Only print the error the first time, then suppress the error:
+					String error = ex.getMessage();
+					
+					Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+							"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+							"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+							"The Prison BlockEvents can be filtered by this triggered value. " +
+							error );
+					
+					// Disable collecting the trigger.
+					setTeExplosionTriggerEnabled( false );
+					
+				}
+			}
+			
+			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion );
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion,
+					triggered );
 			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
@@ -408,6 +439,14 @@ public class OnBlockBreakEventListener
 			usesElapsedTimeNano = 0L;
 		}
 		return message;
+	}
+
+	private boolean isTeExplosionTriggerEnabled() {
+		return teExplosionTriggerEnabled;
+	}
+
+	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
+		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
 	}
 
 }

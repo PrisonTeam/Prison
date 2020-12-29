@@ -2754,7 +2754,8 @@ public class MinesCommands
     		// This is checking for within a certain distance from any mine, so we just need to use
     		// some arbitrary distance as a max radius.  We do not want to use the individual values
     		// that have been set for each mine.
-    		else if ( !mine.isVirtual() &&  mine.getBounds().within( player.getLocation(), MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
+    		else if ( !mine.isVirtual() &&  mine.getBounds().within( player.getLocation(), 
+    									MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
     			Double distance = mine.getBounds().getDistance3d( player.getLocation() );
 //    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
@@ -2890,13 +2891,22 @@ public class MinesCommands
         			.tooltip("Permission - Click to Edit");
         	row.addFancy( msgPerm );
         	
-        	FancyMessage msgEventType = new FancyMessage( String.format( "&7%s ", 
+        	FancyMessage msgEventType = new FancyMessage( String.format( "&7%s", 
         													blockEvent.getEventType().name() ) )
         			.command( "/mines blockEvent eventType " + mineName + " " + rowNumber + " " )
         			.tooltip("Event Type - Click to Edit");
         	row.addFancy( msgEventType );
         	
-        	FancyMessage msgMode = new FancyMessage( String.format( "&3(&7%s&3) ", 
+        	if ( blockEvent.getTriggered() != null ) {
+        		
+        		FancyMessage msgTriggered = new FancyMessage( String.format( "&3:&7%s", 
+        				blockEvent.getTriggered() ) )
+        				.command( "/mines blockEvent triggered " + mineName + " " + rowNumber + " " )
+        				.tooltip("Triggered - Click to Edit");
+        		row.addFancy( msgTriggered );
+        	}
+        	
+        	FancyMessage msgMode = new FancyMessage( String.format( " &3(&7%s&3) ", 
         			blockEvent.getMode() ) )
         			.command( "/mines blockEvent mode " + mineName + " " + rowNumber + " " )
         			.tooltip("Event Mode - Click to Edit");
@@ -2978,6 +2988,9 @@ public class MinesCommands
     			@Arg(name = "eventType", def = "eventTypeAll",
     					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
     								) String eventType,
+    			@Arg(name = "triggered", def = "none",
+    					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
+    					) String triggered,
     			@Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
     					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
@@ -3023,6 +3036,15 @@ public class MinesCommands
         					eventType ));
         }
         
+        if ( eType != BlockEventType.eventTEXplosion && triggered != null && !"none".equalsIgnoreCase( triggered ) ) {
+        	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
+        			"Defaulting to none." );
+        	triggered = null;
+        }
+        if ( triggered != null && "none".equalsIgnoreCase( triggered ) ) {
+        	triggered = null;
+        }
+
         
         setLastMineReferenced(mineName);
         
@@ -3036,7 +3058,7 @@ public class MinesCommands
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode, eType );
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode, eType, triggered );
         m.getBlockEvents().add( blockEvent );
 
         pMines.getMineManager().saveMine( m );
@@ -3256,6 +3278,82 @@ public class MinesCommands
 
     }
 
+	
+	@Command(identifier = "mines blockEvent triggered", description = "Edits a BlockBreak triggered value.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void blockEventTriggered(CommandSender sender, 
+			@Arg(name = "mineName") String mineName,
+			@Arg(name = "row") Integer row,
+			@Arg(name = "triggered", def = "none",
+					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
+						) String triggered
+			) {
+		
+		
+		if (!performCheckMineExists(sender, mineName)) {
+			return;
+		}
+		
+		
+		if ( row == null || row <= 0 ) {
+			sender.sendMessage( 
+					String.format("&7Please provide a valid row number greater than zero. " +
+							"Was row=[&b%d&7]",
+							(row == null ? "null" : row) ));
+			return;        	
+		}
+		
+		
+		setLastMineReferenced(mineName);
+		
+		PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+		Mine m = pMines.getMine(mineName);
+		
+
+		
+		if ( row > m.getBlockEvents().size() ) {
+			sender.sendMessage( 
+					String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+							"Was row=[&b%d&7]",
+							m.getBlockEvents().size(), (row == null ? "null" : row) ));
+			return;        	
+		}
+		
+		MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+
+		
+        if ( blockEvent.getEventType() != BlockEventType.eventTEXplosion && triggered != null && 
+        		!"none".equalsIgnoreCase( triggered ) ) {
+        	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
+        			"Defaulting to none." );
+        	triggered = null;
+        }
+        if ( triggered != null && "none".equalsIgnoreCase( triggered ) ) {
+        	triggered = null;
+        }
+
+        String oldTriggered = blockEvent.getTriggered();
+		
+		
+		blockEvent.setTriggered( triggered );
+		
+		pMines.getMineManager().saveMine( m );
+		
+		
+		Output.get().sendInfo(sender, "&7BlockEvent triggered &b%s&7 was changed for mine '&b%s&7'. " +
+				"Was &b%s&7. Command '&b%s&7'", 
+				(triggered == null ? "none" : triggered), 
+				m.getName(), 
+				(oldTriggered == null ? "none" : oldTriggered), 
+				blockEvent.getCommand() );
+		
+		
+		// Redisplay the event list:
+		blockEventList( sender, mineName );
+		
+	}
+	
 
 	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak mode type: [inline, sync].", 
     		onlyPlayers = false, permissions = "mines.set")

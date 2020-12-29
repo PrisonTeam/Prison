@@ -71,8 +71,11 @@ dependencies {
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
  
-    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
-    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-18.11.3.jar'])
+    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.11.3.jar'])
+
+//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
+//    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])

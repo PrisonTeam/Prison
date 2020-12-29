@@ -469,7 +469,8 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( int blockCount, Player player, BlockEventType eventType ) {
+	public void processBlockBreakEventCommands( int blockCount, Player player, 
+					BlockEventType eventType, String triggered ) {
 		
 		if ( getBlockEvents().size() > 0 ) {
 			Random random = new Random();
@@ -479,16 +480,22 @@ public abstract class MineScheduler
 				
 				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 					
-					processBlockEventDetails( player, eventType, chance, blockEvent );
+					processBlockEventDetails( player, eventType, chance, blockEvent, triggered );
 				}
 				
 			}
 		}
 	}
 
-	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, MineBlockEvent blockEvent )
+	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, 
+					MineBlockEvent blockEvent, String triggered )
 	{
-		if ( blockEvent.getEventType() == BlockEventType.eventTypeAll || 
+		if ( eventType == BlockEventType.eventTEXplosion && 
+				eventType == blockEvent.getEventType() && 
+					( blockEvent.getTriggered() == null || 
+						blockEvent.getTriggered().equalsIgnoreCase( triggered )) ||
+					
+				blockEvent.getEventType() == BlockEventType.eventTypeAll || 
 				blockEvent.getEventType() == eventType ) {
 			
 			// If perms are set, check them, otherwise ignore perm check:
