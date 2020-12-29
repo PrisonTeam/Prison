@@ -16,7 +16,19 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.1 2020-12-27
+# V3.2.4-alpha.2 2020-12-29
+
+
+* **V3.2.4-alpha.2 2020-12-29**
+Bump version.
+
+
+* **Upgrade Cryptomorin's XSeries to v7.8.0 from v7.6.0.0.1.**
+
+
+* **Upgrade TokenEnchant to v18.11.3 to support the new TokenExplosionEvent's getTrigger().**
+This allows BlockEvents to now support filtering on TE's plugins that trigger the explosion event.
+Added support for editing and displaying the triggered parameter.
 
 
 * **Added a new unit type to the number format attribute: binary.**
