@@ -46,7 +46,7 @@
 [*][SIZE=4][COLOR=#808080]Prison now supports Prestiges too![/COLOR][/SIZE]
 [*][SIZE=4][COLOR=#808080]Many other features, try the Plugin to find out![/COLOR][/SIZE]
 [/LIST]
-[CENTER][SIZE=7][COLOR=#ffa64d][B]Mines:[/B][/COLOR][/SIZE]
+[CENTER][SIZE=7][COLOR=rgb(230, 145, 56)][B]Mines:[/B][/COLOR][/SIZE]
 [B][SIZE=6][COLOR=#808080]Some info about Mines:[/COLOR][/SIZE][/B][/CENTER]
 
 [LIST]
