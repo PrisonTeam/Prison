@@ -25,8 +25,8 @@ public class TextTest
 		
 		assertEquals("This is a test", stripColor("&KTh&ris &7is &aa &At&Be&8s&9t"));
 		
-		assertEquals("This is a test", stripColor("This &#123456is &ra test"));
-		assertEquals("This is a test", stripColor("This &#abCDeFis &ra test"));
+		assertEquals("This is a test", stripColor("This #123456is &ra test"));
+		assertEquals("This is a test", stripColor("This #abCDeFis &ra test"));
 		
 		
 	}
@@ -85,9 +85,41 @@ public class TextTest
 	 */
 	private String replaceColorCodeWithx( String text ) {
 		
+		return replaceColorCodeWithx( text, 'x' );
+		
+	}
+	private String replaceColorCodeWithx( String text, char replace ) {
+		
 		char code = 167;
 		
-		return text.replace( code, 'x' );
+		return text.replace( code, replace );
+		
+	}
+	
+	@Test
+	public void testHexColors() {
+		
+		// Test no translations:
+		assertEquals("This is a test", translateHexColorCodes("This is a test"));
+		
+		// test simple translations:
+		assertEquals("This &7is a test", translateHexColorCodes("This &7is a test"));
+		
+		// Test a hex color code:
+		assertEquals("This &7is ^x^a^3^b^4^c^5 &Ra test", replaceColorCodeWithx(
+										translateHexColorCodes("This &7is #a3b4c5 &Ra test"), '^' ));
+
+//		// Test without quotes:
+//		assertEquals("This x7is xra x1tx2ex3sx4t", replaceColorCodeWithx( 
+//												translateColorCodes("This &7is &Ra &1t&2e&3s&4t", '&')));
+
+		// Test the translation within main:
+		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test", replaceColorCodeWithx(
+										translateColorCodes("This &7is #a3b4c5 &Ra test", '&'), '^' ));
+
+		// Test with complete quote:
+		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test #123456 test", replaceColorCodeWithx(
+				translateColorCodes("This &7is #a3b4c5 &Ra test \\Q#123456 test\\E", '&'), '^' ));
 		
 	}
 }

@@ -19,7 +19,12 @@
 package tech.mcprison.prison.util;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -48,11 +53,13 @@ public class Text {
     
     public static final Pattern STRIP_COLOR_PATTERN =
     						Pattern.compile("(?i)" + COLOR_ + "#[A-Fa-f0-9]{6}|" + 
-    												 COLOR_ + "[0-9A-FK-OR]");
+    												 COLOR_ + "[0-9A-FK-ORxX]");
 
    
     public static final Pattern STRIP_COLOR_PATTERN_ORIGINAL =
     		Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+    
+    public static final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     
     
     //#([A-Fa-f0-9]){6}
@@ -226,7 +233,7 @@ public class Text {
         if (prefix == 167) {
             return text; // No need to translate, it's already been translated
         }
-        char[] b = text.toCharArray();
+        char[] b = translateHexColorCodes( text ).toCharArray();
 
         int len = b.length;
         boolean dirty = false;
@@ -292,6 +299,66 @@ public class Text {
         return STRIP_COLOR_PATTERN.matcher(text).replaceAll("");
     }
 
+    public static String translateHexColorCodes(String text) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	int idxStart = text.indexOf( "\\Q" );
+    	int idxEnd = -1;
+    	
+    	if ( idxStart == -1 ) {
+    		sb.append( translateHexColorCodesCore( text ) );
+    	}
+    	else {
+    		
+    		while ( idxStart >= 0 ) {
+    			sb.append( translateHexColorCodesCore( text.substring( 0, idxStart )) );
+    			
+    			idxEnd = text.indexOf( "\\E", idxStart );
+    			
+    			if ( idxEnd == -1 ) {
+    				sb.append( text.substring( idxStart ) );
+    				idxStart = -1;
+    			}
+    			else {
+    				sb.append( text.substring( idxStart, idxEnd ) );
+    				
+    				idxStart = text.indexOf( "\\Q", idxEnd );
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    /**
+     * Based upon a message at:
+     * 
+     * https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
+     * 
+     * @param startTag
+     * @param endTag
+     * @param message
+     * @return
+     */
+    public static String translateHexColorCodesCore(String message) {
+    	
+//    	String startTag = "";
+//    	String endTag = "";
+//        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
+        
+        Matcher matcher = HEX_PATTERN.matcher(message);
+        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        while (matcher.find()) {
+            String group = matcher.group(1);
+            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
+                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
+                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
+                    );
+        }
+        return matcher.appendTail(buffer).toString();
+    }
+    	      
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).
