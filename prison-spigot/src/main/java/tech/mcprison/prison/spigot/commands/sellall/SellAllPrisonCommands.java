@@ -97,7 +97,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    private double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer) {
+    /**
+     * Get the money to give to the Player depending on the multiplier.
+     * */
+    public double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer) {
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
             getMultiplier(sPlayer);
@@ -148,7 +151,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         multiplier += multiplierExtraByPerms;
     }
 
-    private double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
+    /**
+     * Get value of the items in Player's Inventory if SellAll's triggered now.
+     * */
+    public double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
 
         // Get the player inventory
         Inventory inv = p.getInventory();

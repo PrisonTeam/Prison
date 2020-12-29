@@ -23,7 +23,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public abstract class SpigotGUIComponents {
 
-    // createButton method (create a button for the GUI - item)
+    /**
+     * Create a button for the GUI using Material.
+     * */
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
         if (id == null){
@@ -32,17 +34,12 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        if ( meta != null ) {
-        	meta.setDisplayName(SpigotPrison.format(display));
-        	try {
-        		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        	} catch (NoClassDefFoundError ignored){}
-        	meta.setLore(lore);
-        	item.setItemMeta(meta);
-        }
-
-        return item;
+        return getItemStack(item, lore, display, meta);
     }
+
+    /**
+     * Create a button for the GUI using ItemStack.
+     * */
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
 
         if (item == null){
@@ -55,19 +52,28 @@ public abstract class SpigotGUIComponents {
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
         }
 
-    	if ( meta != null ) {
-    		meta.setDisplayName(SpigotPrison.format(display));
-    		try {
-    			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-    		} catch (NoClassDefFoundError ignored){}
-    		meta.setLore(lore);
-    		item.setItemMeta(meta);
-    	}
-    	
-    	return item;
+        return getItemStack(item, lore, display, meta);
     }
 
-    // createLore method (create a lore for the button)
+    /**
+     * Get ItemStack of an Item.
+     * */
+    private ItemStack getItemStack(ItemStack item, List<String> lore, String display, ItemMeta meta) {
+        if (meta != null) {
+            meta.setDisplayName(SpigotPrison.format(display));
+            try {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            } catch (NoClassDefFoundError ignored){}
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+
+        return item;
+    }
+
+    /**
+     * Create a Lore for an Item in the GUI.
+     * */
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
         for ( String lore : lores ) {
@@ -76,7 +82,9 @@ public abstract class SpigotGUIComponents {
         return results;
     }
 
-    // checkRanks method (check if the ranks module's enabled with success or disabled)
+    /**
+     * Check if the Ranks module's enabled.
+     * */
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
         if(!(module instanceof PrisonRanks)){
@@ -86,23 +94,37 @@ public abstract class SpigotGUIComponents {
         return module instanceof PrisonRanks;
     }
 
-
+    /**
+     * Get Messages config.
+     * */
     protected static Configuration messages(){
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
+    /**
+     * Get SellAll config.
+     * */
     protected static Configuration sellAll(){
         return SpigotPrison.getInstance().getSellAllConfig();
     }
 
+    /**
+     * Get GUI config.
+     * */
     protected static Configuration guiConfig(){
         return SpigotPrison.getInstance().getGuiConfig();
     }
 
+    /**
+     * Get autoFeatures Config.
+     * */
     protected static AutoFeaturesFileConfig AutoFeaturesFileConfig() {
         return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
     }
 
+    /**
+     * Open and register GUIs.
+     * */
     protected void openGUI(Player p, Inventory inv){
 
         // Open the inventory

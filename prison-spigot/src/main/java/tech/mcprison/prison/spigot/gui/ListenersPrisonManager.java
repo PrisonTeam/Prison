@@ -84,6 +84,9 @@ public class ListenersPrisonManager implements Listener {
 
     public ListenersPrisonManager(){}
 
+    /**
+     * Get Listeners instance.
+     * */
     public static ListenersPrisonManager get() {
         if (instance == null) {
             instance = new ListenersPrisonManager();
@@ -106,6 +109,10 @@ public class ListenersPrisonManager implements Listener {
     public void removeMode(){
         mode = null;
     }
+
+    /**
+     * Add a player to the ChatEventPlayer arrayList.
+     * */
     public void addChatEventPlayer(Player p){
 
         if (!isChatEventActive){
@@ -212,6 +219,9 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
+    /**
+     * Remove Player from the chatEventPlayer arrayList.
+     * */
     public void removeChatEventPlayer(Player p){
         chatEventPlayer.remove(p.getName());
     }
@@ -229,6 +239,9 @@ public class ListenersPrisonManager implements Listener {
         activeGui.remove(p.getName());
     }
 
+    /**
+     * Add a Player to the GuiBlocker, so he won't be able to pickup items or do thing in that Inventory.
+     * */
     public void addToGUIBlocker(Player p){
 
         // If the GUI's disabled then return
