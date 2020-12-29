@@ -481,7 +481,7 @@ public class PlayerManager
         					sb.append( attributeNF.format( cost ) );
         				}
         				else  if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedSize( cost ));
+    						sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
     					}
     					else {
     						sb.append( dFmt.format( cost ));
@@ -642,7 +642,7 @@ public class PlayerManager
         				}
 
         				else if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedSize( remaining ));
+    						sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
     					}
     					else {
     						sb.append( dFmt.format( remaining ));
@@ -706,7 +706,7 @@ public class PlayerManager
         				}
 
         				else if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedSize( balance ));
+    						sb.append( PlaceholdersUtil.formattedMetricSISize( balance ));
     					}
     					else {
     						sb.append( dFmt.format( balance ));

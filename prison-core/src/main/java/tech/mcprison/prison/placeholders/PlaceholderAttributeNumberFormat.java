@@ -40,14 +40,10 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformation
  *   	</ul>
  *   </li>
  *   <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
- *   				will append to the placeholder results any error messages
- *   				that may occur when applying the attribute.
+ *    				will log to the console the status of this attribute, along with
+ *    				any error messages that may occur when applying the attribute.
  *   </li>
  * </ul>
- * 
- * <p>The formatting of the number is based upon java's DecimalFormat class.
- * 
- * </p>
  * 
  *
  */
@@ -157,7 +153,11 @@ public class PlaceholderAttributeNumberFormat
 					break;
 					
 				case kmg:
-					results = PlaceholdersUtil.formattedSize( value, dFmt, spaces );
+					results = PlaceholdersUtil.formattedMetricSISize( value, dFmt, spaces );
+					break;
+					
+				case binary:
+					results = PlaceholdersUtil.formattedIPrefixBinarySize( value, dFmt, spaces );
 					break;
 					
 				default:

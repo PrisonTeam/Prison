@@ -2,6 +2,37 @@ package tech.mcprison.prison.placeholders;
 
 import tech.mcprison.prison.output.Output;
 
+/**
+ * <p>This takes the placeholder attribute for bar graph customization, and is then used
+ * to apply to the generation of the bar graph based placeholders.
+ * </p>
+ * 
+ * <p>All parameters are optional and default to the default configuration used for 
+ * all bar graphs.
+ * </p>
+ *  
+ * <p>Usage:
+ * </p>
+ * <pre>::bar:size:posColor:posSeg:negColor:negSeg:debug</pre>
+ * 
+ * <ul>
+ *   <li><b>bar</b>: the keyword to identify this attribute.</li>
+ *   <li><b>size</b>: The number of segments to generate.</li>
+ *   <li><b>Positive Color</b>: The color code to use for the positive segments. 
+ *   						Color codes should start with an &.</li>
+ *   <li><b>Positive Segment</b>: The value that will be used for the positive
+ *   						segment.</li>
+ *   <li><b>Negative Color</b>: The color code to use for the negative segments. 
+ *   						Color codes should start with an &.</li>
+ *   <li><b>Negative Segment</b>: The value that will be used for the negative
+ *   						segment.</li>
+ *   <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
+ *    				will log to the console the status of this attribute, along with
+ *    				any error messages that may occur when applying the attribute.
+ *   </li>
+ * </ul>
+ *
+ */
 public class PlaceholderAttributeBar
 		implements PlaceholderAttribute {
 	

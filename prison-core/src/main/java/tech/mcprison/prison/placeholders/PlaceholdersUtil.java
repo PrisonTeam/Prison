@@ -1,6 +1,8 @@
 package tech.mcprison.prison.placeholders;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaceholdersUtil {
 
@@ -8,6 +10,21 @@ public class PlaceholdersUtil {
 	public static final double TIME_MINUTE = TIME_SECOND * 60.0;
 	public static final double TIME_HOUR = TIME_MINUTE * 60.0;
 	public static final double TIME_DAY = TIME_HOUR * 24.0;
+	
+	
+	public static final List<String> prefixesBinary = new ArrayList<>();
+	
+	static {
+		prefixesBinary.add( "" );
+		prefixesBinary.add( "KB" );
+		prefixesBinary.add( "MB" );
+		prefixesBinary.add( "GB" );
+		prefixesBinary.add( "TB" );
+		prefixesBinary.add( "PB" );
+		prefixesBinary.add( "EB" );
+		prefixesBinary.add( "ZB" );
+		prefixesBinary.add( "YB" );
+	}
 	
 	
 	public static String formattedTime( double time ) {
@@ -54,13 +71,13 @@ public class PlaceholdersUtil {
 	 * @param amount
 	 * @return
 	 */
-	public static String formattedSize( double amount ) { 
+	public static String formattedMetricSISize( double amount ) { 
 		
 		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-		return formattedSize( amount, dFmt, " " );
+		return formattedMetricSISize( amount, dFmt, " " );
 	}
 	
-	public static String formattedSize( double amount, DecimalFormat dFmt, String spaces  ) { 
+	public static String formattedMetricSISize( double amount, DecimalFormat dFmt, String spaces  ) { 
     	StringBuilder unit = new StringBuilder();
     	
     	amount = divBy1000( amount, unit, " kMGTPEZY" );
@@ -82,4 +99,37 @@ public class PlaceholdersUtil {
     	}
     	return amount;
 	}
+	
+	
+	public static String formattedPrefixBinarySize( double amount ) { 
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		return formattedIPrefixBinarySize( amount, dFmt, " " );
+	}
+	
+	public static String formattedIPrefixBinarySize( double amount, DecimalFormat dFmt, String spaces  ) { 
+    	StringBuilder unit = new StringBuilder();
+    	
+    	amount = divBy1024( amount, unit, 0 );
+    	
+    	String results = dFmt.format( amount ) + spaces + unit.toString();
+
+		return results.trim();
+	}
+	
+	private static double divBy1024( double amount, StringBuilder unit, int prefixesBinaryPos ) {
+    	if ( prefixesBinary.size() == 0) {
+    		// no prefixesBinary units have been defined, so exit returning the original amount:
+    	}
+    	else if ( amount <= 1024.0 || prefixesBinary.size() == (prefixesBinaryPos + 1)) {
+    		unit.append( prefixesBinary.get( prefixesBinaryPos ) );
+    	}
+    	else {
+    		// Div amount by 1000.0 and then recursively call this function while adding one to pos:
+    		amount /= 1024.0;
+    		amount = divBy1024( amount, unit, prefixesBinaryPos + 1 );
+    	}
+    	return amount;
+	}
+
 }
