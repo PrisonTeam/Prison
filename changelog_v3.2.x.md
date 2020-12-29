@@ -19,6 +19,10 @@ that you need.
 # V3.2.4-alpha.1 2020-12-27
 
 
+* **Added a new unit type to the number format attribute: binary.**
+Binary is based upon the power of two and uses 1024 as a divisor instead of the base 10's 1000.
+
+
 * **Updates for the placeholder attribute bar to work with the debug mode.**
 
 

@@ -33,10 +33,13 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformation
  *   <li><b>unitType</b>: unit type to display or to use to transform the results.
  *   				Optional. Defaults to the placeholder type that is used.
  *   	<ul>
- *        <li>none: No display of units. No transformations.</li>
- *        <li>kmg: Uses one character units: kMGTPEZY. Transforms results by 
+ *        <li><b>none</b>: No display of units. No transformations.</li>
+ *        <li><b>kmg</b>: Uses one character units: kMGTPEZY. Transforms results by 
  *        			dividing by 1000.0 until value is less than 1000.0, and 
- *        			each time it increments the unit.
+ *        			each time it increments the unit.</li>
+ *        <li><b>binary</b>: Uses a base-two divisor of 1024 along with the units: 
+ *        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
+ *        			</li>
  *   	</ul>
  *   </li>
  *   <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
