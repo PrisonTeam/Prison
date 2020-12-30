@@ -42,6 +42,7 @@ import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
@@ -952,6 +953,12 @@ public class PlayerManager
 						
 					default:
 						break;
+				}
+				
+				if ( attribute != null && attribute instanceof PlaceholderAttributeText ) {
+					PlaceholderAttributeText attributeText = (PlaceholderAttributeText) attribute;
+					
+					results = attributeText.format( results );
 				}
 			}
 		}

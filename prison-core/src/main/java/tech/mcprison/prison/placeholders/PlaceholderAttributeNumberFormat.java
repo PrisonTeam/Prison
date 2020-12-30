@@ -18,7 +18,7 @@ import tech.mcprison.prison.util.Text;
  * 
  * <p>Usage:
  * </p>
- * <pre>::nFormat:format:spaces:unitType:debug</pre>
+ * <pre>::nFormat:format:spaces:unitType:hex:hex2:debug</pre>
  * 
  * <ul>
  *   <li><b>nFormat</b>: the keyword to identify this attribute.</li>

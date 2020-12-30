@@ -16,7 +16,7 @@ import tech.mcprison.prison.util.Text;
  *  
  * <p>Usage:
  * </p>
- * <pre>::bar:size:posColor:posSeg:negColor:negSeg:debug</pre>
+ * <pre>::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug</pre>
  * 
  * <ul>
  *   <li><b>bar</b>: the keyword to identify this attribute.</li>

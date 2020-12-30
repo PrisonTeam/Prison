@@ -36,7 +36,8 @@ public class PlaceholderManager {
     
     public enum PlaceholderAttributePrefixes {
     	nFormat,
-    	bar;
+    	bar,
+    	text;
     	
     	public static PlaceholderAttributePrefixes fromString( String value ) {
     		PlaceholderAttributePrefixes pap = null;
@@ -456,6 +457,10 @@ public class PlaceholderManager {
 
 					case bar:
 						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig(), rawAttribute );
+						break;
+						
+					case text:
+						attribute = new PlaceholderAttributeText( parts, rawAttribute );
 						break;
 						
 					default:

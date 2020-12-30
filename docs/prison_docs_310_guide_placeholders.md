@@ -147,7 +147,7 @@ The Numeric Format attribute will only work on placeholders that return plain nu
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::nFormat:format:spaces:unitType:debug`
+`::nFormat:format:spaces:unitType:hex:hex2:debug`
 
 <ul>
   <li><b>nFormat</b>: the keyword to identify this attribute.</li>
@@ -224,7 +224,7 @@ The bar placeholder attribute only works with placeholders with the word bar in 
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::bar:size:posColor:posSeg:negColor:negSeg:debug`
+`::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug`
 
 <ul>
   <li><b>bar</b>: the keyword to identify this attribute.</li>
@@ -275,7 +275,54 @@ Examples of using hex color codes in a bar graph placeholder. Try it first with 
 ```
 
 
+
+<hr style="height: 1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+### Placeholder Attribute - Text
+
+
+This placeholder attribute is for text formatting the placeholder results.  The only thing it does is to process the hex, hex2, and debug options.
+
+
+This placeholder attribute can be used with any placeholder, even for placeholders
+that have other attributes to format their content.  Since this is strictly processing
+the hex color codes, it will operate upon the final text output from the other
+placeholders.
+
+
+
+Example of this attribute's usage is as follows, using descriptions for each parameter.
+
+`::text:hex:hex2:debug`
+
+
+<ul>
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
+   				will log to the console the status of this attribute, along with
+   				any error messages that may occur when applying the attribute.
+  </li>
+</ul>
+
+
+
+
 <hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Rank Command Placeholders
