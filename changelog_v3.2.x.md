@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.2 2020-12-30
+# V3.2.4-alpha.3 2020-12-30
+
+
+* **V3.2.4-alpha.3 2020-12-30**
+Bump the version.
 
 
 * **Add support for a new Placeholder Attribute called text.**
