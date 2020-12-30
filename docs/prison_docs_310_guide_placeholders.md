@@ -176,10 +176,23 @@ Example of this attribute's usage is as follows, using descriptions for each par
        			reducers.</p>
   	</ul>
   </li>
-  <li><b>debug</b>: **Optional.** Only valid value is "debug". When enabled it
-  				will log to the console the status of this attribute, along with
-  				any error messages that may occur when applying the attribute.
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
+   				will log to the console the status of this attribute, along with
+   				any error messages that may occur when applying the attribute.
   </li>
+  
 </ul>
 
 
@@ -187,6 +200,16 @@ The parameters that are optional do not have to be included, unless another para
 
 
 `{prison_mines_size_temp5::nFormat:#,##0.00:1:kmg}`
+
+
+
+Although it is not suggested to include color codes in the formatting of numbers, it may be possible with the addition of the quoting them with single quotes.  The following use of **hex2** format works well with testing on a scoreboard that does not support hex colors, and is a way to inject the hex color when it cannot be used directly in the scoreboard configs.
+
+```
+{prison_mines_size_temp5::nFormat:'#af33ff'#,##0.00:1:kmg:hex}
+{prison_mines_size_temp5::nFormat:'#af33ff'#,##0.00:1:kmg:hex2}
+```
+
 
 
 <hr style="height: 1px; border:none; color:#aaf; background-color:#aaf;">
@@ -214,7 +237,19 @@ Example of this attribute's usage is as follows, using descriptions for each par
   						Color codes should start with an &.</li>
   <li><b>Negative Segment</b>: The value that will be used for the negative
   						segment.</li>
-  <li><b>debug</b>: Optional. Only valid value is "debug". When enabled it
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
   </li>
@@ -229,7 +264,15 @@ The parameters are all optional and if they are not supplied then the default va
 `{prison_mines_timeleft_bar_temp5::bar:40:&2:O:&d:x:debug}`
 
 
+To use hex color codes within the bar graphs, the plugins that are requesting them, may not always support hex colors.  So the options of **hex** and **hex2** are options to provide pre-formatting of the hex colors so that way the hex colors could work with plugins that do not support them.  If the use of **hex** does not work, then **hex2** may.
 
+
+Examples of using hex color codes in a bar graph placeholder. Try it first with **hex**, and if that does not work, then try **hex2**.  
+
+```
+{prison_mines_timeleft_bar_a::bar:15:#abcdef:O:#5a3c7f:x:hex}
+{prison_mines_timeleft_bar_a::bar:15:#abcdef:O:#5a3c7f:x:hex2}
+```
 
 
 <hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">

@@ -50,6 +50,12 @@ import tech.mcprison.prison.util.Text;
  *   				hex color codes, and other color codes before sending the placeholder
  *   				results back to the requestor. This is useful for plugins that
  *   				do not directly support hex color codes.
+ *   <li><b>hex2</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "hex2". When enabled it will translate
+ *   				hex color codes to their intermediate state, which uses '&' color 
+ *   				codes, sending the placeholder results back to the requestor. 
+ *   				This is useful for plugins that do not directly support hex 
+ *   				color codes and may work when 'hex' does not.
  *   <li><b>debug</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
  *   				Only valid value is "debug". When enabled it
  *    				will log to the console the status of this attribute, along with
@@ -72,6 +78,7 @@ public class PlaceholderAttributeNumberFormat
 	private NumberTransformationUnitTypes unitType;
 	
 	private boolean hex = false;
+	private boolean hex2 = false;
 	private boolean debug = false;
 	
 	public PlaceholderAttributeNumberFormat( ArrayList<String> parts, String raw ) {
@@ -84,6 +91,7 @@ public class PlaceholderAttributeNumberFormat
 		
 		// Extract hex and debug first, since they are non-positional
 		this.hex = parts.remove( "hex" );
+		this.hex2 = parts.remove( "hex2" );
 		this.debug = parts.remove( "debug" );
 		
 		int len = 1;
@@ -202,7 +210,10 @@ public class PlaceholderAttributeNumberFormat
 		}
 		
 		
-		if ( isHex() ) {
+		if ( isHex2() ) {
+			results = Text.translateAmpColorCodesAltHexCode( results );
+		}
+		else if ( isHex() ) {
 			results = Text.translateAmpColorCodes( results );
 		}
 		
@@ -264,6 +275,13 @@ public class PlaceholderAttributeNumberFormat
 	}
 	public void setHex( boolean hex ) {
 		this.hex = hex;
+	}
+
+	public boolean isHex2() {
+		return hex2;
+	}
+	public void setHex2( boolean hex2 ) {
+		this.hex2 = hex2;
 	}
 
 	public boolean isDebug() {

@@ -18,6 +18,11 @@ that you need.
 
 # V3.2.4-alpha.2 2020-12-29
 
+* **Added an alternative hex formatting for the placeholder attributes.**
+This is another way to try to get hex color codes to work with plugins that do not support them directly.  
+With testing, I found that hex2 format actually worked very well with other plugins and resulted in the hex colors working well.
+
+
 * **Placeholder Attributes: Changed how debug works so hex can be added too.**  Instead of using a String array, converted it over to use a list.  The value of hex and debug are extracted prior to extracting any other parameters since those two values are now non-positional and can appear in any parameter location.
 Debug statement now includes the original raw string that is non-converted to the spigot color codes so you can see what the original raw codes were for debugging purposes.  The parameter hex now will convert the color codes before sending the resulting placeholder value back to the plugin that is requesting it.  This may allow the successful use of hex colors in plugins that do not yet support them since the hex codes would have already been correctly converted.
 

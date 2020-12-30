@@ -594,7 +594,7 @@ public class RanksCommands
         ChatDisplay display = new ChatDisplay("Rank " + rank.tag);
 
         display.text("&3Rank Name: &7%s", rank.name);
-        display.text("&3Rank Tag:  &7%s", rank.tag);
+        display.text("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.tag, rank.tag);
         
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
