@@ -19,6 +19,12 @@ that you need.
 # V3.2.4-alpha.3 2020-12-30
 
 
+* **Updated the RankLadder and RankPlayer so the class variables are not accessible from the outside of those classes.**
+
+
+* **Update Rank to fix issues with Rank class variables** being directly accessible from outside the class.  Class variables should never be directly accessed by outside classes.
+
+
 * **V3.2.4-alpha.3 2020-12-30**
 Bump the version.
 
