@@ -65,6 +65,10 @@ public class Rank
     public List<String> rankUpCommands;
 
     
+    private List<String> permissions;
+    private List<String> permissionGroups;
+    
+    
     public transient Rank rankPrior;
     public transient Rank rankNext;
     
@@ -135,6 +139,25 @@ public class Rank
 				setMineStrings( mineStrings );
 			}
 			
+			
+			getPermissions().clear();
+			Object perms = document.get( "permissions" );
+			if ( perms != null ) {
+				List<String> permissions = (List<String>) perms;
+				for ( String permission : permissions ) {
+					getPermissions().add( permission );
+				}
+			}
+	        
+			getPermissionGroups().clear();
+			Object permsGroups = document.get( "permissionGroups" );
+			if ( perms != null ) {
+				List<String> permissionGroups = (List<String>) permsGroups;
+				for ( String permissionGroup : permissionGroups ) {
+					getPermissionGroups().add( permissionGroup );
+				}
+			}
+			
 		}
 		catch ( Exception e )
 		{
@@ -174,6 +197,9 @@ public class Rank
 			}
         }
         ret.put("mines", mineStrings);
+        
+        ret.put( "permissions", getPermissions() );
+        ret.put( "permissionGroups", getPermissionGroups() );
         
         return ret;
     }
@@ -279,6 +305,20 @@ public class Rank
 	}
 	public void setRankUpCommands( List<String> rankUpCommands ) {
 		this.rankUpCommands = rankUpCommands;
+	}
+	
+	public List<String> getPermissions() {
+		return permissions;
+	}
+	public void setPermissions( List<String> permissions ) {
+		this.permissions = permissions;
+	}
+
+	public List<String> getPermissionGroups() {
+		return permissionGroups;
+	}
+	public void setPermissionGroups( List<String> permissionGroups ) {
+		this.permissionGroups = permissionGroups;
 	}
 
 	public Rank getRankPrior() {
