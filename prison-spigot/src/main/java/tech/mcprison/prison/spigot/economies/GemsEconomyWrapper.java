@@ -1,7 +1,7 @@
 package tech.mcprison.prison.spigot.economies;
 
 import me.xanium.gemseconomy.api.GemsEconomyAPI;
-import me.xanium.gemseconomy.currency.Currency;
+import me.xanium.gemseconomy.economy.Currency;
 import tech.mcprison.prison.internal.Player;
 
 /**
