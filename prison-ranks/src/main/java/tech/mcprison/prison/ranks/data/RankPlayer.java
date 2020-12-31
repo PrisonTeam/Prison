@@ -49,11 +49,11 @@ public class RankPlayer
      * Fields & Constants
      */
 
-    public UUID uid;
-    public HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
-    public HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    private UUID uid;
+    private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
+    private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
     
-    public List<RankPlayerName> names;
+    private List<RankPlayerName> names;
     
     // Block name, count
     public HashMap<String, Integer> blocksMined;
@@ -254,11 +254,11 @@ public class RankPlayer
         }
 
         // Remove the current rank on this ladder first
-        if (ranks.containsKey(ladder.name)) {
-            ranks.remove(ladder.name);
+        if (ranks.containsKey(ladder.getName())) {
+            ranks.remove(ladder.getName());
         }
 
-        ranks.put(ladder.name, rank.getId());
+        ranks.put(ladder.getName(), rank.getId());
     }
 
     /**
@@ -309,10 +309,10 @@ public class RankPlayer
      */
     @Deprecated
     public Optional<Rank> getRank(RankLadder ladder) {
-        if (!ranks.containsKey(ladder.name)) {
+        if (!ranks.containsKey(ladder.getName())) {
             return Optional.empty();
         }
-        int id = ranks.get(ladder.name);
+        int id = ranks.get(ladder.getName());
         return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
     }
     
@@ -331,7 +331,20 @@ public class RankPlayer
     	return results;
     }
 
-    /**
+    
+
+	public HashMap<String, Integer> getPrestige() {
+		return prestige;
+	}
+	public void setPrestige( HashMap<String, Integer> prestige ) {
+		this.prestige = prestige;
+	}
+
+	public void setRanks( HashMap<String, Integer> ranks ) {
+		this.ranks = ranks;
+	}
+
+	/**
      * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
      *
      * @return The map containing this data.

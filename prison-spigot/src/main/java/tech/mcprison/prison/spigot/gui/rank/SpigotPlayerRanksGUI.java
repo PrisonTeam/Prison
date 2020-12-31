@@ -116,13 +116,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.get().ranks.size() == 0) {
+        if (ladder.get().getPositionRanks().size() == 0) {
             getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFound")));
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.get().ranks.size() / 9D) * 9) + 9;
+        int dimension = (int) (Math.ceil(ladder.get().getPositionRanks().size() / 9D) * 9) + 9;
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));

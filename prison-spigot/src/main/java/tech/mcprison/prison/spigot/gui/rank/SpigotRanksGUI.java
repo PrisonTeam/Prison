@@ -47,8 +47,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
-            dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
+        if (ladder.isPresent() && !(ladder.get().getPositionRanks().size() == 0)) {
+            dimension = (int) Math.ceil(ladder.get().getPositionRanks().size() / 9D) * 9;
         } else {
             p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
             return;
@@ -73,7 +73,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
         // For every rank make a button
-        for (RankLadder.PositionRank pos : ladder.get().ranks) {
+        for (RankLadder.PositionRank pos : ladder.get().getPositionRanks()) {
             Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
 
             // Well... check if the rank is null probably

@@ -134,7 +134,7 @@ public class RanksCommands
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "&3The '&7%s&3' ladder could not be saved to disk. Check the console for details.",
-                rankLadderOptional.get().name);
+                rankLadderOptional.get().getName());
             Output.get().logError("&3Ladder could not be written to disk.", e);
         }
 
@@ -419,7 +419,7 @@ public class RanksCommands
         }
 
         if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.getId())
-            && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
+            && PrisonRanks.getInstance().getDefaultLadder().getPositionRanks().size() == 1) {
             Output.get().sendError(sender,
                 "You can't remove this rank because it's the only rank in the default ladder.");
             return;
@@ -453,7 +453,7 @@ public class RanksCommands
 
         RankLadder ladder = ladderOpt.get();
         Rank rank = null;
-        for (PositionRank pRank : ladder.ranks) {
+        for (PositionRank pRank : ladder.getPositionRanks()) {
             Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
             if (rankOptional.isPresent()) {
             	rank = rankOptional.get();
@@ -544,12 +544,12 @@ public class RanksCommands
         	
         	List<String> others = new ArrayList<>();
         	for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-        		if (!other.name.equals(ladderName) && (other.name.equals("default") || sender
-        				.hasPermission("ranks.rankup." + other.name.toLowerCase()))) {
+        		if (!other.getName().equals(ladderName) && (other.getName().equals("default") || sender
+        				.hasPermission("ranks.rankup." + other.getName().toLowerCase()))) {
         			if (sender.hasPermission("ranks.admin")) {
-        				others.add("/ranks list " + other.name);
+        				others.add("/ranks list " + other.getName());
         			} else {
-        				others.add("/ranks " + other.name);
+        				others.add("/ranks " + other.getName());
         			}
         		}
         	}
@@ -599,7 +599,7 @@ public class RanksCommands
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
-                ladders.stream().map(rankLadder -> rankLadder.name).collect(Collectors.toList())));
+                ladders.stream().map(rankLadder -> rankLadder.getName()).collect(Collectors.toList())));
         
         if ( rank.getMines().size() == 0 ) {
         	display.text( "&3This rank is not linked to any mines" );
@@ -788,7 +788,7 @@ public class RanksCommands
 				
 				String messageRank = String.format("&c%s&7: Ladder: &b%s  &7Current Rank: &b%s", 
 						player.getDisplayName(), 
-						rankLadder.name,
+						rankLadder.getName(),
 						rank.getName() );
 				
 				if ( nextRank == null ) {
@@ -814,13 +814,13 @@ public class RanksCommands
 			sendToPlayerAndConsole( sender, message );
 			
 			
-			if (sender.hasPermission("ranks.admin") && rankPlayer.names.size() > 1) {
+			if (sender.hasPermission("ranks.admin") && rankPlayer.getNames().size() > 1) {
 	            // This is admin-exclusive content
 
 				sendToPlayerAndConsole( sender, "&8[Admin Only]" );
 				sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
 				
-				for ( RankPlayerName rpn : rankPlayer.names ) {
+				for ( RankPlayerName rpn : rankPlayer.getNames() ) {
 					
 					sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
 				}

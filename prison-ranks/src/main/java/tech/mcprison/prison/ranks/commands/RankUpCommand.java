@@ -357,7 +357,7 @@ public class RankUpCommand
             Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
         }
         else {
-        	results = ladderOptional.get().name;
+        	results = ladderOptional.get().getName();
         }
         return results;
 	}

@@ -314,7 +314,7 @@ public class RankUtil {
 
         
 
-        Rank originalRank = rankPlayer.getRank(ladder.name);
+        Rank originalRank = rankPlayer.getRank(ladder.getName());
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
         
@@ -342,7 +342,7 @@ public class RankUtil {
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
-        		boolean success = rankPlayer.removeLadder( ladder.name );
+        		boolean success = rankPlayer.removeLadder( ladder.getName() );
         		
         		if ( success ) {
         			results.addTransaction( RankupStatus.RANKUP_LADDER_REMOVED, 
@@ -498,7 +498,7 @@ public class RankUtil {
         	if ( cmd != null ) {
         		
         		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-        				.replace("{player_uid}", rankPlayer.uid.toString());
+        				.replace("{player_uid}", rankPlayer.getUUID().toString());
         		
 //            Prison.get().getPlatform().logPlain(
 //            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 

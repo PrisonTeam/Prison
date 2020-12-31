@@ -16,18 +16,18 @@ public class PrisonSortableLaddersTest
 	public void testGetSortedSet()
 	{
 		RankLadder ladderDefault = new RankLadder();
-		ladderDefault.name = "default";
+		ladderDefault.setName( "default" );
 		RankLadder ladderPrestige = new RankLadder();
-		ladderPrestige.name = "prestige";
+		ladderPrestige.setName( "prestige" );
 		
 		RankLadder ladderMods = new RankLadder();
-		ladderMods.name = "mods";
+		ladderMods.setName( "mods" );
 		RankLadder ladderAnimals = new RankLadder();
-		ladderAnimals.name = "Animals";
+		ladderAnimals.setName( "Animals" );
 		RankLadder ladderDonors = new RankLadder();
-		ladderDonors.name = "Donors";
+		ladderDonors.setName( "Donors" );
 		RankLadder ladderZapps = new RankLadder();
-		ladderZapps.name = "ZaPpS";
+		ladderZapps.setName( "ZaPpS" );
 		
 		
 		List<RankLadder> unsortedList = new ArrayList<>();
@@ -39,12 +39,12 @@ public class PrisonSortableLaddersTest
 		unsortedList.add( ladderDefault );
 		
 
-		assertEquals( "ZaPpS", unsortedList.get( 0 ).name );
-		assertEquals( "Donors", unsortedList.get( 1 ).name );
-		assertEquals( "prestige", unsortedList.get( 2 ).name );
-		assertEquals( "mods", unsortedList.get( 3 ).name );
-		assertEquals( "Animals", unsortedList.get( 4 ).name );
-		assertEquals( "default", unsortedList.get( 5 ).name );
+		assertEquals( "ZaPpS", unsortedList.get( 0 ).getName() );
+		assertEquals( "Donors", unsortedList.get( 1 ).getName() );
+		assertEquals( "prestige", unsortedList.get( 2 ).getName() );
+		assertEquals( "mods", unsortedList.get( 3 ).getName() );
+		assertEquals( "Animals", unsortedList.get( 4 ).getName() );
+		assertEquals( "default", unsortedList.get( 5 ).getName() );
 		
 		TreeSet<RankLadder> ladders = new TreeSet<>( new PrisonSortComparableLadders() );
 		
@@ -57,12 +57,12 @@ public class PrisonSortableLaddersTest
 //			System.out.println(l.toString());
 //		}
 		
-		assertEquals( "default", sortedList.get( 0 ).name );
-		assertEquals( "Animals", sortedList.get( 1 ).name );
-		assertEquals( "Donors", sortedList.get( 2 ).name );
-		assertEquals( "mods", sortedList.get( 3 ).name );
-		assertEquals( "ZaPpS", sortedList.get( 4 ).name );
-		assertEquals( "prestige", sortedList.get( 5 ).name );
+		assertEquals( "default", sortedList.get( 0 ).getName() );
+		assertEquals( "Animals", sortedList.get( 1 ).getName() );
+		assertEquals( "Donors", sortedList.get( 2 ).getName() );
+		assertEquals( "mods", sortedList.get( 3 ).getName() );
+		assertEquals( "ZaPpS", sortedList.get( 4 ).getName() );
+		assertEquals( "prestige", sortedList.get( 5 ).getName() );
 		
 		
 	}

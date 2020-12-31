@@ -271,7 +271,7 @@ public class RankManager {
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	Rank curRank = rankPlayer.getRank(ladder.name);
+            	Rank curRank = rankPlayer.getRank(ladder.getName());
                 if ( curRank != null && rank.equals( curRank ) ) {
                     rankPlayer.removeRank(curRank);
                     if ( newRank != null ) {
@@ -295,7 +295,7 @@ public class RankManager {
             	PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
             } catch (IOException e) {
             	success[0] = false;
-            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.name + ".", e);
+            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.getName() + ".", e);
             }
             
         }
@@ -356,10 +356,10 @@ public class RankManager {
     	
     	for ( RankLadder rLadder : lman.getLadders() ) {
 			
-    		rLadder.ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+    		rLadder.getPositionRanks().sort(Comparator.comparingInt(PositionRank::getPosition));
     		
     		Rank rankLast = null;
-    		for ( PositionRank pRank : rLadder.ranks ) {
+    		for ( PositionRank pRank : rLadder.getPositionRanks() ) {
     			if ( pRank != null && pRank.getPosition() >= 0 ) {
     				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
     				if ( opRank.isPresent() ) {
@@ -478,12 +478,12 @@ public class RankManager {
     	List<Rank> ranksIncluded = new ArrayList<>();
     	
     	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
-    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.getName() ) ) {
     			
     			List<Rank> ladderRanks = ladder.getRanks();
     			ranksIncluded.addAll( ladderRanks );
     			
-    			String ranksByLadder = listAllRanks( ladder.name, ladderRanks, includeAll );
+    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, includeAll );
     			
     			rankByLadderOutput( sender, ranksByLadder );
     		}

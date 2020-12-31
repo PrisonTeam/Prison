@@ -93,7 +93,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
-        itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.name));
+        itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemLadder);

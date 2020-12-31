@@ -45,10 +45,10 @@ public class RankLadder
      * Fields & Constants
      */
 
-    public int id;
-    public String name;
-    public List<PositionRank> ranks;
-    public int maxPrestige;
+    private int id;
+    private String name;
+    private List<PositionRank> ranks;
+    private int maxPrestige;
     
     private boolean dirty = false;
 
@@ -57,6 +57,16 @@ public class RankLadder
      */
 
     public RankLadder() {
+    	super();
+    	
+    	this.ranks = new ArrayList<>();
+    }
+    
+    public RankLadder( int id, String name ) {
+    	this();
+    	
+    	this.id = id;
+    	this.name = name;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -421,6 +431,34 @@ public class RankLadder
 			this.rank = rank;
 		}
     }
+
+	public int getId() {
+		return id;
+	}
+	public void setId( int id ) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public int getMaxPrestige() {
+		return maxPrestige;
+	}
+	public void setMaxPrestige( int maxPrestige ) {
+		this.maxPrestige = maxPrestige;
+	}
+
+	public List<PositionRank> getPositionRanks() {
+		return ranks;
+	}
+	public void setPositionRanks( List<PositionRank> ranks ) {
+		this.ranks = ranks;
+	}
 
 	public boolean isDirty() {
 		return dirty;

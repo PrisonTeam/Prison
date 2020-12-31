@@ -65,12 +65,12 @@ public class LadderCommands
             return;
         }
         
-        if (ladder.get().name.equalsIgnoreCase( "default" )) {
+        if (ladder.get().getName().equalsIgnoreCase( "default" )) {
         	Output.get().sendError(sender, "You cannot delete the default ladder. It's needed." );
         	return;
         }
 
-        if (ladder.get().name.equalsIgnoreCase( "prestiges" )) {
+        if (ladder.get().getName().equalsIgnoreCase( "prestiges" )) {
         	Output.get().sendError(sender, "You cannot delete the prestiges ladder. It's needed." );
         	return;
         }
@@ -91,7 +91,7 @@ public class LadderCommands
         BulletedListComponent.BulletedListBuilder list =
             new BulletedListComponent.BulletedListBuilder();
         for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-            list.add(ladder.name);
+            list.add(ladder.getName());
         }
         display.addComponent(list.build());
 
@@ -109,14 +109,14 @@ public class LadderCommands
             return;
         }
 
-        ChatDisplay display = new ChatDisplay(ladder.get().name);
+        ChatDisplay display = new ChatDisplay(ladder.get().getName());
         display.text("&7This ladder contains the following ranks:");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
         
         boolean first = true;
-        for (RankLadder.PositionRank rankPos : ladder.get().ranks) {
+        for (RankLadder.PositionRank rankPos : ladder.get().getPositionRanks()) {
         	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
         	if ( rank == null ) {
         		continue;
@@ -199,7 +199,7 @@ public class LadderCommands
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
             
             Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
-            		rank.getName(), ladder.get().name, Integer.toString( position ));
+            		rank.getName(), ladder.get().getName(), Integer.toString( position ));
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
@@ -231,7 +231,7 @@ public class LadderCommands
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
 
             Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.getName(),
-            		ladder.get().name);
+            		ladder.get().getName());
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while removing a rank from your ladder. &8Check the console for details.");
