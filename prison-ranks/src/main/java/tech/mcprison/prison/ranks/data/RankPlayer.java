@@ -249,7 +249,7 @@ public class RankPlayer
      * @throws IllegalArgumentException If the rank specified is not on this ladder.
      */
     public void addRank(RankLadder ladder, Rank rank) {
-        if (!ladder.containsRank(rank.id)) {
+        if (!ladder.containsRank(rank.getId())) {
             throw new IllegalArgumentException("Rank must be on ladder.");
         }
 
@@ -258,7 +258,7 @@ public class RankPlayer
             ranks.remove(ladder.name);
         }
 
-        ranks.put(ladder.name, rank.id);
+        ranks.put(ladder.name, rank.getId());
     }
 
     /**
@@ -273,7 +273,7 @@ public class RankPlayer
         // avoid a concurrent modification exception. So, we'll retrieve the data we need...
         String ladderName = null;
         for (Map.Entry<String, Integer> rankEntry : ranks.entrySet()) {
-            if (rankEntry.getValue() == rank.id) { // This is our rank!
+            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
                 ladderName = rankEntry.getKey();
             }
         }

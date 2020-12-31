@@ -73,7 +73,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             while ( rank != null ) {
 //                boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
 
-                rank = rank.rankNext;
+                rank = rank.getRankNext();
             }
         }
 
@@ -178,11 +178,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
             List<String> ranksLore = createLore(
                     messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.cost
+                    messages.getString("Lore.Price3") + rank.getCost()
             );
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, ranksLore, SpigotPrison.format(rank.tag));
+                    amount++, ranksLore, SpigotPrison.format(rank.getTag()));
             if (playerRank != null && playerRank.equals( rank )){
                 playerHasThisRank = false;
             }
@@ -196,7 +196,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             }
             inv.addItem(itemrank);
 
-            rank = rank.rankNext;
+            rank = rank.getRankNext();
         }
 
         List<String> rankupLore = createLore(

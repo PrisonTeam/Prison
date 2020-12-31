@@ -131,7 +131,7 @@ public class LadderCommands
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
 
             builder.add("&3#%d &8- &3%s %s", rankPos.getPosition(),
-                rank.name, 
+                rank.getName(), 
                 (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
             	);
             first = false;
@@ -182,7 +182,7 @@ public class LadderCommands
             return;
         }
 
-        if (ladder.get().containsRank(rank.id)) {
+        if (ladder.get().containsRank(rank.getId())) {
             Output.get()
                 .sendError(sender, "The ladder '%s' already contains the rank '%s'.", ladderName,
                     rankName);
@@ -199,7 +199,7 @@ public class LadderCommands
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
             
             Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
-            		rank.name, ladder.get().name, Integer.toString( position ));
+            		rank.getName(), ladder.get().name, Integer.toString( position ));
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
@@ -230,7 +230,7 @@ public class LadderCommands
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
 
-            Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.name,
+            Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.getName(),
             		ladder.get().name);
         } catch (IOException e) {
             Output.get().sendError(sender,

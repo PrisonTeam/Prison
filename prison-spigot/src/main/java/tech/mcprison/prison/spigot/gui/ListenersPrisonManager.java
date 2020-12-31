@@ -1103,7 +1103,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the rankupCommand of the Rank
-            if (rank.rankUpCommands == null) {
+            if (rank.getRankUpCommands() == null) {
                 // Send a message to the player
                 p.sendMessage(SpigotPrison.format("&c[ERROR] There aren't commands for this rank anymore."));
             }
@@ -1119,7 +1119,7 @@ public class ListenersPrisonManager implements Listener {
 
             // Check and open a GUI
             if(rank != null) {
-                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rank.cost, rank.name);
+                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rank.getCost(), rank.getName());
                 gui.open();
             }
 

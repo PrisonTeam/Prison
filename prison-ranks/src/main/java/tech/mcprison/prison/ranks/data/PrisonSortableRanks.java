@@ -33,7 +33,7 @@ public class PrisonSortableRanks
 				results = 1;
 			}
 			else {
-				results = r1.name.toLowerCase().compareTo( r2.name.toLowerCase() );
+				results = r1.getName().toLowerCase().compareTo( r2.getName().toLowerCase() );
 			}
 
 			return results;

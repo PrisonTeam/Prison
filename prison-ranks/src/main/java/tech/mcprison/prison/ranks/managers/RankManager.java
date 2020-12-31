@@ -87,7 +87,7 @@ public class RankManager {
     	if ( rank != null ) {
     		getLoadedRanks().add( rank );
     		getRanksByName().put( rank.getName(), rank );
-    		getRanksById().put( rank.id, rank );
+    		getRanksById().put( rank.getId(), rank );
     	}
     }
     
@@ -95,7 +95,7 @@ public class RankManager {
     	if ( rank != null ) {
     		getLoadedRanks().remove( rank );
     		getRanksByName().remove( rank.getName() );
-    		getRanksById().remove( rank.id );
+    		getRanksById().remove( rank.getId() );
     	}
     	
     }
@@ -169,12 +169,7 @@ public class RankManager {
      */
     public Optional<Rank> createRank(String name, String tag, double cost) {
         // Set the default values...
-        Rank newRank = new Rank();
-        newRank.id = getNextAvailableId();
-        newRank.name = name;
-        newRank.tag = tag;
-        newRank.cost = cost;
-        newRank.rankUpCommands = new ArrayList<>();
+        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
 
         // ... add it to the list...
         addRank(newRank);
@@ -225,7 +220,7 @@ public class RankManager {
      */
     @Deprecated 
     public Optional<Rank> getRankOptional(String name) {
-        return loadedRanks.stream().filter(rank -> rank.name.equals(name)).findFirst();
+        return loadedRanks.stream().filter(rank -> rank.getName().equals(name)).findFirst();
     }
 
     /**
@@ -246,7 +241,7 @@ public class RankManager {
      */
     public Optional<Rank> getRankEscaped(String name) {
     	return loadedRanks.stream().filter(rank -> 
-    					rank.name.replace( "&", "-" ).equals(name)).findFirst();
+    					rank.getName().replace( "&", "-" ).equals(name)).findFirst();
     }
 
     /**
@@ -272,7 +267,7 @@ public class RankManager {
     	
     	final boolean[] success = {true};
         for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager()
-        						.getLaddersWithRank(rank.id)) {
+        						.getLaddersWithRank(rank.getId())) {
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
@@ -289,7 +284,7 @@ public class RankManager {
                         Output.get().logError("RemoveRank: Couldn't save player file.", e);
                     }
                     PrisonAPI.debug("Player %s is now %s", rankPlayer.getName(),
-                        newRank.name);
+                        newRank.getName());
                 }
             });
             
@@ -329,7 +324,7 @@ public class RankManager {
      */
     @Deprecated 
     public Optional<Rank> getRankOptional(int id) {
-        return loadedRanks.stream().filter(rank -> rank.id == id).findFirst();
+        return loadedRanks.stream().filter(rank -> rank.getId() == id).findFirst();
     }
 
     public Rank getRank( int id ) {
@@ -372,12 +367,12 @@ public class RankManager {
     					
     					// reset the rankPrior and rankNext in case there are no hookups:
     					// Important if ranks are removed, or inserted, or moved:
-    					rank.rankPrior = null;
-    					rank.rankNext = null;
+    					rank.setRankPrior( null );
+    					rank.setRankNext( null );
     					
     					if ( rankLast != null ) {
-    						rank.rankPrior = rankLast;
-    						rankLast.rankNext = rank;
+    						rank.setRankPrior( rankLast );
+    						rankLast.setRankNext( rank );
     					}
     					rankLast = rank;
     				}
@@ -406,14 +401,14 @@ public class RankManager {
      */
     public void identifyAllRankCurrencies() {
     	for ( Rank rank : loadedRanks ) {
-			if ( rank.currency != null ) {
+			if ( rank.getCurrency() != null ) {
 				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-						.getEconomyForCurrency( rank.currency );
+						.getEconomyForCurrency( rank.getCurrency() );
 				if ( currencyEcon == null ) {
 					Output.get().logError( 
 						String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
 							"rank &a%s&7, but it isn't supported by any Economy integration.",
-							rank.currency, rank.name) );
+							rank.getCurrency(), rank.getName()) );
 				}
 			}
 		}
@@ -443,7 +438,7 @@ public class RankManager {
     			
     			
     			sb.append( " &3" );
-    			sb.append( rank.name );
+    			sb.append( rank.getName() );
     			
     			if ( players > 0 ) {
     				

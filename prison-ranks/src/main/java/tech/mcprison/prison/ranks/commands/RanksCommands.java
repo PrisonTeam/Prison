@@ -418,7 +418,7 @@ public class RanksCommands
             return;
         }
 
-        if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.id)
+        if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.getId())
             && PrisonRanks.getInstance().getDefaultLadder().ranks.size() == 1) {
             Output.get().sendError(sender,
                 "You can't remove this rank because it's the only rank in the default ladder.");
@@ -481,21 +481,21 @@ public class RanksCommands
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
             
             String textRankName = ( hasPerm ?
-            							String.format( "&3%s " , rank.name )
+            							String.format( "&3%s " , rank.getName() )
             							: "");
             String textCmdCount = ( hasPerm ? 
-            							String.format( " &7- Commands: &3%d", rank.rankUpCommands.size())
+            							String.format( " &7- Commands: &3%d", rank.getRankUpCommands().size())
             							: "" );
             
             String text =
                 String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
-                			textRankName, rank.tag, 
+                			textRankName, rank.getTag(), 
                 			(defaultRank ? "&b(&9Default&b) &7- " : ""),
-                			Text.numberToDollars(rank.cost),
-                			(rank.currency == null ? "" : " &7Currency: &3" + rank.currency),
+                			Text.numberToDollars(rank.getCost()),
+                			(rank.getCurrency() == null ? "" : " &7Currency: &3" + rank.getCurrency()),
                 			textCmdCount );
             
-            String rankName = rank.name;
+            String rankName = rank.getName();
             if ( rankName.contains( "&" ) ) {
             	rankName = rankName.replace( "&", "-" );
             }
@@ -510,7 +510,7 @@ public class RanksCommands
             
             builder.add(msg);
         	
-        	rank = rank.rankNext;
+        	rank = rank.getRankNext();
         	first = false;
         }
         
@@ -589,12 +589,12 @@ public class RanksCommands
         }
 
         List<RankLadder> ladders =
-            PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.id);
+            PrisonRanks.getInstance().getLadderManager().getLaddersWithRank(rank.getId());
 
-        ChatDisplay display = new ChatDisplay("Rank " + rank.tag);
+        ChatDisplay display = new ChatDisplay("Rank " + rank.getTag());
 
-        display.text("&3Rank Name: &7%s", rank.name);
-        display.text("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.tag, rank.tag);
+        display.text("&3Rank Name: &7%s", rank.getName());
+        display.text("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.getTag(), rank.getTag());
         
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
         display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
@@ -618,9 +618,9 @@ public class RanksCommands
         	display.text( "&3Mines linked to this rank: %s", sb.toString() );
         }
 
-        display.text("&3Cost: &7%s", Text.numberToDollars(rank.cost));
+        display.text("&3Cost: &7%s", Text.numberToDollars(rank.getCost()));
         
-        display.text("&3Currency: &7<&a%s&7>", (rank.currency == null ? "&cdefault" : rank.currency) );
+        display.text("&3Currency: &7<&a%s&7>", (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) );
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
@@ -634,10 +634,10 @@ public class RanksCommands
             // This is admin-exclusive content
 
             display.text("&8[Admin Only]");
-            display.text("&6Rank ID: &7%s", rank.id);
+            display.text("&6Rank ID: &7%s", rank.getId());
 
             FancyMessage del =
-                new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.name)
+                new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.getName())
                     .tooltip("&7Click to delete this rank.\n&cYou may not reverse this action.");
             display.addComponent(new FancyMessageComponent(del));
         }
@@ -657,7 +657,7 @@ public class RanksCommands
             return;
         }
         
-        rank.cost = cost;
+        rank.setCost( cost );
         
         // Save the rank
 //        try {
@@ -699,7 +699,7 @@ public class RanksCommands
     	}
     	
     	
-    	rank.currency = currency;
+    	rank.setCurrency( currency );
     	
     	// Save the rank
 //    	try {
@@ -745,7 +745,7 @@ public class RanksCommands
         	return;
         }
 
-        rank.tag = tag;
+        rank.setTag( tag );
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
 
@@ -784,23 +784,23 @@ public class RanksCommands
 			for ( RankLadder rankLadder : rankLadders.keySet() )
 			{
 				Rank rank = rankLadders.get( rankLadder );
-				Rank nextRank = rank.rankNext;
+				Rank nextRank = rank.getRankNext();
 				
 				String messageRank = String.format("&c%s&7: Ladder: &b%s  &7Current Rank: &b%s", 
 						player.getDisplayName(), 
 						rankLadder.name,
-						rank.name );
+						rank.getName() );
 				
 				if ( nextRank == null ) {
 					messageRank += "  It's the highest rank!";
 				} else {
 					messageRank += String.format("  &7Next rank: &b%s&7 &c$&b%s", 
-							nextRank.name, 
-							dFmt.format( nextRank.cost ));
+							nextRank.getName(), 
+							dFmt.format( nextRank.getCost() ));
 
-					if ( nextRank.currency != null ) {
+					if ( nextRank.getCurrency() != null ) {
 						messageRank += String.format("  &7Currency: &b%s", 
-								nextRank.currency);
+								nextRank.getCurrency());
 					}
 				}
 				

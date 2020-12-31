@@ -350,7 +350,7 @@ public class PlayerManager
 					if ( sb.length() > 0 ) {
 						sb.append(" ");
 					}
-					sb.append(entry.getValue().name);
+					sb.append(entry.getValue().getName());
 				}
 			}
 		}
@@ -420,7 +420,7 @@ public class PlayerManager
 //					if ( sb.length() > 0 ) {
 //  	  				sb.append(" ");
 //    				}
-    				sb.append(entry.getValue().tag);
+    				sb.append(entry.getValue().getTag());
     			}
     		}
     	}
@@ -474,7 +474,7 @@ public class PlayerManager
     						sb.append(", ");
     					}
     					
-    					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().cost;
+    					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().getCost();
     					
         				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
         					PlaceholderAttributeNumberFormat attributeNF = 
@@ -523,7 +523,7 @@ public class PlayerManager
     					}
     					
     					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.cost;
+    					double cost = rank.getCost();
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     					double percent = (balance < 0 ? 0 : 
@@ -570,7 +570,7 @@ public class PlayerManager
     					}
     					
     					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.cost;
+    					double cost = rank.getCost();
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     				   	
@@ -627,7 +627,7 @@ public class PlayerManager
     					}
     					
     					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.cost;
+    					double cost = rank.getCost();
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     					double remaining = cost - balance;
@@ -734,15 +734,15 @@ public class PlayerManager
     private double getPlayerBalance(Player player, Rank rank) {
     	double playerBalance = 0;
         	
-    	if ( rank != null && rank.currency != null ) {
+    	if ( rank != null && rank.getCurrency() != null ) {
     		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-    						.getEconomyForCurrency( rank.currency );
+    						.getEconomyForCurrency( rank.getCurrency() );
     		if ( currencyEcon != null ) {
-        		playerBalance = currencyEcon.getBalance( player, rank.currency );
+        		playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
     		} else {
     			String message = String.format( "Failed to load Economy to get the balance for " +
 						"player %s with a currency of %s.",
-						player.getName(), rank.currency );
+						player.getName(), rank.getCurrency() );
     			
     			if ( !getPlayerErrors().contains( message ) ) {
     				getPlayerErrors().add( message );
@@ -786,7 +786,7 @@ public class PlayerManager
     					if ( sb.length() > 0 ) {
     						sb.append(" ");
     					}
-    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().name);
+    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().getName());
     				}
     			}
     		}
@@ -808,7 +808,7 @@ public class PlayerManager
 //    					if ( sb.length() > 0 ) {
 //    						sb.append(", ");
 //    					}
-    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().tag);
+    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().getTag());
     				}
     			}
     		}

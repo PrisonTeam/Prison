@@ -129,7 +129,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").getName();
                 } catch (NullPointerException ex){
                     playerRankName = null;
                 }
@@ -505,7 +505,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return true;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).id);
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
         if (!isInPrestigeLadder) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
             return true;

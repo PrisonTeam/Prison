@@ -121,10 +121,10 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Rank rank = rankOptional.get();
 
         // Add the RankID Lore
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.id));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.name));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.cost));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.getId()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.getName()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.getCost()));
 
         // Init a variable
         List<RankPlayer> players =
@@ -138,7 +138,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         //getCommands(ranksLore, rank);
 
         // Make the button with materials, amount, lore and name
-        itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.name));
+        itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemRank);

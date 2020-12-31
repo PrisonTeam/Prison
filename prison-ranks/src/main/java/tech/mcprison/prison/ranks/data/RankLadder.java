@@ -84,7 +84,7 @@ public class RankLadder
         		
         		// if null look it up from loaded ranks:
         		if ( rRankName == null  ) {
-        			rRankName = rankPrison.name;
+        			rRankName = rankPrison.getName();
         			dirty = true;
         		}
         	}
@@ -149,7 +149,7 @@ public class RankLadder
         ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
                 .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
-        ranks.add(new PositionRank(position, rank.id, rank.name, rank));
+        ranks.add(new PositionRank(position, rank.getId(), rank.getName(), rank));
         
         // Ranks will be reordered within connectRanks() so don't sort here:
         
@@ -166,7 +166,7 @@ public class RankLadder
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id, rank.name, rank));
+        ranks.add(new PositionRank(getNextAvailablePosition(), rank.getId(), rank.getName(), rank));
         
         // Reset the rank relationships:
         PrisonRanks.getInstance().getRankManager().connectRanks();
@@ -231,7 +231,7 @@ public class RankLadder
      */
     public int getPositionOfRank(Rank rank) {
         for (PositionRank rankEntry : ranks) {
-            if (rankEntry.getRankId() == rank.id) {
+            if (rankEntry.getRankId() == rank.getId()) {
                 return rankEntry.getPosition();
             }
         }
@@ -285,7 +285,8 @@ public class RankLadder
      * @param position The position to search for.
      * @return An optional containing the rank if it was found, or empty if it wasn't.
      */
-    public Optional<Rank> getByPosition(int position) {
+    @SuppressWarnings( "deprecation" )
+	public Optional<Rank> getByPosition(int position) {
         for (PositionRank posRank : ranks) {
             if (posRank.getPosition() == position) {
                 return PrisonRanks.getInstance().getRankManager().getRankOptional(posRank.getRankId());
@@ -304,7 +305,8 @@ public class RankLadder
      *
      * @return The rank option, or an empty optional if there are no ranks in this ladder.
      */
-    public Optional<Rank> getLowestRank() {
+    @SuppressWarnings( "deprecation" )
+	public Optional<Rank> getLowestRank() {
         if (ranks.isEmpty()) return Optional.empty();
 
         PositionRank lowest = ranks.get(0);

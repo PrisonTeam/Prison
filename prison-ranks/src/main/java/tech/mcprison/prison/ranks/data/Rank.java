@@ -41,16 +41,16 @@ public class Rank
      */
 
     // The unique identifier used to distinguish this rank from others - this never changes.
-    public int id;
+    private int id;
 
     // The name of this rank, which is used with the user to identify ranks.
-    public String name;
+    private String name;
 
     // The tag that this rank has. It can be used as either a prefix or a suffix, depending on user preferences.
-    public String tag;
+    private String tag;
 
     // The general cost of this rank, unit-independent. This value holds true for both XP and cost.
-    public double cost;
+    private double cost;
 
     /** 
      * <p>Special currency to use. If null, then will use the standard currencies. 
@@ -59,18 +59,18 @@ public class Rank
      * </p>
      * 
      */
-    public String currency;
+    private String currency;
     
     // The commands that are run when this rank is attained.
-    public List<String> rankUpCommands;
+    private List<String> rankUpCommands;
 
     
     private List<String> permissions;
     private List<String> permissionGroups;
     
     
-    public transient Rank rankPrior;
-    public transient Rank rankNext;
+    private transient Rank rankPrior;
+    private transient Rank rankNext;
     
     
     private List<ModuleElement> mines;
@@ -88,6 +88,15 @@ public class Rank
     	
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
+    }
+    
+    public Rank( int id, String name, String tag, double cost ) {
+    	this();
+    	
+    	this.id = id;
+    	this.name = name;
+    	this.tag = tag;
+    	this.cost = cost;
     }
     
     /**
