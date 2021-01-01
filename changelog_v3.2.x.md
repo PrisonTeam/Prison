@@ -19,6 +19,11 @@ that you need.
 # V3.2.4-alpha.4 2021-01-01
 
 
+* **When setting the area of a mine, it now refreshes the liners and shows the tracers.**
+
+
+* **New feature: Force a reset but be able to not run any of the mine commands.**
+This allows for chaining of mine resets to other mines.
 
 
 * **V3.2.4-alpha.4 2021-01-01**

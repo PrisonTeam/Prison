@@ -2432,6 +2432,9 @@ public class MinesCommands
         // Delete the selection:
         Prison.get().getSelectionManager().clearSelection((Player) sender);
         //pMines.getMineManager().clearCache();
+        
+        // adjustSize to zero to reset set all liners:
+        m.adjustSize( Edges.walls, 0 );
     }
 
     
