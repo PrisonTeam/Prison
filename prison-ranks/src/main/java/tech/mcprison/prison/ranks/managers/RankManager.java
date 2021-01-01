@@ -86,7 +86,7 @@ public class RankManager {
     private void addRank( Rank rank ) {
     	if ( rank != null ) {
     		getLoadedRanks().add( rank );
-    		getRanksByName().put( rank.getName(), rank );
+    		getRanksByName().put( rank.getName().toLowerCase(), rank );
     		getRanksById().put( rank.getId(), rank );
     	}
     }
@@ -94,7 +94,7 @@ public class RankManager {
     private void removeRankFromCollections( Rank rank ) {
     	if ( rank != null ) {
     		getLoadedRanks().remove( rank );
-    		getRanksByName().remove( rank.getName() );
+    		getRanksByName().remove( rank.getName().toLowerCase() );
     		getRanksById().remove( rank.getId() );
     	}
     	
@@ -231,7 +231,7 @@ public class RankManager {
      * @return
      */
     public Rank getRank(String name) {
-    	return getRanksByName().get( name );
+    	return getRanksByName().get( name.toLowerCase() );
     }
     
     
