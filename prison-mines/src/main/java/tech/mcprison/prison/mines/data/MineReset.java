@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineMover;
@@ -92,6 +93,8 @@ public abstract class MineReset
 	private List<MineTargetBlock> mineTargetBlocks;
 	private TreeMap<MineTargetBlockKey, MineTargetBlock> mineTargetBlocksMap;
 	
+	private MineJob currentJob;
+	
 	private int resetPage = 0;
 	private int resetPosition = 0;
 	
@@ -126,6 +129,8 @@ public abstract class MineReset
 		
 		this.mineTargetBlocks = new ArrayList<>();
 		this.mineTargetBlocksMap = new TreeMap<>();
+		
+		this.currentJob = null;
 	}
 
     /**
@@ -214,19 +219,22 @@ public abstract class MineReset
 			setStatsTeleport1TimeMS(
 					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
- 			// Before reset commands:
- 	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
- 	        	
- 	        	for (String command : getResetCommands() ) {
+			if ( getCurrentJob().getResetType() != MineResetType.FORCED_NO_COMMANDS ) {
+				
+				// Before reset commands:
+				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+					
+					for (String command : getResetCommands() ) {
 // 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 // 	        				.replace("{player_uid}", player.uid.toString());
- 	        		if ( command.startsWith( "before: " )) {
- 	        			String cmd = command.replace( "before: ", "" );
-
- 	        			PrisonAPI.dispatchCommand(cmd);
- 	        		}
- 	        	}
- 	        }
+						if ( command.startsWith( "before: " )) {
+							String cmd = command.replace( "before: ", "" );
+							
+							PrisonAPI.dispatchCommand(cmd);
+						}
+					}
+				}
+			}
 
 
 			
@@ -321,19 +329,22 @@ public abstract class MineReset
 			getRandomizedBlocks().clear();
 			
 			
- 			// After reset commands:
- 	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
- 	        	
- 	        	for (String command : getResetCommands() ) {
+			if ( getCurrentJob().getResetType() != MineResetType.FORCED_NO_COMMANDS ) {
+				
+				// After reset commands:
+				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+					
+					for (String command : getResetCommands() ) {
 // 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 // 	        				.replace("{player_uid}", player.uid.toString());
- 	        		if ( command.startsWith( "after: " )) {
- 	        			String cmd = command.replace( "after: ", "" );
-
- 	        			PrisonAPI.dispatchCommand(cmd);
- 	        		}
- 	        	}
- 	        }
+						if ( command.startsWith( "after: " )) {
+							String cmd = command.replace( "after: ", "" );
+							
+							PrisonAPI.dispatchCommand(cmd);
+						}
+					}
+				}
+			}
 
 			
 			// Broadcast message to all players within a certain radius of this mine:
@@ -694,16 +705,19 @@ public abstract class MineReset
          		setBlockBreakCount( getAirCountOriginal() );
          		
          		
-         		// Before reset commands:
-         		if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+         		if ( getCurrentJob().getResetType() != MineResetType.FORCED_NO_COMMANDS ) {
          			
-         			for (String command : getResetCommands() ) {
+         			// Before reset commands:
+         			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+         				
+         				for (String command : getResetCommands() ) {
 // 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 // 	        				.replace("{player_uid}", player.uid.toString());
-         				if ( command.startsWith( "before: " )) {
-         					String cmd = command.replace( "before: ", "" );
-         					
-         					PrisonAPI.dispatchCommand(cmd);
+         					if ( command.startsWith( "before: " )) {
+         						String cmd = command.replace( "before: ", "" );
+         						
+         						PrisonAPI.dispatchCommand(cmd);
+         					}
          				}
          			}
          		}
@@ -726,19 +740,22 @@ public abstract class MineReset
         		
         		incrementResetCount();
         		
-    			// After reset commands:
-    	        if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-    	        	
-    	        	for (String command : getResetCommands() ) {
+        		if ( getCurrentJob().getResetType() != MineResetType.FORCED_NO_COMMANDS ) {
+        			
+        			// After reset commands:
+        			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+        				
+        				for (String command : getResetCommands() ) {
 //    	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 //    	        				.replace("{player_uid}", player.uid.toString());
-    	        		if ( command.startsWith( "after: " )) {
-    	        			String cmd = command.replace( "after: ", "" );
-
-    	        			PrisonAPI.dispatchCommand(cmd);
-    	        		}
-    	        	}
-    	        }
+        					if ( command.startsWith( "after: " )) {
+        						String cmd = command.replace( "after: ", "" );
+        						
+        						PrisonAPI.dispatchCommand(cmd);
+        					}
+        				}
+        			}
+        		}
     	        
         		
         		// Broadcast message to all players within a certain radius of this mine:
@@ -1447,7 +1464,17 @@ public abstract class MineReset
     	tracerBuilder.clearMine( (Mine) this, tracer );
     }
     
-    
+
+	public MineJob getCurrentJob()
+	{
+		return currentJob;
+	}
+	public void setCurrentJob( MineJob currentJob )
+	{
+		this.currentJob = currentJob;
+	}
+	
+	
 	@Deprecated
 	public List<BlockType> getRandomizedBlocks()
 	{

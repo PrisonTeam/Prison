@@ -44,6 +44,7 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
@@ -1520,10 +1521,23 @@ public class MinesCommands
 
     @Command(identifier = "mines reset", permissions = "mines.reset", description = "Resets a mine.")
     public void resetCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to reset.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to reset.") String mineName,
+    	@Arg(name = "options", description = "Optional settings [noCommands] " +
+    			"noCommands prevents the running of mine commands.", def = "") String options
+    			) {
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
+        }
+        
+        if ( options == null || options.trim().isEmpty() ) {
+        	options = "";
+        }
+        else if ( !options.equalsIgnoreCase( "noCommands" )) {
+        	
+        	sender.sendMessage( "&cInvalid value for &7options&c. " +
+        			"&3The only valid options are: [&7noCommands&3] or blanks." );
+        	return;
         }
 
         setLastMineReferenced(mineName);
@@ -1545,7 +1559,13 @@ public class MinesCommands
         }
         
         try {
-        	m.manualReset();
+        	MineResetType resetType = MineResetType.FORCED;
+        	
+        	if ( options != null && options.toLowerCase().contains( "nocommands" )) {
+        		resetType = MineResetType.FORCED_NO_COMMANDS;
+        	}
+        	
+        	m.manualReset( resetType );
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
                 .sendTo(sender);

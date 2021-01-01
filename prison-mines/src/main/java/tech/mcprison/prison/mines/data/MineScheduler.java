@@ -37,7 +37,7 @@ public abstract class MineScheduler
 	 */
 	private List<MineJob> jobWorkflow;
 	private Stack<MineJob> jobStack;
-	private MineJob currentJob;
+//	private MineJob currentJob;
 	private Integer taskId = null;
 	
 	public MineScheduler() {
@@ -45,7 +45,7 @@ public abstract class MineScheduler
 		
 		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
-		this.currentJob = null;
+
 	}
 
     /**
@@ -90,7 +90,8 @@ public abstract class MineScheduler
 	
 	public enum MineResetType {
 		NORMAL,
-		FORCED;
+		FORCED,
+		FORCED_NO_COMMANDS;
 	}
 	
 	/**
@@ -124,6 +125,13 @@ public abstract class MineScheduler
 			this.resetType = MineResetType.NORMAL;
 		}
 		
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetType resetType )
+		{
+			this( action, delayActionSec, resetInSec );
+			
+			this.resetType = resetType;
+		}
+		
 		public double getJobSubmitResetInSec() {
 			return getResetInSec() + getDelayActionSec();
 		}
@@ -133,7 +141,8 @@ public abstract class MineScheduler
 			return "Action: " + getAction().name() + 
 					"  Reset at submit: " + getJobSubmitResetInSec() +
 					"  Delay before running: " + getDelayActionSec() + 
-					"  Reset at run: " + getResetInSec();
+					"  Reset at run: " + getResetInSec() +
+					"  ResetType: " + getResetType().name();
 		}
 
 		public MineJobAction getAction()
@@ -453,9 +462,12 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void manualReset() {
+		manualReset( MineResetType.FORCED );
+	}
+	public void manualReset( MineResetType resetType ) {
 		
 		if ( !isVirtual() ) {
-			manualReset( MineResetType.FORCED, 0 );
+			manualReset( resetType, 0 );
 		}
 	}
 	
@@ -601,7 +613,7 @@ public abstract class MineScheduler
 		MineJobAction action = isUsePagingOnReset() ? 
 				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
 		
-		MineJob mineJob = new MineJob( action, delayActionSec, 0);
+		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
 		mineJob.setResetType( resetType );
 		setCurrentJob( mineJob );
     	
@@ -627,15 +639,6 @@ public abstract class MineScheduler
 	public void setJobStack( Stack<MineJob> jobStack )
 	{
 		this.jobStack = jobStack;
-	}
-
-	public MineJob getCurrentJob()
-	{
-		return currentJob;
-	}
-	public void setCurrentJob( MineJob currentJob )
-	{
-		this.currentJob = currentJob;
 	}
 
 	public Integer getTaskId()
