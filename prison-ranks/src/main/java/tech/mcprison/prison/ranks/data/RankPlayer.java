@@ -56,7 +56,7 @@ public class RankPlayer
     private List<RankPlayerName> names;
     
     // Block name, count
-    public HashMap<String, Integer> blocksMined;
+    private HashMap<String, Integer> blocksMined;
 
     /*
      * Document-related
