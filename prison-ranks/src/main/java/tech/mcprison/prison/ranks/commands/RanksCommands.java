@@ -28,6 +28,7 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -763,6 +764,103 @@ public class RanksCommands
         					tag, rank.getName() ) );
         }
     }
+    
+    
+
+//    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
+//    							onlyPlayers = false, permissions = "ranks.set")
+    public void rankPermsList(CommandSender sender, 
+    				@Arg(name = "rankName") String rankName
+    			){
+    	
+        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
+        if ( rank == null ) {
+            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+            return;
+        }
+        
+        
+        if ( rank.getPermissions() == null ||rank.getPermissions().size() == 0 && 
+        		rank.getPermissionGroups() == null && rank.getPermissionGroups().size() == 0 ) {
+        	
+            Output.get().sendInfo(sender, "The Rank '%s' contains no permissions or " +
+            		"permission groups.", rank.getName());
+            return;
+        }
+
+        
+
+        ChatDisplay display = new ChatDisplay("Rank Permissions and Groups for " + rank.getName());
+        display.text("&8Click a Permission to remove it.");
+        BulletedListComponent.BulletedListBuilder builder =
+        									new BulletedListComponent.BulletedListBuilder();
+
+        
+        int rowNumber = 1;
+        
+        if ( rank.getPermissions().size() > 0 ) {
+        	builder.add( "&7Permissions:" );
+        }
+        for (String perm : rank.getPermissions() ) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( "  &3Row: &d%d  ", rowNumber++ );
+        	
+        	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", perm ) )
+        			.command( "/ranks perms edit " + rank.getName() + " " + rowNumber + " " )
+        			.tooltip("Permission - Click to Edit");
+        	row.addFancy( msgPermission );
+        	
+        	
+        	FancyMessage msgRemove = new FancyMessage( String.format( "  &cRemove " ) )
+        			.command( "/ranks perms remove " + rank.getName() + " " + rowNumber + " " )
+        			.tooltip("Remove Permission - Click to Delete");
+        	row.addFancy( msgRemove );
+        	
+            builder.add( row );
+        }
+
+        if ( rank.getPermissionGroups().size() > 0 ) {
+        	builder.add( "&7Permission Groupss:" );
+        }
+        for (String permGroup : rank.getPermissionGroups() ) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( "  &3Row: &d%d  ", rowNumber++ );
+        	
+        	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", permGroup ) )
+        			.command( "/ranks perms edit " + rank.getName() + " " + rowNumber + " " )
+        			.tooltip("Permission Group - Click to Edit");
+        	row.addFancy( msgPermission );
+        	
+        	
+        	FancyMessage msgRemove = new FancyMessage( String.format( "  &cRemove " ) )
+        			.command( "/ranks perms remove " + rank.getName() + " " + rowNumber + " " )
+        			.tooltip("Remove Permission Group - Click to Delete");
+        	row.addFancy( msgRemove );
+        	
+            builder.add( row );
+        }
+
+        
+        display.addComponent(builder.build());
+        display.addComponent(new FancyMessageComponent(
+            new FancyMessage("&7[&a+&7] Add Permission")
+            			.suggest("/ranks perms addPerm " + rank.getName() + " [perm] /")
+                .tooltip("&7Add a new Permission.")));
+        display.addComponent(new FancyMessageComponent(
+        		new FancyMessage("&7[&a+&7] Add Permission Group")
+        				.suggest("/ranks perms addPermGroup " + rank.getName() + " [permGroup] /")
+        		.tooltip("&7Add a new Permission Group.")));
+
+        display.send(sender);
+
+    }
+    
+
+    
     
     @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
     public void rankPlayer(CommandSender sender,
