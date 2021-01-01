@@ -10,6 +10,12 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
+- Issue with /ranks demote and refunding player.
+  If the current rank has a custom currency and the player is demoted with a refund,
+  the refund is creditd to the wrong currency
+  - This will be easier to fix once currencies are fixed
+  
+
 - Possible issue with auto features preventing WorldGuard from protecting a
   mine.  In the auto features GUI, when the bottom three features are turned 
   off then WG won't protect the region.

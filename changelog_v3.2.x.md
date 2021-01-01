@@ -16,7 +16,29 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.3 2020-12-30
+# V3.2.4-alpha.3 2021-01-01
+
+
+* **Start to setup the ranks perms listing: disabled.**  It will work, but I turned off the command since it is not ready yet.
+
+
+
+* **Changes to the Gems Economy integration wrapper to support the new version of Gems Economy.**
+This uses reflection to get around the problems which was introduced with v4.9.0 where the API and its methods remained the same, but one class that is used for the method variable had its package name changed.  Thus breaking support for gems economy v4.9.x when the project is compiled for v4.8.3 and earlier.  This reflection modifications should also work if the project is compiled with GE v4.9.x and the deplyment is using v4.8.3 or earlier.
+Tested with being compiled with v4.8.3 and works well with v4.9.1 that is running on v1.16.4 (v1.16.x requires v4.9.1). Tested and works on v1.8.8 with v1.8.8 running either v4.9.1 or v.4.8.3.
+It has not yet been tested with compiling prison with v4.9.1, but it should work even when running on 1.8.8 with v4.8.3.
+
+
+* **Made the selection of ranks case insensitive.**
+Many commands in rank commands required the proper case spelling of the rank name.  Changed it so it is now case insensitive so it will be easier for players to select ranks.
+
+
+* **For a few rank commands: Clean up some formating with currency names.**
+Collect all currencies used within the default ladder, then display the player's balance with each of those currencies.
+
+
+* **Fixed a problem with the addition of the permission and permission groups.**
+The loading of of these was failing since the the arrays were not being instantiated. 
 
 
 * **Updated the RankLadder and RankPlayer so the class variables are not accessible from the outside of those classes.**
