@@ -88,6 +88,10 @@ public class Rank
     	
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
+    	
+    	this.permissions = new ArrayList<>();
+    	this.permissionGroups =  new ArrayList<>();
+    	
     }
     
     public Rank( int id, String name, String tag, double cost ) {
@@ -114,6 +118,8 @@ public class Rank
 
     @SuppressWarnings( "unchecked" )
 	public Rank(Document document) {
+    	this();
+    	
         try
 		{
 			this.id = RankUtil.doubleToInt(document.get("id"));
@@ -158,6 +164,7 @@ public class Rank
 				}
 			}
 	        
+			
 			getPermissionGroups().clear();
 			Object permsGroups = document.get( "permissionGroups" );
 			if ( perms != null ) {
