@@ -16,7 +16,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.3 2021-01-01
+# V3.2.4-alpha.4 2021-01-01
+
+
+
+
+* **V3.2.4-alpha.4 2021-01-01**
 
 
 * **Start to setup the ranks perms listing: disabled.**  It will work, but I turned off the command since it is not ready yet.
