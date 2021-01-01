@@ -3,9 +3,11 @@ package tech.mcprison.prison.ranks.commands;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.util.Text;
 
@@ -492,7 +495,7 @@ public class RanksCommands
                 			textRankName, rank.getTag(), 
                 			(defaultRank ? "&b(&9Default&b) &7- " : ""),
                 			Text.numberToDollars(rank.getCost()),
-                			(rank.getCurrency() == null ? "" : " &7Currency: &3" + rank.getCurrency()),
+                			(rank.getCurrency() == null ? "" : " &3Currency: &2" + rank.getCurrency()),
                 			textCmdCount );
             
             String rankName = rank.getName();
@@ -778,6 +781,17 @@ public class RanksCommands
 		if ( oPlayer.isPresent() ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			
+			// Collect all currencies in the default ladder:
+			Set<String> currencies = new LinkedHashSet<>();
+			LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+			
+			for ( Rank rank : lm.getLadder( "default" ).get().getRanks() ) {
+				if ( rank.getCurrency() != null && !currencies.contains( rank.getCurrency() )) {
+					currencies.add( rank.getCurrency() );
+				}
+			}
+			
+			
 			RankPlayer rankPlayer = oPlayer.get();
 			Map<RankLadder, Rank> rankLadders = rankPlayer.getRanks();
 			
@@ -799,7 +813,7 @@ public class RanksCommands
 							dFmt.format( nextRank.getCost() ));
 
 					if ( nextRank.getCurrency() != null ) {
-						messageRank += String.format("  &7Currency: &b%s", 
+						messageRank += String.format("  &7Currency: &2%s", 
 								nextRank.getCurrency());
 					}
 				}
@@ -807,11 +821,20 @@ public class RanksCommands
 				sendToPlayerAndConsole( sender, messageRank );
 			}
 			
-			// Print out the player's balance:
+			// Print out the player's balances: 
+
+			// The default currency first:
 			double balance = getPlayerBalance( player );
 			String message = String.format( "&7The current balance for &b%s &7is &b%s", 
 					player.getName(), dFmt.format( balance ) );
 			sendToPlayerAndConsole( sender, message );
+			
+			for ( String currency : currencies ) {
+				double balanceCurrency = getPlayerBalance( player, currency );
+				String messageCurrency = String.format( "&7The current balance for &b%s &7is &b%s &2%s", 
+						player.getName(), dFmt.format( balanceCurrency ), currency );
+				sendToPlayerAndConsole( sender, messageCurrency );
+			}
 			
 			
 			if (sender.hasPermission("ranks.admin") && rankPlayer.getNames().size() > 1) {
