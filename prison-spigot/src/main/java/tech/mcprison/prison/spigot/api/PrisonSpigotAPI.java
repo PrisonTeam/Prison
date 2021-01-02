@@ -22,6 +22,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;
@@ -304,5 +305,45 @@ public class PrisonSpigotAPI {
 	
 	private Mine findMineLocation( SpigotBlock block ) {
 		return getPrisonMineManager().findMineLocation( block.getLocation() );
+	}
+
+
+	/**
+	 * <p>This return the total Prison sellall boost/multiplier of a player</p>
+	 *
+	 * @param player
+	 * @return
+	 * */
+	public Double getSellAllMultiplier(Player player){
+
+		SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+
+		if (sellAll != null){
+			return sellAll.getMultiplier(player);
+		}
+
+		return null;
+	}
+
+	/**
+	 * <p></p>Get the money to give to the Player depending on the SellAll multiplier.
+	 * This depends by the items in the player's inventory at time of call.
+	 * Also if multipliers are disabled, this will return the amount of money you'd
+	 * get without multipliers.</p>
+	 *
+	 * @param player
+	 * @return
+	 * */
+	public Double getSellAllMoneyWithMultiplier(Player player){
+
+		SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+
+		SpigotPlayer sPlayer = new SpigotPlayer(player);
+
+		if (sellAll != null){
+			return sellAll.getMoneyWithMultiplier(player);
+		}
+
+		return null;
 	}
 }

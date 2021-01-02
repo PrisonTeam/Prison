@@ -21,6 +21,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
@@ -37,6 +38,21 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
     private double multiplier;
+    private static SellAllPrisonCommands instance;
+    private double moneyToGive;
+
+    /**
+     * Get SellAll instance.
+     * */
+    public static SellAllPrisonCommands get() {
+        if (instance == null && isEnabled()) {
+            instance = new SellAllPrisonCommands();
+        }
+        if (instance == null){
+            return null;
+        }
+        return instance;
+    }
 
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
@@ -70,18 +86,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
 
-            // Get the Items config section
-            Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-            double moneyToGive = 0;
-
-            // Get money to give
-            moneyToGive = getMoneyToGive(p, items, moneyToGive);
-
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
 
             // Get money to give + multiplier
-            moneyToGive = getMoneyWithMultiplier(moneyToGive, sPlayer);
+            moneyToGive = getMoneyWithMultiplier(sPlayer, p);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -100,7 +109,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the money to give to the Player depending on the multiplier.
      * */
-    public double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer) {
+    private double getMoneyWithMultiplier(SpigotPlayer sPlayer, Player p) {
+
+        // Get the Items config section
+        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
+        moneyToGive = 0;
+
+        // Get money to give
+        moneyToGive = getMoneyToGive(p, items, moneyToGive);
+
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
             getMultiplier(sPlayer);
@@ -111,9 +128,33 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     /**
+     * Get the money to give to the Player depending on the multiplier.
+     * */
+    public double getMoneyWithMultiplier(Player player){
+
+        SpigotPlayer sPlayer = new SpigotPlayer(player);
+
+        getMoneyWithMultiplier(sPlayer, player);
+
+        return moneyToGive;
+    }
+
+    /**
+     * Get player multiplier, this uses the normal Player and actually return a double.
+     * */
+    public double getMultiplier(Player player){
+
+        // Get Spigot Player
+        SpigotPlayer sPlayer = new SpigotPlayer(player);
+
+        getMultiplier(sPlayer);
+        return multiplier;
+    }
+
+    /**
      * Get the player multiplier, requires SpigotPlayer.
      * */
-    public void getMultiplier(SpigotPlayer sPlayer) {
+    private void getMultiplier(SpigotPlayer sPlayer) {
 
         // Get Ranks module.
         ModuleManager modMan = Prison.get().getModuleManager();
