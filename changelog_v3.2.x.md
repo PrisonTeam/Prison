@@ -16,7 +16,21 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.4 2021-01-01
+# V3.2.4-alpha.4 2021-01-02
+
+
+
+* **Add new feature to reset all mines with one command.**
+This works for all mine types, including mines setup for paging.
+This will build a list of reset commands for all mines, then it will submit each one to run.  When each mine finishes, then it will submit the next reset command to run until there are no more mines to reset.  It's using synchronous jobs to manage the resets so as not to dominate the processing and to yield to other tasks needing to be processed.
+The mine resets can also be canceled.
+The following are examples, with additional processing options of `details` will provide some information on the reset progress.  Details is optional.
+
+```
+/mines reset help
+/mines reset *all* details
+/mines reset *cancel*
+```
 
 
 * **When setting the area of a mine, it now refreshes the liners and shows the tracers.**
