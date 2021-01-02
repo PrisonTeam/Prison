@@ -16,8 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.4 2021-01-02
+# V3.2.4-alpha.5 2021-01-02
 
+
+
+* **V3.2.4-alpha.5 2021-01-02**
 
 
 * **Add new feature to reset all mines with one command.**
@@ -26,8 +29,12 @@ This will build a list of reset commands for all mines, then it will submit each
 The mine resets can also be canceled.
 The following are examples, with additional processing options of `details` will provide some information on the reset progress.  Details is optional.
 
+
+When running a reset for all mines, it also automatically enables the noCommands option on all resets.  If a mine is setup with a mine command to reset another mine, then this could cause an endless loop.  Therefore no mine commands are ran when all are rest.
+
 ```
 /mines reset help
+/mines reset *all*
 /mines reset *all* details
 /mines reset *cancel*
 ```
