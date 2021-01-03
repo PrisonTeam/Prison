@@ -5,7 +5,6 @@ import java.util.List;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
-    private final Configuration messages = messages();
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -34,9 +32,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        // Get the variables
-        PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMine(mineName);
+        // Get Mine
+        Mine m = PrisonMines.getInstance().getMine(mineName);
 
         // Get the dimensions and if needed increases them
         int dimension = 54;
@@ -71,8 +68,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         		
         		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
         	}
-        }
-        else {
+        } else {
         	
         	// For every block makes a button
         	for (Block block : m.getBlocks()) {
@@ -119,9 +115,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
 
-    	// Don't load this every time a button is created.... making it a class variable:
-        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         // Create the lore
         List<String> blockslore = createLore(
                 messages.getString("Lore.ShiftAndRightClickToDelete"),
@@ -152,8 +145,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
 
-        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         // Create the lore
     	List<String> blockslore = createLore(
     			messages.getString("Lore.ShiftAndRightClickToDelete"),
@@ -182,5 +173,4 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	// Add the item to the inventory
     	inv.addItem(block1);
     }
-
 }

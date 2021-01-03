@@ -23,8 +23,18 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public abstract class SpigotGUIComponents {
 
+    public Configuration messages = getMessages();
+    public AutoFeaturesFileConfig afConfig = getAutoFeaturesFileConfig();
+    public Configuration guiConfig = getGuiConfig();
+    public Configuration sellAllConfig = getSellAll();
+
     /**
      * Create a button for the GUI using Material.
+     *
+     * @param id
+     * @param amount
+     * @param lore
+     * @param display
      * */
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
@@ -39,6 +49,10 @@ public abstract class SpigotGUIComponents {
 
     /**
      * Create a button for the GUI using ItemStack.
+     *
+     * @param item
+     * @param lore
+     * @param display
      * */
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
 
@@ -57,6 +71,11 @@ public abstract class SpigotGUIComponents {
 
     /**
      * Get ItemStack of an Item.
+     *
+     * @param item
+     * @param lore
+     * @param display
+     * @param meta
      * */
     private ItemStack getItemStack(ItemStack item, List<String> lore, String display, ItemMeta meta) {
         if (meta != null) {
@@ -73,6 +92,8 @@ public abstract class SpigotGUIComponents {
 
     /**
      * Create a Lore for an Item in the GUI.
+     *
+     * @param lores
      * */
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
@@ -84,6 +105,8 @@ public abstract class SpigotGUIComponents {
 
     /**
      * Check if the Ranks module's enabled.
+     *
+     * @param p
      * */
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
@@ -97,33 +120,36 @@ public abstract class SpigotGUIComponents {
     /**
      * Get Messages config.
      * */
-    protected static Configuration messages(){
+    protected static Configuration getMessages(){
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
     /**
      * Get SellAll config.
      * */
-    protected static Configuration sellAll(){
+    protected static Configuration getSellAll(){
         return SpigotPrison.getInstance().getSellAllConfig();
     }
 
     /**
      * Get GUI config.
      * */
-    protected static Configuration guiConfig(){
+    protected static Configuration getGuiConfig(){
         return SpigotPrison.getInstance().getGuiConfig();
     }
 
     /**
      * Get autoFeatures Config.
      * */
-    protected static AutoFeaturesFileConfig AutoFeaturesFileConfig() {
+    protected static AutoFeaturesFileConfig getAutoFeaturesFileConfig() {
         return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
     }
 
     /**
      * Open and register GUIs.
+     *
+     * @param p
+     * @param inv
      * */
     protected void openGUI(Player p, Inventory inv){
 

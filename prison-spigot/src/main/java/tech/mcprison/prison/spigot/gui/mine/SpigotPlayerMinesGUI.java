@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,8 +22,6 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
-    private final Configuration GuiConfig = guiConfig();
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -32,13 +29,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        // Init the ItemStack
-        // ItemStack itemMines;
-
         // Get the mines - In sort order, minus any marked as suppressed
     	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
-//    	Set<Mine> mines = new PrisonSortableMines().getSortedSet();
-        //PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
@@ -89,19 +81,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Mine m, List<String> minesLore) {
 
-    	// Don't load this every time a button is created.... making it a class variable:
-        // Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemMines;
         Material material;
-        String permission = SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin"));
+        String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
-        /**
-         * The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
-         * based upon the XMaterial enumeration name, or supported past names.
-         */
+        // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
+        // based upon the XMaterial enumeration name, or supported past names.
         Material mineMaterial = null;
-        String materialTypeStr = GuiConfig.getString("Options.Mines.MaterialType." + m.getName());
+        String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
         if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
         	XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
         	if ( mineXMaterial != null ) {

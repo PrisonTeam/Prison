@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +17,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public SpigotPrisonGUI(Player p){
         this.p = p;

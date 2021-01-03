@@ -7,7 +7,6 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -35,15 +34,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
-    // Load config
-    private final Configuration guiConfig = guiConfig();
-    private final Configuration messages = messages();
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
-
-        // If you need to get a SpigotPlayer:
-        //        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Server server = SpigotPrison.getInstance().getServer();
         PrisonRanks rankPlugin;

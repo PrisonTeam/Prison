@@ -5,7 +5,6 @@ import java.util.List;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +21,6 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
     private final Player p;
 	private final Mine mine;
     private final String mineName;
-    private final Configuration messages = messages();
 
     public SpigotMineInfoGUI(Player p, Mine mine, String mineName){
         this.p = p;
@@ -133,5 +131,4 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         inv.setItem(33, mineRename);
         inv.setItem(44, closeGUI);
     }
-
 }

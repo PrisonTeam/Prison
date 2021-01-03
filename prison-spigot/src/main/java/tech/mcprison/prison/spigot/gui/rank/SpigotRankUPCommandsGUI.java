@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
-    private final Configuration messages = messages();
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -28,9 +26,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     }
 
     public void open() {
-
-        // Init the ItemStack
-        // ItemStack itemCommand;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
@@ -87,8 +82,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     }
 
     private void buttonsSetup(Inventory inv, String command) {
-
-        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
 
         ItemStack itemCommand;
         // Init the lore array with default values for ladders

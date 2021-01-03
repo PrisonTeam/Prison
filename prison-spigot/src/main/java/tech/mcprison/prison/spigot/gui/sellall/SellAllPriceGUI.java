@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.sellall;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,6 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String itemID;
     private final Double val;
-    private final Configuration messages = messages();
 
     public SellAllPriceGUI(Player p, Double val, String itemID){
         this.p = p;

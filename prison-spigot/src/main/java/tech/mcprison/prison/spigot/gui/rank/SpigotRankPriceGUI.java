@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.rank;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,12 +19,11 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String rankName;
     private final Integer val;
-    private final Configuration messages = messages();
 
-    public SpigotRankPriceGUI(Player p, Integer val, String rankname){
+    public SpigotRankPriceGUI(Player p, Integer val, String rankName){
         this.p = p;
         this.val = val;
-        this.rankName = rankname;
+        this.rankName = rankName;
     }
 
     public void open() {
