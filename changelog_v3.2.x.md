@@ -19,6 +19,13 @@ that you need.
 # V3.2.4-alpha.5 2021-01-02
 
 
+* **Work on Ladder and Rank Perms.**
+Got the Ladder perms hooked up to both the loading and saving, and also the command interfaces to add and remove them.
+This is a work in progress and is non-functional.  The ladder perms working from the sense that you can add them, list them, and remove them.  But they currently do nothing.
+The next step is to finish working on the rank perms commands to get them functional with adding and removing... they should already be functional with saving an loading.
+But even at that point, this will not be functional.  The whole core of the perms and the perm integrations need to be rewritten to utilize the expanded features.
+
+
 
 * **V3.2.4-alpha.5 2021-01-02**
 

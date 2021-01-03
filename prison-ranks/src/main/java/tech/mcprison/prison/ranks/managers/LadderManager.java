@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -121,6 +122,39 @@ public class LadderManager {
     }
 
     /**
+     * <p>This is the save function that should be used from outside of the LadderManager, such as
+     * within the LadderCommands functions because this will be able to handle the possible 
+     * exceptions that are thrown if there are any IOExceptions.  If there is a failure, then
+     * it will log the failure to the console, but it will not notify the user; that's what
+     * the return value is supposed to provide: success or failure.
+     * </p>
+     * 
+     * <p>This will try to save the ladder, and if successful, then it will return a value of 
+     * true, otherwise a value of false will indicate that there was a failure.
+     * </p>
+     * 
+     * @param ladder
+     * @return success or failure.  A value of true indicates the save was successful.
+     */
+    public boolean save( RankLadder ladder ) {
+    	boolean success = false;
+    	
+    	try {
+    		saveLadder( ladder );
+    		success = true;
+    	}
+    	catch ( IOException e ) {
+    		String message = String.format( "&cLadderManager.saveLadder: Failed to save the ladder. &7%s " +
+    				"&3Error= [&7%s&3]", 
+    						ladder.getName(), e.getMessage() );
+    		
+    		Output.get().logError( message, e );
+    	}
+    	
+    	return success;
+    }
+    
+    /**
      * Saves all the loaded ladders to their own files within a directory.
      * Each ladder file will be assigned a name in the format: ladder_&lt;ladder id&gt;.
      *
@@ -183,8 +217,9 @@ public class LadderManager {
 
         // Remove the players from the ladder
         List<RankPlayer> playersWithLadder =
-            PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                .filter(rankPlayer -> rankPlayer.getRanks().containsKey(ladder.getName()))
+            PrisonRanks.getInstance().getPlayerManager().getPlayers()
+            	.stream()
+                .filter(rankPlayer -> rankPlayer.hasLadder(ladder.getName()))
                 .collect(Collectors.toList());
         for (RankPlayer player : playersWithLadder) {
             player.removeLadder(ladder.getName());

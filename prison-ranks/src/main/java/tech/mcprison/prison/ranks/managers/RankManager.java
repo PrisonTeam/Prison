@@ -427,7 +427,7 @@ public class RankManager {
     		// Get the players per rank!!
 			List<RankPlayer> playersList =
                     playerManager.getPlayers().stream()
-                        .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+                        .filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
                         .collect(Collectors.toList());
     		int players = playersList.size();
     		

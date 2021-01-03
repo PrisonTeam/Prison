@@ -129,7 +129,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         // Init a variable
         List<RankPlayer> players =
                 PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                        .filter(rankPlayer -> rankPlayer.getRanks().containsValue(rankOptional.get()))
+                        .filter(rankPlayer -> rankPlayer.getLadderRanks().containsValue(rankOptional.get()))
                         .collect(Collectors.toList());
 
         // Add the number of players with this rank

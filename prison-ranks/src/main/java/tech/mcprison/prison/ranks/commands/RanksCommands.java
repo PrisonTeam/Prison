@@ -628,7 +628,7 @@ public class RanksCommands
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-        		.filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+        		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
         		.collect(Collectors.toList());
         display.text("&7There %s &3%s players &7with this rank.", 
         				(players.size() == 1 ? "is": "are"), 
@@ -767,12 +767,13 @@ public class RanksCommands
     
     
 
-//    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
-//    							onlyPlayers = false, permissions = "ranks.set")
+    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
+    							onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsList(CommandSender sender, 
     				@Arg(name = "rankName") String rankName
     			){
-    	
+  	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
+	  
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
@@ -891,7 +892,7 @@ public class RanksCommands
 			
 			
 			RankPlayer rankPlayer = oPlayer.get();
-			Map<RankLadder, Rank> rankLadders = rankPlayer.getRanks();
+			Map<RankLadder, Rank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
 			{

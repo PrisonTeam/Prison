@@ -83,6 +83,7 @@ public class RankPlayer
 
     @SuppressWarnings( "unchecked" )
 	public RankPlayer(Document document) {
+    	this();
     	
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
@@ -96,12 +97,10 @@ public class RankPlayer
         Object namesListObject = document.get( "names" );
         
 
-        this.ranks = new HashMap<>();
         for (String key : ranksLocal.keySet()) {
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
         
-        this.prestige = new HashMap<>();
         for (String key : prestigeLocal.keySet()) {
             prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
         }
@@ -253,12 +252,14 @@ public class RankPlayer
             throw new IllegalArgumentException("Rank must be on ladder.");
         }
 
+        String ladderName = ladder.getName();
+        
         // Remove the current rank on this ladder first
-        if (ranks.containsKey(ladder.getName())) {
-            ranks.remove(ladder.getName());
+        if (ranks.containsKey(ladderName)) {
+            ranks.remove(ladderName);
         }
 
-        ranks.put(ladder.getName(), rank.getId());
+        ranks.put(ladderName, rank.getId());
     }
 
     /**
@@ -280,6 +281,10 @@ public class RankPlayer
 
         // ... and then remove it!
         ranks.remove(ladderName);
+    }
+    
+    public boolean hasLadder( String ladderName ) {
+    	return ranks.containsKey( ladderName );
     }
 
     /**
@@ -349,7 +354,8 @@ public class RankPlayer
      *
      * @return The map containing this data.
      */
-    public Map<RankLadder, Rank> getRanks() {
+    public Map<RankLadder, Rank> getLadderRanks() {
+    	
         Map<RankLadder, Rank> ret = new HashMap<>();
         for (Map.Entry<String, Integer> entry : ranks.entrySet()) {
             Optional<RankLadder> ladder =
