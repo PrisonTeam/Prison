@@ -19,6 +19,7 @@ package tech.mcprison.prison.ranks.managers;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Collection;
@@ -275,5 +276,18 @@ public class LadderManager {
         return loadedLadders.stream().filter(rankLadder -> rankLadder.containsRank(rankId))
             .collect(Collectors.toList());
     }
+
+	public RankLadder getLadder( Rank rank ) {
+		RankLadder results = null;
+		
+		for ( RankLadder rankLadder : loadedLadders ) {
+			if ( rankLadder.containsRank( rank.getId() )) {
+				results = rankLadder;
+				break;
+			}
+		}
+
+		return results;
+	}
 
 }

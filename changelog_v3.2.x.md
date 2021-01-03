@@ -16,7 +16,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.5 2021-01-02
+# V3.2.4-alpha.5 2021-01-03
+
+
+* **Add the rank commands for managing rank permissions and rank permission groups.**
+This is not functional other than adding these perms to the ranks.
+
 
 
 * **Work on Ladder and Rank Perms.**

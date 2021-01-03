@@ -350,7 +350,7 @@ public class LadderCommands
 		  onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsAddPerm(CommandSender sender, 
 		  @Arg(name = "ladderName", def = "default", 
-						description = "Ladder name to list the permissions.") String ladderName,
+						description = "Ladder name to add the permission to.") String ladderName,
 		  @Arg(name = "permission", description = "Permission") String permission
 		  ){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
@@ -402,7 +402,7 @@ public class LadderCommands
 		  onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsAddGroup(CommandSender sender, 
 		  @Arg(name = "ladderName", def = "default", 
-						description = "Ladder name to list the permissions.") String ladderName,
+						description = "Ladder name to add the permission group to.") String ladderName,
 		  @Arg(name = "permissionGroup", description = "Permission Group") String permissionGroup
 		  ){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );

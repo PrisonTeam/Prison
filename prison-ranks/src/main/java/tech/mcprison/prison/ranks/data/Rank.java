@@ -23,6 +23,7 @@ import java.util.List;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
@@ -76,6 +77,8 @@ public class Rank
     private List<ModuleElement> mines;
     private List<String> mineStrings;
     
+    
+    private transient RankLadder ladder;
     
     /*
      * Document-related
@@ -221,6 +224,48 @@ public class Rank
     }
     
     
+
+    /**
+     * <p>Identifies of the Ladder contains a permission.
+     * </p>
+     * 
+     * @param permission
+     * @return
+     */
+	public boolean hasPermission( String permission ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissions() ) {
+			if ( perm.equalsIgnoreCase( permission ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * <p>Identifies if the Ladder contains a permission group.
+	 * </p>
+	 * 
+	 * @param permissionGroup
+	 * @return
+	 */
+	public boolean hasPermissionGroup( String permissionGroup ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissionGroups() ) {
+			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+
+    
     @Override
     public String toString() {
     	return "Rank: " + id + " " + name;
@@ -230,6 +275,15 @@ public class Rank
     	return "rank_" + id;
     }
     
+    
+    public RankLadder getLadder() {
+    	if ( ladder == null ) {
+    		
+    		ladder = PrisonRanks.getInstance().getLadderManager().getLadder( this );
+    	}
+    	
+    	return ladder;
+    }
     
     /*
      * equals() and hashCode()
