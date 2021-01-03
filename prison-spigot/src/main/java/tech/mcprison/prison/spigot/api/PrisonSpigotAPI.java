@@ -309,7 +309,7 @@ public class PrisonSpigotAPI {
 
 
 	/**
-	 * <p>This return the total Prison sellall boost/multiplier of a player</p>
+	 * <p>This return the total Prison sellall boost/multiplier of a player.</p>
 	 *
 	 * @param player
 	 * @return
@@ -326,7 +326,7 @@ public class PrisonSpigotAPI {
 	}
 
 	/**
-	 * <p></p>Get the money to give to the Player depending on the SellAll multiplier.
+	 * <p>Get the money to give to the Player depending on the SellAll multiplier.
 	 * This depends by the items in the player's inventory at time of call.
 	 * Also if multipliers are disabled, this will return the amount of money you'd
 	 * get without multipliers.</p>
@@ -337,8 +337,6 @@ public class PrisonSpigotAPI {
 	public Double getSellAllMoneyWithMultiplier(Player player){
 
 		SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
-
-		SpigotPlayer sPlayer = new SpigotPlayer(player);
 
 		if (sellAll != null){
 			return sellAll.getMoneyWithMultiplier(player);

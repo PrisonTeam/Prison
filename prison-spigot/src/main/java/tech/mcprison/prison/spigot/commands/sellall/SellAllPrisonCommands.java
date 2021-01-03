@@ -134,7 +134,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
-        getMoneyWithMultiplier(sPlayer, player);
+        moneyToGive = getMoneyWithMultiplier(sPlayer, player);
 
         return moneyToGive;
     }
