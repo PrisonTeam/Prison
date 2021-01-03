@@ -40,6 +40,7 @@ public class PrisonSpigotAPI {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
+	private SellAllPrisonCommands sellAll;
 	
 
 	/**
@@ -316,7 +317,9 @@ public class PrisonSpigotAPI {
 	 * */
 	public Double getSellAllMultiplier(Player player){
 
-		SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+	    if (sellAll == null){
+            sellAll = SellAllPrisonCommands.get();
+        }
 
 		if (sellAll != null){
 			return sellAll.getMultiplier(player);
@@ -336,7 +339,9 @@ public class PrisonSpigotAPI {
 	 * */
 	public Double getSellAllMoneyWithMultiplier(Player player){
 
-		SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+	    if (sellAll == null){
+	        sellAll = SellAllPrisonCommands.get();
+        }
 
 		if (sellAll != null){
 			return sellAll.getMoneyWithMultiplier(player);
