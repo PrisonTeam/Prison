@@ -30,7 +30,7 @@ This is a work in progress and is non-functional.  The ladder perms working from
 The next step is to finish working on the rank perms commands to get them functional with adding and removing... they should already be functional with saving an loading.
 But even at that point, this will not be functional.  The whole core of the perms and the perm integrations need to be rewritten to utilize the expanded features.
 
-* **V3.2.4-alpha.6 2021-01-03**
+
 * **GUI code cleanup and optimizations.**
 The GUI's improving and getting more stable, the code got some refactoring, this won't really change things for the end user but it'll for devs who are wanting
 to edit GUIs, I hope to manage in the future to improve it even more.
