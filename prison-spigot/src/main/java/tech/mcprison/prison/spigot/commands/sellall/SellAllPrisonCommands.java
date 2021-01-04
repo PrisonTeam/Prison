@@ -302,33 +302,58 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         Player p = getSpigotPlayer(sender);
 
-        if (p.isOp() || p.hasPermission("prison.admin")){
-            SellAllAdminGUI gui = new SellAllAdminGUI(p);
-            gui.open();
+        if (p == null) {
+            sender.sendMessage(getMessages().getString("Message.CantRunGUIFromConsole"));
             return;
         }
 
-        if (!sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
-            if (p.isOp() || p.hasPermission("prison.admin")) {
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
-                return;
-            }
+        // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
+        if (sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+            // Check if a permission's required, if it isn't it'll open immediately the GUI.
+            if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
+                // Check if the sender have the required permission.
+               if (p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))) {
+                   SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                   gui.open();
+                   return;
+               // Try to open the Player GUI anyway.
+               } else if (sellAllPlayerGUI(p)) return;
+            // Open the Admin GUI because a permission isn't required.
+            } else {
+               SellAllAdminGUI gui = new SellAllAdminGUI(p);
+               gui.open();
+               return;
+           }
         }
+        // If the admin GUI's disabled, it'll try to use the Player GUI anyway.
+        if (sellAllPlayerGUI(p)) return;
+        // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
+        if (p.hasPermission("prison.admin")) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
+        }
+    }
 
-        if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))){
-                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.GUI_Permission") + "]"));
-            } else if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
-                if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
-                    if (!p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
-                        p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
-                        return;
-                    }
+    private boolean sellAllPlayerGUI(Player p) {
+        // Check if the Player GUI's enabled.
+        if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
+            // Check if a permission's required, if not it'll open directly the Player's GUI.
+            if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")){
+                // Check if the sender has the required permission.
+                if (p.hasPermission("Options.Player_GUI_Permission")){
+                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                    gui.open();
+                // If missing will send a missing permission error message.
+                } else {
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
                 }
+            // Because a permission isn't required, it'll open directly the GUI.
+            } else {
                 SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
                 gui.open();
             }
+            return true;
         }
+        return false;
     }
 
     @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", onlyPlayers = false)
