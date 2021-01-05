@@ -112,7 +112,7 @@ Prison now has a new set of features that can help you get up and running faster
 - [/prestige](docs-commands/prison_docs_command_38_prestige.md) `ranks.user` `ranks.rankup.prestiges`
 - [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md) `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
 - [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md) `ranks.user` `ranks.rankup.[ladderName]`
-
+- [/gui \[gui\]]]()
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
