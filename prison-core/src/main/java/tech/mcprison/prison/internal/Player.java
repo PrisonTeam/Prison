@@ -132,4 +132,7 @@ public interface Player extends CommandSender, InventoryHolder {
     
     public List<String> getPermissions( String prefix );
     
+    
+    public double getSellAllMultiplier();
+    
 }

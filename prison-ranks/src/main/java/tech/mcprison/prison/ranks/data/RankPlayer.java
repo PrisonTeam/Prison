@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -511,6 +512,31 @@ public class RankPlayer
 				results.add( perm );
 			}
 		}
+    	
+    	return results;
+    }
+    
+    /**
+     * <p>This will called by the placeholders, so need to get the actual
+     * multipliers that exists in the SpigotPlayer object.
+     * </p>
+     * 
+     * <p>If the player is offline, then just set to a value of 1.0 so as 
+     * not to change any other value that may be used with this function.
+     * If the player is offline, then there will be no inventory that can be
+     * accessed and hence, none to sell, so a value of 1.0 should be fine.
+     * </p>
+     * 
+     */
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
+    	
+    	if ( player.isPresent() ) {
+    		results = player.get().getSellAllMultiplier();
+    	}
     	
     	return results;
     }

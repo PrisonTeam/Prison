@@ -38,6 +38,7 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -332,4 +333,26 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     				iStack.getType().name(), iStack.getAmount() );
     	}
     }
+    
+    
+    /**
+     * <p>This uses the sellall configs for the permission name to use to get the list of
+     * multipliers.  It then adds all of the multipliers together to ...
+     * 
+     * </p>
+     * 
+     */
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+    	
+    	if ( sellall != null ) {
+    		results = sellall.getMultiplier( this );
+    	}
+    	
+    	return results;
+    }
+    
 }

@@ -175,6 +175,11 @@ public class PlaceholderManager {
 		prison_pb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
 
+	
+		
+		prison_psm(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_player_sellall_multiplier(prison_psm, PlaceHolderFlags.PLAYER),
+		
 		
 		
 		// Mine aliases:

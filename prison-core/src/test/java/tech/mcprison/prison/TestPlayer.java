@@ -149,4 +149,9 @@ public class TestPlayer implements Player {
     	return results;
     }
     
+    @Override
+    public double getSellAllMultiplier() {
+    	return 1.0;
+    }
+    
 }

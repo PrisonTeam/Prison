@@ -155,4 +155,23 @@ public class SpigotOfflinePlayer
     	
     	return results;
     }
+    
+    
+    /**
+     * <p>This is not the active online player instance, so therefore prison would not have
+     * access to the player's inventory if it is defaulting to this Player class. 
+     * Therefore, this function should *never* be used in any calculations dealing with
+     * the sales of inventory items.
+     * </p>
+     * 
+     * <p>This is being set to a value of 1.0 so as not to change any other value that may
+     * be used with this function.
+     * </p>
+     * 
+     */
+    @Override
+    public double getSellAllMultiplier() {
+    	return 1.0;
+    }
+    
 }

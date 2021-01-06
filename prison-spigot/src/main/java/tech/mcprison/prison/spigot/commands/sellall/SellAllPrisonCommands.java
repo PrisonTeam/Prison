@@ -1,6 +1,11 @@
 package tech.mcprison.prison.spigot.commands.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,6 +13,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -21,15 +29,8 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
@@ -37,7 +38,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-    private double multiplier;
     private static SellAllPrisonCommands instance;
     private double moneyToGive;
 
@@ -90,7 +90,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             SpigotPlayer sPlayer = new SpigotPlayer(p);
 
             // Get money to give + multiplier
-            moneyToGive = getMoneyWithMultiplier(sPlayer, p);
+            moneyToGive = getMoneyWithMultiplier(sPlayer);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -109,19 +109,18 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the money to give to the Player depending on the multiplier.
      * */
-    private double getMoneyWithMultiplier(SpigotPlayer sPlayer, Player p) {
+    private double getMoneyWithMultiplier(SpigotPlayer sPlayer) {
 
         // Get the Items config section
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
         moneyToGive = 0;
 
         // Get money to give
-        moneyToGive = getMoneyToGive(p, items, moneyToGive);
+        moneyToGive = getMoneyToGive( sPlayer.getWrapper(), items, moneyToGive);
 
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
-            getMultiplier(sPlayer);
-            moneyToGive = moneyToGive * multiplier;
+            moneyToGive = moneyToGive * getMultiplier(sPlayer);;
         }
 
         return moneyToGive;
@@ -134,7 +133,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
-        moneyToGive = getMoneyWithMultiplier(sPlayer, player);
+        moneyToGive = getMoneyWithMultiplier(sPlayer);
 
         return moneyToGive;
     }
@@ -147,26 +146,26 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         // Get Spigot Player
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
-        getMultiplier(sPlayer);
-        return multiplier;
+        return getMultiplier(sPlayer);
     }
 
     /**
      * Get the player multiplier, requires SpigotPlayer.
      * */
-    private void getMultiplier(SpigotPlayer sPlayer) {
+    public double getMultiplier(SpigotPlayer sPlayer) {
 
         // Get Ranks module.
         ModuleManager modMan = Prison.get().getModuleManager();
         Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-        PrisonRanks rankPlugin = (PrisonRanks) module;
 
         // Get default multiplier
-        multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+        double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
 
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
-        if (rankPlugin != null) {
+        if (module != null) {
+        	PrisonRanks rankPlugin = (PrisonRanks) module;
+        	
             if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
                 String playerRankName;
                 try {
@@ -190,6 +189,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
         multiplier += multiplierExtraByPerms;
+        
+        return multiplier;
     }
 
     /**

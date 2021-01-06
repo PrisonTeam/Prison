@@ -310,22 +310,20 @@ public class PrisonSpigotAPI {
 
 
 	/**
-	 * <p>This return the total Prison sellall boost/multiplier of a player.</p>
+	 * <p>This return the total Prison sellall boost/multiplier of a player. If 
+	 * the player has no multipliers, or if ranks is not enabled, or if sellall 
+	 * is not enabled, then it will return a value of 1.0 so it will not change
+	 * any values multiplied by this value.</p>
+	 * 
 	 *
 	 * @param player
 	 * @return
 	 * */
-	public Double getSellAllMultiplier(Player player){
+	public double getSellAllMultiplier(Player player){
 
-	    if (sellAll == null){
-            sellAll = SellAllPrisonCommands.get();
-        }
-
-		if (sellAll != null){
-			return sellAll.getMultiplier(player);
-		}
-
-		return null;
+		SpigotPlayer spigotPlayer = new SpigotPlayer( player );
+		
+		return spigotPlayer.getSellAllMultiplier();
 	}
 
 	/**

@@ -817,6 +817,21 @@ public class PlayerManager
     	return sb.toString();
     }
     
+
+	private String getPlayerSellallMultiplier( RankPlayer rankPlayer, PlaceholderAttribute attribute ) {
+		String results;
+		double multiplier = rankPlayer.getSellAllMultiplier();
+		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			PlaceholderAttributeNumberFormat attributeNF = 
+													(PlaceholderAttributeNumberFormat) attribute;
+			results = attributeNF.format( multiplier );
+		}
+		else {
+			results = Double.toString( multiplier );
+		}
+		return results;
+	}
+	
     /**
      * <p>Entry point for translating placeholders.
      * </p>
@@ -950,6 +965,12 @@ public class PlayerManager
 					case prison_pb_laddername:
 					case prison_player_balance_laddername:
 						results = getPlayerBalance( rankPlayer, ladderName, false, attribute );
+						break;
+						
+					case prison_psm:
+					case prison_player_sellall_multiplier:
+						results = getPlayerSellallMultiplier( rankPlayer, attribute );
+						break;
 						
 					default:
 						break;
@@ -965,6 +986,7 @@ public class PlayerManager
 		
 		return results;
     }
+
 
     @Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {

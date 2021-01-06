@@ -4,10 +4,10 @@
 
 ## Build logs
  - **[v3.2.4-alpha - Current](changelog_v3.2.x.md)**
- - **[v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)**
- - **[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)**
- - **[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)**
- - **[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)**
+ - [v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)&nbsp;&nbsp;
+[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)&nbsp;&nbsp;
+[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)&nbsp;&nbsp;
+[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)
  
 
 Greetings!  I'm delighted that you are interested in the build logs for the
@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.5 2021-01-03
+# V3.2.4-alpha.5 2021-01-06
+
+
+* **Added new placeholder: prison_player_sellall_multiplier**
+with an alias of prison_psm.  This will return the value of the multiplier and if nothing is configured for it (no ranks, no sellall, no perms, ect) then it will return a value of 1.0.  This placeholder works with the nFormat placeholder attribute so the value can be formatted as desired.
 
 
 * **Add the rank commands for managing rank permissions and rank permission groups.**
