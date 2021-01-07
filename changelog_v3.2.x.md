@@ -15,6 +15,14 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+# V.3.2.4-alpha.6 2021-01-08
+
+* **Added new AutoSell enable and disable commands**
+It's now possible to enable and disable autosell while in game for everyone (enable or disable the whole feature).
+commands:
+  - `/sellall autosell enable` `prison.autosell.enable`
+  - `/sellall autosell disable` `prison.autosell.disable`
+
 
 # V3.2.4-alpha.5 2021-01-06
 
