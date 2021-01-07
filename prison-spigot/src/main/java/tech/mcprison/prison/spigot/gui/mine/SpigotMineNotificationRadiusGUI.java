@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +20,6 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
     private final String mineName;
     private final long val;
     private final String typeNotification;
-    private final Configuration messages = messages();
 
     public SpigotMineNotificationRadiusGUI(Player p, Long val, String typeNotification, String mineName){
         this.p = p;

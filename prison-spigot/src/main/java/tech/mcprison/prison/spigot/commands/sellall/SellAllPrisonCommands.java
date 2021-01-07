@@ -1,6 +1,11 @@
 package tech.mcprison.prison.spigot.commands.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,6 +13,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -24,19 +32,27 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-    private double multiplier;
+    private static SellAllPrisonCommands instance;
+    private double moneyToGive;
+
+    /**
+     * Get SellAll instance.
+     * */
+    public static SellAllPrisonCommands get() {
+        if (instance == null && isEnabled()) {
+            instance = new SellAllPrisonCommands();
+        }
+        if (instance == null){
+            return null;
+        }
+        return instance;
+    }
 
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
@@ -70,18 +86,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
 
-            // Get the Items config section
-            Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-            double moneyToGive = 0;
-
-            // Get money to give
-            moneyToGive = getMoneyToGive(p, items, moneyToGive);
-
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
 
             // Get money to give + multiplier
-            moneyToGive = getMoneyWithMultiplier(moneyToGive, sPlayer);
+            moneyToGive = getMoneyWithMultiplier(sPlayer);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -100,36 +109,67 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the money to give to the Player depending on the multiplier.
      * */
-    public double getMoneyWithMultiplier(double moneyToGive, SpigotPlayer sPlayer) {
+    private double getMoneyWithMultiplier(SpigotPlayer sPlayer) {
+
+        // Get the Items config section
+        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
+        moneyToGive = 0;
+
+        // Get money to give
+        moneyToGive = getMoneyToGive( sPlayer.getWrapper(), items, moneyToGive);
+
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
-            getMultiplier(sPlayer);
-            moneyToGive = moneyToGive * multiplier;
+            moneyToGive = moneyToGive * getMultiplier(sPlayer);;
         }
 
         return moneyToGive;
     }
 
     /**
+     * Get the money to give to the Player depending on the multiplier.
+     * */
+    public double getMoneyWithMultiplier(Player player){
+
+        SpigotPlayer sPlayer = new SpigotPlayer(player);
+
+        moneyToGive = getMoneyWithMultiplier(sPlayer);
+
+        return moneyToGive;
+    }
+
+    /**
+     * Get player multiplier, this uses the normal Player and actually return a double.
+     * */
+    public double getMultiplier(Player player){
+
+        // Get Spigot Player
+        SpigotPlayer sPlayer = new SpigotPlayer(player);
+
+        return getMultiplier(sPlayer);
+    }
+
+    /**
      * Get the player multiplier, requires SpigotPlayer.
      * */
-    public void getMultiplier(SpigotPlayer sPlayer) {
+    public double getMultiplier(SpigotPlayer sPlayer) {
 
         // Get Ranks module.
         ModuleManager modMan = Prison.get().getModuleManager();
         Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-        PrisonRanks rankPlugin = (PrisonRanks) module;
 
         // Get default multiplier
-        multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+        double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
 
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
-        if (rankPlugin != null) {
+        if (module != null) {
+        	PrisonRanks rankPlugin = (PrisonRanks) module;
+        	
             if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").name;
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").getName();
                 } catch (NullPointerException ex){
                     playerRankName = null;
                 }
@@ -149,6 +189,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
         multiplier += multiplierExtraByPerms;
+        
+        return multiplier;
     }
 
     /**
@@ -261,33 +303,58 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         Player p = getSpigotPlayer(sender);
 
-        if (p.isOp() || p.hasPermission("prison.admin")){
-            SellAllAdminGUI gui = new SellAllAdminGUI(p);
-            gui.open();
+        if (p == null) {
+            sender.sendMessage(getMessages().getString("Message.CantRunGUIFromConsole"));
             return;
         }
 
-        if (!sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
-            if (p.isOp() || p.hasPermission("prison.admin")) {
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
-                return;
-            }
+        // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
+        if (sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+            // Check if a permission's required, if it isn't it'll open immediately the GUI.
+            if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
+                // Check if the sender have the required permission.
+               if (p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))) {
+                   SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                   gui.open();
+                   return;
+               // Try to open the Player GUI anyway.
+               } else if (sellAllPlayerGUI(p)) return;
+            // Open the Admin GUI because a permission isn't required.
+            } else {
+               SellAllAdminGUI gui = new SellAllAdminGUI(p);
+               gui.open();
+               return;
+           }
         }
+        // If the admin GUI's disabled, it'll try to use the Player GUI anyway.
+        if (sellAllPlayerGUI(p)) return;
+        // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
+        if (p.hasPermission("prison.admin")) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIDisabled")));
+        }
+    }
 
-        if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))){
-                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.GUI_Permission") + "]"));
-            } else if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
-                if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")) {
-                    if (!p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
-                        p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
-                        return;
-                    }
+    private boolean sellAllPlayerGUI(Player p) {
+        // Check if the Player GUI's enabled.
+        if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
+            // Check if a permission's required, if not it'll open directly the Player's GUI.
+            if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")){
+                // Check if the sender has the required permission.
+                if (p.hasPermission("Options.Player_GUI_Permission")){
+                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                    gui.open();
+                // If missing will send a missing permission error message.
+                } else {
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
                 }
+            // Because a permission isn't required, it'll open directly the GUI.
+            } else {
                 SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
                 gui.open();
             }
+            return true;
         }
+        return false;
     }
 
     @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", onlyPlayers = false)
@@ -505,7 +572,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return true;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).id);
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
         if (!isInPrestigeLadder) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
             return true;

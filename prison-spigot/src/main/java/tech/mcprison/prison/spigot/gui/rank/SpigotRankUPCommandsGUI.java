@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Rank rank;
-    private final Configuration messages = messages();
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -29,21 +27,18 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Init the ItemStack
-        // ItemStack itemCommand;
-
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
             return;
         }
 
-        if (rank.rankUpCommands.size() == 0){
+        if (rank.getRankUpCommands().size() == 0){
             p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRankupCommands")));
             return;
         }
 
         // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(rank.rankUpCommands.size() / 9D) * 9;
+        int dimension = (int) Math.ceil(rank.getRankUpCommands().size() / 9D) * 9;
 
 
 
@@ -65,7 +60,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RankManager -> RankUPCommands"));
 
         // For every command make a button
-        for (String command : rank.rankUpCommands) {
+        for (String command : rank.getRankUpCommands()) {
 
             if (guiBuilder(inv, command)) return;
 
@@ -88,8 +83,6 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, String command) {
 
-        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemCommand;
         // Init the lore array with default values for ladders
         List<String> commandsLore = createLore(
@@ -99,7 +92,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         commandsLore.add(SpigotPrison.format(messages.getString("Lore.Command") + command));
 
         // Make the button with materials, amount, lore and name
-        itemCommand = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), commandsLore, SpigotPrison.format("&3" + rank.name + " " + command));
+        itemCommand = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), commandsLore, SpigotPrison.format("&3" + rank.getName() + " " + command));
 
         // Add the button to the inventory
         inv.addItem(itemCommand);

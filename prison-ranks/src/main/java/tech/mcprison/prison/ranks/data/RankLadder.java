@@ -45,10 +45,15 @@ public class RankLadder
      * Fields & Constants
      */
 
-    public int id;
-    public String name;
-    public List<PositionRank> ranks;
-    public int maxPrestige;
+    private int id;
+    private String name;
+    private List<PositionRank> ranks;
+    private int maxPrestige;
+   
+    
+    private List<String> permissions;
+    private List<String> permissionGroups;
+ 
     
     private boolean dirty = false;
 
@@ -57,10 +62,25 @@ public class RankLadder
      */
 
     public RankLadder() {
+    	super();
+    	
+    	this.ranks = new ArrayList<>();
+    	
+    	this.permissions = new ArrayList<>();
+    	this.permissionGroups =  new ArrayList<>();
+
+    }
+    
+    public RankLadder( int id, String name ) {
+    	this();
+    	
+    	this.id = id;
+    	this.name = name;
     }
 
     @SuppressWarnings( "unchecked" )
 	public RankLadder(Document document, PrisonRanks prisonRanks) {
+    	this();
     	
     	RankManager rankManager = prisonRanks.getRankManager();
     	
@@ -84,7 +104,7 @@ public class RankLadder
         		
         		// if null look it up from loaded ranks:
         		if ( rRankName == null  ) {
-        			rRankName = rankPrison.name;
+        			rRankName = rankPrison.getName();
         			dirty = true;
         		}
         	}
@@ -94,6 +114,26 @@ public class RankLadder
         
         this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
         
+		
+		getPermissions().clear();
+		Object perms = document.get( "permissions" );
+		if ( perms != null ) {
+			List<String> permissions = (List<String>) perms;
+			for ( String permission : permissions ) {
+				getPermissions().add( permission );
+			}
+		}
+        
+		
+		getPermissionGroups().clear();
+		Object permsGroups = document.get( "permissionGroups" );
+		if ( perms != null ) {
+			List<String> permissionGroups = (List<String>) permsGroups;
+			for ( String permissionGroup : permissionGroups ) {
+				getPermissionGroups().add( permissionGroup );
+			}
+		}
+
     }
 
     public Document toDocument() {
@@ -102,6 +142,10 @@ public class RankLadder
         ret.put("name", this.name);
         ret.put("ranks", this.ranks);
         ret.put("maxPrestige", this.maxPrestige);
+        
+        ret.put( "permissions", getPermissions() );
+        ret.put( "permissionGroups", getPermissionGroups() );
+        
         return ret;
     }
 
@@ -149,7 +193,7 @@ public class RankLadder
         ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
                 .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
 
-        ranks.add(new PositionRank(position, rank.id, rank.name, rank));
+        ranks.add(new PositionRank(position, rank.getId(), rank.getName(), rank));
         
         // Ranks will be reordered within connectRanks() so don't sort here:
         
@@ -166,7 +210,7 @@ public class RankLadder
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-        ranks.add(new PositionRank(getNextAvailablePosition(), rank.id, rank.name, rank));
+        ranks.add(new PositionRank(getNextAvailablePosition(), rank.getId(), rank.getName(), rank));
         
         // Reset the rank relationships:
         PrisonRanks.getInstance().getRankManager().connectRanks();
@@ -231,7 +275,7 @@ public class RankLadder
      */
     public int getPositionOfRank(Rank rank) {
         for (PositionRank rankEntry : ranks) {
-            if (rankEntry.getRankId() == rank.id) {
+            if (rankEntry.getRankId() == rank.getId()) {
                 return rankEntry.getPosition();
             }
         }
@@ -285,7 +329,8 @@ public class RankLadder
      * @param position The position to search for.
      * @return An optional containing the rank if it was found, or empty if it wasn't.
      */
-    public Optional<Rank> getByPosition(int position) {
+    @SuppressWarnings( "deprecation" )
+	public Optional<Rank> getByPosition(int position) {
         for (PositionRank posRank : ranks) {
             if (posRank.getPosition() == position) {
                 return PrisonRanks.getInstance().getRankManager().getRankOptional(posRank.getRankId());
@@ -304,7 +349,8 @@ public class RankLadder
      *
      * @return The rank option, or an empty optional if there are no ranks in this ladder.
      */
-    public Optional<Rank> getLowestRank() {
+    @SuppressWarnings( "deprecation" )
+	public Optional<Rank> getLowestRank() {
         if (ranks.isEmpty()) return Optional.empty();
 
         PositionRank lowest = ranks.get(0);
@@ -419,6 +465,89 @@ public class RankLadder
 			this.rank = rank;
 		}
     }
+    
+
+    /**
+     * <p>Identifies of the Ladder contains a permission.
+     * </p>
+     * 
+     * @param permission
+     * @return
+     */
+	public boolean hasPermission( String permission ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissions() ) {
+			if ( perm.equalsIgnoreCase( permission ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * <p>Identifies if the Ladder contains a permission group.
+	 * </p>
+	 * 
+	 * @param permissionGroup
+	 * @return
+	 */
+	public boolean hasPermissionGroup( String permissionGroup ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissionGroups() ) {
+			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+
+	public int getId() {
+		return id;
+	}
+	public void setId( int id ) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public int getMaxPrestige() {
+		return maxPrestige;
+	}
+	public void setMaxPrestige( int maxPrestige ) {
+		this.maxPrestige = maxPrestige;
+	}
+
+	public List<PositionRank> getPositionRanks() {
+		return ranks;
+	}
+	public void setPositionRanks( List<PositionRank> ranks ) {
+		this.ranks = ranks;
+	}
+	
+	public List<String> getPermissions() {
+		return permissions;
+	}
+	public void setPermissions( List<String> permissions ) {
+		this.permissions = permissions;
+	}
+
+	public List<String> getPermissionGroups() {
+		return permissionGroups;
+	}
+	public void setPermissionGroups( List<String> permissionGroups ) {
+		this.permissionGroups = permissionGroups;
+	}
 
 	public boolean isDirty() {
 		return dirty;

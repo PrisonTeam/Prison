@@ -31,6 +31,8 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -237,6 +239,42 @@ public class PrisonMines extends Module {
 ////        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
 //    }
 
+
+	/**
+	 * <p>Submit all mines to reset.  This should only be called once since
+	 * it starts the chain of commands that will start the process.
+	 * </p>
+	 * 
+	 * @param resetType
+	 * @param resetActions 
+	 */
+	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+		getMineManager().resetAllMines( resetType, resetActions );
+	}
+	
+	/**
+	 * <p>Run the mine reset for the next mine in the queue.
+	 * The mine reset command will be submitted to be ran as a task.
+	 * </p>
+	 * 
+	 */
+	public void resetAllMinesNext() {
+		getMineManager().resetAllMinesNext();
+	}
+	
+	/**
+	 * <p>Cancel all the remaining mine resets, including any jobs that have been
+	 * submitted, but not yet started.  If a mine is in the middle of a reset it
+	 * will not be terminated, but it will be allowed to complete.
+	 * </p>
+	 * 
+	 */
+	public void cancelResetAllMines() {
+		getMineManager().cancelResetAllMines();;
+	}
+	
+	
+	
     public JsonFileIO getJsonFileIO()
 	{
 		return jsonFileIO;
@@ -285,5 +323,6 @@ public class PrisonMines extends Module {
 	public void setMinesCommands( MinesCommands minesCommands ) {
 		this.minesCommands = minesCommands;
 	}
+
 
 }

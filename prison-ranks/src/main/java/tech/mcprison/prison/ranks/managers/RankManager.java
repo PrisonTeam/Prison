@@ -86,16 +86,16 @@ public class RankManager {
     private void addRank( Rank rank ) {
     	if ( rank != null ) {
     		getLoadedRanks().add( rank );
-    		getRanksByName().put( rank.getName(), rank );
-    		getRanksById().put( rank.id, rank );
+    		getRanksByName().put( rank.getName().toLowerCase(), rank );
+    		getRanksById().put( rank.getId(), rank );
     	}
     }
     
     private void removeRankFromCollections( Rank rank ) {
     	if ( rank != null ) {
     		getLoadedRanks().remove( rank );
-    		getRanksByName().remove( rank.getName() );
-    		getRanksById().remove( rank.id );
+    		getRanksByName().remove( rank.getName().toLowerCase() );
+    		getRanksById().remove( rank.getId() );
     	}
     	
     }
@@ -169,12 +169,7 @@ public class RankManager {
      */
     public Optional<Rank> createRank(String name, String tag, double cost) {
         // Set the default values...
-        Rank newRank = new Rank();
-        newRank.id = getNextAvailableId();
-        newRank.name = name;
-        newRank.tag = tag;
-        newRank.cost = cost;
-        newRank.rankUpCommands = new ArrayList<>();
+        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
 
         // ... add it to the list...
         addRank(newRank);
@@ -225,7 +220,7 @@ public class RankManager {
      */
     @Deprecated 
     public Optional<Rank> getRankOptional(String name) {
-        return loadedRanks.stream().filter(rank -> rank.name.equals(name)).findFirst();
+        return loadedRanks.stream().filter(rank -> rank.getName().equals(name)).findFirst();
     }
 
     /**
@@ -236,7 +231,7 @@ public class RankManager {
      * @return
      */
     public Rank getRank(String name) {
-    	return getRanksByName().get( name );
+    	return getRanksByName().get( name.toLowerCase() );
     }
     
     
@@ -246,7 +241,7 @@ public class RankManager {
      */
     public Optional<Rank> getRankEscaped(String name) {
     	return loadedRanks.stream().filter(rank -> 
-    					rank.name.replace( "&", "-" ).equals(name)).findFirst();
+    					rank.getName().replace( "&", "-" ).equals(name)).findFirst();
     }
 
     /**
@@ -272,11 +267,11 @@ public class RankManager {
     	
     	final boolean[] success = {true};
         for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager()
-        						.getLaddersWithRank(rank.id)) {
+        						.getLaddersWithRank(rank.getId())) {
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	Rank curRank = rankPlayer.getRank(ladder.name);
+            	Rank curRank = rankPlayer.getRank(ladder.getName());
                 if ( curRank != null && rank.equals( curRank ) ) {
                     rankPlayer.removeRank(curRank);
                     if ( newRank != null ) {
@@ -289,7 +284,7 @@ public class RankManager {
                         Output.get().logError("RemoveRank: Couldn't save player file.", e);
                     }
                     PrisonAPI.debug("Player %s is now %s", rankPlayer.getName(),
-                        newRank.name);
+                        newRank.getName());
                 }
             });
             
@@ -300,7 +295,7 @@ public class RankManager {
             	PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
             } catch (IOException e) {
             	success[0] = false;
-            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.name + ".", e);
+            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.getName() + ".", e);
             }
             
         }
@@ -329,7 +324,7 @@ public class RankManager {
      */
     @Deprecated 
     public Optional<Rank> getRankOptional(int id) {
-        return loadedRanks.stream().filter(rank -> rank.id == id).findFirst();
+        return loadedRanks.stream().filter(rank -> rank.getId() == id).findFirst();
     }
 
     public Rank getRank( int id ) {
@@ -361,10 +356,10 @@ public class RankManager {
     	
     	for ( RankLadder rLadder : lman.getLadders() ) {
 			
-    		rLadder.ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
+    		rLadder.getPositionRanks().sort(Comparator.comparingInt(PositionRank::getPosition));
     		
     		Rank rankLast = null;
-    		for ( PositionRank pRank : rLadder.ranks ) {
+    		for ( PositionRank pRank : rLadder.getPositionRanks() ) {
     			if ( pRank != null && pRank.getPosition() >= 0 ) {
     				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
     				if ( opRank.isPresent() ) {
@@ -372,12 +367,12 @@ public class RankManager {
     					
     					// reset the rankPrior and rankNext in case there are no hookups:
     					// Important if ranks are removed, or inserted, or moved:
-    					rank.rankPrior = null;
-    					rank.rankNext = null;
+    					rank.setRankPrior( null );
+    					rank.setRankNext( null );
     					
     					if ( rankLast != null ) {
-    						rank.rankPrior = rankLast;
-    						rankLast.rankNext = rank;
+    						rank.setRankPrior( rankLast );
+    						rankLast.setRankNext( rank );
     					}
     					rankLast = rank;
     				}
@@ -406,14 +401,14 @@ public class RankManager {
      */
     public void identifyAllRankCurrencies() {
     	for ( Rank rank : loadedRanks ) {
-			if ( rank.currency != null ) {
+			if ( rank.getCurrency() != null ) {
 				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-						.getEconomyForCurrency( rank.currency );
+						.getEconomyForCurrency( rank.getCurrency() );
 				if ( currencyEcon == null ) {
 					Output.get().logError( 
 						String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
 							"rank &a%s&7, but it isn't supported by any Economy integration.",
-							rank.currency, rank.name) );
+							rank.getCurrency(), rank.getName()) );
 				}
 			}
 		}
@@ -432,7 +427,7 @@ public class RankManager {
     		// Get the players per rank!!
 			List<RankPlayer> playersList =
                     playerManager.getPlayers().stream()
-                        .filter(rankPlayer -> rankPlayer.getRanks().values().contains(rank))
+                        .filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
                         .collect(Collectors.toList());
     		int players = playersList.size();
     		
@@ -443,7 +438,7 @@ public class RankManager {
     			
     			
     			sb.append( " &3" );
-    			sb.append( rank.name );
+    			sb.append( rank.getName() );
     			
     			if ( players > 0 ) {
     				
@@ -483,12 +478,12 @@ public class RankManager {
     	List<Rank> ranksIncluded = new ArrayList<>();
     	
     	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
-    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.getName() ) ) {
     			
     			List<Rank> ladderRanks = ladder.getRanks();
     			ranksIncluded.addAll( ladderRanks );
     			
-    			String ranksByLadder = listAllRanks( ladder.name, ladderRanks, includeAll );
+    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, includeAll );
     			
     			rankByLadderOutput( sender, ranksByLadder );
     		}

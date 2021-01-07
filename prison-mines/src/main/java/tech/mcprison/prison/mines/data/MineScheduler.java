@@ -37,7 +37,7 @@ public abstract class MineScheduler
 	 */
 	private List<MineJob> jobWorkflow;
 	private Stack<MineJob> jobStack;
-	private MineJob currentJob;
+//	private MineJob currentJob;
 	private Integer taskId = null;
 	
 	public MineScheduler() {
@@ -45,7 +45,7 @@ public abstract class MineScheduler
 		
 		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
-		this.currentJob = null;
+
 	}
 
     /**
@@ -93,6 +93,13 @@ public abstract class MineScheduler
 		FORCED;
 	}
 	
+	public enum MineResetActions {
+		NO_COMMANDS,
+		CHAINED_RESETS,
+		DETAILS
+		;
+	}
+	
 	/**
 	 * <p>This class represents a workflow action.  The action can be one of either MESSAGE, or
 	 * RESET.  The delayActionSec is how many seconds the job must wait until taking action.
@@ -112,6 +119,7 @@ public abstract class MineScheduler
 		private double delayActionSec;
 		private double resetInSec;
 		private MineResetType resetType;
+		private List<MineResetActions> resetActions;
 		
 		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
 		{
@@ -122,6 +130,15 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 			
 			this.resetType = MineResetType.NORMAL;
+			
+			this.resetActions = new ArrayList<>();
+		}
+		
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetType resetType )
+		{
+			this( action, delayActionSec, resetInSec );
+			
+			this.resetType = resetType;
 		}
 		
 		public double getJobSubmitResetInSec() {
@@ -130,48 +147,53 @@ public abstract class MineScheduler
 		
 		@Override
 		public String toString() {
+			StringBuilder ra = new StringBuilder();
+			for ( MineResetActions resetAction : getResetActions() ) {
+				ra.append( resetAction.name() ).append( " " );
+			}
+			
 			return "Action: " + getAction().name() + 
 					"  Reset at submit: " + getJobSubmitResetInSec() +
 					"  Delay before running: " + getDelayActionSec() + 
-					"  Reset at run: " + getResetInSec();
+					"  Reset at run: " + getResetInSec() +
+					"  ResetType: " + getResetType().name() + 
+					"  ResetActions: " + ra.toString();
 		}
 
-		public MineJobAction getAction()
-		{
+		public MineJobAction getAction() {
 			return action;
 		}
-		public void setAction( MineJobAction action )
-		{
+		public void setAction( MineJobAction action ) {
 			this.action = action;
 		}
 
-		public double getDelayActionSec()
-		{
+		public double getDelayActionSec() {
 			return delayActionSec;
 		}
-		public void setDelayActionSec( double delayActionSec )
-		{
+		public void setDelayActionSec( double delayActionSec ) {
 			this.delayActionSec = delayActionSec;
 		}
 
-		public double getResetInSec()
-		{
+		public double getResetInSec() {
 			return resetInSec;
 		}
-		public void setResetInSec( double resetInSec )
-		{
+		public void setResetInSec( double resetInSec ) {
 			this.resetInSec = resetInSec;
 		}
 
-		public MineResetType getResetType()
-		{
+		public MineResetType getResetType() {
 			return resetType;
 		}
-		public void setResetType( MineResetType resetType )
-		{
+		public void setResetType( MineResetType resetType ) {
 			this.resetType = resetType;
 		}
 
+		public List<MineResetActions> getResetActions() {
+			return resetActions;
+		}
+		public void setResetActions( List<MineResetActions> resetActions ) {
+			this.resetActions = resetActions;
+		}
 
 	}
 	
@@ -447,18 +469,7 @@ public abstract class MineScheduler
 		submitTask();
 	}
 
-	/**
-	 * This is called by the MineCommand.resetCommand() function, which is 
-	 * triggered by a player.
-	 * 
-	 */
-	public void manualReset() {
-		
-		if ( !isVirtual() ) {
-			manualReset( MineResetType.FORCED, 0 );
-		}
-	}
-	
+
 	
 	/**
 	 * <p>This function checks if the block break event should execute a 
@@ -573,6 +584,32 @@ public abstract class MineScheduler
 	}
 	
 	/**
+	 * This is called by the MineCommand.resetCommand() function, which is 
+	 * triggered by a player.
+	 * 
+	 */
+	public void manualReset() {
+		manualReset( MineResetType.FORCED );
+	}
+	public void manualReset( MineResetType resetType ) {
+		
+		if ( !isVirtual() ) {
+			manualReset( resetType, 0 );
+		}
+	}
+	
+	private void manualReset( MineResetType resetType, double delayActionSec ) {
+		List<MineResetActions> resetActions = new ArrayList<>();
+		
+		manualReset( resetType, delayActionSec, resetActions );
+	}
+	public void manualReset( MineResetType resetType, List<MineResetActions> resetActions ) {
+		
+		manualReset( resetType, 0, resetActions );
+	}
+	
+	
+	/**
 	 * <p>This function should only be called from the commands to manually force a mine to reset.
 	 * How this should work, is it should cancel (remove) the scheduled reset for this mine, then 
 	 * run the actual reset, with the intentions of resubmitting the whole workflow from the
@@ -583,7 +620,8 @@ public abstract class MineScheduler
 	 * @param delayActionSec Delay in seconds before resetting mine. 
 	 * 
 	 */
-	private void manualReset( MineResetType resetType, double delayActionSec ) {
+	private void manualReset( MineResetType resetType, double delayActionSec, 
+			List<MineResetActions> resetActions ) {
 		
 		if ( isVirtual() ) {
 			// Nope... nothing to reset... 
@@ -601,8 +639,10 @@ public abstract class MineScheduler
 		MineJobAction action = isUsePagingOnReset() ? 
 				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
 		
-		MineJob mineJob = new MineJob( action, delayActionSec, 0);
+		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
 		mineJob.setResetType( resetType );
+		mineJob.setResetActions( resetActions );
+		
 		setCurrentJob( mineJob );
     	
 		// Force reset even if skip is enabled:
@@ -627,15 +667,6 @@ public abstract class MineScheduler
 	public void setJobStack( Stack<MineJob> jobStack )
 	{
 		this.jobStack = jobStack;
-	}
-
-	public MineJob getCurrentJob()
-	{
-		return currentJob;
-	}
-	public void setCurrentJob( MineJob currentJob )
-	{
-		this.currentJob = currentJob;
 	}
 
 	public Integer getTaskId()

@@ -44,11 +44,13 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
-import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -131,7 +133,7 @@ public class MinesCommands
     	
     	if (PrisonMines.getInstance().getMine(mineName) != null) {
     		pMines.getMinesMessages().getLocalizable("mine_exists")
-    		.sendTo(sender, LogLevel.ERROR);
+    										.sendTo(sender, LogLevel.ERROR);
     		return;
     	}
 
@@ -1520,7 +1522,58 @@ public class MinesCommands
 
     @Command(identifier = "mines reset", permissions = "mines.reset", description = "Resets a mine.")
     public void resetCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to reset.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to reset, " +
+        		"or '*all*' to reset all the mines, " +
+        		"or '*cancel*' to cancel the resetting of all mines.") String mineName,
+        @Wildcard(join=true)
+    	@Arg(name = "options", description = "Optional settings [noCommands details] " +
+    			"'noCommands' prevents the running of mine commands. " +
+    			"'details' shows progress on reset *all*.", def = "") String options
+    			) {
+        
+        // make sure not null and set to lower case:
+        options = ( options == null ? "" : options.trim().toLowerCase());
+
+        MineResetType resetType = MineResetType.FORCED;
+        List<MineResetActions> resetActions = new ArrayList<>();
+        
+        
+        if ( options.contains( "nocommands" )) {
+        	options = options.replace( "nocommands", "" ).trim();
+        	resetActions.add( MineResetActions.NO_COMMANDS );
+        }
+        
+        // The value of chained is an internal value and should not be shown to users:
+        if ( options.contains( "details" ) ) {
+        	options = options.replace( "details", "" ).trim();
+        	resetActions.add( MineResetActions.DETAILS );
+        }
+        
+        // The value of chained is an internal value and should not be shown to users:
+        if ( options.contains( "chained" ) ) {
+        	options = options.replace( "chained", "" ).trim();
+        	resetActions.add( MineResetActions.CHAINED_RESETS );
+        }
+        
+        if ( !options.trim().isEmpty() ) {
+        	sender.sendMessage( "&cInvalid value for &7options&c. " +
+        			"&3The only valid options are: [&7noCommands details&3] or blanks. " +
+        			"[&7" + options + "&3] mine = [&7" + mineName + "&3]" );
+        	return;
+        }
+
+        PrisonMines pMines = PrisonMines.getInstance();
+        
+        if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+        	pMines.resetAllMines( resetType, resetActions );
+        	return;
+        }
+        
+        if ( mineName != null && "*cancel*".equalsIgnoreCase( mineName ) ) {
+        	pMines.cancelResetAllMines();
+        	return;
+        }
+        
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -1528,7 +1581,6 @@ public class MinesCommands
 
         setLastMineReferenced(mineName);
         
-        PrisonMines pMines = PrisonMines.getInstance();
         
         Mine m = pMines.getMine(mineName);
         
@@ -1543,9 +1595,10 @@ public class MinesCommands
         	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
         	return;
         }
-        
+
         try {
-        	m.manualReset();
+        	
+        	m.manualReset( resetType, resetActions );
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
                 .sendTo(sender);
@@ -2412,6 +2465,9 @@ public class MinesCommands
         // Delete the selection:
         Prison.get().getSelectionManager().clearSelection((Player) sender);
         //pMines.getMineManager().clearCache();
+        
+        // adjustSize to zero to reset set all liners:
+        m.adjustSize( Edges.walls, 0 );
     }
 
     

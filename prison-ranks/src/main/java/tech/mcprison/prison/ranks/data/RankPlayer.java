@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -49,14 +50,14 @@ public class RankPlayer
      * Fields & Constants
      */
 
-    public UUID uid;
-    public HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
-    public HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    private UUID uid;
+    private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
+    private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
     
-    public List<RankPlayerName> names;
+    private List<RankPlayerName> names;
     
     // Block name, count
-    public HashMap<String, Integer> blocksMined;
+    private HashMap<String, Integer> blocksMined;
 
     /*
      * Document-related
@@ -83,6 +84,7 @@ public class RankPlayer
 
     @SuppressWarnings( "unchecked" )
 	public RankPlayer(Document document) {
+    	this();
     	
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
@@ -96,12 +98,10 @@ public class RankPlayer
         Object namesListObject = document.get( "names" );
         
 
-        this.ranks = new HashMap<>();
         for (String key : ranksLocal.keySet()) {
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
         
-        this.prestige = new HashMap<>();
         for (String key : prestigeLocal.keySet()) {
             prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
         }
@@ -249,16 +249,18 @@ public class RankPlayer
      * @throws IllegalArgumentException If the rank specified is not on this ladder.
      */
     public void addRank(RankLadder ladder, Rank rank) {
-        if (!ladder.containsRank(rank.id)) {
+        if (!ladder.containsRank(rank.getId())) {
             throw new IllegalArgumentException("Rank must be on ladder.");
         }
 
+        String ladderName = ladder.getName();
+        
         // Remove the current rank on this ladder first
-        if (ranks.containsKey(ladder.name)) {
-            ranks.remove(ladder.name);
+        if (ranks.containsKey(ladderName)) {
+            ranks.remove(ladderName);
         }
 
-        ranks.put(ladder.name, rank.id);
+        ranks.put(ladderName, rank.getId());
     }
 
     /**
@@ -273,13 +275,17 @@ public class RankPlayer
         // avoid a concurrent modification exception. So, we'll retrieve the data we need...
         String ladderName = null;
         for (Map.Entry<String, Integer> rankEntry : ranks.entrySet()) {
-            if (rankEntry.getValue() == rank.id) { // This is our rank!
+            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
                 ladderName = rankEntry.getKey();
             }
         }
 
         // ... and then remove it!
         ranks.remove(ladderName);
+    }
+    
+    public boolean hasLadder( String ladderName ) {
+    	return ranks.containsKey( ladderName );
     }
 
     /**
@@ -309,10 +315,10 @@ public class RankPlayer
      */
     @Deprecated
     public Optional<Rank> getRank(RankLadder ladder) {
-        if (!ranks.containsKey(ladder.name)) {
+        if (!ranks.containsKey(ladder.getName())) {
             return Optional.empty();
         }
-        int id = ranks.get(ladder.name);
+        int id = ranks.get(ladder.getName());
         return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
     }
     
@@ -331,12 +337,26 @@ public class RankPlayer
     	return results;
     }
 
-    /**
+    
+
+	public HashMap<String, Integer> getPrestige() {
+		return prestige;
+	}
+	public void setPrestige( HashMap<String, Integer> prestige ) {
+		this.prestige = prestige;
+	}
+
+	public void setRanks( HashMap<String, Integer> ranks ) {
+		this.ranks = ranks;
+	}
+
+	/**
      * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
      *
      * @return The map containing this data.
      */
-    public Map<RankLadder, Rank> getRanks() {
+    public Map<RankLadder, Rank> getLadderRanks() {
+    	
         Map<RankLadder, Rank> ret = new HashMap<>();
         for (Map.Entry<String, Integer> entry : ranks.entrySet()) {
             Optional<RankLadder> ladder =
@@ -492,6 +512,31 @@ public class RankPlayer
 				results.add( perm );
 			}
 		}
+    	
+    	return results;
+    }
+    
+    /**
+     * <p>This will called by the placeholders, so need to get the actual
+     * multipliers that exists in the SpigotPlayer object.
+     * </p>
+     * 
+     * <p>If the player is offline, then just set to a value of 1.0 so as 
+     * not to change any other value that may be used with this function.
+     * If the player is offline, then there will be no inventory that can be
+     * accessed and hence, none to sell, so a value of 1.0 should be fine.
+     * </p>
+     * 
+     */
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
+    	
+    	if ( player.isPresent() ) {
+    		results = player.get().getSellAllMultiplier();
+    	}
     	
     	return results;
     }

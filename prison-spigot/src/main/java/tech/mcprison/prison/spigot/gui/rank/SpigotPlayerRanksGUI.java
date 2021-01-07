@@ -7,7 +7,6 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -35,15 +34,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
-    // Load config
-    private final Configuration guiConfig = guiConfig();
-    private final Configuration messages = messages();
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
-
-        // If you need to get a SpigotPlayer:
-        //        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Server server = SpigotPrison.getInstance().getServer();
         PrisonRanks rankPlugin;
@@ -116,13 +109,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.get().ranks.size() == 0) {
+        if (ladder.get().getPositionRanks().size() == 0) {
             getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFound")));
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.get().ranks.size() / 9D) * 9) + 9;
+        int dimension = (int) (Math.ceil(ladder.get().getPositionRanks().size() / 9D) * 9) + 9;
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
@@ -165,12 +158,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             List<String> ranksLore = createLore(
                     messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.cost
+                    messages.getString("Lore.Price3") + rank.getCost()
             );
 
             ItemStack itemRank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, ranksLore, SpigotPrison.format(rank.tag));
+                    amount++, ranksLore, SpigotPrison.format(rank.getTag()));
 
             if (playerRank != null && playerRank.equals(rank)){
                 playerHasThisRank = false;
@@ -186,7 +179,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             }
 
             inv.addItem(itemRank);
-            rank = rank.rankNext;
+            rank = rank.getRankNext();
         }
 
         List<String> rankupLore = createLore(

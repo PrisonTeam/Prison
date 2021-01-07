@@ -6,7 +6,6 @@ import java.util.List;
 import com.cryptomorin.xseries.XMaterial;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +27,6 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
-    
-    private final Configuration messages = messages();
 
     public SpigotMinesGUI(Player p) {
         this.p = p;
@@ -37,13 +34,8 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        // Init the ItemStack
-        // ItemStack itemMines;
-
         // Get the mines - In sort order, minus any marked as suppressed
     	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
-//        Set<Mine> mines = new PrisonSortableMines().getSortedSet();
-        // PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
@@ -88,9 +80,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Mine m) {
 
-    	// Don't load this every time a button is created.... making it a class variable:
-        // Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemMines;
         // Init the lore array with default values for ladders
         List<String> minesLore = createLore(
@@ -130,8 +119,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         				StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
         		minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")"));
         	}
-        }
-        else {
+        } else {
 
         	for (Block block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;

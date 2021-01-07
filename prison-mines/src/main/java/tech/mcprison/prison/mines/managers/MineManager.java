@@ -30,18 +30,23 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.PrisonDispatchCommandTask;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
-import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 /**
  * Manages the creation, removal, and management of mines.
@@ -62,6 +67,11 @@ public class MineManager
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
     private boolean mineStats = false;
+    
+    private List<String> mineResetCommands;
+    private int mineResetCommandsCurrentTaskId = 0;
+    private List<MineResetActions> mineResetActions;
+
 
 	/**
 	 * <p>These sort orders control how the mines are sorted, and which ones 
@@ -196,6 +206,9 @@ public class MineManager
     	this.minesByName = new TreeMap<>();
     	
     	this.unavailableWorlds = new TreeMap<>();
+    	
+    	this.mineResetCommands = new ArrayList<>();
+    	this.mineResetActions = new ArrayList<>();
     	
     	this.coll = null;
     	
@@ -440,6 +453,120 @@ public class MineManager
 	}
 	
 	
+
+	/**
+	 * <p>This command is the starting point for resetting all mines.
+	 * </p>
+	 * 
+	 * <p>This will first cancel and prior resets that were queued. Then it will build the
+	 * list of commands to run using all of the mines that are not virtual and are enabled.
+	 * </p>
+	 * 
+	 * @param resetType
+	 * @param resetActions 
+	 */
+	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+
+		cancelResetAllMines();
+		
+		if ( getMineResetActions().contains( MineResetActions.DETAILS ) ) {
+			Output.get().logInfo( "MineManager.resetAllMines: submitting all mines to be reset." );
+		}
+		
+		// Save the resetActions:
+		setMineResetActions( resetActions );
+		
+		// Build all the reset commands for all of the mines:
+		for ( Mine mine : getMines() ) {
+			
+			// Only create reset commands if the mine is not a virtual mine and it is enabled:
+			if ( !mine.isVirtual() && mine.isEnabled() ) {
+				
+				String command = String.format( "mines reset %s noCommands chained", mine.getName() );
+				getMineResetCommands().add( command );
+			}
+		}
+
+		// Submit the commands to run sync... 
+		resetAllMinesNext();
+		
+	}
+	
+	
+	/**
+	 * <p>This is where the actual processing of the mine reset commands are processed to
+	 * be submitted.  This should only be ran from within the MineReset functions when
+	 * finished with resetting another mine. Trying to run this command from another
+	 * location can cause problems or will result in nothing happening.  The 
+	 * getMineResetCommands() List can only be built by resetAllMines().
+	 * </p>
+	 */
+	public void resetAllMinesNext() {
+		if ( getMineResetCommands().size() > 0 ) {
+
+			List<String> tasks = new ArrayList<>();
+			
+			String command = getMineResetCommands().remove( 0 );
+			tasks.add( command );
+			
+			String errorMessage = String.format( "&3MineManager: resetAllMinesNext: mines left= &7%s " + 
+					 "  &3command= [&7%s&3]",
+					 Integer.toString( getMineResetCommands().size( )), command );
+			
+			if ( getMineResetActions().contains( MineResetActions.DETAILS ) ) {
+				Output.get().logInfo( errorMessage );
+			}
+			
+			PrisonDispatchCommandTask task = 
+					new PrisonDispatchCommandTask( tasks, errorMessage );
+
+			// submit task: One tick in the future:
+			int taskId = PrisonTaskSubmitter.runTaskLater(task, 1);
+			
+			// Store task ID so it can be canceled if needed:
+			setMineResetCommandsCurrentTaskId( taskId );
+		}
+	}
+	
+	/**
+	 * <p>Cancel the chained resetting of all the mines.
+	 * Any mine that is in the middle of being reset 
+	 * will continue to be reset, but this will prevent the other
+	 * mines from being reset.  This will also cancel any job that has been submitted,
+	 * but is yet to run.
+	 * </p>
+	 */
+	public void cancelResetAllMines() {
+		
+		// If there is job yet to run, then cancel it:
+		PrisonTaskSubmitter.cancelTask( getMineResetCommandsCurrentTaskId() );
+		
+		// Clear the queue of commands so there won't be any more left to run:
+		getMineResetCommands().clear();
+		
+		setMineResetCommandsCurrentTaskId( 0 );
+		
+		getMineResetActions().clear();
+	}
+	
+	public List<String> getMineResetCommands() {
+		return mineResetCommands;
+	}
+
+	public int getMineResetCommandsCurrentTaskId() {
+		return mineResetCommandsCurrentTaskId;
+	}
+	public void setMineResetCommandsCurrentTaskId( int mineResetCommandsCurrentTaskId ) {
+		this.mineResetCommandsCurrentTaskId = mineResetCommandsCurrentTaskId;
+	}
+
+	public List<MineResetActions> getMineResetActions() {
+		return mineResetActions;
+	}
+	public void setMineResetActions( List<MineResetActions> mineResetActions ) {
+		this.mineResetActions = mineResetActions;
+	}
+
 
 	/**
 	 * <p>Add the missing world and the associated mine to the collection. Create the
@@ -748,6 +875,12 @@ public class MineManager
 					default:
 						break;
 				}
+				
+				if ( attribute != null && attribute instanceof PlaceholderAttributeText ) {
+					PlaceholderAttributeText attributeText = (PlaceholderAttributeText) attribute;
+					
+					results = attributeText.format( results );
+				}
 			}
 			
 		}
@@ -943,5 +1076,7 @@ public class MineManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
+
+
 
 }

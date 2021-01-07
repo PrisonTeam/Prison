@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -22,7 +21,6 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
-    private final Configuration messages = messages();
 
     public SpigotMineNotificationsGUI(Player p, String mineName){
         this.p = p;
@@ -138,5 +136,4 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
         }
     }
-
 }

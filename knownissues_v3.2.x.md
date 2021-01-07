@@ -10,55 +10,18 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
-- Placeholder Attributes:
-  A way for placeholders to be customized dynamically other plugin configs.
-  Example would be a scoreboard that uses bar graphs but customizes each one to different colors, characters, and size. 
-  Use :: to identify the start of an attribute followed by the type of attribute.
-    Examples:  ::nFormat:    and   ::bar:  
-  Use of : to separate each parameter.
+- Issue with /ranks demote and refunding player.
+  If the current rank has a custom currency and the player is demoted with a refund,
+  the refund is creditd to the wrong currency
+  - This will be easier to fix once currencies are fixed
   
-
-
-- Hex colors:
-  https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
-  https://regex101.com/
-  (?i)&#[A-Fa-f0-9]{6}|&[0-9A-FK-OR]
-  
-https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
-public static final char COLOR_CHAR = '\u00A7';
-public String translateHexColorCodes(String startTag, String endTag, String message) {
-        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
-        Matcher matcher = hexPattern.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find())
-        {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-                    );
-        }
-        return matcher.appendTail(buffer).toString();
-    }
-      
 
 - Possible issue with auto features preventing WorldGuard from protecting a
   mine.  In the auto features GUI, when the bottom three features are turned 
   off then WG won't protect the region.
-  
-
-- auto manager - durability not working even when feature is enabled
-- autoConfigure - fixed?
 
 
-- mines - add storage for liner so it can be regenerated
-- mine liner - add bedrock
-- BlockEvents - submit to run synch or async.
-- BlockEvents - multiple on same command.  Use ; as separators
-- auto features - fixed - durabilty not working
-- auto features - cannot turn off smelt or blocking
-- auto features - issue with lore
+- ? auto features - issue with lore
 - world guard - not working properly
 
 
@@ -93,10 +56,6 @@ public String translateHexColorCodes(String startTag, String endTag, String mess
    
  
 
-* **DONE: Sellall - Hook up to prison command handler** 
-Currently sellall is not hooked up to the prison command handler and it needs to be.
-
-
 
 * **Get new block model working**
   *  Start to enable and test various functions
@@ -128,33 +87,8 @@ We know what blocks are in the mine and the percentages.  If people equally mine
 
 
 
-* **Save the liner settings for each mine**
-Currently is not saved and have to manually reissue each time.
-Save all six faces and include pattern and if forced
-Add command to regenerate, or reapply, the liners.
-Add liner details to mines info
-
-
-
-* **DONE: Add numeric abbreviations on rank costs**
- K, M, B, T, Q, etc... 
- New placeholder? Formatted?
- https://en.wikipedia.org/wiki/Metric_prefix Use Prefix Symbol column.
-
-
-* **ranks autoConfigure - Feature Ideas**
-- option for using EssentialsX warps instead: essentials.warps.<mineName>
-- DONE: Generate default blocks for all mines.
-- DONE: Add perms for /mines tp
-- DONE: Perm names: mines.tp.<mineName>, mines.<mineName>
-
-
 * **Commands - Enhancement**
 Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
-
-
-* **DONE: EXP with auto pickup**
-For certain blocks such as coal, diamonds, other... provide xp...
 
 
 * **New Block Model - Implement in parallel**
@@ -171,10 +105,6 @@ Implement and have a fully functional new block handling mechanism that operate 
  5. Hookup block search. 
  
  
-
-* **DONE! Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
- Blue should work on this.
-
 
 
 
@@ -324,31 +254,8 @@ Upon loading prison, validate that all blocks that are defined within each mine 
 
 
 
-* **Add to the Command annotations an option of *async* to run that command asynchronously**
-Check to see if the commands are being ran sync or async.  Add a parameter support so 
-commands that can be ran async.
-
-
-* **Add prison Placeholders to papi's website for downloads**
-Prison is already using papi (PlaceholderAPI).  But see if we can add prison to the supported
-plugis for papi's cloud.  Should time this with the v3.2.1 release so there are more 
-placeholder to use.
-
-DeadlyKill: This what he needs ita
-Papi
-Hook Plugin
-They have those expansions which hook other plug-ins
-
-https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
-
-
-
 * **Improve some of the display pages for ranks and ladders***
 Can add more information to the listings so they have more value.
-
-
-* **Tab Completion***
-Hook up tab completion on the prison commands.
 
 
 * **Better logging of major events***
@@ -377,8 +284,6 @@ eliminate possible bugs too and give tighter code.
 * **Notification that inventory is full***
 In progress!
 
-
-* **Built in selling system***
 
 * **Custom Mine reset messages per mine***
 
@@ -423,6 +328,98 @@ I think those few integrations could really provide a huge bootstrap to getting 
 # Features recently added:
 
 
+- DONE: Placeholder Attributes:
+  A way for placeholders to be customized dynamically other plugin configs.
+  Example would be a scoreboard that uses bar graphs but customizes each one to different colors, characters, and size. 
+  Use :: to identify the start of an attribute followed by the type of attribute.
+    Examples:  ::nFormat:    and   ::bar:  
+  Use of : to separate each parameter.
+  
+
+
+- DONE: Hex colors:
+  https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
+  https://regex101.com/
+  (?i)&#[A-Fa-f0-9]{6}|&[0-9A-FK-OR]
+  
+
+
+
+
+* **DONE: Save the liner settings for each mine**
+Currently is not saved and have to manually reissue each time.
+Save all six faces and include pattern and if forced
+Add command to regenerate, or reapply, the liners.
+Add liner details to mines info
+
+
+
+* **DONE: Add numeric abbreviations on rank costs**
+ K, M, B, T, Q, etc... 
+ New placeholder? Formatted?
+ https://en.wikipedia.org/wiki/Metric_prefix Use Prefix Symbol column.
+
+
+* **ranks autoConfigure - Feature Ideas**
+- option for using EssentialsX warps instead: essentials.warps.<mineName>
+- DONE: Generate default blocks for all mines.
+- DONE: Add perms for /mines tp
+- DONE: Perm names: mines.tp.<mineName>, mines.<mineName>
+
+
+
+- DONE auto manager - durability not working even when feature is enabled
+- DONE autoConfigure - fixed?
+
+
+- DONE mines - add storage for liner so it can be regenerated
+- DONE mine liner - add bedrock
+- DONE BlockEvents - submit to run synch or async. Eliminated asynch and added inline.
+- DONE BlockEvents - multiple on same command.  Use ; as separators
+- DONE auto features - fixed - durabilty not working
+- DONE auto features - cannot turn off smelt or blocking
+
+
+* **DONE: Sellall - Hook up to prison command handler** 
+Currently sellall is not hooked up to the prison command handler and it needs to be.
+
+
+* **DONE: added to their papi's wiki...**
+Add prison Placeholders to papi's website for downloads
+Prison is already using papi (PlaceholderAPI).  But see if we can add prison to the supported
+plugis for papi's cloud.  Should time this with the v3.2.1 release so there are more 
+placeholder to use.
+
+DeadlyKill: This what he needs ita
+Papi
+Hook Plugin
+They have those expansions which hook other plug-ins
+
+https://github.com/help-chat/PlaceholderAPI/wiki/Placeholders
+
+
+* **DONE: Tab Completion***
+Hook up tab completion on the prison commands.
+
+
+
+* **DONE: EXP with auto pickup**
+For certain blocks such as coal, diamonds, other... provide xp...
+
+
+* **DONE! Rework commands within the spigot module so all user facing commands are routed through Prison's Command Interface**
+ Blue should work on this.
+
+
+
+* **CANNOT DO: Add to the Command annotations an option of *async* to run that command asynchronously**
+Check to see if the commands are being ran sync or async.  Add a parameter support so 
+commands that can be ran async.
+Cannot run commands in async mode... they fail and cannot be ran. Can only run tasks in async.
+
+
+ 
+* **DONE: Built in selling system***
  
 
 * **DONE: Rename Mines**

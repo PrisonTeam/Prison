@@ -137,8 +137,8 @@ public class RankUpCommand
 
 			Rank rank = lm.getLadder("default").get().getLowestRank().get();
 
-			while (rank.rankNext != null) {
-				rank = rank.rankNext;
+			while (rank.getRankNext() != null) {
+				rank = rank.getRankNext();
 			}
 
 			if (!(rank == pRankSecond)) {
@@ -150,7 +150,7 @@ public class RankUpCommand
 		}
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
+        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
 
 		boolean rankupWithSuccess = false;
 
@@ -188,7 +188,7 @@ public class RankUpCommand
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 			// Set the player rank to the first one of the default ladder
 			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-											lm.getLadder("default").get().getLowestRank().get().name + " default");
+											lm.getLadder("default").get().getLowestRank().get().getName() + " default");
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
 			// Check if the ranks match
@@ -206,7 +206,7 @@ public class RankUpCommand
 					}
 						
 					// Send a message to the player because he did prestige!
-					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.tag + "&c!");
+					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
 				}
 				else {
 					player.sendMessage( "&3No economy is available.  Cannot perform action." );
@@ -249,7 +249,7 @@ public class RankUpCommand
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
+        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
         
         
 
@@ -295,7 +295,7 @@ public class RankUpCommand
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
+        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
 
         if ( ladder != null && rankPlayer != null ) {
         	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
@@ -335,7 +335,7 @@ public class RankUpCommand
         Rank pRank = rankPlayer.getRank( ladder );
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.currency;
+        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
 
         if ( ladder != null && rankPlayer != null ) {
         	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
@@ -357,7 +357,7 @@ public class RankUpCommand
             Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
         }
         else {
-        	results = ladderOptional.get().name;
+        	results = ladderOptional.get().getName();
         }
         return results;
 	}
@@ -388,7 +388,7 @@ public class RankUpCommand
             	if ( rankup ) {
             		String message = String.format( "Congratulations! %s ranked up to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name), 
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
             				(results.getMessage() != null ? results.getMessage() : "") );
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
@@ -397,13 +397,13 @@ public class RankUpCommand
             			
             			String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
             					(player == null ? "Someone" : player.getName()),
-            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
             			broadcastToWholeServer( sender, messageGlobal );
             		}
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
             				(player == null ? "You have" : player.getName()),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().name), 
+            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
             				(results.getMessage() != null ? results.getMessage() : ""));
             		Output.get().sendInfo(sender, message);
             		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
@@ -412,7 +412,7 @@ public class RankUpCommand
             			
             			String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
             					(player == null ? "Someone" : player.getName()),
-            					(results.getTargetRank() == null ? "" : results.getTargetRank().name) );
+            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
             			 broadcastToWholeServer( sender, messageGlobal );
             		}
 				}
@@ -421,7 +421,7 @@ public class RankUpCommand
                 Output.get().sendError(sender,
                     "You don't have enough money to rank up! The next rank costs %s.",
                     RankUtil.doubleToDollarString(
-                    				results.getTargetRank() == null ? 0 : results.getTargetRank().cost));
+                    				results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()));
                 break;
             case RANKUP_LOWEST:
             	Output.get().sendInfo(sender, "%s already at the lowest rank!",
@@ -464,7 +464,7 @@ public class RankUpCommand
             
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
 				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
-													"loaded economies.", results.getTargetRank().currency);
+													"loaded economies.", results.getTargetRank().getCurrency());
 				break;
 				
 			case RANKUP_LADDER_REMOVED:

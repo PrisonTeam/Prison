@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Optional<RankLadder> ladder;
-    private static final Configuration messages = messages();
 
     public SpigotRanksGUI(Player p, Optional<RankLadder> ladder) {
         this.p = p;
@@ -36,10 +34,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Init the ItemStack
-        // ItemStack itemRank;
-
-        int dimension = 27;
+        int dimension;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
@@ -47,8 +42,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.isPresent() && !(ladder.get().ranks.size() == 0)) {
-            dimension = (int) Math.ceil(ladder.get().ranks.size() / 9D) * 9;
+        if (ladder.isPresent() && !(ladder.get().getPositionRanks().size() == 0)) {
+            dimension = (int) Math.ceil(ladder.get().getPositionRanks().size() / 9D) * 9;
         } else {
             p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
             return;
@@ -73,7 +68,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
         // For every rank make a button
-        for (RankLadder.PositionRank pos : ladder.get().ranks) {
+        for (RankLadder.PositionRank pos : ladder.get().getPositionRanks()) {
             Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
 
             // Well... check if the rank is null probably
@@ -102,8 +97,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Optional<Rank> rankOptional) {
 
-//        Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemRank;
         // Init the lore array with default values for ladders
         List<String> ranksLore = createLore(
@@ -121,15 +114,15 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         Rank rank = rankOptional.get();
 
         // Add the RankID Lore
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.id));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.name));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.tag)));
-        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.cost));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.getId()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.getName()));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
+        ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.getCost()));
 
         // Init a variable
         List<RankPlayer> players =
                 PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                        .filter(rankPlayer -> rankPlayer.getRanks().containsValue(rankOptional.get()))
+                        .filter(rankPlayer -> rankPlayer.getLadderRanks().containsValue(rankOptional.get()))
                         .collect(Collectors.toList());
 
         // Add the number of players with this rank
@@ -138,7 +131,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         //getCommands(ranksLore, rank);
 
         // Make the button with materials, amount, lore and name
-        itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.name));
+        itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemRank);

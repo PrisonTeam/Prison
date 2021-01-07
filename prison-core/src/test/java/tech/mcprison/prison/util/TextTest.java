@@ -100,14 +100,14 @@ public class TextTest
 	public void testHexColors() {
 		
 		// Test no translations:
-		assertEquals("This is a test", translateHexColorCodes("This is a test"));
+		assertEquals("This is a test", translateHexColorCodes("This is a test", Text.COLOR_CHAR));
 		
 		// test simple translations:
-		assertEquals("This &7is a test", translateHexColorCodes("This &7is a test"));
+		assertEquals("This &7is a test", translateHexColorCodes("This &7is a test", Text.COLOR_CHAR));
 		
 		// Test a hex color code:
 		assertEquals("This &7is ^x^a^3^b^4^c^5 &Ra test", replaceColorCodeWithx(
-										translateHexColorCodes("This &7is #a3b4c5 &Ra test"), '^' ));
+										translateHexColorCodes("This &7is #a3b4c5 &Ra test", Text.COLOR_CHAR), '^' ));
 
 //		// Test without quotes:
 //		assertEquals("This x7is xra x1tx2ex3sx4t", replaceColorCodeWithx( 
@@ -120,6 +120,11 @@ public class TextTest
 		// Test with complete quote:
 		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test #123456 test", replaceColorCodeWithx(
 				translateColorCodes("This &7is #a3b4c5 &Ra test \\Q#123456 test\\E", '&'), '^' ));
+		
+		
+		// Test with the alt hex encoding that could be used with placeholder hex support:
+		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test ^x^1^2^3^4^5^6 test", replaceColorCodeWithx(
+				translateAmpColorCodesAltHexCode("This &7is #a3b4c5 &Ra test #123456 test"), '^' ));
 		
 	}
 }

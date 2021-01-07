@@ -314,7 +314,7 @@ public class RankUtil {
 
         
 
-        Rank originalRank = rankPlayer.getRank(ladder.name);
+        Rank originalRank = rankPlayer.getRank(ladder.getName());
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
         
@@ -342,7 +342,7 @@ public class RankUtil {
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
-        		boolean success = rankPlayer.removeLadder( ladder.name );
+        		boolean success = rankPlayer.removeLadder( ladder.getName() );
         		
         		if ( success ) {
         			results.addTransaction( RankupStatus.RANKUP_LADDER_REMOVED, 
@@ -369,8 +369,8 @@ public class RankUtil {
 
         
         
-        double nextRankCost = targetRank.cost;
-        double currentRankCost = (originalRank == null ? 0 : originalRank.cost);
+        double nextRankCost = targetRank.getCost();
+        double currentRankCost = (originalRank == null ? 0 : originalRank.getCost());
         
         
         results.addTransaction( RankupTransactions.fireRankupEvent );
@@ -396,18 +396,18 @@ public class RankUtil {
         if (pForceCharge != PromoteForceCharge.no_charge ) {
         	
         	
-        	if ( targetRank.currency != null ) {
+        	if ( targetRank.getCurrency() != null ) {
         		results.addTransaction( RankupTransactions.custom_currency );
         		
         		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-        						.getEconomyForCurrency( targetRank.currency );
+        						.getEconomyForCurrency( targetRank.getCurrency() );
         		if ( currencyEcon == null ) {
         			results.addTransaction( RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED, 
         					RankupTransactions.specified_currency_not_found );
         			return;
         		} else {
         			if ( pForceCharge == PromoteForceCharge.charge_player) {
-        				if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, targetRank.currency)) {
+        				if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, targetRank.getCurrency())) {
         					//results.setTargetRank( targetRank );
         					results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
         							RankupTransactions.player_cannot_afford );
@@ -415,24 +415,24 @@ public class RankUtil {
         				}
         				
         				results.addTransaction( RankupTransactions.player_balance_initial );
-        				results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
+        				results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
         				results.addTransaction( RankupTransactions.player_balance_decreased );
-        				currencyEcon.removeBalance(prisonPlayer, nextRankCost, targetRank.currency );
+        				currencyEcon.removeBalance(prisonPlayer, nextRankCost, targetRank.getCurrency() );
         				results.addTransaction( RankupTransactions.player_balance_final );
-        				results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.currency ) );
+        				results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
         			} else 
         				if ( pForceCharge == PromoteForceCharge.refund_player) {
         					
         				results.addTransaction( RankupTransactions.player_balance_initial );
         				results.setBalanceInitial( originalRank == null ? 0 : 
-        									currencyEcon.getBalance( prisonPlayer, originalRank.currency ) );
+        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
         				results.addTransaction( RankupTransactions.player_balance_increased);
         				if ( originalRank != null ) {
-        					currencyEcon.addBalance(prisonPlayer, currentRankCost, originalRank.currency );
+        					currencyEcon.addBalance(prisonPlayer, currentRankCost, originalRank.getCurrency() );
         				}
         				results.addTransaction( RankupTransactions.player_balance_final );
         				results.setBalanceFinal( originalRank == null ? 0 :
-        									currencyEcon.getBalance( prisonPlayer, originalRank.currency ) );
+        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
         			} else {
         				// Should never hit this code!!
         			}
@@ -491,14 +491,14 @@ public class RankUtil {
         // Now, we'll run the rank up commands.
 
         results.addTransaction( RankupTransactions.rankupCommandsStart );
-        results.setRankupCommandsAvailable( targetRank.rankUpCommands.size() );
+        results.setRankupCommandsAvailable( targetRank.getRankUpCommands().size() );
         
         int count = 0;
-        for (String cmd : targetRank.rankUpCommands) {
+        for (String cmd : targetRank.getRankUpCommands()) {
         	if ( cmd != null ) {
         		
         		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-        				.replace("{player_uid}", rankPlayer.uid.toString());
+        				.replace("{player_uid}", rankPlayer.getUUID().toString());
         		
 //            Prison.get().getPlatform().logPlain(
 //            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
@@ -570,7 +570,7 @@ public class RankUtil {
 	        	Optional<Rank> lowestRank = ladder.getLowestRank();
 	        	if ( lowestRank.isPresent() ) {
 	        		targetRank = lowestRank.get();
-	        		rankName = targetRank.name;
+	        		rankName = targetRank.getName();
 	
 	        		results.addTransaction(RankupTransactions.assigned_default_rank);
 	        	} 
@@ -583,7 +583,7 @@ public class RankUtil {
         		
         		if ( targetRank != null ) {
         			
-        			if ( !ladder.containsRank( targetRank.id )) {
+        			if ( !ladder.containsRank( targetRank.getId() )) {
         				results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER, 
         						RankupTransactions.failed_rank_not_in_ladder );
         				return targetRank;
@@ -675,19 +675,19 @@ public class RankUtil {
     			switch ( rt ) {
     				case orginal_rank:
     					sb.append( "=" );
-    					sb.append( oRank == null ? "" : oRank.name );
+    					sb.append( oRank == null ? "" : oRank.getName() );
     					
     					break;
     					
     				case custom_currency:
     					sb.append( "=" );
-    					sb.append( tRank == null || tRank.currency == null ? "" : tRank.currency );
+    					sb.append( tRank == null || tRank.getCurrency() == null ? "" : tRank.getCurrency() );
     					
     					break;
     					
     				case specified_currency_not_found:
     					sb.append( "=" );
-    					sb.append( tRank == null || tRank.currency == null ? "" : tRank.currency );
+    					sb.append( tRank == null || tRank.getCurrency() == null ? "" : tRank.getCurrency() );
     					
     					break;
     					
@@ -699,13 +699,13 @@ public class RankUtil {
     					
     				case player_balance_decreased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( tRank.cost ) );
+    					sb.append( tRank == null ? "" : dFmt.format( tRank.getCost() ) );
     					
     					break;
     					
     				case player_balance_increased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( oRank.cost ) );
+    					sb.append( tRank == null ? "" : dFmt.format( oRank.getCost() ) );
     					
     					break;
     					
@@ -750,13 +750,13 @@ public class RankUtil {
     			(results.getRankName() == null ? "" : results.getRankName() ),
     			
     			
-    			(oRank == null ? "none" : oRank.name), 
-    			(oRank == null ? "" : " " + dFmt.format( oRank.cost)), 
-    			(oRank == null || oRank.currency == null ? "" : " " + oRank.currency),
+    			(oRank == null ? "none" : oRank.getName()), 
+    			(oRank == null ? "" : " " + dFmt.format( oRank.getCost())), 
+    			(oRank == null || oRank.getCurrency() == null ? "" : " " + oRank.getCurrency()),
     			
-    			(tRank == null ? "none" : tRank.name), 
-    			(tRank == null ? "" : " " + dFmt.format( tRank.cost)), 
-    			(tRank == null || tRank.currency == null ? "" : " " + tRank.currency),
+    			(tRank == null ? "none" : tRank.getName()), 
+    			(tRank == null ? "" : " " + dFmt.format( tRank.getCost())), 
+    			(tRank == null || tRank.getCurrency() == null ? "" : " " + tRank.getCurrency()),
 				
 				iFmt.format( results.getElapsedTime() ),
     			(results.getMessage() == null ? "" : results.getMessage()) 

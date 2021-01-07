@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,6 @@ import java.util.List;
 public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public PrisonSetupGUI(Player p) {
         this.p = p;

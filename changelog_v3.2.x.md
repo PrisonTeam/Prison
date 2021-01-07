@@ -4,10 +4,10 @@
 
 ## Build logs
  - **[v3.2.4-alpha - Current](changelog_v3.2.x.md)**
- - **[v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)**
- - **[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)**
- - **[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)**
- - **[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)**
+ - [v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)&nbsp;&nbsp;
+[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)&nbsp;&nbsp;
+[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)&nbsp;&nbsp;
+[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)
  
 
 Greetings!  I'm delighted that you are interested in the build logs for the
@@ -16,7 +16,102 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.4-alpha.2 2020-12-29
+# V3.2.4-alpha.5 2021-01-06
+
+
+* **Added new placeholder: prison_player_sellall_multiplier**
+with an alias of prison_psm.  This will return the value of the multiplier and if nothing is configured for it (no ranks, no sellall, no perms, ect) then it will return a value of 1.0.  This placeholder works with the nFormat placeholder attribute so the value can be formatted as desired.
+
+
+* **Add the rank commands for managing rank permissions and rank permission groups.**
+This is not functional other than adding these perms to the ranks.
+
+
+
+* **Work on Ladder and Rank Perms.**
+Got the Ladder perms hooked up to both the loading and saving, and also the command interfaces to add and remove them.
+This is a work in progress and is non-functional.  The ladder perms working from the sense that you can add them, list them, and remove them.  But they currently do nothing.
+The next step is to finish working on the rank perms commands to get them functional with adding and removing... they should already be functional with saving an loading.
+But even at that point, this will not be functional.  The whole core of the perms and the perm integrations need to be rewritten to utilize the expanded features.
+
+
+* **GUI code cleanup and optimizations.**
+The GUI's improving and getting more stable, the code got some refactoring, this won't really change things for the end user but it'll for devs who are wanting
+to edit GUIs, I hope to manage in the future to improve it even more.
+
+* **V3.2.4-alpha.5 2021-01-02**
+
+
+* **Add new feature to reset all mines with one command.**
+This works for all mine types, including mines setup for paging.
+This will build a list of reset commands for all mines, then it will submit each one to run.  When each mine finishes, then it will submit the next reset command to run until there are no more mines to reset.  It's using synchronous jobs to manage the resets so as not to dominate the processing and to yield to other tasks needing to be processed.
+The mine resets can also be canceled.
+The following are examples, with additional processing options of `details` will provide some information on the reset progress.  Details is optional.
+
+
+When running a reset for all mines, it also automatically enables the noCommands option on all resets.  If a mine is setup with a mine command to reset another mine, then this could cause an endless loop.  Therefore no mine commands are ran when all are rest.
+
+```
+/mines reset help
+/mines reset *all*
+/mines reset *all* details
+/mines reset *cancel*
+```
+
+
+* **When setting the area of a mine, it now refreshes the liners and shows the tracers.**
+
+
+* **New feature: Force a reset but be able to not run any of the mine commands.**
+This allows for chaining of mine resets to other mines.
+
+
+* **V3.2.4-alpha.4 2021-01-01**
+
+
+* **Start to setup the ranks perms listing: disabled.**  It will work, but I turned off the command since it is not ready yet.
+
+
+
+* **Changes to the Gems Economy integration wrapper to support the new version of Gems Economy.**
+This uses reflection to get around the problems which was introduced with v4.9.0 where the API and its methods remained the same, but one class that is used for the method variable had its package name changed.  Thus breaking support for gems economy v4.9.x when the project is compiled for v4.8.3 and earlier.  This reflection modifications should also work if the project is compiled with GE v4.9.x and the deplyment is using v4.8.3 or earlier.
+Tested with being compiled with v4.8.3 and works well with v4.9.1 that is running on v1.16.4 (v1.16.x requires v4.9.1). Tested and works on v1.8.8 with v1.8.8 running either v4.9.1 or v.4.8.3.
+It has not yet been tested with compiling prison with v4.9.1, but it should work even when running on 1.8.8 with v4.8.3.
+
+
+* **Made the selection of ranks case insensitive.**
+Many commands in rank commands required the proper case spelling of the rank name.  Changed it so it is now case insensitive so it will be easier for players to select ranks.
+
+
+* **For a few rank commands: Clean up some formating with currency names.**
+Collect all currencies used within the default ladder, then display the player's balance with each of those currencies.
+
+
+* **Fixed a problem with the addition of the permission and permission groups.**
+The loading of of these was failing since the the arrays were not being instantiated. 
+
+
+* **Updated the RankLadder and RankPlayer so the class variables are not accessible from the outside of those classes.**
+
+
+* **Update Rank to fix issues with Rank class variables** being directly accessible from outside the class.  Class variables should never be directly accessed by outside classes.
+
+
+* **V3.2.4-alpha.3 2020-12-30**
+Bump the version.
+
+
+* **Add support for a new Placeholder Attribute called text.**
+This is strictly for debug purposes and also to format hex colors if they are not working in the other plugins that are using prison's placeholders.
+This actually works very well, and has been tested with v1.16.x.
+Update the docs and a few comments on the other attributes.
+
+
+
+* **Added an alternative hex formatting for the placeholder attributes.**
+This is another way to try to get hex color codes to work with plugins that do not support them directly.  
+With testing, I found that hex2 format actually worked very well with other plugins and resulted in the hex colors working well.
+
 
 * **Placeholder Attributes: Changed how debug works so hex can be added too.**  Instead of using a String array, converted it over to use a list.  The value of hex and debug are extracted prior to extracting any other parameters since those two values are now non-positional and can appear in any parameter location.
 Debug statement now includes the original raw string that is non-converted to the spigot color codes so you can see what the original raw codes were for debugging purposes.  The parameter hex now will convert the color codes before sending the resulting placeholder value back to the plugin that is requesting it.  This may allow the successful use of hex colors in plugins that do not yet support them since the hex codes would have already been correctly converted.
@@ -24,7 +119,7 @@ Debug statement now includes the original raw string that is non-converted to th
 
 * **Full support for hex color codes.**
 The use of #abcdef will be converted to the correct color codes.  This applies only to prison messages and will not provide any translation for placeholders that are sent back to the requesting plugins that are using them.  They would have to support hex colors on their own.
-This is only a feature that works with minecraft v1.16.x and newer.  Older versions of minecraft and spigot may produce undesireabl artifacts.
+This is only a feature that works with minecraft v1.16.x and newer.  Older versions of minecraft and spigot may produce undesirable artifacts.
 
 
 * **V3.2.4-alpha.2 2020-12-29**

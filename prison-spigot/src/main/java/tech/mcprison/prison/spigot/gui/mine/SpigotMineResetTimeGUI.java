@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,6 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
     private final Player p;
     private final String mineName;
     private final Integer val;
-    private final Configuration messages = messages();
 
     public SpigotMineResetTimeGUI(Player p, Integer val, String mineName){
         this.p = p;

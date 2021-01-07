@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui.rank;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +13,6 @@ import java.util.List;
 public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public SpigotConfirmPrestigeGUI(Player p) {
         this.p = p;
@@ -65,5 +63,4 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         inv.setItem(2, confirm);
         inv.setItem(6, cancel);
     }
-
 }

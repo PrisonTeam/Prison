@@ -74,14 +74,14 @@ public class PrisonSpigotPrestigeCommands
 
             	if (lm != null && (!(lm.getLadder("default").isPresent()) ||
             			!(lm.getLadder("default").get().getLowestRank().isPresent()) ||
-            			lm.getLadder("default").get().getLowestRank().get().name == null)) {
+            			lm.getLadder("default").get().getLowestRank().get().getName() == null)) {
             		sender.sendMessage(SpigotPrison.format(messages.getString("Message.DefaultLadderEmpty")));
             		return;
             	}
 
             	if (lm != null && (!(lm.getLadder("prestiges").isPresent()) ||
             			!(lm.getLadder("prestiges").get().getLowestRank().isPresent()) ||
-            			lm.getLadder("prestiges").get().getLowestRank().get().name == null)) {
+            			lm.getLadder("prestiges").get().getLowestRank().get().getName() == null)) {
             		sender.sendMessage(SpigotPrison.format(messages.getString("Message.CantFindPrestiges")));
             		return;
             	}

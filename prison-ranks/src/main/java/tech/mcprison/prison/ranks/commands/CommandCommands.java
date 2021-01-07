@@ -52,15 +52,15 @@ public class CommandCommands
             return;
         }
 
-        if (rank.rankUpCommands == null) {
-            rank.rankUpCommands = new ArrayList<>();
+        if (rank.getRankUpCommands() == null) {
+            rank.setRankUpCommands( new ArrayList<>() );
         }
-        rank.rankUpCommands.add(command);
+        rank.getRankUpCommands().add(command);
     	
 //        try {
         	PrisonRanks.getInstance().getRankManager().saveRank( rank );
         	
-        	Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.name);
+        	Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.getName());
 //        } catch (IOException e) {
 //            Output.get().sendError(sender,
 //                "The new command for the rank could not be saved to disk. Check the console for details.");
@@ -87,17 +87,17 @@ public class CommandCommands
             return;
         }
 
-        if (rank.rankUpCommands == null) {
-            rank.rankUpCommands = new ArrayList<>();
+        if (rank.getRankUpCommands() == null) {
+            rank.setRankUpCommands( new ArrayList<>() );
         }
         
-        if ( rank.rankUpCommands.remove(command) ) {
+        if ( rank.getRankUpCommands().remove(command) ) {
         	
 //            try {
             	PrisonRanks.getInstance().getRankManager().saveRank( rank );
             	
             	Output.get()
-            		.sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.name);
+            		.sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.getName());
 //            } catch (IOException e) {
 //                Output.get().sendError(sender,
 //                    "The updated rank could not be saved to disk. Check the console for details.");
@@ -120,17 +120,17 @@ public class CommandCommands
             return;
         }
 
-        if (rank.rankUpCommands == null || rank.rankUpCommands.size() == 0) {
-            Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.name);
+        if (rank.getRankUpCommands() == null || rank.getRankUpCommands().size() == 0) {
+            Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.getName());
             return;
         }
 
-        ChatDisplay display = new ChatDisplay("RankUpCommand for " + rank.tag);
+        ChatDisplay display = new ChatDisplay("RankUpCommand for " + rank.getTag());
         display.text("&8Click a command to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
-        for (String command : rank.rankUpCommands) {
+        for (String command : rank.getRankUpCommands()) {
             FancyMessage msg = new FancyMessage("&3/" + command)
                 .command("/ranks command remove " + rankName + " " + command)
                 .tooltip("Click to remove.");

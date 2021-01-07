@@ -36,7 +36,8 @@ public class PlaceholderManager {
     
     public enum PlaceholderAttributePrefixes {
     	nFormat,
-    	bar;
+    	bar,
+    	text;
     	
     	public static PlaceholderAttributePrefixes fromString( String value ) {
     		PlaceholderAttributePrefixes pap = null;
@@ -174,6 +175,11 @@ public class PlaceholderManager {
 		prison_pb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
 
+	
+		
+		prison_psm(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_player_sellall_multiplier(prison_psm, PlaceHolderFlags.PLAYER),
+		
 		
 		
 		// Mine aliases:
@@ -456,6 +462,10 @@ public class PlaceholderManager {
 
 					case bar:
 						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig(), rawAttribute );
+						break;
+						
+					case text:
+						attribute = new PlaceholderAttributeText( parts, rawAttribute );
 						break;
 						
 					default:

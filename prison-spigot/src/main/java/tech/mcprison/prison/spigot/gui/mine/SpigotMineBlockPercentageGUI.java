@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,6 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
     private final String mineName;
     private final Double val;
     private final String blockName;
-    private final Configuration messages = messages();
     private int counter;
 
     public SpigotMineBlockPercentageGUI(Player p, Double val, String mineName, String blockName, int counter){

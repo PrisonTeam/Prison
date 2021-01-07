@@ -16,7 +16,7 @@ import tech.mcprison.prison.util.Text;
  *  
  * <p>Usage:
  * </p>
- * <pre>::bar:size:posColor:posSeg:negColor:negSeg:debug</pre>
+ * <pre>::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug</pre>
  * 
  * <ul>
  *   <li><b>bar</b>: the keyword to identify this attribute.</li>
@@ -35,6 +35,12 @@ import tech.mcprison.prison.util.Text;
  *   				hex color codes, and other color codes before sending the placeholder
  *   				results back to the requestor. This is useful for plugins that
  *   				do not directly support hex color codes.
+ *   <li><b>hex2</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
+ *   				Only valid value is "hex2". When enabled it will translate
+ *   				hex color codes to their intermediate state, which uses '&' color 
+ *   				codes, sending the placeholder results back to the requestor. 
+ *   				This is useful for plugins that do not directly support hex 
+ *   				color codes and may work when 'hex' does not.
  *   <li><b>debug</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
  *   				Only valid value is "debug". When enabled it
  *    				will log to the console the status of this attribute, along with
@@ -52,6 +58,7 @@ public class PlaceholderAttributeBar
 	private PlaceholderProgressBarConfig barConfig;
 	
 	private boolean hex = false;
+	private boolean hex2 = false;
 	private boolean debug = false;
 	
 	public PlaceholderAttributeBar(ArrayList<String> parts, 
@@ -65,6 +72,7 @@ public class PlaceholderAttributeBar
 		
 		// Extract hex and debug first, since they are non-positional
 		this.hex = parts.remove( "hex" );
+		this.hex2 = parts.remove( "hex2" );
 		this.debug = parts.remove( "debug" );
 
 		int len = 1;
@@ -102,7 +110,11 @@ public class PlaceholderAttributeBar
 		String nSeg = parts.size() > len ? parts.get( len++ ) : defaultBarConfig.getNegativeSegment();
 
 		// If hex, then convert the color codes before storing in the config:
-		if ( isHex() ) {
+		if ( isHex2() ) {
+			pCol = Text.translateAmpColorCodesAltHexCode( pCol );
+			nCol = Text.translateAmpColorCodesAltHexCode( nCol );
+		}
+		else if ( isHex() ) {
 			pCol = Text.translateAmpColorCodes( pCol );
 			nCol = Text.translateAmpColorCodes( nCol );
 		}
@@ -149,6 +161,13 @@ public class PlaceholderAttributeBar
 	}
 	public void setHex( boolean hex ) {
 		this.hex = hex;
+	}
+
+	public boolean isHex2() {
+		return hex2;
+	}
+	public void setHex2( boolean hex2 ) {
+		this.hex2 = hex2;
 	}
 
 	public boolean isDebug() {

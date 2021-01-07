@@ -17,7 +17,9 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Collection;
@@ -117,9 +119,42 @@ public class LadderManager {
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
     public void saveLadder(RankLadder ladder) throws IOException {
-        this.saveLadder(ladder, "ladder_" + ladder.id);
+        this.saveLadder(ladder, "ladder_" + ladder.getId());
     }
 
+    /**
+     * <p>This is the save function that should be used from outside of the LadderManager, such as
+     * within the LadderCommands functions because this will be able to handle the possible 
+     * exceptions that are thrown if there are any IOExceptions.  If there is a failure, then
+     * it will log the failure to the console, but it will not notify the user; that's what
+     * the return value is supposed to provide: success or failure.
+     * </p>
+     * 
+     * <p>This will try to save the ladder, and if successful, then it will return a value of 
+     * true, otherwise a value of false will indicate that there was a failure.
+     * </p>
+     * 
+     * @param ladder
+     * @return success or failure.  A value of true indicates the save was successful.
+     */
+    public boolean save( RankLadder ladder ) {
+    	boolean success = false;
+    	
+    	try {
+    		saveLadder( ladder );
+    		success = true;
+    	}
+    	catch ( IOException e ) {
+    		String message = String.format( "&cLadderManager.saveLadder: Failed to save the ladder. &7%s " +
+    				"&3Error= [&7%s&3]", 
+    						ladder.getName(), e.getMessage() );
+    		
+    		Output.get().logError( message, e );
+    	}
+    	
+    	return success;
+    }
+    
     /**
      * Saves all the loaded ladders to their own files within a directory.
      * Each ladder file will be assigned a name in the format: ladder_&lt;ladder id&gt;.
@@ -142,10 +177,7 @@ public class LadderManager {
      */
     public Optional<RankLadder> createLadder(String name) {
         // Set the default values...
-        RankLadder newLadder = new RankLadder();
-        newLadder.id = getNextAvailableId();
-        newLadder.name = name;
-        newLadder.ranks = new ArrayList<>();
+        RankLadder newLadder = new RankLadder( getNextAvailableId(), name );
 
         // ... add it to the list...
         loadedLadders.add(newLadder);
@@ -166,8 +198,8 @@ public class LadderManager {
 
         // If anything's higher, it's now the highest...
         for (RankLadder ladder : loadedLadders) {
-            if (highest < ladder.id) {
-                highest = ladder.id;
+            if (highest < ladder.getId()) {
+                highest = ladder.getId();
             }
         }
 
@@ -186,18 +218,19 @@ public class LadderManager {
 
         // Remove the players from the ladder
         List<RankPlayer> playersWithLadder =
-            PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                .filter(rankPlayer -> rankPlayer.ranks.containsKey(ladder.name))
+            PrisonRanks.getInstance().getPlayerManager().getPlayers()
+            	.stream()
+                .filter(rankPlayer -> rankPlayer.hasLadder(ladder.getName()))
                 .collect(Collectors.toList());
         for (RankPlayer player : playersWithLadder) {
-            player.removeLadder(ladder.name);
+            player.removeLadder(ladder.getName());
         }
 
         // Remove it from the list...
         loadedLadders.remove(ladder);
 
         // ... and remove the ladder's save files.
-        collection.delete("ladder_" + ladder.id);
+        collection.delete("ladder_" + ladder.getId());
 //        collection.remove("ladder_" + ladder.id);
         return true;
     }
@@ -209,7 +242,7 @@ public class LadderManager {
      * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified name.
      */
     public Optional<RankLadder> getLadder(String name) {
-        return loadedLadders.stream().filter(ladder -> ladder.name.equals(name)).findFirst();
+        return loadedLadders.stream().filter(ladder -> ladder.getName().equals(name)).findFirst();
     }
 
     /**
@@ -219,7 +252,7 @@ public class LadderManager {
      * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified id.
      */
     public Optional<RankLadder> getLadder(int id) {
-        return loadedLadders.stream().filter(ladder -> ladder.id == id).findFirst();
+        return loadedLadders.stream().filter(ladder -> ladder.getId() == id).findFirst();
     }
 
     /**
@@ -243,5 +276,18 @@ public class LadderManager {
         return loadedLadders.stream().filter(rankLadder -> rankLadder.containsRank(rankId))
             .collect(Collectors.toList());
     }
+
+	public RankLadder getLadder( Rank rank ) {
+		RankLadder results = null;
+		
+		for ( RankLadder rankLadder : loadedLadders ) {
+			if ( rankLadder.containsRank( rank.getId() )) {
+				results = rankLadder;
+				break;
+			}
+		}
+
+		return results;
+	}
 
 }

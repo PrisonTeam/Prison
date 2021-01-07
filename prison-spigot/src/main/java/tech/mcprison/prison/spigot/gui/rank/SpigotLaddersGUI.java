@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,16 +20,12 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public SpigotLaddersGUI(Player p){
         this.p = p;
     }
 
     public void open(){
-
-        // Init the ItemStack
-        // ItemStack itemLadder;
 
         // Check if Ranks are enabled
         if (!(checkRanks(p))){
@@ -84,8 +79,6 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, RankLadder ladder) {
 
-        //Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemLadder;
         // Init the lore array with default values for ladders
         List<String> laddersLore = createLore(
@@ -93,7 +86,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Create the button
-        itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.name));
+        itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.getName()));
 
         // Add the button to the inventory
         inv.addItem(itemLadder);

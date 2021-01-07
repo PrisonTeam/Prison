@@ -48,7 +48,7 @@ public class Text {
             millisPerSecond);
     private static String headingLine = repeat("-", 52);
     
-    private static final char COLOR_CHAR = '\u00A7';
+    public static final char COLOR_CHAR = '\u00A7';
     private static final String COLOR_ = String.valueOf(COLOR_CHAR);
     
     public static final Pattern STRIP_COLOR_PATTERN =
@@ -230,10 +230,17 @@ public class Text {
      * @return The translated string.
      */
     public static String translateColorCodes(String text, char prefix) {
-        if (prefix == 167) {
+    	return translateColorCodes( text, prefix, COLOR_CHAR, COLOR_CHAR );
+    }
+    
+    
+    public static String translateColorCodes(String text, char prefix, 
+    							char targetColorCode, char targetHexColorCode) {
+        if (prefix == COLOR_CHAR) {
             return text; // No need to translate, it's already been translated
         }
-        char[] b = translateHexColorCodes( text ).toCharArray();
+        
+        char[] b = translateHexColorCodes( text, targetHexColorCode ).toCharArray();
 
         int len = b.length;
         boolean dirty = false;
@@ -254,7 +261,7 @@ public class Text {
         		// skip processing:
         	}
         	else if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
-                b[i] = 167; // Section symbol
+                b[i] = targetColorCode; // COLOR_CHAR; // 167; // Section symbol
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
                 dirty = true;
             }
@@ -283,6 +290,22 @@ public class Text {
         return translateColorCodes(text, '&');
     }
 
+    
+    
+    /**
+     * <p>This function will convert normal color codes to use the COLOR_CHAR prefix,
+     * but it converts the hex color codes to be converted to use & as the prefix. 
+     * This may allow for pass through to other plugins so they will work better 
+     * with hex colors.  This would primarily be used with placeholders.
+     * </p>
+     * 
+     * @param text
+     * @param prefix
+     * @return
+     */
+    public static String translateAmpColorCodesAltHexCode(String text) {
+    	return translateColorCodes( text, '&', COLOR_CHAR, '&' );
+    }
     /**
      * Strips the given message of all color codes
      *
@@ -299,19 +322,19 @@ public class Text {
         return STRIP_COLOR_PATTERN.matcher(text).replaceAll("");
     }
 
-    public static String translateHexColorCodes(String text) {
+    public static String translateHexColorCodes( String text, char targetColorCode ) {
     	StringBuilder sb = new StringBuilder();
     	
     	int idxStart = text.indexOf( "\\Q" );
     	int idxEnd = -1;
     	
     	if ( idxStart == -1 ) {
-    		sb.append( translateHexColorCodesCore( text ) );
+    		sb.append( translateHexColorCodesCore( text, targetColorCode ) );
     	}
     	else {
     		
     		while ( idxStart >= 0 ) {
-    			sb.append( translateHexColorCodesCore( text.substring( 0, idxStart )) );
+    			sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
     			
     			idxEnd = text.indexOf( "\\E", idxStart );
     			
@@ -340,7 +363,7 @@ public class Text {
      * @param message
      * @return
      */
-    public static String translateHexColorCodesCore(String message) {
+    public static String translateHexColorCodesCore(String message, char targetColorCode) {
     	
 //    	String startTag = "";
 //    	String endTag = "";
@@ -350,10 +373,10 @@ public class Text {
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
+            matcher.appendReplacement(buffer, targetColorCode + "x"
+                    + targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
+                    + targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
+                    + targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
                     );
         }
         return matcher.appendTail(buffer).toString();
