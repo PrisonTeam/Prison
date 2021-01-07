@@ -70,6 +70,58 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
+    @Command(identifier = "sellall autosell enable", description = "Enable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.enable")
+    private void SellAllAutoSellEnable(CommandSender sender){
+        if (sender.hasPermission("prison.autosell.enable")){
+            SellAllConfig sellAllConfigClass = new SellAllConfig();
+            sellAllConfigClass.initialize();
+            sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+            if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyEnabled")));
+            } else {
+                try {
+                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                    conf.set("Options.Full_Inv_AutoSell", true);
+                    conf.save(sellAllFile);
+                } catch (IOException e) {
+                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                    e.printStackTrace();
+                    return;
+                }
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
+            }
+        } else {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + "[prison.autosell.enable]");
+        }
+    }
+
+    @Command(identifier = "sellall autosell disable", description = "Disable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.disable")
+    private void SellAllAutoSellDisable(CommandSender sender){
+        if (sender.hasPermission("prison.autosell.disable")){
+            SellAllConfig sellAllConfigClass = new SellAllConfig();
+            sellAllConfigClass.initialize();
+            sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+            if (!sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyDisabled")));
+            } else {
+                try {
+                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                    conf.set("Options.Full_Inv_AutoSell", false);
+                    conf.save(sellAllFile);
+                } catch (IOException e) {
+                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                    e.printStackTrace();
+                    return;
+                }
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
+            }
+        } else {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + "[prison.autosell.disable]");
+        }
+    }
+
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
     private void SellAllSellCommand(CommandSender sender){
 
@@ -226,6 +278,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
         return moneyToGive;
     }
+
+
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){

@@ -201,6 +201,11 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.rankTagRenameClosed", "&7[&3PRISON INFO&7] &cRename tag closed, nothing got changed!");
         dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
         dataConfig("Message.rankGuiMissingPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI ranks");
+        dataConfig("Message.SellAllAutoSellMissingPermission", "&7[&3PRISON ERROR&7] &cYou don't have the permission to edit AutoSell.");
+        dataConfig("Message.SellAllAutoSellAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell's already enabled!");
+        dataConfig("Message.SellAllAutoSellEnabled", "&7[&3SPRISON&7] &3AutoSell enabled with success!");
+        dataConfig("Message.SellAllAutoSellDisabled", "&7[&3PRISON&7] &3AutoSell disabled with success!");
+        dataConfig("Message.SellAllAutoSellAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell's already disabled!");
         dataConfig("Message.SellAllIsDisabled", "&7[&3PRISON ERROR&7] &cSorry but the SellAll Feature's disabled in the config.yml");
         dataConfig("Message.SellAllEditedWithSuccess", "] edited with success!");
         dataConfig("Message.SellAllSubCommandNotFound", "&7[&3PRISON WARN&7] &cSub-command not found, check with /sellall for a list!");
@@ -236,7 +241,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllNothingToSell", "&7[&3PRISON&7]&c You have nothing to sell!");
         dataConfig("Message.SellAllYouGotMoney", "&7[&3PRISON&7]&a You got $");
         dataConfig("Message.SellAllGUIDisabled", "&7[&3PRISON ERROR&7] &cSorry but the GUI's disabled in the SellAllConfig.yml");
-        dataConfig("Message.SellAllAutoSell", "&7[&3PRISON INFO&7] Your inventory's full, AutoSell activated!");
+        dataConfig("Message.SellAllAutoSell", "&7[&3PRISON INFO&7] &3Your inventory's full, AutoSell activated!");
         dataConfig("Message.SellAllSignNotify", "&7[&3PRISON&7] &aUsing SellAll from a sign with success!");
         dataConfig("Message.SellAllEmpty", "&7[&3PRISON ERROR&7] &cThere aren't items in the sellall config,\n please add them and maybe restart the server, this might need it sometimes!");
         dataConfig("Message.SellAllAutoEnabled", "&7[&3PRISON&7] &3SellAll-Auto &aenabled &3with success!");
