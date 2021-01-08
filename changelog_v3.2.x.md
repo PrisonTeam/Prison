@@ -18,6 +18,12 @@ that you need.
 # V.3.2.4-alpha.5 2021-01-08
 
 
+* **Rework the BlockEvents to simplify the add command.**
+Now to get some features you must make changes after with the editing with the other commands.
+Added player task modes and made it an enum.  So a task can now be ran as the player instead of just as console.
+Changed the names of the BlockEventTypes to simplify them, but set them up to translate to the new enum names.
+
+
 
 * **Added new AutoSell enable and disable commands**
 It's now possible to enable and disable autosell while in game for everyone (enable or disable the whole feature).
