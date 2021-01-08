@@ -49,6 +49,7 @@ import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineBlockEvent.TaskMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -2977,9 +2978,9 @@ public class MinesCommands
         	}
         	
         	FancyMessage msgMode = new FancyMessage( String.format( " &3(&7%s&3) ", 
-        			blockEvent.getMode() ) )
+        			blockEvent.getTaskMode().name() ) )
         			.command( "/mines blockEvent mode " + mineName + " " + rowNumber + " " )
-        			.tooltip("Event Mode - Click to Edit");
+        			.tooltip("Event Task Mode - Click to Edit");
         	row.addFancy( msgMode );
         	
         	FancyMessage msgCommand = new FancyMessage( String.format( " &a'&7%s&a'", 
@@ -3055,13 +3056,15 @@ public class MinesCommands
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, or [none] for no perm." 
     								) String perm,
-    			@Arg(name = "eventType", def = "eventTypeAll",
-    					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
-    								) String eventType,
-    			@Arg(name = "triggered", def = "none",
-    					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
-    					) String triggered,
-    			@Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
+//    			@Arg(name = "eventType", def = "eventTypeAll",
+//    					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
+//    								) String eventType,
+//    			@Arg(name = "triggered", def = "none",
+//    					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
+//    					) String triggered,
+    			@Arg(name = "taskMode", description = "Processing task mode to run the task as console. " +
+    								"Player runs as player. " +
+    								"[inline, inlinePlayer, sync, syncPlayer]",
     					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
@@ -3084,11 +3087,13 @@ public class MinesCommands
         	return;
         }
         
-        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
+        TaskMode taskMode = TaskMode.fromString( mode );
+        
+        if ( mode == null || !taskMode.name().equalsIgnoreCase( mode ) ) {
         	sender.sendMessage( 
-        			String.format("&7Please provide a valid mode for running the commands. " +
-        					"[inline, sync]  mode=[&b%s&7]",
-        					mode ));
+        			String.format("&7Task mode is defaulting to %s. " +
+        					"[inline, inlinePlayer, sync, syncPlayer]  mode=[&b%s&7]",
+        					taskMode.name(), mode ));
         	return;
         }
         
@@ -3097,23 +3102,23 @@ public class MinesCommands
         }
         
         
-        BlockEventType eType = BlockEventType.fromString( eventType );
-        if ( !eType.name().equalsIgnoreCase( eventType ) ) {
-        	sender.sendMessage( 
-        			String.format("&7Notice: The supplied eventType does not match the list of valid " +
-        					"BlockEventTypes therefore defaulting to eventTypeAll. Valid eventTypes are: " +
-        					"[eventTypeAll, eventBlockBreak, eventTEXplosion]",
-        					eventType ));
-        }
+//        BlockEventType eType = BlockEventType.fromString( eventType );
+//        if ( !eType.name().equalsIgnoreCase( eventType ) ) {
+//        	sender.sendMessage( 
+//        			String.format("&7Notice: The supplied eventType does not match the list of valid " +
+//        					"BlockEventTypes therefore defaulting to eventTypeAll. Valid eventTypes are: " +
+//        					"[eventTypeAll, eventBlockBreak, eventTEXplosion]",
+//        					eventType ));
+//        }
         
-        if ( eType != BlockEventType.eventTEXplosion && triggered != null && !"none".equalsIgnoreCase( triggered ) ) {
-        	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
-        			"Defaulting to none." );
-        	triggered = null;
-        }
-        if ( triggered != null && "none".equalsIgnoreCase( triggered ) ) {
-        	triggered = null;
-        }
+//        if ( eType != BlockEventType.eventTEXplosion && triggered != null && !"none".equalsIgnoreCase( triggered ) ) {
+//        	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
+//        			"Defaulting to none." );
+//        	triggered = null;
+//        }
+//        if ( triggered != null && "none".equalsIgnoreCase( triggered ) ) {
+//        	triggered = null;
+//        }
 
         
         setLastMineReferenced(mineName);
@@ -3128,17 +3133,30 @@ public class MinesCommands
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, mode, eType, triggered );
+        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, taskMode );
         m.getBlockEvents().add( blockEvent );
 
         pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' for eventTypes of " +
-        		"&b%s &7to the mine '&b%s&7' with " +
+        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' " +
+        		"&7to the mine '&b%s&7' with " +
         		"the optional permission %s. Using the mode %s.", 
-        		command, eType.name(), m.getName(), 
+        		command, m.getName(), 
         		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
         		mode );
+
+		String.format("&7Notice: &3The default eventType has been set to &7all&3. If you need " +
+				"to change it to something else, then use the command &7/mines blockEvent eventType help&3. " +
+				"[all, blockBreak, TEXplosion] The event type is what causes the block to break. " +
+				"Token Enchant's Explosion events are covered and can be focused with the " +
+				"triggered parameter." );
+
+        
+//        if ( eType == BlockEventType.eventTEXplosion ) {
+//        	sender.sendMessage( "&7Notice: &3Since the event type is for TokenEnchant's eventTEXplosion, " +
+//        			"then you may set the value of &7triggered&7 with the command " +
+//        			"&7/mines blockEvent triggered help&3." );
+//        }
 
         
         // Redisplay the event list:
@@ -3287,7 +3305,7 @@ public class MinesCommands
     			@Arg(name = "row") Integer row,
     			@Arg(name = "eventType", def = "eventTypeAll",
 					description = "EventType to trigger BlockEvent: " +
-										"[eventTypeAll, eventBlockBreak, eventTEXplosion]"
+										"[all, blockBreak, TEXplosion]"
 							) String eventType
     			) {
     	
@@ -3342,6 +3360,11 @@ public class MinesCommands
         		"Was &b%s&7. Command '&b%s&7'", 
         		eType.name(), m.getName(), eTypeOld.name(), blockEvent.getCommand() );
 
+        if ( eType == BlockEventType.eventTEXplosion ) {
+        	sender.sendMessage( "&7Notice: &3Since the event type is for TokenEnchant's eventTEXplosion, " +
+        			"then you may set the value of &7triggered&7 with the command " +
+        			"&7/mines blockEvent triggered help&3." );
+        }
         
         // Redisplay the event list:
         blockEventList( sender, mineName );
@@ -3425,12 +3448,13 @@ public class MinesCommands
 	}
 	
 
-	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak mode type: [inline, sync].", 
+	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak task mode type: [inline, sync].", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventJobMode(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
     			@Arg(name = "row") Integer row,
-    	        @Arg(name = "mode", description = "Processing mode to run the task: [inline, sync]",
+    	        @Arg(name = "taskMode", description = "Processing task mode to run the task: " +
+    	        		"[inline, inlinePlayer, sync, syncPlayer]",
     					def = "inline") String mode
     			) {
 
@@ -3447,13 +3471,24 @@ public class MinesCommands
         	return;        	
         }
         
-        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
+        
+        TaskMode taskMode = TaskMode.fromString( mode );
+        
+        if ( mode == null || !taskMode.name().equalsIgnoreCase( mode ) ) {
         	sender.sendMessage( 
-        			String.format("&7Please provide a valid mode for running the commands. " +
-        					"[inline, sync]  mode=[&b%s&7]",
-        					mode ));
+        			String.format("&7Task mode is defaulting to %s. " +
+        					"[inline, inlinePlayer, sync, syncPlayer]  mode=[&b%s&7]",
+        					taskMode.name(), mode ));
         	return;
         }
+
+//        if ( mode == null || !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
+//        	sender.sendMessage( 
+//        			String.format("&7Please provide a valid mode for running the commands. " +
+//        					"[inline, sync]  mode=[&b%s&7]",
+//        					mode ));
+//        	return;
+//        }
         
         
         setLastMineReferenced(mineName);
@@ -3472,16 +3507,16 @@ public class MinesCommands
         
         MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
 
-        String modeOld = blockEvent.getMode();
+        TaskMode taskModeOld = blockEvent.getTaskMode();
         
-        blockEvent.setMode( mode );
+        blockEvent.setTaskMode( taskMode );
 
         pMines.getMineManager().saveMine( m );
         
         
-        Output.get().sendInfo(sender, "&7BlockEvent mode &b%s&7 was changed for mine '&b%s&7'. " +
+        Output.get().sendInfo(sender, "&7BlockEvent task mode &b%s&7 was changed for mine '&b%s&7'. " +
         		"Was &b%s&7. Command '&b%s&7'", 
-        		mode, m.getName(), modeOld, blockEvent.getCommand() );
+        		taskMode, m.getName(), taskModeOld.name(), blockEvent.getCommand() );
 
         
         // Redisplay the event list:

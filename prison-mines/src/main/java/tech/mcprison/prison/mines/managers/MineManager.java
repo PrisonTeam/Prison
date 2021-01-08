@@ -518,7 +518,7 @@ public class MineManager
 			}
 			
 			PrisonDispatchCommandTask task = 
-					new PrisonDispatchCommandTask( tasks, errorMessage );
+					new PrisonDispatchCommandTask( tasks, errorMessage, null, false );
 
 			// submit task: One tick in the future:
 			int taskId = PrisonTaskSubmitter.runTaskLater(task, 1);

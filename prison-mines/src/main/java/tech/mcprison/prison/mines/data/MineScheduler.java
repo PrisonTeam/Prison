@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineBlockEvent.TaskMode;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -531,19 +532,25 @@ public abstract class MineScheduler
 						
 						String errorMessage = "BlockEvent: Player: " + player.getName();
 						
+						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
+											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
+						
 						PrisonDispatchCommandTask task = 
-								new PrisonDispatchCommandTask( tasks, errorMessage );
+								new PrisonDispatchCommandTask( tasks, errorMessage, 
+												player, playerTask );
 						
 						
-						switch ( blockEvent.getMode() )
+						switch ( blockEvent.getTaskMode() )
 						{
-							case "inline":
+							case inline:
+							case inlinePlayer:
 								// Don't submit, but run it here within this thread:
 								task.run();
 								break;
 								
-							case "sync":
-							case "async": // async will cause failures so run as sync:
+							case sync:
+							case syncPlayer:
+							//case "async": // async will cause failures so run as sync:
 								
 								// submit task: 
 								@SuppressWarnings( "unused" ) 
