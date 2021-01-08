@@ -202,10 +202,10 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
         dataConfig("Message.rankGuiMissingPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI ranks");
         dataConfig("Message.SellAllAutoSellMissingPermission", "&7[&3PRISON ERROR&7] &cYou don't have the permission to edit AutoSell.");
-        dataConfig("Message.SellAllAutoSellAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell's already enabled!");
-        dataConfig("Message.SellAllAutoSellEnabled", "&7[&3SPRISON&7] &3AutoSell enabled with success!");
-        dataConfig("Message.SellAllAutoSellDisabled", "&7[&3PRISON&7] &3AutoSell disabled with success!");
-        dataConfig("Message.SellAllAutoSellAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell's already disabled!");
+        dataConfig("Message.SellAllAutoSellEnabled", "&7[&3PRISON&7] &3Autosell has been &aenabled&3.");
+        dataConfig("Message.SellAllAutoSellDisabled", "&7[&3PRISON&7] &3Autosell has been &cdisabled&3.");
+        dataConfig("Message.SellAllAutoSellAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell has already been enabled!");
+        dataConfig("Message.SellAllAutoSellAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell has already been disabled!");
         dataConfig("Message.SellAllIsDisabled", "&7[&3PRISON ERROR&7] &cSorry but the SellAll Feature's disabled in the config.yml");
         dataConfig("Message.SellAllEditedWithSuccess", "] edited with success!");
         dataConfig("Message.SellAllSubCommandNotFound", "&7[&3PRISON WARN&7] &cSub-command not found, check with /sellall for a list!");
