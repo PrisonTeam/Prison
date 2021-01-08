@@ -49,7 +49,7 @@ Keep in mind that in order to use the command `/ranks autoConfigure` you cannot 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Ranks
+# Ranks
 
 There are many different ways you can setup your Prison server and ranks is just one small part of how you can customize everything.
 
@@ -66,7 +66,7 @@ This documentation uses setups that are fairly simple.  The mine names also matc
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Adding Ranks
+# Adding Ranks
 
 
 Adding Ranks is pretty simple.
@@ -106,7 +106,7 @@ For example a default prestige rank may simply be something like this with the e
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Rank Information
+# Rank Information
 
 Information on a rank can be viewed by using the following command:
 
@@ -123,7 +123,7 @@ This example of rank information includes a rank that has a custom currency.  *S
 
 
 
-#Rank Listings
+# Rank Listings
 
 To list all ranks for a given ladder use the following command:
 
@@ -144,7 +144,7 @@ The `ladderName` parameter is optional and will default to a value of **default*
 
 
 
-#Deleting Ranks
+# Deleting Ranks
 
 Ranks can be deleted, but when they are, they are simply just removed from Prison and no longer loaded.  Deleted Ranks can be undeleted.
 
@@ -187,7 +187,7 @@ The above shows how "id" has been updated to a value of `37`.  It also shows tha
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Changing a Rank's Cost
+# Changing a Rank's Cost
 
 The Rank's cost is initially set when creating a rank, but it can be changed at any time. The command to change the cost is:
 
@@ -213,7 +213,7 @@ If you are going to assign the rank a custom currency, then you can set the curr
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Changing a Rank's Currency
+# Changing a Rank's Currency
 
 
 Prison supports custom currencies, instead of the default currency that is used with most plugins such as Vault or Essentials.
@@ -269,7 +269,7 @@ Even though in the above example the custom currency "puurr" does not exist, pla
 
 
 
-#Changing a Rank's Tag
+# Changing a Rank's Tag
 
 
 A Rank's tag is a formatted String value that is intended to be used with placeholders when special formatting is needed, or desired, for a given Rank. The tag value can be set when the Rank is initially created, or at any other time.  If a tag is not defined, then any access of the tag through placeholders will only return the Rank's name.
@@ -292,7 +292,7 @@ For example: &0 - &9, &a - &f, &k (magic), &l (bold), &m (strike through), &n (u
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Showing a Player's Ranks
+# Showing a Player's Ranks
 
 A player may only have zero or one active rank per ladder.  But since a player can have active ranks in more than one ladder, this command will show all ranks within all ladders that are available for the given player.
 
@@ -316,7 +316,7 @@ The following screen print shows the status of two different players. The **defa
 
 
 
-#Promote, Demote, and Set Rank Commands
+# Promote, Demote, and Set Rank Commands
 
 
 Perhaps the most important thing to understand about these three commands is that it is strongly suggested that you should **never** use the `ranks set rank` command.  This will be explained later, and is related to the rank commands that are associated with your ranks.
@@ -361,7 +361,7 @@ The parameter **chargePlayers** when dealing with custom currency: If this param
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Ladder Overview
+# Ladder Overview
 
 
 By default, Prison automatically creates two default ladders so you do not have to create them, you just use them.  These two ladders are called **default** and **prestiges**.  The **default** ladder contains all of the ranks that are associated with the normal Prison play and ranking.  The **prestiges** ladder is strictly for the prestige behavior within prison.
@@ -372,7 +372,7 @@ By default, Prison automatically creates two default ladders so you do not have 
 
 
 
-#Create Ladder Command
+# Create Ladder Command
 
 This command will create new ladders.  Ladders do not need to have any ranks associated with them.  
 
@@ -387,7 +387,7 @@ The parameter **ladderName** is the name of the new ladder.
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Add Rank to a Ladder
+# Add Rank to a Ladder
 
 This command will add a rank to the specified ladder.  If the rank was on a different ladder, it will be removed and added to the specified ladder.  The added rank will be added to the end of the ladder if **position** is not specified.  If **position** is specified then this command can be used to move a rank to another position within the ladder.
 
@@ -412,7 +412,7 @@ If the rank already exists in another ladder, it will be moved to the specified 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Ladder Delete Command
+# Ladder Delete Command
 
 This command will delete the specified ladder.  The ranks that are within the ladder will be unassociated with the removed ladder and all of the ranks will then be ladderless.  Any player that has that rank will be unable to be promoted or demoted until the ranks are added to another ladder, or the ranks are deleted.
 
@@ -482,7 +482,7 @@ There are many commands that have interdependancies to multiple settings, and th
 You are solely responsible for any problems you create by making changes directly to these files.  We cannot help undo any problems, issues, failures, or undefined behaviors that may be caused with such tampering.
 
 
-#Ladder Remove a Rank
+# Ladder Remove a Rank
 
 This command will remove a rank from a ladder.  In removing the rank, it will not delete the rank, and the given rank will not be associated with any ladder.  Any players that are active on that Rank will be removed fro that rank, such as they would be if the Rank was deleted.
 
@@ -494,7 +494,7 @@ This command will remove a rank from a ladder.  In removing the rank, it will no
 
 
 
-#Ladder List
+# Ladder List
 
 The ladder list command will list all active ladders on the server.  
 
@@ -529,7 +529,7 @@ It is suggested that you use `/ranks list [ladder]` instead of this command sinc
 
 
 
-#Rank Commands
+# Rank Commands
 
 The use of Rank Commands is what hooks everything together within Prison.  It ties Ranks to mines and even hooks it up to other plugins and custom behaviors. 
 
@@ -542,7 +542,7 @@ A good example of how to use it with LuckPerms can be found in the documentation
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-#Example of using Ranks
+# Example of using Ranks
 
 (coming soon an example on how to use ranks)
 
