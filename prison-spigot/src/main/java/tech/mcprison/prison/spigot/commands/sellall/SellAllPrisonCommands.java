@@ -29,6 +29,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
@@ -70,55 +71,100 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell enable", description = "Enable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.enable")
-    private void SellAllAutoSellEnable(CommandSender sender){
-        if (sender.hasPermission("prison.autosell.enable")){
-            SellAllConfig sellAllConfigClass = new SellAllConfig();
-            sellAllConfigClass.initialize();
-            sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
-            if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
+    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.edit")
+    private void SellAllAutoSell(CommandSender sender,
+    @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
+
+        if (!sender.hasPermission("prison.autosell.edit")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
+            return;
+        }
+
+        if (!isEnabled()) return;
+
+        if (enable.equalsIgnoreCase("perusertoggleable")){
+            SellAllAutoSellPerUserToggleable(sender, enable);
+            return;
+        }
+
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase(enable)){
+            if (enable.equalsIgnoreCase("true")){
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyEnabled")));
-            } else {
-                try {
-                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                    conf.set("Options.Full_Inv_AutoSell", true);
-                    conf.save(sellAllFile);
-                } catch (IOException e) {
-                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-                    e.printStackTrace();
-                    return;
-                }
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
+            } else if (enable.equalsIgnoreCase("false")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyDisabled")));
             }
-        } else {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + "[prison.autosell.enable]");
+            return;
+        }
+
+        try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Full_Inv_AutoSell", enable);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        if (enable.equalsIgnoreCase("true")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
+        } else if (enable.equalsIgnoreCase("false")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
         }
     }
 
-    @Command(identifier = "sellall autosell disable", description = "Disable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.disable")
-    private void SellAllAutoSellDisable(CommandSender sender){
-        if (sender.hasPermission("prison.autosell.disable")){
-            SellAllConfig sellAllConfigClass = new SellAllConfig();
-            sellAllConfigClass.initialize();
-            sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
-            if (!sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyDisabled")));
-            } else {
-                try {
-                    sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                    conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                    conf.set("Options.Full_Inv_AutoSell", false);
-                    conf.save(sellAllFile);
-                } catch (IOException e) {
-                    sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-                    e.printStackTrace();
-                    return;
-                }
-                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
+    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable", onlyPlayers = false, permissions = "prison.autosell.edit")
+    private void SellAllAutoSellPerUserToggleable(CommandSender sender,
+    @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
+
+        if (!sender.hasPermission("prison.autosell.edit")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
+            return;
+        }
+
+        if (!isEnabled()) return;
+
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase(enable)){
+            if (enable.equalsIgnoreCase("true")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableAlreadyEnabled")));
+            } else if (enable.equalsIgnoreCase("false")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableAlreadyDisabled")));
             }
-        } else {
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + "[prison.autosell.disable]");
+            return;
+        }
+
+        try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enable);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        if (enable.equalsIgnoreCase("true")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
+        } else if (enable.equalsIgnoreCase("false")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
         }
     }
 

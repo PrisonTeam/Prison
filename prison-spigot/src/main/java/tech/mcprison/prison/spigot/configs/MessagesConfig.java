@@ -85,6 +85,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToNextPage", "&aClick to see the next page.");
         dataConfig("Lore.ClickToStartBlockSetup", "&aClick to setup block.");
         dataConfig("Lore.ClickToAddBlock", "&aClick to add a block.");
+        dataConfig("Lore.ClickToEnable", "&aClick to enable.");
+        dataConfig("Lore.ClickToDisable", "&cClick to disable.");
         dataConfig("Lore.Chance","&3Chance: ");
         dataConfig("Lore.Command","&3Command: &7");
         dataConfig("Lore.ContainsTheRank","&3The Rank ");
@@ -104,6 +106,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.LeftClickToConfirm","&aLeft-Click to confirm.");
         dataConfig("Lore.LeftClickToOpen","&8Left Click to open.");
         dataConfig("Lore.LeftClickToReset","&aLeft Click to reset");
+        dataConfig("Lore.LeftClickToEdit", "&aLeft-Click to edit value");
         dataConfig("Lore.ManageResetTime","&8Manage the reset time of Mine.");
         dataConfig("Lore.MinesButton","&8Mines GUI manager.");
         dataConfig("Lore.MineName", "&3Mine Name: &f");
@@ -125,8 +128,10 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.RanksButton","&8Ranks GUI manager.");
         dataConfig("Lore.ResetButton","&8Resets the mine.");
         dataConfig("Lore.RightClickToCancel","&cRight-Click to cancel.");
-        dataConfig("Lore.RightClickToEnable","&aRight click to enable");
-        dataConfig("Lore.RightClickToToggle","&cRight click to toggle");
+        dataConfig("Lore.RightClickToEnable","&aRight-Click to enable.");
+        dataConfig("Lore.RightClickToDisable", "&cRight-Click to disable.");
+        dataConfig("Lore.RightClickToToggle","&cRight click to toggle.");
+        dataConfig("Lore.RightClickToDelete", "&cRight-Click to delete.");
         dataConfig("Lore.SpawnPoint","&3Spawnpoint: &7");
         dataConfig("Lore.StatusLockedMine","&8Status: &cLocked");
         dataConfig("Lore.StatusUnlockedMine","&8Status: &aUnlocked");
@@ -161,6 +166,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.DefaultLadderEmpty", "&7[&3PRISON ERROR&7] &cThe default ladder has no rank.");
         dataConfig("Message.NoSellAllItems", "&7[&3PRISON WARN&7] &cSorry but there aren't SellAll Items to show.");
         dataConfig("Message.EmptyGui","&7[&3PRISON WARN&7] &cSorry, the GUI looks empty.");
+        dataConfig("Message.EnableAutoSellToUse", "&7[&3PRISON WARN&7] &cSorry, but autoSell's disabled, please enable it!");
+        dataConfig("Message.InvalidBooleanInput", "&7[&3PRISON ERROR&7] &cSorry, you should type -true- or -false- here.");
         dataConfig("Message.NoBlocksMine","&7[&3PRISON WARN&7] &cSorry but there aren't blocks inside this Mine.");
         dataConfig("Message.NoMines", "&7[&3PRISON WARN&7] &cSorry but there aren't Mines to show.");
         dataConfig("Message.NoRankupCommands", "&7[&3PRISON WARN&7] &cSorry, but there aren't rankUpCommands for this ranks, please create one to use this GUI!");
@@ -200,12 +207,14 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.rankTagRenameClose", "&7[&3PRISON INFO&7] &3Input &cclose &3to cancel or wait &c30 seconds&3.");
         dataConfig("Message.rankTagRenameClosed", "&7[&3PRISON INFO&7] &cRename tag closed, nothing got changed!");
         dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "&7[&3PRISON INFO&7] &cGUI and/or GUI ranks is not enabled. Check GuiConfig.yml (%s %s)");
-        dataConfig("Message.rankGuiMissingPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use GUI ranks");
+        dataConfig("Message.rankGuiMissingPermission", "&7[&3PRISON INFO&7] &cYou lack the permissions to use the Ranks GUI.");
         dataConfig("Message.SellAllAutoSellMissingPermission", "&7[&3PRISON ERROR&7] &cYou don't have the permission to edit AutoSell.");
         dataConfig("Message.SellAllAutoSellEnabled", "&7[&3PRISON&7] &3Autosell has been &aenabled&3.");
         dataConfig("Message.SellAllAutoSellDisabled", "&7[&3PRISON&7] &3Autosell has been &cdisabled&3.");
         dataConfig("Message.SellAllAutoSellAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell has already been enabled!");
         dataConfig("Message.SellAllAutoSellAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell has already been disabled!");
+        dataConfig("Message.SellAllAutoPerUserToggleableAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell perUserToggleable's already enabled!");
+        dataConfig("Message.SellAllAutoPerUserToggleableAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell perUserToggleable's already disabled!");
         dataConfig("Message.SellAllIsDisabled", "&7[&3PRISON ERROR&7] &cSorry but the SellAll Feature's disabled in the config.yml");
         dataConfig("Message.SellAllEditedWithSuccess", "] edited with success!");
         dataConfig("Message.SellAllSubCommandNotFound", "&7[&3PRISON WARN&7] &cSub-command not found, check with /sellall for a list!");

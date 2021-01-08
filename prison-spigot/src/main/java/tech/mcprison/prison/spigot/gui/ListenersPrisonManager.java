@@ -53,6 +53,8 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
@@ -575,9 +577,25 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions
+            case "SellAll -> Blocks":{
+
+                sellAllAdminBlocksGUI(e, p, buttonNameMain);
+
+                break;
+            }
+
+            // Check the title and do the actions
             case "Prison -> SellAll-Admin":{
 
                 sellAllAdminGUI(e, p, buttonNameMain);
+
+                break;
+            }
+
+            // Check the title and do the actions
+            case "SellAll -> AutoSell":{
+
+                sellAllAutoSellAdminGUI(e, p, buttonNameMain);
 
                 break;
             }
@@ -606,6 +624,90 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
         }
+    }
+
+    private void sellAllAutoSellAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+        switch (buttonNameMain){
+
+            case "PerUserToggleable":{
+
+                Bukkit.dispatchCommand(p, "sellall autosell perusertoggleable false");
+                SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
+                gui.open();
+
+                break;
+            }
+
+            case "PerUserToggleable-Disabled":{
+
+                Bukkit.dispatchCommand(p, "sellall autosell perusertoggleable true");
+                SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
+                gui.open();
+
+                break;
+            }
+
+            case "AutoSell":{
+
+                Bukkit.dispatchCommand(p, "Sellall autosell false");
+                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                gui.open();
+
+                break;
+            }
+
+            case "AutoSell-Disabled":{
+
+                Bukkit.dispatchCommand(p, "Sellall autosell true");
+                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                gui.open();
+
+                break;
+            }
+
+        }
+
+        e.setCancelled(true);
+    }
+
+    private void sellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+        switch (buttonNameMain){
+
+            case "Blocks-Shop":{
+
+                SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p);
+                gui.open();
+                break;
+            }
+
+            case "AutoSell":{
+
+                if (e.getClick().isRightClick()){
+                    Bukkit.dispatchCommand(p, "sellall autosell false");
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    gui.open();
+                } else {
+                    SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
+                    gui.open();
+                }
+                break;
+            }
+
+            case "AutoSell-Disabled":{
+
+                if (e.getClick().isRightClick()){
+                    Bukkit.dispatchCommand(p, "Sellall autosell true");
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    gui.open();
+                } else {
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.EnableAutoSellToUse")));
+                }
+                break;
+            }
+
+        }
+
+        e.setCancelled(true);
     }
 
     private boolean guiConditions(InventoryClickEvent e, Player p) {
@@ -919,7 +1021,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void sellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void sellAllAdminBlocksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         if (e.isRightClick()){
 
