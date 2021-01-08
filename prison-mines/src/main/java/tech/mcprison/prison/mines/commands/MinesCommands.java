@@ -53,7 +53,6 @@ import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
-import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -2313,10 +2312,11 @@ public class MinesCommands
 
 
     @Command(identifier = "mines set rank", permissions = "mines.set", 
-    		description = "Links a mine to a rank.")
+    		description = "Links a mine to a rank or removes the rank.")
     public void setMineRankCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine.") String mineName,
-        @Arg(name = "rankName", description = "Then rank name to link to this mine.") 
+        @Arg(name = "rankName", description = "Then rank name to link to this mine. " +
+        		"Use 'none' to remove the rank.") 
     					String rankName
         
     		) {
@@ -2335,53 +2335,67 @@ public class MinesCommands
             
             if ( m.getRank() != null ) {
             	// First unlink the preexisting mine and rank:
+            	String removedRankName = m.getRank().getName();
+            	
             	Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
+            	
+        		
+        		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
+        				removedRankName, m.getName() ));
+
             }
             
-            boolean success = Prison.get().getPlatform().linkModuleElements( m, 
-            						ModuleElementType.RANK, rankName );
-            
-            if ( !success ) {
-            	sender.sendMessage( String.format( "&3Invalid Rank Name: &7%s", rankName ));
-            }
-            else {
-            	sender.sendMessage( String.format( "&3Rank &7%s &3has been linked to mine &7%s", 
-            						rankName, m.getName() ));
+            if ( "none".equalsIgnoreCase( rankName ) ) {
+            	
+            	boolean success = Prison.get().getPlatform().linkModuleElements( m, 
+            			ModuleElementType.RANK, rankName );
+            	
+            	if ( !success ) {
+            		sender.sendMessage( String.format( "&3Invalid Rank Name: &7%s", rankName ));
+            	}
+            	else {
+            		sender.sendMessage( String.format( "&3Rank &7%s &3has been linked to mine &7%s", 
+            				rankName, m.getName() ));
+            	}
             }
         } 
     }
 
 
-    
-    @Command(identifier = "mines set norank", permissions = "mines.set", 
-    		description = "Unlinks a rank from a mine")
-    public void setMineNoRankCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine.") String mineName
-    
-    		) {
-    	
-    	if (performCheckMineExists(sender, mineName)) {
-    		setLastMineReferenced(mineName);
-    		
-    		PrisonMines pMines = PrisonMines.getInstance();
-    		Mine m = pMines.getMine(mineName);
-    		
-    		if ( m.getRank() == null ) {
-    			sender.sendMessage( "&cThis mine has no ranks to unlink." );
-    			return;
-    		}
-    		
-    		ModuleElement rank = m.getRank();
-    		
-    		Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
-    		
-    		
-    		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
-    				rank.getName(), m.getName() ));
-    		
-    	} 
-    }
-    
+/*
+ * Remove this command since the same functionality exists in /mines set rank:
+ * This will be removed shortly once the replacement is confirmed to work well.
+ * 
+ *   @Command(identifier = "mines set norank", permissions = "mines.set", 
+ *   		description = "Unlinks a rank from a mine")
+ *	public void setMineNoRankCommand(CommandSender sender,
+ *   		@Arg(name = "mineName", description = "The name of the mine.") String mineName
+ *   
+ *   		) {
+ *   	
+ *   	if (performCheckMineExists(sender, mineName)) {
+ *   		setLastMineReferenced(mineName);
+ *   		
+ *   		PrisonMines pMines = PrisonMines.getInstance();
+ *   		Mine m = pMines.getMine(mineName);
+ *   		
+ *   		if ( m.getRank() == null ) {
+ *   			sender.sendMessage( "&cThis mine has no ranks to unlink." );
+ *   			return;
+ *   		}
+ *   		
+ *   		ModuleElement rank = m.getRank();
+ *   		
+ *   		Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
+ *   		
+ *   		
+ *   		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
+ *   				rank.getName(), m.getName() ));
+ *   		
+ *   	} 
+ *   }
+ *   
+ */
     
 
     @Command(identifier = "mines set area", permissions = "mines.set", 
