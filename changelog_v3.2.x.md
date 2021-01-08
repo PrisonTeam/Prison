@@ -17,6 +17,14 @@ that you need.
 
 # V.3.2.4-alpha.5 2021-01-08
 
+* **New SellAll Admin GUI and Sub-GUIs**
+Rework of the admin SellAll GUI, added AutoSell GUI, moved the old Admin GUI to a Blocks GUI.
+
+* **New SellAll AutoSell perusertoggleable commands**
+It's now possible to edit while in game the perUserToggleable AutoSell feature with a command:
+  - `/sellall autosell perusertoggleable true` `prison.autosell.edit`.
+  - `/sellall autosell perusertoggleable false` `prison.autosell.edit`.
+
 
 * **Rework the BlockEvents to simplify the add command.**
 Now to get some features you must make changes after with the editing with the other commands.
@@ -28,8 +36,8 @@ Changed the names of the BlockEventTypes to simplify them, but set them up to tr
 * **Added new AutoSell enable and disable commands**
 It's now possible to enable and disable autosell while in game for everyone (enable or disable the whole feature).
 commands:
-  - `/sellall autosell enable` `prison.autosell.enable`
-  - `/sellall autosell disable` `prison.autosell.disable`
+  - `/sellall autosell true` `prison.autosell.edit`
+  - `/sellall autosell true` `prison.autosell.edit`
 
 
 

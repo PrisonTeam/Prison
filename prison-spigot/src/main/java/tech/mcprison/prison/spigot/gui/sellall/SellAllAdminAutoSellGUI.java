@@ -10,6 +10,9 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllAdminAutoSellGUI extends SpigotGUIComponents {
 
     private final Player p;

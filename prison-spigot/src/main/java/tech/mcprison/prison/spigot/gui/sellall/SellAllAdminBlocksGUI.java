@@ -11,7 +11,6 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * @author GABRYCA
  */

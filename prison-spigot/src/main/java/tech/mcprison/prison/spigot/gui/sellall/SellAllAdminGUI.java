@@ -10,6 +10,9 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -20,6 +23,11 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
     }
 
     public void open() {
+
+        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllIsDisabled")));
+            return;
+        }
 
         if (guiBuilder()) return;
 
