@@ -472,7 +472,7 @@ public class RanksCommands
         ChatDisplay display = new ChatDisplay( rankHeader );
         
         if ( hasPerm ) {
-        	display.text("&7Click on a rank's name to view more info.");
+        	display.addText("&7Click on a rank's name to view more info.");
         }
         
 
@@ -597,16 +597,16 @@ public class RanksCommands
 
         ChatDisplay display = new ChatDisplay("Rank " + rank.getTag());
 
-        display.text("&3Rank Name: &7%s", rank.getName());
-        display.text("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.getTag(), rank.getTag());
+        display.addText("&3Rank Name: &7%s", rank.getName());
+        display.addText("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.getTag(), rank.getTag());
         
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
-        display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
+        display.addText("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
                 ladders.stream().map(rankLadder -> rankLadder.getName()).collect(Collectors.toList())));
         
         if ( rank.getMines().size() == 0 ) {
-        	display.text( "&3This rank is not linked to any mines" );
+        	display.addText( "&3This rank is not linked to any mines" );
         }
         else {
         	StringBuilder sb = new StringBuilder();
@@ -619,26 +619,26 @@ public class RanksCommands
 				sb.append( mine.getName() );
 			}
         	
-        	display.text( "&3Mines linked to this rank: %s", sb.toString() );
+        	display.addText( "&3Mines linked to this rank: %s", sb.toString() );
         }
 
-        display.text("&3Cost: &7%s", Text.numberToDollars(rank.getCost()));
+        display.addText("&3Cost: &7%s", Text.numberToDollars(rank.getCost()));
         
-        display.text("&3Currency: &7<&a%s&7>", (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) );
+        display.addText("&3Currency: &7<&a%s&7>", (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) );
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
         		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
         		.collect(Collectors.toList());
-        display.text("&7There %s &3%s players &7with this rank.", 
+        display.addText("&7There %s &3%s players &7with this rank.", 
         				(players.size() == 1 ? "is": "are"), 
         				players.size() + "");
 
         if (sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
-            display.text("&8[Admin Only]");
-            display.text("&6Rank ID: &7%s", rank.getId());
+            display.addText("&8[Admin Only]");
+            display.addText("&6Rank ID: &7%s", rank.getId());
 
             FancyMessage del =
                 new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.getName())
@@ -792,7 +792,7 @@ public class RanksCommands
         RankLadder ladder = rank.getLadder();
 
         ChatDisplay display = new ChatDisplay("Rank Permissions and Groups for " + rank.getName());
-        display.text("&8Click a Permission to remove it.");
+        display.addText("&8Click a Permission to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
         									new BulletedListComponent.BulletedListBuilder();
 

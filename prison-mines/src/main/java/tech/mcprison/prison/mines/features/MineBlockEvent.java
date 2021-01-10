@@ -1,6 +1,12 @@
 package tech.mcprison.prison.mines.features;
 
 import java.text.DecimalFormat;
+import java.util.Set;
+import java.util.TreeSet;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 
 public class MineBlockEvent {
 
@@ -12,6 +18,8 @@ public class MineBlockEvent {
 	private BlockEventType eventType;
 	
 	private String triggered;
+	
+	private Set<PrisonBlock> prisonBlocks;
 	
 	public enum BlockEventType {
 		
@@ -97,6 +105,8 @@ public class MineBlockEvent {
 		this.eventType = eventType;
 		
 		this.triggered = null;
+		
+		this.prisonBlocks = new TreeSet<>();
 	}
 	
 	public MineBlockEvent( double chance, String permission, 
@@ -112,7 +122,8 @@ public class MineBlockEvent {
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
 				getCommand() + "|" + getTaskMode() + "|" + getEventType().name() + "|" + 
-				(getTriggered() == null ? "none" : getTriggered());
+				(getTriggered() == null ? "none" : getTriggered()) + "|" +
+				getPrisonBlockStrings( "," );
 	}
 	
 	
@@ -184,9 +195,21 @@ public class MineBlockEvent {
 			String triggered = cpc.length >= 6 && !"none".equals(cpc[5]) ? cpc[5] : null;
 			
 			
+			String blocks = cpc.length >= 7 && !"".equalsIgnoreCase( cpc[6] ) ? cpc[6] : "";
+			
+			
 			if ( command != null && command.trim().length() > 0 ) {
 				
 				results = new MineBlockEvent( chance, permission, command, taskMode, eventType, triggered );
+				
+				PrisonBlockTypes pBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+				
+				for ( String block : blocks.toLowerCase().split( "," ) ) {
+					PrisonBlock blockType = pBlockTypes.getBlockTypesByName().get( block );
+					if ( blockType != null ) {
+						results.getPrisonBlocks().add( blockType );
+					}
+				}
 			}
 		}
 		
@@ -235,6 +258,29 @@ public class MineBlockEvent {
 	}
 	public void setTriggered( String triggered ) {
 		this.triggered = triggered;
+	}
+
+	public String getPrisonBlockStrings() {
+		return getPrisonBlockStrings( " " );
+	}
+	
+	public String getPrisonBlockStrings( String deliminator ) {
+		StringBuilder sb = new StringBuilder();
+		
+		for ( PrisonBlock block : getPrisonBlocks() ) {
+			if ( sb.length() > 0 ) {
+				sb.append( deliminator );
+			}
+			sb.append( block.getBlockName() );
+		}
+
+		return sb.toString().trim();
+	}
+	public Set<PrisonBlock> getPrisonBlocks() {
+		return prisonBlocks;
+	}
+	public void setPrisonBlocks( Set<PrisonBlock> prisonBlocks ) {
+		this.prisonBlocks = prisonBlocks;
 	}
 
 

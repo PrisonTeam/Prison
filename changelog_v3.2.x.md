@@ -15,7 +15,17 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V.3.2.4-alpha.5 2021-01-08
+# V.3.2.4-alpha.5 2021-01-10
+
+* **ChatDisplay changed function text to addText and changed emptyLine to addEmptyLine**
+to better align these commands with the other text based message handling functions.
+
+
+* **Started to add Block names to BlockEvents so blocks can be targeted with the blockEvents.**
+What makes this more dificult to deal with, is the fact that you can specify more than one block per BlockEvent.  This makes it more complex for the editor since I want to be more selection based so the end user does not have to type in hugely long commands.  
+This is a work in progress and is not yet functional... it's enabled, but does not cause errors or adds the actual blocks as of yet.
+For the blockEvents: changed the use of .command to .suggest since suggest will not run the command for the user, but will allow them to make the final edits on it before submitting.  Plus it acts as a "confirmation" to follow through on the command. 
+
 
 * **New SellAll Admin GUI and Sub-GUIs**
 Rework of the admin SellAll GUI, added AutoSell GUI, moved the old Admin GUI to a Blocks GUI.

@@ -126,7 +126,7 @@ public class CommandCommands
         }
 
         ChatDisplay display = new ChatDisplay("RankUpCommand for " + rank.getTag());
-        display.text("&8Click a command to remove it.");
+        display.addText("&8Click a command to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 

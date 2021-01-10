@@ -945,7 +945,7 @@ public class MinesCommands
     	
     	
     	ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
-    	display.text("&8Click a block to add it to a mine.");
+    	display.addText("&8Click a block to add it to a mine.");
     	
     	BulletedListComponent.BulletedListBuilder builder =
     			new BulletedListComponent.BulletedListBuilder();
@@ -1009,7 +1009,7 @@ public class MinesCommands
 
     	
         ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
-        display.text("&8Click a block to add it to a mine.");
+        display.addText("&8Click a block to add it to a mine.");
         
         BulletedListComponent.BulletedListBuilder builder =
         						new BulletedListComponent.BulletedListBuilder();
@@ -1104,13 +1104,13 @@ public class MinesCommands
         	setConfirmTimestamp( null );
         	
         	ChatDisplay display = new ChatDisplay("&cDelete " + mineName);
-            display.text("&8Delete canceled.");
+            display.addText("&8Delete canceled.");
 
             display.send( sender );
             
         } else {
 	    	ChatDisplay display = new ChatDisplay("&cDelete " + mineName);
-	    	display.text("&8Delete confirmation failed. Try again.");
+	    	display.addText("&8Delete confirmation failed. Try again.");
 	    	
 	    	display.send( sender );
 	    }
@@ -1179,38 +1179,38 @@ public class MinesCommands
         if ( cmdPageData.getCurPage() == 1 ) {
         	
         	if ( m.isVirtual() ) {
-        		chatDisplay.text("&cWarning!! This mine is &lVirtual&r&c!! &7Use &3/mines set area &7to enable." );
+        		chatDisplay.addText("&cWarning!! This mine is &lVirtual&r&c!! &7Use &3/mines set area &7to enable." );
         	}
         	
         	if ( !m.isEnabled() ) {
-        		chatDisplay.text("&cWarning!! This mine is &lDISABLED&r&c!!" );
+        		chatDisplay.addText("&cWarning!! This mine is &lDISABLED&r&c!!" );
         	}
         	
         	
         	String noTagMessag = String.format( "&7(not set) &3Will default to mine name if used." );
-        	chatDisplay.text("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
+        	chatDisplay.addText("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
         	
         	if ( !m.isVirtual() ) {
         		String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
-        		chatDisplay.text("&3World: &7%s", worldName);
+        		chatDisplay.addText("&3World: &7%s", worldName);
         	}
         	
         	
         	if ( m.getRank() == null ) {
-        		chatDisplay.text( "&3No rank is linked to this mine." );
+        		chatDisplay.addText( "&3No rank is linked to this mine." );
         	}
         	else {
-        		chatDisplay.text( "&3Rank: &7%s", m.getRank() );
+        		chatDisplay.addText( "&3Rank: &7%s", m.getRank() );
         	}
         	
         	
         	if ( !m.isVirtual() ) {
         		String minCoords = m.getBounds().getMin().toBlockCoordinates();
         		String maxCoords = m.getBounds().getMax().toBlockCoordinates();
-        		chatDisplay.text("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
+        		chatDisplay.addText("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
         		Player player = getPlayer( sender );
         		
-        		chatDisplay.text("&3Center: &7%s   &3%s &7%s", 
+        		chatDisplay.addText("&3Center: &7%s   &3%s &7%s", 
         				m.getBounds().getCenter().toBlockCoordinates(), 
         				(player == null ? "" : "Distance:"),
         				(player == null ? "" : fFmt.format( m.getBounds().getDistance3d( player.getLocation() ) ))
@@ -1218,7 +1218,7 @@ public class MinesCommands
         		
         		
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-        		chatDisplay.text("&3Spawnpoint: &7%s", spawnPoint);
+        		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
         		if ( mMan.isMineStats() ) {
         			RowComponent rowStats = new RowComponent();
@@ -1424,12 +1424,12 @@ public class MinesCommands
         if ( useNewBlockModel ) {
         	
         	if ( cmdPageData.isDebug() ) {
-        		chatDisplay.text( "&7Block model: &3New" );
+        		chatDisplay.addText( "&7Block model: &3New" );
         	}
         	
         	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        		chatDisplay.text("&3Blocks:");
-        		chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
+        		chatDisplay.addText("&3Blocks:");
+        		chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
         		BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         		
         		chatDisplay.addComponent(list);
@@ -1444,12 +1444,12 @@ public class MinesCommands
         if ( !useNewBlockModel || useNewBlockModel && cmdPageData.isDebug() ) {
         	
         	if ( cmdPageData.isDebug() ) {
-        		chatDisplay.text( "&7Block model: &3Old" );
+        		chatDisplay.addText( "&7Block model: &3Old" );
         	}
         	
         	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        		chatDisplay.text("&3Blocks:");
-        		chatDisplay.text("&8Click on a block's name to edit its chances of appearing.");
+        		chatDisplay.addText("&3Blocks:");
+        		chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
         		BulletedListComponent list = getBlocksList(m, cmdPageData, false );
         		
         		chatDisplay.addComponent(list);
@@ -1620,7 +1620,7 @@ public class MinesCommands
             	description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
         ChatDisplay display = new ChatDisplay("Mines");
-        display.text("&8Click a mine's name to see more information.");
+        display.addText("&8Click a mine's name to see more information.");
     	Player player = getPlayer( sender );
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
@@ -1656,12 +1656,12 @@ public class MinesCommands
     	// Get mines in the correct sorted order and suppress the mines if they should
     	PrisonSortableResults sortedMines = pMines.getMines( sortOrder );
     	
-    	display.text( "&3  Mines listed: &7%s   &3Mines suppressed: &7%s",
+    	display.addText( "&3  Mines listed: &7%s   &3Mines suppressed: &7%s",
     					sortedMines.getSortedList().size(),
     					sortedMines.getSortedSuppressedList().size());
     	
     	if ( sortedMines.getSortedSuppressedList().size() > 0 ) {
-    		display.text( "&8To view suppressed mines sort by: %s", 
+    		display.addText( "&8To view suppressed mines sort by: %s", 
     				sortedMines.getSuppressedListSortTypes() );
     	}
     	
@@ -2936,9 +2936,20 @@ public class MinesCommands
 
 
         ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getName());
-        display.text("&8Click a BlockEvent command to remove it.");
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
+        display.addText("&8Hover over values for more information and clickable actions.");
+
+        generateBlockEventListing( m, display );
+        
+        display.addComponent(new FancyMessageComponent(
+            new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + mineName + " [chance] [perm] [cmd] /")
+                .tooltip("&7Add a new BockEvent command.")));
+        display.send(sender);
+    }
+
+	private void generateBlockEventListing( Mine m, ChatDisplay display ) {
+		
+		BulletedListComponent.BulletedListBuilder builder =
+        					new BulletedListComponent.BulletedListBuilder();
 
         DecimalFormat dFmt = new DecimalFormat("0.00000");
         
@@ -2952,19 +2963,19 @@ public class MinesCommands
         	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
         	
         	FancyMessage msgPercent = new FancyMessage( String.format( "&7%s%% ", chance ) )
-        			.command( "/mines blockEvent percent " + mineName + " " + rowNumber + " " )
+        			.suggest( "/mines blockEvent percent " + m.getName() + " " + rowNumber + " [%]" )
         			.tooltip("Percent Chance - Click to Edit");
         	row.addFancy( msgPercent );
         	
         	FancyMessage msgPerm = new FancyMessage( String.format( "&3[&7%s&3] ", 
         													blockEvent.getPermission() ) )
-        			.command( "/mines blockEvent permission " + mineName + " " + rowNumber + " " )
+        			.suggest( "/mines blockEvent permission " + m.getName() + " " + rowNumber + " [permisson]" )
         			.tooltip("Permission - Click to Edit");
         	row.addFancy( msgPerm );
         	
         	FancyMessage msgEventType = new FancyMessage( String.format( "&7%s", 
         													blockEvent.getEventType().name() ) )
-        			.command( "/mines blockEvent eventType " + mineName + " " + rowNumber + " " )
+        			.suggest( "/mines blockEvent eventType " + m.getName() + " " + rowNumber + " [eventType]" )
         			.tooltip("Event Type - Click to Edit");
         	row.addFancy( msgEventType );
         	
@@ -2972,34 +2983,55 @@ public class MinesCommands
         		
         		FancyMessage msgTriggered = new FancyMessage( String.format( "&3:&7%s", 
         				blockEvent.getTriggered() ) )
-        				.command( "/mines blockEvent triggered " + mineName + " " + rowNumber + " " )
+        				.suggest( "/mines blockEvent triggered " + m.getName() + " " + rowNumber + " [triggered]" )
         				.tooltip("Triggered - Click to Edit");
         		row.addFancy( msgTriggered );
         	}
         	
         	FancyMessage msgMode = new FancyMessage( String.format( " &3(&7%s&3) ", 
         			blockEvent.getTaskMode().name() ) )
-        			.command( "/mines blockEvent mode " + mineName + " " + rowNumber + " " )
+        			.suggest( "/mines blockEvent mode " + m.getName() + " " + rowNumber + " [mode]" )
         			.tooltip("Event Task Mode - Click to Edit");
         	row.addFancy( msgMode );
         	
         	FancyMessage msgCommand = new FancyMessage( String.format( " &a'&7%s&a'", 
         			blockEvent.getCommand() ) )
-        			.command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
-        			.tooltip("Event Commands - Click to Delete");
+        			//.command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
+        			.tooltip("Event Commands - You cannot change a command directly, " +
+        					"delete it and then re-add it.");
         	row.addFancy( msgCommand );
         	
         	
+        	FancyMessage msgRemove = new FancyMessage( String.format( " &4Remove&3", 
+        			blockEvent.getCommand() ) )
+        			.suggest("/mines blockEvent remove " + m.getName() + " " + blockEvent.getCommand() )
+        			.tooltip("Click to Delete this BlockEvent");
+        	row.addFancy( msgRemove );
+        	
 	
             builder.add( row );
+            
+            
+            
+            String prisonBlocks = blockEvent.getPrisonBlockStrings();
+            if ( !prisonBlocks.isEmpty() ) {
+            	RowComponent row2 = new RowComponent();
+            	
+            	row2.addTextComponent( "                " );
+            	
+            	FancyMessage msgBlocks = new FancyMessage( String.format( " &bBlocks: &3[&7%s&3]", 
+            			prisonBlocks ) )
+            			.command("/mines blockEvent blocks " + m.getName() )
+            			.tooltip("Event Blocks - Click to Edit");
+            	row2.addFancy( msgBlocks );
+            	
+            	builder.add( row2 );
+            }
+            
         }
 
         display.addComponent(builder.build());
-        display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + mineName + " [chance] [perm] [cmd] /")
-                .tooltip("&7Add a new BockEvent command.")));
-        display.send(sender);
-    }
+	}
 
 
 	@Command(identifier = "mines blockEvent remove", description = "Removes a BlockEvent command from a mine.", 
@@ -3526,6 +3558,132 @@ public class MinesCommands
 
 
 
+	@Command(identifier = "mines blockEvent block add", 
+						description = "Adds a blockName to a BlockBreak task.", 
+						onlyPlayers = false, permissions = "mines.set")
+    public void blockEventBlockAdd(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "row", def = "0", description = "Row number to add a " +
+    					"blockName to. If not provided, or value of 0, then " +
+    					"this command " +
+    					"will display a list of all commands.") Integer row,
+    			@Arg(name = "search", description = "Optioinal keyword 'search' to search " +
+    					"based upon value of blockName. [search, none, <blank>]",
+    					def = "") String search,
+    	        @Arg(name = "blockName", description = "Name of block to add, or " +
+    	        		"'search' to search for blocks",
+    					def = "search") String blockName
+    			) {
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        
+        setLastMineReferenced(mineName);
+
+        
+        // Need to clean up the search field:
+        if ( search == null || search.trim().isEmpty() ) {
+        	// Make sure search is equal to "search"
+        	search = "none";
+        }
+        else if ( "search".equalsIgnoreCase( search ) ) {
+        	// Make sure it is all lower case:
+        	search = "search";
+        }
+        else {
+        	// The value in search is not actually part of search, but instead part of
+        	// the block name, so shift it to blockName:
+        	blockName = search.trim() + 
+        				( blockName == null || blockName.trim().isEmpty() ? "" : " " + blockName );
+        	search = "none";
+        }
+        
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+
+        
+        
+        /// if row is less than 1, then we need to display a list of BlockEvents:
+        if ( row == null || row <= 0 ) {
+        	
+
+            ChatDisplay display = new ChatDisplay("Add blocks to a BlockEvent for " + m.getName() );
+            display.addText("&8Hover over values for more information and clickable actions.");
+
+            // Generates a blockEvent listing for the given selected mine:
+            generateBlockEventListing( m, display );
+            
+            
+            display.addText( "&7Select a BlockEvent by row number to add a block" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent block add [row] [search} [block]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( "&7/mines blockEvent block add %d %s %s", 
+					row, search, blockName ) )
+					.suggest( "/mines blockEvent block add " + row + " " + search + " [eventType]" )
+					.tooltip("Add blockName to blockEvent - Click to Add");
+            
+            display.send( sender );
+            msgAddBlock.send( sender );
+     
+        	return;        	
+        }
+        
+        
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        
+        // If search is "search", then perform a block search:
+        if ( "search".equalsIgnoreCase( search ) ) {
+        	
+        	// block search: 
+        	
+        	
+        }
+        
+
+        // We have the row number, so now get the BlockEvent:
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+        
+
+        
+
+        
+
+        TaskMode taskModeOld = blockEvent.getTaskMode();
+        
+        //blockEvent.setTaskMode( taskMode );
+
+        pMines.getMineManager().saveMine( m );
+        
+        
+//        Output.get().sendInfo(sender, "&7BlockEvent task mode &b%s&7 was changed for mine '&b%s&7'. " +
+//        		"Was &b%s&7. Command '&b%s&7'", 
+//        		taskMode, m.getName(), taskModeOld.name(), blockEvent.getCommand() );
+
+        
+        Output.get().sendInfo(sender, "&7BlockEvent add block is under developement and is not finalized." );
+
+        
+        // Redisplay the event list:
+ //       blockEventList( sender, mineName );
+
+    }
+
+
+	
+	
+	
 
 
 
@@ -3557,7 +3715,7 @@ public class MinesCommands
 
 
         ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
-        display.text("&8Click a command to remove it.");
+        display.addText("&8Click a command to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 

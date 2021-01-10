@@ -2,7 +2,6 @@ package tech.mcprison.prison.mines.data;
 
 import java.util.List;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;

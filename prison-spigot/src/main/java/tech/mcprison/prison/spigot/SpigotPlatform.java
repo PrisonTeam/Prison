@@ -194,7 +194,7 @@ class SpigotPlatform
     		List<String> unavailableWorlds = mineManager.getUnavailableWorldsListings();
     		for ( String uWorld : unavailableWorlds ) {
     			
-    			display.text( uWorld );
+    			display.addText( uWorld );
     		}
     		
     	}
@@ -650,16 +650,16 @@ class SpigotPlatform
         
         if ( isPlugManPresent ) {
         	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
-        	chatDisplay.text( "&7The use of PlugMan on this Prison server will corrupt internals" );
-        	chatDisplay.text( "&7of Prison and may lead to a non-functional state, or even total" );
-        	chatDisplay.text( "&7corruption of the internal settings, the saved files, and maybe" );
-        	chatDisplay.text( "&7even the mines and surrounding areas too." );
-        	chatDisplay.text( "&7The only safe way to restart Prison is through a server restart." );
-        	chatDisplay.text( "&7Use of PlugMan at your own risk.  You have been warned. " );
-        	chatDisplay.text( "&7Prison support team has no obligation to help recover, or repair," );
-        	chatDisplay.text( "&7any troubles that may result of the use of PlugMan." );
-        	chatDisplay.text( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
-        	chatDisplay.text( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
+        	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
+        	chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
+        	chatDisplay.addText( "&7even the mines and surrounding areas too." );
+        	chatDisplay.addText( "&7The only safe way to restart Prison is through a server restart." );
+        	chatDisplay.addText( "&7Use of PlugMan at your own risk.  You have been warned. " );
+        	chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
+        	chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
+        	chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
+        	chatDisplay.addText( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
         	
         	chatDisplay.sendtoOutputLogInfo();;
         }

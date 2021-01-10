@@ -113,7 +113,7 @@ public class LadderCommands
         }
 
         ChatDisplay display = new ChatDisplay(ladder.get().getName());
-        display.text("&7This ladder contains the following ranks:");
+        display.addText("&7This ladder contains the following ranks:");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -273,9 +273,9 @@ public class LadderCommands
       
 
       ChatDisplay display = new ChatDisplay("Ladder Permissions and Groups for " + ladder.getName());
-      display.text("&8Click the 'Remove' tag to remove it.");
-      display.text("  &3Placeholders: &7{rank}&3 - Rank Name");
-      display.text("  &3All Ladder perms will be applied automatically to all ladder ranks.");
+      display.addText("&8Click the 'Remove' tag to remove it.");
+      display.addText("  &3Placeholders: &7{rank}&3 - Rank Name");
+      display.addText("  &3All Ladder perms will be applied automatically to all ladder ranks.");
       
       BulletedListComponent.BulletedListBuilder builder =
       									new BulletedListComponent.BulletedListBuilder();

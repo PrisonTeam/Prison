@@ -58,12 +58,12 @@ public class ChatDisplay {
         return this;
     }
 
-    public ChatDisplay text(String text, Object... args) {
+    public ChatDisplay addText(String text, Object... args) {
         addComponent(new TextComponent(text, args));
         return this;
     }
 
-    public ChatDisplay emptyLine() {
+    public ChatDisplay addEmptyLine() {
         addComponent(new TextComponent(""));
         return this;
     }

@@ -51,8 +51,8 @@ public class AlertCommands {
         }
         else {
         	
-        	display.text("&8Type /prison alerts clear to clear your alerts.");
-        	display.text("&8Type /prison alerts clearall to clear everyone's alerts.");
+        	display.addText("&8Type /prison alerts clear to clear your alerts.");
+        	display.addText("&8Type /prison alerts clearall to clear everyone's alerts.");
         	
         	display.send(sender);
         }
