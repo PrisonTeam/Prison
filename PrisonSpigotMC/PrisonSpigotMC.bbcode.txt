@@ -6,22 +6,22 @@
 
 [B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Core%20Features%20Long.png[/IMG] Core features:[/SIZE][/COLOR][/B][/CENTER]
 [LIST]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Ranks.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Rankup/Prestige commands.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Prestiges.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Mines.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Mines commands.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080][B]Ranks[/B] with [B]Prestiges[/B]: Highly customizable with rankup commands.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Rankup and Prestige commands, including promote, demote, and set rank.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Mines: Highly customizable with mine reset commands.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Mine commands with many customizations to control reset behavior and setup.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080][B][COLOR=#F03333]New Feature:[/COLOR][/B] BlockEvents allows firing commands when players break blocks with many features such as percent chance, targeting Token Enchant Explosion Events, etc.[/COLOR][/SIZE][/FONT]
 [*][FONT=Verdana][SIZE=5][COLOR=#808080]SellAll and SellAll Signs.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]AutoSell.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]AutoPickup.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]AutoSmelt.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]AutoBlock.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Many GUIs.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Placeholders and Aliases.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Custom Blocks support.[/COLOR][/SIZE][/FONT]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080]Many plugins are supported.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Auto manager: auto pickup, auto smelt, and auto block, with AutoSell capabilities.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]GUI menu support for most player and admin functions.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Over 100+ Placeholders including Aliases, with attribute support for dynamic customization of most placeholders.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Custom Blocks support using Custom Items plugin.[/COLOR][/SIZE][/FONT]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080]Prison supports, and works with, many plugins are supported.[/COLOR][/SIZE][/FONT]
 [/LIST]
 [CENTER][COLOR=#e69138][SIZE=7][B][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Main%20Commands%20Long.png[/IMG] [/B][/SIZE][/COLOR][B][COLOR=rgb(230, 145, 56)][SIZE=7]Main Commands:[/SIZE][/COLOR][/B][/CENTER]
+
+[FONT=Verdana][SIZE=5][COLOR=#808080]Prison has many features with many commands.  The main command, [B]/prison[/B], will show all of Prison's main root commands and their registered aliases. When using commands, Prison's command hander provides command lists of valid commands, and also help on each adding the [B]help[/B] keyword after the command. The help also includes the list of permissions if the command requires permissions.[/COLOR][/SIZE][/FONT]
+[SPOILER="Prison Commands"]
 [LIST]
 [*][SIZE=5][COLOR=#808080]/prison[/COLOR][/SIZE]
 [*][SIZE=5][COLOR=#808080]/prison placeholders[/COLOR][/SIZE]
@@ -38,24 +38,45 @@
 [*][SIZE=5][COLOR=#808080]/gui prestiges[/COLOR][/SIZE]
 [*][COLOR=#808080][SIZE=5]/gui admin[/SIZE][/COLOR]
 [/LIST]
+
+
+[FONT=Verdana][SIZE=4][COLOR=#808080]Prison's main root command [B]/prison[/B], with it's sub-commands, including other registered root commands and aliases.[/COLOR][/SIZE][/FONT]
+
+[CENTER][SIZE=2][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Prison_Commands_01.png[/IMG][/SIZE][/CENTER]
+
+
+[FONT=Verdana][SIZE=4][COLOR=#808080]Example of using using the [B]help[/B] keyword:[/COLOR][/SIZE][/FONT]
+
+[CENTER][SIZE=2][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Prison_Commands_02.png[/IMG][/SIZE][/CENTER]
+
+
+[/SPOILER]
+
 [I][COLOR=rgb(153, 153, 153)][SIZE=4]For a full list of commands check our guidebooks using the link at the bottom of the page or run on your server the /prison or /prison help command.[/SIZE][/COLOR][/I]
 
-[CENTER][COLOR=rgb(230, 145, 56)]
-[IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Dependencies%20Long.png[/IMG] [/COLOR][/CENTER]
+[CENTER][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Dependencies%20Long.png[/IMG][/CENTER]
+
+[FONT=Verdana][SIZE=5][COLOR=#808080]Prison may not have any hard dependencies, but it is required to have a currency registered with Prison in order to use the Ranks module.  Vault is a highly recommended plugin that Prison uses to connect to any economy plugin, or permission plugin that supports Vault. [/COLOR][/SIZE][/FONT]
+
 [LIST]
-[*][SIZE=4][B][COLOR=#ff0000][Dependency][/COLOR][COLOR=#808080] -> Vault.[/COLOR][/B][/SIZE]
-[*][SIZE=4][B][COLOR=#ff0000][Dependency][/COLOR][COLOR=#808080] -> An economy [/COLOR][/B][COLOR=#808080]plugin like[/COLOR][B][COLOR=rgb(128, 128, 128)] EssentialsX[/COLOR][/B][COLOR=#808080] for example.[/COLOR][/SIZE]
+[*][SIZE=4][B][COLOR=#ff4466][Dependency][/COLOR][COLOR=#808080] -> Vault (Highly suggested)[/COLOR][/B][/SIZE]
+[*][SIZE=4][B][COLOR=#ff4466][Dependency][/COLOR][COLOR=#808080] -> An economy plugin[/COLOR][/B][COLOR=#808080] like[/COLOR][B][COLOR=rgb(128, 128, 128)] EssentialsX[/COLOR][/B][COLOR=#808080] for example.[/COLOR][/SIZE]
 [/LIST]
 [SPOILER="Supported Plugins"]
 
 [CENTER][COLOR=#808080][SIZE=4][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Supported%20Plugins%20Long.png[/IMG] [/SIZE][/COLOR][/CENTER]
 [LIST]
-[*][SIZE=4][B][COLOR=#00b3b3][Optional][/COLOR][COLOR=#808080] -> PlaceholderAPI [/COLOR][/B][COLOR=#808080](PAPI) and/or [B]MVdWPlaceholderAPI [/B]to use Prison Placeholders.[/COLOR][/SIZE]
-[*][SIZE=4][COLOR=#00b3b3][B][Optional][/B][/COLOR][COLOR=#808080] [B]->[/B] [B]Permissions Manager [/B]([B]LuckPerms [/B]for example).[/COLOR][/SIZE]
-[*][SIZE=4][B][COLOR=#00b3b3][Optional][/COLOR][COLOR=#808080] -> TokenEnchant's[/COLOR][/B][COLOR=#808080] supported.[/COLOR][/SIZE]
-[*][SIZE=4][B][COLOR=#00b3b3][Optional] [/COLOR][COLOR=#808080]-> Custom Blocks[/COLOR][/B][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]EssentialsXChat [/B]Useful for setting up chat prefixes[/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]PlaceholderAPI [/B](PAPI) and/or [B]MVdWPlaceholderAPI [/B]to use Prison Placeholders.[/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]HolographicDisplays [/B] which also requires [B]HolographicExtension[/B] to use Prison's placeholders.[/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]Permissions Manager [/B]([B]LuckPerms [/B]for example).[/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]GemsEconomy [/B] can be used for alternative currencies[/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]TokenEnchant[/B] [/COLOR][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]Custom Items[/B] provides support for Customized Blocks that can be used within mines, plus other items.[/COLOR]][/SIZE]
+[*][SIZE=4][COLOR=#808080][B]WorldGuard[/B] when using Regions, along with a permission plugin, can provide protection to mines.[/COLOR][/SIZE]
 [/LIST]
 [/SPOILER]
+
 
 [CENTER][COLOR=#e69138][SIZE=7][B][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Ranks%20Long.png[/IMG] [/B][/SIZE][/COLOR][B][SIZE=6][COLOR=#ffa64d]Some info about Ranks:[/COLOR][/SIZE][/B][/CENTER]
 [LIST]
