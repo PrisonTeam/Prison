@@ -17,6 +17,13 @@ that you need.
 
 # V.3.2.4-alpha.5 2021-01-10
 
+* **SellAll delay.**
+ Added SellAll sell delay, it's now possible to add a delay to execute sellall sell, global
+  permission for editing: `prison.sell.delay`.
+  - New /sellall delay <true/false> command, you can now disable sellAll delay while in game.
+  - New /sellall delay set <Delay_Seconds> command, you can now edit sellAll delay while in game.
+
+
 * **ChatDisplay changed function text to addText and changed emptyLine to addEmptyLine**
 to better align these commands with the other text based message handling functions.
 

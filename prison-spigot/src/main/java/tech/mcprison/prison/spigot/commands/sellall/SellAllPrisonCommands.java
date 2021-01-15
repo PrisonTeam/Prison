@@ -89,19 +89,103 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell", onlyPlayers = false, permissions = "prison.autosell.edit")
-    private void SellAllAutoSell(CommandSender sender,
-    @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
+    @Command(identifier = "sellall delay", description = "SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
+    private void sellAllDelay(CommandSender sender,
+                              @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
+
+        if (!isEnabled()) return;
+
+        if (!sender.hasPermission("prison.sellall.delay")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.MissingPermission")));
+            return;
+        }
+
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
+            return;
+        }
+
+        if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase(enable)){
+            if (enable.equalsIgnoreCase("true")){
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayAlreadyEnabled")));
+            } else {
+                sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayAlreadyDisabled")));
+            }
+            return;
+        }
+
+        try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Sell_Delay_Enabled", enable);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+        }
+
+        if (enable.equalsIgnoreCase("true")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayEnabled")));
+        } else if (enable.equalsIgnoreCase("false")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayDisabled")));
+        }
+    }
+
+    @Command(identifier = "sellall delay set", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
+    private void sellAllDelaySet(CommandSender sender,
+                              @Arg(name = "delay", description = "Set delay value in seconds.", def = "null") String delay){
+
+        if (!isEnabled()) return;
+
+        if (!sender.hasPermission("prison.sellall.delay")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.MissingPermission")));
+            return;
+        }
+
+        SellAllConfig sellAllConfigClass = new SellAllConfig();
+        sellAllConfigClass.initialize();
+        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        int delayValue;
+
+        try {
+            delayValue = Integer.parseInt(delay);
+        } catch (NumberFormatException ex){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayNotNumber")));
+            return;
+        }
+
+        try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Sell_Delay_Seconds", delayValue);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+            return;
+        }
+
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayEditedWithSuccess") + " [" + delayValue + "s]"));
+    }
+
+    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", onlyPlayers = false, permissions = "prison.autosell.edit")
+    private void sellAllAutoSell(CommandSender sender,
+                                 @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
+
+        if (!isEnabled()) return;
 
         if (!sender.hasPermission("prison.autosell.edit")){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
             return;
         }
 
-        if (!isEnabled()) return;
-
         if (enable.equalsIgnoreCase("perusertoggleable")){
-            SellAllAutoSellPerUserToggleable(sender, enable);
+            sellAllAutoSellPerUserToggleable(sender, enable);
             return;
         }
 
@@ -131,6 +215,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } catch (IOException e) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
+            return;
         }
 
         if (enable.equalsIgnoreCase("true")){
@@ -141,8 +226,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable", onlyPlayers = false, permissions = "prison.autosell.edit")
-    private void SellAllAutoSellPerUserToggleable(CommandSender sender,
-    @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
+    private void sellAllAutoSellPerUserToggleable(CommandSender sender,
+                                                  @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
 
         if (!sender.hasPermission("prison.autosell.edit")){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
@@ -177,6 +262,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } catch (IOException e) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
+            return;
         }
 
         if (enable.equalsIgnoreCase("true")){
@@ -187,7 +273,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
-    private void SellAllSellCommand(CommandSender sender){
+    private void sellAllSellCommand(CommandSender sender){
 
         if (!isEnabled()) return;
 
@@ -394,6 +480,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 } catch (IOException e) {
                     sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                     e.printStackTrace();
+                    return;
                 }
 
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoDisabled")));
@@ -408,6 +495,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 } catch (IOException e) {
                     sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                     e.printStackTrace();
+                    return;
                 }
 
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
@@ -424,6 +512,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             } catch (IOException e) {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                 e.printStackTrace();
+                return;
             }
 
             p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
@@ -530,6 +619,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             } catch (IOException e) {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                 e.printStackTrace();
+                return;
             }
         } catch (IllegalArgumentException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
@@ -567,6 +657,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } catch (IOException e) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
+            return;
         }
 
         sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrisonTag") + itemID + messages.getString("Message.SellAllDeletedSuccess")));
@@ -612,6 +703,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             } catch (IOException e) {
                 sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                 e.printStackTrace();
+                return;
             }
         } catch (IllegalArgumentException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
