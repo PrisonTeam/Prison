@@ -2,10 +2,12 @@ package tech.mcprison.prison.spigot.commands.sellall;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,6 +42,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
     private static SellAllPrisonCommands instance;
     private double moneyToGive;
+    public static List<String> activePlayerDelay = new ArrayList<>();
 
     /**
      * Get SellAll instance.
@@ -56,6 +59,22 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+    }
+
+    private void addPlayerToDelay(Player p){
+
+        if (!isEnabled()) return;
+
+        if (!activePlayerDelay.contains(p.getName())){
+            activePlayerDelay.add(p.getName());
+        }
+    }
+
+    private void removePlayerFromDelay(Player p){
+
+        if (!isEnabled()) return;
+
+        activePlayerDelay.remove(p.getName());
     }
 
     @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
@@ -182,6 +201,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Sell_Permission") + "]"));
             }
         } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
+
+            if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
+
+                if (activePlayerDelay.contains(p.getName())){
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
+                    return;
+                }
+
+                addPlayerToDelay(p);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
+            }
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
