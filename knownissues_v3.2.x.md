@@ -10,9 +10,28 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
+- Remove a player from a ladder
+  - Cannot remove default ladder
+
+-
+- DONE: new placeholder - user - prison placeholder for total multiplier
+  - see the new API... 
+  
+
+- blockEvent
+  - simplify add - use common defaults - can change features with the other commands
+  - Add a target block name
+  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
+  
+  
+- auto features
+  - custom list of blocks for fortune
+  - allow to work outside the mines
+  
+
 - Issue with /ranks demote and refunding player.
   If the current rank has a custom currency and the player is demoted with a refund,
-  the refund is creditd to the wrong currency
+  the refund is credited to the wrong currency
   - This will be easier to fix once currencies are fixed
   
 

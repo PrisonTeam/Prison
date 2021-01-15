@@ -15,13 +15,26 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V.3.2.4-alpha.5 2021-01-10
+# V.3.2.4-alpha.5 2021-01-15
+
 
 * **SellAll delay.**
  Added SellAll sell delay, it's now possible to add a delay to execute sellall sell, global
   permission for editing: `prison.sell.delay`.
   - New /sellall delay <true/false> command, you can now disable sellAll delay while in game.
   - New /sellall delay set <Delay_Seconds> command, you can now edit sellAll delay while in game.
+
+
+* **Fix a mapping of terracotta to hardend clay only, and not hard clay.**
+The two are different. This may "fix" this in the mappings for BlockType, but this still won't work well, since XMaterial is incorrectly mapped with terracotta.  I submitted a pull request to fix it but last check they did not pull it.
+
+
+* **A few edits to the beginning of the spigotmc.org resource page document.**
+Added a couple of screen prints for examples of a couple of commands.
+
+
+* **Many updates and a lot of great work put in to the spigotmc.org's page design**
+by Gabryca and graphics by Madog24 this week.  A lot of greate progress has been made.
 
 
 * **ChatDisplay changed function text to addText and changed emptyLine to addEmptyLine**
