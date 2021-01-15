@@ -195,6 +195,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         SellAllConfig sellAllConfigClass = new SellAllConfig();
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+
+        if (p == null){
+            sender.sendMessage(SpigotPrison.format("&7[&3PRISON&7] &cSorry but you can't use that from the console!"));
+            return;
+        }
         
         if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
             if (!p.hasPermission("Options.Sell_Permission")){
