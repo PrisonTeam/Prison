@@ -389,10 +389,35 @@ public class PrisonCommand {
     		description = "Converts any Prison placeholders in the test string to their values", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
+    		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
+    							def = "." ) String playerName,
     		@Wildcard(join=true)
     		@Arg(name = "text", 
     			description = "Placeholder text to test using { } as escape characters" ) String text ) {
     	
+    	
+    	// blank defaults do not work when there are more than one at a time.  So had to
+    	// default to periods.  So convert periods to blanks initially:
+    	playerName = (playerName.equals( "." ) ? "" : playerName );
+    	
+    	// Try to get player from the supplied playerName first:
+    	Player player = getPlayer( null, playerName );
+    	if ( player == null ) {
+    		// No player found, or none specified. Need to shift parameters over by one:
+    		if ( text != null && text.trim().length() > 0 ) {
+    			
+    			// playerName should be moved to the pageNumber, after pageNumber is moved to patterns:
+    			text = (playerName.trim() + " " + text).trim();
+    		} 
+    		else {
+    			text = playerName;
+    		}
+    		
+    		// Try to get player from the sender:
+    		player = getPlayer( sender );
+    	}
+    	
+
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
         BulletedListComponent.BulletedListBuilder builder =
@@ -403,7 +428,6 @@ public class PrisonCommand {
         	return;
         }
         
-    	Player player = getPlayer( sender );
     	UUID playerUuid = (player == null ? null : player.getUUID());
     	String translated = Prison.get().getPlatform().getPlaceholders()
     					.placeholderTranslateText( playerUuid, sender.getName(), text );

@@ -18,6 +18,10 @@ that you need.
 # V.3.2.4-alpha.6 2021-01-16
 
 
+* **Added playerName as a parameter to the /prison placeholder test command**
+so it can use stats from that player.  If the playerName cannot be resolved, then the value used within the playerName variable is added to the search text field so nothing is lost and playerName is strictly optional.
+
+
 * **Added a new unit type for placeholder formatting.  kmbt**
 which uses KMBTqQsS as units.
 Example of use: /prison placeholders test {prison_mines_size_temp5::nFormat:#,##0.00:0:kmbt}
