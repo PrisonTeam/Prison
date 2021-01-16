@@ -18,7 +18,11 @@ that you need.
 # V.3.2.4-alpha.5 2021-01-15
 
 
-* **Fix a NoSuchMethodException on BlockEvents for TE Explosion events.**
+* **Add ability to select to TP to either the spawn location for a mine, or the mine's center location even if the spawn point exists.**
+This is useful if spawn gets disconnected from the mine and there is no easy way to find the mine.
+
+
+* **Fixed a NoSuchMethodException on BlockEvents for TE Explosion events.**
 Thought that Exception would have caught it.  Must be due to the fact that it is generally assumed that the NoSuchMethodException is mostly a compile time exception and not a runtime exception so they split it out as far as what it extends from?  
 
 

@@ -472,6 +472,11 @@ public abstract class MineReset
     	return System.currentTimeMillis() - start;
     }
     
+    
+    public void teleportPlayerOut(Player player) {
+    	teleportPlayerOut( player, "spawn" );
+    }
+    
     /**
      * <p>This function will teleport the player out of a given mine, or to the given
      * mine. It will not confirm if the player is within the mine before trying to 
@@ -498,7 +503,7 @@ public abstract class MineReset
      * 
      * @param player
      */
-    public void teleportPlayerOut(Player player) {
+    public void teleportPlayerOut(Player player, String targetLocation) {
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -512,7 +517,8 @@ public abstract class MineReset
 		}
 		else {
 			Location altTp = alternativeTpLocation();
-			Location target = isHasSpawn() ? getSpawn() : altTp;
+			Location target = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
+										getSpawn() : altTp;
 			
 			// Player needs to stand on something.  If block below feet is air, change it to a 
 			// glass block:

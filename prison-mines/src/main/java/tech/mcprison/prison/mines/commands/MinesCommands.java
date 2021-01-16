@@ -2707,12 +2707,31 @@ public class MinesCommands
         @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName,
         
 		@Arg(name = "player", def = "", description = "Player name to TP - " +
-				"Only console or rank command can include this parameter") String playerName
-
+				"Only console or rank command can include this parameter") String playerName,
+		@Arg(name = "target", def = "spawn", 
+				description = "Selects either the mine's spawn location or the center of " +
+						"the mine. [spawn, mine]")
+    			String target
     		) {
     	
-    	Player player = getPlayer( sender );
+    	
+    	// If playerName was not specified, then it could contain the value of target, if so, then copy
+    	// to the target variable and set playerName to an empty String.
+    	if ( playerName != null && 
+    			("spawn".equalsIgnoreCase( playerName ) || "mine".equalsIgnoreCase( playerName )) ) {
+    		target = playerName;
+    		playerName = "";
+    	}
 
+    	// Only valid values are mine and spawn, if anything other than these, set value to spawn:
+    	if ( target == null || 
+    			!("spawn".equalsIgnoreCase( target ) || "mine".equalsIgnoreCase( target )) ) {
+    		target = "spawn";
+    	}
+    	
+    	
+    	Player player = getPlayer( sender );
+    	
     	Player playerAlt = getOnlinePlayer( playerName );
     	
     	if ( sender.isOp() && playerAlt != null && playerAlt.isOnline() ) {
@@ -2766,13 +2785,14 @@ public class MinesCommands
             }
     	
 
+    	
 //        if ( !m.isEnabled() ) {
 //        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //        	return;
 //        }
         
     	if ( sender instanceof Player ) {
-    		m.teleportPlayerOut( (Player) sender );
+    		m.teleportPlayerOut( (Player) sender, target );
     	} else {
     		sender.sendMessage(
     	            "&3Telport failed. Are you sure you're a Player?");
