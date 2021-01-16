@@ -15,8 +15,13 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V.3.2.4-alpha.6 2021-01-15
+# V.3.2.4-alpha.6 2021-01-16
 
+
+* **Added a new unit type for placeholder formatting.  kmbt**
+which uses KMBTqQsS as units.
+Example of use: /prison placeholders test {prison_mines_size_temp5::nFormat:#,##0.00:0:kmbt}
+Where temp5 is a mine name.
 
 
 * **V.3.2.4-alpha.6 2021-01-15**

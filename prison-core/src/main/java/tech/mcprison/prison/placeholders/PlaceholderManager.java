@@ -57,6 +57,7 @@ public class PlaceholderManager {
     public enum NumberTransformationUnitTypes {
     	none,
     	kmg,
+    	kmbt,
     	binary;
     	
     	public static NumberTransformationUnitTypes fromString( String value ) {

@@ -87,6 +87,16 @@ public class PlaceholdersUtil {
 		return results.trim();
 	}
 	
+	public static String formattedKmbtSISize( double amount, DecimalFormat dFmt, String spaces  ) { 
+		StringBuilder unit = new StringBuilder();
+		
+		amount = divBy1000( amount, unit, " KMBTqQsS" );
+		
+		String results = dFmt.format( amount ) + spaces + unit.toString();
+		
+		return results.trim();
+	}
+	
 	private static double divBy1000( double amount, StringBuilder unit, String units ) {
     	if ( amount <= 1000.0 || units.length() == 1 ) {
     		unit.append( units.subSequence( 0, 1 ) );
