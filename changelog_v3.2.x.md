@@ -15,7 +15,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V.3.2.4-alpha.5 2021-01-15
+# V.3.2.4-alpha.6 2021-01-15
+
+
+
+* **V.3.2.4-alpha.6 2021-01-15**
 
 
 * **Add ability to select to TP to either the spawn location for a mine, or the mine's center location even if the spawn point exists.**
