@@ -347,7 +347,7 @@ public class OnBlockBreakEventListener
 				try {
 					triggered = e.getTrigger();
 				}
-				catch ( Exception ex ) {
+				catch ( Exception | NoSuchMethodError ex ) {
 					// Only print the error the first time, then suppress the error:
 					String error = ex.getMessage();
 					

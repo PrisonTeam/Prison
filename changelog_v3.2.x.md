@@ -18,6 +18,10 @@ that you need.
 # V.3.2.4-alpha.5 2021-01-15
 
 
+* **Fix a NoSuchMethodException on BlockEvents for TE Explosion events.**
+Thought that Exception would have caught it.  Must be due to the fact that it is generally assumed that the NoSuchMethodException is mostly a compile time exception and not a runtime exception so they split it out as far as what it extends from?  
+
+
 * **SellAll delay.**
  Added SellAll sell delay, it's now possible to add a delay to execute sellall sell, global
   permission for editing: `prison.sell.delay`.
