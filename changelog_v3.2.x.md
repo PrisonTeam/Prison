@@ -18,6 +18,15 @@ that you need.
 # V.3.2.4-alpha.6 2021-01-16
 
 
+* **Bug fix: This fixes an issue with the fortune enchantment not providing more drops.**
+The code that generates the additional drops was found to be good.  But what was wrong, was Prison's SpigotItemStack's internal value was not being reflected back in to the spigot's ItemStack that backed the object.  The fix for the setAmount function is to set the amount value for both the prison's SpigotItemStack and also bukkit's ItemStack.
+This probably was causing potential issues elsewhere too.
+
+
+* **Text.translateHexColorCodes: Fix a potential NPE when the text is null.**
+  It should not happen, but suspect it could be caused if there isn't a value, such as if it is trying to get the rank of a player on a ladder of which the player is not a part of.
+
+
 * **Added playerName as a parameter to the /prison placeholder test command**
 so it can use stats from that player.  If the playerName cannot be resolved, then the value used within the playerName variable is added to the search text field so nothing is lost and playerName is strictly optional.
 

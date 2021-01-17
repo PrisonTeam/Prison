@@ -40,6 +40,9 @@ public class SpigotItemStack
         		displayName = meta.getDisplayName();
         	}
         	
+        	
+        	// We are getting the bukkit amount here, but if it changes, we must set the amount
+        	// in the bukkitStack:
         	int amount = bukkitStack.getAmount();
         	
         	BlockType type = SpigotPrison.getInstance().getCompatibility()
@@ -62,6 +65,20 @@ public class SpigotItemStack
 
 		
     }
+	
+	/**
+	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
+	 * same behavior of setting the amount to the requested value, but it also updates
+	 * the bukkitStack's amount to ensure that it is the correct value.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void setAmount( int amount ) {
+		super.setAmount( amount );
+		
+		bukkitStack.setAmount( amount );
+	}
 	
     public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {
         super(displayName, amount, material, lore );
