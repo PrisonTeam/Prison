@@ -1111,18 +1111,36 @@ public class AutoManagerFeatures
 			// being ran.
 			BlockType block = blocks.getMaterial();
 
-			if (block == BlockType.COAL ||
-					block == BlockType.DIAMOND ||
-					block == BlockType.EMERALD ||
-					block == BlockType.LAPIS_BLOCK ||
-					block == BlockType.GOLD_BLOCK ||
-					block == BlockType.QUARTZ_BLOCK ||
+			if (	
 					block == BlockType.COAL_ORE ||
 					block == BlockType.DIAMOND_ORE ||
 					block == BlockType.EMERALD_ORE ||
+					block == BlockType.IRON_ORE ||
+					block == BlockType.LAPIS_LAZULI_ORE ||
 					block == BlockType.LAPIS_ORE ||
 					block == BlockType.GOLD_ORE ||
-					block == BlockType.NETHER_QUARTZ_ORE) {
+					block == BlockType.NETHER_GOLD_ORE ||
+					block == BlockType.NETHER_QUARTZ_ORE ||
+					
+					block == BlockType.BLOCK_OF_COAL ||
+					block == BlockType.COAL ||
+					block == BlockType.COAL_BLOCK ||
+					block == BlockType.DIAMOND ||
+					block == BlockType.DIAMOND_BLOCK ||
+					block == BlockType.EMERALD ||
+					block == BlockType.EMERALD_BLOCK ||
+					block == BlockType.GOLD_BLOCK ||
+					block == BlockType.IRON_BLOCK ||
+					block == BlockType.LAPIS_BLOCK ||
+					block == BlockType.LAPIS_LAZULI_BLOCK ||
+					block == BlockType.NETHER_WART_BLOCK ||
+					block == BlockType.NETHERITE_BLOCK ||
+					block == BlockType.PURPUR_BLOCK ||
+					block == BlockType.QUARTZ_BLOCK ||
+					block == BlockType.REDSTONE_BLOCK ||
+					block == BlockType.SLIME_BLOCK ||
+					block == BlockType.SNOW_BLOCK
+					) {
 
 				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
 
@@ -1133,6 +1151,7 @@ public class AutoManagerFeatures
 					block == BlockType.REDSTONE ||
 					block == BlockType.SEA_LANTERN ||
 					block == BlockType.GLOWING_REDSTONE_ORE ||
+					block == BlockType.REDSTONE_ORE ||
 					block == BlockType.PRISMARINE ||
 
 					block == BlockType.BEETROOT_SEEDS ||
