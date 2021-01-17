@@ -15,7 +15,14 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V.3.2.4-alpha.6 2021-01-16
+# V3.2.4-alpha.7 2021-01-16
+
+
+* **V3.2.4-alpha.7 2021-01-16**
+
+
+* **Added many more ores and blocks to the fortune.**
+Some of which are not normally found in "nature" (man made) so they would never be mined (most of the blocks).
 
 
 * **Bug fix: This fixes an issue with the fortune enchantment not providing more drops.**
@@ -37,7 +44,7 @@ Example of use: /prison placeholders test {prison_mines_size_temp5::nFormat:#,##
 Where temp5 is a mine name.
 
 
-* **V.3.2.4-alpha.6 2021-01-15**
+* **V3.2.4-alpha.6 2021-01-15**
 
 
 * **Add ability to select to TP to either the spawn location for a mine, or the mine's center location even if the spawn point exists.**
