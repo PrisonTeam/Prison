@@ -77,7 +77,9 @@ public class SpigotItemStack
 	public void setAmount( int amount ) {
 		super.setAmount( amount );
 		
-		bukkitStack.setAmount( amount );
+		if ( bukkitStack != null ) {
+			bukkitStack.setAmount( amount );
+		}
 	}
 	
     public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {
