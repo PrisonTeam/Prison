@@ -306,7 +306,8 @@ public class RankUpCommand
     }
 
 
-    @Command(identifier = "ranks set rank", description = "Sets a play to a specified rank.", 
+    @Command(identifier = "ranks set rank", description = "Sets a player to a specified rank on a ladder, " +
+    		"or remove a player from a ladder (delete player rank).", 
     			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
@@ -325,7 +326,19 @@ public class RankUpCommand
         setPlayerRank( player, rank, ladder, sender );
     }
 
-
+    
+    @Command(identifier = "ranks remove rank", description = "Removes a player from a specified ladder " +
+    		"(delete player rank). This is an alias for /ranks set rank <playerName> -remove- <ladder>.", 
+    		permissions = "ranks.setrank", onlyPlayers = false) 
+    public void removeRank(CommandSender sender,
+    		@Arg(name = "playerName", def = "", description = "Player name") String playerName,
+    		@Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
+    	
+    	setRank( sender, playerName, "-remove-", ladder );
+    	
+    }
+    
+    
 	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         

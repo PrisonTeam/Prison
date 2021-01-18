@@ -300,6 +300,8 @@ A player may only have zero or one active rank per ladder.  But since a player c
 /ranks player [playerName]
 
 /ranks player help
+
+/ranks players help
 ```
 
 This command will show the Player's name, the given ladder and the rank name.  If the player is not at the highest rank, then it will also show what the next rank's name is, along with the cost to achieve that rank.  If the rank has a custom currency, that too will be displayed.
@@ -312,11 +314,15 @@ The following screen print shows the status of two different players. The **defa
 
 
 
+The command `/ranks players` shows all of the ranks that have players, along with the number of players at each rank.  Ranks with no players will not be shown.  The command `/ranks players all all` will show the same information, but it will also include ranks with no players.  See `/ranks players help` for more information.
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
-# Promote, Demote, and Set Rank Commands
+# Promote, Demote, Set Rank, and Remove Rank Commands
 
 
 Perhaps the most important thing to understand about these three commands is that it is strongly suggested that you should **never** use the `ranks set rank` command.  This will be explained later, and is related to the rank commands that are associated with your ranks.
@@ -330,6 +336,9 @@ The following commands are intended for the use of admins only.  They are to be 
 /ranks demote [playerName] [ladder] [chargePlayers]
 /ranks set rank [playerName] [rankName] [ladder]
 
+/ranks set rank [playerName] -remove- [ladder]
+/ranks remove rank [playerName] [ladder] 
+
 /ranks promote help
 /ranks demote help
 /ranks set rank help
@@ -337,7 +346,7 @@ The following commands are intended for the use of admins only.  They are to be 
 
 
 **Warning: Risk of corruption of player ranks:**
-Promote and demote changes the player's rank by just one rank.  This is important because if you need to promote a player 3 ranks, and you run this command three times, then all rankup commands are properly ran for the player and when you promote then to the final rank, they will have the correct permissons.  If you were to just use `/ranks set rank` and skip the other two ranks, then you risk the player missing important permissions and as such, may require more interventions to correct their ranks.  The `/ranks set rank` command is there in case it needs to be used, but as owner/admin, you need to understand it may corrupt the players rank.
+Promote and demote changes the player's rank by just one rank.  This is important because if you need to promote a player 3 ranks, and you run this command three times, then all rankup commands are properly ran for the player and when you promote then to the final rank, they will have the correct permissions.  If you were to just use `/ranks set rank` and skip the other two ranks, then you risk the player missing important permissions and as such, may require more interventions to correct their ranks.  The `/ranks set rank` command is there in case it needs to be used, but as owner/admin, you need to understand it may corrupt the players rank.
 
 
 Demote is just as important as promote.  Especially since it has been strongly suggested that when you create a rank command, that you include the commands to take away permissions that a player may have gotten in the next higher rank.  If a given rankup command set includes all the commands required for that rank, and all the commands to remove the permissions from the next higher rank, then using `promote` and `demote` will never corrupt any player's rank and will lead to less problems.
@@ -349,6 +358,9 @@ For the commands's parameter **playerName** is obviously the player's name.
 The parameter **ladder** is optional, and if not specified will default to the `default` ladder.  If you need to use any other ladder you need to supply the ladder name.
 
 The parameter **rankName** is required and identifies what rank to set the player to.  If there is more than one level of promotion or demotion, then there is a risk of corruption of the player's rank and missing permissions with promotions, or permissions the player should not have access to with demotions.
+
+
+For the command `/ranks set rank` the parameter for **rankName** can be set to a value of `-remove-` to remove the player from the specified ladder.  An alias for this command is `/ranks remove rank [player] [ladder]`.
 
 
 The parameter **chargePlayers** will require that the player has enough of the specific currency for promotions, and will subtract that amount from their bank balance.  If they do not have enough funds, then they will not be ranked up, just as if they ran the command.  If the player is being demoted and this parameter is used, then the player will be issued a refund for the prior rank.  
@@ -385,6 +397,7 @@ This command will create new ladders.  Ladders do not need to have any ranks ass
 The parameter **ladderName** is the name of the new ladder.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Add Rank to a Ladder

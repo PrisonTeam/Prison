@@ -18,6 +18,11 @@ that you need.
 # V3.2.4-alpha.7 2021-01-16
 
 
+* **Added an alias for removing ranks from a player: /ranks remove rank.**
+This is a shortcut for /ranks set rank -remove-.
+Updated the docs on rankup to reflect these changes and to cover how to remove ranks from a player.  Also added information on /ranks players.
+
+
 * **Added a formula to calculate the fortune multiplier on all fortune levels greater than 5.**
 This allows for an highly OP tool with no limit on fortune levels.
  
