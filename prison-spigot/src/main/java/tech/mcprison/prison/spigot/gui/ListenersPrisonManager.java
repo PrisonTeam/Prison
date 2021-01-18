@@ -141,6 +141,9 @@ public class ListenersPrisonManager implements Listener {
         }
 
         try {
+            if (e.getLine(0) == null){
+                return;
+            }
             if (e.getLine(0).equalsIgnoreCase("[SellAll]") || e.getLine(0).equalsIgnoreCase(signTag)) {
                 if (p.hasPermission("prison.sign")){
                     e.setLine(0, SpigotPrison.format(signTag));
@@ -161,8 +164,6 @@ public class ListenersPrisonManager implements Listener {
         }
 
         Material clickedBlock;
-        Material signMaterial;
-        Material signWallMaterial;
 
         // Check if the clickedBlock's a block
         try {
@@ -171,21 +172,8 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        // Not sure which one will work better
-        try {
-            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseItem().getType();
-        } catch (NullPointerException ex) {
-            signMaterial = XMaterial.matchXMaterial(Material.SIGN).parseMaterial();
-        }
-        try {
-            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseItem().getType();
-        } catch (NullPointerException ex){
-            signWallMaterial = XMaterial.matchXMaterial(Material.WALL_SIGN).parseMaterial();
-        }
-
-
         // Check if the clicked block's a sign
-        if (clickedBlock == signMaterial || clickedBlock == signWallMaterial){
+        if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN){
 
             // Get the player
             Player p = e.getPlayer();
