@@ -334,7 +334,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         moneyToGive = 0;
 
         // Get money to give
-        moneyToGive = getMoneyToGive( sPlayer.getWrapper(), items, moneyToGive);
+        moneyToGive = getMoneyToGiveRemoveItems( sPlayer.getWrapper(), items, moneyToGive);
 
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
@@ -351,7 +351,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
-        moneyToGive = getMoneyWithMultiplier(sPlayer);
+        // Get the Items config section
+        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
+        moneyToGive = 0;
+
+        // Get money to give
+        moneyToGive = getMoneyToGive( sPlayer.getWrapper(), items, moneyToGive);
+
+        if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
+
+            moneyToGive = moneyToGive * getMultiplier(sPlayer);;
+        }
 
         return moneyToGive;
     }
@@ -416,6 +426,35 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
      * */
     public double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
 
+        // Get the player inventory
+        Inventory inv = p.getInventory();
+
+        // Get the items from the player inventory and for each of them check the conditions.
+        for (ItemStack itemStack : inv.getContents()){
+
+            if (itemStack != null) {
+                // Get the items strings from config and for each of them get the Material and value.
+                for (String key : items) {
+                    ItemStack itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseItem();
+                    double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
+                    int amount = 0;
+
+                    // Check if the item from the player inventory's on the config of items sellable
+                    // So it gets the amount and then remove it from the inventory
+                    if (itemMaterial != null && itemMaterial == itemStack) {
+                        amount = itemStack.getAmount();
+                    }
+                    // Get the new amount of money to give
+                    if (amount != 0) {
+                        moneyToGive = moneyToGive + (value * amount);
+                    }
+                }
+            }
+        }
+        return moneyToGive;
+    }
+
+    public double getMoneyToGiveRemoveItems(Player p, Set<String> items, double moneyToGive){
         // Get the player inventory
         Inventory inv = p.getInventory();
 
