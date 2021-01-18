@@ -1269,6 +1269,76 @@ public class AutoManagerFeatures
 	}
 
 
+	/**
+	 * <p>Fortune is calculated using the standard calculations used by vanilla
+	 * minecraft when the tool's fortuneLevel is three or lower.
+	 * </p>
+	 * 
+	 * <p>This function also supports non-standard higher fortune levels. Fortune 
+	 * levels of 4 and 5 are fixed at lower levels.  Levels 6 and higher uses a
+	 * formula with an initial threshold of 80%, but the threshold increases 
+	 * as the fortuneLevel increases.  There is no upper limit on the calculations, 
+	 * but anything greater than a fortune level of 200 has a 100% chance of 
+	 * the calculated multiplier being applied.
+	 * </p>
+	 * 
+	 * <p>Fortune Levels and the resulting multipliers are based upon random chance
+	 * between 0 and 100:
+	 * 
+	 * </p>
+	 * <ul>
+	 *   <li>Fortune 1: <ul>
+	 *   	<li><b>2</b> :: rnd <= 33</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 2: <ul>
+	 *   	<li><b>2</b> :: rnd <= 25</li>
+	 *   	<li><b>3</b> :: rnd <= 50</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 3: <ul>
+	 *   	<li><b>2</b> :: rnd <= 20</li>
+	 *   	<li><b>3</b> :: rnd <= 40</li>
+	 *   	<li><b>4</b> :: rnd <= 60</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 4: <ul>
+	 *   	<li><b>2</b> :: rnd <= 16</li>
+	 *   	<li><b>3</b> :: rnd <= 32</li>
+	 *   	<li><b>4</b> :: rnd <= 48</li>
+	 *   	<li><b>5</b> :: rnd <= 64</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 5: <ul>
+	 *   	<li><b>2</b> :: rnd <= 14</li>
+	 *   	<li><b>3</b> :: rnd <= 28</li>
+	 *   	<li><b>4</b> :: rnd <= 42</li>
+	 *   	<li><b>5</b> :: rnd <= 56</li>
+	 *   	<li><b>6</b> :: rnd <= 70</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 6 & Higher: <ul>
+	 *     <li>Threshold is set to 80%</li>
+	 *     <li>For every fortuneLevel of 10, threshold is increased by 1%</li>
+	 *     <li>Threshold can only reach a max value of 100</li>
+	 *     <li>If rnd is greater than threshold, then multiplier is only 1</li>
+	 *     <li>chancePerUnit = threshold / fortuneLevel</li>
+	 *     <li>multiplier = the floor value of chancePerUnit * rnd</li>
+	 *     <li>If modified threshold hit 100, then chancePerUnit is always calculated.</li>
+	 *     <li>No upper limit on fortuneLevel.</li>
+	 *     </ul></li>
+	 *   </li>
+	 * </ul
+	 * 
+	 * @param fortuneLevel
+	 * @param multiplier
+	 * @return
+	 */
 	private int calculateFortuneMultiplier(int fortuneLevel, int multiplier) {
 		int rnd = getRandom().nextInt( 100 );
 
@@ -1318,25 +1388,66 @@ public class AutoManagerFeatures
 				}
 				break;
 
-			default:
+			case 5:
 				// values of 5 or higher
-				if (rnd <= 16) {
+				if (rnd <= 14) {
 					multiplier = 2;
 				}
-				else if (rnd <= 32) {
+				else if (rnd <= 28) {
 					multiplier = 3;
 				}
-				else if (rnd <= 48) {
+				else if (rnd <= 42) {
 					multiplier = 4;
 				}
-				else if (rnd <= 64) {
+				else if (rnd <= 56) {
 					multiplier = 5;
 				}
-				else if (rnd <= 74) {
+				else if (rnd <= 70) {
 					// Only 8% not 16% chance
 					multiplier = 6;
 				}
 				break;
+				
+			default:
+				
+				// Fortune is over 5, so apply a special formula:
+				
+				// Take the fortune level and divide by 10 and then take the 
+				// floor value of that and use it as the threshold modifier.
+				
+				int thresholdModifier = Math.floorDiv( fortuneLevel, 10 );
+				
+				// Max thresholdModifier can only be 100.
+				if ( thresholdModifier > 100 ) {
+					thresholdModifier = 100;
+				}
+				
+				// Calculate the threshold to apply the multiplier, starting 
+				// with 80%, then add the thresholdModifier so the higher the
+				// fortune, then the greater the odds of engaging the the 
+				// multiplier, where a fortune of 200 will guarantee the 
+				// the multiplier will always be enabled.
+				
+				double threshold = 80.0d + thresholdModifier;
+				
+				// Use a random number that is a double:
+				double rndD = getRandom().nextDouble();
+				
+				if ( rndD <= threshold ) {
+					// Passed the threshold, so calculate the multiplier.
+					
+					// The chancesPerUnit represents how to subdivide the 
+					// threshold in to number of fortuneLevels.
+					double chancesPerUnit = threshold / fortuneLevel;
+					
+					// Calculate how many units are in the rndD number:
+					double units = rndD / chancesPerUnit;
+					
+					// The multiplier is the floor of units. Do not round up.
+					multiplier = 1 + (int) Math.floor( units );
+					
+				}
+				
 		}
 		return multiplier;
 	}

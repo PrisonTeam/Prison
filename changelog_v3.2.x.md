@@ -18,6 +18,14 @@ that you need.
 # V3.2.4-alpha.7 2021-01-16
 
 
+* **Added a formula to calculate the fortune multiplier on all fortune levels greater than 5.**
+This allows for an highly OP tool with no limit on fortune levels.
+ 
+
+* **Bug fix with enabling fortune being applied.**
+Needed to check to ensure the bukkitStack object was not null prior to updating.  The bukkitStack may not always exist especially if the stack is created.
+
+
 * **V3.2.4-alpha.7 2021-01-16**
 
 
