@@ -425,13 +425,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             if (itemStack != null) {
                 // Get the items strings from config and for each of them get the Material and value.
                 for (String key : items) {
-                    String itemMaterial = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+                    ItemStack itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseItem();
                     double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
                     int amount = 0;
 
                     // Check if the item from the player inventory's on the config of items sellable
                     // So it gets the amount and then remove it from the inventory
-                    if (itemMaterial != null && itemMaterial.equalsIgnoreCase(itemStack.getType().toString())) {
+                    if (itemMaterial != null && itemMaterial == itemStack) {
                         amount = itemStack.getAmount();
                         p.getInventory().remove(itemStack);
                     }
@@ -613,7 +613,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             try {
                 sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
+                conf.set("Items." + itemID + ".ITEM_ID", itemID);
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
                 conf.save(sellAllFile);
             } catch (IOException e) {
@@ -697,7 +697,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             try {
                 sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + itemID + ".ITEM_ID", blockAdd.getType().toString());
+                conf.set("Items." + itemID + ".ITEM_ID", itemID);
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
                 conf.save(sellAllFile);
             } catch (IOException e) {
