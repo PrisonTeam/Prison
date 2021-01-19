@@ -6,7 +6,7 @@
 
 This document provides information how to setup and use ranks and ladders.
 
-Information on how to use Prestiges is provided in a separate document: [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
+Information on how to use Prestiges is provided in a separate document: [Setting up Prestiges](prison_docs_107_setting_up_prestiges.md)
 
 
 The use of Ranks, Ladders, and Prestiges are all optional.  You can either use these Prison based items, or you can use some other plugin to provide these functionalities.  The choice is yours.
@@ -521,7 +521,7 @@ The ladder list command will list all active ladders on the server.
 No other information is provided for the ladders listed.  For more information on a ladder use `/ranks list [ladderName]` or `/ranks ladder listranks [ladderName]` but this last one has less information provided.
 
 
-#Ladder Ranks Listings
+# Ladder Ranks Listings
 
 This command provides a simple list of ranks associated with the given ladder.  
 
@@ -565,7 +565,7 @@ A good example of how to use it with LuckPerms can be found in the documentation
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-#This is a work in progress!
+# This is a work in progress!
 
 More coming soon!
 

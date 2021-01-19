@@ -189,7 +189,7 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 
-* [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
+* [Setting up Prestiges](prison_docs_107_setting_up_prestiges.md)
 	Configuring and using Prestiges.
 
 

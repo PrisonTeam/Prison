@@ -276,6 +276,20 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
+    private boolean sellAllCommandPDelay(Player p) {
+        if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
+
+            if (activePlayerDelay.contains(p.getName())){
+                p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
+                return true;
+            }
+
+            addPlayerToDelay(p);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
+        }
+        return false;
+    }
+
     @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
     private void sellAllCommands(CommandSender sender) {
 
@@ -492,16 +506,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
 
-            if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
-
-                if (activePlayerDelay.contains(p.getName())){
-                    p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
-                    return;
-                }
-
-                addPlayerToDelay(p);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
-            }
+            if (sellAllCommandPDelay(p)) return;
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
@@ -522,6 +527,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
     }
+
+
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
