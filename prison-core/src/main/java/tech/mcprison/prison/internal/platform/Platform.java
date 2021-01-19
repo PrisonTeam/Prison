@@ -313,6 +313,9 @@ public interface Platform {
 	public int getModuleElementCount( ModuleElementType elementType );
 	
 	
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender );
+	
+	
 	public void autoCreateMineBlockAssignment();
 
 

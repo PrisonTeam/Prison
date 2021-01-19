@@ -282,6 +282,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+		return null;
+	}
+
+	@Override
 	public void autoCreateMineBlockAssignment() {
 		
 	}

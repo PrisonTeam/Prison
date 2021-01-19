@@ -15,7 +15,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V3.2.4-alpha.7 2021-01-16
+# V3.2.4-alpha.7 2021-01-19
+
+
+* **Setup** `/mines tp` **or just** `/mtp` **to teleport to them mine associated with the current player's rank**
+on the default ladder.  Only will work when mines are associated to ranks.  If there is more than one mine tied to a rank, it will first try to select the mine that has the same name as the rank, otherwise it uses the first mine (arbitrary mine).
 
 
 * **Added an alias for removing ranks from a player: /ranks remove rank.**

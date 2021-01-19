@@ -143,9 +143,15 @@ Some of the highlights of these commands are as follows:
 * `/mines list` : Displays all mines on your server.
 * `/mines playerInventory` : Shows your current inventory in the console. Intended strictly for admins.
 * `/mines rename` : Renames a mine.
-* `/mines reset` : Resets the mine. Forces a regeneration of all the blocks, even if the mine is in skip reset mode.
+* `/mines reset <mineName> <options>` : Resets the mine. Forces a regeneration of all the blocks, even if the mine is in skip reset mode.  `<mineName>` should be the name of the mine, but can also be ** *all* ** to force all the mines to reset one after the other.  If such action is performed, then all mine resets will be done through a submission with a slight delay between each reset, and it will prevent the running of the mine reset commands to prevent possible looping.  `<options>` should not be use directly without understanding what they do. 
 * `/mines stats` : Toggles the display of stats that pertain to how long it takes to reset the mines.  View /mines info or /mines list to see the stats.  Use this command again to turn it off.
-* `/mines tp` : tp to a mine's spawn point, or the center of the mine if no spawn has been set.  If players are given the permissions, they too can use this command.  Use `/mines tp help` for a list of the perms.
+
+
+* `/mines tp <mineName> <playerName> <target>` : tp to a mine's spawn point, or the center of the mine if no spawn has been set.  If players are given the permissions, they too can use this command.  If no parameters are used, then the it will try to teleport the player to the mine associated with their current default ladder's rank. If more than one mine is associated with a Rank, then it will use the mine that has the same name as the Rank, otherwise it will use the first mine listed in the rank. If `<playerName>` is provided and submitted by console or an OP'd player, then it can initiate a tp for the specified player if they are online. Target defaults to `spawn` and will tp to the set spawn location for the mine, otherwise `target` tp's to the center of the mine.  Use `/mines tp help` for a list of the perms.
+
+* `/mtp` is an alias for `/mines tp` and can be use interchangeably. 
+
+
 * `/mines wand` : Gives you a Prison selection wand for defining you mine's area. Use prior to using the commands `/mines create` and `/mines set area`.  The wand is no longer the only way to set a physical location, you can now use `/mines set area <mineName> feet` to set a 1 x 1 x 1 region under your feet, which is great for when you're flying.  You can then use `/mines set size` to increase the size.
 * `/mines whereami` : Shows you what mine you are in, or how far away you are from other mines in the area.  If you have a lot of mines, it's easy to lose track of where you are, and this may help get your bearings.
 
@@ -156,13 +162,26 @@ Some of the highlights of these commands are as follows:
 * `/mines block set` : Edit the block's percentage within the mine.  A percent of zero will remove.  If the block does not already exist, it will be added. (Can replace add and remove).
 
 
+* `/mines blockEvent add` : 
+* `/mines blockEvent block add` : 
+* `/mines blockEvent block list` : 
+* `/mines blockEvent block remove` : 
+* `/mines blockEvent eventType` : 
+* `/mines blockEvent list` : 
+* `/mines blockEvent mode` : 
+* `/mines blockEvent percent` : 
+* `/mines blockEvent permission` : 
+* `/mines blockEvent remove` : 
+* `/mines blockEvent triggered` : 
+
+
 * `/mines set area` : Redefine the area of the mine.  Careful, this can wipe out builds if set incorrectly.  This is a required command to set the area of the mine.  A new feature is to use the current location of your feet to define a 1 x 1 x 1 region with `/mines set area <mineName> feet`.  Then you can use `/mines set size` to make it any size you want.
 * `/mines set liner` : A quick way to wrap your mine with a 2D Pattern in 3D space.  This command also will `repair` the area around a mine, and will effectively erase a liner.  There are six directions that can be specified for change: `north`, `south`, `east`, `west`, `top`, and `bottom`. `walls` also is a shortcut for `north`, `south`, `east`, and `west`.  The patterns available are listed by the command.  There is even a `force` setting that will allow the mine to be wrapped when in air, since the wrappings normally needs blocks in contact with the mine so it is able to conform to the terrain.
 * `/mines set move` is a new command that is not yet enabled. It is still in development, but will be active soon.  This command will move a whole mine as a single unit, be it a few blocks or many (not recommended).
-* `/mines set norank` : Disconnect the mine from a rank. 
+* **Removed:** `/mines set norank` : Disconnect the mine from a rank. **Note:** This command has been changed to `/mines set rank <mineName> none` to delete the rank from the mine.
 * `/mines set notificationPerm` : Enables or Disables notifications pertaining to mine resets to be seen only by players who have permission to that mine.  The permissions used are `mines.notification.[mineName]` in all lower case.
 * `/mines set notification` : Can turn off the notifications on a per-mine basis.  Or set the notification radius, or only notify players within the mine.  This command cannot change the message.
-* `/mines set rank` : Links a mine to a rank, otherwise there is no way within prison to identify which mines should be associated with a given rank.  This is not yet needed, but it will be used in the near future with new features, or enhancements to existing features.
+* `/mines set rank <rankName>` : Links a mine to a rank, otherwise there is no way within prison to identify which mines should be associated with a given rank. If **rankName** is **none** then it removes the associated rank from the mine (deletes the rank).  This is not yet needed, but it will be used in the near future with new features, or enhancements to existing features.
 * `/mines set resetThreshold` : This allows you to set a percent remaining in the mine to use as a threshold for resets. For example if you set it to 20.5% then the mine will reset when it reaches 25.5% blocks remaining.  When the mine resets, it will initiate the `zeroBlockResetDelay` functionality, of which it's not exactly "zero blocks" anymore.
 * `/mines set resetTime` : Changes the time between resets, as expressed in seconds. Applies to each mine independently.
 * `/mines set resetPaging` : This is an advanced feature that can eliminate lag that might be experienced with the resetting of enormous large mines. A mine could be millions of blocks in size and without this setting it may take a few seconds, or longer to reset, and it could cause the ticks to fall far behind, even to the point of forcing a shutdown.  This command instead will breakdown the mine's reset in to very small chunks that will prevent the TPS from slowing down, and it will allow other critical tasks to continue to run.  The total length of time for the rest may be increased, but it will not hurt the server. Prison does not use async resets due to eventual corruption of the bukkit and spigot components.

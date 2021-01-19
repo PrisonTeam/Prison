@@ -10,7 +10,13 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
-- Remove a player from a ladder
+- /mines tp - mineName optional - default to the highest ranking Rank's mine.
+
+
+- DONE: auto pickup fortune - formula for levels greater than 5?
+
+
+- DONE: Remove a player from a ladder. (This already existed)
   - Cannot remove default ladder
 
 -

@@ -1063,6 +1063,82 @@ class SpigotPlatform
 		return results;
 	}
 	
+	/**
+	 * <p>This function takes a CommandSender for a player, and tries to find a mine
+	 * that would be associated with that player.  This is a very complex process
+	 * since mines don't have to be associated with mines, and you can have multiple 
+	 * mines per rank.  This only processes ranks on the default ladder. Both 
+	 * the Ranks and Mines modules must be enabled too.
+	 * </p>
+	 * 
+	 * <p>First, the CommandSender has to be converted to a Player object, then
+	 * mapped to a RankPlayer.  This process can only happen with a RankPlayer object
+	 * since that is where a Player is associated with ranks. 
+	 * </p>
+	 * 
+	 * <p>If the player has a rank on the default ladder, then that rank will be
+	 * used to continue the search for the mine.  If there is more than one mine 
+	 * associated with the rank, then it tries to find a mine with the same name.
+	 * Otherwise it will take the first mine in the list.
+	 * </p>
+	 * 
+	 * <p>The result, if not null, is the best mine that can be found. It is recognized
+	 * that if multiple mines exist, then it may not always be the one intended.
+	 * </p>
+	 * 
+	 * @param sender
+	 * @return
+	 */
+	@Override
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+		Mine results = null;
+		
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() &&
+				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() 
+				) {
+			
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		Player player = pm.getPlayer( sender );
+    		RankPlayer rankPlayer = pm.getPlayer( player );
+
+    		if ( rankPlayer != null ) {
+    			Rank rank = rankPlayer.getRank( "default" );
+    			
+    			if ( rank != null ) {
+    				
+    				// First check to see if there are any mines linked to a rank:
+    				if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
+    					
+    					for ( ModuleElement mineME : rank.getMines() ) {
+							if ( mineME.getName().equalsIgnoreCase( rank.getName() )) {
+								// Found a mine with the same name as the rank. Give high priority:
+								
+								results = (Mine) mineME;
+								break;
+							}
+						}
+    					
+    					if ( results == null ) {
+    						results = (Mine) rank.getMines().get(0);
+    					}
+    				}
+    				
+    				if ( results == null ) {
+    					// Check to see if there are any mines with the same name:
+    					
+    					MineManager mm = PrisonMines.getInstance().getMineManager();
+    					results = mm.getMine( rank.getName() );
+    				}
+    				
+    			}
+    			
+    		}
+			
+		}
+		
+		return results;
+	}
+	
 	
 	/**
 	 * <p>This function assigns blocks to all of the generated mines.  It is intended that

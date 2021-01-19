@@ -2704,7 +2704,8 @@ public class MinesCommands
     		aliases = "mtp",
     		altPermissions = {"mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to teleport to.") String mineName,
+        @Arg(name = "mineName", def="",
+        		description = "The name of the mine to teleport to.") String mineName,
         
 		@Arg(name = "player", def = "", description = "Player name to TP - " +
 				"Only console or rank command can include this parameter") String playerName,
@@ -2714,6 +2715,16 @@ public class MinesCommands
     			String target
     		) {
     	
+    	
+    	if ( mineName != null && 
+    			("spawn".equalsIgnoreCase( mineName ) || "mine".equalsIgnoreCase( mineName )) ) {
+    		target = mineName;
+    		// Since the value spawn and mine are the last parameters, then we know playerName and 
+    		// mineName were not provided so set them to empty Strings:
+    		playerName = "";
+    		mineName = "";
+    	}
+
     	
     	// If playerName was not specified, then it could contain the value of target, if so, then copy
     	// to the target variable and set playerName to an empty String.
@@ -2757,6 +2768,25 @@ public class MinesCommands
     	else if ( playerAlt != null && !player.getName().equalsIgnoreCase( playerAlt.getName()  ) ) {
     		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
     	}
+    	
+    	
+    	if ( mineName == null || mineName.trim().isEmpty() ) {
+    		// Need to find a "correct" mine to TP to.
+    		
+    		Mine m = (Mine) Prison.get().getPlatform().getPlayerDefaultMine( sender );
+
+    		if ( m != null ) {
+    			
+    			m.teleportPlayerOut( (Player) sender, target );
+    		}
+    		else {
+    			sender.sendMessage( "&cNo target mine found. " +
+    									"&3Resubmit teleport request with a mine name." );
+    		}
+    		
+    		return;
+    	}
+    	
 
     	// Load mine information first to confirm the mine exists and the parameter is correct:
     	if (!performCheckMineExists(sender, mineName)) {
@@ -2880,10 +2910,10 @@ public class MinesCommands
 
     }
 
-	private Player getPlayer( CommandSender sender ) {
-		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
-		return player.isPresent() ? player.get() : null;
-	}
+//	private Player getPlayer( CommandSender sender ) {
+//		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
+//		return player.isPresent() ? player.get() : null;
+//	}
     
 	private Player getOnlinePlayer( String playerName ) {
 		Player player = null;

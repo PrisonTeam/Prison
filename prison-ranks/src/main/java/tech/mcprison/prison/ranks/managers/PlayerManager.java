@@ -246,6 +246,15 @@ public class PlayerManager
     	return results;
     }
     
+    public RankPlayer getPlayer( Player player ) {
+    	RankPlayer rPlayer = null;
+    	if ( player != null ) {
+    		Optional<RankPlayer> oPlayer = getPlayer( player.getUUID(), player.getName() );
+    		rPlayer = oPlayer.orElse( null );
+    	}
+    	return rPlayer;
+    }
+    
     
     private RankPlayer addPlayer( UUID uid, String playerName ) {
     	RankPlayer results = null;
