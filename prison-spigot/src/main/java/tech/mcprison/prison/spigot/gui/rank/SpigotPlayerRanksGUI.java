@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -34,6 +35,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
+    private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
@@ -160,6 +162,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                     messages.getString("Lore.Info"),
                     messages.getString("Lore.Price3") + rank.getCost()
             );
+
+            if (placeholderAPINotNull) {
+                if (hackyCounterEnchant == 1) {
+                    hackyCounterEnchant++;
+                    ranksLore.add(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_default%")));
+                }
+            }
 
             ItemStack itemRank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),

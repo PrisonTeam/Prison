@@ -35,7 +35,7 @@ send-metrics: true
 show-alerts: true
 
 # NEW: Prison now has prestiges! 
-# https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_107_setting_up_pestiges.md
+# https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_107_setting_up_prestiges.md
 # Note: "prestiges: true" is deprecated and will be removed in the future. 
 prestiges: true
 

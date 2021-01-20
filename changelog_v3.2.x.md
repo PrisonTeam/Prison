@@ -21,6 +21,10 @@ that you need.
 * **v3.2.4-alpha.8 2021-01-19**
 
 
+* **Added Ranks GUI Progress Bar.**
+Just added a progress bar to the Ranks GUI to see the next Rank how far is to get available for unlock/rankup.
+
+
 * **Added spiget as a jar instead of using the maven repo since it's been going down frequently and the builds were failing remotely.**
 
 
