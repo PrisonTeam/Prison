@@ -15,7 +15,13 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-# V3.2.4-alpha.7 2021-01-19
+# v3.2.4-alpha.8 2021-01-19
+
+
+* **v3.2.4-alpha.8 2021-01-19**
+
+
+* **Added spiget as a jar instead of using the maven repo since it's been going down frequently and the builds were failing remotely.**
 
 
 * **Setup** `/mines tp` **or just** `/mtp` **to teleport to them mine associated with the current player's rank**

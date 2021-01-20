@@ -10,6 +10,9 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
+- use the spiget jar and remove the maven hook since maven has been going down frequently.
+
+
 - /mines tp - mineName optional - default to the highest ranking Rank's mine.
 
 

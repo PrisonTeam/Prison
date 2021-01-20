@@ -4,16 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
-
 public class SpigotPlatformTest
-		extends SpigotPlatform
+		//extends SpigotPlatform
 {
+	private SpigotPlatform sp = new SpigotPlatform();
 
-	@Test
+	//@Test
 	public void testMineBlockList()
 	{
-		List<String> blockList = buildBlockListBlockType();
+
+		List<String> blockList = sp.buildBlockListBlockType();
+		
 		
 		int i = -1;
 		
@@ -51,9 +52,8 @@ public class SpigotPlatformTest
 		
 	}
 	
-	@Override
 	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
-		List<String> results =  super.mineBlockList( blockList, startPos, length);
+		List<String> results =  sp.mineBlockList( blockList, startPos, length);
 		
 		System.out.println( results );
 		
