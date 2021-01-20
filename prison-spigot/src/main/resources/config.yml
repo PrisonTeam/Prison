@@ -66,12 +66,6 @@ sellall: false
 
 
 
-# NEW: Broadcast rankups and demotions to the whole server, in all worlds.
-# If this value does not exist, or has a true value, it will be broadcasted.
-# Any other value besides true, or non-existant, will be treated as false.
-broadcast-rankups: false
-
-
 # NEW: SellAll sign
 # New sellall feature which enable a sign with the name of [SellAll] to execute the command /sellall sell of Prison
 # To make a sign, give yourself the permission prison.admin and then add as the first line of a sign the tag [SellAll]
