@@ -20,6 +20,8 @@ that you need.
 
 * **v3.2.4-alpha.8 2021-01-19**
 
+* **AutoFeatures GUI redesign**
+New design for AutoFeatures GUI.
 
 * **Added Ranks GUI Progress Bar.**
 Just added a progress bar to the Ranks GUI to see the next Rank how far is to get available for unlock/rankup.

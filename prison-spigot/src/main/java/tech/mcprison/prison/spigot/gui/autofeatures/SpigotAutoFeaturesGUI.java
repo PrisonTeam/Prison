@@ -180,10 +180,10 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             List<String> EnabledOrDisabledLore = createLore(
                     messages.getString("Lore.DisabledAll"),
                     messages.getString("Lore.RightClickToEnable"));
-            ItemStack enabledOrDisabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), EnabledOrDisabledLore, SpigotPrison.format("&a" + "All Enabled"));
+            ItemStack enabledOrDisabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), EnabledOrDisabledLore, SpigotPrison.format("&a" + "All Disabled"));
 
             inv.setItem(2, enabledOrDisabled);
-            inv.setItem(5, closeGUI);
+            inv.setItem(6, closeGUI);
         }
     }
 }
