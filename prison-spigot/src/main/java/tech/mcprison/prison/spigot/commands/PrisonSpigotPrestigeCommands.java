@@ -32,10 +32,9 @@ public class PrisonSpigotPrestigeCommands
 			return;
 		}
 
-		if ( isConfig( "prestiges-gui-enabled") ) {
+		if ( isConfig( "Options.Prestiges.GUI_Enabled") ) {
 			sender.dispatchCommand( "gui prestiges");
-		}
-		else {
+		} else {
 			sender.dispatchCommand( "ranks list prestiges");
 		}
 	}

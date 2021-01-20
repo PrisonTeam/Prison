@@ -15,15 +15,14 @@ public class PrisonSpigotMinesCommands
 	@Command(identifier = "mines", onlyPlayers = false,
 			altPermissions = {"-none-", "mines.admin"})
 	public void minesGUICommand(CommandSender sender) {
-		if (!sender.hasPermission("mines.admin") && isPrisonConfig("mines-gui-enabled") ) {
+		if (!sender.hasPermission("mines.admin") && isConfig("Options.Mines.GUI_Enabled")) {
 
 			prisonManagerMines( sender );
 
             if (isPrisonConfig("prison-gui-enabled") && isConfig("Options.Mines.GUI_Enabled")){
                 sender.dispatchCommand("gui mines");
             }
-		}
-		else {
+		} else {
 			sender.dispatchCommand("mines help");
 		}
 	}
@@ -60,5 +59,4 @@ public class PrisonSpigotMinesCommands
         SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player );
         gui.open();
     }
-
 }

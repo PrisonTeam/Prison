@@ -53,24 +53,6 @@ slime-fun: false
 # Access with /gui
 prison-gui-enabled: true
 
-# NEW: Enable or disable /mines to open the GUI to players (This won't works
-# with OPs or admins who have the permission mines.admin or prison.admin)
-# This command's only a shortcut of /gui mines
-mines-gui-enabled: true
-
-# NEW: Enable or disable /ranks to open the GUI to players (This won't
-# works with OPs or admins who have the permission ranks.admin or prison.admin)
-# This command's only a shortcut of /gui ranks
-ranks-gui-enabled: true
-
-# NEW: /ranks prestiges's a shortcut of /gui prestiges and the same 
-# as the /prestiges shortcut
-ranks-gui-prestiges-enabled: true
-
-# NEW: /prestiges command which opens the Prestiges GUI, this's basically a 
-# shortcut of the /gui prestiges
-prestiges-gui-enabled: true
-
 # NEW: /prestige will open a confirmation GUI if this's on true, if on false 
 # will use a chat confirmation instead.
 prestige-confirm-gui: true

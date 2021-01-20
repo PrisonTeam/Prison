@@ -22,17 +22,14 @@ public class PrisonSpigotRanksCommands
 		if (!sender.hasPermission("ranks.admin")) {
 
 			if ((ladderName.equalsIgnoreCase("default") || ladderName.equalsIgnoreCase("ranks")) &&
-					isPrisonConfig("ranks-gui-enabled") ) {
+					isConfig("Options.Ranks.GUI_Enabled")) {
 
 				prisonManagerRanks( sender );
 //				sender.dispatchCommand("gui ranks");
-			}
-			else if (ladderName.equalsIgnoreCase("prestiges") &&
-					isPrisonConfig( "ranks-gui-prestiges-enabled") ) {
+			} else if (ladderName.equalsIgnoreCase("prestiges") && isConfig( "Options.Prestiges.GUI_Enabled")) {
 
 				sender.dispatchCommand("gui prestiges");
-			}
-			else {
+			} else {
 				sender.dispatchCommand("ranks list " + ladderName);
 			}
 		}
