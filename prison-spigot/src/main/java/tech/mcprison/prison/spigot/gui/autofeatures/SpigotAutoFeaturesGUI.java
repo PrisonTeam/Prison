@@ -167,9 +167,9 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             // Position of the button
             inv.setItem(0, playSound);
             inv.setItem(8, hologram);
-            inv.setItem(10, autoPickup);
+            inv.setItem(11, autoPickup);
             inv.setItem(13, autoSmelt);
-            inv.setItem(16, autoBlock);
+            inv.setItem(15, autoBlock);
             inv.setItem(18, enabledOrDisabled);
             inv.setItem(dimensions-1, closeGUI);
 
