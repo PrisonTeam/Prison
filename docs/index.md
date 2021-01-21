@@ -20,16 +20,7 @@
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-<link rel="stylesheet" href="/assets/index.f7afda7848e99e6cf0ab.css">
-    <div id="discord-widget" style="height: 500; width: 500px; "></div>
-    
-    <script>window.GLOBAL_ENV = {
-      API_ENDPOINT: '//discord.com/api',
-      WEBAPP_ENDPOINT: '//discord.com',
-      CDN_HOST: 'cdn.discordapp.com',
-      MARKETING_ENDPOINT: '//discord.com',
-      RELEASE_CHANNEL: 'stable',
-    };</script><script src="/assets/5a61f8e3e63b7e93777f.js"></script> 
+<iframe src="https://discord.com/widget?id=332602419483770890&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
