@@ -129,13 +129,17 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onSignEditing(SignChangeEvent e){
 
+        if (sellAllConfig == null){
+            return;
+        }
+
         // Check if the feature's enabled
-        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+        if (!(sellAllConfig.getString("Options.SellAll_Sign_Enabled").equalsIgnoreCase("true"))){
             return;
         }
 
         Player p = e.getPlayer();
-        String signTag = config.getString("sellall-sign-visible-tag");
+        String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
         if (signTag == null){
             signTag = "&7[&3SellAll&7]";
         }
@@ -158,8 +162,12 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler
     public void onPlayerClickSign(PlayerInteractEvent e){
 
+        if (sellAllConfig == null){
+            return;
+        }
+
         // Check if the feature's enabled
-        if (!(config.getString("sellall-sign").equalsIgnoreCase("true"))){
+        if (!(sellAllConfig.getString("Options.SellAll_Sign_Enabled").equalsIgnoreCase("true"))){
             return;
         }
 
@@ -177,7 +185,7 @@ public class ListenersPrisonManager implements Listener {
 
             // Get the player
             Player p = e.getPlayer();
-            String signTag = config.getString("sellall-sign-visible-tag");
+            String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
             if (signTag == null) {
                 signTag = "&7[&3SellAll&7]";
             }
@@ -197,7 +205,7 @@ public class ListenersPrisonManager implements Listener {
                     // Check if the first like of the sign have the right tag
                     if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))){
 
-                        if (config.getString("sellall-sign-notify").equalsIgnoreCase("true")){
+                        if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")){
                             p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
                         }
 

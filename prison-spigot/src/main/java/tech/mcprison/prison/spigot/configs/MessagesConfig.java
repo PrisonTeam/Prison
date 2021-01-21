@@ -230,7 +230,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllMultiplierNotANumber", "&7[&3PRISON WARN&7] &cSorry but the multiplier isn't a number!");
         dataConfig("Message.SellAllMultiplierNotNumber2", " Here-> ");
         dataConfig("Message.SellAllConfigSaveFail", "&7[&3PRISON ERROR&7] &cSorry, something went wrong while saving the config!");
-        dataConfig("Message.SellAllMultiplierEditSaveSuccess", "&7[&3PRISON&7] &aMultiplier got added or edited with success!");
+        dataConfig("Message.SellAllMultiplierEditSaveSuccess", "&7[&3PRISON&7] &3Multiplier got added or edited with success!");
         dataConfig("Message.SellAllMultiplierFormat", "&7[&3PRISON WARN&7] &cPlease use this format: /sellall multiplier delete <Prestige>");
         dataConfig("Message.SellAllCantFindMultiplier", "&7[&3PRISON WARN&7] &cCan't find the Multiplier of the prestige ");
         dataConfig("Message.SellAllCantFindMultiplier2", " in the sellallconfig.yml");
@@ -263,6 +263,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllDelayDisabled", "&7[&3PRISON&7] &3SellAll Delay &cdisabled &3with success!");
         dataConfig("Message.SellAllDelayEditedWithSuccess", "&7[&3PRISON&7] &3SellAll Delay edited with &asuccess&3!");
         dataConfig("Message.SellAllDelayNotNumber", "&7[&3PRISON&7] &cDelay value isn't a number!");
+        dataConfig("Message.SellAllGUIEmpty", "&7[&3PRISON&7] &3Sorry but there aren't blocks in the SellAll Shop!");
+        dataConfig("Message.SellAllGUIEmpty2", "&7[&cTIP&7] &3You can add one using the command /sellall add!");
         dataConfig("Setup.Message.MissingPermission", "&7[&3PRISON ERROR&7] &cSorry but you don't have the permission [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "&7[&3PRISON ERROR&7] &cYou're missing the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "&7[&3PRISON INFO&7] &3Hi and welcome to the ranks setup, please wait until it'll be completed!");

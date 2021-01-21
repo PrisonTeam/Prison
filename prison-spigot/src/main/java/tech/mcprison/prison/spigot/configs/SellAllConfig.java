@@ -67,6 +67,9 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Sell_Permission","prison.admin");
         dataConfig("Options.Sell_Delay_Enabled", "false");
         dataConfig("Options.Sell_Delay_Seconds", "5");
+        dataConfig("Options.SellAll_Sign_Enabled", "false");
+        dataConfig("Options.SellAll_Sign_Notify", "false");
+        dataConfig("Options.SellAll_Sign_Visible_Tag", "&7[&3SellAll&7]");
         dataConfig("Options.Add_Permission_Enabled","true");
         dataConfig("Options.Add_Permission","prison.admin");
         dataConfig("Options.Delete_Permission_Enabled","true");

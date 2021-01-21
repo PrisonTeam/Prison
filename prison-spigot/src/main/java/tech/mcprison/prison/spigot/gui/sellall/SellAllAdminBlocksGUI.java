@@ -27,7 +27,11 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         if (guiBuilder()) return;
 
         Inventory inv = buttonsSetup();
-        if (inv == null) return;
+        if (inv == null) {
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
+            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
+            return;
+        }
 
         openGUI(p, inv);
     }
