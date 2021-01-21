@@ -1,6 +1,6 @@
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-# Prison Build Logs for v3.2.0 - 2019-12-03
+# Prison Build Logs for v3.2.0 - 2019-12-03 +
 
 ## Build logs
  - **[v3.2.4-alpha - Current](../changelog_v3.2.x.md)**

@@ -159,7 +159,7 @@
 
 [CENTER][B][SIZE=5][COLOR=rgb(128, 128, 128)][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20AutoFeatures%20Long.png[/IMG] [/COLOR][/SIZE]
 [SIZE=7][COLOR=#ffa64d]There're 4 main AutoFeatures:[/COLOR][/SIZE][/B][/CENTER]
-[LIST=1]
+[LIST]
 [*][CENTER][COLOR=#808080][B]AutoPickup[/B][/COLOR][/CENTER]
 [*][CENTER][COLOR=#808080][B]AutoSmelt[/B][/COLOR][/CENTER]
 [*][CENTER][COLOR=#808080][B]AutoBlock[/B][/COLOR][/CENTER]

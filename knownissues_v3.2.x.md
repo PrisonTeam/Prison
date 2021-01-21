@@ -10,17 +10,31 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.3
 
 
-- use the spiget jar and remove the maven hook since maven has been going down frequently.
+- Remove obsolete objects:
+  - prison-spigot/out
+  
+
+- Prepare for sellall integration to the new block model (simple way to put it)
+  - PrisonBlock - add "price" - Maybe keyed by "shop".
+  - Hook startup for PrisonBlock to sellall to preload the price 
+  - PrisonBlock - add quantity
+  - Add a utility method for converting a PrisonBlock to ItemStack
+  
 
 
-- /mines tp - mineName optional - default to the highest ranking Rank's mine.
+- DONE: use the spiget jar and remove the maven hook since maven has been going down frequently.
+   - There were strange issues when "trying" to remove the maven hooks. I don't think they were caused by that, but more so could have been triggered because the core of gradle has changed.  Most of the issues manifested themselves in unit test packages where core classes were missing at the running of the junit tests.  Such failures should not happen since the environments for unit tests should not exclude core classes that are available within the main source.
+   
+
+- DONE: /mines tp - mineName optional - default to the highest ranking Rank's mine.
 
 
 - DONE: auto pickup fortune - formula for levels greater than 5?
+   - Allows unlimited fortune levels.
 
 
 - DONE: Remove a player from a ladder. (This already existed)
-  - Cannot remove default ladder
+  - Cannot remove from the default ladder
 
 -
 - DONE: new placeholder - user - prison placeholder for total multiplier
