@@ -220,6 +220,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllAutoSellAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell has already been disabled!");
         dataConfig("Message.SellAllAutoPerUserToggleableAlreadyEnabled", "&7[&3PRISON ERROR&7] &cAutoSell perUserToggleable's already enabled!");
         dataConfig("Message.SellAllAutoPerUserToggleableAlreadyDisabled", "&7[&3PRISON ERROR&7] &cAutoSell perUserToggleable's already disabled!");
+        dataConfig("Message.SellAllAutoPerUserToggleableEnabled", "&7[&3PRISON&7] &3SellAll PerUserToggleable &aEnabled&3!");
+        dataConfig("Message.SellAllAutoPerUserToggleableDisabled", "&7[&3PRISON&7] &3SellAll PerUserToggleable &cDisabled&3!");
         dataConfig("Message.SellAllIsDisabled", "&7[&3PRISON ERROR&7] &cSorry but the SellAll Feature's disabled in the config.yml");
         dataConfig("Message.SellAllEditedWithSuccess", "] edited with success!");
         dataConfig("Message.SellAllSubCommandNotFound", "&7[&3PRISON WARN&7] &cSub-command not found, check with /sellall for a list!");

@@ -479,9 +479,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         if (enable.equalsIgnoreCase("true")){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
+
+            // EDIT THIS ASAP, it's the same message as autosell enable and disable
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableEnabled")));
         } else if (enable.equalsIgnoreCase("false")){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
+
+            // EDIT THIS ASAP, it's the same message as autosell enable and disable
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableDisabled")));
         }
     }
 
