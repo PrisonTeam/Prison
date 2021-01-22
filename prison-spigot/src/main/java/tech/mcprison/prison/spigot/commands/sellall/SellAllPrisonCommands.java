@@ -285,7 +285,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
 
             addPlayerToDelay(p);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Long.parseLong(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
         }
         return false;
     }
@@ -363,10 +363,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
 
-        int delayValue;
+        double delayValue;
 
         try {
-            delayValue = Integer.parseInt(delay);
+            delayValue = Double.parseDouble(delay);
         } catch (NumberFormatException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayNotNumber")));
             return;

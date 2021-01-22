@@ -649,7 +649,7 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"sellall delay set " + part3);
+                Bukkit.dispatchCommand(p,"sellall delay set " + Integer.parseInt(part3));
 
                 // Close the inventory
                 p.closeInventory();
