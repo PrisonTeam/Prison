@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -32,6 +33,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
     private final Player player;
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
+    private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
 
     public SpigotPlayerPrestigesGUI(Player player) {
         this.player = player;
@@ -40,10 +42,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         PrisonRanks rankPlugin;
         RankPlayer rPlayer;
-
         ModuleManager modMan = Prison.get().getModuleManager();
         Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-
         rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){
@@ -61,11 +61,9 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         LadderManager lm = rankPlugin.getLadderManager();
 
         for ( RankLadder ladderData : lm.getLadders() ) {
-//            Rank playerRank = rPlayer == null ? null : rPlayer.getRank( ladderData ).orElse( null );
             Rank rank = ladderData.getLowestRank().orElse( null );
 
             while ( rank != null ) {
-//                boolean playerHasThisRank = playerRank != null && playerRank.equals( rank );
 
                 rank = rank.getRankNext();
             }
@@ -174,6 +172,14 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                     messages.getString("Lore.Info"),
                     messages.getString("Lore.Price3") + rank.getCost()
             );
+
+            if (placeholderAPINotNull) {
+                if (hackyCounterEnchant == 1) {
+                    hackyCounterEnchant++;
+                    ranksLore.add(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_prestiges%")));
+                }
+            }
+
             ItemStack itemrank = createButton(
                     (playerHasThisRank ? materialHas : materialHasNot),
                     amount++, ranksLore, SpigotPrison.format(rank.getTag()));

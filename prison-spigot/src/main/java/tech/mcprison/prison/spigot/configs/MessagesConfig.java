@@ -91,6 +91,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Command","&3Command: &7");
         dataConfig("Lore.ContainsTheRank","&3The Rank ");
         dataConfig("Lore.ContainsNoCommands"," &3contains no commands.");
+        dataConfig("Lore.DelaySellAll", "&3Delay: &8");
         dataConfig("Lore.DisableNotifications","&8Disable notifications.");
         dataConfig("Lore.EnabledAll","&aAll features ON");
         dataConfig("Lore.DisabledAll","&aAll features OFF");
@@ -138,6 +139,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.SpawnPoint2","&8Set the mine spawn point.");
         dataConfig("Lore.SizeOfMine","&3Size of Mine: &7");
         dataConfig("Lore.Selected","&3Selected");
+        dataConfig("Lore.SellAllDelayInfo", "&8Short delay before using again");
+        dataConfig("Lore.SellAllDelayInfo2", "&8the &3/sellall sell &8command.");
         dataConfig("Lore.ShiftAndRightClickToDelete","&cShift + Right click to delete.");
         dataConfig("Lore.ShiftAndRightClickToDisable","&cShift + Right click to disable");
         dataConfig("Lore.ShiftAndRightClickToToggle","&cShift + Right click to toggle");
@@ -166,7 +169,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.DefaultLadderEmpty", "&7[&3PRISON ERROR&7] &cThe default ladder has no rank.");
         dataConfig("Message.NoSellAllItems", "&7[&3PRISON WARN&7] &cSorry but there aren't SellAll Items to show.");
         dataConfig("Message.EmptyGui","&7[&3PRISON WARN&7] &cSorry, the GUI looks empty.");
-        dataConfig("Message.EnableAutoSellToUse", "&7[&3PRISON WARN&7] &cSorry, but autoSell's disabled, please enable it!");
+        dataConfig("Message.EnableAutoSellToUse", "&7[&3PRISON WARN&7] &cSorry, but AutoSell's disabled, please enable it!");
+        dataConfig("Message.EnableSellDelayToUse", "&7[&3PRISON WARN&7] &cSorry, but the SellAll Delay's disabled, please enable it!");
         dataConfig("Message.InvalidBooleanInput", "&7[&3PRISON ERROR&7] &cSorry, you should type -true- or -false- here.");
         dataConfig("Message.MissingPermission", "&7[&3PRISON WARN&7] &cSorry but you don't have the permission to use that!");
         dataConfig("Message.NoBlocksMine","&7[&3PRISON WARN&7] &cSorry but there aren't blocks inside this Mine.");

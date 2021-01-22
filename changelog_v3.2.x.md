@@ -20,6 +20,10 @@ that you need.
 
 * **v3.2.4-alpha.8 2021-01-19**
 
+* **SellAll Delay GUI**
+Added a new Button to the SellAll GUI and also a new sub-GUI for the SellAll Delay
+  feature.
+
 * **AutoFeatures GUI redesign**
 New design for AutoFeatures GUI.
 

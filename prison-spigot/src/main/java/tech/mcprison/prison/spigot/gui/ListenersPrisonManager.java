@@ -53,10 +53,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.gui.sellall.*;
 
 /**
  * @author GABRYCA
@@ -332,35 +329,35 @@ public class ListenersPrisonManager implements Listener {
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
         }
-        // Cancel the event and set the boolean to false, so it can be deactivated
+        // Cancel the event and set the boolean to false, so it can be deactivated.
         e.setCancelled(true);
         isChatEventActive = false;
         rankNameOfChat = null;
     }
 
-    // Cancel the events of the active GUI opened from the player
+    // Cancel the events of the active GUI opened from the player.
     private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
         if(activeGui.contains(p.getName())) {
             e.setCancelled(true);
         }
     }
 
-    // InventoryClickEvent
+    // InventoryClickEvent.
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
 
-        // Check if GUIs are enabled
+        // Check if GUIs are enabled.
         if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
             return;
         }
 
-        // Get the player
+        // Get the player.
         Player p = (Player) e.getWhoClicked();
 
-        // GUIs must have the good conditions to work
+        // GUIs must have the good conditions to work.
         if (guiConditions(e, p)) return;
 
-        // Get parameters
+        // Get parameters.
         String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
         buttonNameMain = SpigotPrison.stripColor(buttonNameMain);
         String[] parts = buttonNameMain.split(" ");
@@ -369,7 +366,7 @@ public class ListenersPrisonManager implements Listener {
         String title = compat.getGUITitle(e).substring(2);
 
         if (activeGui.contains(p.getName())) {
-            // Close GUI button globally
+            // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
                 p.closeInventory();
                 e.setCancelled(true);
@@ -377,125 +374,125 @@ public class ListenersPrisonManager implements Listener {
             }
         }
 
-        // Check if the GUI have the right title and do the actions
+        // Check if the GUI have the right title and do the actions.
         switch (title) {
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "PrisonManager":
 
-                // Call the method
+                // Call the method.
                 prisonManagerGUI(e, p, buttonNameMain);
 
                 break;
 
-            // Check the title
+            // Check the title.
             case "RanksManager -> Ladders": {
 
-                // Call the method
+                // Call the method.
                 laddersGUI(e, p, buttonNameMain, module);
 
                 break;
             }
 
-            // Check the title of the inventory and do the actions
+            // Check the title of the inventory and do the actions.
             case "Ladders -> Ranks": {
 
-                // Call the method
+                // Call the method.
                 ranksGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Prestiges -> PlayerPrestiges": {
 
-                // Call the method
+                // Call the method.
                 playerPrestigesGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Prestige -> Confirmation": {
 
-                // Call the method
+                // Call the method.
                 prestigeConfirmationGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the title of the inventory and do things
+            // Check the title of the inventory and do things.
             case "Ranks -> RankManager": {
 
-                // Call the method
+                // Call the method.
                 rankManagerGUI(e, p, parts);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Ranks -> PlayerRanks":{
 
-                // Call the method
+                // Call the method.
                 playerRanksGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "RankManager -> RankUPCommands": {
 
-                // Call the method
+                // Call the method.
                 rankUPCommandsGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the inventory name and do the actions
+            // Check the inventory name and do the actions.
             case "RankManager -> RankPrice": {
 
-                // Call the method
+                // Call the method.
                 rankPriceGUI(e, p, parts);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "MinesManager -> Mines": {
 
-                // Call the method
+                // Call the method.
                 minesGUI(e, p, buttonNameMain);
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Mines -> PlayerMines": {
 
-                // Call the method
+                // Call the method.
                 playerMinesGUI(p, buttonNameMain);
 
                 break;
             }
             case "Mines -> MineInfo": {
 
-                // Call the method
+                // Call the method.
                 mineInfoGUI(e, p, parts);
 
                 break;
             }
 
-            // Check the title of the inventory and do the actions
+            // Check the title of the inventory and do the actions.
             case "Mines -> Delete": {
 
-                // Call the method
+                // Call the method.
                 minesDeleteGUI(p, parts);
 
                 break;
             }
 
-            // Check the title of the inventory and do the actions
+            // Check the title of the inventory and do the actions.
             case "MineInfo -> Blocks": {
 
-                // Call the method
+                // Call the method.
                 blocksGUI(e, p, parts);
 
                 break;
             }
 
-            // Check the inventory name and do the actions
+            // Check the inventory name and do the actions.
             case "Mines -> BlocksList":{
 
                 blocksListGUI(e, p, parts);
@@ -503,19 +500,19 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the inventory name and do the actions
+            // Check the inventory name and do the actions.
             case "MineInfo -> ResetTime": {
 
-                // Call the method
+                // Call the method.
                 resetTimeGUI(e, p, parts);
 
                 break;
             }
 
-            // Check the inventory title and do the actions
+            // Check the inventory title and do the actions.
             case "MineInfo -> MineNotifications": {
 
-                // Call the method
+                // Call the method.
                 mineNotificationsGUI(e, p, parts);
 
                 break;
@@ -528,7 +525,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the inventory title and do the actions
+            // Check the inventory title and do the actions.
             case "MineNotifications -> Radius": {
 
                 // Call the method
@@ -536,7 +533,7 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
-            // Check the inventory title and do the actions
+            // Check the inventory title and do the actions.
             case "PrisonManager -> AutoFeatures": {
 
                 // Call the method
@@ -545,7 +542,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "AutoFeatures -> AutoPickup":{
 
                 // Call the method
@@ -554,7 +551,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "AutoFeatures -> AutoSmelt":{
 
                 // Call the method
@@ -563,7 +560,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "AutoFeatures -> AutoBlock":{
 
                 // Call the method
@@ -572,7 +569,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "SellAll -> Blocks":{
 
                 sellAllAdminBlocksGUI(e, p, buttonNameMain);
@@ -580,7 +577,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Prison -> SellAll-Admin":{
 
                 sellAllAdminGUI(e, p, buttonNameMain);
@@ -588,7 +585,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "SellAll -> AutoSell":{
 
                 sellAllAutoSellAdminGUI(e, p, buttonNameMain);
@@ -596,7 +593,7 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "SellAll -> ItemValue":{
 
                 sellAllItemValue(e, p, parts);
@@ -604,7 +601,15 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the title and do the actions
+            // Check the title and do the actions.
+            case "SellAll -> Delay":{
+
+                sellAllDelayGUI(e, p, parts);
+
+                break;
+            }
+
+            // Check the title and do the actions.
             case "Prison -> SellAll-Player":{
 
                 p.closeInventory();
@@ -612,13 +617,116 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
-            // Check the title and do the actions
+            // Check the title and do the actions.
             case "Prison Setup -> Confirmation":{
 
                 prisonSetupConfirmGUI(e, p, parts);
 
                 break;
             }
+        }
+    }
+
+    private void sellAllDelayGUI(InventoryClickEvent e, Player p, String[] parts) {
+
+        // Rename the parts
+        String part1 = parts[0];
+        String part2 = parts[1];
+        String part3 = parts[2];
+
+        // Initialize the variable
+        int decreaseOrIncreaseValue = 0;
+
+        // If there're enough parts init another variable
+        if (parts.length == 4){
+            decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
+        }
+
+        // Check the button name and do the actions
+        if (part1.equalsIgnoreCase("Confirm:")) {
+
+            // Check the click type and do the actions
+            if (e.isLeftClick()){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p,"sellall delay set " + part3);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+
+                // Check the click type and do the actions
+            } else if (e.isRightClick()){
+
+                // Send a message to the player
+                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            } else {
+
+                // Cancel the event
+                e.setCancelled(true);
+                return;
+            }
+        }
+
+        // Give to val a value
+        double val = Double.parseDouble(part2);
+
+        // Check the calculator symbol
+        if (part3.equals("-")){
+
+            // Check if the value's already too low
+            if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                // If it isn't too low then decrease it
+                val = val - decreaseOrIncreaseValue;
+
+                // If it is too low
+            } else {
+
+                // Tell to the player that the value's too low
+                p.sendMessage(SpigotPrison.format("&cToo low value."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+                return;
+            }
+
+            // Open an updated GUI after the value changed
+            SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+            gui.open();
+
+            // Check the calculator symbol
+        } else if (part3.equals("+")){
+
+            // Check if the value isn't too high
+            if (!((val + decreaseOrIncreaseValue) > 2147483646)) {
+
+                // Increase the value
+                val = val + decreaseOrIncreaseValue;
+
+                // If the value's too high then do the action
+            } else {
+
+                // Close the GUI and tell it to the player
+                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                e.setCancelled(true);
+                p.closeInventory();
+                return;
+            }
+
+            // Open a new updated GUI with new values
+            SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+            gui.open();
         }
     }
 
@@ -692,7 +800,7 @@ public class ListenersPrisonManager implements Listener {
             case "AutoSell-Disabled":{
 
                 if (e.getClick().isRightClick()){
-                    Bukkit.dispatchCommand(p, "Sellall autosell true");
+                    Bukkit.dispatchCommand(p, "sellall autosell true");
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -701,6 +809,39 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
+            case "Delay-Enabled":{
+
+                if (e.getClick().isRightClick()){
+                    Bukkit.dispatchCommand(p, "sellall delay false");
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    gui.open();
+                } else {
+                    p.closeInventory();
+
+                    double val = 0;
+
+                    try {
+                        val = Double.parseDouble(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
+                    } catch (NumberFormatException ignored){}
+
+                    SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+                    gui.open();
+                }
+
+                break;
+            }
+
+            case "Delay-Disabled":{
+
+                if (e.getClick().isRightClick()){
+                    Bukkit.dispatchCommand(p, "sellall delay true");
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    gui.open();
+                } else {
+                    p.sendMessage(SpigotPrison.format(messages.getString("Message.EnableSellDelayToUse")));
+                }
+                break;
+            }
         }
 
         e.setCancelled(true);
