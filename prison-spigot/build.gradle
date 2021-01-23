@@ -33,6 +33,7 @@ repositories {
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+    maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
     
     maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
   //  maven { url = 'https://maven.enginehub.org/repo/' }
@@ -58,7 +59,6 @@ dependencies {
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
     
-    
 	implementation 'com.github.cryptomorin:XSeries:7.8.0'
 //	implementation 'com.github.cryptomorin:XSeries:7.6.0.0.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.5.4'
@@ -72,8 +72,9 @@ dependencies {
 //    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 	// 1.13.2 fails since deprecated functions have been removed.
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
-    
-    
+
+    compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
+
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'

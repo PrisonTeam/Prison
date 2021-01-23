@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
+import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -43,6 +45,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private static SellAllPrisonCommands instance;
     private double moneyToGive;
     public static List<String> activePlayerDelay = new ArrayList<>();
+    public MinepacksPlugin minepacksPlugin = SpigotPrison.getMinepacks();
+    public boolean isEnabledMinePacks = SpigotPrison.MinepacksPresent();
 
     /**
      * Get SellAll instance.
@@ -185,25 +189,46 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         // Get the items from the player inventory and for each of them check the conditions.
         for (ItemStack itemStack : inv.getContents()){
 
-            if (itemStack != null) {
-                // Get the items strings from config and for each of them get the Material and value.
-                for (String key : items) {
-                    ItemStack itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseItem();
-                    double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
-                    int amount = 0;
+            moneyToGive = getMoneyToGiveKeepInv(items, moneyToGive, itemStack);
+        }
 
-                    // Check if the item from the player inventory's on the config of items sellable
-                    // So it gets the amount and then remove it from the inventory
-                    if (itemMaterial != null && itemMaterial == itemStack) {
-                        amount = itemStack.getAmount();
-                    }
-                    // Get the new amount of money to give
-                    if (amount != 0) {
-                        moneyToGive = moneyToGive + (value * amount);
-                    }
+        if (isEnabledMinePacks){
+
+            Backpack backpack = minepacksPlugin.getBackpackCachedOnly(p);
+
+            if (backpack == null){
+                return moneyToGive;
+            }
+
+            for (ItemStack itemStack : backpack.getInventory().getContents()){
+                moneyToGive += getMoneyToGiveKeepInv(items,moneyToGive, itemStack);
+            }
+        }
+
+        return moneyToGive;
+    }
+
+    private double getMoneyToGiveKeepInv(Set<String> items, double moneyToGive, ItemStack itemStack) {
+
+        if (itemStack != null) {
+            // Get the items strings from config and for each of them get the Material and value.
+            for (String key : items) {
+                ItemStack itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseItem();
+                double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
+                int amount = 0;
+
+                // Check if the item from the player inventory's on the config of items sellable
+                // So it gets the amount and then remove it from the inventory
+                if (itemMaterial != null && itemMaterial == itemStack) {
+                    amount = itemStack.getAmount();
+                }
+                // Get the new amount of money to give
+                if (amount != 0) {
+                    moneyToGive = moneyToGive + (value * amount);
                 }
             }
         }
+
         return moneyToGive;
     }
 
@@ -213,40 +238,63 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         // Get the items from the player inventory and for each of them check the conditions.
         for (ItemStack itemStack : inv.getContents()){
+            moneyToGive = getMoneyToGiveClearInv(p, items, moneyToGive, itemStack, false);
+        }
 
-            if (itemStack != null) {
-                // Get the items strings from config and for each of them get the Material and value.
-                for (String key : items) {
+        if (isEnabledMinePacks){
 
-                    boolean hasError = false;
+            Backpack backpack = minepacksPlugin.getBackpackCachedOnly(p);
 
-                    XMaterial itemMaterial = null;
-                    XMaterial invMaterial = null;
-                    try {
-                        itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID"));
-                        invMaterial = XMaterial.matchXMaterial(itemStack);
-                    } catch (IllegalArgumentException ex){
-                        hasError = true;
-                    }
+            if (backpack == null){
+                return moneyToGive;
+            }
 
-                    double value = 0;
-                    try {
-                        value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
-                    } catch (NumberFormatException ex){
-                        if (!hasError) hasError = true;
-                    }
+            for (ItemStack itemStack : backpack.getInventory().getContents()){
+                moneyToGive += getMoneyToGiveClearInv(p,items,moneyToGive, itemStack, true);
+            }
+        }
 
-                    int amount = 0;
-                    // Check if the item from the player inventory's on the config of items sellable
-                    // So it gets the amount and then remove it from the inventory
-                    if (!hasError && itemMaterial == invMaterial) {
-                        amount = itemStack.getAmount();
+        return moneyToGive;
+    }
+
+    private double getMoneyToGiveClearInv(Player p, Set<String> items, double moneyToGive, ItemStack itemStack, boolean backPackMode) {
+
+        if (itemStack != null) {
+            // Get the items strings from config and for each of them get the Material and value.
+            for (String key : items) {
+
+                boolean hasError = false;
+
+                XMaterial itemMaterial = null;
+                XMaterial invMaterial = null;
+                try {
+                    itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID"));
+                    invMaterial = XMaterial.matchXMaterial(itemStack);
+                } catch (IllegalArgumentException ex){
+                    hasError = true;
+                }
+
+                double value = 0;
+                try {
+                    value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
+                } catch (NumberFormatException ex){
+                    if (!hasError) hasError = true;
+                }
+
+                int amount = 0;
+                // Check if the item from the player inventory's on the config of items sellable
+                // So it gets the amount and then remove it from the inventory
+                if (!hasError && itemMaterial == invMaterial) {
+                    amount = itemStack.getAmount();
+                    if (!backPackMode) {
                         p.getInventory().remove(itemStack);
+                    } else {
+                        minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
                     }
-                    // Get the new amount of money to give
-                    if (amount != 0) {
-                        moneyToGive = moneyToGive + (value * amount);
-                    }
+                }
+                // Get the new amount of money to give
+                if (amount != 0) {
+                    moneyToGive = moneyToGive + (value * amount);
                 }
             }
         }

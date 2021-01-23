@@ -25,12 +25,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
@@ -389,7 +391,6 @@ public class SpigotPrison extends JavaPlugin {
         getLogger().info("Using version adapter " + compatibility.getClass().getName());
     }
 
-
 	private void initIntegrations() {
 
     	registerIntegration(new VaultEconomy());
@@ -408,6 +409,18 @@ public class SpigotPrison extends JavaPlugin {
 
 //        registerIntegration(new WorldGuard6Integration());
 //        registerIntegration(new WorldGuard7Integration());
+    }
+
+    public static MinepacksPlugin getMinepacks() {
+        Plugin bukkitPlugin = Bukkit.getPluginManager().getPlugin("Minepacks");
+        if(!(bukkitPlugin instanceof MinepacksPlugin)) {
+            return null;
+        }
+        return (MinepacksPlugin) bukkitPlugin;
+    }
+
+    public static boolean MinepacksPresent() {
+        return getMinepacks() != null;
     }
 	
 	/**
