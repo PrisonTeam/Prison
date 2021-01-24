@@ -18,6 +18,12 @@ that you need.
 # v3.2.4-alpha.8 2021-01-19
 
 
+
+
+* **Start work on the prison's top player enhancement**
+Moving economy functions to the RankPlayer object to minimize having to have external hooks to get those details.  Provide for a player's balance cache to help reduce hits on the server to full fill requests for placeholders that will be added soon.
+
+
 * **v3.2.4-alpha.8 2021-01-19**
 
 * **SellAll Delay GUI**
