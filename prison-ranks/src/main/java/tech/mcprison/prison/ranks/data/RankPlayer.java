@@ -57,7 +57,9 @@ public class RankPlayer
 
     private UUID uid;
     private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
-    private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    
+    // This prestige is not used.  Current prestige is just another ladder.
+    //private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
     
     private List<RankPlayerName> names;
     
@@ -78,7 +80,7 @@ public class RankPlayer
     	super();
     	
         this.ranks = new HashMap<>();
-        this.prestige = new HashMap<>();
+        //this.prestige = new HashMap<>();
         
         this.playerBalances = new TreeMap<>();
     }
@@ -102,8 +104,8 @@ public class RankPlayer
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
-        LinkedTreeMap<String, Object> prestigeLocal =
-            (LinkedTreeMap<String, Object>) document.get("prestige");
+//        LinkedTreeMap<String, Object> prestigeLocal =
+//            (LinkedTreeMap<String, Object>) document.get("prestige");
         
         LinkedTreeMap<String, Object> blocksMinedLocal =
         		(LinkedTreeMap<String, Object>) document.get("blocksMined");
@@ -115,9 +117,9 @@ public class RankPlayer
             ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
         
-        for (String key : prestigeLocal.keySet()) {
-            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
-        }
+//        for (String key : prestigeLocal.keySet()) {
+//            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
+//        }
         
         this.blocksMined = new HashMap<>();
         if ( blocksMinedLocal != null ) {
@@ -149,7 +151,7 @@ public class RankPlayer
         Document ret = new Document();
         ret.put("uid", this.uid);
         ret.put("ranks", this.ranks);
-        ret.put("prestige", this.prestige);
+//        ret.put("prestige", this.prestige);
         
         ret.put("names", this.names);
 
@@ -352,12 +354,12 @@ public class RankPlayer
 
     
 
-	public HashMap<String, Integer> getPrestige() {
-		return prestige;
-	}
-	public void setPrestige( HashMap<String, Integer> prestige ) {
-		this.prestige = prestige;
-	}
+//	public HashMap<String, Integer> getPrestige() {
+//		return prestige;
+//	}
+//    public void setPrestige( HashMap<String, Integer> prestige ) {
+//		this.prestige = prestige;
+//	}
 
 	public void setRanks( HashMap<String, Integer> ranks ) {
 		this.ranks = ranks;
