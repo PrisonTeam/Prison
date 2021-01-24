@@ -14,9 +14,9 @@ import java.util.List;
 public class SellAllDelayGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Double val;
+    private final int val;
 
-    public SellAllDelayGUI(Player p, Double val){
+    public SellAllDelayGUI(Player p, int val){
         this.p = p;
         this.val = val;
     }

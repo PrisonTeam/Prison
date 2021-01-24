@@ -43,7 +43,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
     private static SellAllPrisonCommands instance;
-    private double moneyToGive;
     public static List<String> activePlayerDelay = new ArrayList<>();
     public MinepacksPlugin minepacksPlugin = SpigotPrison.getMinepacks();
     public boolean isEnabledMinePacks = SpigotPrison.MinepacksPresent();
@@ -83,15 +82,21 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     /**
      * Get the money to give to the Player depending on the multiplier.
+     *
+     * @param player
+     * @param removeItems
+     *
+     * @return money
      * */
-    private double getMoneyWithMultiplier(SpigotPlayer sPlayer) {
+    public double getMoneyWithMultiplier(Player player, boolean removeItems){
+
+        SpigotPlayer sPlayer = new SpigotPlayer(player);
 
         // Get the Items config section
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-        moneyToGive = 0;
 
         // Get money to give
-        moneyToGive = getMoneyToGiveRemoveItems( sPlayer.getWrapper(), items, moneyToGive);
+        double moneyToGive = getNewMoneyToGive( sPlayer.getWrapper(), items, removeItems);
 
         if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
 
@@ -99,43 +104,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         return moneyToGive;
-    }
-
-    /**
-     * Get the money to give to the Player depending on the multiplier.
-     * */
-    public double getMoneyWithMultiplier(Player player){
-
-        SpigotPlayer sPlayer = new SpigotPlayer(player);
-
-        // Get the Items config section
-        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-        moneyToGive = 0;
-
-        // Get money to give
-        moneyToGive = getMoneyToGive( sPlayer.getWrapper(), items, moneyToGive);
-
-        if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
-
-            moneyToGive = moneyToGive * getMultiplier(sPlayer);;
-        }
-
-        return moneyToGive;
-    }
-
-    /**
-     * Get player multiplier, this uses the normal Player and actually return a double.
-     * */
-    public double getMultiplier(Player player){
-
-        // Get Spigot Player
-        SpigotPlayer sPlayer = new SpigotPlayer(player);
-
-        return getMultiplier(sPlayer);
     }
 
     /**
      * Get the player multiplier, requires SpigotPlayer.
+     *
+     * @param sPlayer
+     *
+     * @return multiplier
      * */
     public double getMultiplier(SpigotPlayer sPlayer) {
 
@@ -178,93 +154,43 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return multiplier;
     }
 
-    /**
-     * Get value of the items in Player's Inventory if SellAll's triggered now.
-     * */
-    public double getMoneyToGive(Player p, Set<String> items, double moneyToGive) {
+    private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
+
+        double moneyToGive = 0;
 
         // Get the player inventory
         Inventory inv = p.getInventory();
 
         // Get the items from the player inventory and for each of them check the conditions.
         for (ItemStack itemStack : inv.getContents()){
-
-            moneyToGive = getMoneyToGiveKeepInv(items, moneyToGive, itemStack);
+            moneyToGive = getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
         }
 
         if (isEnabledMinePacks){
 
-            Backpack backpack = minepacksPlugin.getBackpackCachedOnly(p);
+            Backpack backPack = minepacksPlugin.getBackpackCachedOnly(p);
 
-            if (backpack == null){
+            if (backPack == null){
                 return moneyToGive;
             }
 
-            for (ItemStack itemStack : backpack.getInventory().getContents()){
-                moneyToGive += getMoneyToGiveKeepInv(items,moneyToGive, itemStack);
+            for (ItemStack itemStack : backPack.getInventory().getContents()){
+                moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, true, removeItems);
             }
         }
 
         return moneyToGive;
     }
 
-    private double getMoneyToGiveKeepInv(Set<String> items, double moneyToGive, ItemStack itemStack) {
+    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean backPackMode, boolean removeItems) {
 
-        if (itemStack != null) {
-            // Get the items strings from config and for each of them get the Material and value.
-            for (String key : items) {
-                ItemStack itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID")).parseItem();
-                double value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
-                int amount = 0;
-
-                // Check if the item from the player inventory's on the config of items sellable
-                // So it gets the amount and then remove it from the inventory
-                if (itemMaterial != null && itemMaterial == itemStack) {
-                    amount = itemStack.getAmount();
-                }
-                // Get the new amount of money to give
-                if (amount != 0) {
-                    moneyToGive = moneyToGive + (value * amount);
-                }
-            }
-        }
-
-        return moneyToGive;
-    }
-
-    private double getMoneyToGiveRemoveItems(Player p, Set<String> items, double moneyToGive){
-        // Get the player inventory
-        Inventory inv = p.getInventory();
-
-        // Get the items from the player inventory and for each of them check the conditions.
-        for (ItemStack itemStack : inv.getContents()){
-            moneyToGive = getMoneyToGiveClearInv(p, items, moneyToGive, itemStack, false);
-        }
-
-        if (isEnabledMinePacks){
-
-            Backpack backpack = minepacksPlugin.getBackpackCachedOnly(p);
-
-            if (backpack == null){
-                return moneyToGive;
-            }
-
-            for (ItemStack itemStack : backpack.getInventory().getContents()){
-                moneyToGive += getMoneyToGiveClearInv(p,items,moneyToGive, itemStack, true);
-            }
-        }
-
-        return moneyToGive;
-    }
-
-    private double getMoneyToGiveClearInv(Player p, Set<String> items, double moneyToGive, ItemStack itemStack, boolean backPackMode) {
+        double moneyToGive = 0;
 
         if (itemStack != null) {
             // Get the items strings from config and for each of them get the Material and value.
             for (String key : items) {
 
                 boolean hasError = false;
-
                 XMaterial itemMaterial = null;
                 XMaterial invMaterial = null;
                 try {
@@ -286,15 +212,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 // So it gets the amount and then remove it from the inventory
                 if (!hasError && itemMaterial == invMaterial) {
                     amount = itemStack.getAmount();
-                    if (!backPackMode) {
-                        p.getInventory().remove(itemStack);
-                    } else {
-                        minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                    if (removeItems) {
+                        if (!backPackMode) {
+                            p.getInventory().remove(itemStack);
+                        } else {
+                            minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                        }
                     }
                 }
                 // Get the new amount of money to give
                 if (amount != 0) {
-                    moneyToGive = moneyToGive + (value * amount);
+                    moneyToGive += value * amount;
                 }
             }
         }
@@ -324,7 +252,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
-    private boolean sellAllCommandPDelay(Player p) {
+    private boolean sellAllCommandDelay(Player p) {
         if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
 
             if (activePlayerDelay.contains(p.getName())){
@@ -333,7 +261,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
 
             addPlayerToDelay(p);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Long.parseLong(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
         }
         return false;
     }
@@ -411,10 +339,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
 
-        double delayValue;
+        int delayValue;
 
         try {
-            delayValue = Double.parseDouble(delay);
+            delayValue = Integer.parseInt(delay);
         } catch (NumberFormatException ex){
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllDelayNotNumber")));
             return;
@@ -558,13 +486,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         } else if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
 
-            if (sellAllCommandPDelay(p)) return;
+            if (sellAllCommandDelay(p)) return;
 
             // Get Spigot Player
             SpigotPlayer sPlayer = new SpigotPlayer(p);
 
             // Get money to give + multiplier
-            moneyToGive = getMoneyWithMultiplier(sPlayer);
+            double moneyToGive = getMoneyWithMultiplier(p, true);
 
             // Get economy and add balance
             EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
@@ -579,8 +507,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
     }
-
-
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){

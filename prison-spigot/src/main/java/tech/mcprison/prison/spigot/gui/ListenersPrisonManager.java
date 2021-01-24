@@ -677,7 +677,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // Give to val a value
-        double val = Double.parseDouble(part2);
+        int val = Integer.parseInt(part2);
 
         // Check the calculator symbol
         if (part3.equals("-")){
@@ -818,10 +818,10 @@ public class ListenersPrisonManager implements Listener {
                 } else {
                     p.closeInventory();
 
-                    double val = 0;
+                    int val = 0;
 
                     try {
-                        val = Double.parseDouble(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
+                        val = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
                     } catch (NumberFormatException ignored){}
 
                     SellAllDelayGUI gui = new SellAllDelayGUI(p, val);

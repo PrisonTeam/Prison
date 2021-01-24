@@ -342,7 +342,7 @@ public class PrisonSpigotAPI {
         }
 
 		if (sellAll != null){
-			return sellAll.getMoneyWithMultiplier(player);
+			return sellAll.getMoneyWithMultiplier(player, false);
 		}
 
 		return null;
