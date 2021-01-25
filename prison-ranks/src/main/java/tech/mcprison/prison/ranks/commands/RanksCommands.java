@@ -32,7 +32,6 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
@@ -414,7 +413,8 @@ public class RanksCommands
 	
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 
     								onlyPlayers = false, permissions = "ranks.delete")
-    public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
+    public void removeRank(CommandSender sender, 
+    			@Arg(name = "rankName") String rankName) {
         // Check to ensure the rank exists
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
@@ -422,8 +422,8 @@ public class RanksCommands
             return;
         }
 
-        if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.getId())
-            && PrisonRanks.getInstance().getDefaultLadder().getPositionRanks().size() == 1) {
+        if (PrisonRanks.getInstance().getDefaultLadder().getRanks().contains( rank ) 
+            && PrisonRanks.getInstance().getDefaultLadder().getRanks().size() == 1) {
             Output.get().sendError(sender,
                 "You can't remove this rank because it's the only rank in the default ladder.");
             return;
@@ -456,14 +456,16 @@ public class RanksCommands
         }
 
         RankLadder ladder = ladderOpt.get();
-        Rank rank = null;
-        for (PositionRank pRank : ladder.getPositionRanks()) {
-            Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
-            if (rankOptional.isPresent()) {
-            	rank = rankOptional.get();
-            	break;
-            }
-        }
+        Rank rank = ladder.getLowestRank().orElse( null );
+
+//        Rank rank = null;
+//        for (Rank pRank : ladder.getPositionRanks()) {
+//            Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
+//            if (rankOptional.isPresent()) {
+//            	rank = rankOptional.get();
+//            	break;
+//            }
+//        }
         
 
         String rankHeader = "Ranks" + 

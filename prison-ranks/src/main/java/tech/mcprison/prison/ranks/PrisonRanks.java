@@ -125,8 +125,8 @@ public class PrisonRanks
         createDefaultLadder();
 
         
-        // Set the rank relationships:
-        rankManager.connectRanks();
+//        // Set the rank relationships:
+//        rankManager.connectRanks();
 
         
         // Verify that all ranks that use currencies have valid currencies:

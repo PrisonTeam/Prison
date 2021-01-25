@@ -71,6 +71,8 @@ public class PlayerManager
     private Collection collection;
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
+    
+    private List<RankPlayer> playersByTop;
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     

@@ -56,6 +56,8 @@ public class RankPlayer
      */
 
     private UUID uid;
+    
+    // ranks is the storage structure used to save the player's ladder & ranks:
     private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
     
     // This prestige is not used.  Current prestige is just another ladder.

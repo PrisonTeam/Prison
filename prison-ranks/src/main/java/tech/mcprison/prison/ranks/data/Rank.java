@@ -40,6 +40,9 @@ public class Rank
     /*
      * Fields & Constants
      */
+	
+	// This is to help eliminate RankLadder.PositionRank object:
+	private int position; 
 
     // The unique identifier used to distinguish this rank from others - this never changes.
     private int id;
@@ -97,8 +100,10 @@ public class Rank
     	
     }
     
-    public Rank( int id, String name, String tag, double cost ) {
+    public Rank( int position, int id, String name, String tag, double cost ) {
     	this();
+    	
+    	this.position = position;
     	
     	this.id = id;
     	this.name = name;
@@ -115,6 +120,7 @@ public class Rank
      * @param name
      */
     protected Rank( String name ) {
+    	this.position = 0;
     	this.id = 0;
     	this.name = name;
     }
@@ -125,6 +131,9 @@ public class Rank
     	
         try
 		{
+        	Object pos = document.get("position");
+        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
+        	
 			this.id = RankUtil.doubleToInt(document.get("id"));
 			this.name = (String) document.get("name");
 			this.tag = (String) document.get("tag");
@@ -192,6 +201,7 @@ public class Rank
 
     public Document toDocument() {
         Document ret = new Document();
+        ret.put("position", this.position );
         ret.put("id", this.id);
         ret.put("name", this.name);
         ret.put("tag", this.tag);
@@ -284,6 +294,9 @@ public class Rank
     	
     	return ladder;
     }
+    public void setLadder( RankLadder ladder ) {
+    	this.ladder = ladder;
+    }
     
     /*
      * equals() and hashCode()
@@ -331,6 +344,14 @@ public class Rank
         result = 31 * result + currency.hashCode();
         return result;
     }
+
+    
+	public int getPosition() {
+		return position;
+	}
+	public void setPosition( int position ) {
+		this.position = position;
+	}
 
 	public int getId() {
 		return id;

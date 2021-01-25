@@ -119,8 +119,8 @@ public class LadderCommands
             new BulletedListComponent.BulletedListBuilder();
         
         boolean first = true;
-        for (RankLadder.PositionRank rankPos : ladder.get().getPositionRanks()) {
-        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
+        for (Rank rank : ladder.get().getRanks()) {
+//        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
         	if ( rank == null ) {
         		continue;
         	}
@@ -133,7 +133,7 @@ public class LadderCommands
             
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
 
-            builder.add("&3#%d &8- &3%s %s", rankPos.getPosition(),
+            builder.add("&3#%d &8- &3%s %s", rank.getPosition(),
                 rank.getName(), 
                 (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
             	);

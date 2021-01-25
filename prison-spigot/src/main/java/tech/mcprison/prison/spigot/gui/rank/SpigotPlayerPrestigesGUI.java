@@ -116,7 +116,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.get().getPositionRanks().size() / 9D) * 9) + 9;
+        int dimension = (int) (Math.ceil(ladder.get().getRanks().size() / 9D) * 9) + 9;
 
         // Create an inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Prestiges -> PlayerPrestiges"));
