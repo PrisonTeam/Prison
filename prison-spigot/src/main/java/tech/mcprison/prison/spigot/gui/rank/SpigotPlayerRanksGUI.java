@@ -1,10 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.cryptomorin.xseries.XMaterial;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -14,6 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.cryptomorin.xseries.XMaterial;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
@@ -63,16 +63,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
  	    }
 
  	    PlayerManager playerManager = rankPlugin.getPlayerManager();
-    	rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() ).orElse( null );
+    	rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() );
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
 
         if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
-            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().
+            rPlayer = rankPlugin.getPlayerManager().
             								getPlayer( getPlayer().getUniqueId(), getPlayer().getName() );
-            if ( oPlayer.isPresent() ) {
-                rPlayer = oPlayer.get();
-            }
         }
         this.rankPlugin = rankPlugin;
         this.rankPlayer = rPlayer;

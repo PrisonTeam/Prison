@@ -17,6 +17,11 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -24,12 +29,6 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Manages the creation, removal, and management of ladders.
@@ -255,10 +254,17 @@ public class LadderManager {
      * Returns the ladder with the specified ID.
      *
      * @param id The ladder's ID.
-     * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified id.
+     * @return the {@link RankLadder} if it could be found, or null if it does not exist by the specified id.
      */
-    public Optional<RankLadder> getLadder(int id) {
-        return loadedLadders.stream().filter(ladder -> ladder.getId() == id).findFirst();
+    public RankLadder getLadder(int id) {
+    	RankLadder results = null;
+    	for ( RankLadder rankLadder : loadedLadders ) {
+			if ( rankLadder.getId() == id ) {
+				results = rankLadder;
+				break;
+			}
+		}
+    	return results;
     }
 
     /**

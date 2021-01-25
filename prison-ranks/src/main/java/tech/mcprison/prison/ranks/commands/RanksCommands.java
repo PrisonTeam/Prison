@@ -1066,9 +1066,9 @@ public class RanksCommands
     	}
 
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID(), player.getName());
+		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 		
-		if ( oPlayer.isPresent() ) {
+		if ( rankPlayer != null ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			
 			// Collect all currencies in the default ladder:
@@ -1082,7 +1082,6 @@ public class RanksCommands
 			}
 			
 			
-			RankPlayer rankPlayer = oPlayer.get();
 			Map<RankLadder, Rank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )

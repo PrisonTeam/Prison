@@ -244,14 +244,14 @@ public class RankManager {
     }
     
     
-    
-    /**
-     * Returns the first rank that has an escaped name that has the & replaced with -.
-     */
-    public Optional<Rank> getRankEscaped(String name) {
-    	return loadedRanks.stream().filter(rank -> 
-    					rank.getName().replace( "&", "-" ).equals(name)).findFirst();
-    }
+// Not used anywhere... 
+//    /**
+//     * Returns the first rank that has an escaped name that has the & replaced with -.
+//     */
+//    public Rank getRankEscaped(String name) {
+//    	return loadedRanks.stream().filter(rank -> 
+//    					rank.getName().replace( "&", "-" ).equals(name)).findFirst().orElse( null );
+//    }
 
     /**
      * Removes the provided rank. This will go through the process of removing the rank from the loaded
@@ -325,16 +325,16 @@ public class RankManager {
         return true;
     }
 
-    /**
-     * Returns the rank with the specified ID.
-     *
-     * @param id The rank's ID.
-     * @return An optional containing either the {@link Rank} if it could be found, or empty if it does not exist by the specified id.
-     */
-    @Deprecated 
-    public Optional<Rank> getRankOptional(int id) {
-        return loadedRanks.stream().filter(rank -> rank.getId() == id).findFirst();
-    }
+//    /**
+//     * Returns the rank with the specified ID.
+//     *
+//     * @param id The rank's ID.
+//     * @return An optional containing either the {@link Rank} if it could be found, or empty if it does not exist by the specified id.
+//     */
+//    @Deprecated 
+//    public Optional<Rank> getRankOptional(int id) {
+//        return loadedRanks.stream().filter(rank -> rank.getId() == id).findFirst();
+//    }
 
     public Rank getRank( int id ) {
     	return getRanksById().get( id );

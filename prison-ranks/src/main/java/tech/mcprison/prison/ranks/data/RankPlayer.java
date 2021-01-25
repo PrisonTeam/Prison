@@ -335,13 +335,12 @@ public class RankPlayer
      * @param ladder The ladder to check.
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
-    @Deprecated
-    public Optional<Rank> getRank(RankLadder ladder) {
+    public Rank getRank(RankLadder ladder) {
         if (!ranksRefs.containsKey(ladder.getName())) {
-            return Optional.empty();
+            return null;
         }
         int id = ranksRefs.get(ladder.getName());
-        return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
+        return PrisonRanks.getInstance().getRankManager().getRank(id);
     }
     
     /**

@@ -18,7 +18,6 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
@@ -379,17 +378,17 @@ public class RankUpCommand
 
 	public RankPlayer getRankPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
 		
-		Optional<RankPlayer> playerOptional =
+		RankPlayer player =
 							PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
-        if (!playerOptional.isPresent()) {
+        if ( player == null ) {
             Output.get().sendError(sender,
                 "You don't exist! The server has no records of you. Try rejoining, " +
             									"or contact a server administrator for help.");
         }
 
-        return playerOptional.isPresent() ? playerOptional.get() : null;
+        return player;
 	}
 
 

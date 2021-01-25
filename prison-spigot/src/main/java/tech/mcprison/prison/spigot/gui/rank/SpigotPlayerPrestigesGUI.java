@@ -1,7 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
-import me.clip.placeholderapi.PlaceholderAPI;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
@@ -21,9 +25,6 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author GABRYCA
@@ -57,7 +58,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         PlayerManager playerManager = rankPlugin.getPlayerManager();
 
-        rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() ).orElse( null );
+        rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() );
         LadderManager lm = rankPlugin.getLadderManager();
 
         for ( RankLadder ladderData : lm.getLadders() ) {
@@ -72,11 +73,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
         if (plugin instanceof PrisonRanks) {
             rankPlugin = (PrisonRanks) plugin;
-            Optional<RankPlayer> oPlayer = rankPlugin.getPlayerManager().
+            rPlayer = rankPlugin.getPlayerManager().
             									getPlayer( getPlayer().getUniqueId(), getPlayer().getName() );
-            if ( oPlayer.isPresent() ) {
-                rPlayer = oPlayer.get();
-            }
         }
         this.rankPlugin = rankPlugin;
         this.rankPlayer = rPlayer;

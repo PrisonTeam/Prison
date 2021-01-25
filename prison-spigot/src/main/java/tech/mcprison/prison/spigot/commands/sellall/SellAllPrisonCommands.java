@@ -127,10 +127,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (module != null) {
             PrisonRanks rankPlugin = (PrisonRanks) module;
 
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).isPresent()) {
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null ) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).get().getRank("prestiges").getName();
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
                 } catch (NullPointerException ex){
                     playerRankName = null;
                 }

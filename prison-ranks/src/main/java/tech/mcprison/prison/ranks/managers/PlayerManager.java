@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -195,9 +194,9 @@ public class PlayerManager
      * @param uid
      * @return
      */
-    public Optional<RankPlayer> getPlayer(UUID uid, String playerName) {
+    public RankPlayer getPlayer(UUID uid, String playerName) {
     	
-    	Optional<RankPlayer> results = Optional.ofNullable( null );
+    	RankPlayer results = null;
     	boolean dirty = false;
     	
     	for ( RankPlayer rankPlayer : players ) {
@@ -212,7 +211,7 @@ public class PlayerManager
 					dirty = rankPlayer.checkName( playerName );
 				}
 				
-				results = Optional.ofNullable( rankPlayer );
+				results = rankPlayer;
 				break;
 			}
 		}
@@ -223,15 +222,15 @@ public class PlayerManager
 //    						( playerName != null || playerName.trim().length() == 0 ? false :
 //    							player.checkName( playerName )))).findFirst();
     	
-    	if ( !results.isPresent() ) {
-    		results = Optional.ofNullable( addPlayer(uid, playerName) );
-    		dirty = results.isPresent();
+    	if ( results == null ) {
+    		results = addPlayer(uid, playerName);
+    		dirty = results != null;
     	}
     	
     	// Save if dirty (change or new):
-    	if ( dirty && results.isPresent() ) {
+    	if ( dirty && results != null ) {
     		try {
-				savePlayer( results.get() );
+				savePlayer( results );
 			}
 			catch ( IOException e ) {
 				String message = String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
@@ -251,8 +250,7 @@ public class PlayerManager
     public RankPlayer getPlayer( Player player ) {
     	RankPlayer rPlayer = null;
     	if ( player != null ) {
-    		Optional<RankPlayer> oPlayer = getPlayer( player.getUUID(), player.getName() );
-    		rPlayer = oPlayer.orElse( null );
+    		rPlayer = getPlayer( player.getUUID(), player.getName() );
     	}
     	return rPlayer;
     }
@@ -338,7 +336,8 @@ public class PlayerManager
      * Listeners
      */
 
-    @Subscribe public void onPlayerJoin(PlayerJoinEvent event) {
+    @Subscribe 
+    public void onPlayerJoin(PlayerJoinEvent event) {
     	
     	Player player = event.getPlayer();
     	
@@ -888,10 +887,9 @@ public class PlayerManager
 			
 			String ladderName = placeHolderKey.getData();
 			
-			Optional<RankPlayer> oPlayer = getPlayer(playerUuid, playerName);
+			RankPlayer rankPlayer = getPlayer(playerUuid, playerName);
 			
-			if ( oPlayer.isPresent() ) {
-				RankPlayer rankPlayer = oPlayer.get();
+			if ( rankPlayer != null ) {
 				
 				switch ( placeHolder ) {
 					case prison_r:
