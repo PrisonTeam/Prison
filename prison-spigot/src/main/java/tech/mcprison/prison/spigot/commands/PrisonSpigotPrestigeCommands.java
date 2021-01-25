@@ -10,6 +10,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
@@ -53,7 +54,7 @@ public class PrisonSpigotPrestigeCommands
 
         if ( isPrisonConfig("prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
 
-            if (!(PrisonRanks.getInstance().getLadderManager().getLadder("prestiges").isPresent())) {
+            if ( PrisonRanks.getInstance().getLadderManager().getLadder("prestiges") == null ) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
             }
 
@@ -69,21 +70,24 @@ public class PrisonSpigotPrestigeCommands
             	LadderManager lm = null;
             	if (rankPlugin != null) {
             		lm = rankPlugin.getLadderManager();
+            		
+            		RankLadder ladderDefault = lm.getLadder("default");
+            		if ( ( ladderDefault == null  ||
+            				!(ladderDefault.getLowestRank().isPresent()) ||
+            				ladderDefault.getLowestRank().get().getName() == null)) {
+            			sender.sendMessage(SpigotPrison.format(messages.getString("Message.DefaultLadderEmpty")));
+            			return;
+            		}
+            		
+            		RankLadder ladderPrestiges = lm.getLadder("prestiges");
+            		if ( ( ladderPrestiges == null ||
+            				!(ladderPrestiges.getLowestRank().isPresent()) ||
+            				ladderPrestiges.getLowestRank().get().getName() == null)) {
+            			sender.sendMessage(SpigotPrison.format(messages.getString("Message.CantFindPrestiges")));
+            			return;
+            		}
             	}
 
-            	if (lm != null && (!(lm.getLadder("default").isPresent()) ||
-            			!(lm.getLadder("default").get().getLowestRank().isPresent()) ||
-            			lm.getLadder("default").get().getLowestRank().get().getName() == null)) {
-            		sender.sendMessage(SpigotPrison.format(messages.getString("Message.DefaultLadderEmpty")));
-            		return;
-            	}
-
-            	if (lm != null && (!(lm.getLadder("prestiges").isPresent()) ||
-            			!(lm.getLadder("prestiges").get().getLowestRank().isPresent()) ||
-            			lm.getLadder("prestiges").get().getLowestRank().get().getName() == null)) {
-            		sender.sendMessage(SpigotPrison.format(messages.getString("Message.CantFindPrestiges")));
-            		return;
-            	}
 
             	if ( isPrisonConfig( "prestige-confirm-gui") ) {
             		try {

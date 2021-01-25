@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -22,8 +21,8 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
 import org.bukkit.event.player.PlayerInteractEvent;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -53,7 +52,11 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.*;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllDelayGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
 /**
  * @author GABRYCA
@@ -1225,7 +1228,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // Get the ladder by the name of the button got before
-        ladder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
+        ladder = Optional.of( PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain) );
 
         // Check if the ladder exist, everything can happen but this shouldn't
         if (!ladder.isPresent()) {

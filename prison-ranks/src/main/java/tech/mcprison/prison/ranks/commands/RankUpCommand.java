@@ -126,16 +126,18 @@ public class RankUpCommand
 		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
 		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
 
-			if (!(lm.getLadder("default").isPresent())){
+			RankLadder rankLadder = lm.getLadder("default");
+			
+			if ( rankLadder == null ){
 				sender.sendMessage("&c[ERROR] There isn't a default ladder! Please report this to an admin!");
 				return;
 			}
-			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
+			if (!rankLadder.getLowestRank().isPresent()){
 				sender.sendMessage("&c[ERROR] Can't get the lowest rank! Please report this to an admin!");
 				return;
 			}
 
-			Rank rank = lm.getLadder("default").get().getLowestRank().get();
+			Rank rank = rankLadder.getLowestRank().get();
 
 			while (rank.getRankNext() != null) {
 				rank = rank.getRankNext();
@@ -188,11 +190,11 @@ public class RankUpCommand
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 			// Set the player rank to the first one of the default ladder
 			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-											lm.getLadder("default").get().getLowestRank().get().getName() + " default");
+											lm.getLadder("default").getLowestRank().get().getName() + " default");
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
 			// Check if the ranks match
-			if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
+			if (pRankSecond == lm.getLadder("default").getLowestRank().get()) {
 				// Get economy
 				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 				
@@ -362,15 +364,14 @@ public class RankUpCommand
 
 	public String confirmLadder( CommandSender sender, String ladderName ) {
 		String results = null;
-		Optional<RankLadder> ladderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         // The ladder doesn't exist
-        if (!ladderOptional.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
         }
         else {
-        	results = ladderOptional.get().getName();
+        	results = ladder.getName();
         }
         return results;
 	}

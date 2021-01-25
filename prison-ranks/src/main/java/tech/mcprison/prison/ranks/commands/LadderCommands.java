@@ -1,7 +1,6 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
@@ -30,24 +29,23 @@ public class LadderCommands
     @Command(identifier = "ranks ladder create", description = "Creates a new rank ladder.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderAdd(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
-        Optional<RankLadder> ladderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-        if (ladderOptional.isPresent()) {
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        if ( ladder != null ) {
             Output.get()
                 .sendError(sender, "A ladder with the name '%s' already exists.", ladderName);
             return;
         }
 
-        ladderOptional = PrisonRanks.getInstance().getLadderManager().createLadder(ladderName);
+        RankLadder rankLadder = PrisonRanks.getInstance().getLadderManager().createLadder(ladderName);
 
-        if (!ladderOptional.isPresent()) {
+        if ( rankLadder == null ) {
             Output.get().sendError(sender,
                 "An error occurred while creating your ladder. &8Check the console for details.");
             return;
         }
 
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(ladderOptional.get());
+            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
             
             Output.get().sendInfo(sender, "The ladder '%s' has been created.", ladderName);
         } catch (IOException e) {
@@ -60,25 +58,24 @@ public class LadderCommands
     @Command(identifier = "ranks ladder delete", description = "Deletes a rank ladder.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderRemove(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
-        Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if (!ladder.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
         
-        if (ladder.get().getName().equalsIgnoreCase( "default" )) {
+        if (ladder.getName().equalsIgnoreCase( "default" )) {
         	Output.get().sendError(sender, "You cannot delete the default ladder. It's needed." );
         	return;
         }
 
-        if (ladder.get().getName().equalsIgnoreCase( "prestiges" )) {
+        if (ladder.getName().equalsIgnoreCase( "prestiges" )) {
         	Output.get().sendError(sender, "You cannot delete the prestiges ladder. It's needed." );
         	return;
         }
         
-        if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder.get()) ) {
+        if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder) ) {
             Output.get().sendInfo(sender, "The ladder '%s' has been deleted.", ladderName);
 
         } else {
@@ -104,22 +101,21 @@ public class LadderCommands
     @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderInfo(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
-        Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if (!ladder.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
 
-        ChatDisplay display = new ChatDisplay(ladder.get().getName());
+        ChatDisplay display = new ChatDisplay(ladder.getName());
         display.addText("&7This ladder contains the following ranks:");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
         
         boolean first = true;
-        for (Rank rank : ladder.get().getRanks()) {
+        for (Rank rank : ladder.getRanks()) {
 //        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
         	if ( rank == null ) {
         		continue;
@@ -171,9 +167,9 @@ public class LadderCommands
 	        @Arg(name = "position", def = "0", verifiers = "min[0]",
 	        description = "Position where you want the rank to be added. " +
 	        		"0 is the first position in the ladder.") int position) {
-        Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-        if (!ladder.isPresent()) {
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
@@ -185,7 +181,7 @@ public class LadderCommands
             return;
         }
 
-        if (ladder.get().containsRank(rank.getId())) {
+        if (ladder.containsRank(rank.getId())) {
             Output.get()
                 .sendError(sender, "The ladder '%s' already contains the rank '%s'.", ladderName,
                     rankName);
@@ -193,16 +189,16 @@ public class LadderCommands
         }
 
         if (position > 0) {
-            ladder.get().addRank(position, rank);
+            ladder.addRank(position, rank);
         } else {
-            ladder.get().addRank(rank);
+            ladder.addRank(rank);
         }
 
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
+            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
             
             Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
-            		rank.getName(), ladder.get().getName(), Integer.toString( position ));
+            		rank.getName(), ladder.getName(), Integer.toString( position ));
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while adding a rank to your ladder. &8Check the console for details.");
@@ -214,9 +210,9 @@ public class LadderCommands
     											onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderRemoveRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
         @Arg(name = "rankName") String rankName) {
-        Optional<RankLadder> ladder =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-        if (!ladder.isPresent()) {
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
@@ -228,13 +224,13 @@ public class LadderCommands
             return;
         }
 
-        ladder.get().removeRank(ladder.get().getPositionOfRank(rank));
+        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder.get());
+            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
 
             Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.getName(),
-            		ladder.get().getName());
+            		ladder.getName());
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "An error occurred while removing a rank from your ladder. &8Check the console for details.");
@@ -252,16 +248,13 @@ public class LadderCommands
   			){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
 	  
-      Optional<RankLadder> ladderOptional =
-              PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-      if (!ladderOptional.isPresent()) {
+      RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+      
+      if ( ladder == null ) {
           Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
           return;
       }
 
-      RankLadder ladder = ladderOptional.get();
-
-      
       if ( ladder.getPermissions() == null ||ladder.getPermissions().size() == 0 && 
     		  ladder.getPermissionGroups() == null && ladder.getPermissionGroups().size() == 0 ) {
       	
@@ -355,14 +348,12 @@ public class LadderCommands
 		  ){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
 	  
-      Optional<RankLadder> ladderOptional =
-              PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-      if (!ladderOptional.isPresent()) {
+      RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+      
+      if ( ladder == null ) {
           Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
           return;
       }
-
-      RankLadder ladder = ladderOptional.get();
 
       if ( permission == null || permission.trim().isEmpty() ) {
       	
@@ -407,14 +398,12 @@ public class LadderCommands
 		  ){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
 	  
-	  Optional<RankLadder> ladderOptional =
-              PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-      if (!ladderOptional.isPresent()) {
+	  RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+	  
+      if ( ladder == null ) {
           Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
           return;
       }
-
-      RankLadder ladder = ladderOptional.get();
 
       if ( permissionGroup == null || permissionGroup.trim().isEmpty() ) {
       	
@@ -480,14 +469,13 @@ public class LadderCommands
 		  ){
 	  sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
 	  
-      Optional<RankLadder> ladderOptional =
-              PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-      if (!ladderOptional.isPresent()) {
+      RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+      
+      if ( ladder == null ) {
           Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
           return;
       }
 
-      RankLadder ladder = ladderOptional.get();
       boolean dirty = false;
       String removedPerm = "";
       boolean permGroup = false;

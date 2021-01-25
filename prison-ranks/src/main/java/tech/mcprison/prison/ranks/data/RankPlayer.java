@@ -57,8 +57,11 @@ public class RankPlayer
 
     private UUID uid;
     
+    
+    private HashMap<RankLadder, Rank> ladderRanks;
+    
     // ranks is the storage structure used to save the player's ladder & ranks:
-    private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
+    private HashMap<String, Integer> ranksRefs; // <Ladder Name, Rank ID>
     
     // This prestige is not used.  Current prestige is just another ladder.
     //private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
@@ -81,7 +84,9 @@ public class RankPlayer
     public RankPlayer() {
     	super();
     	
-        this.ranks = new HashMap<>();
+    	this.ladderRanks = new HashMap<>();
+    	
+        this.ranksRefs = new HashMap<>();
         //this.prestige = new HashMap<>();
         
         this.playerBalances = new TreeMap<>();
@@ -116,7 +121,7 @@ public class RankPlayer
         
 
         for (String key : ranksLocal.keySet()) {
-            ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
+            ranksRefs.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
         
 //        for (String key : prestigeLocal.keySet()) {
@@ -152,7 +157,7 @@ public class RankPlayer
     public Document toDocument() {
         Document ret = new Document();
         ret.put("uid", this.uid);
-        ret.put("ranks", this.ranks);
+        ret.put("ranks", this.ranksRefs);
 //        ret.put("prestige", this.prestige);
         
         ret.put("names", this.names);
@@ -273,11 +278,11 @@ public class RankPlayer
         String ladderName = ladder.getName();
         
         // Remove the current rank on this ladder first
-        if (ranks.containsKey(ladderName)) {
-            ranks.remove(ladderName);
+        if (ranksRefs.containsKey(ladderName)) {
+            ranksRefs.remove(ladderName);
         }
 
-        ranks.put(ladderName, rank.getId());
+        ranksRefs.put(ladderName, rank.getId());
     }
 
     /**
@@ -291,18 +296,18 @@ public class RankPlayer
         // When we loop through, we have to store our ladder name outside the loop to
         // avoid a concurrent modification exception. So, we'll retrieve the data we need...
         String ladderName = null;
-        for (Map.Entry<String, Integer> rankEntry : ranks.entrySet()) {
+        for (Map.Entry<String, Integer> rankEntry : ranksRefs.entrySet()) {
             if (rankEntry.getValue() == rank.getId()) { // This is our rank!
                 ladderName = rankEntry.getKey();
             }
         }
 
         // ... and then remove it!
-        ranks.remove(ladderName);
+        ranksRefs.remove(ladderName);
     }
     
     public boolean hasLadder( String ladderName ) {
-    	return ranks.containsKey( ladderName );
+    	return ranksRefs.containsKey( ladderName );
     }
 
     /**
@@ -314,7 +319,7 @@ public class RankPlayer
     public boolean removeLadder(String ladderName) {
     	boolean results = false;
         if ( !ladderName.equalsIgnoreCase("default") ) {
-        	Integer id = ranks.remove(ladderName);
+        	Integer id = ranksRefs.remove(ladderName);
         	results = (id != null);
         }
         return results;
@@ -332,10 +337,10 @@ public class RankPlayer
      */
     @Deprecated
     public Optional<Rank> getRank(RankLadder ladder) {
-        if (!ranks.containsKey(ladder.getName())) {
+        if (!ranksRefs.containsKey(ladder.getName())) {
             return Optional.empty();
         }
-        int id = ranks.get(ladder.getName());
+        int id = ranksRefs.get(ladder.getName());
         return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
     }
     
@@ -347,8 +352,8 @@ public class RankPlayer
      */
     public Rank getRank(String ladder) {
     	Rank results = null;
-    	if (ladder != null && ranks.containsKey(ladder)) {
-    		int id = ranks.get(ladder);
+    	if (ladder != null && ranksRefs.containsKey(ladder)) {
+    		int id = ranksRefs.get(ladder);
     		results = PrisonRanks.getInstance().getRankManager().getRank(id);
     	}
     	return results;
@@ -364,7 +369,7 @@ public class RankPlayer
 //	}
 
 	public void setRanks( HashMap<String, Integer> ranks ) {
-		this.ranks = ranks;
+		this.ranksRefs = ranks;
 	}
 
 	/**
@@ -374,30 +379,34 @@ public class RankPlayer
      */
     public Map<RankLadder, Rank> getLadderRanks() {
     	
-        Map<RankLadder, Rank> ret = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : ranks.entrySet()) {
-            Optional<RankLadder> ladder =
-                PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
-            if (!ladder.isPresent()) {
-                continue; // Skip it
-            }
+    	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
+    		
+    		//Map<RankLadder, Rank> ret = new HashMap<>();
+    		for (Map.Entry<String, Integer> entry : ranksRefs.entrySet()) {
+    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
+    			
+    			if ( ladder == null ) {
+    				continue; // Skip it
+    			}
+    			
+    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
+    			if ( rank == null ) {
+    				continue; // Skip it
+    			}
+    			
+    			ladderRanks.put(ladder, rank);
+    		}
+    	}
 
-            Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
-            if ( rank == null ) {
-                continue; // Skip it
-            }
-
-            ret.put(ladder.get(), rank);
-        }
-
-        return ret;
+        return ladderRanks;
     }
 
     /*
      * equals() and hashCode()
      */
 
-    @Override public boolean equals(Object o) {
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -410,7 +419,8 @@ public class RankPlayer
         return uid.equals(that.uid);
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         return uid.hashCode();
     }
 
@@ -428,9 +438,8 @@ public class RankPlayer
 	@Override
 	public void dispatchCommand( String command )
 	{
-		// TODO Auto-generated method stub
-		
 	}
+	
 	@Override
 	public boolean hasPermission( String perm ) {
 		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );

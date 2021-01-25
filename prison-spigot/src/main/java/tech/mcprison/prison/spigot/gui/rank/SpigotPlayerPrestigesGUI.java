@@ -107,16 +107,16 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         // Load config
 
         LadderManager lm = getRankPlugin().getLadderManager();
-        Optional<RankLadder> ladder = lm.getLadder("prestiges");
+        RankLadder ladder = lm.getLadder("prestiges");
 
         // Ensure ladder is present and that it has a rank:
-        if ( !ladder.isPresent() || !ladder.get().getLowestRank().isPresent() ){
+        if ( ladder == null || !ladder.getLowestRank().isPresent() ){
             getPlayer().closeInventory();
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.get().getRanks().size() / 9D) * 9) + 9;
+        int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
         // Create an inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Prestiges -> PlayerPrestiges"));
@@ -128,7 +128,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         openGUI(getPlayer(), inv);
     }
 
-    private boolean guiBuilder(Optional<RankLadder> ladder, int dimension, Inventory inv) {
+    private boolean guiBuilder(RankLadder ladder, int dimension, Inventory inv) {
         try {
             buttonsSetup(ladder, dimension, inv);
         } catch (NullPointerException ex){
@@ -139,15 +139,15 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Optional<RankLadder> ladder, int dimension, Inventory inv) {
+    private void buttonsSetup(RankLadder ladder, int dimension, Inventory inv) {
 
 
-        if (!ladder.isPresent()){
+        if ( ladder == null ){
             player.sendMessage(SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
             return;
         }
 
-        RankLadder ladderData = ladder.get();
+        RankLadder ladderData = ladder;
 
         if (!ladderData.getLowestRank().isPresent()){
             player.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));

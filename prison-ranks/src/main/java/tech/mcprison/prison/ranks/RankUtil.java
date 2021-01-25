@@ -306,7 +306,7 @@ public class RankUtil {
     	
 
         
-        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName).orElse(null);
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if( ladder == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_LADDER, RankupTransactions.failed_ladder );
         	return;

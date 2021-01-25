@@ -54,9 +54,9 @@ public class RankConversionAgent implements ConversionAgent {
                         break; // Already added
                     }
 
-                    Optional<RankLadder> rankLadderOptional =
-                        PrisonRanks.getInstance().getLadderManager().getLadder("default");
-                    if (!rankLadderOptional.isPresent()) {
+                    RankLadder rankLadder =
+                    				PrisonRanks.getInstance().getLadderManager().getLadder("default");
+                    if ( rankLadder == null ) {
                         break; // Idek how this is possible.
                     }
 
@@ -77,10 +77,9 @@ public class RankConversionAgent implements ConversionAgent {
 //                        break; // Skip this...
 //                    }
 
-                    rankLadderOptional.get().addRank(ourRank.get());
+                    rankLadder.addRank(ourRank.get());
                     try {
-                        PrisonRanks.getInstance().getLadderManager()
-                            .saveLadder(rankLadderOptional.get());
+                        PrisonRanks.getInstance().getLadderManager().saveLadder( rankLadder );
                     } catch (IOException e) {
                         PrisonRanks.getInstance().getErrorManager().throwError(
                             new Error("while converting ranks")

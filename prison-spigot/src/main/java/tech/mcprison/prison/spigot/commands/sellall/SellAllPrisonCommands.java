@@ -828,7 +828,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return true;
         }
 
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").isPresent();
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
         if (!isPrestigeLadder) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
             return true;
@@ -840,7 +840,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return true;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").get().containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
         if (!isInPrestigeLadder) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
             return true;

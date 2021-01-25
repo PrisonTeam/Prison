@@ -89,9 +89,9 @@ public class RanksCommands
 
         // Fetch the ladder first, so we can see if it exists
 
-        Optional<RankLadder> rankLadderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
-        if (!rankLadderOptional.isPresent()) {
+        RankLadder rankLadder = PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
+        
+        if ( rankLadder == null ) {
             Output.get().sendWarn(sender, "&3A ladder by the name of '&7%s&3' does not exist.", ladder);
             return success;
         }
@@ -124,9 +124,9 @@ public class RanksCommands
 
         // Add the ladder
 
-        rankLadderOptional.get().addRank(newRank);
+        rankLadder.addRank(newRank);
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
+            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
             
             success = true;
             
@@ -137,7 +137,7 @@ public class RanksCommands
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "&3The '&7%s&3' ladder could not be saved to disk. Check the console for details.",
-                rankLadderOptional.get().getName());
+                rankLadder.getName());
             Output.get().logError("&3Ladder could not be written to disk.", e);
         }
 
@@ -447,15 +447,14 @@ public class RanksCommands
     	boolean hasPerm = sender.hasPermission("ranks.list") ||
     					sender.isOp();
     	
-        Optional<RankLadder> ladderOpt =
+        RankLadder ladder =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if (!ladderOpt.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
 
-        RankLadder ladder = ladderOpt.get();
         Rank rank = ladder.getLowestRank().orElse( null );
 
 //        Rank rank = null;
@@ -1076,7 +1075,7 @@ public class RanksCommands
 			Set<String> currencies = new LinkedHashSet<>();
 			LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 			
-			for ( Rank rank : lm.getLadder( "default" ).get().getRanks() ) {
+			for ( Rank rank : lm.getLadder( "default" ).getRanks() ) {
 				if ( rank.getCurrency() != null && !currencies.contains( rank.getCurrency() )) {
 					currencies.add( rank.getCurrency() );
 				}
@@ -1182,7 +1181,7 @@ public class RanksCommands
 
     	
     	if ( !ladderName.equalsIgnoreCase( "all" ) && 
-    			!PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ).isPresent() ) {
+    			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
     		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not ALL.", ladderName);
     		return;
     	}

@@ -220,10 +220,10 @@ public class PrisonRanks
      * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
      */
     private void createDefaultLadder() {
-        if (!ladderManager.getLadder("default").isPresent()) {
-            Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("default");
+        if ( ladderManager.getLadder("default") == null ) {
+            RankLadder rankLadder = ladderManager.createLadder("default");
 
-            if (!rankLadderOptional.isPresent()) {
+            if ( rankLadder == null ) {
             	String message = "Failed to create a new default ladder, preexisting one not be found.";
             	Output.get().logError(message);
                 super.getStatus().toFailed("&c" + message);
@@ -231,7 +231,7 @@ public class PrisonRanks
             }
 
             try {
-                ladderManager.saveLadder(rankLadderOptional.get());
+                ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
             	String message = "Failed to save a new default ladder, preexisting one not be found.";
             	Output.get().logError(message, e);
@@ -239,10 +239,10 @@ public class PrisonRanks
             }
         }
 
-        if (!ladderManager.getLadder("prestiges").isPresent()) {
-            Optional<RankLadder> rankLadderOptional = ladderManager.createLadder("prestiges");
+        if ( ladderManager.getLadder("prestiges") == null ) {
+            RankLadder rankLadder = ladderManager.createLadder("prestiges");
 
-            if (!rankLadderOptional.isPresent()) {
+            if ( rankLadder == null ) {
                 String message = "Failed to create a new prestiges ladder, preexisting one not be found.";
                 Output.get().logError(message);
                 super.getStatus().toFailed("&c" + message);
@@ -250,7 +250,7 @@ public class PrisonRanks
             }
 
             try {
-                ladderManager.saveLadder(rankLadderOptional.get());
+                ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
                 String message = "Failed to save a new prestiges ladder, preexisting one not be found.";
                 Output.get().logError(message, e);
@@ -279,7 +279,7 @@ public class PrisonRanks
     }
 
     public RankLadder getDefaultLadder() {
-        return getLadderManager().getLadder("default").orElseThrow(IllegalStateException::new);
+        return getLadderManager().getLadder("default");
     }
 
     public Database getDatabase() {

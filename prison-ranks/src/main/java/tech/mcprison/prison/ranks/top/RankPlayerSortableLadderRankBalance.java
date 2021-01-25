@@ -23,7 +23,7 @@ public class RankPlayerSortableLadderRankBalance
 		if ( ladder != null ) {
 			
 			this.ladder = PrisonRanks.getInstance().getLadderManager()
-									.getLadder( ladder ).orElse( null );
+									.getLadder( ladder );
 		}
 	}
 	

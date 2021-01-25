@@ -101,29 +101,29 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         LadderManager lm = getRankPlugin().getLadderManager();
-        Optional<RankLadder> ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
+        RankLadder ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
-        if (!ladder.isPresent() || !ladder.get().getLowestRank().isPresent()){
+        if ( ladder == null || !ladder.getLowestRank().isPresent()){
             getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2")));
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
-        if (ladder.get().getRanks().size() == 0) {
+        if (ladder.getRanks().size() == 0) {
             getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFound")));
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.get().getRanks().size() / 9D) * 9) + 9;
+        int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
 
         // Get many parameters
-        RankLadder ladderData = ladder.get();
+        RankLadder ladderData = ladder;
         Rank rank = ladderData.getLowestRank().get();
         Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
