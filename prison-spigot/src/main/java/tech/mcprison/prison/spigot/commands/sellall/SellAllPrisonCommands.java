@@ -66,6 +66,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
     }
 
+    /**
+     * Add a Player to delay.
+     *
+     * @param p Player
+     * */
     private void addPlayerToDelay(Player p){
 
         if (!isEnabled()) return;
@@ -75,6 +80,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
+    /**
+     * Removes a Player from delay.
+     *
+     * @param p Player
+     * */
     private void removePlayerFromDelay(Player p){
 
         if (!isEnabled()) return;
@@ -85,8 +95,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the money to give to the Player depending on the multiplier.
      *
-     * @param player
-     * @param removeItems
+     * @param player Player
+     * @param removeItems boolean
      *
      * @return money
      * */
@@ -111,7 +121,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get the player multiplier, requires SpigotPlayer.
      *
-     * @param sPlayer
+     * @param sPlayer SpigotPlayer
      *
      * @return multiplier
      * */
@@ -192,6 +202,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Get the items strings from config and for each of them get the Material and value.
             for (String key : items) {
 
+                // Flag variable and XMaterials.
                 boolean hasError = false;
                 XMaterial itemMaterial = null;
                 XMaterial invMaterial = null;
@@ -202,6 +213,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     hasError = true;
                 }
 
+                // Get value
                 double value = 0;
                 try {
                     value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
@@ -209,6 +221,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     if (!hasError) hasError = true;
                 }
 
+                // Get amount and remove items if enabled
                 int amount = 0;
                 // Check if the item from the player inventory's on the config of items sellable
                 // So it gets the amount and then remove it from the inventory
@@ -231,7 +244,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return moneyToGive;
     }
 
+    /**
+     * Open SellAll GUI for Players if enabled.
+     *
+     * @param p Player
+     *
+     * @return boolean
+     * */
     private boolean sellAllPlayerGUI(Player p) {
+
         // Check if the Player GUI's enabled.
         if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
             // Check if a permission's required, if not it'll open directly the Player's GUI.
@@ -254,7 +275,16 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
+    /**
+     * Check if a player's waiting for his delay to end.
+     * Check if SellAllDelay's enabled.
+     *
+     * @param p Player
+     *
+     * @return boolean
+     * */
     private boolean sellAllCommandDelay(Player p) {
+
         if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
 
             if (activePlayerDelay.contains(p.getName())){
@@ -265,7 +295,26 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             addPlayerToDelay(p);
             Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
         }
+
         return false;
+    }
+
+    /**
+     * Get SellAll Economy from the config if found.
+     *
+     * @return economy
+     * */
+    private EconomyIntegration getSellAllEconomy() {
+
+        // Get SellAll economy.
+        EconomyIntegration economy;
+        if (sellAllConfig.getString("Options.SellAll_Currency").equalsIgnoreCase("default")) {
+            economy = PrisonAPI.getIntegrationManager().getEconomy();
+        } else {
+            economy = PrisonAPI.getIntegrationManager().getEconomyForCurrency(sellAllConfig.getString("Options.SellAll_Currency"));
+        }
+
+        return economy;
     }
 
     @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
@@ -526,12 +575,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Get money to give + multiplier
             double moneyToGive = getMoneyWithMultiplier(p, true);
 
-            EconomyIntegration economy;
-            if (sellAllConfig.getString("Options.SellAll_Currency").equalsIgnoreCase("default")) {
-                economy = PrisonAPI.getIntegrationManager().getEconomy();
-            } else {
-                economy = PrisonAPI.getIntegrationManager().getEconomyForCurrency(sellAllConfig.getString("Options.SellAll_Currency"));
-            }
+            EconomyIntegration economy = getSellAllEconomy();
 
             if (economy == null){
                 Output.get().sendError(sender, "No active economy supports the currency named '%s'.", sellAllConfig.getString("Options.SellAll_Currency"));
@@ -550,6 +594,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
     }
+
+
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
