@@ -19,7 +19,6 @@ package tech.mcprison.prison.ranks;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
@@ -636,10 +635,6 @@ public class RankUtil {
     	return targetRank;
     }
     
-    
-    public static String doubleToDollarString(double val) {
-        return NumberFormat.getCurrencyInstance().format(val);
-    }
 
     public static int doubleToInt(Object d) {
         return Math.toIntExact(Math.round((double) d));

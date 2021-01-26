@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.commands;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -431,10 +432,11 @@ public class RankUpCommand
 				}
                 break;
             case RANKUP_CANT_AFFORD:
+            	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
                 Output.get().sendError(sender,
-                    "You don't have enough money to rank up! The next rank costs %s.",
-                    RankUtil.doubleToDollarString(
-                    				results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()));
+                    "You don't have enough money to rank up! The next rank costs %s %s.",
+                    dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
+                    results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency() );
                 break;
             case RANKUP_LOWEST:
             	Output.get().sendInfo(sender, "%s already at the lowest rank!",
