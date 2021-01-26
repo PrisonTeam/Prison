@@ -15,33 +15,52 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+
+# v3.2.4-alpha.8 2021-01-26
+
+
+* **Fixed the currency issue with RANKUP_CANT_AFFORD.**
+It was using the local currency, which was injecting symbols that cannot be displayed within minecraft, like non-breaking spaces.  
+It now just formats the number naturally with commas and will display the rank's custom currency if it is provided.
+
+
+* **Hooked up a new way of storing ranks in ladders.**
+Eliminate a lot of the old ways that used the PositionRank object (which was eliminated).  Also eliminating references by rankId and by position.  Position is now fabricated and will be phased out, but in the mean time it has been moved to Rank.
+
+
 * **Edited many messages.**
 Edited many messages at the messages file (path /module_conf/lang/), they'll apply
   only if you delete your old one, be careful because if you do it all your custom
   or edited/translated messages inside this config will get resetted.
 
+
 * **SellAll delay set moved to SellAll set delay**
 Moved the command /Sellall delay set to /sellall set delay.
+
 
 * **SellAll set currency**
 Added a new command, like the /ranks set currency <currency>, this will allow SellAll to work with custom currencies.
 
-# v3.2.4-alpha.8 2021-01-19
 
 * **SellAll BackPacks support**
   Added support for MinesBackPacks.
 
+
 * **Start work on the prison's top player enhancement**
 Moving economy functions to the RankPlayer object to minimize having to have external hooks to get those details.  Provide for a player's balance cache to help reduce hits on the server to full fill requests for placeholders that will be added soon.
 
+
 * **v3.2.4-alpha.8 2021-01-19**
+
 
 * **SellAll Delay GUI**
 Added a new Button to the SellAll GUI and also a new sub-GUI for the SellAll Delay
   feature.
 
+
 * **AutoFeatures GUI redesign**
 New design for AutoFeatures GUI.
+
 
 * **Added Ranks GUI Progress Bar.**
 Just added a progress bar to the Ranks GUI to see the next Rank how far is to get available for unlock/rankup.

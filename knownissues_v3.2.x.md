@@ -7,7 +7,7 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.3
+# To Do Items - During Alpha v3.2.4
 
 
 - Top Listings
@@ -32,6 +32,7 @@ issues, and/or to serve as items that should be added, or fixed.
 - Prepare for sellall integration to the new block model (simple way to put it)
   - PrisonBlock - add "price" - Maybe keyed by "shop".
     - custom currency support like ranks?
+    - shop, currency, price, item
   - Hook startup for PrisonBlock to sellall to preload the price 
   - PrisonBlock - add quantity
   - Add a utility method for converting a PrisonBlock to ItemStack
