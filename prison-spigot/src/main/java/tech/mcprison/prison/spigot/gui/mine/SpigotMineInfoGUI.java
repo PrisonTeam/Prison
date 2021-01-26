@@ -63,9 +63,9 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
                 messages.getString("Lore.SkipReset3"),
                 "",
                 messages.getString("Lore.ShiftAndRightClickToToggle"),
-                messages.getString("Message.ZeroBlocksReset1"),
-                messages.getString("Message.ZeroBlocksReset2"),
-                messages.getString("Message.ZeroBlocksReset3")
+                messages.getString("Lore.ZeroBlocksReset1"),
+                messages.getString("Lore.ZeroBlocksReset2"),
+                messages.getString("Lore.ZeroBlocksReset3")
         );
         List<String> MineSpawnLore = createLore(
                 messages.getString("Lore.ClickToUse"),

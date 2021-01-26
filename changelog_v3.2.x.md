@@ -15,14 +15,24 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+* **Edited many messages.**
+Edited many messages at the messages file (path /module_conf/lang/), they'll apply
+  only if you delete your old one, be careful because if you do it all your custom
+  or edited/translated messages inside this config will get resetted.
+
+* **SellAll delay set moved to SellAll set delay**
+Moved the command /Sellall delay set to /sellall set delay.
+
+* **SellAll set currency**
+Added a new command, like the /ranks set currency <currency>, this will allow SellAll to work with custom currencies.
+
 # v3.2.4-alpha.8 2021-01-19
 
-
-
+* **SellAll BackPacks support**
+  Added support for MinesBackPacks.
 
 * **Start work on the prison's top player enhancement**
 Moving economy functions to the RankPlayer object to minimize having to have external hooks to get those details.  Provide for a player's balance cache to help reduce hits on the server to full fill requests for placeholders that will be added soon.
-
 
 * **v3.2.4-alpha.8 2021-01-19**
 

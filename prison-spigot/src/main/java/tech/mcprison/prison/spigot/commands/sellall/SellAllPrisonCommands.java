@@ -24,10 +24,12 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
@@ -266,6 +268,35 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
+    @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
+    private void sellAllCurrency(CommandSender sender,
+    @Arg(name = "currency", description = "Currency name.", def = "default") String currency){
+
+        if (!sender.hasPermission("prison.sellall.currency") || !sender.hasPermission("prison.admin")){
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.MissingPermission") + " [prison.sellall.currency]"));
+            return;
+        }
+
+        EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
+        if (currencyEcon == null) {
+            Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
+            return;
+        }
+
+        try {
+            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.SellAll_Currency", currency);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+            return;
+        }
+
+        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + "[" + currency + "]"));
+    }
+
     @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
     private void sellAllCommands(CommandSender sender) {
 
@@ -285,7 +316,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (!sender.hasPermission("prison.sellall.delay")){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.MissingPermission")));
+            sender.sendMessage(SpigotPrison.format(messages.getString("Message.MissingPermission") + " [prison.sellall.delay]"));
             return;
         }
 
@@ -315,6 +346,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } catch (IOException e) {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
+            return;
         }
 
         if (enable.equalsIgnoreCase("true")){
@@ -324,7 +356,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall delay set", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
+    @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelaySet(CommandSender sender,
                               @Arg(name = "delay", description = "Set delay value in seconds.", def = "null") String delay){
 
@@ -464,7 +496,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableDisabled")));
         }
     }
-
+    
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
     private void sellAllSellCommand(CommandSender sender){
 
@@ -494,8 +526,19 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Get money to give + multiplier
             double moneyToGive = getMoneyWithMultiplier(p, true);
 
-            // Get economy and add balance
-            EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+            EconomyIntegration economy;
+            if (sellAllConfig.getString("Options.SellAll_Currency").equalsIgnoreCase("default")) {
+                economy = PrisonAPI.getIntegrationManager().getEconomy();
+            } else {
+                economy = PrisonAPI.getIntegrationManager().getEconomyForCurrency(sellAllConfig.getString("Options.SellAll_Currency"));
+            }
+
+            if (economy == null){
+                Output.get().sendError(sender, "No active economy supports the currency named '%s'.", sellAllConfig.getString("Options.SellAll_Currency"));
+                return;
+            }
+
+            // Add money
             economy.addBalance(sPlayer, moneyToGive);
 
             if (moneyToGive<0.001){
