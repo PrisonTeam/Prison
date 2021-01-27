@@ -16,6 +16,9 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
+# v3.2.4-alpha.9 2021-01-27
+
+
 * **PLEASE DELETE YOUR OLD MESSAGES CONFIG TO APPLY CHANGES!**
   To do it please open the Prison folder on your server, then module_conf and lang, there delete your old config en_US.yml
   (for example) to apply all changes and avoid double messages, **Prison will try to automatically update already existing messages**
@@ -31,7 +34,6 @@ Edited the Spigot messages config, removed Prison tags and now using default Pri
 Spotted some weird things about some command of SellAll not updating correctly (like /sellall delete) and
   fixed them.
 
-# v3.2.4-alpha.9 2021-01-27
 
 
 * **Fixed critical SellAll value!**
