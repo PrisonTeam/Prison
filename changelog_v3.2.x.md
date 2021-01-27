@@ -15,6 +15,22 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
+
+* **PLEASE DELETE YOUR OLD MESSAGES CONFIG TO APPLY CHANGES!**
+  To do it please open the Prison folder on your server, then module_conf and lang, there delete your old config en_US.yml
+  (for example) to apply all changes and avoid double messages, **Prison will try to automatically update already existing messages**
+  with an integrated converter, it'll try to remove tags from messages, but sometimes they don't work properly,
+  so some tags might still be there, if you want please *move on and delete them manually*.
+
+
+* **Edited Spigot Messages config.**
+Edited the Spigot messages config, removed Prison tags and now using default Prison standards methods for all messages.
+  
+
+* **Fixed some SellAll bugs.**
+Spotted some weird things about some command of SellAll not updating correctly (like /sellall delete) and
+  fixed them.
+
 # v3.2.4-alpha.9 2021-01-27
 
 
