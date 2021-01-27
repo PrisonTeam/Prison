@@ -772,7 +772,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllMissingID")));
         }
         if (sellAllConfig.getConfigurationSection("Items." + itemID) == null){
-            sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllTagWarn") + itemID + messages.getString("Message.SellAllNotFoundStringConfig")));
+            sender.sendMessage(SpigotPrison.format(messages.getString("Tag.PrisonWarnTag") + itemID + messages.getString("Message.SellAllNotFoundStringConfig")));
             return;
         }
 
@@ -789,7 +789,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        sender.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllPrisonTag") + itemID + messages.getString("Message.SellAllDeletedSuccess")));
+        sender.sendMessage(SpigotPrison.format(messages.getString("Tag.PrisonTag") + itemID + messages.getString("Message.SellAllDeletedSuccess")));
     }
 
     @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)
