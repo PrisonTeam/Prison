@@ -5,6 +5,8 @@ import org.bukkit.event.Listener;
 
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 
 /**
@@ -28,7 +30,7 @@ public class PrisonSpigotCommands extends PrisonSpigotBaseCommands implements Li
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
-        	sender.sendMessage( getMessages().getString("Message.CantRunGUIFromConsole"));
+        	Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
         	return;
         }
 

@@ -17,6 +17,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -24,6 +25,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -53,12 +55,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         if (rankPlugin == null){
-            player.sendMessage(SpigotPrison.format("&cError: rankPlugin == null"));
+            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin == null."));
             return;
         }
 
  	    if (rankPlugin.getPlayerManager() == null) {
- 	        player.sendMessage(SpigotPrison.format("&cError: rankPlugin.getPlayerManager() == null"));
+ 	        Output.get().sendError(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin.getPlayerManager() == null."));
  	    	return;
  	    }
 
@@ -102,14 +104,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
-            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2")));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format(messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2")));
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.getRanks().size() == 0) {
-            getPlayer().sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFound")));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format(messages.getString("Message.NoRanksFound")));
             return;
         }
 
@@ -135,7 +137,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(dimension, inv, rank, playerRank);
         } catch (NullPointerException ex){
-            getPlayer().sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

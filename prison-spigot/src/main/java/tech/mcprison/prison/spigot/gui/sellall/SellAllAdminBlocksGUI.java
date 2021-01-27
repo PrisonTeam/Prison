@@ -4,8 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         Inventory inv = buttonsSetup();
         if (inv == null) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
             return;
         }
 
@@ -60,7 +62,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         int dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
             return null;
         }
 
@@ -83,7 +85,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup();
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

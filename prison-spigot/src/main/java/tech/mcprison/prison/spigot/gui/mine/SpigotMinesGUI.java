@@ -17,7 +17,9 @@ import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -50,7 +52,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyMines")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -71,7 +73,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, m);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

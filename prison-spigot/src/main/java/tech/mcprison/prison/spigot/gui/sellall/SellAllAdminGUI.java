@@ -5,7 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
     public void open() {
 
         if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllIsDisabled")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllIsDisabled")));
             return;
         }
 
@@ -42,7 +44,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         try {
             buttonsSetup();
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

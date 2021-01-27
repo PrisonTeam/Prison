@@ -14,8 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author rbluer RoyalBlueRanger
@@ -111,7 +113,7 @@ public abstract class SpigotGUIComponents {
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
         if(!(module instanceof PrisonRanks)){
-            p.sendMessage(SpigotPrison.format("&c[ERROR] The GUI can't open because the &3Ranks module &cisn't loaded"));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&c[ERROR] The GUI can't open because the &3Ranks module &cisn't loaded"));
             p.closeInventory();
         }
         return module instanceof PrisonRanks;

@@ -8,10 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -40,14 +42,14 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoLadders")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoLadders")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyLadders")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyLadders")));
             p.closeInventory();
             return;
         }
@@ -70,7 +72,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, ladder);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

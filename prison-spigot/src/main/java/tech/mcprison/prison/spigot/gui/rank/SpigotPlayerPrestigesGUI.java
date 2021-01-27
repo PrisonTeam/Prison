@@ -17,6 +17,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -24,6 +25,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -48,7 +50,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){
-            player.sendMessage(SpigotPrison.format("&3[PRISON WARN] &cLooks like the Ranks module's disabled"));
+            Output.get().sendError(new SpigotPlayer(player), SpigotPrison.format("&3Looks like the Ranks module's disabled"));
             return;
         }
 
@@ -130,7 +132,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(ladder, dimension, inv);
         } catch (NullPointerException ex){
-            getPlayer().sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -141,14 +143,14 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
 
         if ( ladder == null ){
-            player.sendMessage(SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
+            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
             return;
         }
 
         RankLadder ladderData = ladder;
 
         if (!ladderData.getLowestRank().isPresent()){
-            player.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
+            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
             return;
         }
 

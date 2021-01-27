@@ -9,7 +9,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author GABRYCA
@@ -38,7 +40,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

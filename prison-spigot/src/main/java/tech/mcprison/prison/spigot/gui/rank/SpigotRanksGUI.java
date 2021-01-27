@@ -11,11 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -45,7 +47,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         if (ladder.isPresent() && !(ladder.get().getRanks().size() == 0)) {
             dimension = (int) Math.ceil(ladder.get().getRanks().size() / 9D) * 9;
         } else {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
             return;
         }
 
@@ -59,7 +61,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyRanks")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyRanks")));
             p.closeInventory();
             return;
         }
@@ -83,7 +85,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, rankOptional);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -101,7 +103,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                 messages.getString("Lore.Info"));
 
         if (!rankOptional.isPresent()){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.CantGetRanksAdmin")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.CantGetRanksAdmin")));
             return;
         }
 

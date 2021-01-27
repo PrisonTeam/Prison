@@ -29,11 +29,13 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
@@ -206,7 +208,7 @@ public class ListenersPrisonManager implements Listener {
                     if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))){
 
                         if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")){
-                            p.sendMessage(SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
+                            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
                         }
 
                         // Execute the sellall command
@@ -299,11 +301,11 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the actions
         if (message.equalsIgnoreCase("cancel")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigeCancelled")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelled")));
         } else if (message.equalsIgnoreCase("confirm")) {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
         } else {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.PrestigeCancelledWrongKeyword")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelledWrongKeyword")));
         }
         // Cancel the event
         e.setCancelled(true);
@@ -315,7 +317,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
         }
@@ -328,7 +330,7 @@ public class ListenersPrisonManager implements Listener {
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
         }
@@ -663,7 +665,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 e.setCancelled(true);
 
@@ -695,7 +697,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                p.sendMessage(SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 e.setCancelled(true);
 
@@ -721,7 +723,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -807,7 +809,7 @@ public class ListenersPrisonManager implements Listener {
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
-                    p.sendMessage(SpigotPrison.format(messages.getString("Message.EnableAutoSellToUse")));
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EnableAutoSellToUse")));
                 }
                 break;
             }
@@ -841,7 +843,7 @@ public class ListenersPrisonManager implements Listener {
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
-                    p.sendMessage(SpigotPrison.format(messages.getString("Message.EnableSellDelayToUse")));
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EnableSellDelayToUse")));
                 }
                 break;
             }
@@ -882,7 +884,7 @@ public class ListenersPrisonManager implements Listener {
         if (parts[0].equalsIgnoreCase("Confirm:")){
             Bukkit.dispatchCommand(p, "ranks autoConfigure");
         } else if (parts[0].equalsIgnoreCase("Cancel:")){
-            p.sendMessage(SpigotPrison.format(messages.getString("Setup.Message.Aborted")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Setup.Message.Aborted")));
         }
         p.closeInventory();
         e.setCancelled(true);
@@ -976,7 +978,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1009,7 +1011,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                p.sendMessage(SpigotPrison.format("&cToo low, under 0%!"));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low, under 0%!"));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1037,7 +1039,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high, exceed 100%!"));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high, exceed 100%!"));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1090,7 +1092,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 e.setCancelled(true);
 
@@ -1122,7 +1124,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                p.sendMessage(SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 e.setCancelled(true);
 
@@ -1148,7 +1150,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -1221,7 +1223,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check if the Ranks module's loaded
         if(!(module instanceof PrisonRanks)){
-            p.sendMessage(SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
             p.closeInventory();
             e.setCancelled(true);
             return;
@@ -1232,7 +1234,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check if the ladder exist, everything can happen but this shouldn't
         if (!ladder.isPresent()) {
-            p.sendMessage("What did you actually click? Sorry ladder not found.");
+            Output.get().sendWarn(new SpigotPlayer(p), "&7What did you actually click? Sorry ladder not found.");
             return;
         }
 
@@ -1265,7 +1267,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check if the rank exist
         if (rank == null) {
-            p.sendMessage(SpigotPrison.format("&cThe rank " + buttonNameMain + " does not exist."));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThe rank " + buttonNameMain + " does not exist."));
             return;
         }
 
@@ -1316,7 +1318,7 @@ public class ListenersPrisonManager implements Listener {
             p.closeInventory();
         } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
             // Send a message to the player
-            p.sendMessage(SpigotPrison.format("&7[&3Info&7] &cCancelled"));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format("&cCancelled"));
             // Close the inventory
             p.closeInventory();
         }
@@ -1340,14 +1342,14 @@ public class ListenersPrisonManager implements Listener {
             // Check if the rank exist
             if (rank == null) {
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&c[ERROR] The rank " + rankName + " does not exist."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThe rank " + rankName + " does not exist."));
                 return;
             }
 
             // Check the rankupCommand of the Rank
             if (rank.getRankUpCommands() == null) {
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&c[ERROR] There aren't commands for this rank anymore."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere aren't commands for this rank anymore."));
             }
 
             // Open the GUI of commands
@@ -1369,8 +1371,8 @@ public class ListenersPrisonManager implements Listener {
         } else if (buttonName.equalsIgnoreCase("RankTag")){
 
             // Send messages to the player
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRename")));
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRename")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
             // Start the async task
             isChatEventActive = true;
             rankNameOfChat = rankName;
@@ -1378,7 +1380,7 @@ public class ListenersPrisonManager implements Listener {
             id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                 if (isChatEventActive) {
                     removeChatEventPlayer(p);
-                    p.sendMessage(SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
                     isChatEventActive = false;
                 }
             }, 20L * 30);
@@ -1453,7 +1455,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 e.setCancelled(true);
 
@@ -1485,7 +1487,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                p.sendMessage(SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 e.setCancelled(true);
 
@@ -1511,7 +1513,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -1643,8 +1645,8 @@ public class ListenersPrisonManager implements Listener {
             case "Mine_Name:": {
 
                 // Send messages to the player
-                p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRename")));
-                p.sendMessage(SpigotPrison.format(messages.getString("Message.mineNameRenameClose")));
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRename")));
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClose")));
                 // Start the async task
                 isChatEventActive = true;
                 mineNameOfChat = mineName;
@@ -1652,7 +1654,7 @@ public class ListenersPrisonManager implements Listener {
                 id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
                     if (isChatEventActive) {
                         removeChatEventPlayer(p);
-                        p.sendMessage(SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
+                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
                         isChatEventActive = false;
                     }
                 }, 20L * 30);
@@ -1771,7 +1773,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1804,7 +1806,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                p.sendMessage(SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1832,7 +1834,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1951,7 +1953,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Close the inventory
-                p.sendMessage(SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1984,7 +1986,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the inventory and tell it the player
-                p.sendMessage(SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -2011,7 +2013,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the inventory and tell it to the player
-                p.sendMessage(SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
 
                 // Cancel the inventory
                 e.setCancelled(true);

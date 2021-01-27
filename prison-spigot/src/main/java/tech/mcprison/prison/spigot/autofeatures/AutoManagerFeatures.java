@@ -459,7 +459,7 @@ public class AutoManagerFeatures
 				}
 
 				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-					player.sendMessage(SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 				}
 
 				Bukkit.dispatchCommand(player, "sellall sell");

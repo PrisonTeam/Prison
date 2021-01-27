@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 
 /**
@@ -36,12 +38,12 @@ public class PrisonSpigotMinesCommands
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
-        	sender.sendMessage( getMessages().getString("Message.CantRunGUIFromConsole"));
+        	Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
         	return;
         }
 
         if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled") ){
-            sender.sendMessage( getMessages().getString("Message.mineOrGuiDisabled"));
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.mineOrGuiDisabled")));
             return;
         }
 
@@ -50,8 +52,8 @@ public class PrisonSpigotMinesCommands
         	String perm = getConfig( "Options.Mines.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                sender.sendMessage( getMessages().getString("Message.mineMissingGuiPermission") + " [" +
-        				perm + "]");
+                Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.mineMissingGuiPermission") + " [" +
+        				perm + "]"));
                 return;
             }
         }

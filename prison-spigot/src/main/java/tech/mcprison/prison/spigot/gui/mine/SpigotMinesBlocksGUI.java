@@ -14,7 +14,9 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Block;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -95,7 +97,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -106,7 +108,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	try {
     		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
-    		p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+    		Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
     		ex.printStackTrace();
     		return true;
     	}
