@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
+import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -156,6 +157,11 @@ public class OnBlockBreakEventListener
     	genericBlockExplodeEvent( e );
     }
 
+    @EventHandler(priority=EventPriority.MONITOR) 
+	public void onCrazyEnchantsBlockExplode( BlastUseEvent e ) {
+		
+    	genericBlockExplodeEvent( e );
+	}
     /**
      * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
      * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
@@ -312,6 +318,93 @@ public class OnBlockBreakEventListener
 	}
 
 	
+	
+	/**
+	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
+	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * </p>
+	 * 
+	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
+	 * event contains multiple blocks so it's far more efficient to process the player data once. 
+	 * So that basically needed a slight refactoring.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	protected void genericBlockExplodeEvent( BlastUseEvent e )
+	{
+		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
+		if ( getPrisonMineManager() != null ) {
+			
+			// long startNano = System.nanoTime();
+			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
+			
+			// Get the cached mine, if it exists:
+			Mine mine = getPlayerCache().get( playerUUIDLSB );
+			
+			if ( mine == null ) {
+				
+				// have to go through all blocks since some blocks may be outside the mine.
+				// but terminate search upon first find:
+				for ( Block blk : e.getBlockList() ) {
+					// Need to wrap in a Prison block so it can be used with the mines:
+					SpigotBlock block = new SpigotBlock(blk);
+					
+					// Look for the correct mine to use. 
+					// Set mine to null so if cannot find the right one it will return a null:
+					mine = findMineLocation( block );
+					
+					// Store the mine in the player cache if not null:
+					if ( mine != null ) {
+						getPlayerCache().put( playerUUIDLSB, mine );
+						
+						// we found the mine!
+						break;
+					}
+				}
+			}
+			
+			// now process all blocks:
+			if ( mine != null ) {
+				// have to go through all blocks since some blocks may be outside the mine.
+				// but terminate search upon first find:
+				
+				int blockCount = 0;
+				for ( Block blk : e.getBlockList() ) {
+					boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
+					
+					// If canceled it must be AIR, otherwise if it is not canceled then 
+					// count it since it will be a normal drop
+					if ( e.isCancelled() && isAir || !e.isCancelled() ) {
+						
+						// Need to wrap in a Prison block so it can be used with the mines:
+						SpigotBlock block = new SpigotBlock(blk);
+						
+						if ( !mine.isInMine( block.getLocation() ) ) {
+							
+							blockCount++;
+						}
+						
+					}
+				}
+				if ( blockCount > 0 ) {
+					// This is where the processing actually happens:
+					doAction( mine, e, blockCount );
+					
+				}
+			}
+			
+			
+			
+			// for debug use: Uncomment to use.
+//    		String message = incrementUses(System.nanoTime() - startNano);
+//    		if ( message != null ) {
+//    			e.getPlayer().sendMessage( message );
+//    		}
+		}
+	}
+	
+	
 	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
 		if ( mine != null ) {
 			
@@ -362,6 +455,51 @@ public class OnBlockBreakEventListener
 					
 				}
 			}
+			
+			
+			// Process mine block break events:
+			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion,
+					triggered );
+			
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
+	}
+	
+	
+	public void doAction( Mine mine, BlastUseEvent e, int blockCount ) {
+		if ( mine != null ) {
+			
+			mine.addBlockBreakCount( blockCount );
+			mine.addTotalBlocksMined( blockCount );
+			
+			// Other possible processing:
+			
+			String triggered = null;
+			
+//			if ( isTeExplosionTriggerEnabled() ) {
+//				
+//				try {
+//					triggered = e.getTrigger();
+//				}
+//				catch ( Exception | NoSuchMethodError ex ) {
+//					// Only print the error the first time, then suppress the error:
+//					String error = ex.getMessage();
+//					
+//					Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+//							"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+//							"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+//							"The Prison BlockEvents can be filtered by this triggered value. " +
+//							error );
+//					
+//					// Disable collecting the trigger.
+//					setTeExplosionTriggerEnabled( false );
+//					
+//				}
+//			}
 			
 			
 			// Process mine block break events:
@@ -448,5 +586,6 @@ public class OnBlockBreakEventListener
 	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
 		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
 	}
+
 
 }

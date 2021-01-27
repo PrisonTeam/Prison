@@ -26,6 +26,7 @@ public class MineBlockEvent {
 		all,
 		blockBreak,
 		TEXplosion,
+		CEXplosion,
 		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),
@@ -62,6 +63,22 @@ public class MineBlockEvent {
 		
 		public BlockEventType getPrimaryEventType() {
 			return primaryEventType;
+		}
+		
+		public static String getPrimaryEventTypes() {
+			StringBuilder sb = new StringBuilder();
+			
+			for ( BlockEventType eType : values() ) {
+				if ( eType.getPrimaryEventType() != null ) {
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					
+					sb.append( eType.name() );
+				}
+			}
+
+			return sb.toString();
 		}
 	}
 	

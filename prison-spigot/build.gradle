@@ -37,6 +37,9 @@ repositories {
     
     maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
   //  maven { url = 'https://maven.enginehub.org/repo/' }
+  
+  	//maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
+  	
     jcenter()
 }
 
@@ -66,6 +69,9 @@ dependencies {
 //	implementation 'com.github.cryptomorin:XSeries:6.3.2.1'
 
 
+//  This includes 535KB when all we need is 1 class! 
+//	implementation 'me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'
+
 	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
 //    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
 	// 1.12.2-R0.1-SNAPSHOT works well:
@@ -84,9 +90,12 @@ dependencies {
  
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar'])
+    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
     compile fileTree(dir: 'lib', 
-    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar'])
+    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
+    					
 //    compile fileTree(dir: 'lib', include: ['SPIGET__BUKKIT-1.4.2-SNAPSHOT.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
@@ -125,6 +134,9 @@ shadowJar {
         include(dependency('me.clip:placeholderapi:2.9.1'))
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(dependency('com.github.cryptomorin:XSeries:7.8.0'))
+        
+        //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
+        
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
@@ -133,6 +145,8 @@ shadowJar {
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
+
+    //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
     classifier ''
     archiveVersion = ''

@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
+import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -99,6 +100,15 @@ public class AutoManager
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		genericBlockExplodeEvent( e );
+    	}
+    }
+    
+    
+    @Override
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
     		genericBlockExplodeEvent( e );
     	}

@@ -3380,14 +3380,17 @@ public class MinesCommands
     }
 
 
-	@Command(identifier = "mines blockEvent eventType", description = "Edits a BlockBreak EventType.", 
+	@Command(identifier = "mines blockEvent eventType", description = "Edits a BlockBreak EventType. " +
+			"The 'all' event is the default and applies to all event types. The 'blockBreak' targets " +
+			"only normal Bukkit BlockBreakEvents. The 'TEXplosion' enables Token Enchant's Block " +
+			"Explosion events. While 'CEXplosion' is for Crazy Enchant's Block Explosion Events.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventEventType(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
     			@Arg(name = "row") Integer row,
-    			@Arg(name = "eventType", def = "eventTypeAll",
+    			@Arg(name = "eventType", def = "all",
 					description = "EventType to trigger BlockEvent: " +
-										"[all, blockBreak, TEXplosion]"
+										"[all, blockBreak, TEXplosion, CEXplosion]"
 							) String eventType
     			) {
     	
@@ -3411,8 +3414,8 @@ public class MinesCommands
         	sender.sendMessage( 
         			String.format("&7Notice: The supplied eventType does not match the list of valid " +
         					"BlockEventTypes therefore defaulting to eventTypeAll. Valid eventTypes are: " +
-        					"[eventTypeAll, eventBlockBreak, eventTEXplosion]",
-        					eventType ));
+        					"[%s]",
+        					eventType, BlockEventType.getPrimaryEventTypes() ));
         }
         
         setLastMineReferenced(mineName);
