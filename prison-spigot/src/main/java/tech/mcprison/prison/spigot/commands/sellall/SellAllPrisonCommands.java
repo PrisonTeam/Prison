@@ -175,7 +175,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         // Get the items from the player inventory and for each of them check the conditions.
         for (ItemStack itemStack : inv.getContents()){
-            moneyToGive = getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
+            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
         }
 
         if (isEnabledMinePacks){
