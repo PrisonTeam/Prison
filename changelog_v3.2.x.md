@@ -15,11 +15,11 @@ Prison plugin.  I'm wanting to provide a more formal documentation as to what
 is going on in each build so you have a better idea if it may be something 
 that you need.
 
-* **Fixed critical SellAll value!**
-Literally, one logic character was missing for sellall and kind of breaking it, fixed.
-
 # v3.2.4-alpha.9 2021-01-27
 
+
+* **Fixed critical SellAll value!**
+Literally, one logic character was missing for sellall and kind of breaking it, fixed.
 
 
 * **v3.2.4-alpha.9 2021-01-27**

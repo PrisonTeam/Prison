@@ -33,6 +33,7 @@ issues, and/or to serve as items that should be added, or fixed.
   - PrisonBlock - add "price" - Maybe keyed by "shop".
     - custom currency support like ranks?
     - shop, currency, price, item
+  - RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
   - Hook startup for PrisonBlock to sellall to preload the price 
   - PrisonBlock - add quantity
   - Add a utility method for converting a PrisonBlock to ItemStack
