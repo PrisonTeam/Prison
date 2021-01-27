@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.8 2021-01-27
+# v3.2.4-alpha.9 2021-01-27
+
+
+
+* **v3.2.4-alpha.9 2021-01-27**
 
 
 * **Add support for Crazy Enchant's BlastUseEvent so prison will pickup explosion events within the mines.**
