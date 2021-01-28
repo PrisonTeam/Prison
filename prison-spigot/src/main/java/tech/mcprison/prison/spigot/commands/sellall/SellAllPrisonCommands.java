@@ -24,6 +24,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
@@ -319,7 +320,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
     private void sellAllCurrency(CommandSender sender,
-    @Arg(name = "currency", description = "Currency name.", def = "default") String currency){
+    @Arg(name = "currency", description = "Currency name.", def = "default") @Wildcard String currency){
 
         if (!sender.hasPermission("prison.sellall.currency") || !sender.hasPermission("prison.admin")){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [prison.sellall.currency]"));
@@ -343,7 +344,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + "[" + currency + "]"));
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + " [" + currency + "]"));
         SellAllConfig sellAllConfigClass = new SellAllConfig();
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
