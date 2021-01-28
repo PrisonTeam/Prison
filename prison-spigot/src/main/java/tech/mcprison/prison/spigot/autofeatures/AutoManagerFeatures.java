@@ -441,30 +441,33 @@ public class AutoManagerFeatures
 	 */
 	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, SpigotBlock block ) {
 
-		Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-
 		if ( extra != null && extra.size() > 0 ) {
 
-			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
+			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
+			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
 				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
 
 					UUID playerUUID = player.getUniqueId();
 
 					if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
-						if (!sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+						if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+							if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
+								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+							}
+
+							Bukkit.dispatchCommand(player, "sellall sell");
 							return;
 						}
 					}
+				} else {
+					if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
+						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					}
+
+					Bukkit.dispatchCommand(player, "sellall sell");
+					return;
 				}
-
-				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-					Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
-				}
-
-				Bukkit.dispatchCommand(player, "sellall sell");
-
-				return;
 			}
 
 			for ( SpigotItemStack itemStack : extra.values() ) {
@@ -477,11 +480,9 @@ public class AutoManagerFeatures
 
 					SpigotUtil.dropPlayerItems( player, itemStack );
 					notifyPlayerThatInventoryIsFull( player, block );
-				}
-				else {
+				} else {
 					notifyPlayerThatInventoryIsFullLosingItems( player, block );
 				}
-
 			}
 		}
 	}

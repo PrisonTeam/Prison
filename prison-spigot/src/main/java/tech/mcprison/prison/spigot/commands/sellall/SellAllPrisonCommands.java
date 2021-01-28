@@ -920,7 +920,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        Output.get().sendInfo(sender, SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllCommandEditSuccess")));
+        Output.get().sendInfo(sender, SpigotPrison.format("&3ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllCommandEditSuccess")));
         SellAllConfig sellAllConfigClass = new SellAllConfig();
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
