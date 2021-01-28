@@ -98,6 +98,10 @@ public abstract class MineReset
 	private int resetPage = 0;
 	private int resetPosition = 0;
 	
+	private long resetPageMaxPageElapsedTimeMs = -1;
+	private long resetPagePageSubmitDelayTicks = -1;
+	private long resetPageTimeoutCheckBlockCount = -1;
+	
 	private int airCountOriginal = 0;
 	private int airCount = 0;
 	private long airCountTimestamp = 0L;
@@ -131,6 +135,7 @@ public abstract class MineReset
 		this.mineTargetBlocksMap = new TreeMap<>();
 		
 		this.currentJob = null;
+		
 	}
 
     /**
@@ -975,9 +980,9 @@ public abstract class MineReset
 				 * but what it is more important is the actual elapsed time.  This is to allow other
 				 * processes to get processing time and to eliminate possible lagging.
 				 */
-				if ( i % MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT == 0 ) {
+				if ( i % getResetPageTimeoutCheckBlockCount() == 0 ) {
 					elapsed = System.currentTimeMillis() - start;
-					if ( elapsed > MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS ) {
+					if ( elapsed > getResetPageMaxPageElapsedTimeMs() ) {
 
 						break;
 					}
@@ -1016,11 +1021,13 @@ public abstract class MineReset
      * @param callbackAsync
      */
     public void submitAsyncTask( PrisonRunnable callbackAsync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
+    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
+    			getResetPagePageSubmitDelayTicks() );
     }
     
     public void submitSyncTask( PrisonRunnable callbackSync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
+    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
+    			getResetPagePageSubmitDelayTicks() );
     }
 
 //    /**
@@ -1563,6 +1570,42 @@ public abstract class MineReset
 	public void setResetPosition( int resetPosition )
 	{
 		this.resetPosition = resetPosition;
+	}
+
+	public long getResetPageMaxPageElapsedTimeMs() {
+		if ( resetPageMaxPageElapsedTimeMs == -1 ) {
+			this.resetPageMaxPageElapsedTimeMs = Prison.get().getPlatform()
+										.getConfigLong( "prison-mines.reset-gap-ms", 
+													MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS );
+		}
+		return resetPageMaxPageElapsedTimeMs;
+	}
+	public void setResetPageMaxPageElapsedTimeMs( long resetPageMaxPageElapsedTimeMs ) {
+		this.resetPageMaxPageElapsedTimeMs = resetPageMaxPageElapsedTimeMs;
+	}
+
+	public long getResetPagePageSubmitDelayTicks() {
+		if ( resetPagePageSubmitDelayTicks == -1 ) {
+			this.resetPagePageSubmitDelayTicks = Prison.get().getPlatform()
+										.getConfigLong( "prison-mines.page-submit-delay-ticks", 
+													MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
+		}
+		return resetPagePageSubmitDelayTicks;
+	}
+	public void setResetPagePageSubmitDelayTicks( long resetPagePageSubmitDelayTicks ) {
+		this.resetPagePageSubmitDelayTicks = resetPagePageSubmitDelayTicks;
+	}
+
+	public long getResetPageTimeoutCheckBlockCount() {
+		if ( resetPageTimeoutCheckBlockCount == -1 ) {
+			this.resetPageTimeoutCheckBlockCount = Prison.get().getPlatform()
+										.getConfigLong( "prison-mines.page-timeout-check-block-count", 
+												MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT );
+		}
+		return resetPageTimeoutCheckBlockCount;
+	}
+	public void setResetPageTimeoutCheckBlockCount( long resetPageTimeoutCheckBlockCount ) {
+		this.resetPageTimeoutCheckBlockCount = resetPageTimeoutCheckBlockCount;
 	}
 
 	public int getAirCountOriginal()

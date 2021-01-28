@@ -229,8 +229,13 @@ public class MineManager
 
         
         // Default value of 5 seconds:
+        //  NOTE: the parameter 'prison-mines-reset-gap' is the old version, so keep it
+        //        for compatibility purposes.
         long offsetTimingMs = Prison.get().getPlatform()
         							.getConfigInt( "prison-mines-reset-gap", 5000 );
+        offsetTimingMs = Prison.get().getPlatform()
+        					.getConfigInt( "prison-mines.reset-gap-ms", (int) offsetTimingMs );
+
         loadMines(offsetTimingMs);
         
 

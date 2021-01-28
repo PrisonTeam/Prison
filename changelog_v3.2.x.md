@@ -21,6 +21,10 @@ that you need.
 
 * **v3.2.4-alpha.10 2021-01-28**
 
+* **Setup new mine related parameters to fine-tune control reset-paging.**
+This can be disastrous if the admins do not know what they are doing.
+
+
 * **Added support to parse Long parameter values through the Platform.**
 This is needed so as to prevent the need of casting a long to an int.  The actual parameters used may not require actual long values, but the targeted fields and data types are of type long so these need to be properly reflected in the configs.
 
