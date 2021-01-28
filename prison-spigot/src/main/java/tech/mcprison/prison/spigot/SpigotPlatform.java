@@ -804,6 +804,28 @@ class SpigotPlatform
 		return results;
 	}
 	
+	@Override
+	public long getConfigLong( String key, long defaultValue ) {
+		long results = defaultValue;
+		
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+			
+			try {
+				results = Long.parseLong( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an integer but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
+	}
+	
 
 	
     /**

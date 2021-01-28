@@ -288,6 +288,8 @@ public interface Platform {
 	
 	public int getConfigInt( String key, int defaultValue );
 	
+	public long getConfigLong( String key, long defaultValue );
+	
 
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 

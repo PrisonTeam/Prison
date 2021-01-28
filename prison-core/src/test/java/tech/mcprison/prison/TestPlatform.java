@@ -251,6 +251,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public long getConfigLong( String key, long defaultValue ) {
+		return defaultValue;
+	}
+	
+	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return null;
 	}
