@@ -318,6 +318,57 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return economy;
     }
 
+    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
+
+        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
+            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
+
+                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
+                return true;
+            }
+        }
+        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return true;
+        }
+        if (prestige == null){
+
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+        if (multiplier == null){
+
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        if (rankPlugin == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
+            return true;
+        }
+
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
+        if (!isPrestigeLadder) {
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
+            return true;
+        }
+
+        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
+        if (!isARank) {
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
+            return true;
+        }
+
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
+        if (!isInPrestigeLadder) {
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
+            return true;
+        }
+        return false;
+    }
+
     @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
     private void sellAllCurrency(CommandSender sender,
     @Arg(name = "currency", description = "Currency name.", def = "default") @Wildcard String currency){
@@ -343,6 +394,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             e.printStackTrace();
             return;
         }
+
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + " [" + currency + "]"));
         SellAllConfig sellAllConfigClass = new SellAllConfig();
@@ -413,7 +465,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelaySet(CommandSender sender,
-                              @Arg(name = "delay", description = "Set delay value in seconds.", def = "null") String delay){
+                              @Arg(name = "delay", description = "Set delay value in seconds.", def = "0") String delay){
 
         if (!isEnabled()) return;
 
@@ -744,6 +796,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (sellAllConfig.getConfigurationSection("Items." + itemID) != null){
+            Output.get().sendInfo(sender, SpigotPrison.format(itemID + messages.getString("Message.SellAllAlreadyAdded")));
+            return;
+        }
+
         try {
             XMaterial blockAdd;
             try {
@@ -789,6 +846,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingID")));
             return;
         }
+
         if (sellAllConfig.getConfigurationSection("Items." + itemID) == null){
             Output.get().sendInfo(sender, SpigotPrison.format(itemID + messages.getString("Message.SellAllNotFoundStringConfig")));
             return;
@@ -834,6 +892,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (value == null){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAddPrice")));
+            return;
+        }
+
+        if (sellAllConfig.getConfigurationSection("Items." + itemID) == null){
+            Output.get().sendInfo(sender, SpigotPrison.format(itemID + messages.getString("Message.SellAllNotFoundEdit")));
             return;
         }
 
@@ -915,56 +978,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
     }
 
-    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
 
-        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
-
-                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
-                return true;
-            }
-        }
-        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
-
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return true;
-        }
-        if (prestige == null){
-
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-        if (multiplier == null){
-
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
-        if (rankPlugin == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
-            return true;
-        }
-
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
-        if (!isPrestigeLadder) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
-            return true;
-        }
-
-        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
-        if (!isARank) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
-            return true;
-        }
-
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
-        if (!isInPrestigeLadder) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
-            return true;
-        }
-        return false;
-    }
 
     @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", onlyPlayers = false)
     private void sellAllDeleteMultiplierCommand(CommandSender sender,
@@ -976,6 +990,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierFormat")));
             return;
         }
+
         if (sellAllConfig.getConfigurationSection("Multiplier." + prestige) == null){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindMultiplier") + prestige + messages.getString("Message.SellAllCantFindMultiplier2")));
             return;

@@ -267,8 +267,10 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllValueNotNumber", "Sorry but the value &cisn't a number&7!");
         dataConfig("Message.SellAllMissingID", "Please &aadd&7 an ITEM_ID [example: /sellall delete COAL_ORE]");
         dataConfig("Message.SellAllNotFoundStringConfig", " not found in the config or got already &cdeleted&7.");
+        dataConfig("Message.SellAllNotFoundEdit", " not found in the config!");
         dataConfig("Message.SellAllDeletedSuccess", " &cDeleted&7 with &asuccess&7!");
         dataConfig("Message.SellAllAddSuccess", "] &aadded&7 with &asuccess&7!");
+        dataConfig("Message.SellAllAlreadyAdded", " &cgot already added before&7, to edit it please use the /sellall edit command!");
         dataConfig("Message.SellAllCommandEditSuccess", "] &aedited&7 with &asuccess&7!");
         dataConfig("Message.SellAllYouArentPlayer", "You &caren't&a a player");
         dataConfig("Message.SellAllNothingToSell", "You have &cnothing&7 to sell!");
