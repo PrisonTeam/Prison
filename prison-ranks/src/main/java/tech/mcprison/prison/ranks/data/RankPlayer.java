@@ -679,7 +679,7 @@ public class RankPlayer
 										.getEconomyForCurrency( currency );
 		if ( currencyEcon != null ) {
 			
-			results = currencyEcon.getBalance( this );
+			results = currencyEcon.getBalance( this, currency );
 			setCachedRankPlayerBalance( currency, results );
 		}
 		
