@@ -241,6 +241,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllAutoPerUserToggleableEnabled", "SellAll PerUserToggleable &aEnabled&7!");
         dataConfig("Message.SellAllAutoPerUserToggleableDisabled", "SellAll PerUserToggleable &cDisabled&7!");
         dataConfig("Message.SellAllCurrencyEditedSuccess", "SellAll Currency edited with success!");
+        dataConfig("Message.SellAllDefaultSuccess", "Default Values added with &asuccess&7!");
+        dataConfig("Message.SellAllDefaultMissingPermission", "Sorry but you're missing the &cpermission!");
         dataConfig("Message.SellAllIsDisabled", "Sorry but the SellAll Feature's &cdisabled&7 in the config.yml");
         dataConfig("Message.SellAllEditedWithSuccess", "&7] edited with &asuccess&7!");
         dataConfig("Message.SellAllSubCommandNotFound", "Sub-command &cnot found&7, please use /sellall help for help!");
