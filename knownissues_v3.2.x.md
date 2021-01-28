@@ -10,6 +10,10 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.4
 
 
+- DONE: Hook the paging variables up to config parameters.  OfficiallyGuo needs them.
+  - 
+
+
 - Top Listings
 	- Ranks & Prestiges
 	- Individual Ranks

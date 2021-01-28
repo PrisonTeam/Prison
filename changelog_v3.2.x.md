@@ -16,7 +16,24 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.9 2021-01-27
+# v3.2.4-alpha.10 2021-01-28
+
+
+* **v3.2.4-alpha.10 2021-01-28**
+
+* **Added support to parse Long parameter values through the Platform.**
+This is needed so as to prevent the need of casting a long to an int.  The actual parameters used may not require actual long values, but the targeted fields and data types are of type long so these need to be properly reflected in the configs.
+
+
+* **Sellall sell improvements:** 
+It was possible to use `/sellall sell` even without the permission when enabled, and sometimes it didn't  worked for everyone.
+
+
+* **`SellAll set currency <currency>` with currency names with spaces fixed.**
+- Because Spigot recognizes spaces as multiple arguments, a custom currency name with spaces would lead to a missing economy (for example "Euro Broken" would be recognized as "Euro" and not with the full name, which's an error).
+
+**NOTE: Custom currencies with spaces in their name may not work with ranks.  Use spaces at your own risk.**
+
 
 
 * **PLEASE DELETE YOUR OLD MESSAGES CONFIG TO APPLY CHANGES!**
