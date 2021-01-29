@@ -19,7 +19,9 @@ that you need.
 # v3.2.4-alpha.10 2021-01-28
 
 
+
 * **v3.2.4-alpha.10 2021-01-28**
+
 
 * **Some adjustments to the RankPlayer's econ functions.**
 Reworked the rankup code to use the RankPlayer functions for economy.
