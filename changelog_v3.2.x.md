@@ -16,8 +16,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.10 2021-01-28
+# v3.2.4-alpha.10 2021-01-29
 
+
+* **Add new option: isCalculateFortuneOnAllBlocksEnabled which defaults to false.**
+When set to true it will apply fortune to every block that is mined, ignoring the type of block.
+
+
+* **Sellall fix for custom currency.**
+The bug was basically within the RankPlayer object. 
+Hooked up sellall to the RankPlayer for the currency usage which will update the player's currency cache.
 
 
 * **v3.2.4-alpha.10 2021-01-28**

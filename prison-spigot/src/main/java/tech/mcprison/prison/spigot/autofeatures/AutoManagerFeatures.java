@@ -1116,8 +1116,11 @@ public class AutoManagerFeatures
 			// Material name selection which will fit for the version of MC that is
 			// being ran.
 			BlockType block = blocks.getMaterial();
-
-			if (	
+			
+				
+			if ( 
+					isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ) ||
+					
 					block == BlockType.COAL_ORE ||
 					block == BlockType.DIAMOND_ORE ||
 					block == BlockType.EMERALD_ORE ||

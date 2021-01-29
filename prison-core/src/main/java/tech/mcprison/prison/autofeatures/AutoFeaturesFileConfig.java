@@ -37,7 +37,10 @@ public class AutoFeaturesFileConfig {
 		    	isAutoManagerEnabled(general, false),
 		    	
 		    	isCalculateDurabilityEnabled(general, false),
+		    	
 		    	isCalculateFortuneEnabled(general, true),
+		    	isCalculateFortuneOnAllBlocksEnabled(general, false),
+		    	
 		    	isCalculateSilkEnabled(general, true),
 		    	
 		    	isCalculateXPEnabled(general, true),
