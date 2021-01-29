@@ -718,7 +718,7 @@ public class RankPlayer
 					.getEconomyForCurrency(currency );
 			
 			if ( currencyEcon != null ) {
-				currencyEcon.addBalance( this, amount );
+				currencyEcon.addBalance( this, amount, currency );
 				addCachedRankPlayerBalance( currency, amount );
 			}
 		}
@@ -735,7 +735,7 @@ public class RankPlayer
 					.getEconomyForCurrency(currency );
 			
 			if ( currencyEcon != null ) {
-				currencyEcon.removeBalance( this, amount );
+				currencyEcon.removeBalance( this, amount, currency );
 				addCachedRankPlayerBalance( currency, -1 * amount );
 			}
 		}
@@ -753,7 +753,7 @@ public class RankPlayer
 					.getEconomyForCurrency(currency );
 			
 			if ( currencyEcon != null ) {
-				currencyEcon.setBalance( this, amount );
+				currencyEcon.setBalance( this, amount, currency );
 				setCachedRankPlayerBalance( currency, amount );
 			}
 		}

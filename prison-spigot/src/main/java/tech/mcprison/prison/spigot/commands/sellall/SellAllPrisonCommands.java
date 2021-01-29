@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
-import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
@@ -20,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
+import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -32,10 +32,10 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
-import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -639,33 +639,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             // Get money to give + multiplier.
             double moneyToGive = getMoneyWithMultiplier(p, true);
+            
+            
+            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+            String currency = sellAllConfig.getString("Options.SellAll_Currency");
+            rankPlayer.addBalance( currency, moneyToGive );
 
-            // Get economy.
-            EconomyIntegration economy = getSellAllEconomy();
-
-            if (economy == null){
-                Output.get().sendError(sender, "No active economy supports the currency named '%s'.", sellAllConfig.getString("Options.SellAll_Currency"));
-                return;
-            }
-
-            // Temporary fix for custom currencies from GemsEconomy.
-            /*if (economy.getDisplayName().equalsIgnoreCase("GemsEconomy") && Bukkit.getPluginManager().getPlugin("GemsEconomy") != null){
-
-                // Get GemsEconomy
-                GemsEconomy gemsEcon = new GemsEconomy();
-
-                // Add money, NOT WORKING, second attempt.
-                gemsEcon.setBalance(sPlayer, gemsEcon.getBalance(sPlayer) + moneyToGive, sellAllConfig.getString("Options.SellAll_Currency"));
-
-                // NOT WORKING!
-                // gemsEcon.addBalance(sPlayer, moneyToGive, sellAllConfig.getString("Options.SellAll_Currency"));
-            } else {*/
-
-                // Add money.
-                economy.addBalance(sPlayer, moneyToGive);
-
-            //}
-
+ 
             if (moneyToGive<0.001){
                 Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
             } else {
