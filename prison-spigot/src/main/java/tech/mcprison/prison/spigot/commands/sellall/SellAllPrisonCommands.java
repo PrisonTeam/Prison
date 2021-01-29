@@ -35,6 +35,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
+import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -379,7 +380,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
-        if (currencyEcon == null) {
+        if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
             Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
             return;
         }
@@ -396,10 +397,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
 
-        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + " [" + currency + "]"));
         SellAllConfig sellAllConfigClass = new SellAllConfig();
         sellAllConfigClass.initialize();
         sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + " [" + sellAllConfig.getString("Options.SellAll_Currency") + "]"));
     }
 
     @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
@@ -647,8 +648,23 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 return;
             }
 
-            // Add money.
-            economy.addBalance(sPlayer, moneyToGive);
+            // Temporary fix for custom currencies from GemsEconomy.
+            /*if (economy.getDisplayName().equalsIgnoreCase("GemsEconomy") && Bukkit.getPluginManager().getPlugin("GemsEconomy") != null){
+
+                // Get GemsEconomy
+                GemsEconomy gemsEcon = new GemsEconomy();
+
+                // Add money, NOT WORKING, second attempt.
+                gemsEcon.setBalance(sPlayer, gemsEcon.getBalance(sPlayer) + moneyToGive, sellAllConfig.getString("Options.SellAll_Currency"));
+
+                // NOT WORKING!
+                // gemsEcon.addBalance(sPlayer, moneyToGive, sellAllConfig.getString("Options.SellAll_Currency"));
+            } else {*/
+
+                // Add money.
+                economy.addBalance(sPlayer, moneyToGive);
+
+            //}
 
             if (moneyToGive<0.001){
                 Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
