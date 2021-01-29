@@ -301,24 +301,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
-    /**
-     * Get SellAll Economy from the config if found.
-     *
-     * @return economy
-     * */
-    private EconomyIntegration getSellAllEconomy() {
-
-        // Get SellAll economy.
-        EconomyIntegration economy;
-        if (sellAllConfig.getString("Options.SellAll_Currency").equalsIgnoreCase("default")) {
-            economy = PrisonAPI.getIntegrationManager().getEconomy();
-        } else {
-            economy = PrisonAPI.getIntegrationManager().getEconomyForCurrency(sellAllConfig.getString("Options.SellAll_Currency"));
-        }
-
-        return economy;
-    }
-
     private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
 
         if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
@@ -639,13 +621,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             // Get money to give + multiplier.
             double moneyToGive = getMoneyWithMultiplier(p, true);
-            
-            
+
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
             String currency = sellAllConfig.getString("Options.SellAll_Currency");
-            rankPlayer.addBalance( currency, moneyToGive );
+            if (currency == null || currency.equalsIgnoreCase("default")){
+                rankPlayer.addBalance(moneyToGive);
+            } else {
+                rankPlayer.addBalance(currency, moneyToGive);
+            }
 
- 
             if (moneyToGive<0.001){
                 Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
             } else {
