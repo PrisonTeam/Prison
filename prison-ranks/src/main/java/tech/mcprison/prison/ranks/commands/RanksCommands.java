@@ -1113,16 +1113,17 @@ public class RanksCommands
 			// Print out the player's balances: 
 
 			// The default currency first:
-			double balance = getPlayerBalance( player );
+			double balance = rankPlayer.getBalance();
 			String message = String.format( "&7The current balance for &b%s &7is &b%s", 
 					player.getName(), dFmt.format( balance ) );
 			sendToPlayerAndConsole( sender, message );
 			
 			for ( String currency : currencies ) {
-				double balanceCurrency = getPlayerBalance( player, currency );
+				double balanceCurrency = rankPlayer.getBalance( currency );
 				String messageCurrency = String.format( "&7The current balance for &b%s &7is &b%s &2%s", 
 						player.getName(), dFmt.format( balanceCurrency ), currency );
 				sendToPlayerAndConsole( sender, messageCurrency );
+
 			}
 			
 			

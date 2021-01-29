@@ -4,12 +4,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.output.Output;
 
 public abstract class BaseCommands
 {
@@ -75,29 +71,29 @@ public abstract class BaseCommands
 	}
 	
 	
-	public double getPlayerBalance( Player player ) {
-		
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-		
-		return economy.getBalance( player );
-	}
-    
-	public double getPlayerBalance( Player player, String currency ) {
-		
-
-		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-						.getEconomyForCurrency( currency );
-		if ( currencyEcon == null ) {
-			// ERROR: currency is not supported
-			Output.get().logInfo( "The currency %s is not supported.  Therefore there is no blance.",
-					currency );
-			return 0;
-		}
-		else {
-			return currencyEcon.getBalance( player, currency );
-		}
-
-	}
+//	public double getPlayerBalance( Player player ) {
+//		
+//		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+//		
+//		return economy.getBalance( player );
+//	}
+//    
+//	public double getPlayerBalance( Player player, String currency ) {
+//		
+//
+//		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+//						.getEconomyForCurrency( currency );
+//		if ( currencyEcon == null ) {
+//			// ERROR: currency is not supported
+//			Output.get().logInfo( "The currency %s is not supported.  Therefore there is no blance.",
+//					currency );
+//			return 0;
+//		}
+//		else {
+//			return currencyEcon.getBalance( player, currency );
+//		}
+//
+//	}
 	
 	
 }
