@@ -21,6 +21,10 @@ that you need.
 
 * **v3.2.4-alpha.10 2021-01-28**
 
+* **Some adjustments to the RankPlayer's econ functions.**
+Reworked the rankup code to use the RankPlayer functions for economy.
+
+
 * **Setup new mine related parameters to fine-tune control reset-paging.**
 This can be disastrous if the admins do not know what they are doing.
 

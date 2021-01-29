@@ -541,13 +541,7 @@ public class RankPlayer
     	return results;
     }
     
-    
-    public TreeMap<String, RankPlayerBalance> getPlayerBalances() {
-		return playerBalances;
-	}
-	public void setPlayerBalances( TreeMap<String, RankPlayerBalance> playerBalances ) {
-		this.playerBalances = playerBalances;
-	}
+
 
 	
 	/**
@@ -575,6 +569,17 @@ public class RankPlayer
     	return results;
     }
 
+    
+    
+    public TreeMap<String, RankPlayerBalance> getPlayerBalances() {
+		return playerBalances;
+	}
+	public void setPlayerBalances( TreeMap<String, RankPlayerBalance> playerBalances ) {
+		this.playerBalances = playerBalances;
+	}
+	
+	
+	
     private void addCachedRankPlayerBalance( String currency, double amount ) {
     	// Since the cache will be updated, do not allow it fetch the player's balance:
     	RankPlayerBalance balance = getCachedRankPlayerBalance( currency, false );
@@ -655,10 +660,19 @@ public class RankPlayer
 	
 	public void addBalance( double amount ) {
 		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-		
+
 		if ( economy != null ) {
 			economy.addBalance( this, amount );
 			addCachedRankPlayerBalance( null, amount );
+		}
+	}
+	
+	public void removeBalance( double amount ) {
+		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		
+		if ( economy != null ) {
+			economy.removeBalance( this, amount );
+			addCachedRankPlayerBalance( null, -1 * amount );
 		}
 	}
 	
@@ -675,34 +689,73 @@ public class RankPlayer
 	public double getBalance( String currency ) {
 		double results = 0;
 		
-		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-										.getEconomyForCurrency( currency );
-		if ( currencyEcon != null ) {
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			results = getBalance();
+		}
+		else {
 			
-			results = currencyEcon.getBalance( this, currency );
-			setCachedRankPlayerBalance( currency, results );
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency( currency );
+			if ( currencyEcon != null ) {
+				
+				results = currencyEcon.getBalance( this, currency );
+				setCachedRankPlayerBalance( currency, results );
+			}
 		}
 		
 		return results;
 	}
 	
 	public void addBalance( String currency, double amount ) {
-		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-				.getEconomyForCurrency(currency );
 
-		if ( currencyEcon != null ) {
-			currencyEcon.addBalance( this, amount );
-			addCachedRankPlayerBalance( currency, amount );
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			addBalance( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.addBalance( this, amount );
+				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+	}
+	
+	public void removeBalance( String currency, double amount ) {
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			removeBalance( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.removeBalance( this, amount );
+				addCachedRankPlayerBalance( currency, -1 * amount );
+			}
 		}
 	}
 	
 	public void setBalance( String currency, double amount ) {
-		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-				.getEconomyForCurrency(currency );
 		
-		if ( currencyEcon != null ) {
-			currencyEcon.setBalance( this, amount );
-			setCachedRankPlayerBalance( currency, amount );
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			setBalance( amount );
+		}
+		else {
+			
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.setBalance( this, amount );
+				setCachedRankPlayerBalance( currency, amount );
+			}
 		}
 	}
 }

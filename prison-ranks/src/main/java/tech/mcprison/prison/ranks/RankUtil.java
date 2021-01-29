@@ -24,7 +24,6 @@ import java.util.Optional;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -374,7 +373,7 @@ public class RankUtil {
         
         results.addTransaction( RankupTransactions.fireRankupEvent );
         
-        // Nothing can cancel a RankUpEvent:
+        // Fire the rankup event to see if it should be canceled.
         RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, originalRank, targetRank, nextRankCost, 
         								command, pForceCharge );
         Prison.get().getEventBus().post(rankupEvent);
@@ -394,82 +393,99 @@ public class RankUtil {
         
         if (pForceCharge != PromoteForceCharge.no_charge ) {
         	
-        	
         	if ( targetRank.getCurrency() != null ) {
         		results.addTransaction( RankupTransactions.custom_currency );
         		
         		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-        						.getEconomyForCurrency( targetRank.getCurrency() );
-        		if ( currencyEcon == null ) {
-        			results.addTransaction( RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED, 
-        					RankupTransactions.specified_currency_not_found );
-        			return;
-        		} else {
+        											.getEconomyForCurrency( targetRank.getCurrency() );
+				if ( currencyEcon == null ) {
+					results.addTransaction( RankupStatus.RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED, 
+							RankupTransactions.specified_currency_not_found );
+					return;
+				}
+        	}
+        	
+        	
+//        	if ( targetRank.getCurrency() != null ) 
+        	{
+
+        		{
+        			results.addTransaction( RankupTransactions.player_balance_initial );
+        			results.setBalanceInitial( rankPlayer.getBalance( targetRank.getCurrency() ) );
+//        				results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
+
         			if ( pForceCharge == PromoteForceCharge.charge_player) {
-        				if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, targetRank.getCurrency())) {
+        				if ( rankPlayer.getBalance(targetRank.getCurrency()) < nextRankCost ) {
+//        				if (!currencyEcon.canAfford(prisonPlayer, nextRankCost, targetRank.getCurrency())) {
         					//results.setTargetRank( targetRank );
         					results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
         							RankupTransactions.player_cannot_afford );
         					return;
         				}
         				
-        				results.addTransaction( RankupTransactions.player_balance_initial );
-        				results.setBalanceInitial( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
         				results.addTransaction( RankupTransactions.player_balance_decreased );
-        				currencyEcon.removeBalance(prisonPlayer, nextRankCost, targetRank.getCurrency() );
-        				results.addTransaction( RankupTransactions.player_balance_final );
-        				results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
+        				rankPlayer.removeBalance( targetRank.getCurrency(), nextRankCost );
+//        				currencyEcon.removeBalance(prisonPlayer, nextRankCost, targetRank.getCurrency() );
         			} else 
         				if ( pForceCharge == PromoteForceCharge.refund_player) {
         					
-        				results.addTransaction( RankupTransactions.player_balance_initial );
-        				results.setBalanceInitial( originalRank == null ? 0 : 
-        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
+//        				results.addTransaction( RankupTransactions.player_balance_initial );
+//        				results.setBalanceInitial( originalRank == null ? 0 : 
+//        									rankPlayer.getBalance( originalRank.getCurrency() ) );
+//        				results.setBalanceInitial( originalRank == null ? 0 : 
+//        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
         				results.addTransaction( RankupTransactions.player_balance_increased);
         				if ( originalRank != null ) {
-        					currencyEcon.addBalance(prisonPlayer, currentRankCost, originalRank.getCurrency() );
+        					rankPlayer.addBalance( originalRank.getCurrency(), currentRankCost );
+//        					currencyEcon.addBalance(prisonPlayer, currentRankCost, originalRank.getCurrency() );
         				}
-        				results.addTransaction( RankupTransactions.player_balance_final );
-        				results.setBalanceFinal( originalRank == null ? 0 :
-        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
+//        				results.addTransaction( RankupTransactions.player_balance_final );
+//        				results.setBalanceFinal( originalRank == null ? 0 :
+//        									rankPlayer.getBalance( originalRank.getCurrency() ) );
+//        				results.setBalanceFinal( originalRank == null ? 0 :
+//        									currencyEcon.getBalance( prisonPlayer, originalRank.getCurrency() ) );
         			} else {
         				// Should never hit this code!!
         			}
         			
+        			results.addTransaction( RankupTransactions.player_balance_final );
+        			results.setBalanceFinal( rankPlayer.getBalance( targetRank.getCurrency() ) );
+//        				results.setBalanceFinal( currencyEcon.getBalance( prisonPlayer, targetRank.getCurrency() ) );
         		}
         		
-        	} else {
-        		
-        		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-
-        		if ( pForceCharge == PromoteForceCharge.charge_player) {
-        			if (!economy.canAfford(prisonPlayer, nextRankCost)) {
-        				//results.setTargetRank( targetRank );
-        				results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
-        						RankupTransactions.player_cannot_afford );
-        				return;
-        			}
-        			
-        			results.addTransaction( RankupTransactions.player_balance_initial );
-        			results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
-        			results.addTransaction( RankupTransactions.player_balance_decreased );
-        			economy.removeBalance(prisonPlayer, nextRankCost);
-        			results.addTransaction( RankupTransactions.player_balance_final );
-        			results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
-        		} else 
-    				if ( pForceCharge == PromoteForceCharge.refund_player) {
-    					
-    				results.addTransaction( RankupTransactions.player_balance_initial );
-    				results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
-    				results.addTransaction( RankupTransactions.player_balance_increased);
-    				economy.addBalance(prisonPlayer, currentRankCost );
-    				results.addTransaction( RankupTransactions.player_balance_final );
-    				results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
-    			} else {
-    				// Should never hit this code!!
-    			}
-        		
-        	}
+        	} 
+//        	else {
+//        		
+//        		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+//
+//        		if ( pForceCharge == PromoteForceCharge.charge_player) {
+//        			if (!economy.canAfford(prisonPlayer, nextRankCost)) {
+//        				//results.setTargetRank( targetRank );
+//        				results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
+//        						RankupTransactions.player_cannot_afford );
+//        				return;
+//        			}
+//        			
+//        			results.addTransaction( RankupTransactions.player_balance_initial );
+//        			results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
+//        			results.addTransaction( RankupTransactions.player_balance_decreased );
+//        			economy.removeBalance(prisonPlayer, nextRankCost);
+//        			results.addTransaction( RankupTransactions.player_balance_final );
+//        			results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
+//        		} else 
+//    				if ( pForceCharge == PromoteForceCharge.refund_player) {
+//    					
+//    				results.addTransaction( RankupTransactions.player_balance_initial );
+//    				results.setBalanceInitial( economy.getBalance( prisonPlayer ) );
+//    				results.addTransaction( RankupTransactions.player_balance_increased);
+//    				economy.addBalance(prisonPlayer, currentRankCost );
+//    				results.addTransaction( RankupTransactions.player_balance_final );
+//    				results.setBalanceFinal( economy.getBalance( prisonPlayer ) );
+//    			} else {
+//    				// Should never hit this code!!
+//    			}
+//        		
+//        	}
         	
         } else {
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
