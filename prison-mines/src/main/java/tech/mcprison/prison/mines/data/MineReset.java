@@ -1575,7 +1575,7 @@ public abstract class MineReset
 	public long getResetPageMaxPageElapsedTimeMs() {
 		if ( resetPageMaxPageElapsedTimeMs == -1 ) {
 			this.resetPageMaxPageElapsedTimeMs = Prison.get().getPlatform()
-										.getConfigLong( "prison-mines.reset-gap-ms", 
+										.getConfigLong( "prison-mines.reset-paging.max-page-elapsed-time-ms", 
 													MINE_RESET__MAX_PAGE_ELASPSED_TIME_MS );
 		}
 		return resetPageMaxPageElapsedTimeMs;
@@ -1587,7 +1587,7 @@ public abstract class MineReset
 	public long getResetPagePageSubmitDelayTicks() {
 		if ( resetPagePageSubmitDelayTicks == -1 ) {
 			this.resetPagePageSubmitDelayTicks = Prison.get().getPlatform()
-										.getConfigLong( "prison-mines.page-submit-delay-ticks", 
+										.getConfigLong( "prison-mines.reset-paging.page-submit-delay-ticks", 
 													MINE_RESET__PAGE_SUBMIT_DELAY_TICKS );
 		}
 		return resetPagePageSubmitDelayTicks;
@@ -1599,7 +1599,7 @@ public abstract class MineReset
 	public long getResetPageTimeoutCheckBlockCount() {
 		if ( resetPageTimeoutCheckBlockCount == -1 ) {
 			this.resetPageTimeoutCheckBlockCount = Prison.get().getPlatform()
-										.getConfigLong( "prison-mines.page-timeout-check-block-count", 
+										.getConfigLong( "prison-mines.reset-paging.page-timeout-check-block-count", 
 												MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT );
 		}
 		return resetPageTimeoutCheckBlockCount;
