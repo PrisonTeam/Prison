@@ -16,7 +16,9 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.10 2021-01-29
+# v3.2.4-alpha.10 2021-01-30
+
+* **Map currency name "default" to the default currency.**
 
 
 * **Add new option: isCalculateFortuneOnAllBlocksEnabled which defaults to false.**

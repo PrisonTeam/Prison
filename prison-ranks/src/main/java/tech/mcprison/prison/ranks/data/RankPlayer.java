@@ -709,7 +709,7 @@ public class RankPlayer
 	
 	public void addBalance( String currency, double amount ) {
 
-		if ( currency == null || currency.trim().isEmpty() ) {
+		if ( currency == null || currency.trim().isEmpty() || "default".equals( amount ) ) {
 			// No currency specified, so use the default currency:
 			addBalance( amount );
 		}
