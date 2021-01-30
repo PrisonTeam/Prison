@@ -281,8 +281,13 @@ public class RankPlayer
         if (ranksRefs.containsKey(ladderName)) {
             ranksRefs.remove(ladderName);
         }
+        
+        if ( ladderRanks.containsKey( ladder ) ) {
+        	ladderRanks.remove( ladder );
+        }
 
         ranksRefs.put(ladderName, rank.getId());
+        ladderRanks.put( ladder, rank );
     }
 
     /**
@@ -293,17 +298,26 @@ public class RankPlayer
      */
     public void removeRank(Rank rank) {
 
-        // When we loop through, we have to store our ladder name outside the loop to
-        // avoid a concurrent modification exception. So, we'll retrieve the data we need...
-        String ladderName = null;
-        for (Map.Entry<String, Integer> rankEntry : ranksRefs.entrySet()) {
-            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
-                ladderName = rankEntry.getKey();
-            }
-        }
-
-        // ... and then remove it!
-        ranksRefs.remove(ladderName);
+    	if ( rank != null && rank.getLadder() != null ) {
+    		
+    		ladderRanks.remove( rank.getLadder() );
+    		
+    		ranksRefs.remove( rank.getLadder().getName() );
+    	}
+        
+//        // When we loop through, we have to store our ladder name outside the loop to
+//        // avoid a concurrent modification exception. So, we'll retrieve the data we need...
+//        String ladderName = null;
+//        for (Map.Entry<String, Integer> rankEntry : ranksRefs.entrySet()) {
+//            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
+//                ladderName = rankEntry.getKey();
+//            }
+//        }
+//
+//        // ... and then remove it!
+//        ranksRefs.remove(ladderName);
+//        
+//        ladderRanks.remove( rank.getLadder() );
     }
     
     public boolean hasLadder( String ladderName ) {
@@ -321,7 +335,13 @@ public class RankPlayer
         if ( !ladderName.equalsIgnoreCase("default") ) {
         	Integer id = ranksRefs.remove(ladderName);
         	results = (id != null);
+        	
+        	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
+        		ladderRanks.remove( ladder );
+        	}
         }
+        
         return results;
     }
 
@@ -336,11 +356,18 @@ public class RankPlayer
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
     public Rank getRank(RankLadder ladder) {
-        if (!ranksRefs.containsKey(ladder.getName())) {
-            return null;
-        }
-        int id = ranksRefs.get(ladder.getName());
-        return PrisonRanks.getInstance().getRankManager().getRank(id);
+    	
+    	if ( !ladderRanks.containsKey( ladder ) ) {
+    		return null;
+    	}
+    	
+    	return ladderRanks.get( ladder );
+    	
+//        if (!ranksRefs.containsKey(ladder.getName())) {
+//            return null;
+//        }
+//        int id = ranksRefs.get(ladder.getName());
+//        return PrisonRanks.getInstance().getRankManager().getRank(id);
     }
     
     /**
@@ -349,13 +376,17 @@ public class RankPlayer
      * @param ladder The ladder name to check.
      * @return The {@link Rank} if found, otherwise null;
      */
-    public Rank getRank(String ladder) {
-    	Rank results = null;
-    	if (ladder != null && ranksRefs.containsKey(ladder)) {
-    		int id = ranksRefs.get(ladder);
-    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
-    	}
-    	return results;
+    public Rank getRank( String ladderName ) {
+    	
+    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+    	return getRank( ladder );
+    	
+//    	Rank results = null;
+//    	if (ladder != null && ranksRefs.containsKey(ladder)) {
+//    		int id = ranksRefs.get(ladder);
+//    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
+//    	}
+//    	return results;
     }
 
     
@@ -711,7 +742,12 @@ public class RankPlayer
 
 		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
 			// No currency specified, so use the default currency:
+			
+//			double pre = getBalance();
 			addBalance( amount );
+//			double post = getBalance();
+//			Output.get().logInfo( "###  RankPlayer.addBalance() amount= %s  pre= %s  post= %s", 
+//					Double.toString( amount ), Double.toString( pre ), Double.toString( post ));
 		}
 		else {
 			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()

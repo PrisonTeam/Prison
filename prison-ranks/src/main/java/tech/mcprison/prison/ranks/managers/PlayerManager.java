@@ -199,22 +199,29 @@ public class PlayerManager
     	RankPlayer results = null;
     	boolean dirty = false;
     	
-    	for ( RankPlayer rankPlayer : players ) {
-			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
-				 uid == null && playerName != null && playerName.trim().length() > 0 &&
-				 rankPlayer.getDisplayName() != null &&
-				 rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
-				
-				// This checks to see if they have a new name, if so, then adds it to the history:
-				// But the UID must match:
-				if ( uid != null && rankPlayer.getUUID().equals(uid) ) {
-					dirty = rankPlayer.checkName( playerName );
-				}
-				
-				results = rankPlayer;
-				break;
-			}
-		}
+    	if ( playerName != null && getPlayersByName().containsKey( playerName ) ) {
+    		results = getPlayersByName().get( playerName );
+    	}
+    	
+    	if ( results == null ) {
+    		
+    		for ( RankPlayer rankPlayer : players ) {
+    			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
+    					uid == null && playerName != null && playerName.trim().length() > 0 &&
+    					rankPlayer.getDisplayName() != null &&
+    					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
+    				
+    				// This checks to see if they have a new name, if so, then adds it to the history:
+    				// But the UID must match:
+    				if ( uid != null && rankPlayer.getUUID().equals(uid) ) {
+    					dirty = rankPlayer.checkName( playerName );
+    				}
+    				
+    				results = rankPlayer;
+    				break;
+    			}
+    		}
+    	}
     	
 //    	Optional<RankPlayer> results = players.stream().filter(
 //    			player -> (uid != null ? 
@@ -222,7 +229,7 @@ public class PlayerManager
 //    						( playerName != null || playerName.trim().length() == 0 ? false :
 //    							player.checkName( playerName )))).findFirst();
     	
-    	if ( results == null ) {
+    	if ( results == null && playerName != null && !"console".equalsIgnoreCase( playerName ) ) {
     		results = addPlayer(uid, playerName);
     		dirty = results != null;
     	}

@@ -18,6 +18,11 @@ that you need.
 
 # v3.2.4-alpha.10 2021-01-30
 
+
+* **Bug fix: Fixed a bug where it was not able to properly change ranks or remove ranks.**
+This was related to an internal change where the main processes had to constantly look up ranks and ladders because they were using magic numbers for all the references.  It was changed over to use an object oriented design so nothing has to be cross referenced and looked up by magic numbers.  This should result in a performance boost under heavy loads.
+
+
 * **Map currency name "default" to the default currency.**
 
 
