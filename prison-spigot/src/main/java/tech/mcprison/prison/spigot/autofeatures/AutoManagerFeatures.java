@@ -115,6 +115,16 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig.getFeatureMessage( feature );
 	}
 
+	protected List<String> getListString( AutoFeatures feature ) {
+		List<String> results = null;
+		if ( feature.isStringList() ) {
+			results = autoFeaturesConfig.getFeatureStringList( feature );
+		}
+		else {
+			results = new ArrayList<>();
+		}
+		return results;
+	}
 
 //	/**
 //     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
@@ -632,6 +642,18 @@ public class AutoManagerFeatures
 		return results;
 	}
 
+	
+	/**
+	 * <p>If using autoPickupBlockNameList then must use XMaterial's name.
+	 * If block type is CustomItems, then it must be prefixed with CustomIems:BlockName. Minecraft
+	 * blocks can be prefixed with minecraft:BlockName but they don't have to be.
+	 * </p>
+	 * 
+	 * @param block
+	 * @param p
+	 * @param itemInHand
+	 * @return
+	 */
 	protected int autoFeaturePickup( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
 
 
@@ -639,11 +661,23 @@ public class AutoManagerFeatures
 //		String blockName = brokenBlock.toString().toLowerCase();
 //		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( p );
 		int count = 0;
+		
+		// Use this is a block name lisst based upon the following:  blockType:blockName if not minecraft, or blockName
+		List<String> autoPickupBlockNameList =
+				isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) ? 
+						getListString( AutoFeatures.autoPickupBlockNameList ) : null;
 
 		if (isBoolean(AutoFeatures.autoPickupAllBlocks)) {
 			count += autoPickup( true, p, itemInHand, block );
 
-		} else {
+		}
+		
+		else if ( isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) && autoPickupBlockNameList.size() > 0 && 
+							autoPickupBlockNameList.contains( block.getPrisonBlock().getBlockName() ) ) {
+			count += autoPickup( true, p, itemInHand, block );
+		}
+			
+		else {
 
 			switch (block.getPrisonBlock().getBlockNameSearch() ) {
 

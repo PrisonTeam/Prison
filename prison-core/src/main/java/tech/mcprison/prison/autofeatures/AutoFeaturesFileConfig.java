@@ -75,6 +75,7 @@ public class AutoFeaturesFileConfig {
 		    	autoPickupLimitToMines(autoPickup, true),
 		    	autoPickupAllBlocks(autoPickup, true),
 		    	
+		    	autoPickupBlockNameListEnabled( autoPickup, false ),
 		    	autoPickupBlockNameList(autoPickup, NodeType.STRING_LIST,
 		    				"coal_block", "iron_ore"),
 		    	
