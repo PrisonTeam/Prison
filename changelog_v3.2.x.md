@@ -16,8 +16,22 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.10 2021-01-30
+# v3.2.4-alpha.10 2021-01-31
 
+
+* alpha.10d
+
+* **New feature: This update hooks up the support for `options.autopickup.autoPickupBlockNameList`.**
+To enable this list, you must set `options.autopickup.autoPickupBlockNameListEnabled` to true.
+The block list names must be from this list of values and must be valid for your server's version of spigot: 
+https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/com/cryptomorin/xseries/XMaterial.java
+NOTE: This new feature has not been tested yet.
+
+
+* **Include top of mines within the check for a location being within a mine.**  Also allows a virtual mine to perform a check if a block is within a mine's config.
+
+
+* alpha.10c
 
 * **Bug fix: Fixed a bug where it was not able to properly change ranks or remove ranks.**
 This was related to an internal change where the main processes had to constantly look up ranks and ladders because they were using magic numbers for all the references.  It was changed over to use an object oriented design so nothing has to be cross referenced and looked up by magic numbers.  This should result in a performance boost under heavy loads.

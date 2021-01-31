@@ -455,14 +455,14 @@ public abstract class MineData
     	if ( isVirtual() ) {
     		return false;
     	}
-        return getBounds().within(location);
+        return getBounds().withinIncludeTopOfMine(location);
     }
     
     public boolean isInMine(BlockType blockType) {
     	//TODO Not sure if virtual should return false... they do have blocks.
-    	if ( isVirtual() ) {
-    		return false;
-    	}
+//    	if ( isVirtual() ) {
+//    		return false;
+//    	}
         for (Block block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;

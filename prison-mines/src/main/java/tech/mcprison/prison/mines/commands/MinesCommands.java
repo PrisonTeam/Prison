@@ -2868,7 +2868,7 @@ public class MinesCommands
     	List<Mine> inMine = new ArrayList<>();
     	TreeMap<Integer, Mine> nearMine = new TreeMap<>();
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
-    		if ( !mine.isVirtual() && mine.getBounds().within( player.getLocation() ) ) {
+    		if ( !mine.isVirtual() && mine.getBounds().withinIncludeTopOfMine( player.getLocation() ) ) {
     			inMine.add( mine );
     		}
     		
