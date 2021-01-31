@@ -1,10 +1,5 @@
 package tech.mcprison.prison.spigot.gui;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -22,7 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -40,25 +34,14 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
-import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllDelayGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.gui.mine.*;
+import tech.mcprison.prison.spigot.gui.rank.*;
+import tech.mcprison.prison.spigot.gui.sellall.*;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author GABRYCA
@@ -394,7 +377,7 @@ public class ListenersPrisonManager implements Listener {
             case "RanksManager -> Ladders": {
 
                 // Call the method.
-                laddersGUI(e, p, buttonNameMain, module);
+                laddersGUI(e, p, buttonNameMain, module, parts);
 
                 break;
             }
@@ -403,7 +386,7 @@ public class ListenersPrisonManager implements Listener {
             case "Ladders -> Ranks": {
 
                 // Call the method.
-                ranksGUI(e, p, buttonNameMain);
+                ranksGUI(e, p, buttonNameMain, parts);
 
                 break;
             }
@@ -1187,8 +1170,8 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the Item display name and do open the right GUI
         switch (buttonNameMain) {
-            case "Ranks": {
-                SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
+            case "Ranks - Ladders": {
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
                 gui.open();
                 break;
             }
@@ -1219,18 +1202,27 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module) {
+    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module, String[] parts) {
 
         // Check if the Ranks module's loaded
         if(!(module instanceof PrisonRanks)){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThe GUI can't open because the &3Rank module &cisn't loaded"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("The GUI can't open because the &3Rank module &cisn't loaded"));
             p.closeInventory();
             e.setCancelled(true);
             return;
         }
 
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            // Open a new SpigotLadders GUI page.
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]));
+            p.closeInventory();
+            gui.open();
+            return;
+        }
+
         // Get the ladder by the name of the button got before
-        ladder = Optional.of( PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain) );
+        ladder = Optional.of( PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
 
         // Check if the ladder exist, everything can happen but this shouldn't
         if (!ladder.isPresent()) {
@@ -1246,21 +1238,32 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p);
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
             gui.open();
             return;
 
         }
 
         // Open the GUI of ranks
-        SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
+        SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, 0);
         gui.open();
 
         // Cancel the event
         e.setCancelled(true);
     }
 
-    private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
+
+
+
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            // Open a new SpigotLadders GUI page.
+            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, Integer.parseInt(parts[1]));
+            p.closeInventory();
+            gui.open();
+            return;
+        }
 
         // Get the rank
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
@@ -1278,7 +1281,7 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder);
+            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, 0);
             gui.open();
             return;
 
