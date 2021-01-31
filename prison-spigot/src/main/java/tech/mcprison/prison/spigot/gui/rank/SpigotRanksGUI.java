@@ -55,7 +55,6 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
-        ItemStack itemRank;
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -88,7 +87,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             //getCommands(ranksLore, rank);
 
             // Make the button with materials, amount, lore and name
-            itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
+            ItemStack itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
 
             // Add the button to the inventory
             inv.addItem(itemRank);

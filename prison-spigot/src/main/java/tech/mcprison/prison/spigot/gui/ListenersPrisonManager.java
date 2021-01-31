@@ -442,7 +442,7 @@ public class ListenersPrisonManager implements Listener {
             case "MinesManager -> Mines": {
 
                 // Call the method.
-                minesGUI(e, p, buttonNameMain);
+                minesGUI(e, p, buttonNameMain, parts);
 
                 break;
             }
@@ -1185,7 +1185,7 @@ public class ListenersPrisonManager implements Listener {
 
             // Check the Item display name and do open the right GUI
             case "Mines": {
-                SpigotMinesGUI gui = new SpigotMinesGUI(p);
+                SpigotMinesGUI gui = new SpigotMinesGUI(p, 0);
                 gui.open();
                 break;
             }
@@ -1253,8 +1253,6 @@ public class ListenersPrisonManager implements Listener {
     }
 
     private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
-
-
 
         if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
 
@@ -1529,7 +1527,16 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void minesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void minesGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
+
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            // Open a new SpigotLadders GUI page.
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]));
+            p.closeInventory();
+            gui.open();
+            return;
+        }
 
         // Variables
         PrisonMines pMines = PrisonMines.getInstance();

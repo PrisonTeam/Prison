@@ -39,18 +39,16 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Init variable
         LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
-        // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(lm.getLadders().size() / 9D) * 9;
 
         // If the inventory is empty
-        if (dimension == 0){
+        if (lm.getLadders().size() == 0){
             Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoLadders")));
             p.closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
-        dimension = 54;
+        int dimension = 54;
         int pageSize = 45;
 
 
