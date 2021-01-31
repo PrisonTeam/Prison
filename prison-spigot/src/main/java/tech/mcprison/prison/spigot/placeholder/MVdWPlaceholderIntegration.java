@@ -10,6 +10,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
+import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderIntegration;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -99,7 +100,7 @@ public class MVdWPlaceholderIntegration
     				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
     					registerPlaceholder(placeHolderKey.getKey(),
     							player -> Text.translateAmpColorCodes(
-    									mm.getTranslateMinesPlaceHolder( placeHolderKey, null )
+    									mm.getTranslateMinesPlaceHolder( placeHolderKey, (PlaceholderAttribute) null  )
     									));
     					if ( !registered ) {
     						registered = true;

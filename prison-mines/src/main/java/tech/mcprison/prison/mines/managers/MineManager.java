@@ -685,21 +685,45 @@ public class MineManager
 		// placeholder Attributes:
 		PlaceholderManager pman = Prison.get().getPlaceholderManager();
 		String placeholder = pman.extractPlaceholderString( identifier );
-		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+		//PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
 		
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
 			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
 				
-				Mine mine = getMine( placeHolderKey.getData() );
+				//Mine mine = getMine( placeHolderKey.getData() );
 				
-				results = getTranslateMinesPlaceHolder( placeHolderKey, mine, attribute );
+				results = getTranslateMinesPlaceHolder( placeHolderKey, identifier );
 				break;
 			}
 		}
     	
     	return results;
     }
-    
+   
+	
+	public String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey, String identifier ) {
+    	String results = null;
+ 	
+    	if ( placeHolderKey != null && identifier != null ) {
+
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+     
+    		// placeholder Attributes:
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		//String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		
+    		Mine mine = getMine( placeHolderKey.getData() );
+    		
+    		results = getTranslateMinesPlaceHolder( placeHolderKey, mine, attribute );
+    	}
+    	
+    	return results;
+    }
+	
 	public String getTranslateMinesPlaceHolder( PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute ) {
 		Mine mine = getMine( placeHolderKey.getData() );
 		return getTranslateMinesPlaceHolder( placeHolderKey, mine, attribute );
@@ -892,6 +916,7 @@ public class MineManager
 		
 		return results;
     }
+
     
     public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
     	String results = null;
@@ -904,6 +929,8 @@ public class MineManager
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
+
+			
     		// placeholder Attributes:
     		PlaceholderManager pman = Prison.get().getPlaceholderManager();
     		String placeholder = pman.extractPlaceholderString( identifier );
@@ -915,6 +942,30 @@ public class MineManager
     				break;
     			}
     		}
+    	}
+    	
+    	return results;
+    }
+    
+    
+    
+    public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, 
+    						PlaceHolderKey placeHolderKey, String identifier ) {
+    	String results = null;
+
+    	if ( playerUuid != null ) {
+    		
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+			
+    		// placeholder Attributes:
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		//String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		
+    		results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
     	}
     	
     	return results;
@@ -940,11 +991,30 @@ public class MineManager
 			Player player = getPlayer(playerUuid, playerName);
 			
 			if ( player != null ) {
-				Mine mine = PrisonMines.getInstance().findMineLocation( player );
+				
+				Mine mine = null;
+				
+				if ( placeHolderKey.getPlaceholder().getFlags().contains( PlaceHolderFlags.MINES )) {
+					mine = getMine( placeHolderKey.getData() );
+				}
+				else {
+					
+					mine = PrisonMines.getInstance().findMineLocation( player );
+				}
+				
+//				Output.get().logInfo( "### ### MineManager.getTranslated... : 1  in mine? %s  player: %s  %s  %s", 
+//						(mine == null ? "-- NO --" : "-- YES == " + mine.getName()), 
+//						(player == null ? "(null)" : player.getName()), placeHolderKey.getPlaceholder().name(),
+//						player.getLocation().toBlockCoordinates() );
 				
 				if ( mine != null ) {
 					results = getTranslateMinesPlaceHolder( placeHolderKey, mine, attribute );
 				}
+			}
+			
+			// If results is null, but a PLAYERMINES then must return an empty string:
+			if ( placeHolderKey.getPlaceholder().getFlags().contains( PlaceHolderFlags.PLAYERMINES ) ) {
+				results = "";
 			}
 		}
 		
@@ -1044,14 +1114,15 @@ public class MineManager
     		
     		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
     		// the player is in.  So this is just a simple registration.
-    		placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYERMINES );
+    		List<PrisonPlaceHolders> placeHoldersPM = 
+    									PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYERMINES );
     		
-			for ( PrisonPlaceHolders ph : placeHolders ) {
-				String key = ph.name();
+			for ( PrisonPlaceHolders ph : placeHoldersPM ) {
+				String key = ph.name().toLowerCase();
 				
 				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
 				if ( ph.getAlias() != null ) {
-					String aliasName = ph.getAlias().name();
+					String aliasName = ph.getAlias().name().toLowerCase();
 					placeholder.setAliasName( aliasName );
 				}
 				translatedPlaceHolderKeys.add( placeholder );

@@ -28,6 +28,9 @@ https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/com/cryptomorin
 NOTE: This new feature has not been tested yet.
 
 
+* **This is a work in progress.  Working on getting playermines placeholders working.  Not yet functional.**
+
+
 * **Include top of mines within the check for a location being within a mine.**  Also allows a virtual mine to perform a check if a block is within a mine's config.
 
 

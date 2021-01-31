@@ -212,25 +212,31 @@ public class PrisonMines extends Module {
 	}
 	
 	public Mine findMineLocation( Player player ) {
-		Mine result = null;
+		Mine results = null;
 		
 		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
 		
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
-		if ( mine == null || !mine.isInMine( player.getLocation() ) ) {
+		if ( mine != null && mine.isInMine( player.getLocation() )) {
+			results = mine;
+		}
+		else {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
-			mine = findMineLocation( player.getLocation() );
+			results = findMineLocation( player.getLocation() );
 			
 			// Store the mine in the player cache if not null:
-			if ( mine != null ) {
-				getPlayerCache().put( playerUUIDLSB, mine );
+			if ( results != null ) {
+				getPlayerCache().put( playerUUIDLSB, results );
+			}
+			else {
+				getPlayerCache().remove( playerUUIDLSB );
 			}
 		}
 
-		return result;
+		return results;
 	}
 
 //    private void initMines() {
