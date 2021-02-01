@@ -39,7 +39,6 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
     }
 
 
-
     private boolean guiBuilder() {
         try {
             buttonsSetup();
@@ -104,12 +103,22 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             sellAllDelayButton = createButton(XMaterial.CLOCK.parseItem(), sellAllDelayLore, "&cDelay-Disabled");
         }
 
+        List<String> setCurrencyLore = createLore(
+                messages.getString("Lore.SellAllActiveCurrency") + sellAllConfig.getString("Options.SellAll_Currency"),
+                messages.getString("Lore.ClickToEdit"),
+                "",
+                messages.getString("Lore.SellAllCurrencyInfo")
+        );
+
+        ItemStack setCurrencyButton = createButton(XMaterial.EMERALD.parseItem(), setCurrencyLore, SpigotPrison.format("&3SellAll-Currency"));
+
         ItemStack blocksButton = createButton(XMaterial.DIAMOND_ORE.parseItem(), blocksLore, "&3Blocks-Shop");
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
 
-        inv.setItem(11, blocksButton);
-        inv.setItem(13, sellAllDelayButton);
-        inv.setItem(15, autoSellButton);
+        inv.setItem(10, blocksButton);
+        inv.setItem(12, sellAllDelayButton);
+        inv.setItem(14, autoSellButton);
+        inv.setItem(16, setCurrencyButton);
         inv.setItem(dimension - 1, closeGUI);
 
         return inv;

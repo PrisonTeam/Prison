@@ -277,7 +277,26 @@ public class ListenersPrisonManager implements Listener {
         // If the mode's prestige will execute this
         } else if (mode.equalsIgnoreCase("prestige")){
             prestigeAction(e, p, message);
+        } else if (mode.equalsIgnoreCase("sellall_currency")){
+            sellAllCurrencyChat(e, p, message);
         }
+    }
+
+    private void sellAllCurrencyChat(AsyncPlayerChatEvent e, Player p, String message) {
+
+        // Check message and do the action
+        if (message.equalsIgnoreCase("cancel")){
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditCancelled")));
+        } else if (message.equalsIgnoreCase("default")){
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency default"));
+        } else {
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency " + message));
+        }
+
+        // Cancel event.
+        e.setCancelled(true);
+        // Set the event to false, because it's finished.
+        isChatEventActive = false;
     }
 
     private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -828,6 +847,28 @@ public class ListenersPrisonManager implements Listener {
                 } else {
                     Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EnableSellDelayToUse")));
                 }
+                break;
+            }
+
+            case "SellAll-Currency":{
+
+                // Send messages to the player
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat1")));
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat2")));
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat3")));
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat4")));
+                // Start the async task
+                isChatEventActive = true;
+                mode = "sellall_currency";
+                addChatEventPlayer(p);
+                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+                    if (isChatEventActive) {
+                        removeChatEventPlayer(p);
+                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
+                        isChatEventActive = false;
+                    }}, 20L * 30);
+                p.closeInventory();
+
                 break;
             }
         }

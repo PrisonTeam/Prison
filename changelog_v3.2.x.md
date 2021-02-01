@@ -18,6 +18,9 @@ that you need.
 
 # v3.2.4-alpha.10 2021-01-31
 
+* **SellAll set currency from GUI.**
+  It's now possible to edit the SellAll Currency from the /sellall GUI using the SellAll-Currency button.
+
 * **Fixed the issue with the chat handling of the placeholders.**
 The issue I saw was where one placeholder was being processed instead of the correct one.  So what i saw was trying to use the placeholder prison_mbm_pm but it was targeting prison_mbm_p which is a prison_mbm_minename instead.  This was fixed by anchoring the end of the placeholder so the whole placeholder is tested from { to }, or from { to :: if an attribute is being used.
 

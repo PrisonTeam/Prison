@@ -98,6 +98,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToUse","&8Click to use.");
         dataConfig("Lore.ClickToRankup","&8Click to rankup");
         dataConfig("Lore.ClickToEditBlock", "&8Click to edit percentage.");
+        dataConfig("Lore.ClickToEdit", "&8Click to edit.");
         dataConfig("Lore.ClickToClose", "&cClick to close the GUI.");
         dataConfig("Lore.ClickToPriorPage", "&aClick to see the prior page.");
         dataConfig("Lore.ClickToNextPage", "&aClick to see the next page.");
@@ -149,8 +150,9 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.RightClickToCancel","&cRight-Click to cancel.");
         dataConfig("Lore.RightClickToEnable","&aRight-Click to enable.");
         dataConfig("Lore.RightClickToDisable", "&cRight-Click to disable.");
-        dataConfig("Lore.RightClickToToggle","&cRight click to toggle.");
+        dataConfig("Lore.RightClickToToggle","&3Right click to toggle.");
         dataConfig("Lore.RightClickToDelete", "&cRight-Click to delete.");
+        dataConfig("Lore.RightClickToEdit", "&8Right click to edit.");
         dataConfig("Lore.SpawnPoint","&3Spawnpoint: &7");
         dataConfig("Lore.StatusLockedMine","&8Status: &cLocked");
         dataConfig("Lore.StatusUnlockedMine","&8Status: &aUnlocked");
@@ -159,6 +161,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Selected","&3Selected");
         dataConfig("Lore.SellAllDelayInfo", "&8Short delay before using again");
         dataConfig("Lore.SellAllDelayInfo2", "&8the &3/sellall sell &8command.");
+        dataConfig("Lore.SellAllCurrencyInfo", "&3Edit SellAll Currency.");
+        dataConfig("Lore.SellAllActiveCurrency", "&3Currency: &a");
         dataConfig("Lore.ShiftAndRightClickToDelete","&cShift + Right click to delete.");
         dataConfig("Lore.ShiftAndRightClickToDisable","&cShift + Right click to disable");
         dataConfig("Lore.ShiftAndRightClickToToggle","&cShift + Right click to toggle");
@@ -241,6 +245,11 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllAutoPerUserToggleableEnabled", "SellAll PerUserToggleable &aEnabled&7!");
         dataConfig("Message.SellAllAutoPerUserToggleableDisabled", "SellAll PerUserToggleable &cDisabled&7!");
         dataConfig("Message.SellAllCurrencyEditedSuccess", "SellAll Currency edited with success!");
+        dataConfig("Message.SellAllCurrencyEditCancelled", "SellAll edit currency &ccancelled&7.");
+        dataConfig("Message.SellAllCurrencyChat1", "&3Started setup of new currency for SellAll!");
+        dataConfig("Message.SellAllCurrencyChat2", "Type &ccancel &7to cancel.");
+        dataConfig("Message.SellAllCurrencyChat3", "Type &3default &7to set to default currency.");
+        dataConfig("Message.SellAllCurrencyChat4", "Type the &aCurrency name &7to set the new currency.");
         dataConfig("Message.SellAllDefaultSuccess", "Default Values added with &asuccess&7!");
         dataConfig("Message.SellAllDefaultMissingPermission", "Sorry but you're missing the &cpermission!");
         dataConfig("Message.SellAllIsDisabled", "Sorry but the SellAll Feature's &cdisabled&7 in the config.yml");
