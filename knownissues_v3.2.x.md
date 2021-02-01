@@ -10,6 +10,11 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.4
 
 
+- Fixed: player-mine placeholders do not work
+
+- Fixed: rankup does not work.  This may have looked like some placeholders were not working after a /rankup.
+
+
 - DONE: Hook the paging variables up to config parameters.  OfficiallyGuo needs them.
   - 
 

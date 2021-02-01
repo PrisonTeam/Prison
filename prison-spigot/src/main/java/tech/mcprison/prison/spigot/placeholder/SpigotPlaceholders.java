@@ -13,6 +13,7 @@ import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttribute;
+import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.Placeholders;
@@ -261,20 +262,31 @@ public class SpigotPlaceholders
     		
     		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
     			
-				
-	    		String key1 = "{" + placeHolderKey.getKey();
-	    		String key2 = "}";
-	    		
-	    		int idx = results.indexOf( key1 );
-	    		if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
-	    			
-	    			String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
-	    			
-	    			results = results.replace("{" + identifier + "}", 
-	    							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
-	    		}
-
     			
+    			// Rank in to an issue with placeholders: prison_mbm_minename and prison_mbm_pm, 
+    			// because the mine P has a placeholder prison_mbm_p which gets hit for the
+    			// prison_mbm_pm.  So to zero in on the correct placeholder, but bracket the end
+    			// of the placeholder with either } or :: to ensure the correct association.
+    			String test1 = "{" + placeHolderKey.getKey() + "}";
+    			String test2 = "{" + placeHolderKey.getKey() + 
+    								PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR;
+    			if ( results.contains( test1 ) || results.contains( test2 ) ) {
+    				
+    				// The key1 and key2 helps ensure that the full placeholder, 
+    				// including the attribute, is replaced:
+    				String key1 = "{" + placeHolderKey.getKey();
+    				String key2 = "}";
+    				
+    				int idx = results.indexOf( key1 );
+    				if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
+    					
+    					String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
+    					
+    					results = results.replace("{" + identifier + "}", 
+    							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
+    				}
+    			}
+
     		}
     	}
     	
@@ -289,22 +301,31 @@ public class SpigotPlaceholders
 	    		
 	    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
 	    			
-					
-		    		String key1 = "{" + placeHolderKey.getKey();
-		    		String key2 = "}";
-		    		
-		    		int idx = results.indexOf( key1 );
-		    		if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
-		    			
-		    			String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
-		    			
-		    			results = results.replace("{" + identifier + "}", 
-		    					mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, identifier ) );
-		    		}
-
+	    			// Rank in to an issue with placeholders: prison_mbm_minename and prison_mbm_pm, 
+	    			// because the mine P has a placeholder prison_mbm_p which gets hit for the
+	    			// prison_mbm_pm.  So to zero in on the correct placeholder, but bracket the end
+	    			// of the placeholder with either } or :: to ensure the correct association.
+	    			String test1 = "{" + placeHolderKey.getKey() + "}";
+	    			String test2 = "{" + placeHolderKey.getKey() + 
+	    								PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR;
+	    			if ( results.contains( test1 ) || results.contains( test2 ) ) {
+	    				
+	    				// The key1 and key2 helps ensure that the full placeholder, 
+	    				// including the attribute, is replaced:
+	    				String key1 = "{" + placeHolderKey.getKey();
+	    				String key2 = "}";
+	    				
+	    				int idx = results.indexOf( key1 );
+	    				if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
+	    					
+	    					String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
+	    					
+	    					results = results.replace("{" + identifier + "}", 
+	    							mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, identifier ) );
+	    				}
+	    			}
 	    			
 	    		}
-
 			}
 			
 		}
