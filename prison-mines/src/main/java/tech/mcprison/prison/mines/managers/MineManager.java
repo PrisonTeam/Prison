@@ -733,10 +733,12 @@ public class MineManager
     						PlaceholderAttribute attribute ) {
 		String results = null;
 
-		if ( placeHolderKey != null && placeHolderKey.getData() != null ) {
+		if ( placeHolderKey != null ) {
 
 			// If the mine is not provided, try to get it from the placeholder data: 
-			if ( mine == null ) {
+			if ( mine == null && 
+					placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) &&
+					placeHolderKey.getData() != null )  {
 				mine = getMine( placeHolderKey.getData() );
 			}
 
@@ -929,7 +931,6 @@ public class MineManager
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
     		}
     		
-
 			
     		// placeholder Attributes:
     		PlaceholderManager pman = Prison.get().getPlaceholderManager();
@@ -994,7 +995,7 @@ public class MineManager
 				
 				Mine mine = null;
 				
-				if ( placeHolderKey.getPlaceholder().getFlags().contains( PlaceHolderFlags.MINES )) {
+				if ( placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES )) {
 					mine = getMine( placeHolderKey.getData() );
 				}
 				else {
@@ -1013,7 +1014,7 @@ public class MineManager
 			}
 			
 			// If results is null, but a PLAYERMINES then must return an empty string:
-			if ( placeHolderKey.getPlaceholder().getFlags().contains( PlaceHolderFlags.PLAYERMINES ) ) {
+			if ( results == null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ) ) {
 				results = "";
 			}
 		}

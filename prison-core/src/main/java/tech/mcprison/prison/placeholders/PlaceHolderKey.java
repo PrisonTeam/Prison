@@ -26,6 +26,18 @@ public class PlaceHolderKey {
 		this(key, placeholder, primary);
 		this.data = data;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "PlaceHolderKey: key=" ).append( getKey() )
+				.append( "  placeholder=" ).append( getPlaceholder().name() )
+				.append( "  isPriamary=" ).append( isPrimary() )
+				.append( "  data=" ).append( getData() == null ? "" : getData() );
+		
+		return sb.toString();
+	}
 
 	public String getKey() {
 		return key;

@@ -150,6 +150,17 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	return results;
     }
     
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( "SpigotPlayer: " ).append( getName() )
+    		.append( "  isOp=" ).append( isOp() )
+    		.append( "  isOnline=" ).append( isOnline() );
+    	
+    	return sb.toString();
+    }
+    
     /**
      * This class is an adaptation of the NmsHelper class in the Rosetta library by Max Roncace. The
      * library is licensed under the New BSD License. See the {@link tech.mcprison.prison.localization}

@@ -18,6 +18,11 @@ that you need.
 
 # v3.2.4-alpha.10 2021-01-31
 
+
+* **Fixed a few more things pertaining to the playermines placeholders.**
+Works now, but still issues when used in chat messages (will fix next).
+
+
 * **Ranks,Ladders, Mines GUI now support more than 54 Ranks/Ladders/Mines:** It's possible to see now
 more than 54 Ranks, Ladders or Mines, a new button got added to go to the next page if more than 45 Ranks/Ladders
   are added, there's also a Prior button, this works like the "add blocks GUI" for Mines, just with Mines, Ranks and ladders.
