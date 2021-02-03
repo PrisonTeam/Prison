@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.util.BlockType;
@@ -80,6 +82,10 @@ public class SpigotItemStack
 		if ( bukkitStack != null ) {
 			bukkitStack.setAmount( amount );
 		}
+	}
+	
+	public boolean isBlock() {
+		return XMaterial.matchXMaterial( getBukkitStack() ).parseMaterial().isBlock();
 	}
 	
     public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {

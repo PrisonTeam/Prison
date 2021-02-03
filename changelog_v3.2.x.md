@@ -18,6 +18,10 @@ that you need.
 
 # v3.2.4-alpha.10 2021-02-02
 
+
+* **Add some new functions to Prison's SpigotItemStack and SpigotOffilnePlayer to prepare for the next enhancement pertaining to Utility functions.**
+
+
 * **Fixed issue with blockEvents by using the newer versions of the BlockEventType.**
 There was a change last week to simplify them, and not all references to the old types were changed. 
 It's setup that when loaded from the files it will auto convert to the correct new version.

@@ -136,6 +136,10 @@ public class SpigotOfflinePlayer
 		
 	}
 	
+	public OfflinePlayer getWrapper() {
+		return offlinePlayer;
+	}
+	
     @Override
     public List<String> getPermissions() {
     	List<String> results = new ArrayList<>();
