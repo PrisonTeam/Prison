@@ -20,9 +20,7 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public SellAllConfig(){
 
-    	//if ( Prison.get().getPlatform().getConfigBooleanFalse("sellall")) {
         initialize();
-    	//}
     }
 
     public void initialize(){

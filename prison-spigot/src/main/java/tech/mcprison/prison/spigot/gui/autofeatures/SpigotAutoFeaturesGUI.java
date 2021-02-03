@@ -54,7 +54,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
 
-        if (afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
+        if (afConfig().isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
 
             // Declare buttons
             ItemStack autoPickup;
@@ -64,7 +64,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             ItemStack playSound;
             ItemStack hologram;
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {
 
                 List<String> EnabledOrDisabledLore = createLore(
                         messages.getString("Lore.FullSoundEnabled"),
@@ -80,7 +80,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.hologramIfInventoryIsFull)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.hologramIfInventoryIsFull)) {
 
                 List<String> EnabledOrDisabledLore = createLore(
                         messages.getString("Lore.FullHologramEnabled"),
@@ -96,7 +96,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
 
                 List<String> EnabledOrDisabledLore = createLore(
                         messages.getString("Lore.EnabledAll"),
@@ -112,7 +112,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoPickupEnabled)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.autoPickupEnabled)) {
                 // Lore of the button
                 List<String> autoPickupLore = createLore(
                         messages.getString("Lore.AutoPickupGuiManager"),
@@ -129,7 +129,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             }
 
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoSmeltEnabled)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.autoSmeltEnabled)) {
                 // Lore of the button
                 List<String> autoSmeltLore = createLore(
                         messages.getString("Lore.AutoSmeltGuiManager"),
@@ -146,7 +146,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             }
 
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockEnabled)) {
+            if (afConfig().isFeatureBoolean(AutoFeatures.autoBlockEnabled)) {
                 // Lore of the button
                 List<String> autoBlockLore = createLore(
                         messages.getString("Lore.AutoBlockGuiManager"),

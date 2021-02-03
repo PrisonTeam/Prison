@@ -26,7 +26,6 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
@@ -44,8 +43,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-    private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-    private FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
     private static SellAllPrisonCommands instance;
     public static List<String> activePlayerDelay = new ArrayList<>();
     public MinepacksPlugin minepacksPlugin = SpigotPrison.getMinepacks();
@@ -66,6 +63,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+    }
+
+    /**
+     * Get sellAllConfig updated.
+     * */
+    private void sellAllConfigUpdater(){
+        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     }
 
     /**
@@ -368,8 +372,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Options.SellAll_Currency", currency);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -378,10 +382,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditedSuccess") + " [" + sellAllConfig.getString("Options.SellAll_Currency") + "]"));
     }
 
@@ -427,8 +428,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Options.Sell_Delay_Enabled", enable);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -442,8 +443,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } else if (enable.equalsIgnoreCase("false")){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayDisabled")));
         }
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
@@ -457,9 +457,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
 
         int delayValue;
 
@@ -471,8 +469,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Options.Sell_Delay_Seconds", delayValue);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -482,8 +480,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayEditedWithSuccess") + " [" + delayValue + "s]"));
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", onlyPlayers = false, permissions = "prison.autosell.edit")
@@ -502,9 +499,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
 
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
@@ -521,8 +516,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Options.Full_Inv_AutoSell", enable);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -536,8 +531,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         } else if (enable.equalsIgnoreCase("false")){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
         }
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable", onlyPlayers = false, permissions = "prison.autosell.edit")
@@ -551,9 +545,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
 
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
@@ -570,8 +562,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enable);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -586,8 +578,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableDisabled")));
         }
 
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
     
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
@@ -596,9 +587,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
 
         if (p == null){
             Output.get().sendInfo(sender, SpigotPrison.format("&cSorry but you can't use that from the console!"));
@@ -646,9 +635,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
+
+        // Sender must be a Player, not something else like the Console.
+        if (p == null) {
+            Output.get().sendError(sender, SpigotPrison.format(getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
 
         if (!sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
             return;
@@ -667,8 +660,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             boolean isEnabled = sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true");
 
             try {
-                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Users." + playerUUID + ".isEnabled", !isEnabled);
                 conf.save(sellAllFile);
             } catch (IOException e) {
@@ -687,8 +680,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Enable it for the first time
 
             try {
-                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Users." + playerUUID + ".isEnabled", true);
                 conf.set("Users." + playerUUID + ".name", p.getName());
                 conf.save(sellAllFile);
@@ -701,8 +694,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
         }
 
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)
@@ -784,8 +776,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
 
             try {
-                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
                 conf.save(sellAllFile);
@@ -800,9 +792,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", onlyPlayers = false)
@@ -826,8 +816,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemID + ".ITEM_ID", null);
             conf.set("Items." + itemID + ".ITEM_VALUE", null);
             conf.set("Items." + itemID, null);
@@ -839,9 +829,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(itemID + messages.getString("Message.SellAllDeletedSuccess")));
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)
@@ -883,8 +871,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
 
             try {
-                sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
                 conf.save(sellAllFile);
@@ -899,9 +887,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format("&3ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllCommandEditSuccess")));
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", onlyPlayers = false)
@@ -921,9 +907,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         sender.dispatchCommand("sellall multiplier help");
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier.", permissions = "prison.admin", onlyPlayers = false)
@@ -935,8 +919,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (addMultiplierConditions(sender, prestige, multiplier)) return;
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
             conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
             conf.save(sellAllFile);
@@ -946,9 +930,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierEditSaveSuccess")));
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", permissions = "prison.admin", onlyPlayers = false)
@@ -973,8 +955,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         try {
-            sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Multiplier." + prestige, null);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -982,9 +964,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierDeleteSuccess")));
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
+        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", permissions = "prison.admin", onlyPlayers = false)

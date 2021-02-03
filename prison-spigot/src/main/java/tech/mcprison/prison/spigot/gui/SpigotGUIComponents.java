@@ -26,7 +26,6 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 public abstract class SpigotGUIComponents {
 
     public Configuration messages = getMessages();
-    public AutoFeaturesFileConfig afConfig = getAutoFeaturesFileConfig();
     public Configuration guiConfig = getGuiConfig();
     public Configuration sellAllConfig = getSellAll();
 
@@ -143,7 +142,7 @@ public abstract class SpigotGUIComponents {
     /**
      * Get autoFeatures Config.
      * */
-    protected static AutoFeaturesFileConfig getAutoFeaturesFileConfig() {
+    public static AutoFeaturesFileConfig afConfig() {
         return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
     }
 
