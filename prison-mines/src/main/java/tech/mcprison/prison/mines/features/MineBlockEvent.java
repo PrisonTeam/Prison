@@ -42,7 +42,7 @@ public class MineBlockEvent {
 		}
 		
 		public static BlockEventType fromString( String type ) {
-			BlockEventType results = eventTypeAll;
+			BlockEventType results = all;
 			
 			for ( BlockEventType eType : values() ) {
 				if ( eType.name().equalsIgnoreCase( type ) ) {
@@ -207,7 +207,7 @@ public class MineBlockEvent {
 			TaskMode taskMode = TaskMode.fromString( mode ); // defaults to inline
 			
 			BlockEventType eventType = cpc.length >= 5 ? BlockEventType.fromString( cpc[4] ) :
-				BlockEventType.eventTypeAll;
+				BlockEventType.all;
 			
 			String triggered = cpc.length >= 6 && !"none".equals(cpc[5]) ? cpc[5] : null;
 			

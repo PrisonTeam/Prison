@@ -3445,7 +3445,7 @@ public class MinesCommands
         		"Was &b%s&7. Command '&b%s&7'", 
         		eType.name(), m.getName(), eTypeOld.name(), blockEvent.getCommand() );
 
-        if ( eType == BlockEventType.eventTEXplosion ) {
+        if ( eType == BlockEventType.TEXplosion ) {
         	sender.sendMessage( "&7Notice: &3Since the event type is for TokenEnchant's eventTEXplosion, " +
         			"then you may set the value of &7triggered&7 with the command " +
         			"&7/mines blockEvent triggered help&3." );
@@ -3501,7 +3501,7 @@ public class MinesCommands
 		MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
 
 		
-        if ( blockEvent.getEventType() != BlockEventType.eventTEXplosion && triggered != null && 
+        if ( blockEvent.getEventType() != BlockEventType.TEXplosion && triggered != null && 
         		!"none".equalsIgnoreCase( triggered ) ) {
         	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
         			"Defaulting to none." );

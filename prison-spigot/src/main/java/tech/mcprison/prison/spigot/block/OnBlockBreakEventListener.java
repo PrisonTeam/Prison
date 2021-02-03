@@ -416,7 +416,7 @@ public class OnBlockBreakEventListener
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
 			String triggered = null;
-			mine.processBlockBreakEventCommands( 1, player, BlockEventType.eventBlockBreak, triggered );
+			mine.processBlockBreakEventCommands( 1, player, BlockEventType.blockBreak, triggered );
 			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
@@ -459,7 +459,7 @@ public class OnBlockBreakEventListener
 			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion,
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
 					triggered );
 			
 			
@@ -504,7 +504,7 @@ public class OnBlockBreakEventListener
 			
 			// Process mine block break events:
 			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.eventTEXplosion,
+			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
 					triggered );
 			
 			

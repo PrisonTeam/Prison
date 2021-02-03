@@ -502,12 +502,12 @@ public abstract class MineScheduler
 	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, 
 					MineBlockEvent blockEvent, String triggered )
 	{
-		if ( eventType == BlockEventType.eventTEXplosion && 
+		if ( eventType == BlockEventType.TEXplosion && 
 				eventType == blockEvent.getEventType() && 
 					( blockEvent.getTriggered() == null || 
 						blockEvent.getTriggered().equalsIgnoreCase( triggered )) ||
 					
-				blockEvent.getEventType() == BlockEventType.eventTypeAll || 
+				blockEvent.getEventType() == BlockEventType.all || 
 				blockEvent.getEventType() == eventType ) {
 			
 			// If perms are set, check them, otherwise ignore perm check:
