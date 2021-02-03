@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final AutoFeaturesFileConfig afConfig = afConfig();
 
     public SpigotAutoPickupGUI(Player p){
         this.p = p;
@@ -66,7 +68,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(35, closeGUI);
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupAllBlocks ) ) {
             ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -74,7 +76,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupCobbleStone ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupCobbleStone ) ) {
             ItemStack Enabled = createButton(XMaterial.COBBLESTONE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Cobblestone Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -82,7 +84,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupStone ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupStone ) ) {
         	ItemStack Enabled = createButton(XMaterial.STONE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Stone Enabled"));
         	inv.addItem(Enabled);
         } else {
@@ -90,7 +92,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         	inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupGoldOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupGoldOre ) ) {
         	ItemStack Enabled = createButton(XMaterial.GOLD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
         	inv.addItem(Enabled);
         } else {
@@ -98,7 +100,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         	inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupIronOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupIronOre ) ) {
             ItemStack Enabled = createButton(XMaterial.IRON_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -106,7 +108,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupCoalOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupCoalOre ) ) {
             ItemStack Enabled = createButton(XMaterial.COAL_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Coal_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -114,7 +116,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupDiamondOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupDiamondOre ) ) {
             ItemStack Enabled = createButton(XMaterial.DIAMOND_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Diamond_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -122,7 +124,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupRedStoneOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupRedStoneOre ) ) {
             ItemStack Enabled = createButton(XMaterial.REDSTONE_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Redstone_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -130,7 +132,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupEmeraldOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupEmeraldOre ) ) {
             ItemStack Enabled = createButton(XMaterial.EMERALD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Emerald_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -142,7 +144,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         if ( quartzOre == null ) {
         	quartzOre = Material.matchMaterial( "nether_quartz_ore" );
         }
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupQuartzOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupQuartzOre ) ) {
             ItemStack Enabled = createButton(quartzOre, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -150,7 +152,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupLapisOre ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupLapisOre ) ) {
             ItemStack Enabled = createButton(XMaterial.LAPIS_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Lapis_Ore Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -162,7 +164,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
         if ( snowBall == null ) {
         	snowBall = Material.matchMaterial( "snowball" );
         }
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupSnowBall ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupSnowBall ) ) {
             ItemStack Enabled = createButton(snowBall, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled"));
             inv.addItem(Enabled);
         } else {
@@ -170,7 +172,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
             inv.addItem(Disabled);
         }
 
-        if ( afConfig().isFeatureBoolean( AutoFeatures.autoPickupGlowstoneDust ) ) {
+        if ( afConfig.isFeatureBoolean( AutoFeatures.autoPickupGlowstoneDust ) ) {
             ItemStack Enabled = createButton(XMaterial.GLOWSTONE_DUST.parseItem(), enabledLore, SpigotPrison.format("&a" + "Glowstone_Dust Enabled"));
             inv.addItem(Enabled);
         } else {
