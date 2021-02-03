@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.10 2021-02-02
 
 
+* **Starting to hook up some of the first prison utils** 
+that can be used within blockEvents to provide more functionality for the mines.  This is not yet enabled.
+
+
 * **Add some new functions to Prison's SpigotItemStack and SpigotOffilnePlayer to prepare for the next enhancement pertaining to Utility functions.**
 
 
