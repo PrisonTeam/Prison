@@ -595,7 +595,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
         
         if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission("Options.Sell_Permission")){
+            if (!p.hasPermission(sellAllConfig.getString("Options.Sell_Permission"))){
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Sell_Permission") + "]"));
                 return;
             }
