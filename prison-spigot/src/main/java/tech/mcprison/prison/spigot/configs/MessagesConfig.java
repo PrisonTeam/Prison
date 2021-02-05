@@ -288,7 +288,9 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllYouGotMoney", "You got &a$");
         dataConfig("Message.SellAllGUIDisabled", "Sorry but the GUI's &cdisabled&7 in the SellAllConfig.yml.");
         dataConfig("Message.SellAllAutoSell", "Your inventory's full, &aAutoSell activated&7!");
+        dataConfig("Message.SellAllSignOnly", "Sorry but you can use SellAll only by touching a sign (or with the ByPass permission).");
         dataConfig("Message.SellAllSignNotify", "Using &aSellAll&7 from a Sign with &asuccess&7!");
+        dataConfig("Message.SellAllSignMissingPermission", "Sorry, but you don't have the &cpermission&7 to use this!");
         dataConfig("Message.SellAllEmpty", "&cThere aren't&7 items in the sellall config,\n please add one and/or restart the server!");
         dataConfig("Message.SellAllAutoEnabled", "SellAll-Auto &aenabled &7with &asuccess&7!");
         dataConfig("Message.SellAllAutoDisabled", "SellAll-Auto &cdisabled &7with &asuccess&7!");

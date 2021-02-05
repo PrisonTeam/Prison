@@ -18,9 +18,28 @@ that you need.
 
 # v3.2.4-alpha.10 2021-02-02
 
+* **SellAll Sign Permission**
+It's now possible to enable a permission to use the SellAll sign, from the SellAll Config you can toggle 
+  `SellAll_Sign_Use_Permission_Enabled: false` to `true` to enable it, the permission's also editable 
+  from the same config, by default it's like this: `SellAll_Sign_Use_Permission: prison.sign`
+
+
+* **SellAll Sell only trough sign**
+Added a new option, by the name if enabled you'll be able to use `/sellall sell` only trough a sign
+  (make a sellall sign and click it), just toggle this option to true to enable it: `SellAll_By_Sign_Only: true`
+  from the config, by default it's `false`, **Note:** there's a bypass permission
+  so, if you're OP you'll still get access to it but players won't, the permission's editable
+  from the SellAllConfig too and by default it's like this: `SellAll_By_Sign_Only_Bypass_Permission: prison.admin`.
+  
+
+* **SellAll Sell notify option:**
+It's now possible to disable or enable from the SellAll config the message telling 
+  you the amount of money earned, to disable the message just turn this option to false
+  like this `Sell_Notify_Enabled: false` by default it's on true.
+
 
 * **Starting to hook up some of the first prison utils** 
-that can be used within blockEvents to provide more functionality for the mines.  This is not yet enabled.
+That can be used within blockEvents to provide more functionality for the mines.  This is not yet enabled.
 
 
 * **Add some new functions to Prison's SpigotItemStack and SpigotOffilnePlayer to prepare for the next enhancement pertaining to Utility functions.**

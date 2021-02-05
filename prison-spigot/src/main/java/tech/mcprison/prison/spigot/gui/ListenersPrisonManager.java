@@ -28,6 +28,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
@@ -189,6 +190,18 @@ public class ListenersPrisonManager implements Listener {
 
                     // Check if the first like of the sign have the right tag
                     if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))){
+
+                        if (sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission"))){
+                           Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignMissingPermission") + " [&3" + sellAllConfig.getString("Options.SellAll_Sign_Use_Permission") + "&7]"));
+                            return;
+                        }
+
+                        if (sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true")){
+                            SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+                            if (sellAll != null){
+                                sellAll.toggleSellAllSign();
+                            }
+                        }
 
                         if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")){
                             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));

@@ -47,6 +47,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     public static List<String> activePlayerDelay = new ArrayList<>();
     public MinepacksPlugin minepacksPlugin = SpigotPrison.getMinepacks();
     public boolean isEnabledMinePacks = SpigotPrison.MinepacksPresent();
+    public boolean signUsed = false;
 
     /**
      * Get SellAll instance.
@@ -96,6 +97,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         activePlayerDelay.remove(p.getName());
+    }
+
+    public void toggleSellAllSign(){
+        if (!signUsed){
+            signUsed = true;
+        }
     }
 
     /**
@@ -601,7 +608,16 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        if (!(sellAllConfig.getConfigurationSection("Items.") == null)){
+        if (sellAllConfig.getString("Options.SellAll_Sign_Enabled").equalsIgnoreCase("true") && sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission"))){
+            if (!signUsed){
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
+                return;
+            }
+        }
+
+        if (signUsed) signUsed = false;
+
+        if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
 
             if (sellAllCommandDelay(p)) return;
 
@@ -617,17 +633,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             rankPlayer.addBalance(currency, moneyToGive);
 
-            if (moneyToGive<0.001){
-                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
-            } else {
-                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + moneyToGive));
+            if (sellAllConfig.getString("Options.Sell_Notify_Enabled").equalsIgnoreCase("true")) {
+                if (moneyToGive < 0.001) {
+                    Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
+                } else {
+                    Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + moneyToGive));
+                }
             }
         } else {
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
     }
-
-
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
