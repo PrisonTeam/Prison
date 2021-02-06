@@ -630,6 +630,14 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check the title and do the actions.
+            case "SellAll -> Multipliers":{
+
+                sellAllMultipliersGUI(e, p, buttonNameMain, parts);
+
+                break;
+            }
+
+            // Check the title and do the actions.
             case "Prison -> SellAll-Player":{
 
                 p.closeInventory();
@@ -645,6 +653,35 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
         }
+    }
+
+    private void sellAllMultipliersGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
+
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            // Open a new SpigotLadders GUI page.
+            SellAllPrestigesMultiplierGUI gui = new SellAllPrestigesMultiplierGUI(p, Integer.parseInt(parts[1]));
+            p.closeInventory();
+            gui.open();
+            return;
+        }
+
+        // Check the clicks
+        if (e.isRightClick()) {
+            // Execute the command
+            Bukkit.dispatchCommand(p, "sellall multiplier delete " + buttonNameMain);
+            // Cancel the event
+            e.setCancelled(true);
+            // Close the inventory
+            p.closeInventory();
+            // Open a GUI
+            SellAllPrestigesMultiplierGUI gui = new SellAllPrestigesMultiplierGUI(p, 0);
+            gui.open();
+            return;
+        }
+
+        // Cancel the event
+        e.setCancelled(true);
     }
 
     private void sellAllDelayGUI(InventoryClickEvent e, Player p, String[] parts) {
@@ -788,7 +825,6 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
-
         }
 
         e.setCancelled(true);
@@ -881,6 +917,30 @@ public class ListenersPrisonManager implements Listener {
                         isChatEventActive = false;
                     }}, 20L * 30);
                 p.closeInventory();
+
+                break;
+            }
+
+            case "Prestige-Multipliers":{
+
+                if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+
+                    Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+
+                    return;
+                } else {
+
+                    if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
+                        Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EmptyGui")));
+                        e.setCancelled(true);
+                        return;
+                    } else {
+
+                        SellAllPrestigesMultiplierGUI gui = new SellAllPrestigesMultiplierGUI(p, 0);
+                        gui.open();
+
+                    }
+                }
 
                 break;
             }
@@ -1586,7 +1646,7 @@ public class ListenersPrisonManager implements Listener {
         if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
 
             // Open a new SpigotLadders GUI page.
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]));
+            SpigotMinesGUI gui = new SpigotMinesGUI(p, Integer.parseInt(parts[1]));
             p.closeInventory();
             gui.open();
             return;

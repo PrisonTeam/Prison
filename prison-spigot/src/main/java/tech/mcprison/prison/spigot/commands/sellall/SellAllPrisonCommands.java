@@ -314,6 +314,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
 
+        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return true;
+        }
+
         if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
             if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
 
@@ -321,11 +327,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 return true;
             }
         }
-        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
 
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return true;
-        }
         if (prestige == null){
 
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
@@ -923,7 +925,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         sender.dispatchCommand("sellall multiplier help");
-        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier.", permissions = "prison.admin", onlyPlayers = false)

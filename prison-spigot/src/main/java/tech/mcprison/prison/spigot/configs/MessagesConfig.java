@@ -112,8 +112,9 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ContainsNoCommands"," &3contains no commands.");
         dataConfig("Lore.DelaySellAll", "&3Delay: &8");
         dataConfig("Lore.DisableNotifications","&8Disable notifications.");
-        dataConfig("Lore.EnabledAll","&aAll features ON");
         dataConfig("Lore.DisabledAll","&aAll features OFF");
+        dataConfig("Lore.EnabledAll","&aAll features ON");
+        dataConfig("Lore.EmptyMultiplier", "&c[!] There aren't multipliers!");
         dataConfig("Lore.FullSoundEnabled","&aFull Inv., notify with sound ON");
         dataConfig("Lore.FullSoundDisabled","&cFull Inv., notify with sound OFF");
         dataConfig("Lore.FullHologramEnabled","&aFull Inv., notify with hologram ON");
@@ -136,6 +137,9 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.PrestigeWarning", "&3Prestige will reset: ");
         dataConfig("Lore.PrestigeWarning2", "&3 - &bRank");
         dataConfig("Lore.PrestigeWarning3", "&3 - &bBalance");
+        dataConfig("Lore.PrestigeName", "&8Prestige name: &3");
+        dataConfig("Lore.PrestigeMultiplier", "&8Multiplier: &3");
+        dataConfig("Lore.PrestigeMultiplierInfoGUI", "&3Manage multipliers.");
         dataConfig("Lore.Price","&3Price: &a$");
         dataConfig("Lore.Price2","&8Price: &a$");
         dataConfig("Lore.Price3","&3Rank Price: &a$");

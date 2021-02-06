@@ -18,6 +18,16 @@ that you need.
 
 # v3.2.4-alpha.10 2021-02-02
 
+* **Mines GUI pages fixed**
+Fixed a simple error of Mines GUI opening the Ladders GUI new page instead of the Mines new page.
+  
+
+
+* **SellAll Prestige Multipliers GUI**
+Added a new button to the /sellall gui to open the Prestige Multipliers SellAll GUI.
+  For now you can only see Multipliers values and delete them with a right-click.
+
+
 * **SellAll Optional Permissions review and fix**
 Some Optional Permission weren't working, now this got fixed, there may be
   more errors like this, if you find any please report it to me (@GABRYCA).
