@@ -18,6 +18,11 @@ that you need.
 
 # v3.2.4-alpha.10 2021-02-02
 
+* **SellAll Optional Permissions review and fix**
+Some Optional Permission weren't working, now this got fixed, there may be
+  more errors like this, if you find any please report it to me (@GABRYCA).
+
+
 * **SellAll Sign Permission**
 It's now possible to enable a permission to use the SellAll sign, from the SellAll Config you can toggle 
   `SellAll_Sign_Use_Permission_Enabled: false` to `true` to enable it, the permission's also editable 

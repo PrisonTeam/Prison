@@ -271,7 +271,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Check if a permission's required, if not it'll open directly the Player's GUI.
             if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")){
                 // Check if the sender has the required permission.
-                if (p.hasPermission("Options.Player_GUI_Permission")){
+                if (p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
                     SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
                     gui.open();
                     // If missing will send a missing permission error message.
@@ -761,7 +761,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
         if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission("Options.Add_Permission")) {
+            if (!sender.hasPermission(sellAllConfig.getString("Options.Add_Permission"))) {
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
                 return;
             }
@@ -817,7 +817,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (sellAllConfig.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission("Options.Delete_Permission")) {
+            if (!sender.hasPermission(sellAllConfig.getString("Options.Delete_Permission"))) {
                 return;
             }
         }
@@ -856,7 +856,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission("Options.Add_Permission")) {
+            if (!sender.hasPermission(sellAllConfig.getString("Options.Add_Permission"))) {
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
                 return;
             }
