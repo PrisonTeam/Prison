@@ -16,7 +16,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.10 2021-02-02
+# v3.2.4-alpha.11 2021-02-05
+
+
+
+* **v3.2.4-alpha.11 2021-02-05**
+
 
 * **Mines GUI pages fixed**
 Fixed a simple error of Mines GUI opening the Ladders GUI new page instead of the Mines new page.
