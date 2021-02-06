@@ -16,11 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.11 2021-02-05
+# v3.2.4-alpha.11b 2021-02-06
 
 
 
-* **v3.2.4-alpha.11b 2021-02-05**
+* **v3.2.4-alpha.11b 2021-02-06**
 Note: alpha.11 was built, but the changes to the build files were not committed.  11.b now represents an accurately set version. 
 
 

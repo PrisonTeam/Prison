@@ -10,6 +10,18 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.4
 
 
+- Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+
+
+- For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
+
+
+- Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
+
+
+- restrict access to the root commands in prison so players cannot run them even though they won't have access to the actual commands.
+
+
 - Fixed: player-mine placeholders do not work
 
 - Fixed: rankup does not work.  This may have looked like some placeholders were not working after a /rankup.
