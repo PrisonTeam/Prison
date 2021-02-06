@@ -20,7 +20,13 @@ that you need.
 
 
 
-* **v3.2.4-alpha.11 2021-02-05**
+* **v3.2.4-alpha.11b 2021-02-05**
+Note: alpha.11 was built, but the changes to the build files were not committed.  11.b now represents an accurately set version. 
+
+
+* **SellAll new GUI and many changes.** 
+Added new GUI and button. Minor changes and some fixes. Remove unused imports.
+Fixed some Optional permissions, essentially I was getting the permission path instead of the value from the config with that path.  Fixed a sellall issue when the permission was enabled it was using the permission for the path instead of getting it from the config.
 
 
 * **Mines GUI pages fixed**
