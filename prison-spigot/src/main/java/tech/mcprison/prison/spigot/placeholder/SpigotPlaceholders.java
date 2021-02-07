@@ -319,9 +319,13 @@ public class SpigotPlaceholders
 	    				if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
 	    					
 	    					String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
+	    					String target = "{" + identifier + "}";
 	    					
-	    					results = results.replace("{" + identifier + "}", 
-	    							mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, identifier ) );
+	    					String replacement = mm.getTranslatePlayerMinesPlaceHolder( 
+	    										playerUuid, playerName, placeHolderKey, identifier );
+	    					
+	    					results = results.replace( target, 
+		    									(replacement == null ? "" : replacement) );
 	    				}
 	    			}
 	    			
