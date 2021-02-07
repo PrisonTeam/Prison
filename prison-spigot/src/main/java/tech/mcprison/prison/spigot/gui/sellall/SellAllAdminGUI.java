@@ -116,7 +116,13 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
           messages.getString("Lore.PrestigeMultiplierInfoGUI")
         );
 
-        if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
+        try {
+            if (sellAllConfig.getConfigurationSection("Multiplier") == null) {
+                multipliersLore.add(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
+            } else if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
+                multipliersLore.add(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
+            }
+        } catch (NullPointerException ex){
             multipliersLore.add(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
         }
 
