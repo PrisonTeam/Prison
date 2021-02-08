@@ -49,6 +49,17 @@ public class SpigotOfflinePlayer
 		return false;
 	}
 	
+	/**
+	 * NOTE: A SpigotOfflinePlayer does not represent an online player with inventory.  
+	 *       This class is not "connected" to the underlying bukkit player
+	 *       so technically this is not a player object, especially since it
+	 *       always represents offline players too.
+	 */
+    @Override 
+    public boolean isPlayer() {
+    	return false;
+    }
+    
 	@Override
 	public boolean hasPermission( String perm ) {
 		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );

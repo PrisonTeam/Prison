@@ -16,8 +16,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.11b 2021-02-07
+# v3.2.4-alpha.11b 2021-02-08
 
+
+* **Allow the rankup command be ran from console and through other commands.**  It will not allow it to actually run, since a player name cannot be provided, but it will now allow /rankup help from console.  Added a function isPlayer() to all player objects to identify if being ran by a player, or from the console.
 
 
 * **Fixes prison's placeholders so that way when papi is reloaded it will no longer forget what prison registered.**

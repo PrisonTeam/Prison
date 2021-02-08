@@ -120,6 +120,11 @@ public class TestPlayer implements Player {
         return true;
     }
 
+    @Override
+    public boolean isPlayer() {
+    	return false;
+    }
+    
     @Override public Inventory getInventory() {
         return null;
     }

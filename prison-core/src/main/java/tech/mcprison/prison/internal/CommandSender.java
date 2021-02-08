@@ -76,5 +76,8 @@ public interface CommandSender {
     
     
     public boolean isOp();
+    
+    
+    public boolean isPlayer();
 
 }

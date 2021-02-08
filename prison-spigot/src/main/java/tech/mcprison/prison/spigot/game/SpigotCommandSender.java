@@ -73,6 +73,16 @@ public class SpigotCommandSender implements CommandSender {
     	return bukkitSender.isOp();
     }
     
+    @Override 
+    public boolean isPlayer() {
+    	boolean results = false;
+    	
+    	if ( bukkitSender != null ) {
+    		results = bukkitSender instanceof org.bukkit.entity.Player;
+    	}
+    	return results;
+    }
+    
     public org.bukkit.command.CommandSender getWrapper() {
         return bukkitSender;
     }

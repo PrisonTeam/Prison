@@ -537,6 +537,19 @@ public class RankPlayer
 	public boolean isOp() {
 		return false;
 	}
+	
+	
+	/**
+	 * NOTE: A RankPlayer does not represent an online player with inventory.  
+	 *       This class is not "connected" to the underlying bukkit player
+	 *       so technically this is not a player object, especially since it
+	 *       always represents offline players too.
+	 */
+    @Override 
+    public boolean isPlayer() {
+    	return false;
+    }
+	
 
 	@Override
 	public void updateInventory() {

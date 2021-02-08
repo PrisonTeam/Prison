@@ -73,10 +73,17 @@ public class RankUpCommand
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
+			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
     public void rankUp(CommandSender sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
+        
+        if ( !sender.isPlayer() ) {
+        	
+        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	return;
+        }
+        
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
 
@@ -106,6 +113,13 @@ public class RankUpCommand
         }
         
         Player player = getPlayer( sender, null );
+        
+       if ( !sender.isPlayer() ) {
+        	
+        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	return;
+        }
+
         
         //UUID playerUuid = player.getUUID();
         
