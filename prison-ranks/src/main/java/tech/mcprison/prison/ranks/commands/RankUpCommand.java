@@ -63,14 +63,21 @@ public class RankUpCommand
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
     					"on the default ladder.", 
-    			altPermissions = {"ranks.user", "ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
+    			altPermissions = {"ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
-    	if (sender.hasPermission("ranks.user") || sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
+    	
+    	// Not supposed to check perms here... :(  But it is a simple check, and it if works...
+    	if ( sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
+    	else {
+            Output.get()
+            .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
+            		"ranks.rankupmax." + ladder.toLowerCase());
+    	}
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
