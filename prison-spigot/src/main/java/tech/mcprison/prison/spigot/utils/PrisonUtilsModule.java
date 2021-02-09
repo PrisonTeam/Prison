@@ -8,7 +8,7 @@ import tech.mcprison.prison.modules.Module;
 public class PrisonUtilsModule
 	extends Module 
 {
-	public static final String MODULE_NAME = "Mines";
+	public static final String MODULE_NAME = "Utils";
 	
 	private YamlConfiguration modulesConf;
 
@@ -42,16 +42,16 @@ public class PrisonUtilsModule
 			}
 		}
 		
-		if ( isEnabled( "utils.potions.enabled", true ) ) {
-			
-			//PrisonUtilsPotions utils = new PrisonUtilsPotions();
-			
-//			utils.setEnableRepairAll( isEnabled( "utils.repair.repairAll", true ) );
-//			utils.setEnableRepairHand( isEnabled( "utils.repair.repairHand", true ) );
-			
-			//Prison.get().getCommandHandler().registerCommands( utils );
-			
-		}
+//		if ( isEnabled( "utils.potions.enabled", true ) ) {
+//			
+//			PrisonUtilsPotions utils = new PrisonUtilsPotions();
+//			
+//			utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects.enabled", true ) );
+//			utils.setEnablePotions( isEnabled( "utils.potions.potions.enabled", true ) );
+//			
+//			Prison.get().getCommandHandler().registerCommands( utils );
+//			
+//		}
 		
 	}
 

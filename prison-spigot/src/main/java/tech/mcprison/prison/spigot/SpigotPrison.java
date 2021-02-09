@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
@@ -82,6 +82,7 @@ import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -513,6 +514,21 @@ public class SpigotPrison extends JavaPlugin {
         // This registers the admin's /gui commands
         Prison.get().getCommandHandler().registerCommands( new PrisonSpigotCommands() );
 
+        
+        // Register prison utility commands:
+        if (modulesConf.getBoolean("utils.enabled", true)) {
+            Prison.get().getModuleManager()
+                    .registerModule(new PrisonUtilsModule(getDescription().getVersion(), modulesConf));
+
+            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+            
+        } else {
+            Output.get().logInfo("&7Modules: &cPrison Utils are disabled and were not Loaded. ");
+            Output.get().logInfo("&7  Prison Utils have been disabled in &2plugins/Prison/modules.yml&7.");
+            Prison.get().getModuleManager().getDisabledModules().add( PrisonUtilsModule.MODULE_NAME );
+        }
+        
+        
     }
 
 

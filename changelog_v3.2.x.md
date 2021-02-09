@@ -19,6 +19,12 @@ that you need.
 # v3.2.4-alpha.11b 2021-02-08
 
 
+* **Hooked up the new /prison utils module.**
+I added it as a module so the whole thing can be disabled and won't be loaded, and it can take advantage of the prison module's infrastructure.
+Initially this has command line access for /prison utils repair and /prison utils repairAll with a few different options.  These commands, and future util commands, are targeted to be used with blockEvents, or other rank and mine commands. Or they can even be used outside of prison if desired.  These utils will support spigot v1.8 through v1.16.
+The next utils command will provide potion effects.  That is not yet enabled or tested.
+
+
 * **When getting the player's rank number, if it player does not have a rank on that ladder, then it will now return a zero.**
 
 

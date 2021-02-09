@@ -96,7 +96,7 @@ public abstract class PrisonUtils
 		
 		boolean isConsole = !(sender instanceof org.bukkit.entity.Player);
 		
-    	SpigotPlayer player = getSpigotPlayer( playerName );
+    	SpigotPlayer player = getSpigotPlayer( playerName, false );
     	
     	// Player's name was not found then it's either being ran from console, or on self.
     	if ( player == null ) {
@@ -105,12 +105,12 @@ public abstract class PrisonUtils
     		// specified or was invalid:
     		if ( isConsole ) {
     			sender.sendMessage( String.format(
-    					"&3PlayerName was not specified or is not a valid player. [%s]", 
+    					"&3PlayerName is incorrect or they are not online. [&7%s&3]", 
     					(playerName == null ? "null" : playerName) ));
     		}
     		else if ( !sender.isOp() && !sender.hasPermission( permsSelf ) ) {
     			sender.sendMessage( String.format(
-    					"&3You do not have the permission to use on another player. [%s]", 
+    					"&3You do not have the permission to use on another player. [&7%s&3]", 
     					(playerName == null ? "null" : playerName) ));
     				
     		}
@@ -155,7 +155,7 @@ public abstract class PrisonUtils
      * @param playerName is optional, if not supplied, then sender will be used
      * @return Player if found, or null.
      */
-	protected SpigotPlayer getSpigotPlayer( String playerName ) {
+	protected SpigotPlayer getSpigotPlayer( String playerName, boolean useOfflinePlayer ) {
 		SpigotPlayer result = null;
 		
 		if ( playerName != null ) {
@@ -164,7 +164,7 @@ public abstract class PrisonUtils
 			if ( opt.isPresent() ) {
 				result = (SpigotPlayer) opt.get();
 			}
-			else {
+			else if ( useOfflinePlayer ) {
 				Optional<Player> optOLP = Prison.get().getPlatform().getOfflinePlayer( playerName );
 				
 				if ( optOLP.isPresent() ) {
@@ -178,6 +178,42 @@ public abstract class PrisonUtils
 		}
 		return result;
 	}
+	
+	/**
+	 * <p>This parses a String value to an int.  It uses a default value and
+	 * also constrains the results to be between within a given range.
+	 * </p>
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @param rangeLow
+	 * @param rangeHigh
+	 * @return
+	 */
+	protected int intValue( String value, int defaultValue, int rangeLow, int rangeHigh ) {
+		int results = defaultValue;
+		
+		if ( value != null && !value.trim().isEmpty() ) {
+			
+		}
+		
+		try {
+			results = Integer.parseInt( value );
+		}
+		catch ( NumberFormatException e ) {
+			// Not a valid number so ignore
+		}
+		
+		if ( results < rangeLow ) {
+			results = rangeLow;
+		}
+		else if ( results > rangeHigh ) {
+			results = rangeHigh;
+		}
+		
+		return results;
+	}
+
 	
 	public String getPluginName() {
 		return pluginName;

@@ -140,6 +140,10 @@ public class PrisonUtilsRepair
 				
 				utilRepair( player, playerName, repairOptions );
 			}
+			else {
+				
+				Output.get().logInfo( "Prison's utils command repair: Player cannot be loaded." );
+			}
 		}
 	}
 	
@@ -147,38 +151,46 @@ public class PrisonUtilsRepair
 	private void utilRepair( SpigotPlayer player, String playerName, List<RepairOptions> repairOptions ) {
 		
     	final List<String> repaired = new ArrayList<>();
+    	
+    	if ( player != null && player.getWrapper() != null && player.getWrapper().getInventory() != null ) {
+    		
+    		SpigotPlayerInventory inventory = new SpigotPlayerInventory( player.getWrapper().getInventory() );
+    		
+    		if ( repairOptions.contains( RepairOptions.repairAll ) ) {
+    			
+    			repairItems( inventory.getItems(), player, repaired, repairOptions);
+    		}
+    		else if ( repairOptions.contains( RepairOptions.repairInHand ) ) {
+    			List<ItemStack> itemStacks = new ArrayList<>();
+    			if ( inventory.getItemInLeftHand() != null ) {
+    				itemStacks.add( inventory.getItemInLeftHand() );
+    			}
+    			if ( inventory.getItemInRightHand() != null ) {
+    				itemStacks.add( inventory.getItemInRightHand() );
+    			}
+    			
+    			if ( itemStacks.size() > 0 ) {
+    				repairItems( itemStacks, player, repaired, repairOptions);
+    			}
+    		}
+    		
+    		if ( repairOptions.contains( RepairOptions.repairArmour ) ) {
+    			
+    			repairItems( inventory.getArmorContents(), player, repaired, repairOptions);
+    		}
+    		
+    	}
     	 
-    	 SpigotPlayerInventory inventory = new SpigotPlayerInventory( player.getWrapper().getInventory() );
-    	 
-    	 if ( repairOptions.contains( RepairOptions.repairAll ) ) {
-    		 
-    		 repairItems( inventory.getItems(), player, repaired, repairOptions);
-    	 }
-    	 else if ( repairOptions.contains( RepairOptions.repairInHand ) ) {
-    		 List<ItemStack> itemStacks = new ArrayList<>();
-    		 if ( inventory.getItemInLeftHand() != null ) {
-    			 itemStacks.add( inventory.getItemInLeftHand() );
-    		 }
-    		 if ( inventory.getItemInRightHand() != null ) {
-    			 itemStacks.add( inventory.getItemInRightHand() );
-    		 }
-    		 
-    		 if ( itemStacks.size() > 0 ) {
-    			 repairItems( itemStacks.toArray( new ItemStack[itemStacks.size()] ), 
-    					 player, repaired, repairOptions);
-    		 }
-    	 }
-    	 
-    	 if ( repairOptions.contains( RepairOptions.repairArmour ) ) {
-    		 
-    		 repairItems( inventory.getArmorContents(), player, repaired, repairOptions);
-    	 }
-
-         if (repaired.isEmpty()) {
-    		player.sendMessage( 
-    				String.format( "&3Nothing was repaired.") );
-         } 
-         else {
+        if (repaired.isEmpty()) {
+        	 if ( player.getWrapper() != null ) {
+        		 player.sendMessage( String.format( "&3Nothing was repaired.") );
+        	 }
+        	 else {
+        		 Output.get().logInfo( "&3Nothing was repaired." );
+        	 }
+        	 
+        } 
+        else {
 
         	 // At least one item was repaired so update the player's inventory:
         	 player.updateInventory();
@@ -245,25 +257,29 @@ public class PrisonUtilsRepair
     	
     	Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     	
-    	if ( item != null && !item.isBlock() && compat.getDurabilityMax( item ) > 0 && 
-    			compat.getDurability( item ) == 0 && 
-            	( item.getEnchantments().isEmpty() || 
-            	  !item.getEnchantments().isEmpty() && 
-            	  	!repairOptions.contains( RepairOptions.repairEnchanted )
-            	 ) ) {
+    	if ( item != null && !item.isBlock() && !item.isAir() ) {
     		
-    		results = compat.setDurability( item, 0 );
-    		if ( results ) {
-    			final String itemName = item.getName();
-    			repaired.add(itemName.replace('_', ' '));
+    		if ( compat.getDurabilityMax( item ) > 0 &&   // has durability if > 0
+    				compat.getDurability( item ) > 0 &&   // has wear if > 0
+    				( item.getEnchantments().isEmpty() || 
+    						!item.getEnchantments().isEmpty() && 
+    						!repairOptions.contains( RepairOptions.repairEnchanted )
+    						) ) {
+    			
+    			results = compat.setDurability( item, 0 );
+    			if ( results ) {
+    				final String itemName = item.getName();
+    				repaired.add(itemName.replace('_', ' '));
+    			}
     		}
     	}
+    	
         
         return results;
     }
     
 
-    private void repairItems( ItemStack[] itemStacks, SpigotPlayer player, 
+    private void repairItems( List<ItemStack> itemStacks, SpigotPlayer player, 
     					List<String> repaired, List<RepairOptions> repairOptions ) {
     	
         for (final ItemStack is : itemStacks) {
@@ -271,6 +287,15 @@ public class PrisonUtilsRepair
         	
         	repairItem( item, repaired, repairOptions );
         }
+    }
+    private void repairItems( ItemStack[] itemStacks, SpigotPlayer player, 
+    		List<String> repaired, List<RepairOptions> repairOptions ) {
+    	
+    	for (final ItemStack is : itemStacks) {
+    		SpigotItemStack item = (SpigotItemStack) is;
+    		
+    		repairItem( item, repaired, repairOptions );
+    	}
     }
 
 	public boolean isEnableRepairAll() {
