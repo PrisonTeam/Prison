@@ -57,10 +57,7 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
+import tech.mcprison.prison.spigot.commands.*;
 import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
@@ -510,9 +507,9 @@ public class SpigotPrison extends JavaPlugin {
             Prison.get().getCommandHandler().registerCommands(new SellAllPrisonCommands());
 
         }
-        
+
         // This registers the admin's /gui commands
-        Prison.get().getCommandHandler().registerCommands( new PrisonSpigotCommands() );
+        Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
 
         
         // Register prison utility commands:

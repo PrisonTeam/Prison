@@ -17,48 +17,14 @@ public class PrisonSpigotMinesCommands
 	@Command(identifier = "mines", onlyPlayers = false,
 			altPermissions = {"-none-", "mines.admin"})
 	public void minesGUICommand(CommandSender sender) {
-		if (!sender.hasPermission("mines.admin") && isConfig("Options.Mines.GUI_Enabled")) {
-
-			prisonManagerMines( sender );
+		if (!sender.hasPermission("mines.admin")) {
 
             if (isPrisonConfig("prison-gui-enabled") && isConfig("Options.Mines.GUI_Enabled")){
                 sender.dispatchCommand("gui mines");
             }
+
 		} else {
 			sender.dispatchCommand("mines help");
 		}
 	}
-	
-
-    @Command( identifier = "gui mines", description = "GUI Mines",
-  		  aliases = {"prisonmanager mines"},
-		  onlyPlayers = true )
-    private void prisonManagerMines(CommandSender sender) {
-
-        Player player = getSpigotPlayer(sender);
-
-        if (player == null) {
-        	Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
-        	return;
-        }
-
-        if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Mines.GUI_Enabled") ){
-            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.mineOrGuiDisabled")));
-            return;
-        }
-
-
-        if ( isConfig("Options.Mines.Permission_GUI_Enabled") ){
-        	String perm = getConfig( "Options.Mines.Permission_GUI");
-
-            if ( !sender.hasPermission( perm ) ){
-                Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.mineMissingGuiPermission") + " [" +
-        				perm + "]"));
-                return;
-            }
-        }
-
-        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player );
-        gui.open();
-    }
 }

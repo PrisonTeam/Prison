@@ -26,8 +26,7 @@ public class PrisonSpigotRanksCommands
 			if ((ladderName.equalsIgnoreCase("default") || ladderName.equalsIgnoreCase("ranks")) &&
 					isConfig("Options.Ranks.GUI_Enabled")) {
 
-				prisonManagerRanks( sender );
-//				sender.dispatchCommand("gui ranks");
+				sender.dispatchCommand("gui ranks");
 			} else if (ladderName.equalsIgnoreCase("prestiges") && isConfig( "Options.Prestiges.GUI_Enabled")) {
 
 				sender.dispatchCommand("gui prestiges");
@@ -39,39 +38,4 @@ public class PrisonSpigotRanksCommands
 			sender.dispatchCommand("ranks help");
 		}
 	}
-
-
-    @Command( identifier = "gui ranks", description = "GUI Ranks",
-    		  aliases = {"prisonmanager ranks"},
-    		  onlyPlayers = true )
-    private void prisonManagerRanks(CommandSender sender) {
-
-        Player player = getSpigotPlayer(sender);
-
-        if (player == null) {
-        	Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
-        	return;
-        }
-
-        if (!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled")) {
-        	Output.get().sendInfo(sender, SpigotPrison.format(String.format(String.format(
-        					getMessages().getString("Message.rankGuiDisabledOrAllGuiDisabled"), 
-        					getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") ))));
-        	return;
-        }
-
-        if (isConfig("Options.Ranks.Permission_GUI_Enabled")) {
-        	String perm = getConfig( "Options.Ranks.Permission_GUI");
-        	if (!sender.hasPermission(perm)) {
-
-        		Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.rankGuiMissingPermission") + " [" +
-        				perm + "]"));
-        		return;
-        	}
-        }
-
-        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player );
-        gui.open();
-    }
-
 }

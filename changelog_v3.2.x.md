@@ -18,8 +18,13 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-08
 
+ 
+* **SellAll GUI shortcut**
+It's now possible to use /sellall gui even with the command /gui sellall.
+  
 
-
+* **GUIs permissions fixes**
+It should be now possible to use GUIs command without permissions issues.
 
 
 * **v3.2.4-alpha.12 2021-02-08**

@@ -135,36 +135,4 @@ public class PrisonSpigotPrestigeCommands
             }
         }, 20L * 30);
     }
-
-
-    @Command( identifier = "gui prestiges", description = "GUI Prestiges",
-    		  aliases = {"prisonmanager prestiges"},
-    		  onlyPlayers = true )
-    private void prisonManagerPrestiges( CommandSender sender ) {
-
-        if ( !isPrisonConfig("prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.PrestigesAreDisabled")));
-            return;
-        }
-
-
-        if ( !isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Prestiges.GUI_Enabled")){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.GuiOrPrestigesDisabled")));
-            return;
-        }
-
-        if ( isConfig("Options.Prestiges.Permission_GUI_Enabled") ){
-        	String perm = getConfig( "Options.Prestiges.Permission_GUI");
-
-            if ( !sender.hasPermission( perm ) ){
-                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.missingGuiPrestigesPermission") + " [" +
-        				perm + "]"));
-                return;
-            }
-        }
-
-        Player player = getSpigotPlayer( sender );
-        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player );
-        gui.open();
-    }
 }
