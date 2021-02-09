@@ -16,7 +16,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.11b 2021-02-08
+# v3.2.4-alpha.12 2021-02-08
+
+
+
+
+
+* **v3.2.4-alpha.12 2021-02-08**
 
 
 * **Hooked up the new /prison utils module.**
