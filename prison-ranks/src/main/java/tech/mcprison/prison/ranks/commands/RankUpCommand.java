@@ -68,8 +68,8 @@ public class RankUpCommand
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
-    	
-    	// Not supposed to check perms here... :(  But it is a simple check, and it if works...
+
+    	// Not supposed to check perms here... But it is a simple check, and it if works...
     	if ( sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
