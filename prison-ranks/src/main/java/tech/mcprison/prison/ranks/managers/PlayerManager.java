@@ -403,7 +403,7 @@ public class PlayerManager
     		}
     	}
     	
-    	return sb.toString();
+    	return (sb.length() == 0 ? "0" : sb.toString());
     }
     
     /**
