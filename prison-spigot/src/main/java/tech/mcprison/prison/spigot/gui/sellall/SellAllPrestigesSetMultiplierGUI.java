@@ -73,7 +73,7 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         // Decrease button
         ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 0.1" ));
         inv.setItem(1, decreaseOf1);
-        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 0.5"));
+        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 0.5"));
         inv.setItem(10, decreaseOf5);
         ItemStack decreaseOf10 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 1"));
         inv.setItem(19, decreaseOf10);
