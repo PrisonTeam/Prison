@@ -39,6 +39,9 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();

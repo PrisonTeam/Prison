@@ -21,6 +21,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
  */
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 

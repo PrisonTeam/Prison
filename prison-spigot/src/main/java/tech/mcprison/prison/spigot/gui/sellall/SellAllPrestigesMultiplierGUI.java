@@ -13,6 +13,9 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -63,6 +66,7 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
                             messages.getString("Lore.PrestigeName") + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
                             messages.getString("Lore.PrestigeMultiplier") + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER"),
                             "",
+                            messages.getString("Lore.ClickToEdit"),
                             messages.getString("Lore.RightClickToDelete")
                     );
 

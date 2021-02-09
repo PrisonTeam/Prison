@@ -16,21 +16,23 @@ import java.util.List;
 /**
  * @author GABRYCA
  */
-public class SellAllDelayGUI extends SpigotGUIComponents {
+public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final int val;
+    private final double val;
+    private final String prestigeName;
 
-    public SellAllDelayGUI(Player p, int val){
+    public SellAllPrestigesSetMultiplierGUI(Player p, double val, String prestigeName){
         this.p = p;
         this.val = val;
+        this.prestigeName = prestigeName;
     }
 
     public void open() {
 
         // Create a new inventory
         int dimension = 45;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Delay"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Edit -> Multiplier"));
 
         if (guiBuilder(inv)) return;
 
@@ -58,7 +60,7 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         );
         List<String> confirmButtonLore = createLore(
                 messages.getString("Lore.LeftClickToConfirm"),
-                messages.getString("Lore.DelaySellAll") + val + "s",
+                messages.getString("Lore.Multiplier") + "x" + val,
                 messages.getString("Lore.RightClickToCancel")
         );
         List<String> changeIncreaseValueLore = createLore(
@@ -69,35 +71,36 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         ItemStack decreaseStack = XMaterial.REDSTONE_BLOCK.parseItem();
 
         // Decrease button
-        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay" + + val + " - 1" ));
+        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 0.1" ));
         inv.setItem(1, decreaseOf1);
-        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10"));
+        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 0.5"));
         inv.setItem(10, decreaseOf5);
-        ItemStack decreaseOf10 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 100"));
+        ItemStack decreaseOf10 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 1"));
         inv.setItem(19, decreaseOf10);
-        ItemStack decreaseOf50 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 1000"));
+        ItemStack decreaseOf50 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 2"));
         inv.setItem(28, decreaseOf50);
-        ItemStack decreaseOf100 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10000"));
+        ItemStack decreaseOf100 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 5"));
         inv.setItem(37, decreaseOf100);
 
 
         // Create a button and set the position
-        ItemStack confirmButton = createButton(XMaterial.CLOCK.parseItem(), confirmButtonLore, SpigotPrison.format("&3Confirm: Delay " + val));
+        ItemStack confirmButton = createButton(XMaterial.CLOCK.parseItem(), confirmButtonLore, SpigotPrison.format("&3Confirm: "  + prestigeName + " " + val));
         inv.setItem(22, confirmButton);
 
         Material increaseMat = XMaterial.EMERALD_BLOCK.parseMaterial();
         ItemStack increaseStack = XMaterial.EMERALD_BLOCK.parseItem();
 
         // Increase button
-        ItemStack increseOf1 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 1" ));
+        ItemStack increseOf1 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 0.1" ));
         inv.setItem(7, increseOf1);
-        ItemStack increaseOf5 = createButton(new ItemStack(increaseMat, 10), changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 10"));
+        ItemStack increaseOf5 = createButton(new ItemStack(increaseMat, 10), changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 0.5"));
         inv.setItem(16, increaseOf5);
-        ItemStack increaseOf10 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 100"));
+        ItemStack increaseOf10 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 1"));
         inv.setItem(25, increaseOf10);
-        ItemStack increaseOf50 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 1000"));
+        ItemStack increaseOf50 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 2"));
         inv.setItem(34, increaseOf50);
-        ItemStack increaseOf100 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 10000"));
+        ItemStack increaseOf100 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 5"));
         inv.setItem(43, increaseOf100);
     }
+
 }

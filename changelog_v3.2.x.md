@@ -18,6 +18,12 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-08
 
+
+* **New SellAll set Multiplier GUI**
+By clicking on a Prestige on the /sellall gui -> Prestige Multiplier -> Click on a prestige
+  it's now possible to open an editor to edit the SellAll Multiplier Prestige of that prestige
+  directly from the GUI.
+
  
 * **SellAll GUI shortcut**
 It's now possible to use /sellall gui even with the command /gui sellall.

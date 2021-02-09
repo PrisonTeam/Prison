@@ -637,6 +637,13 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
+            case "Edit -> Multiplier":{
+
+                setSellAllPrestigeMultiplier(e, p, parts);
+
+                break;
+            }
+
             // Check the title and do the actions.
             case "Prison -> SellAll-Player":{
 
@@ -652,6 +659,109 @@ public class ListenersPrisonManager implements Listener {
 
                 break;
             }
+        }
+    }
+
+    private void setSellAllPrestigeMultiplier(InventoryClickEvent e, Player p, String[] parts) {
+
+        // Rename the parts
+        String part1 = parts[0];
+        String part2 = parts[1];
+        String part3 = parts[2];
+
+        // Initialize the variable
+        double decreaseOrIncreaseValue = 0;
+
+        // If there're enough parts init another variable
+        if (parts.length == 4){
+            decreaseOrIncreaseValue = Double.parseDouble(parts[3]);
+        }
+
+        // Check the button name and do the actions
+        if (part1.equalsIgnoreCase("Confirm:")) {
+
+            // Check the click type and do the actions
+            if (e.isLeftClick()){
+
+                // Execute the command
+                Bukkit.dispatchCommand(p,"sellall multiplier add " + part2 + " " + part3);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+
+                // Check the click type and do the actions
+            } else if (e.isRightClick()){
+
+                // Send a message to the player
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+
+                return;
+            } else {
+
+                // Cancel the event
+                e.setCancelled(true);
+                return;
+            }
+        }
+
+        // Give to val a value
+        double val = Double.parseDouble(part2);
+
+        // Check the calculator symbol
+        if (part3.equals("-")){
+
+            // Check if the value's already too low
+            if (!((val -  decreaseOrIncreaseValue) < 0)) {
+
+                // If it isn't too low then decrease it
+                val = val - decreaseOrIncreaseValue;
+
+                // If it is too low
+            } else {
+
+                // Tell to the player that the value's too low
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
+
+                e.setCancelled(true);
+
+                // Close the inventory
+                p.closeInventory();
+                return;
+            }
+
+            // Open an updated GUI after the value changed
+            SellAllPrestigesSetMultiplierGUI gui = new SellAllPrestigesSetMultiplierGUI(p, val, part1);
+            gui.open();
+
+            // Check the calculator symbol
+        } else if (part3.equals("+")){
+
+            // Check if the value isn't too high
+            if (!((val + decreaseOrIncreaseValue) > 2147483646)) {
+
+                // Increase the value
+                val = val + decreaseOrIncreaseValue;
+
+                // If the value's too high then do the action
+            } else {
+
+                // Close the GUI and tell it to the player
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
+                e.setCancelled(true);
+                p.closeInventory();
+                return;
+            }
+
+            // Open a new updated GUI with new values
+            SellAllPrestigesSetMultiplierGUI gui = new SellAllPrestigesSetMultiplierGUI(p, val, part1);
+            gui.open();
         }
     }
 
@@ -678,6 +788,11 @@ public class ListenersPrisonManager implements Listener {
             SellAllPrestigesMultiplierGUI gui = new SellAllPrestigesMultiplierGUI(p, 0);
             gui.open();
             return;
+        } else {
+
+            // Open setMultiplierGUI
+            SellAllPrestigesSetMultiplierGUI gui = new SellAllPrestigesSetMultiplierGUI(p, Double.parseDouble(sellAllConfig.getString("Multiplier." + parts[0] + ".MULTIPLIER")), parts[0]);
+            gui.open();
         }
 
         // Cancel the event

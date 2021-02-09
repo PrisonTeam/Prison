@@ -11,6 +11,9 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class PrisonSetupGUI extends SpigotGUIComponents{
 
     private final Player p;

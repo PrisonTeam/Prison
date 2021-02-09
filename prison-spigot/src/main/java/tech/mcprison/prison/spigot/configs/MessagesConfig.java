@@ -131,6 +131,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ManageResetTime","&8Manage the reset time of Mine.");
         dataConfig("Lore.MinesButton","&8Mines GUI manager.");
         dataConfig("Lore.MineName", "&3Mine Name: &f");
+        dataConfig("Lore.Multiplier", "&3Multiplier: &f");
         dataConfig("Lore.Name","&3Rank Name: &7");
         dataConfig("Lore.Notifications","&8Edit Mines notifications.");
         dataConfig("Lore.PlayersWithTheRank","&3Players at rank: &7");

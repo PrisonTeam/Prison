@@ -11,6 +11,10 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 
+/**
+ * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
+ */
 public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();

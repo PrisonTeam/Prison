@@ -20,6 +20,10 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+/**
+ * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
+ */
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;

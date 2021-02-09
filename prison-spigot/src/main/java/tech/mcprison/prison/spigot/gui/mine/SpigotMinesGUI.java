@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
  */
 public class SpigotMinesGUI extends SpigotGUIComponents {
 
