@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.cryptomorin.xseries.XMaterial;
-
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.util.BlockType;
@@ -26,6 +24,7 @@ public class SpigotItemStack
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
         	  setAmount( 0 );
               setMaterial( BlockType.AIR );
+              setDisplayName( "air" );
         }
         else {
         	
@@ -35,12 +34,7 @@ public class SpigotItemStack
         	} else {
         		meta = bukkitStack.getItemMeta();
         	}
-        	
-        	String displayName = null;
-        	
-        	if (meta.hasDisplayName()) {
-        		displayName = meta.getDisplayName();
-        	}
+
         	
         	
         	// We are getting the bukkit amount here, but if it changes, we must set the amount
@@ -50,6 +44,16 @@ public class SpigotItemStack
         	BlockType type = SpigotPrison.getInstance().getCompatibility()
         			.getBlockType( bukkitStack );
 //        BlockType type = materialToBlockType(bukkitStack.getType());
+        	
+        	
+        	String displayName = null;
+        	
+        	if (meta.hasDisplayName()) {
+        		displayName = meta.getDisplayName();
+        	}
+        	else if ( type != null ) {
+        		displayName = type.name().toLowerCase();
+        	}
         	
         	List<String> lores = new ArrayList<>();
         	
@@ -84,9 +88,37 @@ public class SpigotItemStack
 		}
 	}
 	
-	public boolean isBlock() {
-		return XMaterial.matchXMaterial( getBukkitStack() ).parseMaterial().isBlock();
+	
+	
+	public boolean isAir() {
+		boolean results = false;
+		
+		if ( getMaterial() != null && getMaterial() == BlockType.AIR ||
+				getName() != null && "air".equalsIgnoreCase( getName() ) ) {
+			results = true;
+		}
+		else if ( getBukkitStack() != null ) {
+			results = getBukkitStack().getType().equals( Material.AIR );
+		}
+		
+		return results;
 	}
+	
+	public boolean isBlock() {
+		boolean results = false;
+		
+		if ( getBukkitStack() != null ) {
+			results = getBukkitStack().getType().isBlock();
+//			XMaterial xMat = XMaterial.matchXMaterial( getBukkitStack() );
+//			if ( xMat != null ) {
+//				results = xMat.parseMaterial().isBlock();
+//			}
+		}
+		
+		return results;
+	}
+	
+
 	
     public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {
         super(displayName, amount, material, lore );

@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.11b 2021-02-08
 
 
+* **Fixed issues with item stacks and support for compatibility issues.**
+Reworked some of the compatibility functions to handle different situations where it failing.  Now for spigot 1.8, if it fails to map a block, an item, a tool, a weapon, or armor to a valid BlockType, it will fall back to XMaterial to make that mapping possible.  Found that were some items are defined with a data value of zero, in reality, the value could be anything.  So prison's old block model uses the "book" values, but when those fail, then it defers to XMaterial to apply a more aggressive mapping.  Also fixed some of the SpigotPlayerInventory functions since they were not hooked in to the compatibility functions so they were being problematic.
+
+
+
 * **Allow the rankup command be ran from console and through other commands.**  It will not allow it to actually run, since a player name cannot be provided, but it will now allow /rankup help from console.  Added a function isPlayer() to all player objects to identify if being ran by a player, or from the console.
 
 

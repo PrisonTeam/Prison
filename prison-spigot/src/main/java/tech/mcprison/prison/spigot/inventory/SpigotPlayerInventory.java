@@ -18,13 +18,15 @@
 
 package tech.mcprison.prison.spigot.inventory;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.inventory.PlayerInventory;
-import tech.mcprison.prison.spigot.SpigotUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.inventory.PlayerInventory;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 
 /**
  * Created by DMP9 on 04/02/2017.
@@ -98,23 +100,40 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     }
 
     @Override public ItemStack getItemInLeftHand() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInOffHand());
+
+    	return SpigotUtil.bukkitItemStackToPrison(
+    			SpigotPrison.getInstance().getCompatibility().getItemInOffHand( 
+						((org.bukkit.inventory.PlayerInventory) getWrapper()) )
+    				);
+    	
+//        return SpigotUtil.bukkitItemStackToPrison(
+//            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInOffHand());
     }
 
     @Override public void setItemInLeftHand(ItemStack stack) {
-        ((org.bukkit.inventory.PlayerInventory) getWrapper())
-            .setItemInOffHand(SpigotUtil.prisonItemStackToBukkit(stack));
+    	
+    	if ( stack instanceof SpigotItemStack ) {
+    		
+    		SpigotPrison.getInstance().getCompatibility()
+    						.setItemStackInOffHand( this, ((SpigotItemStack) stack) );
+    	}
     }
 
     @Override public ItemStack getItemInRightHand() {
-        return SpigotUtil.bukkitItemStackToPrison(
-            ((org.bukkit.inventory.PlayerInventory) getWrapper()).getItemInMainHand());
+    	
+    	
+    	return SpigotUtil.bukkitItemStackToPrison(
+    				SpigotPrison.getInstance().getCompatibility().getItemInMainHand( 
+    						((org.bukkit.inventory.PlayerInventory) getWrapper()) ));
     }
 
     @Override public void setItemInRightHand(ItemStack stack) {
-        ((org.bukkit.inventory.PlayerInventory) getWrapper())
-            .setItemInMainHand(SpigotUtil.prisonItemStackToBukkit(stack));
+    	
+    	if ( stack instanceof SpigotItemStack ) {
+    		
+    		SpigotPrison.getInstance().getCompatibility()
+    						.setItemStackInMainHand( this, ((SpigotItemStack) stack) );
+    	}
     }
 
 }

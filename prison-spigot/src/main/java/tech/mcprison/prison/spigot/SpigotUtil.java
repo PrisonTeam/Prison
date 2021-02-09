@@ -567,8 +567,12 @@ public class SpigotUtil {
    */
 
     public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
+    	SpigotItemStack results = null;
     	
-    	SpigotItemStack results = new SpigotItemStack( bukkitStack );
+    	if ( bukkitStack != null ) {
+    		results = new SpigotItemStack( bukkitStack );
+    	}
+    	
     	return results;
     }
 

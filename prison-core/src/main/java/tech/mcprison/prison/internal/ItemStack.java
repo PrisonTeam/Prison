@@ -69,7 +69,9 @@ public class ItemStack {
      * Returns the name of the item stack, derived from its BlockType name.
      */
     public String getName() {
-        return StringUtils.capitalize(material.name().replaceAll("_", " ").toLowerCase());
+    	String name = (material != null ? material.name() : 
+    					( getDisplayName() != null ? getDisplayName() : "none"));
+        return StringUtils.capitalize(name.replaceAll("_", " ").toLowerCase());
     }
 
     /**
