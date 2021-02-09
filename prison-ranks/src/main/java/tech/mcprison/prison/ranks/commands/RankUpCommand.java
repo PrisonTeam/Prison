@@ -63,13 +63,14 @@ public class RankUpCommand
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
     					"on the default ladder.", 
-    			permissions = "ranks.user", 
-    			altPermissions = "ranks.rankupmax.[ladderName] ranks.rankupmax.prestige", 
+    			altPermissions = {"ranks.user", "ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
-    	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax." );
+    	if (sender.hasPermission("ranks.user") || sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
+			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
+		}
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
@@ -138,7 +139,7 @@ public class RankUpCommand
 		boolean willPrestige = false;
 
 		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
-		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
+		if (ladder.equalsIgnoreCase("prestiges")) {
 
 			RankLadder rankLadder = lm.getLadder("default");
 			
@@ -170,7 +171,7 @@ public class RankUpCommand
 
 		boolean rankupWithSuccess = false;
 
-        if ( ladder != null && rankPlayer != null ) {
+        if (rankPlayer != null ) {
         	
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
