@@ -324,6 +324,38 @@ public class PrisonCommand {
         return display;
     }
 
+	
+    /**
+     * A test to see if these dummny command placeholders could possibly lock out
+     * players who don't have permission to view the subcommands?
+     * 
+     */
+
+    @Command(identifier = "prison", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison help" );
+    }
+ 
+    @Command(identifier = "prison placeholders", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonPlaceholdersSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison placeholders help" );
+    }
+    
+    @Command(identifier = "prison reload", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonReloadSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison reload help" );
+    }
+    
+    @Command(identifier = "prison utils", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonUtilsSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison utils help" );
+    }
+    
+    
     @Command(identifier = "prison modules", onlyPlayers = false, permissions = "prison.modules", 
     				description = "Lists the modules that hook into Prison to give it functionality.")
     public void modulesCommand(CommandSender sender) {
@@ -657,7 +689,7 @@ public class PrisonCommand {
      */
     @Command(identifier = "prison autofeatures", 
     		description = "Autofeatures for prison: pickup, smelt, and block", 
-    		onlyPlayers = false )
+    		onlyPlayers = false, permissions = "prison.autofeatures" )
 //    		, altPermissions = { "prison.autofeatures.pickup", "prison.autofeatures.smelt" , 
 //    				"prison.autofeatures.block" })
     public void autoFeaturesInformation(CommandSender sender) {
@@ -699,7 +731,7 @@ public class PrisonCommand {
     
     @Command(identifier = "prison debug", 
     		description = "For internal use only. Do not use until instructed since this is not hookedup.", 
-    		onlyPlayers = false )
+    		onlyPlayers = false, permissions = "prison.debug" )
     public void toggleDebug(CommandSender sender ) {
     	
     	Output.get().setDebug( !Output.get().isDebug() );

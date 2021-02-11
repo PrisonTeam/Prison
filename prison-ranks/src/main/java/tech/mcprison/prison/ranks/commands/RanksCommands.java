@@ -59,6 +59,35 @@ public class RanksCommands
 		this.rankCommandCommands = rankCommandCommands;
 	}
 
+    @Command(identifier = "ranks command", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksCommandSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks command help" );
+    }
+    
+    @Command(identifier = "ranks ladder", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksLadderSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks ladder help" );
+    }
+    
+    @Command(identifier = "ranks perms", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksPermsSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks perms help" );
+    }
+    
+    @Command(identifier = "ranks remove", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksRemoveSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks remove help" );
+    }
+    
+    @Command(identifier = "ranks set", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksSetSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks set help" );
+    }
 
 	@Command(identifier = "ranks create", description = "Creates a new rank", 
     							onlyPlayers = false, permissions = "ranks.create")

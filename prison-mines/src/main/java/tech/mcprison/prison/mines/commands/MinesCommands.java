@@ -93,6 +93,30 @@ public class MinesCommands
         return true;
     }
 
+    @Command(identifier = "mines block", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineBlockSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines block help" );
+    }
+    
+    @Command(identifier = "mines blockEvent", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineBlockEventSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines blockEvent help" );
+    }
+    
+    @Command(identifier = "mines command", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineCommandSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines command help" );
+    }
+    
+    @Command(identifier = "mines set", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void minesSetSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines set help" );
+    }
+    
     @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
