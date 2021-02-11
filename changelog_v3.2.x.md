@@ -18,6 +18,9 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-08
 
+* **SellAll sell earned money formatted**
+SellAll sell money's now formatted properly.
+
 
 * **New SellAll set Multiplier GUI**
 By clicking on a Prestige on the /sellall gui -> Prestige Multiplier -> Click on a prestige
