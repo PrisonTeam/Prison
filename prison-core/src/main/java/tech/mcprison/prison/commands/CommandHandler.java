@@ -131,7 +131,7 @@ public class CommandHandler {
         public String[] getHelpMessage(RegisteredCommand command) {
             ArrayList<String> message = new ArrayList<String>();
 
-            if (command.isSet()) {
+            if (command.isSet() && command.getDescription() != null && !command.getDescription().isEmpty()) {
                 message.add(ChatColor.DARK_AQUA + command.getDescription());
             }
 
