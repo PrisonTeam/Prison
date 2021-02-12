@@ -71,39 +71,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
     }
 
-    /**
-     * Get sellAllConfig updated.
-     * */
-    private void sellAllConfigUpdater(){
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-    }
-
-    /**
-     * Add a Player to delay.
-     *
-     * @param p Player
-     * */
-    private void addPlayerToDelay(Player p){
-
-        if (!isEnabled()) return;
-
-        if (!activePlayerDelay.contains(p.getName())){
-            activePlayerDelay.add(p.getName());
-        }
-    }
-
-    /**
-     * Removes a Player from delay.
-     *
-     * @param p Player
-     * */
-    private void removePlayerFromDelay(Player p){
-
-        if (!isEnabled()) return;
-
-        activePlayerDelay.remove(p.getName());
-    }
-
     public void toggleSellAllSign(){
         if (!signUsed){
             signUsed = true;
@@ -127,9 +94,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         // Get money to give
         double moneyToGive = getNewMoneyToGive( sPlayer.getWrapper(), items, removeItems);
-
-        if (sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true")) {
-
+        boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        if (multiplierEnabled) {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);;
         }
 
@@ -150,224 +116,50 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
 
         // Get default multiplier
-        double multiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+        String multiplierString = sellAllConfig.getString("Options.Multiplier_Default");
+        double multiplier = 0;
+        if (multiplierString != null) {
+            multiplier = Double.parseDouble(multiplierString);
+        }
 
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
         if (module != null) {
             PrisonRanks rankPlugin = (PrisonRanks) module;
-
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null ) {
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null) {
                 String playerRankName;
                 try {
                     playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
-                } catch (NullPointerException ex){
+                } catch (NullPointerException ex) {
                     playerRankName = null;
                 }
-                if ((playerRankName != null) && (sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER") != null)) {
-                    multiplier = Double.parseDouble(sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER"));
+                if (playerRankName != null) {
+                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+                    if (multiplierRankString != null) {
+                        try {
+                            multiplier = Double.parseDouble(multiplierRankString);
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
                 }
             }
         }
+
+        // Get Multiplier from multipliers permission's if there's any.
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
         double multiplierExtraByPerms = 0;
         for (String multByPerm : perms){
             double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            if (!sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true")) {
+            boolean multiplierPermissionHighOption = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
+            if (!multiplierPermissionHighOption) {
                 multiplierExtraByPerms += multByPermDouble;
-            } else if (sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher").equalsIgnoreCase("true") && multByPermDouble > multiplierExtraByPerms){
+            } else if (multByPermDouble > multiplierExtraByPerms){
                 multiplierExtraByPerms = multByPermDouble;
             }
         }
         multiplier += multiplierExtraByPerms;
 
         return multiplier;
-    }
-
-    private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
-
-        double moneyToGive = 0;
-
-        // Get the player inventory
-        Inventory inv = p.getInventory();
-
-        // Get the items from the player inventory and for each of them check the conditions.
-        for (ItemStack itemStack : inv.getContents()){
-            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
-        }
-
-        if (isEnabledMinePacks){
-
-            Backpack backPack = minepacksPlugin.getBackpackCachedOnly(p);
-
-            if (backPack == null){
-                return moneyToGive;
-            }
-
-            for (ItemStack itemStack : backPack.getInventory().getContents()){
-                moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, true, removeItems);
-            }
-        }
-
-        return moneyToGive;
-    }
-
-    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean backPackMode, boolean removeItems) {
-
-        double moneyToGive = 0;
-
-        if (itemStack != null) {
-            // Get the items strings from config and for each of them get the Material and value.
-            for (String key : items) {
-
-                // Flag variable and XMaterials.
-                boolean hasError = false;
-                XMaterial itemMaterial = null;
-                XMaterial invMaterial = null;
-                try {
-                    itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID"));
-                    invMaterial = XMaterial.matchXMaterial(itemStack);
-                } catch (IllegalArgumentException ex){
-                    hasError = true;
-                }
-
-                // Get value
-                double value = 0;
-                try {
-                    value = Double.parseDouble(sellAllConfig.getString("Items." + key + ".ITEM_VALUE"));
-                } catch (NumberFormatException ex){
-                    if (!hasError) hasError = true;
-                }
-
-                // Get amount and remove items if enabled
-                int amount = 0;
-                // Check if the item from the player inventory's on the config of items sellable
-                // So it gets the amount and then remove it from the inventory
-                if (!hasError && itemMaterial == invMaterial) {
-                    amount = itemStack.getAmount();
-                    if (removeItems) {
-                        if (!backPackMode) {
-                            p.getInventory().remove(itemStack);
-                        } else {
-                            minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
-                        }
-                    }
-                }
-                // Get the new amount of money to give
-                if (amount != 0) {
-                    moneyToGive += value * amount;
-                }
-            }
-        }
-        return moneyToGive;
-    }
-
-    /**
-     * Open SellAll GUI for Players if enabled.
-     *
-     * @param p Player
-     *
-     * @return boolean
-     * */
-    private boolean sellAllPlayerGUI(Player p) {
-
-        // Check if the Player GUI's enabled.
-        if (sellAllConfig.getString("Options.Player_GUI_Enabled").equalsIgnoreCase("true")){
-            // Check if a permission's required, if not it'll open directly the Player's GUI.
-            if (sellAllConfig.getString("Options.Player_GUI_Permission_Enabled").equalsIgnoreCase("true")){
-                // Check if the sender has the required permission.
-                if (p.hasPermission(sellAllConfig.getString("Options.Player_GUI_Permission"))){
-                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
-                    gui.open();
-                    // If missing will send a missing permission error message.
-                } else {
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Player_GUI_Permission") + "]"));
-                }
-                // Because a permission isn't required, it'll open directly the GUI.
-            } else {
-                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
-                gui.open();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Check if a player's waiting for his delay to end.
-     * Check if SellAllDelay's enabled.
-     *
-     * @param p Player
-     *
-     * @return boolean
-     * */
-    private boolean sellAllCommandDelay(Player p) {
-
-        if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")) {
-
-            if (activePlayerDelay.contains(p.getName())){
-                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
-                return true;
-            }
-
-            addPlayerToDelay(p);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds")));
-        }
-
-        return false;
-    }
-
-    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
-
-        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
-
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return true;
-        }
-
-        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
-
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
-                return true;
-            }
-        }
-
-        if (prestige == null){
-
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-        if (multiplier == null){
-
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
-        if (rankPlugin == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
-            return true;
-        }
-
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
-        if (!isPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
-            return true;
-        }
-
-        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
-        if (!isARank) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
-            return true;
-        }
-
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
-        if (!isInPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
-            return true;
-        }
-        return false;
     }
 
     @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
@@ -381,7 +173,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
         if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
-            Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
+            Output.get().sendError(sender, messages.getString("Message.SellAllCurrencyNotFound"), currency);
             return;
         }
 
@@ -423,17 +215,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SellAllConfig sellAllConfigClass = new SellAllConfig();
-        sellAllConfigClass.initialize();
-        sellAllConfig = sellAllConfigClass.getFileSellAllConfig();
-
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
             return;
         }
 
-        if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase(enable)){
-            if (enable.equalsIgnoreCase("true")){
+        boolean enableBoolean = Boolean.getBoolean(enable);
+        boolean sellDelayEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
+        if (sellDelayEnabled == enableBoolean){
+            if (enableBoolean){
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayAlreadyEnabled")));
             } else {
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayAlreadyDisabled")));
@@ -444,7 +234,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Sell_Delay_Enabled", enable);
+            conf.set("Options.Sell_Delay_Enabled", enableBoolean);
             conf.save(sellAllFile);
         } catch (IOException e) {
             Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
@@ -452,9 +242,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (enable.equalsIgnoreCase("true")){
+        if (enableBoolean){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayEnabled")));
-        } else if (enable.equalsIgnoreCase("false")){
+        } else {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayDisabled")));
         }
         sellAllConfigUpdater();
@@ -466,15 +256,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (!sender.hasPermission("prison.sellall.delay")){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission")));
-            return;
-        }
-
-        sellAllConfigUpdater();
-
         int delayValue;
-
         try {
             delayValue = Integer.parseInt(delay);
         } catch (NumberFormatException ex){
@@ -503,27 +285,22 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (!sender.hasPermission("prison.autosell.edit")){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
-            return;
-        }
-
         if (enable.equalsIgnoreCase("perusertoggleable")){
             sellAllAutoSellPerUserToggleable(sender, enable);
             return;
         }
-
-        sellAllConfigUpdater();
 
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
             return;
         }
 
-        if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase(enable)){
-            if (enable.equalsIgnoreCase("true")){
+        boolean enableBoolean = Boolean.getBoolean(enable);
+        boolean fullInvAutoSellEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell"));
+        if (fullInvAutoSellEnabled == enableBoolean){
+            if (enableBoolean){
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyEnabled")));
-            } else if (enable.equalsIgnoreCase("false")){
+            } else {
                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellAlreadyDisabled")));
             }
             return;
@@ -532,7 +309,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Full_Inv_AutoSell", enable);
+            conf.set("Options.Full_Inv_AutoSell", enableBoolean);
             conf.save(sellAllFile);
         } catch (IOException e) {
             Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
@@ -540,9 +317,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (enable.equalsIgnoreCase("true")){
+        if (enableBoolean){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
-        } else if (enable.equalsIgnoreCase("false")){
+        } else {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
         }
         sellAllConfigUpdater();
@@ -559,17 +336,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        sellAllConfigUpdater();
-
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
             return;
         }
 
-        if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase(enable)){
-            if (enable.equalsIgnoreCase("true")){
+        boolean enableBoolean = Boolean.getBoolean(enable);
+        boolean perUserToggleableEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
+        if (perUserToggleableEnabled == enableBoolean){
+            if (enableBoolean){
                 Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableAlreadyEnabled")));
-            } else if (enable.equalsIgnoreCase("false")){
+            } else {
                 Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableAlreadyDisabled")));
             }
             return;
@@ -578,7 +355,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enable);
+            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enableBoolean);
             conf.save(sellAllFile);
         } catch (IOException e) {
             Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
@@ -586,9 +363,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (enable.equalsIgnoreCase("true")){
+        if (enableBoolean){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableEnabled")));
-        } else if (enable.equalsIgnoreCase("false")){
+        } else {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableDisabled")));
         }
 
@@ -601,21 +378,25 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
-        sellAllConfigUpdater();
 
         if (p == null){
             Output.get().sendInfo(sender, SpigotPrison.format("&cSorry but you can't use that from the console!"));
             return;
         }
-        
-        if (sellAllConfig.getString("Options.Sell_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!p.hasPermission(sellAllConfig.getString("Options.Sell_Permission"))){
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Sell_Permission") + "]"));
+
+        boolean sellPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
+        if (sellPermissionEnabled){
+            String permission = sellAllConfig.getString("Options.Sell_Permission");
+            if (permission == null || !p.hasPermission(permission)){
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
                 return;
             }
         }
 
-        if (sellAllConfig.getString("Options.SellAll_Sign_Enabled").equalsIgnoreCase("true") && sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission"))){
+        boolean sellAllSignEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
+        boolean sellAllBySignOnlyEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
+        String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
+        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission != null && !p.hasPermission(byPassPermission))){
             if (!signUsed){
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
                 return;
@@ -640,7 +421,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             rankPlayer.addBalance(currency, moneyToGive);
 
-            if (sellAllConfig.getString("Options.Sell_Notify_Enabled").equalsIgnoreCase("true")) {
+            boolean sellNotifyEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
+            if (sellNotifyEnabled) {
                 if (moneyToGive < 0.001) {
                     Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
                 } else {
@@ -667,12 +449,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (!sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+        boolean perUserToggleableEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
+        if (!perUserToggleableEnabled){
             return;
         }
 
-        if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission"))){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermissionToToggleAutoSell") + " [" + sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission") + "]"));
+        boolean perUserToggleablePermEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm"));
+        String permission = sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission");
+        if (perUserToggleablePermEnabled && (permission != null && !p.hasPermission(permission))){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermissionToToggleAutoSell") + " [" + permission + "]"));
             return;
         }
 
@@ -681,8 +466,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
 
-            boolean isEnabled = sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true");
-
+            boolean isEnabled = Boolean.getBoolean(sellAllConfig.getString("Users." + playerUUID + ".isEnabled"));
             try {
                 File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -701,8 +485,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
 
         } else {
-            // Enable it for the first time
 
+            // Enable it for the first time
             try {
                 File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -721,7 +505,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
-    @Command(identifier = "sellall gui", description = "SellAll GUI command", onlyPlayers = true)
+    @Command(identifier = "sellall gui", description = "SellAll GUI command", altPermissions = "prison.admin", onlyPlayers = true)
     private void sellAllGuiCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -735,11 +519,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         }
 
         // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
-        if (sellAllConfig.getString("Options.GUI_Enabled").equalsIgnoreCase("true")){
+        boolean guiEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
+        if (guiEnabled){
             // Check if a permission's required, if it isn't it'll open immediately the GUI.
-            if (sellAllConfig.getString("Options.GUI_Permission_Enabled").equalsIgnoreCase("true")){
+            boolean guiPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"));
+            if (guiPermissionEnabled){
                 // Check if the sender have the required permission.
-               if (p.hasPermission(sellAllConfig.getString("Options.GUI_Permission"))) {
+                String guiPermission = sellAllConfig.getString("Options.GUI_Permission");
+               if (guiPermission != null && p.hasPermission(guiPermission)) {
                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
                    gui.open();
                    return;
@@ -768,9 +555,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                                    @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if (!isEnabled()) return;
-        if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission(sellAllConfig.getString("Options.Add_Permission"))) {
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
+
+        boolean addPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Add_Permission_Enabled"));
+        if (addPermissionEnabled) {
+            String permission = sellAllConfig.getString("Options.Add_Permission");
+            if (permission != null && !sender.hasPermission(permission)) {
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
                 return;
             }
         }
@@ -824,8 +614,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (sellAllConfig.getString("Options.Delete_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission(sellAllConfig.getString("Options.Delete_Permission"))) {
+        boolean deletePermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Delete_Permission_Enabled"));
+        if (deletePermissionEnabled) {
+            String permission = sellAllConfig.getString("Options.Delete_Permission");
+            if (permission != null && !sender.hasPermission(permission)) {
                 return;
             }
         }
@@ -863,9 +655,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (sellAllConfig.getString("Options.Add_Permission_Enabled").equalsIgnoreCase("true")) {
-            if (!sender.hasPermission(sellAllConfig.getString("Options.Add_Permission"))) {
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Add_Permission") + "]"));
+        boolean addPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Add_Permission_Enabled"));
+        if (addPermissionEnabled) {
+            String permission = sellAllConfig.getString("Options.Add_Permission");
+            if (permission != null && !sender.hasPermission(permission)) {
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
                 return;
             }
         }
@@ -919,15 +713,19 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled").equalsIgnoreCase("true")){
-            if (!(sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission")))){
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
-                return;
-            }
-        }
-        if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+        boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        if (!multiplierEnabled){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
             return;
+        }
+
+        boolean multiplierCommandPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled"));
+        if (multiplierCommandPermissionEnabled){
+            String permission = sellAllConfig.getString("Options.Multiplier_Command_Permission");
+            if (permission != null && !(sender.hasPermission(permission))){
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
+                return;
+            }
         }
 
         sender.dispatchCommand("sellall multiplier help");
@@ -939,6 +737,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                                              @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
 
         if (!isEnabled()) return;
+
+        boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        if (!multiplierEnabled){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return;
+        }
+
         if (addMultiplierConditions(sender, prestige, multiplier)) return;
 
         try {
@@ -962,8 +767,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (!sender.hasPermission(sellAllConfig.getString("Options.Multiplier_Command_Permission"))){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + sellAllConfig.getString("Options.Multiplier_Command_Permission") + "]"));
+        boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        if (!multiplierEnabled){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return;
+        }
+
+        String permission = sellAllConfig.getString("Options.Multiplier_Command_Permission");
+        if (permission != null && !sender.hasPermission(permission)){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
             return;
         }
 
@@ -986,6 +798,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             return;
         }
+
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierDeleteSuccess")));
         sellAllConfigUpdater();
     }
@@ -995,30 +808,24 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        String permission = "prison.admin";
+        valueSaver("COBBLESTONE", 50, sender);
+        valueSaver("STONE", 50, sender);
+        valueSaver("COAL",50, sender);
+        valueSaver("COAL_BLOCK", 450, sender);
+        valueSaver("IRON_INGOT",75, sender);
+        valueSaver("IRON_BLOCK",600, sender);
+        valueSaver("REDSTONE", 101, sender);
+        valueSaver("REDSTONE_BLOCK", 909, sender);
+        valueSaver("GOLD_INGOT", 122, sender);
+        valueSaver("GOLD_BLOCK", 1100, sender);
+        valueSaver("DIAMOND", 200, sender);
+        valueSaver("DIAMOND_BLOCK", 1800, sender);
+        valueSaver("EMERALD", 300, sender);
+        valueSaver("EMERALD_BLOCK", 2700, sender);
+        valueSaver("LAPIS_LAZULI", 70, sender);
+        valueSaver("LAPIS_BLOCK", 630, sender);
 
-        if (sender.hasPermission(permission)){
-            valueSaver("COBBLESTONE", 50, sender);
-            valueSaver("STONE", 50, sender);
-            valueSaver("COAL",50, sender);
-            valueSaver("COAL_BLOCK", 450, sender);
-            valueSaver("IRON_INGOT",75, sender);
-            valueSaver("IRON_BLOCK",600, sender);
-            valueSaver("REDSTONE", 101, sender);
-            valueSaver("REDSTONE_BLOCK", 909, sender);
-            valueSaver("GOLD_INGOT", 122, sender);
-            valueSaver("GOLD_BLOCK", 1100, sender);
-            valueSaver("DIAMOND", 200, sender);
-            valueSaver("DIAMOND_BLOCK", 1800, sender);
-            valueSaver("EMERALD", 300, sender);
-            valueSaver("EMERALD_BLOCK", 2700, sender);
-            valueSaver("LAPIS_LAZULI", 70, sender);
-            valueSaver("LAPIS_BLOCK", 630, sender);
-
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultSuccess")));
-        } else {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultMissingPermission") + " &7[&c" + permission + "&7]"));
-        }
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultSuccess")));
     }
 
     private void valueSaver(String material, int value, CommandSender sender){
@@ -1029,5 +836,241 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             material = materialM.name();
         }
         sender.dispatchCommand( "sellall add " + material + " " + value);
+    }
+
+    private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
+
+        double moneyToGive = 0;
+
+        // Get the player inventory
+        Inventory inv = p.getInventory();
+
+        // Get the items from the player inventory and for each of them check the conditions.
+        for (ItemStack itemStack : inv.getContents()){
+            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
+        }
+
+        if (isEnabledMinePacks){
+
+            Backpack backPack = minepacksPlugin.getBackpackCachedOnly(p);
+
+            if (backPack == null){
+                return moneyToGive;
+            }
+
+            for (ItemStack itemStack : backPack.getInventory().getContents()){
+                moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, true, removeItems);
+            }
+        }
+
+        return moneyToGive;
+    }
+
+    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean backPackMode, boolean removeItems) {
+
+        double moneyToGive = 0;
+
+        if (itemStack != null) {
+            // Get the items strings from config and for each of them get the Material and value.
+            for (String key : items) {
+
+                // Flag variable and XMaterials.
+                boolean hasError = false;
+                XMaterial itemMaterial = null;
+                XMaterial invMaterial = null;
+                try {
+                    itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID"));
+                    invMaterial = XMaterial.matchXMaterial(itemStack);
+                } catch (IllegalArgumentException ex){
+                    hasError = true;
+                }
+
+                // Get value
+                double value = 0;
+                try {
+                    String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+                    if (valueString != null) {
+                        value = Double.parseDouble(valueString);
+                    } else {
+                        hasError = true;
+                    }
+                } catch (NumberFormatException ex){
+                    if (!hasError) hasError = true;
+                }
+
+                // Get amount and remove items if enabled
+                int amount = 0;
+                // Check if the item from the player inventory's on the config of items sellable
+                // So it gets the amount and then remove it from the inventory
+                if (!hasError && itemMaterial == invMaterial) {
+                    amount = itemStack.getAmount();
+                    if (removeItems) {
+                        if (!backPackMode) {
+                            p.getInventory().remove(itemStack);
+                        } else {
+                            minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                        }
+                    }
+                }
+                // Get the new amount of money to give
+                if (amount != 0) {
+                    moneyToGive += value * amount;
+                }
+            }
+        }
+        return moneyToGive;
+    }
+
+    /**
+     * Open SellAll GUI for Players if enabled.
+     *
+     * @param p Player
+     *
+     * @return boolean
+     * */
+    private boolean sellAllPlayerGUI(Player p) {
+
+        // Check if the Player GUI's enabled.
+        boolean playerGUIEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Player_GUI_Enabled"));
+        if (playerGUIEnabled){
+            // Check if a permission's required, if not it'll open directly the Player's GUI.
+            boolean playerGUIPermissionEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Player_GUI_Permission_Enabled"));
+            if (playerGUIPermissionEnabled){
+                // Check if the sender has the required permission.
+                String permission = sellAllConfig.getString("Options.Player_GUI_Permission");
+                if (permission != null && p.hasPermission(permission)){
+                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                    gui.open();
+                    // If missing will send a missing permission error message.
+                } else {
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
+                }
+                // Because a permission isn't required, it'll open directly the GUI.
+            } else {
+                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                gui.open();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a player's waiting for his delay to end.
+     * Check if SellAllDelay's enabled.
+     *
+     * @param p Player
+     *
+     * @return boolean
+     * */
+    private boolean sellAllCommandDelay(Player p) {
+
+        boolean sellDelayEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
+        if (sellDelayEnabled) {
+
+            if (activePlayerDelay.contains(p.getName())){
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
+                return true;
+            }
+
+            addPlayerToDelay(p);
+
+            String delayInSeconds = sellAllConfig.getString("Options.Sell_Delay_Seconds");
+            if (delayInSeconds == null){
+                delayInSeconds = "1";
+            }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(delayInSeconds));
+        }
+
+        return false;
+    }
+
+    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
+
+        boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        if (!multiplierEnabled){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
+            return true;
+        }
+
+        boolean multiplierCommandPermEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled"));
+        if (multiplierCommandPermEnabled){
+            String permission = sellAllConfig.getString("Options.Multiplier_Command_Permission");
+            if (permission != null && !(sender.hasPermission(permission))){
+
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
+                return true;
+            }
+        }
+
+        if (prestige == null){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+        if (multiplier == null){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
+            return true;
+        }
+
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        if (rankPlugin == null) {
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
+            return true;
+        }
+
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
+        if (!isPrestigeLadder) {
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
+            return true;
+        }
+
+        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
+        if (!isARank) {
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
+            return true;
+        }
+
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
+        if (!isInPrestigeLadder) {
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get sellAllConfig updated.
+     * */
+    private void sellAllConfigUpdater(){
+        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    }
+
+    /**
+     * Add a Player to delay.
+     *
+     * @param p Player
+     * */
+    private void addPlayerToDelay(Player p){
+
+        if (!isEnabled()) return;
+
+        if (!activePlayerDelay.contains(p.getName())){
+            activePlayerDelay.add(p.getName());
+        }
+    }
+
+    /**
+     * Removes a Player from delay.
+     *
+     * @param p Player
+     * */
+    private void removePlayerFromDelay(Player p){
+
+        if (!isEnabled()) return;
+
+        activePlayerDelay.remove(p.getName());
     }
 }

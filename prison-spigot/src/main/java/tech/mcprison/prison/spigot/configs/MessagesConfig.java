@@ -249,12 +249,13 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllAutoPerUserToggleableAlreadyDisabled", "AutoSell perUserToggleable's already &cdisabled&7!");
         dataConfig("Message.SellAllAutoPerUserToggleableEnabled", "SellAll PerUserToggleable &aEnabled&7!");
         dataConfig("Message.SellAllAutoPerUserToggleableDisabled", "SellAll PerUserToggleable &cDisabled&7!");
-        dataConfig("Message.SellAllCurrencyEditedSuccess", "SellAll Currency edited with success!");
-        dataConfig("Message.SellAllCurrencyEditCancelled", "SellAll edit currency &ccancelled&7.");
         dataConfig("Message.SellAllCurrencyChat1", "&3Started setup of new currency for SellAll!");
         dataConfig("Message.SellAllCurrencyChat2", "Type &ccancel &7to cancel.");
         dataConfig("Message.SellAllCurrencyChat3", "Type &3default &7to set to default currency.");
         dataConfig("Message.SellAllCurrencyChat4", "Type the &aCurrency name &7to set the new currency.");
+        dataConfig("Message.SellAllCurrencyEditedSuccess", "SellAll Currency edited with success!");
+        dataConfig("Message.SellAllCurrencyEditCancelled", "SellAll edit currency &ccancelled&7.");
+        dataConfig("Message.SellAllCurrencyNotFound", "No active economy supports the currency named '%s'.");
         dataConfig("Message.SellAllDefaultSuccess", "Default Values added with &asuccess&7!");
         dataConfig("Message.SellAllDefaultMissingPermission", "Sorry but you're missing the &cpermission!");
         dataConfig("Message.SellAllIsDisabled", "Sorry but the SellAll Feature's &cdisabled&7 in the config.yml");
@@ -262,7 +263,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllSubCommandNotFound", "Sub-command &cnot found&7, please use /sellall help for help!");
         dataConfig("Message.SellAllMultipliersAreDisabled", "Multipliers are &cdisabled&7 in the SellAll config!");
         dataConfig("Message.SellAllMultiplierWrongFormat", "&cWrong format&7, please use /sellall multiplier add/delete <Prestige> <Multiplier>");
-        dataConfig("Message.SellAllMissingPermission", "Sorry, but you don't have the &cpermission&7 [");
+        dataConfig("Message.SellAllMissingPermission", "Sorry, but you don't have the &cpermission&7");
         dataConfig("Message.SellAllMissingPermissionToToggleAutoSell", "Sorry but you're missing the &cpermission&7 to use that! ");
         dataConfig("Message.SellAllRanksDisabled", "The Ranks module's &cdisabled&7 or not found!");
         dataConfig("Message.SellAllPrestigeLadderNotFound", "&cCan't find&7 the Prestiges Ladder, they might be &cdisabled&7 in the config.yml!");

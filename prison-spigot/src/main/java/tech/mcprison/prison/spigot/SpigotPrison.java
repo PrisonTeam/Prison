@@ -264,6 +264,9 @@ public class SpigotPrison extends JavaPlugin {
 	}
 
 
+	/**
+     * Translate alternate color codes like & codes.
+     * */
     public static String format(String format){
 
         // This might be enabled in the future
