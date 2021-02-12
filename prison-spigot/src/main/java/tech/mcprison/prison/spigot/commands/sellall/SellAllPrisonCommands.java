@@ -124,39 +124,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
-        if (module != null) {
-            PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null) {
-                String playerRankName;
-                try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
-                } catch (NullPointerException ex) {
-                    playerRankName = null;
-                }
-                if (playerRankName != null) {
-                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
-                    if (multiplierRankString != null) {
-                        try {
-                            multiplier = Double.parseDouble(multiplierRankString);
-                        } catch (NumberFormatException ignored) {
-                        }
-                    }
-                }
-            }
-        }
+        multiplier = getMultiplierByRank(sPlayer, module, multiplier);
 
         // Get Multiplier from multipliers permission's if there's any.
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
         double multiplierExtraByPerms = 0;
-        for (String multByPerm : perms){
-            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            boolean multiplierPermissionHighOption = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
-            if (!multiplierPermissionHighOption) {
-                multiplierExtraByPerms += multByPermDouble;
-            } else if (multByPermDouble > multiplierExtraByPerms){
-                multiplierExtraByPerms = multByPermDouble;
-            }
-        }
+        multiplierExtraByPerms = getMultiplierExtraByPerms(perms, multiplierExtraByPerms);
         multiplier += multiplierExtraByPerms;
 
         return multiplier;
@@ -173,7 +146,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
         if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
-            Output.get().sendError(sender, messages.getString("Message.SellAllCurrencyNotFound"), currency);
+            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyNotFound")), currency);
             return;
         }
 
@@ -1041,6 +1014,42 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return false;
     }
 
+    private double getMultiplierByRank(SpigotPlayer sPlayer, Module module, double multiplier) {
+        if (module != null) {
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null) {
+                String playerRankName;
+                try {
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
+                } catch (NullPointerException ex) {
+                    playerRankName = null;
+                }
+                if (playerRankName != null) {
+                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+                    if (multiplierRankString != null) {
+                        try {
+                            multiplier = Double.parseDouble(multiplierRankString);
+                        } catch (NumberFormatException ignored) {}
+                    }
+                }
+            }
+        }
+        return multiplier;
+    }
+
+    private double getMultiplierExtraByPerms(List<String> perms, double multiplierExtraByPerms) {
+        for (String multByPerm : perms){
+            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+            boolean multiplierPermissionHighOption = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
+            if (!multiplierPermissionHighOption) {
+                multiplierExtraByPerms += multByPermDouble;
+            } else if (multByPermDouble > multiplierExtraByPerms){
+                multiplierExtraByPerms = multByPermDouble;
+            }
+        }
+        return multiplierExtraByPerms;
+    }
+
     /**
      * Get sellAllConfig updated.
      * */
@@ -1073,4 +1082,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         activePlayerDelay.remove(p.getName());
     }
+
+
 }
