@@ -636,7 +636,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
             String currency = sellAllConfig.getString("Options.SellAll_Currency");
-            if (currency.equalsIgnoreCase("default")) currency = null;
+            if (currency != null && currency.equalsIgnoreCase("default")) currency = null;
 
             rankPlayer.addBalance(currency, moneyToGive);
 
