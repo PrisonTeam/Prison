@@ -18,10 +18,18 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -47,10 +55,6 @@ public class SpigotCommandSender implements CommandSender {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 
-    @Override public boolean hasPermission(String perm) {
-        return bukkitSender.hasPermission(perm);
-    }
-
     @Override public void sendMessage(String message) {
         bukkitSender.sendMessage(Text.translateAmpColorCodes(message));
     }
@@ -72,6 +76,60 @@ public class SpigotCommandSender implements CommandSender {
     public boolean isOp() {
     	return bukkitSender.isOp();
     }
+   
+	@Override
+	public void recalculatePermissions() {
+		bukkitSender.recalculatePermissions();
+	}
+	
+
+    @Override
+    public boolean hasPermission(String perm) {
+        return bukkitSender.hasPermission(perm);
+    }
+    
+    
+    @Override
+    public List<String> getPermissions() {
+    	List<String> results = new ArrayList<>();
+    	
+    	Set<PermissionAttachmentInfo> perms = bukkitSender.getEffectivePermissions();
+    	for ( PermissionAttachmentInfo perm : perms )
+		{
+			results.add( perm.getPermission() );
+		}
+    	
+    	return results;
+    }
+    
+    
+    @Override
+    public List<String> getPermissions( String prefix ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	for ( String perm : getPermissions() ) {
+			if ( perm.startsWith( prefix ) ) {
+				results.add( perm );
+			}
+		}
+    	
+    	return results;
+    }
+
+    
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+    	
+    	if ( oPlayer.isPresent() ) {
+    		results = oPlayer.get().getSellAllMultiplier();
+    	}
+    	
+    	return results;
+    }
+    
     
     @Override 
     public boolean isPlayer() {

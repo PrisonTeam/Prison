@@ -535,14 +535,15 @@ public class RankPlayer
 
 	@Override
 	public boolean isOp() {
-		return false;
+		Player player = getPlayer();
+		return (player != null ? player.isOp() : false );
 	}
 	
 	
 	/**
 	 * NOTE: A RankPlayer does not represent an online player with inventory.  
-	 *       This class is not "connected" to the underlying bukkit player
-	 *       so technically this is not a player object, especially since it
+	 *       This class is not "connected" to the underlying bukkit Player
+	 *       so technically this is not a bukkit Player object, especially since it
 	 *       always represents offline players too.
 	 */
     @Override 
@@ -565,24 +566,43 @@ public class RankPlayer
 		
 	}
 	
+	/**
+	 * <p>Player is not cached in this class, so if using it in a function 
+	 * make a local variable to save it instead of calling this function multiple
+	 * times since it is a high impact lookup.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	private Player getPlayer() {
+		Player player = null;
+		
+		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( uid );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		return player;
+	}
+	
+	@Override
+	public void recalculatePermissions() {
+		Player player = getPlayer();
+		if ( player != null ) {
+			player.recalculatePermissions();
+		}
+	}
+	
     @Override
     public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	return results;
+    	Player player = getPlayer();
+    	return (player == null ? new ArrayList<>() : player.getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
-    	
-    	return results;
+    	Player player = getPlayer();
+    	return (player == null ? new ArrayList<>() : player.getPermissions( prefix ) );
     }
     
 
@@ -604,11 +624,16 @@ public class RankPlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
-    	
-    	if ( player.isPresent() ) {
-    		results = player.get().getSellAllMultiplier();
+    	Player player = getPlayer();
+    	if ( player != null ) {
+    		results = player.getSellAllMultiplier();
     	}
+//    	
+//    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
+//    	
+//    	if ( player.isPresent() ) {
+//    		results = player.get().getSellAllMultiplier();
+//    	}
     	
     	return results;
     }

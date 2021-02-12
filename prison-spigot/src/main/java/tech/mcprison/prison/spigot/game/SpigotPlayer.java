@@ -108,10 +108,6 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         return Optional.empty();
     }
 
-    @Override public boolean isOp() {
-        return bukkitPlayer.isOp();
-    }
-
     public org.bukkit.entity.Player getWrapper() {
         return bukkitPlayer;
     }
@@ -125,6 +121,24 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         bukkitPlayer.updateInventory();
     }
 
+	@Override
+	public void recalculatePermissions() {
+		bukkitPlayer.recalculatePermissions();
+	}
+
+
+    @Override 
+    public boolean isOp() {
+        return bukkitPlayer.isOp();
+    }
+    
+	@Override
+	public boolean hasPermission( String perm ) {
+		List<String> perms = getPermissions( perm );
+		return perms.contains( perm );
+	}
+
+    
     @Override
     public List<String> getPermissions() {
     	List<String> results = new ArrayList<>();
@@ -137,6 +151,7 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	
     	return results;
     }
+    
     
     @Override
     public List<String> getPermissions( String prefix ) {
@@ -151,6 +166,27 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	return results;
     }
     
+    
+    /**
+     * <p>This uses the sellall configs for the permission name to use to get the list of
+     * multipliers.  It then adds all of the multipliers together to ...
+     * 
+     * </p>
+     * 
+     */
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+    	
+    	if ( sellall != null ) {
+    		results = sellall.getMultiplier( this );
+    	}
+    	
+    	return results;
+    }
+    
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
@@ -161,7 +197,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	
     	return sb.toString();
     }
-    
+
+	
     /**
      * This class is an adaptation of the NmsHelper class in the Rosetta library by Max Roncace. The
      * library is licensed under the New BSD License. See the {@link tech.mcprison.prison.localization}
@@ -346,25 +383,5 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	}
     }
     
-    
-    /**
-     * <p>This uses the sellall configs for the permission name to use to get the list of
-     * multipliers.  It then adds all of the multipliers together to ...
-     * 
-     * </p>
-     * 
-     */
-    @Override
-    public double getSellAllMultiplier() {
-    	double results = 1.0;
-    	
-    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-    	
-    	if ( sellall != null ) {
-    		results = sellall.getMultiplier( this );
-    	}
-    	
-    	return results;
-    }
     
 }

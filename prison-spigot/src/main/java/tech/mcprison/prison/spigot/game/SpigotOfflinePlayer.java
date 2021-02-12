@@ -3,10 +3,14 @@ package tech.mcprison.prison.spigot.game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -46,7 +50,8 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public boolean isOnline() {
-		return false;
+		return offlinePlayer.isOnline();
+//		return false;
 	}
 	
 	/**
@@ -57,14 +62,15 @@ public class SpigotOfflinePlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	return false;
+    	return (offlinePlayer.getPlayer() instanceof Player );
+//    	return false;
     }
     
-	@Override
-	public boolean hasPermission( String perm ) {
-		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
-		return false;
-	}
+//	@Override
+//	public boolean hasPermission( String perm ) {
+//		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
+//		return false;
+//	}
 	
 	@Override
 	public void setDisplayName( String newDisplayName ) {
@@ -130,7 +136,7 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public boolean isOp() {
-		return false;
+		return offlinePlayer.isOp();
 	}
 
 	@Override
@@ -150,10 +156,36 @@ public class SpigotOfflinePlayer
 	public OfflinePlayer getWrapper() {
 		return offlinePlayer;
 	}
+
+	/**
+	 * <p>Technically, offline players do not have any perms through bukkkit so
+	 * bukkit cannot recalculate any permissions.
+	 * </p>
+	 */
+	@Override
+	public void recalculatePermissions() {
+		
+//		offlinePlayer.getPlayer().recalculatePermissions();
+	}
 	
     @Override
     public List<String> getPermissions() {
     	List<String> results = new ArrayList<>();
+    	
+    	if ( offlinePlayer.getPlayer() != null ) {
+    		
+    		Set<PermissionAttachmentInfo> perms = offlinePlayer.getPlayer().getEffectivePermissions();
+    		for ( PermissionAttachmentInfo perm : perms )
+    		{
+    			results.add( perm.getPermission() );
+    		}
+    	}
+    	else {
+    		// try to use vault:
+    		
+    		// TODO add permission integrations here!!
+    	}
+    	
     	
     	return results;
     }
@@ -171,6 +203,45 @@ public class SpigotOfflinePlayer
     	return results;
     }
     
+	@Override
+	public boolean hasPermission( String perm ) {
+		boolean hasPerm = false;
+		
+		if ( offlinePlayer.getPlayer() != null ) {
+			
+			hasPerm = offlinePlayer.getPlayer().hasPermission( perm );
+		}
+		else {
+			List<String> perms = getPermissions( perm );
+			hasPerm = perms.contains( perm );
+		}
+		
+		return hasPerm;
+		
+//		List<String> perms = getPermissions( perm );
+//		return perms.contains( perm );
+	}
+    
+//    @Override
+//    public List<String> getPermissions() {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	return results;
+//    }
+//    
+//    @Override
+//    public List<String> getPermissions( String prefix ) {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	for ( String perm : getPermissions() ) {
+//			if ( perm.startsWith( prefix ) ) {
+//				results.add( perm );
+//			}
+//		}
+//    	
+//    	return results;
+//    }
+    
     
     /**
      * <p>This is not the active online player instance, so therefore prison would not have
@@ -186,7 +257,16 @@ public class SpigotOfflinePlayer
      */
     @Override
     public double getSellAllMultiplier() {
-    	return 1.0;
+    	double results = 1.0;
+    	
+    	Optional<tech.mcprison.prison.internal.Player> oPlayer = 
+    									Prison.get().getPlatform().getPlayer( getName() );
+    	
+    	if ( oPlayer.isPresent() ) {
+    		results = oPlayer.get().getSellAllMultiplier();
+    	}
+    	
+    	return results;
     }
     
 }

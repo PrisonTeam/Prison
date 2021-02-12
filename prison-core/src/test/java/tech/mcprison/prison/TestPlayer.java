@@ -34,7 +34,8 @@ import tech.mcprison.prison.util.Location;
 /**
  * @author Faizaan A. Datoo
  */
-public class TestPlayer implements Player {
+public class TestPlayer 
+				implements Player {
 
     // just allows input to be given to the user
 
@@ -133,6 +134,11 @@ public class TestPlayer implements Player {
     public void printDebugInventoryInformationToConsole() {
     	
     }
+    
+    public void recalculatePermissions() {
+    	
+    }
+    
     
     @Override
     public List<String> getPermissions() {

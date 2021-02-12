@@ -24,7 +24,8 @@ package tech.mcprison.prison.internal;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface CommandSender {
+public interface CommandSender 
+					extends PlayerPermissions {
 
     /**
      * Returns the name of the command sender.
@@ -41,13 +42,6 @@ public interface CommandSender {
      * This is not always the case, especially when using command blocks and online consoles.
      */
     boolean doesSupportColors();
-
-    /**
-     * Returns true if the command sender has access to the permission specified.
-     *
-     * @param perm The permission to check.
-     */
-    boolean hasPermission(String perm);
 
     /**
      * Sends a message to the command sender.
@@ -75,8 +69,17 @@ public interface CommandSender {
     void sendRaw(String json);
     
     
-    public boolean isOp();
-    
+//    public boolean isOp();
+//    
+//    public void recalculatePermissions();
+//    
+//    /**
+//     * Returns true if the command sender has access to the permission specified.
+//     *
+//     * @param perm The permission to check.
+//     */
+//    boolean hasPermission(String perm);
+
     
     public boolean isPlayer();
 

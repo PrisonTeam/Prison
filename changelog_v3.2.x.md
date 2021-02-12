@@ -16,7 +16,19 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.12 2021-02-08
+# v3.2.4-alpha.12 2021-02-11
+
+
+* **Redesigned how the player permissions are worked to make sure more of the are actually working**
+instead of being dead functions.  Also ensure they are trying to use active players to ensure that the permissions have the best chance of being retrieved.  Changed the offline player to actually check for OP and "try" to get the player's perms instead of just return nothing or false.
+
+
+* **Lockout players from listing prison commands.** 
+The subcommands related to prison have been tied to the permission `prison.command` and calls itself with the help keyword.  So the subcommand `/mines set` is locked down with the permission `prison.commmand` and when used submits `/mines set help`.   So the behavior is similar as before, but non-op'd admins need to be granted the permission to list the commands.
+
+
+* **Fix the CommandHander so it will not print a blank line if the description was not set.**
+
 
 * **SellAll sell earned money formatted**
 SellAll sell money's now formatted properly.

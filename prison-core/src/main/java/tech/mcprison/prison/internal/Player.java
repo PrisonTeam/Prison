@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison.internal;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +32,8 @@ import tech.mcprison.prison.util.Location;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public interface Player extends CommandSender, InventoryHolder {
+public interface Player 
+		extends CommandSender, InventoryHolder {
 
     /**
      * Returns the unique identifier for this player.
@@ -101,12 +101,6 @@ public interface Player extends CommandSender, InventoryHolder {
      */
     Optional<String> getLocale();
 
-    /**
-     * Returns whether the player is a server operator or not.
-     *
-     * @return true if the player is an operator, false otherwise.
-     */
-    boolean isOp();
 
     @Override default boolean doesSupportColors() {
         return true;
@@ -125,14 +119,5 @@ public interface Player extends CommandSender, InventoryHolder {
      * 
      */
     public void printDebugInventoryInformationToConsole();
-    
-    
-    public List<String> getPermissions();
-
-    
-    public List<String> getPermissions( String prefix );
-    
-    
-    public double getSellAllMultiplier();
     
 }
