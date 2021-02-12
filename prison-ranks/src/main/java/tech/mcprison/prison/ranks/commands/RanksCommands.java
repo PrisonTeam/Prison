@@ -3,6 +3,7 @@ package tech.mcprison.prison.ranks.commands;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
@@ -1083,9 +1085,12 @@ public class RanksCommands
     
     
     
-    @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
+    @Command(identifier = "ranks player", description = "Shows a player their rank", 
+    		onlyPlayers = false, altPermissions = "ranks.admin" )
     public void rankPlayer(CommandSender sender,
-    			@Arg(name = "player", def = "", description = "Player name") String playerName){
+    			@Arg(name = "player", def = "", description = "Player name") String playerName
+//    			@Arg(name = "options", def = "", description = "Options [allPerms]") String options
+    			){
     	
     	Player player = getPlayer( sender, playerName );
     	
@@ -1155,18 +1160,61 @@ public class RanksCommands
 
 			}
 			
+			double sellallMultiplier = player.getSellAllMultiplier();
+			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
+			String messageCurrency = String.format( "&7  Sellall multiplier: &b%s", 
+					pFmt.format( sellallMultiplier ) );
+			sendToPlayerAndConsole( sender, messageCurrency );
+
 			
-			if (sender.hasPermission("ranks.admin") && rankPlayer.getNames().size() > 1) {
+			
+			if ( sender.hasPermission("ranks.admin") ) {
 	            // This is admin-exclusive content
 
 				sendToPlayerAndConsole( sender, "&8[Admin Only]" );
-				sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
 				
-				for ( RankPlayerName rpn : rankPlayer.getNames() ) {
+				if ( rankPlayer.getNames().size() > 1 ) {
 					
-					sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
+					sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
+					
+					for ( RankPlayerName rpn : rankPlayer.getNames() ) {
+						
+						sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
+					}
 				}
 
+				
+//				if ( options != null && options.toLowerCase().contains( "allperms" ) ) 
+				{
+					
+					
+					boolean isOp = player.isOp();
+					boolean isPlayer = player.isPlayer();
+					boolean isOnline = player.isOnline();
+					
+					boolean isPrisonPlayer = (player instanceof Player);
+					boolean isPrisonOfflineMcPlayer = (player instanceof OfflineMcPlayer);
+					
+					sendToPlayerAndConsole( sender, String.format( "  &7Player Perms:  %s%s%s%s", 
+								(isOp ? " &cOP&7" : ""),
+								(isPlayer ? " &3Player&7" : ""),
+								(isOnline ? " &3Online&7" : " &3Offline&7"),
+								(isPrisonOfflineMcPlayer ? " &3PrisonOfflinePlayer&7" : 
+									(isPrisonPlayer ? " &3PrisonPlayer&7" : ""))
+							) );
+					
+					
+					player.recalculatePermissions();
+					
+					List<String> perms = player.getPermissions();
+					
+					listPermissions( sender, "bukkit", perms );
+
+					sendToPlayerAndConsole( sender, "### has perm prison.mines.a: " + 
+								player.hasPermission( "prison.mines.a" ) );
+					
+					// TODO list perms from integrations:
+				}
 
 	        }
 			
@@ -1188,6 +1236,30 @@ public class RanksCommands
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
+
+	private void listPermissions( CommandSender sender, String prefix, List<String> perms )
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		Collections.sort( perms );
+		
+		for ( String perm : perms ) {
+			sb.append( perm ).append( " " );
+			
+			if ( sb.length() > 70 ) {
+				String message = String.format( "    &7* (%s) &3%s", 
+						prefix, sb.toString());
+				sendToPlayerAndConsole( sender, message );
+				sb.setLength( 0 );
+			}
+		}
+		if ( sb.length() > 0 ) {
+			String message = String.format( "    &7* (%s) &3%s", 
+					prefix, sb.toString());
+			sendToPlayerAndConsole( sender, message );
+			sb.setLength( 0 );
+		}
+	}
 
 	private void sendToPlayerAndConsole( CommandSender sender, String messageRank )
 	{
