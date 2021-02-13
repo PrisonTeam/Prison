@@ -1227,8 +1227,8 @@ class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				tech.mcprison.prison.mines.data.Block block = 
-						new tech.mcprison.prison.mines.data.Block( 
+				tech.mcprison.prison.mines.data.BlockOld block = 
+						new tech.mcprison.prison.mines.data.BlockOld( 
 								mBlocks.get( i ), percents.get( i ) );
 				
 				mine.getBlocks().add( block );

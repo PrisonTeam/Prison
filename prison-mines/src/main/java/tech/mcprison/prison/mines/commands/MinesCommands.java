@@ -40,7 +40,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.Block;
+import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
@@ -506,7 +506,7 @@ public class MinesCommands
         	// This is an add block function so if we get this far, add it:
         	if ( percentTotal.getOldBlock() == null ) {
         		// add the block since it does not exist in the mine:
-        		m.getBlocks().add( new Block( blockType, chance) );
+        		m.getBlocks().add( new BlockOld( blockType, chance) );
         	} 
         	else if ( chance <= 0 ) {
         		// block exists in mine, but chance is set to zero so remove it:
@@ -741,7 +741,7 @@ public class MinesCommands
     	BlockPercentTotal results = new BlockPercentTotal();
     	results.addChance( chance );
 
-    	for ( Block block : m.getBlocks() ) {
+    	for ( BlockOld block : m.getBlocks() ) {
 			if ( block.getType() == blockType ) {
 				// do not replace the block's chance since this may fail
 				results.setOldBlock( block );
@@ -777,7 +777,7 @@ public class MinesCommands
     
     protected class BlockPercentTotal {
     	private double totalChance = 0d;
-    	private Block oldBlock = null;
+    	private BlockOld oldBlock = null;
     	private PrisonBlock prisonBlock = null;
     	
     	public BlockPercentTotal() {
@@ -793,10 +793,10 @@ public class MinesCommands
 			this.totalChance = totalChance;
 		}
 
-		public Block getOldBlock() {
+		public BlockOld getOldBlock() {
 			return oldBlock;
 		}
-		public void setOldBlock( Block oldBlock ) {
+		public void setOldBlock( BlockOld oldBlock ) {
 			this.oldBlock = oldBlock;
 		}
 
@@ -901,8 +901,8 @@ public class MinesCommands
 	 */
 	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, BlockType blockType )
 	{
-		Block rBlock = null;
-		for ( Block block : m.getBlocks() ) {
+		BlockOld rBlock = null;
+		for ( BlockOld block : m.getBlocks() ) {
 			if ( block.getType() ==  blockType ) {
 				rBlock = block;
 				break;
@@ -1554,7 +1554,7 @@ public class MinesCommands
         if ( !useNewBlockModel || 
         		!useNewBlockModel && cmdPageData != null && cmdPageData.isDebug() ) {
         	
-        	for (Block block : m.getBlocks()) {
+        	for (BlockOld block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
         		totalChance += chance;
         		

@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.Block;
+import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -74,7 +74,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         } else {
         	
         	// For every block makes a button
-        	for (Block block : m.getBlocks()) {
+        	for (BlockOld block : m.getBlocks()) {
         		
         		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
@@ -105,7 +105,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         return false;
     }
     
-    private boolean guiBuilder(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
     	try {
     		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
@@ -146,7 +146,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         inv.addItem(block1);
     }
 
-    private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
 
         // Create the lore
     	List<String> blockslore = createLore(

@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.Block;
+import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
@@ -102,7 +102,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
                 }
             } else {
 
-                for (Block block : m.getBlocks()) {
+                for (BlockOld block : m.getBlocks()) {
                     double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
                     totalChance += chance;
                     String blockName =

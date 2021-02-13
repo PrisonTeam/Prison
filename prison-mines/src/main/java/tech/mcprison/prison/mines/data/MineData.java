@@ -64,7 +64,7 @@ public abstract class MineData
 	 * phased out since it has limited flexibility and complex issues with 
 	 * supporting magic values with the older bukkit versions.
 	 */
-    private List<Block> blocks;
+    private List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -382,7 +382,7 @@ public abstract class MineData
     	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
-    public List<Block> getBlocks() {
+    public List<BlockOld> getBlocks() {
         return blocks;
     }
     
@@ -441,7 +441,7 @@ public abstract class MineData
         this.prisonBlocks.clear();
         
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new Block(entry.getKey(), entry.getValue()));
+            blocks.add(new BlockOld(entry.getKey(), entry.getValue()));
             
             PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
             if ( prisonBlock != null ) {
@@ -463,7 +463,7 @@ public abstract class MineData
 //    	if ( isVirtual() ) {
 //    		return false;
 //    	}
-        for (Block block : getBlocks()) {
+        for (BlockOld block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;
             }

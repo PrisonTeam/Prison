@@ -326,7 +326,7 @@ public class Mine
 							dirty = true;
 						}
 						
-						Block block = new Block(blockType, chance);
+						BlockOld block = new BlockOld(blockType, chance);
 						getBlocks().add(block);
 					}
 					else {
@@ -392,7 +392,7 @@ public class Mine
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
-        	for ( Block block : getBlocks() ) {
+        	for ( BlockOld block : getBlocks() ) {
         		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block.getType().name() );
             	if ( prisonBlock != null ) {
             		
@@ -507,7 +507,7 @@ public class Mine
         Set<String> validateBlockNames = new HashSet<>();
 
         List<String> blockStrings = new ArrayList<>();
-        for (Block block : getBlocks()) {
+        for (BlockOld block : getBlocks()) {
         	if ( !validateBlockNames.contains( block.getType().name() )) {
         		// Use the BlockType.name() to save the block type to the file:
         		blockStrings.add(block.getType().name() + "-" + block.getChance());
@@ -598,7 +598,7 @@ public class Mine
         	}
         }
         else {
-        	for ( Block block : getBlocks() ) {
+        	for ( BlockOld block : getBlocks() ) {
         		if ( sb.length() > 0 ) {
         			sb.append( ", " );
         		}

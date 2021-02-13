@@ -1325,7 +1325,7 @@ public abstract class MineReset
 		double chance = random.nextDouble() * 100.0d;
 		
 		BlockType value = BlockType.AIR;
-		for (Block block : getBlocks()) {
+		for (BlockOld block : getBlocks()) {
 			if (chance <= block.getChance()) {
 				value = block.getType();
 				break;

@@ -23,10 +23,10 @@ import tech.mcprison.prison.util.BlockType;
 /**
  * Represents a block in a mine
  */
-public class Block {
+public class BlockOld {
 
     /**
-     * The {@link BlockType} represented by this {@link Block}
+     * The {@link BlockType} represented by this {@link BlockOld}
      */
     private BlockType type; // = BlockType.AIR;
     /**
@@ -37,12 +37,12 @@ public class Block {
     /**
      * Assigns the type and chance
      */
-    public Block(BlockType block, double chance) {
+    public BlockOld(BlockType block, double chance) {
         this.type = block;
         this.chance = chance;
     }
 
-    public Block(String blockType, double chance ) {
+    public BlockOld(String blockType, double chance ) {
     	this.chance = chance;
     	
     	BlockType block = BlockType.fromString( blockType );
