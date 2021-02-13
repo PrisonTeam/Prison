@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.12 2021-02-12
 
 
+* **If the mine file is manually edited**
+and a comma is added to the end of one of the block lists, then docBlock could be null and cause a problem when trying to split the percentage from the block name.  This can also be caused if the last block in the block list is deleted and the comma is not removed. The bottom line is the files should not be manually edited. This issue, if it happens again, will be ignored when parsing the files in the future.
+			
+
 * **A work in progress: Adding the ability to get the list of player perms from the integrations.**
 This will allow for listing perms when the player is offline.  Also will have the ability to include more details with the perms which will be for display purposes only.
 
