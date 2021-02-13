@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.12 2021-02-12
 
 
+* **Provide some docs on the PlaceholdersUtil.formattedTime() function.**
+Also changed the parameter name to timeSec so it reflects the unit that is expected.
+
+
 * **If the mine file is manually edited**
 and a comma is added to the end of one of the block lists, then docBlock could be null and cause a problem when trying to split the percentage from the block name.  This can also be caused if the last block in the block list is deleted and the comma is not removed. The bottom line is the files should not be manually edited. This issue, if it happens again, will be ignored when parsing the files in the future.
 			
