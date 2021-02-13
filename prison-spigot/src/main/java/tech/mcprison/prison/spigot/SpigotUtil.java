@@ -237,7 +237,8 @@ public class SpigotUtil {
 				ItemStack itemStack = xMat.parseItem();
 				if ( itemStack != null ) {
 					
-					if ( itemStack.getType().isBlock() ) {
+					//if ( itemStack.getType().isBlock() ) 
+					{
 						
 						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
 						
