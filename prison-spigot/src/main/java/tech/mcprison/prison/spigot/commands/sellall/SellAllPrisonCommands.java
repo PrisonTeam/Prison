@@ -36,13 +36,13 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
-import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
  */
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
@@ -67,10 +67,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return instance;
     }
 
+    /**
+     * Check if SellAll's enabled.
+     * */
     public static boolean isEnabled(){
         return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
     }
 
+    /**
+     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
+     * for SellAll.
+     * */
     public void toggleSellAllSign(){
         if (!signUsed){
             signUsed = true;

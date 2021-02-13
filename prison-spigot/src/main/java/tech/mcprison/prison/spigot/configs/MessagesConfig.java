@@ -201,6 +201,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.EmptyGui", "Sorry, the GUI's &cempty.");
         dataConfig("Message.EnableAutoSellToUse", "Sorry, but AutoSell's &cdisabled&7, please enable it!");
         dataConfig("Message.EnableSellDelayToUse", "Sorry, but the SellAll Delay's &cdisabled&7, please enable it!");
+        dataConfig("Message.EventCancelled", "&cEvent cancelled.");
         dataConfig("Message.InvalidBooleanInput", "Sorry, you should type &a-true-&7 or &c-false-&7 here.");
         dataConfig("Message.MissingPermission", "Sorry but you don't have the &cpermission&7 to use that!");
         dataConfig("Message.NoBlocksMine", "Sorry but this Mine's &cempty&7.");
@@ -309,6 +310,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllDelayNotNumber", "Delay value &cisn't&7 a number!");
         dataConfig("Message.SellAllGUIEmpty", "Sorry but there &caren't&7 Blocks in the SellAll Shop!");
         dataConfig("Message.SellAllGUIEmpty2", "&7[&cTIP&7] &7You can &aadd&7 one using the command /sellall add!");
+        dataConfig("Message.TooLowValue", "&cToo low value.");
+        dataConfig("Message.TooHighValue", "&cToo high value.");
         dataConfig("Setup.Message.MissingPermission", "Sorry but you don't have the &cpermission&7 [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "You're &cmissing&7 the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "Hi and welcome to the Ranks Setup, please &cwait&7 until it'll be completed!");

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -367,7 +368,8 @@ public class ListenersPrisonManager implements Listener {
     public void onClick(InventoryClickEvent e){
 
         // Check if GUIs are enabled.
-        if (!(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true"))){
+        boolean prisonGuiEnabled = Boolean.getBoolean(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled"));
+        if (!prisonGuiEnabled){
             return;
         }
 
@@ -727,7 +729,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooLowValue")));
 
                 e.setCancelled(true);
 
@@ -753,7 +755,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooHighValue")));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -791,8 +793,11 @@ public class ListenersPrisonManager implements Listener {
         } else {
 
             // Open setMultiplierGUI
-            SellAllPrestigesSetMultiplierGUI gui = new SellAllPrestigesSetMultiplierGUI(p, Double.parseDouble(sellAllConfig.getString("Multiplier." + parts[0] + ".MULTIPLIER")), parts[0]);
-            gui.open();
+            String doubleString = sellAllConfig.getString("Multiplier." + parts[0] + ".MULTIPLIER");
+            if (doubleString != null) {
+                SellAllPrestigesSetMultiplierGUI gui = new SellAllPrestigesSetMultiplierGUI(p, Double.parseDouble(doubleString), parts[0]);
+                gui.open();
+            }
         }
 
         // Cancel the event
@@ -832,7 +837,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EventCancelled")));
 
                 e.setCancelled(true);
 
@@ -864,7 +869,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooLowValue")));
 
                 e.setCancelled(true);
 
@@ -890,7 +895,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooHighValue")));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -992,7 +997,10 @@ public class ListenersPrisonManager implements Listener {
                     int val = 0;
 
                     try {
-                        val = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
+                        String valString = sellAllConfig.getString("Options.Sell_Delay_Seconds");
+                        if (valString != null) {
+                            val = Integer.parseInt(valString);
+                        }
                     } catch (NumberFormatException ignored){}
 
                     SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
@@ -1038,7 +1046,8 @@ public class ListenersPrisonManager implements Listener {
 
             case "Prestige-Multipliers":{
 
-                if (!(sellAllConfig.getString("Options.Multiplier_Enabled").equalsIgnoreCase("true"))){
+                boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+                if (!multiplierEnabled){
 
                     Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
 
@@ -1069,26 +1078,19 @@ public class ListenersPrisonManager implements Listener {
         // If you click an empty slot, this should avoid the error.
         // Also if there is no button that was clicked, then it may not be a Prison GUI on click event?
         if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR ||
-                e.getCurrentItem().getItemMeta() == null || !e.getCurrentItem().hasItemMeta() ||
-                e.getCurrentItem().getItemMeta().getDisplayName() == null) {
+                e.getCurrentItem().getItemMeta() == null || !e.getCurrentItem().hasItemMeta()) {
             activeGuiEventCanceller(p, e);
             return true;
+        } else {
+            e.getCurrentItem().getItemMeta().getDisplayName();
         }
-
-        // Get action of the Inventory from the event
-        InventoryAction action = e.getAction();
 
         // If an action equals one of these, and the inventory is open from the player equals
         // one of the Prison Title, it'll cancel the event
-        if (action != null) {
-            activeGuiEventCanceller(p, e);
-        }
+        activeGuiEventCanceller(p, e);
 
         // ensure the item has itemMeta and a display name
-        if (!e.getCurrentItem().hasItemMeta()){
-            return true;
-        }
-        return false;
+        return !e.getCurrentItem().hasItemMeta();
     }
 
     private void prisonSetupConfirmGUI(InventoryClickEvent e, Player p, String[] parts) {
@@ -1384,12 +1386,11 @@ public class ListenersPrisonManager implements Listener {
 
         } else if (e.isLeftClick()){
 
-            File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
-
-            SellAllPriceGUI gui = new SellAllPriceGUI(p,Double.parseDouble(conf.getString("Items." + buttonNameMain + ".ITEM_VALUE")), buttonNameMain);
-            gui.open();
-
+            String valueString = sellAllConfig.getString("Items." + buttonNameMain + ".ITEM_VALUE");
+            if (valueString != null) {
+                SellAllPriceGUI gui = new SellAllPriceGUI(p, Double.parseDouble(valueString), buttonNameMain);
+                gui.open();
+            }
         }
 
         e.setCancelled(true);
@@ -1451,13 +1452,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // Get the ladder by the name of the button got before
-        ladder = Optional.of( PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
-
-        // Check if the ladder exist, everything can happen but this shouldn't
-        if (!ladder.isPresent()) {
-            Output.get().sendWarn(new SpigotPlayer(p), "&7What did you actually click? Sorry ladder not found.");
-            return;
-        }
+        ladder = Optional.of(PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
 
         // When the player click an item with shift and right click, e.isShiftClick should be enough but i want
         // to be sure's a right click
