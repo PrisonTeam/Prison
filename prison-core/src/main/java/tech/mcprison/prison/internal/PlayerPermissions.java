@@ -10,7 +10,7 @@ public interface PlayerPermissions {
      *
      * @return true if the player is an operator, false otherwise.
      */
-    boolean isOp();
+    public boolean isOp();
     
     
     public void recalculatePermissions();
@@ -20,7 +20,7 @@ public interface PlayerPermissions {
      *
      * @param perm The permission to check.
      */
-    boolean hasPermission(String perm);
+    public boolean hasPermission(String perm);
     
     
     public List<String> getPermissions();
@@ -31,5 +31,7 @@ public interface PlayerPermissions {
     
     public double getSellAllMultiplier();
     
-
+    
+    public List<String> getPermissionsIntegrations( boolean detailed );
+    
 }

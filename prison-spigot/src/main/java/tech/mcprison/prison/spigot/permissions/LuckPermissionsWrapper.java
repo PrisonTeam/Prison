@@ -1,5 +1,9 @@
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import me.lucko.luckperms.LuckPerms;
@@ -8,6 +12,7 @@ import me.lucko.luckperms.api.LuckPermsApi;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 public class LuckPermissionsWrapper
 {
@@ -69,6 +74,72 @@ public class LuckPermissionsWrapper
                 user.refreshCachedData();
 
             }, api.getStorage().getAsyncExecutor());
+    }
+    
+    
+    public List<String> getPermissions(Player holder, boolean detailed) {
+    	List<String> results = new ArrayList<>();
+    	
+    	UUID uuid = holder.getUUID();
+    	
+        // get the user
+        User user = api.getUser(uuid);
+        if (user != null) {
+        	// user loaded
+        	
+        	SortedSet<? extends Node> permNodes = user.getPermissions();
+        	
+        	for ( Node node : permNodes ) {
+        		String perm = node.getPermission();
+        		StringBuilder details = new StringBuilder();
+        		
+        		if ( detailed ) {
+        			
+        			if ( node.isTemporary() ) {
+        				long seconds = node.getSecondsTilExpiry();
+        				String expiry = PlaceholdersUtil.formattedTime( seconds );
+        				
+        				details.append(expiry);
+        			}
+        			
+        			if ( node.isGroupNode() ) {
+        				if ( details.length() > 0 ) {
+        					details.append( ":" );
+        				}
+        				details.append( "group=" ).append( node.getGroupName() );
+        			}
+        			
+        			if ( node.isWorldSpecific() ) {
+        				if ( details.length() > 0 ) {
+        					details.append( ":" );
+        				}
+        				details.append( "world=" ).append( node.getWorld() );
+        			}
+        			
+        			if ( node.isMeta() ) {
+        				if ( details.length() > 0 ) {
+        					details.append( ":" );
+        				}
+        				
+        				Entry<String, String> meta = node.getMeta();
+        				
+        				details.append( "meta={" ).append( meta.getKey() )
+        				.append( "=" ).append( meta.getValue() ).append( "}" );
+        			}
+        			
+        			if ( details.length() > 0 ) {
+        				details.insert( 0, "::" );
+        			}
+        			
+        		}
+        		details.insert( 0, perm );
+        		
+        		results.add( details.toString() );
+        	}
+        }
+
+        
+        return results;
     }
 	
 }

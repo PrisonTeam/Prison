@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
 import tech.mcprison.prison.integration.PermissionIntegration;
@@ -68,6 +71,19 @@ public class LuckPermissions
     		permsWrapper.removePermission( holder, permission );
     	}
     }
+    
+    @Override
+    public List<String> getPermissions(Player holder, boolean detailed) {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( permsWrapper != null ) {
+    		results = permsWrapper.getPermissions(holder, detailed);
+    	}
+    	
+    	return results;
+    }
+    
+        
     
     @Override
     public boolean hasIntegrated() {

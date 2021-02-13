@@ -82,9 +82,14 @@ public class IntegrationManager {
     	integrations.get(iType).add(i);
     }
     
+    public PermissionIntegration getPermission() {
+    	return (PermissionIntegration) getForType(IntegrationType.PERMISSION)
+							.orElse( null );
+    }
+    
     public EconomyIntegration getEconomy() {
     	return (EconomyIntegration) getForType(IntegrationType.ECONOMY)
-							.orElse( null );
+    			.orElse( null );
     }
 
     public EconomyCurrencyIntegration getEconomyForCurrency(String currency) {

@@ -18,6 +18,9 @@
 
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -75,5 +78,13 @@ public class VaultPermissions
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }
+
+	@Override
+	public List<String> getPermissions( Player holder, boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
+
 
 }

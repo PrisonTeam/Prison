@@ -28,6 +28,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.util.Text;
@@ -125,6 +127,22 @@ public class SpigotCommandSender implements CommandSender {
     	
     	if ( oPlayer.isPresent() ) {
     		results = oPlayer.get().getSellAllMultiplier();
+    	}
+    	
+    	return results;
+    }
+    
+    public List<String> getPermissionsIntegrations( boolean detailed ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+    	
+    	if ( oPlayer.isPresent() ) {
+    		
+    		PermissionIntegration perms = PrisonAPI.getIntegrationManager() .getPermission();
+    		if ( perms != null ) {
+    			results = perms.getPermissions( oPlayer.get(), detailed );
+    		}
     	}
     	
     	return results;

@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.12 2021-02-12
 
 
+* **A work in progress: Adding the ability to get the list of player perms from the integrations.**
+This will allow for listing perms when the player is offline.  Also will have the ability to include more details with the perms which will be for display purposes only.
+
+
 * **Change around the /mines block search command to allow the searching for non-block items**
 with the new command /mines block searchAll.
 It appears like some blocks may not be marked properly as blocks or items, so this at least allows finding items to confirm that they exist.  They player could try to add items to mines, but they will fail to be placed.

@@ -160,6 +160,14 @@ public class TestPlayer
     	return results;
     }
     
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
+
+    
     @Override
     public double getSellAllMultiplier() {
     	return 1.0;

@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -61,6 +64,17 @@ public class LuckPerms5
 			permsWrapper.removePermission( holder, permission );
 		}
 	}
+    
+    @Override
+    public List<String> getPermissions(Player holder, boolean detailed) {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( permsWrapper != null ) {
+    		results = permsWrapper.getPermissions(holder, detailed);
+    	}
+    	
+    	return results;
+    }
     
 	@Override
 	public boolean hasIntegrated() {

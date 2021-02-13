@@ -832,4 +832,11 @@ public class RankPlayer
 			}
 		}
 	}
+
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
 }

@@ -242,6 +242,13 @@ public class SpigotOfflinePlayer
 //    	return results;
 //    }
     
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
+
     
     /**
      * <p>This is not the active online player instance, so therefore prison would not have

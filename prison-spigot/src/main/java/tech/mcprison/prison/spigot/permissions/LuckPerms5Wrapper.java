@@ -3,6 +3,10 @@
  */
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -12,8 +16,11 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.PermissionNode;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
  * <p>This wrapper provides support for LuckPerms v5.x.  Both v5.x and legacy 
@@ -97,5 +104,90 @@ public class LuckPerms5Wrapper
 		}
     }
     
+    
+    public List<String> getPermissions(Player holder, boolean detailed) {
+    	List<String> results = new ArrayList<>();
+    	
+    	UUID uuid = holder.getUUID();
+    	
+    	if ( api != null ) {
+
+			UserManager um = api.getUserManager();
+    	    User user = um.getUser(uuid);
+    	    
+    	    if (user != null) {
+    	    	
+    	    	SortedSet<Node> permNodes = user.getDistinctNodes();
+    	    	
+    	    	for ( Node node : permNodes ) {
+    	    		
+    	    		String perm = node.getKey();
+    	    		
+//    	    		String perm = node.getPermission();
+    	    		StringBuilder details = new StringBuilder();
+    	    		
+    	    		if ( detailed ) {
+    	    			
+    	    			if ( node.hasExpiry() ) {
+    	    				double seconds = (System.currentTimeMillis() - node.getExpiry().toEpochMilli()) / 1000.0;
+    	    				String expiry = PlaceholdersUtil.formattedTime( seconds );
+    	    				
+    	    				details.append(expiry);
+    	    			}
+    	    			
+    	    			if ( node.hasExpired() ) {
+    	    				if ( details.length() > 0 ) {
+    	    					details.append( ":" );
+    	    				}
+    	    				details.append( "expired" );
+    	    			}
+
+//    	    			if ( node.isGroup() ) {
+//    	    				if ( details.length() > 0 ) {
+//    	    					details.append( ":" );
+//    	    				}
+//    	    				details.append( "group=" ).append( node.getGroupName() );
+//    	    			}
+    	    			
+//    	    			if ( node.getType() == NodeType.PERMISSION ) {
+//    	    				node.get
+//    	    			}
+//    	    			
+//    	    			if ( node.isWorldSpecific() ) {
+//    	    				if ( details.length() > 0 ) {
+//    	    					details.append( ":" );
+//    	    				}
+//    	    				details.append( "world=" ).append( node.getWorld() );
+//    	    			}
+//    	    			
+//    	    			if ( node.isMeta() ) {
+//    	    				if ( details.length() > 0 ) {
+//    	    					details.append( ":" );
+//    	    				}
+//    	    				
+//    	    				Entry<String, String> meta = node.getMeta();
+//    	    				
+//    	    				details.append( "meta={" ).append( meta.getKey() )
+//    	    				.append( "=" ).append( meta.getValue() ).append( "}" );
+//    	    			}
+    	    			
+    	    			if ( details.length() > 0 ) {
+    	    				details.insert( 0, "::" );
+    	    			}
+    	    			
+    	    		}
+    	    		details.insert( 0, perm );
+    	    		
+    	    		results.add( details.toString() );
+    	    	}
+    	    }
+    	}
+    	
+    	
+    	
+
+        
+        return results;
+    }
 }
 
