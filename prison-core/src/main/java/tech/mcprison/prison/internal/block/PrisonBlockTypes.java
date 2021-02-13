@@ -99,11 +99,11 @@ public class PrisonBlockTypes {
 		}
 	}
 
-	public List<PrisonBlock> getBlockTypes( String searchTerm ) {
+	public List<PrisonBlock> getBlockTypes( String searchTerm, boolean restrictToBlocks ) {
 		List<PrisonBlock> results = new ArrayList<>();
     	
     	for ( PrisonBlock pBlock : getBlockTypes() ) {
-    		if ( pBlock.isBlock() && 
+    		if ( (!restrictToBlocks || restrictToBlocks && pBlock.isBlock()) && 
     				pBlock.getBlockNameSearch().toLowerCase().contains( searchTerm.toLowerCase()  )) {
     			results.add( pBlock );
     		}

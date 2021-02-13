@@ -272,7 +272,7 @@ public enum BlockType {
 	CACTUS( 81, "minecraft:cactus", 0, MaterialType.BLOCK ),
 
 	CLAY( 82, "minecraft:clay", 0, MaterialType.BLOCK, "HARD_CLAY" ),
-	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE" ),
+	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE", "SUGAR_CANE_BLOCK" ),
 	JUKEBOX( 84, "minecraft:jukebox", 0, MaterialType.BLOCK ),
 	OAK_FENCE( 85, "minecraft:fence", 0, MaterialType.BLOCK ),
 	PUMPKIN( 86, "minecraft:pumpkin", 0, MaterialType.BLOCK ),

@@ -121,7 +121,8 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
     		@Arg(name = "virtual", description = "Create a virtual mine in name only; no physical location. " +
-    				"This allows the mine to be predefined before specifying the coordinates. Use [virtual]. ", def = "") 
+    				"This allows the mine to be predefined before specifying the coordinates. Use [virtual]. ", 
+    				def = "") 
     					String virtualMine,
     		@Wildcard(join=true)
     		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName
@@ -528,7 +529,8 @@ public class MinesCommands
         //pMines.getMineManager().clearCache();
     }
 
-	private void updateMinePrisonBlock( CommandSender sender, Mine m, PrisonBlock prisonBlock, double chance, PrisonMines pMines )
+	private void updateMinePrisonBlock( CommandSender sender, Mine m, PrisonBlock prisonBlock, 
+											double chance, PrisonMines pMines )
 	{
 		PrisonBlock existingPrisonBlock = m.getPrisonBlock( prisonBlock );
 
@@ -808,7 +810,8 @@ public class MinesCommands
     }
     
 
-    @Command(identifier = "mines block remove", permissions = "mines.block", onlyPlayers = false, description = "Deletes a block from a mine.")
+    @Command(identifier = "mines block remove", permissions = "mines.block", 
+    			onlyPlayers = false, description = "Deletes a block from a mine.")
     public void delBlockCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "block", def = "AIR", description = "The block's name or ID.") String block) {
@@ -929,11 +932,11 @@ public class MinesCommands
     	
         if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
             
-        	display = prisonBlockSearchBuilder(search, page);
+        	display = prisonBlockSearchBuilder(search, page, true, "mines block search");
         }
         else {
         	
-        	display = blockSearchBuilder(search, page);
+        	display = blockSearchBuilder(search, page, true, "mines block search");
         }
         
         display.send(sender);
@@ -941,14 +944,43 @@ public class MinesCommands
         //pMines.getMineManager().clearCache();
     }
     
-    private ChatDisplay prisonBlockSearchBuilder(String search, String page)
+    @Command(identifier = "mines block searchAll", permissions = "mines.block", 
+    		description = "Searches for a blocks and items. Items cannot be added to mines.")
+    public void searchBlockAllCommand(CommandSender sender,
+    		@Arg(name = "search", def = " ", description = "Any part of the block's, or item's name.") String search,
+    		@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	if (search == null)
+    	{
+    		pMines.getMinesMessages().getLocalizable("block_search_blank").sendTo(sender);
+    	}
+    	
+    	ChatDisplay display = null;
+    	
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+    		
+    		display = prisonBlockSearchBuilder(search, page, false, "mines block searchAll");
+    	}
+    	else {
+    		
+    		display = blockSearchBuilder(search, page, false, "mines block searchAll");
+    	}
+    	
+    	display.send(sender);
+    	
+    	//pMines.getMineManager().clearCache();
+    }
+    
+    private ChatDisplay prisonBlockSearchBuilder(String search, String page, 
+    							boolean restrictToBlocks, String command )
     {
     	
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
-    	List<PrisonBlock> blocks = prisonBlockTypes.getBlockTypes( search );
+    	List<PrisonBlock> blocks = prisonBlockTypes.getBlockTypes( search, restrictToBlocks );
     	
     	CommandPagedData cmdPageData = new CommandPagedData(
-    			"/mines block search " + search, blocks.size(),
+    			"/" + command + " " + search, blocks.size(),
     			0, page );
     	
     	// Same page logic as in mines info
@@ -978,8 +1010,9 @@ public class MinesCommands
     		PrisonBlock block = blocks.get(i);
     		FancyMessage msg =
     				new FancyMessage(
-    						String.format("&7%s %s", 
-    								Integer.toString(i), block.getBlockNameSearch()
+    						String.format("&7%s %s (%s)", 
+    								Integer.toString(i), block.getBlockNameSearch(),
+    								(block.isBlock() ? "block" : "item")
 //    								block.getAltName(),
     								))
     				.suggest("/mines block add " + getLastMineReferenced() + 
@@ -997,12 +1030,13 @@ public class MinesCommands
     	return display;
     }
 
-	private ChatDisplay blockSearchBuilder(String search, String page)
+	private ChatDisplay blockSearchBuilder(String search, String page, 
+					boolean restrictToBlocks, String command)
 	{
 		List<BlockType> blocks = new ArrayList<>();
     	for (BlockType block : BlockType.values())
 		{
-			if ( block.getMaterialType() == MaterialType.BLOCK && 
+			if ( (!restrictToBlocks || restrictToBlocks && block.getMaterialType() == MaterialType.BLOCK) && 
 					(block.getId().contains(search.toLowerCase()) || 
 					block.name().toLowerCase().contains(search.toLowerCase())) )
 			{
@@ -1012,7 +1046,7 @@ public class MinesCommands
     	
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/mines block search " + search, blocks.size(),
+        		"/" + command + " " + search, blocks.size(),
         		0, page );
     	
     	// Same page logic as in mines info
@@ -1042,11 +1076,13 @@ public class MinesCommands
         	BlockType block = blocks.get(i);
             FancyMessage msg =
                     new FancyMessage(
-                    		String.format("&7%s %s  (%s)%s", 
+                    		String.format("&7%s %s  (%s)%s (%s)", 
                     				Integer.toString(i), block.name(), 
                     				block.getId().replace("minecraft:", ""),
                     				(block.getMaterialVersion() == null ? "" : 
-                    					"(" + block.getMaterialVersion() + ")")))
+                    					"(" + block.getMaterialVersion() + ")"),
+                    				(block.isBlock() ? "block": "item"))
+                    		)
                     .suggest("/mines block add " + getLastMineReferenced() + " " + block.name() + " %")
                         .tooltip("&7Click to add block to a mine.");
                 builder.add(msg);

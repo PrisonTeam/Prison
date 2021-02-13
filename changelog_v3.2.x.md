@@ -16,7 +16,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.12 2021-02-11
+# v3.2.4-alpha.12 2021-02-12
+
+
+* **Change around the /mines block search command to allow the searching for non-block items**
+with the new command /mines block searchAll.
+It appears like some blocks may not be marked properly as blocks or items, so this at least allows finding items to confirm that they exist.  They player could try to add items to mines, but they will fail to be placed.
+
+
+* **Initial setup of the /ranks player command to include the players rank if the one who is issuing the command has the perm ranks.admin.**
 
 
 * **Redesigned how the player permissions are worked to make sure more of the are actually working**
