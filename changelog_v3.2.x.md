@@ -16,7 +16,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.12 2021-02-12
+# v3.2.4-alpha.12 2021-02-13
+
+* **Clean up some of the messages related to the /mines stats command.**  
+Eliminated the stats on TP events and broadcasting messages since they are trivial in time it takes to run those parts. Fixed a stats bug in the synchronous reset page count should have been always 1, but it was accumulating after each update.
 
 
 * **Provide some docs on the PlaceholdersUtil.formattedTime() function.**

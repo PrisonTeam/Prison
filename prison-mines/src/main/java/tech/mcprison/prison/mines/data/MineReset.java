@@ -117,9 +117,12 @@ public abstract class MineReset
 	private long statsResetTimeMS = 0;
 	private long statsBlockGenTimeMS = 0;
 	private long statsBlockUpdateTimeMS = 0;
-	private long statsTeleport1TimeMS = 0;
-	private long statsTeleport2TimeMS = 0;
-	private long statsMessageBroadcastTimeMS = 0;
+	
+	// Note: The time it takes to teleport players and broadcast is so trivial
+	//       that they are being disabled to reduce the clutter and memory load.
+//	private long statsTeleport1TimeMS = 0;
+//	private long statsTeleport2TimeMS = 0;
+//	private long statsMessageBroadcastTimeMS = 0;
 	
 	private int statsResetPages = 0;
 	private long statsResetPageBlocks = 0;
@@ -221,8 +224,9 @@ public abstract class MineReset
 			// Generate new set of randomized blocks each time:  This is the ONLY thing that can be async!! ;(
 			//generateBlockList();
 			
-			setStatsTeleport1TimeMS(
-					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+			teleportAllPlayersOut( getBounds().getyBlockMax() );
+//			setStatsTeleport1TimeMS(
+//					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
 			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
 				
@@ -314,7 +318,9 @@ public abstract class MineReset
 			time2 = System.currentTimeMillis() - time2;
 			setStatsBlockUpdateTimeMS( time2 );
 			
-			setStatsResetPages( getStatsResetPages() + 1 );
+			// This is synchronous resetting so there will only be ONE page:
+			setStatsResetPages( 1 );
+//			setStatsResetPages( getStatsResetPages() + 1 );
 			setStatsResetPageBlocks( i );
 			setStatsResetPageMs( time2 );
 			
@@ -327,8 +333,9 @@ public abstract class MineReset
 			// If a player falls back in to the mine before it is fully done being reset, 
 			// such as could happen if there is lag or a lot going on within the server, 
 			// this will TP anyone out who would otherwise suffocate.  I hope! lol
-			setStatsTeleport2TimeMS(
-					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+			teleportAllPlayersOut( getBounds().getyBlockMax() );
+//			setStatsTeleport2TimeMS(
+//					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
 			// free up memory:
 			getRandomizedBlocks().clear();
@@ -375,23 +382,23 @@ public abstract class MineReset
     	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
     	DecimalFormat iFmt = new DecimalFormat("#,##0");
     	
-    	sb.append( "&3 Reset: &7" );
-    	sb.append( dFmt.format(getStatsResetTimeMS() / 1000.0d ));
+    	sb.append( "&3 ResetTime: &7" );
+    	sb.append( dFmt.format(getStatsResetTimeMS() / 1000.0d )).append( " s " );
     	
-    	sb.append( "&3 BlockGen: &7" );
-    	sb.append( dFmt.format(getStatsBlockGenTimeMS() / 1000.0d ));
+    	sb.append( "&3 BlockGenTime: &7" );
+    	sb.append( dFmt.format(getStatsBlockGenTimeMS() / 1000.0d )).append( " s " );
     	
-    	sb.append( "&3 TP1: &7" );
-    	sb.append( dFmt.format(getStatsTeleport1TimeMS() / 1000.0d ));
+//    	sb.append( "&3 TP1: &7" );
+//    	sb.append( dFmt.format(getStatsTeleport1TimeMS() / 1000.0d ));
 
-    	sb.append( "&3 BlockUpdate: &7" );
-    	sb.append( dFmt.format(getStatsBlockUpdateTimeMS() / 1000.0d ));
+    	sb.append( "&3 BlockUpdateTime: &7" );
+    	sb.append( dFmt.format(getStatsBlockUpdateTimeMS() / 1000.0d )).append( " s " );
     	
-    	sb.append( "&3 TP2: &7" );
-    	sb.append( dFmt.format(getStatsTeleport2TimeMS() / 1000.0d ));
+//    	sb.append( "&3 TP2: &7" );
+//    	sb.append( dFmt.format(getStatsTeleport2TimeMS() / 1000.0d ));
     	
-    	sb.append( "&3 Msg: &7" );
-    	sb.append( dFmt.format(getStatsMessageBroadcastTimeMS() / 1000.0d ));
+//    	sb.append( "&3 Msg: &7" );
+//    	sb.append( dFmt.format(getStatsMessageBroadcastTimeMS() / 1000.0d ));
     	
     	sb.append( "&3 ResetPages: &7" );
     	sb.append( iFmt.format(getStatsResetPages() ));
@@ -401,10 +408,10 @@ public abstract class MineReset
     	double avgMs = getStatsResetPages() == 0 ? 0 :
     			getStatsResetPageMs() / getStatsResetPages();
     	
-    	sb.append( "&3 avgBlocks: &7" );
+    	sb.append( "&3 avgBlocksPerPage: &7" );
     	sb.append( dFmt.format(avgBlocks));
     	
-    	sb.append( "&3 avgMs: &7" );
+    	sb.append( "&3 avgMsPerPage: &7" );
     	sb.append( dFmt.format(avgMs));
     	
     	return sb.toString();
@@ -429,9 +436,9 @@ public abstract class MineReset
     	setStatsResetTimeMS( 0 );
     	setStatsBlockGenTimeMS( 0 );
     	setStatsBlockUpdateTimeMS( 0 );
-    	setStatsTeleport1TimeMS( 0 );
-    	setStatsTeleport2TimeMS( 0 );
-    	setStatsMessageBroadcastTimeMS( 0 );
+//    	setStatsTeleport1TimeMS( 0 );
+//    	setStatsTeleport2TimeMS( 0 );
+//    	setStatsMessageBroadcastTimeMS( 0 );
     	
     	setStatsResetPages( 0 );
     	setStatsResetPageBlocks( 0 );
@@ -751,8 +758,9 @@ public abstract class MineReset
         		// If a player falls back in to the mine before it is fully done being reset, 
         		// such as could happen if there is lag or a lot going on within the server, 
         		// this will TP anyone out who would otherwise suffocate.  I hope! lol
-        		setStatsTeleport2TimeMS(
-        				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+    			teleportAllPlayersOut( getBounds().getyBlockMax() );
+//    			setStatsTeleport2TimeMS(
+//    					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
         		// Reset the paging for the next reset:
         		setResetPage( 0 );
@@ -888,8 +896,9 @@ public abstract class MineReset
 			if (!canceled) {
 				
 				try {
-					setStatsTeleport1TimeMS(
-							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+					teleportAllPlayersOut( getBounds().getyBlockMax() );
+//					setStatsTeleport1TimeMS(
+//							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 					
 				} catch (Exception e) {
 					Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
@@ -1329,7 +1338,7 @@ public abstract class MineReset
     
     
     private void broadcastResetMessageToAllPlayersWithRadius() {
-    	long start = System.currentTimeMillis();
+//    	long start = System.currentTimeMillis();
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -1367,9 +1376,9 @@ public abstract class MineReset
     		
     	}
     	
-        long stop = System.currentTimeMillis();
+//        long stop = System.currentTimeMillis();
         
-        setStatsMessageBroadcastTimeMS( stop - start );
+//        setStatsMessageBroadcastTimeMS( stop - start );
     }
     
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
@@ -1684,32 +1693,32 @@ public abstract class MineReset
 		this.statsBlockUpdateTimeMS = statsBlockUpdateTimeMS;
 	}
 
-	public long getStatsTeleport1TimeMS()
-	{
-		return statsTeleport1TimeMS;
-	}
-	public void setStatsTeleport1TimeMS( long statsTeleport1TimeMS )
-	{
-		this.statsTeleport1TimeMS = statsTeleport1TimeMS;
-	}
-
-	public long getStatsTeleport2TimeMS()
-	{
-		return statsTeleport2TimeMS;
-	}
-	public void setStatsTeleport2TimeMS( long statsTeleport2TimeMS )
-	{
-		this.statsTeleport2TimeMS = statsTeleport2TimeMS;
-	}
-
-	public long getStatsMessageBroadcastTimeMS()
-	{
-		return statsMessageBroadcastTimeMS;
-	}
-	public void setStatsMessageBroadcastTimeMS( long statsMessageBroadcastTimeMS )
-	{
-		this.statsMessageBroadcastTimeMS = statsMessageBroadcastTimeMS;
-	}
+//	public long getStatsTeleport1TimeMS()
+//	{
+//		return statsTeleport1TimeMS;
+//	}
+//	public void setStatsTeleport1TimeMS( long statsTeleport1TimeMS )
+//	{
+//		this.statsTeleport1TimeMS = statsTeleport1TimeMS;
+//	}
+//
+//	public long getStatsTeleport2TimeMS()
+//	{
+//		return statsTeleport2TimeMS;
+//	}
+//	public void setStatsTeleport2TimeMS( long statsTeleport2TimeMS )
+//	{
+//		this.statsTeleport2TimeMS = statsTeleport2TimeMS;
+//	}
+//
+//	public long getStatsMessageBroadcastTimeMS()
+//	{
+//		return statsMessageBroadcastTimeMS;
+//	}
+//	public void setStatsMessageBroadcastTimeMS( long statsMessageBroadcastTimeMS )
+//	{
+//		this.statsMessageBroadcastTimeMS = statsMessageBroadcastTimeMS;
+//	}
 
 	public int getStatsResetPages() {
 		return statsResetPages;
