@@ -18,6 +18,13 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-14
 
+* **Bug fix: SellAll broken**
+Working on fixing many SellAll broken permissions, now booleans are working again.
+
+* **Buf fix: GUI error.**
+Improved Prison GUIs handler that won't trigger without opening a true Prison GUI, this will
+  fix random Prison GUI errors.
+
 
 * **Bug fix: This audio file does not exist on 1.8 so catch the exception and ignore.**
 A sound still plays so not sure the point of this actually.

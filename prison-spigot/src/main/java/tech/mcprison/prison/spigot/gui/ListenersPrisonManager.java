@@ -4,16 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -40,7 +36,6 @@ import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -356,6 +351,24 @@ public class ListenersPrisonManager implements Listener {
         rankNameOfChat = null;
     }
 
+    /**
+     * Java getBoolean's broken so I made my own.
+     * */
+    public boolean getBoolean(String string){
+
+        if (string == null){
+            return false;
+        }
+
+        if (string.equalsIgnoreCase("true")){
+            return true;
+        } else if (string.equalsIgnoreCase("false")){
+            return false;
+        }
+
+        return false;
+    }
+
     // Cancel the events of the active GUI opened from the player.
     private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
         if(activeGui.contains(p.getName())) {
@@ -368,7 +381,7 @@ public class ListenersPrisonManager implements Listener {
     public void onClick(InventoryClickEvent e){
 
         // Check if GUIs are enabled.
-        boolean prisonGuiEnabled = Boolean.getBoolean(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled"));
+        boolean prisonGuiEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("prison-gui-enabled"));
         if (!prisonGuiEnabled){
             return;
         }
@@ -376,290 +389,302 @@ public class ListenersPrisonManager implements Listener {
         // Get the player.
         Player p = (Player) e.getWhoClicked();
 
-        // GUIs must have the good conditions to work.
-        if (guiConditions(e, p)) return;
-
-        // Get parameters.
-        String buttonNameMain = e.getCurrentItem().getItemMeta().getDisplayName();
-        buttonNameMain = SpigotPrison.stripColor(buttonNameMain);
-        String[] parts = buttonNameMain.split(" ");
-        Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-        String title = compat.getGUITitle(e).substring(2);
-
         if (activeGui.contains(p.getName())) {
+
+            // GUIs must have the good conditions to work.
+            if (guiConditions(e, p)) return;
+
+            String buttonNameMain;
+            String[] parts;
+            Module module;
+            Compatibility compat;
+            String title;
+
+            try {
+                // Get parameters.
+                buttonNameMain = SpigotPrison.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+                parts = buttonNameMain.split(" ");
+                module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
+                compat = SpigotPrison.getInstance().getCompatibility();
+                title = compat.getGUITitle(e).substring(2);
+            } catch (ArrayIndexOutOfBoundsException ex){
+                Output.get().sendError(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
+                ex.printStackTrace();
+                return;
+            }
+
             // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
                 p.closeInventory();
                 e.setCancelled(true);
                 return;
             }
-        }
 
-        // Check if the GUI have the right title and do the actions.
-        switch (title) {
+            // Check if the GUI have the right title and do the actions.
+            switch (title) {
 
-            // Check the title and do the actions.
-            case "PrisonManager":
+                // Check the title and do the actions.
+                case "PrisonManager":
 
-                // Call the method.
-                prisonManagerGUI(e, p, buttonNameMain);
+                    // Call the method.
+                    prisonManagerGUI(e, p, buttonNameMain);
 
-                break;
+                    break;
 
-            // Check the title.
-            case "RanksManager -> Ladders": {
+                // Check the title.
+                case "RanksManager -> Ladders": {
 
-                // Call the method.
-                laddersGUI(e, p, buttonNameMain, module, parts);
+                    // Call the method.
+                    laddersGUI(e, p, buttonNameMain, module, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title of the inventory and do the actions.
-            case "Ladders -> Ranks": {
+                // Check the title of the inventory and do the actions.
+                case "Ladders -> Ranks": {
 
-                // Call the method.
-                ranksGUI(e, p, buttonNameMain, parts);
+                    // Call the method.
+                    ranksGUI(e, p, buttonNameMain, parts);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "Prestiges -> PlayerPrestiges": {
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Prestiges -> PlayerPrestiges": {
 
-                // Call the method.
-                playerPrestigesGUI(e, p, buttonNameMain);
+                    // Call the method.
+                    playerPrestigesGUI(e, p, buttonNameMain);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "Prestige -> Confirmation": {
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Prestige -> Confirmation": {
 
-                // Call the method.
-                prestigeConfirmationGUI(e, p, buttonNameMain);
+                    // Call the method.
+                    prestigeConfirmationGUI(e, p, buttonNameMain);
 
-                break;
-            }
-            // Check the title of the inventory and do things.
-            case "Ranks -> RankManager": {
+                    break;
+                }
+                // Check the title of the inventory and do things.
+                case "Ranks -> RankManager": {
 
-                // Call the method.
-                rankManagerGUI(e, p, parts);
+                    // Call the method.
+                    rankManagerGUI(e, p, parts);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "Ranks -> PlayerRanks":{
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Ranks -> PlayerRanks": {
 
-                // Call the method.
-                playerRanksGUI(e, p, buttonNameMain);
+                    // Call the method.
+                    playerRanksGUI(e, p, buttonNameMain);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "RankManager -> RankUPCommands": {
+                    break;
+                }
+                // Check the title and do the actions.
+                case "RankManager -> RankUPCommands": {
 
-                // Call the method.
-                rankUPCommandsGUI(e, p, buttonNameMain);
+                    // Call the method.
+                    rankUPCommandsGUI(e, p, buttonNameMain);
 
-                break;
-            }
-            // Check the inventory name and do the actions.
-            case "RankManager -> RankPrice": {
+                    break;
+                }
+                // Check the inventory name and do the actions.
+                case "RankManager -> RankPrice": {
 
-                // Call the method.
-                rankPriceGUI(e, p, parts);
+                    // Call the method.
+                    rankPriceGUI(e, p, parts);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "MinesManager -> Mines": {
+                    break;
+                }
+                // Check the title and do the actions.
+                case "MinesManager -> Mines": {
 
-                // Call the method.
-                minesGUI(e, p, buttonNameMain, parts);
+                    // Call the method.
+                    minesGUI(e, p, buttonNameMain, parts);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "Mines -> PlayerMines": {
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Mines -> PlayerMines": {
 
-                // Call the method.
-                playerMinesGUI(p, buttonNameMain);
+                    // Call the method.
+                    playerMinesGUI(p, buttonNameMain);
 
-                break;
-            }
-            case "Mines -> MineInfo": {
+                    break;
+                }
+                case "Mines -> MineInfo": {
 
-                // Call the method.
-                mineInfoGUI(e, p, parts);
+                    // Call the method.
+                    mineInfoGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title of the inventory and do the actions.
-            case "Mines -> Delete": {
+                // Check the title of the inventory and do the actions.
+                case "Mines -> Delete": {
 
-                // Call the method.
-                minesDeleteGUI(p, parts);
+                    // Call the method.
+                    minesDeleteGUI(p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title of the inventory and do the actions.
-            case "MineInfo -> Blocks": {
+                // Check the title of the inventory and do the actions.
+                case "MineInfo -> Blocks": {
 
-                // Call the method.
-                blocksGUI(e, p, parts);
+                    // Call the method.
+                    blocksGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the inventory name and do the actions.
-            case "Mines -> BlocksList":{
+                // Check the inventory name and do the actions.
+                case "Mines -> BlocksList": {
 
-                blocksListGUI(e, p, parts);
+                    blocksListGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the inventory name and do the actions.
-            case "MineInfo -> ResetTime": {
+                // Check the inventory name and do the actions.
+                case "MineInfo -> ResetTime": {
 
-                // Call the method.
-                resetTimeGUI(e, p, parts);
+                    // Call the method.
+                    resetTimeGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the inventory title and do the actions.
-            case "MineInfo -> MineNotifications": {
+                // Check the inventory title and do the actions.
+                case "MineInfo -> MineNotifications": {
 
-                // Call the method.
-                mineNotificationsGUI(e, p, parts);
+                    // Call the method.
+                    mineNotificationsGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            case "MineInfo -> BlockPercentage":{
+                case "MineInfo -> BlockPercentage": {
 
-                mineBlockPercentage(e, p, parts);
+                    mineBlockPercentage(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the inventory title and do the actions.
-            case "MineNotifications -> Radius": {
+                // Check the inventory title and do the actions.
+                case "MineNotifications -> Radius": {
 
-                // Call the method
-                radiusGUI(e, p, parts);
+                    // Call the method
+                    radiusGUI(e, p, parts);
 
-                break;
-            }
-            // Check the inventory title and do the actions.
-            case "PrisonManager -> AutoFeatures": {
+                    break;
+                }
+                // Check the inventory title and do the actions.
+                case "PrisonManager -> AutoFeatures": {
 
-                // Call the method
-                autoFeaturesGUI(e, p, parts);
+                    // Call the method
+                    autoFeaturesGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "AutoFeatures -> AutoPickup":{
+                // Check the title and do the actions.
+                case "AutoFeatures -> AutoPickup": {
 
-                // Call the method
-                autoPickupGUI(e, p, parts);
+                    // Call the method
+                    autoPickupGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "AutoFeatures -> AutoSmelt":{
+                // Check the title and do the actions.
+                case "AutoFeatures -> AutoSmelt": {
 
-                // Call the method
-                autoSmeltGUI(e, p, parts);
+                    // Call the method
+                    autoSmeltGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "AutoFeatures -> AutoBlock":{
+                // Check the title and do the actions.
+                case "AutoFeatures -> AutoBlock": {
 
-                // Call the method
-                autoBlockGUI(e, p, parts);
+                    // Call the method
+                    autoBlockGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "SellAll -> Blocks":{
+                // Check the title and do the actions.
+                case "SellAll -> Blocks": {
 
-                sellAllAdminBlocksGUI(e, p, buttonNameMain);
+                    sellAllAdminBlocksGUI(e, p, buttonNameMain);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "Prison -> SellAll-Admin":{
+                // Check the title and do the actions.
+                case "Prison -> SellAll-Admin": {
 
-                sellAllAdminGUI(e, p, buttonNameMain);
+                    sellAllAdminGUI(e, p, buttonNameMain);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "SellAll -> AutoSell":{
+                // Check the title and do the actions.
+                case "SellAll -> AutoSell": {
 
-                sellAllAutoSellAdminGUI(e, p, buttonNameMain);
+                    sellAllAutoSellAdminGUI(e, p, buttonNameMain);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "SellAll -> ItemValue":{
+                // Check the title and do the actions.
+                case "SellAll -> ItemValue": {
 
-                sellAllItemValue(e, p, parts);
+                    sellAllItemValue(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "SellAll -> Delay":{
+                // Check the title and do the actions.
+                case "SellAll -> Delay": {
 
-                sellAllDelayGUI(e, p, parts);
+                    sellAllDelayGUI(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "SellAll -> Multipliers":{
+                // Check the title and do the actions.
+                case "SellAll -> Multipliers": {
 
-                sellAllMultipliersGUI(e, p, buttonNameMain, parts);
+                    sellAllMultipliersGUI(e, p, buttonNameMain, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            case "Edit -> Multiplier":{
+                case "Edit -> Multiplier": {
 
-                setSellAllPrestigeMultiplier(e, p, parts);
+                    setSellAllPrestigeMultiplier(e, p, parts);
 
-                break;
-            }
+                    break;
+                }
 
-            // Check the title and do the actions.
-            case "Prison -> SellAll-Player":{
+                // Check the title and do the actions.
+                case "Prison -> SellAll-Player": {
 
-                p.closeInventory();
-                e.setCancelled(true);
+                    p.closeInventory();
+                    e.setCancelled(true);
 
-                break;
-            }
-            // Check the title and do the actions.
-            case "Prison Setup -> Confirmation":{
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Prison Setup -> Confirmation": {
 
-                prisonSetupConfirmGUI(e, p, parts);
+                    prisonSetupConfirmGUI(e, p, parts);
 
-                break;
+                    break;
+                }
             }
         }
     }
@@ -1046,7 +1071,7 @@ public class ListenersPrisonManager implements Listener {
 
             case "Prestige-Multipliers":{
 
-                boolean multiplierEnabled = Boolean.getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+                boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
                 if (!multiplierEnabled){
 
                     Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
