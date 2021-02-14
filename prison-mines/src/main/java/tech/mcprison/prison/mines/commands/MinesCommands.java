@@ -1529,8 +1529,8 @@ public class MinesCommands
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, boolean useNewBlockModel) {
         BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
-        DecimalFormat iFmt = new DecimalFormat("##0");
-        DecimalFormat dFmt = new DecimalFormat("##0.00");
+        DecimalFormat iFmt = new DecimalFormat("#,##0");
+        DecimalFormat dFmt = new DecimalFormat("#,##0.00");
         double totalChance = 0.0d;
         int count = 0;
         
@@ -1546,11 +1546,11 @@ public class MinesCommands
         			String blockName = block.getBlockName().replaceAll("_", " ").toLowerCase();
         			String percent = dFmt.format(chance) + "%";
         			
-        			String blockStats = String.format( " P: %s T: %s  S: %s  US: %s",  
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getResetBlockCount(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountUnsaved(), iFmt, " " )
+        			String blockStats = String.format( "  P: %s  T: %s  S: %s  uS: %s",  
+        					iFmt.format( block.getResetBlockCount() ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), dFmt, "" ), 
+        					iFmt.format( block.getBlockCountUnsaved() )
         					);
         			
         			FancyMessage msg = new FancyMessage(
@@ -1577,11 +1577,11 @@ public class MinesCommands
         					StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
         			String percent = dFmt.format(chance) + "%";
         			
-        			String blockStats = String.format( " P: %s T: %s  S: %s  US: %s",  
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getResetBlockCount(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), iFmt, " " ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountUnsaved(), iFmt, " " )
+        			String blockStats = String.format( " P: %s T: %s  S: %s  uS: %s",  
+        					iFmt.format( block.getResetBlockCount() ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), dFmt, "" ), 
+        					iFmt.format( block.getBlockCountUnsaved() )
         					);
 
         			FancyMessage msg = new FancyMessage(

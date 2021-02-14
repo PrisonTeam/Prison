@@ -513,7 +513,11 @@ public abstract class MineData
     public void resetUnsavedBlockCounts() {
     	
     	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+    		// Since the mine was just saved reset the unsaved value :
     		blockStats.setBlockCountUnsaved( 0 );
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		blockStats.incrementResetBlockCount();
     	}
     }
     

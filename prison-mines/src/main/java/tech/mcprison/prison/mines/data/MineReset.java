@@ -261,6 +261,8 @@ public abstract class MineReset
 				
 			// Reset the block break count before resetting the blocks:
 			setBlockBreakCount( 0 );
+			resetUnsavedBlockCounts();
+			
 			Random random = new Random();
 			
 			int i = 0;
