@@ -16,7 +16,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.12 2021-02-14
+# v3.2.4-alpha.13 2021-02-14
+
+
+
+* **v3.2.4-alpha.13 2021-02-14**
+
 
 * Cleaned up some of the player permissions with SpigotCommandSender, SpigotPlayer, and SpigotOfflinePlayer to ensure they are using the correct bukkit internal functions.**
 
