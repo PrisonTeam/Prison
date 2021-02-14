@@ -25,7 +25,12 @@ import tech.mcprison.prison.util.BlockType;
  * Represents a block in a mine
  */
 public class BlockOld
-	extends PrisonBlockStatusData {
+			extends PrisonBlockStatusData
+			implements Comparable<BlockOld> {
+	
+	public static final BlockOld AIR = new BlockOld( BlockType.AIR );
+	public static final BlockOld IGNORE = new BlockOld( BlockType.IGNORE );
+	public static final BlockOld NULL_BLOCK = new BlockOld( BlockType.NULL_BLOCK );
 
     /**
      * The {@link BlockType} represented by this {@link BlockOld}
@@ -36,6 +41,11 @@ public class BlockOld
      */
     private double chance; // = 100.0d;
 
+    
+    private BlockOld( BlockType block ) {
+    	this( block, 0.0d, 0L );
+    }
+    
     /**
      * Assigns the type and chance
      */
@@ -63,6 +73,33 @@ public class BlockOld
 		return getType().name() + " " + Double.toString( getChance() );
 	}
 
+	
+	@Override
+	public boolean equals( Object block ) {
+		boolean results = false;
+
+		if ( block != null && block instanceof BlockOld) {
+			results = getType() == ((BlockOld) block).getType();
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public int compareTo( BlockOld block )
+	{
+		int results = 0;
+		
+		if ( block == null ) {
+			results = 1;
+		}
+		else {
+			results = getBlockName().compareToIgnoreCase( block.getBlockName() );
+		}
+			
+		return results;
+	}
+	
 	public BlockType getType()
 	{
 		return type;

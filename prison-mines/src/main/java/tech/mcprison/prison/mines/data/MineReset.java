@@ -285,9 +285,13 @@ public abstract class MineReset
 											prisonBlock.getBlockName().equalsIgnoreCase( "AIR" ) ) {
 								
 								PrisonBlock targetPrisonBlock = randomlySelectPrisonBlock( random );
+								
 								if ( !targetPrisonBlock.equals( PrisonBlock.IGNORE ) ) {
 									
-									targetBlock.setPrisonBlock( randomlySelectPrisonBlock( random ));
+									// Increment the mine's block count. This block is one of the control blocks:
+									targetPrisonBlock.incrementResetBlockCount();
+									
+									targetBlock.setPrisonBlock( targetPrisonBlock );
 								}
 								i++;
 								
@@ -305,8 +309,15 @@ public abstract class MineReset
 									isFillMode && targetBlock.isEmpty() ||
 									isFillMode && targetLocation.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
 								
+								BlockOld tBlock = randomlySelectBlock( random );
 								
-								targetBlock.setType(randomlySelectBlock( random ));
+								if ( !tBlock.equals( BlockOld.IGNORE ) ) {
+
+									// Increment the mine's block count. This block is one of the control blocks:
+									tBlock.incrementResetBlockCount();
+									
+									targetBlock.setType( tBlock.getType() );
+								}
 								i++;
 //							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
 							}
@@ -670,6 +681,9 @@ public abstract class MineReset
 						
 						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random );
 						
+						// Increment the mine's block count. This block is one of the control blocks:
+						prisonBlock.incrementResetBlockCount();
+						
 						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 						
 						if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
@@ -679,12 +693,16 @@ public abstract class MineReset
 					}
 					else {
 						
-						BlockType blockType = randomlySelectBlock( random );
 						
-						mtb = new MineTargetBlock( blockType, x, y, z);
+						BlockOld tBlock = randomlySelectBlock( random );
+						
+						// Increment the mine's block count. This block is one of the control blocks:
+						tBlock.incrementResetBlockCount();
+						
+						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
 
-						if ( blockType == BlockType.AIR ) {
-//						mAirBlocks[i++] = true;
+						if ( tBlock.equals( BlockOld.AIR ) ) {
+//							mAirBlocks[i++] = true;
 							airCount++;
 						}
 					}
@@ -1335,20 +1353,20 @@ public abstract class MineReset
 		return prisonBlock;
 	}
 	
-	private BlockType randomlySelectBlock( Random random )
-	{
+	private BlockOld randomlySelectBlock( Random random ) {
 		double chance = random.nextDouble() * 100.0d;
 		
-		BlockType value = BlockType.AIR;
+		BlockOld results = BlockOld.AIR;
+		
 		for (BlockOld block : getBlocks()) {
 			if (chance <= block.getChance()) {
-				value = block.getType();
+				results = block;
 				break;
 			} else {
 				chance -= block.getChance();
 			}
 		}
-		return value;
+		return results;
 	}
     
     
