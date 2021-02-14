@@ -16,8 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.12 2021-02-13
+# v3.2.4-alpha.12 2021-02-14
 
+
+* **Bug fix: This audio file does not exist on 1.8 so catch the exception and ignore.**
+A sound still plays so not sure the point of this actually.
 
 
 * **Add the stats on block counts to the /mines info details.**

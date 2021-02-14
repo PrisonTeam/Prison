@@ -112,7 +112,14 @@ public class Spigot18
 	public void breakItemInMainHand( Player player ) {
 		player.setItemInHand( null );
 		
-		player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F); 
+		try
+		{
+			player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F);
+		}
+		catch ( NoSuchFieldError e )
+		{
+			// Sound does not exist for this version of spigot.  Ignore.
+		} 
 	}
 
 }
