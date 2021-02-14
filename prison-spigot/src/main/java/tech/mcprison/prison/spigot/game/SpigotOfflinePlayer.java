@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -62,7 +61,8 @@ public class SpigotOfflinePlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	return (offlinePlayer.getPlayer() instanceof Player );
+    	return ( offlinePlayer != null && offlinePlayer.getPlayer() != null &&
+    					offlinePlayer.getPlayer() instanceof Player );
 //    	return false;
     }
     
@@ -251,14 +251,11 @@ public class SpigotOfflinePlayer
 
     
     /**
-     * <p>This is not the active online player instance, so therefore prison would not have
-     * access to the player's inventory if it is defaulting to this Player class. 
-     * Therefore, this function should *never* be used in any calculations dealing with
-     * the sales of inventory items.
-     * </p>
-     * 
-     * <p>This is being set to a value of 1.0 so as not to change any other value that may
-     * be used with this function.
+     * <p>SpigotOfflinePlayer represents a player that is offline, and the only time 
+     * when bukkit has the player's perms loaded is when they are online.  If the 
+     * player is online, when you have an instance of this object, then they will
+     * be available through the bukkit's OfflinePlayer.getPlayer() function, otherwise
+     * it will be null. 
      * </p>
      * 
      */
@@ -266,11 +263,12 @@ public class SpigotOfflinePlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Optional<tech.mcprison.prison.internal.Player> oPlayer = 
-    									Prison.get().getPlatform().getPlayer( getName() );
+    	SpigotPlayer sPlayer = null;
     	
-    	if ( oPlayer.isPresent() ) {
-    		results = oPlayer.get().getSellAllMultiplier();
+    	if ( getWrapper().getPlayer() != null ) {
+    		sPlayer = new SpigotPlayer( getWrapper().getPlayer() );
+
+    		results = sPlayer.getSellAllMultiplier();
     	}
     	
     	return results;

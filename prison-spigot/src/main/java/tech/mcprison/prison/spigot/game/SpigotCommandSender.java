@@ -32,6 +32,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -44,6 +45,15 @@ public class SpigotCommandSender implements CommandSender {
     public SpigotCommandSender(org.bukkit.command.CommandSender sender) {
         this.bukkitSender = sender;
     }
+    
+//    @Override 
+//    public UUID getUUID() {
+//    	UUID uuid = null;
+//    	if ( isPlayer() ) {
+//    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
+//    	}
+//        return uuid;
+//    }
 
     @Override public String getName() {
         return bukkitSender.getName();
@@ -123,13 +133,24 @@ public class SpigotCommandSender implements CommandSender {
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
-    	
-    	if ( oPlayer.isPresent() ) {
-    		results = oPlayer.get().getSellAllMultiplier();
+    	if ( isPlayer() ) {
+    		
+    		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+    		
+    		if ( sellall != null ) {
+    			results = sellall.getMultiplier( new SpigotPlayer( (org.bukkit.entity.Player) this ) );
+    		}
     	}
     	
     	return results;
+
+//    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+//    	
+//    	if ( oPlayer.isPresent() ) {
+//    		results = oPlayer.get().getSellAllMultiplier();
+//    	}
+//    	
+//    	return results;
     }
     
     public List<String> getPermissionsIntegrations( boolean detailed ) {
@@ -149,14 +170,21 @@ public class SpigotCommandSender implements CommandSender {
     }
     
     
+    
     @Override 
     public boolean isPlayer() {
-    	boolean results = false;
+    	return bukkitSender != null && bukkitSender instanceof org.bukkit.entity.Player;
+    }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
     	
-    	if ( bukkitSender != null ) {
-    		results = bukkitSender instanceof org.bukkit.entity.Player;
-    	}
-    	return results;
+    	sb.append( "SpigotCommandSender: " ).append( getName() )
+    		.append( "  isOp=" ).append( isOp() )
+    		.append( "  isPlayer=" ).append( isPlayer() );
+    	
+    	return sb.toString();
     }
     
     public org.bukkit.command.CommandSender getWrapper() {

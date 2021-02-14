@@ -21,16 +21,12 @@ package tech.mcprison.prison.spigot.game;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
@@ -38,7 +34,6 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -47,7 +42,9 @@ import tech.mcprison.prison.util.Location;
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotPlayer extends SpigotCommandSender implements Player {
+public class SpigotPlayer 
+				extends SpigotCommandSender 
+				implements Player {
 
     private org.bukkit.entity.Player bukkitPlayer;
 
@@ -56,7 +53,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         this.bukkitPlayer = bukkitPlayer;
     }
 
-    @Override public UUID getUUID() {
+    @Override 
+    public UUID getUUID() {
         return bukkitPlayer.getUniqueId();
     }
 
@@ -121,71 +119,71 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         bukkitPlayer.updateInventory();
     }
 
-	@Override
-	public void recalculatePermissions() {
-		bukkitPlayer.recalculatePermissions();
-	}
+//	@Override
+//	public void recalculatePermissions() {
+//		bukkitPlayer.recalculatePermissions();
+//	}
 
 
-    @Override 
-    public boolean isOp() {
-        return bukkitPlayer.isOp();
-    }
+//    @Override 
+//    public boolean isOp() {
+//        return bukkitPlayer.isOp();
+//    }
     
-	@Override
-	public boolean hasPermission( String perm ) {
-		List<String> perms = getPermissions( perm );
-		return perms.contains( perm );
-	}
+//	@Override
+//	public boolean hasPermission( String perm ) {
+//		List<String> perms = getPermissions( perm );
+//		return perms.contains( perm );
+//	}
 
     
-    @Override
-    public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
-    	for ( PermissionAttachmentInfo perm : perms )
-		{
-			results.add( perm.getPermission() );
-		}
-    	
-    	return results;
-    }
+//    @Override
+//    public List<String> getPermissions() {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
+//    	for ( PermissionAttachmentInfo perm : perms )
+//		{
+//			results.add( perm.getPermission() );
+//		}
+//    	
+//    	return results;
+//    }
     
     
-    @Override
-    public List<String> getPermissions( String prefix ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
-    	
-    	return results;
-    }
+//    @Override
+//    public List<String> getPermissions( String prefix ) {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	for ( String perm : getPermissions() ) {
+//			if ( perm.startsWith( prefix ) ) {
+//				results.add( perm );
+//			}
+//		}
+//    	
+//    	return results;
+//    }
     
     
-    /**
-     * <p>This uses the sellall configs for the permission name to use to get the list of
-     * multipliers.  It then adds all of the multipliers together to ...
-     * 
-     * </p>
-     * 
-     */
-    @Override
-    public double getSellAllMultiplier() {
-    	double results = 1.0;
-    	
-    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-    	
-    	if ( sellall != null ) {
-    		results = sellall.getMultiplier( this );
-    	}
-    	
-    	return results;
-    }
+//    /**
+//     * <p>This uses the sellall configs for the permission name to use to get the list of
+//     * multipliers.  It then adds all of the multipliers together to ...
+//     * 
+//     * </p>
+//     * 
+//     */
+//    @Override
+//    public double getSellAllMultiplier() {
+//    	double results = 1.0;
+//    	
+//    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+//    	
+//    	if ( sellall != null ) {
+//    		results = sellall.getMultiplier( this );
+//    	}
+//    	
+//    	return results;
+//    }
     
     @Override
     public String toString() {
@@ -193,7 +191,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	
     	sb.append( "SpigotPlayer: " ).append( getName() )
     		.append( "  isOp=" ).append( isOp() )
-    		.append( "  isOnline=" ).append( isOnline() );
+    		.append( "  isOnline=" ).append( isOnline() )
+    		.append( "  isPlayer=" ).append( isPlayer() );
     	
     	return sb.toString();
     }

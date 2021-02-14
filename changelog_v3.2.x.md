@@ -18,6 +18,9 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-14
 
+* Cleaned up some of the player permissions with SpigotCommandSender, SpigotPlayer, and SpigotOfflinePlayer to ensure they are using the correct bukkit internal functions.**
+
+
 * **SellAll Permissions edited**
 Removed some SellAll permissions options from the SellAll config because kind of useless.
 

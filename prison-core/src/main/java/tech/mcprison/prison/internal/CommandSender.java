@@ -27,6 +27,13 @@ package tech.mcprison.prison.internal;
 public interface CommandSender 
 					extends PlayerPermissions {
 
+//	/**
+//	 * Returns the UUID for CommandSender if they are a bukkit Player.
+//	 * 
+//	 * @return
+//	 */
+//	public UUID getUUID();
+	
     /**
      * Returns the name of the command sender.
      */
