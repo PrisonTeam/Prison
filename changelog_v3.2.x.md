@@ -18,8 +18,13 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-14
 
+* **SellAll Permissions edited**
+Removed some SellAll permissions options from the SellAll config because kind of useless.
+
+
 * **Bug fix: SellAll broken**
 Working on fixing many SellAll broken permissions, now booleans are working again.
+
 
 * **Buf fix: GUI error.**
 Improved Prison GUIs handler that won't trigger without opening a true Prison GUI, this will

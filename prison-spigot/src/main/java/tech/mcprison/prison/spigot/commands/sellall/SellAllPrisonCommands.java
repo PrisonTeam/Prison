@@ -203,11 +203,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        if (!sender.hasPermission("prison.sellall.delay")){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [prison.sellall.delay]"));
-            return;
-        }
-
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
             return;
@@ -322,10 +317,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
                                                   @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
 
-        if (!sender.hasPermission("prison.autosell.edit")){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellMissingPermission")) + " [prison.autosell.edit]");
-            return;
-        }
 
         if (!isEnabled()) return;
 
@@ -549,14 +540,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (!isEnabled()) return;
 
-        boolean addPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Add_Permission_Enabled"));
-        if (addPermissionEnabled) {
-            String permission = sellAllConfig.getString("Options.Add_Permission");
-            if (permission != null && !sender.hasPermission(permission)) {
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
-                return;
-            }
-        }
         if (itemID == null){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
             return;
@@ -602,18 +585,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
-    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", onlyPlayers = false)
+    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
         if (!isEnabled()) return;
 
-        boolean deletePermissionEnabled = getBoolean(sellAllConfig.getString("Options.Delete_Permission_Enabled"));
-        if (deletePermissionEnabled) {
-            String permission = sellAllConfig.getString("Options.Delete_Permission");
-            if (permission != null && !sender.hasPermission(permission)) {
-                return;
-            }
-        }
         if (itemID == null){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingID")));
             return;
@@ -641,21 +617,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
-    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", onlyPlayers = false)
+    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllEditCommand(CommandSender sender,
                                     @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
                                     @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if (!isEnabled()) return;
 
-        boolean addPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Add_Permission_Enabled"));
-        if (addPermissionEnabled) {
-            String permission = sellAllConfig.getString("Options.Add_Permission");
-            if (permission != null && !sender.hasPermission(permission)) {
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
-                return;
-            }
-        }
         if (itemID == null){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPleaseAddItem")));
             return;
@@ -701,7 +669,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
-    @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -712,19 +680,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        boolean multiplierCommandPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled"));
-        if (multiplierCommandPermissionEnabled){
-            String permission = sellAllConfig.getString("Options.Multiplier_Command_Permission");
-            if (permission != null && !(sender.hasPermission(permission))){
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
-                return;
-            }
-        }
-
         sender.dispatchCommand("sellall multiplier help");
     }
 
-    @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier. Permission multipliers for player's prison.sellall.multiplier.<valueHere>, example prison.sellall.multiplier.2 will add a 2x multiplier",
+            permissions = "prison.admin", onlyPlayers = false)
     private void sellAllAddMultiplierCommand(CommandSender sender,
                                              @Arg(name = "Prestige", description = "Prestige to hook to the multiplier.") String prestige,
                                              @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
@@ -987,23 +947,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return true;
         }
 
-        boolean multiplierCommandPermEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Command_Permission_Enabled"));
-        if (multiplierCommandPermEnabled){
-            String permission = sellAllConfig.getString("Options.Multiplier_Command_Permission");
-            if (permission != null && !(sender.hasPermission(permission))){
-
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
-                return true;
-            }
-        }
-
         if (prestige == null){
-
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
             return true;
         }
         if (multiplier == null){
-
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
             return true;
         }
