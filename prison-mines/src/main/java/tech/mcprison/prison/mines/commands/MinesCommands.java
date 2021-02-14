@@ -506,7 +506,7 @@ public class MinesCommands
         	// This is an add block function so if we get this far, add it:
         	if ( percentTotal.getOldBlock() == null ) {
         		// add the block since it does not exist in the mine:
-        		m.getBlocks().add( new BlockOld( blockType, chance) );
+        		m.getBlocks().add( new BlockOld( blockType, chance, 0) );
         	} 
         	else if ( chance <= 0 ) {
         		// block exists in mine, but chance is set to zero so remove it:

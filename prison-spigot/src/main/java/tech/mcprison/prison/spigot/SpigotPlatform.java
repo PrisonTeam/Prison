@@ -1227,19 +1227,48 @@ class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				tech.mcprison.prison.mines.data.BlockOld block = 
-						new tech.mcprison.prison.mines.data.BlockOld( 
-								mBlocks.get( i ), percents.get( i ) );
-				
-				mine.getBlocks().add( block );
-
-				total += block.getChance();
-				
-				// If this is the last block and the totals are not 100%, then
-				// add the balance to the last block.
-				if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-					double remaining = 100.0d - total;
-					block.setChance( remaining + block.getChance() );
+				if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+					
+					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+	            	if ( prisonBlock != null ) {
+	            	
+	            		prisonBlock.setChance( percents.get( i ) );
+	            		prisonBlock.setBlockCountTotal( 0 );
+	            		
+	            		mine.getPrisonBlocks().add( prisonBlock );
+	            		
+	            		total += prisonBlock.getChance();
+	            		
+	            		// If this is the last block and the totals are not 100%, then
+	            		// add the balance to the last block.
+	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+	            			double remaining = 100.0d - total;
+	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
+	            		}
+	            	}
+	            	else {
+	            		Output.get().logInfo(
+	            				String.format( "AutoConfigure block assignment failure: New Block Model: " +
+	            						"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
+	            						mBlocks.get( i ) ) );
+	            	}
+				}
+				else {
+					
+					tech.mcprison.prison.mines.data.BlockOld block = 
+							new tech.mcprison.prison.mines.data.BlockOld( 
+									mBlocks.get( i ), percents.get( i ), 0 );
+					
+					mine.getBlocks().add( block );
+					
+					total += block.getChance();
+					
+					// If this is the last block and the totals are not 100%, then
+					// add the balance to the last block.
+					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+						double remaining = 100.0d - total;
+						block.setChance( remaining + block.getChance() );
+					}
 				}
 				
 			}

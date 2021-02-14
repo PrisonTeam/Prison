@@ -18,6 +18,12 @@ that you need.
 
 # v3.2.4-alpha.12 2021-02-13
 
+
+* **Setup blocks mined counts for each mine.**
+There are a few stats being tracked: blocks placed during a reset, total blocks mined, total mined since server start (session), and unsaved blocks mined.
+This is not fully hooked up yet.
+
+
 * **Clean up some of the messages related to the /mines stats command.**  
 Eliminated the stats on TP events and broadcasting messages since they are trivial in time it takes to run those parts. Fixed a stats bug in the synchronous reset page count should have been always 1, but it was accumulating after each update.
 

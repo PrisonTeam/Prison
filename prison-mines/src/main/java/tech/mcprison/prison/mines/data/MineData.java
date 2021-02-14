@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -83,6 +85,10 @@ public abstract class MineData
      */
     private transient Set<PrisonBlockType> prisonBlockTypes;
     
+    
+    private TreeMap<String, PrisonBlockStatusData> blockStats;
+    
+    
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
 
@@ -146,6 +152,8 @@ public abstract class MineData
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	this.prisonBlockTypes = new HashSet<>();
+    	
+    	this.blockStats = new TreeMap<>();
     	
     	
     	this.enabled = false;
@@ -441,7 +449,7 @@ public abstract class MineData
         this.prisonBlocks.clear();
         
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new BlockOld(entry.getKey(), entry.getValue()));
+            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
             
             PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
             if ( prisonBlock != null ) {
@@ -450,6 +458,66 @@ public abstract class MineData
             }
         }
     }
+    
+    public boolean incrementBlockCount( PrisonBlock block ) {
+    	String blockName = block.getBlockName().toLowerCase();
+    	return incrementBlockCount( blockName );
+    }
+    
+    public boolean incrementBlockCount( BlockOld block ) {
+    	String blockName = block.getType().name().toLowerCase();
+    	return incrementBlockCount( blockName );
+    }
+    
+    private boolean incrementBlockCount( String blockName ) {
+    	boolean results = false;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		
+    		if ( !getBlockStats().containsKey( blockName ) ) {
+    			for ( PrisonBlock b : getPrisonBlocks() ) {
+    				if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    					getBlockStats().put( b.getBlockName(), b );
+    					
+    					b.incrementMiningBlockCount();
+    					results = true;
+    					break;
+    				}
+    			}
+    		}
+    		else {
+    			
+    			getBlockStats().get( blockName ).incrementMiningBlockCount();
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    
+    public boolean hasUnsavedBlockCounts() {
+    	return getUnsavedBlockCount() > 0;
+    }
+    
+    public long getUnsavedBlockCount() {
+    	long results = 0;
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+			results += blockStats.getBlockCountUnsaved();
+		}
+
+    	return results;
+    }
+    
+    
+    public void resetUnsavedBlockCounts() {
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+    		blockStats.setBlockCountUnsaved( 0 );
+    	}
+    }
+    
+    
 
     public boolean isInMine(Location location) {
     	if ( isVirtual() ) {
@@ -733,6 +801,10 @@ public abstract class MineData
 	}
 	public void setLinerData( MineLinerData linerData ) {
 		this.linerData = linerData;
+	}
+
+	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+		return blockStats;
 	}
 	
 }

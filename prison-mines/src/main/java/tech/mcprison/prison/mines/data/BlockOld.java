@@ -18,12 +18,14 @@
 
 package tech.mcprison.prison.mines.data;
 
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.util.BlockType;
 
 /**
  * Represents a block in a mine
  */
-public class BlockOld {
+public class BlockOld
+	extends PrisonBlockStatusData {
 
     /**
      * The {@link BlockType} represented by this {@link BlockOld}
@@ -37,16 +39,22 @@ public class BlockOld {
     /**
      * Assigns the type and chance
      */
-    public BlockOld(BlockType block, double chance) {
+    public BlockOld(BlockType block, double chance, long blockCountTotal) {
+    	super(block.name(), chance, blockCountTotal);
+    			
         this.type = block;
         this.chance = chance;
     }
 
-    public BlockOld(String blockType, double chance ) {
+    public BlockOld(String blockType, double chance, long blockCountTotal) {
+    	super(blockType, chance, blockCountTotal);
+    	
     	this.chance = chance;
     	
     	BlockType block = BlockType.fromString( blockType );
     	this.type = block;
+    	// Update blockName since mapping to BlockType may result in a different name:
+    	setBlockName( block.name() );
     	
     }
     

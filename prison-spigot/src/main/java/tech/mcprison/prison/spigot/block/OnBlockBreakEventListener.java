@@ -371,7 +371,7 @@ public class OnBlockBreakEventListener
 				
 				int blockCount = 0;
 				for ( Block blk : e.getBlockList() ) {
-					boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
+					boolean isAir = blk == null || blk.getType() != null && blk.getType() == Material.AIR;
 					
 					// If canceled it must be AIR, otherwise if it is not canceled then 
 					// count it since it will be a normal drop
@@ -411,6 +411,17 @@ public class OnBlockBreakEventListener
 			mine.incrementBlockBreakCount();
 			mine.incrementTotalBlocksMined();
 			
+			
+//			boolean isAir = block == null || block.getType() != null && block.getType() == BlockType.AIR;
+//			
+//			// Register the block broken within the mine:
+//			if ( !isAir && !mine.incrementBlockCount( block.getPrisonBlock() ) ) {
+//				Output.get().logInfo( "OnBlockBreak: BlockBreakEvent: cannot increment block count. " +
+//						"Cannot map to a block. [%s][%s]", 
+//						(block.getPrisonBlock() == null ? "---" : block.getPrisonBlock().getBlockName()),
+//						(block.getType() == null ? "--" : block.getType().name()) );
+//			}
+			
 			// Other possible processing:
 			
 			// Process mine block break events:
@@ -430,6 +441,19 @@ public class OnBlockBreakEventListener
 			
 			mine.addBlockBreakCount( blockCount );
 			mine.addTotalBlocksMined( blockCount );
+			
+//			// Register the blocks broken within the mine:
+//			for ( Block bukkitBlock : e.blockList() ) {
+//				SpigotBlock block = new SpigotBlock(bukkitBlock);
+//				
+//				if ( !mine.incrementBlockCount( block.getPrisonBlock() ) ) {
+//					Output.get().logInfo( "OnBlockBreak: TEBlockExplodeEvent: cannot increment block count. " +
+//							"Cannot map to a block. [%s][%s]", 
+//							(block.getPrisonBlock() == null ? "---" : block.getPrisonBlock().getBlockName()),
+//							(block.getType() == null ? "--" : block.getType().name()) );
+//				}
+//
+//			}
 			
 			// Other possible processing:
 			
@@ -475,6 +499,19 @@ public class OnBlockBreakEventListener
 			
 			mine.addBlockBreakCount( blockCount );
 			mine.addTotalBlocksMined( blockCount );
+			
+//			// Register the blocks broken within the mine:
+//			for ( Block bukkitBlock : e.getBlockList() ) {
+//				SpigotBlock block = new SpigotBlock(bukkitBlock);
+//				
+//				if ( !mine.incrementBlockCount( block.getPrisonBlock() ) ) {
+//					Output.get().logInfo( "OnBlockBreak: BlastUseEvent: cannot increment block count. " +
+//							"Cannot map to a block. [%s][%s]", 
+//							(block.getPrisonBlock() == null ? "---" : block.getPrisonBlock().getBlockName()),
+//							(block.getType() == null ? "--" : block.getType().name()) );
+//				}
+//
+//			}
 			
 			// Other possible processing:
 			

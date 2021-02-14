@@ -143,13 +143,16 @@ public class PrisonMines extends Module {
      * shutdown since they will never be in a dirty state; they will always be saved.
      * </p>
      * 
-     * <p>This should shutdown all active mines.  Future to do item.
+     * <p>Block counts are now being stored in the mines and should be saved
+     * on every mine reset and also when the server is shutting down.
      * </p>
      * 
      */
     @Override
 	public void disable() {
-		// Nothing to do...
+    	
+    	// Shutdown the mines by saving any unsaved block stats:
+    	getMineManager().saveMinesIfUnsavedBlockCounts();
     }
 	
 	

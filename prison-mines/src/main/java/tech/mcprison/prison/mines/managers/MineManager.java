@@ -365,6 +365,14 @@ public class MineManager
     }
 
     
+    public void saveMinesIfUnsavedBlockCounts() {
+    	for (Mine m : getMines()){
+    		if ( m.hasUnsavedBlockCounts() ) {
+    			saveMine( m );
+    		}
+    	}
+    }
+    
 
 
 	public void rename( Mine mine, String newName ) {

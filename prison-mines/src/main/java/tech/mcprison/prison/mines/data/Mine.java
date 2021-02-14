@@ -282,7 +282,8 @@ public class Mine
 				
 				String[] split = docBlock.split("-");
 				String blockTypeName = split[0];
-				double chance = Double.parseDouble(split[1]);
+				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
 				
 				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
 					// Use the BlockType.name() load the block type:
@@ -326,7 +327,7 @@ public class Mine
 							dirty = true;
 						}
 						
-						BlockOld block = new BlockOld(blockType, chance);
+						BlockOld block = new BlockOld(blockType, chance, blockCount);
 						getBlocks().add(block);
 					}
 					else {
@@ -361,14 +362,18 @@ public class Mine
 					
 					String[] split = docBlock.split("-");
 					String blockTypeName = split[0];
-					double chance = Double.parseDouble(split[1]);
-					
+					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+
 					if ( blockTypeName != null ) {
-						// The new way to get the PrisonBlocks:
+						// The new way to get the PrisonBlocks:  
+						//   The blocks return are cloned so they have their own instance:
 						PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
 						
 						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
 							prisonBlock.setChance( chance );
+							prisonBlock.setBlockCountTotal( blockCount );
+							
 							if ( prisonBlock.isLegacyBlock() ) {
 								dirty = true;
 							}
@@ -397,6 +402,8 @@ public class Mine
             	if ( prisonBlock != null ) {
             		
             		prisonBlock.setChance( block.getChance() );
+            		prisonBlock.setBlockCountTotal( block.getBlockCountTotal() );
+            		
             		addPrisonBlock( prisonBlock );
 
             		dirty = true;
@@ -509,8 +516,11 @@ public class Mine
         List<String> blockStrings = new ArrayList<>();
         for (BlockOld block : getBlocks()) {
         	if ( !validateBlockNames.contains( block.getType().name() )) {
-        		// Use the BlockType.name() to save the block type to the file:
-        		blockStrings.add(block.getType().name() + "-" + block.getChance());
+        		
+        		blockStrings.add( block.toSaveFileFormat() );
+        		
+//        		// Use the BlockType.name() to save the block type to the file:
+//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
 //            blockStrings.add(block.getType().getId() + "-" + block.getChance());
         		validateBlockNames.add( block.getType().name() );
         	}
@@ -524,7 +534,10 @@ public class Mine
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
         	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
-        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
+        		
+        		prisonBlockStrings.add( pBlock.toSaveFileFormat() );
+        		
+//        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
         		validateBlockNames.add( pBlock.getBlockNameFormal() );
         	}
         }

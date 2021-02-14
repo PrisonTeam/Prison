@@ -228,6 +228,10 @@ public abstract class MineReset
 //			setStatsTeleport1TimeMS(
 //					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
+			// Reset stats:
+			resetStats();
+			
+			
 			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
 				
 				// Before reset commands:
@@ -443,6 +447,17 @@ public abstract class MineReset
     	setStatsResetPages( 0 );
     	setStatsResetPageBlocks( 0 );
 		setStatsResetPageMs( 0 );
+		
+		
+		saveIfUnsavedBlockCounts();
+    }
+    
+    public void saveIfUnsavedBlockCounts() {
+		if ( hasUnsavedBlockCounts() ) {
+			PrisonMines.getInstance().getMineManager().saveMine( (Mine) this );
+
+			resetUnsavedBlockCounts();
+		}
     }
 	
     /**
