@@ -61,6 +61,7 @@ import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -1528,6 +1529,7 @@ public class MinesCommands
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, boolean useNewBlockModel) {
         BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
+        DecimalFormat iFmt = new DecimalFormat("##0");
         DecimalFormat dFmt = new DecimalFormat("##0.00");
         double totalChance = 0.0d;
         int count = 0;
@@ -1540,10 +1542,20 @@ public class MinesCommands
         		
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+        			
         			String blockName = block.getBlockName().replaceAll("_", " ").toLowerCase();
         			String percent = dFmt.format(chance) + "%";
-        			FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
-        					percent, block.getBlockName(), blockName))
+        			
+        			String blockStats = String.format( " P: %s T: %s  S: %s  US: %s",  
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getResetBlockCount(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountUnsaved(), iFmt, " " )
+        					);
+        			
+        			FancyMessage msg = new FancyMessage(
+        					String.format("&7%s - %s  (%s)%s", 
+        									percent, block.getBlockName(), blockName, blockStats))
         					.suggest("/mines block set " + m.getName() + " " + block.getBlockName() + " %")
         					.tooltip("&7Click to edit the block's chance.");
         			builder.add(msg);
@@ -1560,11 +1572,21 @@ public class MinesCommands
         		
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
+        			
         			String blockName =
         					StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
         			String percent = dFmt.format(chance) + "%";
-        			FancyMessage msg = new FancyMessage(String.format("&7%s - %s  (%s)", 
-        					percent, block.getType().name(), blockName))
+        			
+        			String blockStats = String.format( " P: %s T: %s  S: %s  US: %s",  
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getResetBlockCount(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), iFmt, " " ), 
+        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountUnsaved(), iFmt, " " )
+        					);
+
+        			FancyMessage msg = new FancyMessage(
+        					String.format("&7%s - %s  (%s)%s", 
+        									percent, block.getType().name(), blockName, blockStats) )
         					.suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
         					.tooltip("&7Click to edit the block's chance.");
         			builder.add(msg);
@@ -1771,11 +1793,12 @@ public class MinesCommands
             	
             	//row.addTextComponent( m.getWorldName() + " " );
             	
-            	if ( m.getSortOrder() < 0 ) {
-            		row.addFancy( 
-            				new FancyMessage( String.format("&3(&b%s&3) ", 
-            						"X") )
-            				.tooltip("&7Sort order: Suppressed"));
+            	if ( m.getSortOrder() < 1 ) {
+            		row.addTextComponent( "    " );
+//            		row.addFancy( 
+//            				new FancyMessage( String.format("&3(&b%s&3) ", 
+//            						"X") )
+//            				.tooltip("&7Sort order: Suppressed"));
             	}
             	else {
             		row.addFancy( 
@@ -1867,7 +1890,7 @@ public class MinesCommands
 //            	row2.addTextComponent( "            &3Rem: " );
             		
             		// Right justify the total blocks mined, with 1000's separators:
-            		String blocksMined = "           " + dFmt.format( m.getTotalBlocksMined() );
+            		String blocksMined = "                 " + dFmt.format( m.getTotalBlocksMined() );
             		blocksMined = blocksMined.substring( blocksMined.length() - 10);
             		
             		row2.addFancy( 

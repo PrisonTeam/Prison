@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.12 2021-02-13
 
 
+
+* **Add the stats on block counts to the /mines info details.**
+Includes the number of blocks that are present in the mine (P), the Total (T), the Session (S) since server start, and the Un-Saved (US) counts.
+
+
 * **Setup blocks mined counts for each mine.**
 There are a few stats being tracked: blocks placed during a reset, total blocks mined, total mined since server start (session), and unsaved blocks mined.
 This is not fully hooked up yet.
