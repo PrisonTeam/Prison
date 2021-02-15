@@ -1119,9 +1119,10 @@ public class MinesCommands
 
 
         chatDisplay.addText("&3Blocks:");
-        chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
+        chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
+        		(useNewBlockModel ? ".." : ""));
         
-        BulletedListComponent list = getBlocksList(m, null, true );
+        BulletedListComponent list = getBlocksList(m, null, useNewBlockModel );
         chatDisplay.addComponent(list);
 
         if ( useNewBlockModel ) {
@@ -1652,9 +1653,10 @@ public class MinesCommands
         				( useNewBlockModel ? "New" : "Old") );
         	}
         	chatDisplay.addText("&3Blocks:");
-        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
+        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
+        			(useNewBlockModel ? ".." : ""));
         	
-        	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
+        	BulletedListComponent list = getBlocksList(m, cmdPageData, useNewBlockModel );
         	chatDisplay.addComponent(list);
         }
 
