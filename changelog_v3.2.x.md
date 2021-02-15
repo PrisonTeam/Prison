@@ -18,6 +18,8 @@ that you need.
 
 # v3.2.4-alpha.13 2021-02-15
 
+* **Player GUIs now editable**
+You can edit Player GUIs titles from the GuiConfig.yml now.
 
 * **Hooked up the new block constraints for max.**
 Now when enabled it will prevent more than the max amount from being spawned.

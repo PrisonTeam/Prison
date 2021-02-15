@@ -420,6 +420,10 @@ public class ListenersPrisonManager implements Listener {
                 return;
             }
 
+            String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
+            String playerPrestigesTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
+            String minesPlayerTitle = guiConfig.getString("Options.Titles.PlayerMinesGUI").substring(2);
+
             // Check if the GUI have the right title and do the actions.
             switch (title) {
 
@@ -449,14 +453,6 @@ public class ListenersPrisonManager implements Listener {
                     break;
                 }
                 // Check the title and do the actions.
-                case "Prestiges -> PlayerPrestiges": {
-
-                    // Call the method.
-                    playerPrestigesGUI(e, p, buttonNameMain);
-
-                    break;
-                }
-                // Check the title and do the actions.
                 case "Prestige -> Confirmation": {
 
                     // Call the method.
@@ -469,14 +465,6 @@ public class ListenersPrisonManager implements Listener {
 
                     // Call the method.
                     rankManagerGUI(e, p, parts);
-
-                    break;
-                }
-                // Check the title and do the actions.
-                case "Ranks -> PlayerRanks": {
-
-                    // Call the method.
-                    playerRanksGUI(e, p, buttonNameMain);
 
                     break;
                 }
@@ -501,14 +489,6 @@ public class ListenersPrisonManager implements Listener {
 
                     // Call the method.
                     minesGUI(e, p, buttonNameMain, parts);
-
-                    break;
-                }
-                // Check the title and do the actions.
-                case "Mines -> PlayerMines": {
-
-                    // Call the method.
-                    playerMinesGUI(p, buttonNameMain);
 
                     break;
                 }
@@ -685,6 +665,25 @@ public class ListenersPrisonManager implements Listener {
 
                     break;
                 }
+                default:{
+
+                    break;
+                }
+            }
+
+            // Customizable title GUIs.
+            if (title.equalsIgnoreCase(playerRanksTitle)){
+
+                // Call the method.
+                playerRanksGUI(e, p, buttonNameMain);
+            } else if (title.equalsIgnoreCase(playerPrestigesTitle)){
+
+                // Call the method.
+                playerPrestigesGUI(e, p, buttonNameMain);
+            } else if (title.equalsIgnoreCase(minesPlayerTitle)){
+
+                // Call the method
+                playerMinesGUI(p, buttonNameMain);
             }
         }
     }

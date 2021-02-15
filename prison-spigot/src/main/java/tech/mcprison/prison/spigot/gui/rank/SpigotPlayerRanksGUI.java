@@ -120,7 +120,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
         // Create the inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> PlayerRanks"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerRanksGUI")));
 
         // Get many parameters
         RankLadder ladderData = ladder;

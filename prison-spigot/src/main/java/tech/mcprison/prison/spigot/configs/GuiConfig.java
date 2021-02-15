@@ -74,6 +74,9 @@ public class GuiConfig extends SpigotConfigComponents{
         dataConfig("Options.Mines.PermissionWarpPlugin","mines.tp.");
         dataConfig("Options.Mines.CommandWarpPlugin","mines tp");
         dataConfig("Options.Setup.EnabledGUI", "true");
+        dataConfig("Options.Titles.PlayerRanksGUI", "&3Player -> Ranks");
+        dataConfig("Options.Titles.PlayerPrestigesGUI", "&3Player -> Prestiges");
+        dataConfig("Options.Titles.PlayerMinesGUI", "&3Player -> Mines");
     }
 
     // Return method to call the config, you can use this or the global one in the main class

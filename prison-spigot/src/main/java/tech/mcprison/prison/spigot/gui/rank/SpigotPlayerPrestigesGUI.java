@@ -119,7 +119,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
         // Create an inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Prestiges -> PlayerPrestiges"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerPrestigesGUI")));
 
         // guiBuilder and validation
         if (guiBuilder(ladder, dimension, inv)) return;

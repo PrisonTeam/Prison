@@ -57,7 +57,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> PlayerMines"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerMinesGUI")));
 
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList()) {
