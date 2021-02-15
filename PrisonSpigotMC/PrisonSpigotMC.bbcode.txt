@@ -1,12 +1,34 @@
 [CENTER][B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Header%20Prison.png[/IMG] [/SIZE][/COLOR][/B]
-[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.0.2[/COLOR][/SIZE][/FONT]
+[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.1.0[/COLOR][/SIZE][/FONT]
 [COLOR=rgb(230, 145, 56)][SIZE=7][URL='https://discord.com/invite/DCJ3j6r'][IMG]https://camo.githubusercontent.com/b12a95e20b7ca35f918c0ab5103fe56b6f44c067/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383964612e737667[/IMG][/URL] [/SIZE][/COLOR][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/LICENSE.md'][IMG]https://camo.githubusercontent.com/5f2cb15e3e2b3bf7c08ec9a3b597e9e67f9dbca0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d47504c2532304c6963656e736525323076332d626c75652e737667[/IMG] [/URL][URL='https://github.com/PrisonTeam/Prison/actions?query=workflow%3A%22Prison+Build%22'][IMG]https://github.com/PrisonTeam/Prison/workflows/Prison%20Build/badge.svg[/IMG][/URL]
-[COLOR=rgb(230, 145, 56)][SIZE=7]An all around Open-Source Prison Plugin.[/SIZE][/COLOR]
+[COLOR=rgb(230, 145, 56)][SIZE=7]An all-around Open-Source Prison Plugin.[/SIZE][/COLOR]
 
 
-[B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Core%20Features%20Long.png[/IMG][/SIZE][/COLOR][/B][/CENTER]
+[B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Core%20Features%20Long.png[/IMG]
+[/SIZE][/COLOR][/B]
 [LIST]
-[*][FONT=Verdana][SIZE=5][COLOR=#808080][B][COLOR=#F03333]New Feature:[/COLOR][/B] Prison now has a new auto configure feature to get you up and running quickly: [b]/ranks autoConfigure[/b].  Sets up all the ranks, virtual mines, links ranks to the mines, assigns blocks to mines in increasing value, auto assign mine liners, and generates rank commands to control basic permissions. [i]More features being added...[/i][/COLOR][/SIZE][/FONT]
+[*][CENTER][COLOR=rgb(128, 128, 128)][SIZE=6][B]Ranks.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Rankup/Prestige commands.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Prestiges.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Mines.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]BlockEvents on block break inside Mines.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]SellAll and SellAll Signs.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]AutoSell.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]AutoBlock.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]AutoSmelt.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]AutoPickup.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]AutoConfigure.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Placeholders.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][SIZE=6][COLOR=rgb(128, 128, 128)][B]Hex colors support [/B]([/COLOR][COLOR=rgb(255, 0, 0)]R[/COLOR][COLOR=rgb(0, 179, 0)]G[/COLOR][COLOR=rgb(0, 89, 179)]B[/COLOR][COLOR=rgb(128, 128, 128)])[/COLOR][/SIZE][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]GUIs for: Ranks, Mines, Prestiges, SellAll, Admin, Players.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Customizable.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Many supported plugins.[/B][/SIZE][/COLOR][/CENTER]
+[*][CENTER][COLOR=#808080][SIZE=6][B]Many more...[/B][/SIZE][/COLOR][/CENTER]
+[/LIST][/CENTER]
+
+[SPOILER="Detailed features."]
+[LIST]
+[*][FONT=Verdana][SIZE=5][COLOR=#808080][B][COLOR=#F03333]New Feature:[/COLOR][/B] Prison now has a new auto-configure feature to get you up and running quickly: [B]/ranks autoConfigure[/B].  Sets up all the ranks, virtual mines, links ranks to the mines, assigns blocks to mines in increasing value, auto assign mine liners, and generates rank commands to control basic permissions. [I]More features being added...[/I][/COLOR][/SIZE][/FONT]
 
 
 [*][FONT=Verdana][SIZE=5][COLOR=#808080][B]Ranks[/B] with [B]Prestiges[/B]: Highly customizable with rankup commands.[/COLOR][/SIZE][/FONT]
@@ -22,7 +44,7 @@
 [*][FONT=Verdana][SIZE=5][COLOR=#808080]Custom Blocks support using Custom Items plugin.[/COLOR][/SIZE][/FONT]
 [*][FONT=Verdana][SIZE=5][COLOR=#808080]Prison supports, and works with, many other plugins.[/COLOR][/SIZE][/FONT]
 [/LIST]
-
+[/SPOILER]
 
 [CENTER][COLOR=#e69138][SIZE=7][B][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Main%20Commands%20Long.png[/IMG][/B][/SIZE][/COLOR][/CENTER]
 
@@ -74,7 +96,6 @@
 [*][SIZE=5][COLOR=#808080]/ranks promote[/COLOR][/SIZE]
 [*][SIZE=5][COLOR=#808080]/ranks demote[/COLOR][/SIZE]
 [*][SIZE=5][COLOR=#808080]/ranks set rank[/COLOR][/SIZE]
-
 [/LIST]
 
 [FONT=Verdana][SIZE=4][COLOR=#808080]Prison's main root command [B]/prison[/B], with it's sub-commands, including other registered root commands and aliases.[/COLOR][/SIZE][/FONT]
@@ -82,14 +103,14 @@
 [CENTER][SIZE=2][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Prison_Commands_01.png[/IMG][/SIZE][/CENTER]
 
 
-[FONT=Verdana][SIZE=4][COLOR=#808080]Example of using using the [B]help[/B] keyword. The [b]help[/b] keyword shows a description of the command, all parameters, all permissions, and aliases.[/COLOR][/SIZE][/FONT]
+[FONT=Verdana][SIZE=4][COLOR=#808080]Example of using using the [B]help[/B] keyword. The [B]help[/B] keyword shows a description of the command, all parameters, all permissions, and aliases.[/COLOR][/SIZE][/FONT]
 
 [CENTER][SIZE=2][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Prison_Commands_02.png[/IMG][/SIZE][/CENTER]
 
 
 [/SPOILER]
 
-[I][COLOR=rgb(153, 153, 153)][SIZE=4]For a full list of commands checkout our online guidebooks using the link at the bottom of the page, or run the command [b]/prison[/b].[/SIZE][/COLOR][/I]
+[I][COLOR=rgb(153, 153, 153)][SIZE=4]For a full list of commands checkout our online guidebooks using the link at the bottom of the page, or run the command [B]/prison[/B].[/SIZE][/COLOR][/I]
 
 
 [CENTER][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Dependencies%20Long.png[/IMG][/CENTER]
@@ -133,8 +154,6 @@
 [*][SIZE=4][COLOR=#808080][B]Many other features[/B], try the Plugin to find out![/COLOR][/SIZE]
 [*][SIZE=4][COLOR=#4da6ff]Ranks and Ladders[/COLOR] [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_102_setting_up_ranks.md'][COLOR=rgb(128, 128, 128)]Guidebook[/COLOR][/URL][COLOR=#4da6ff].[/COLOR][/SIZE]
 [/LIST]
-
-
 [CENTER][SIZE=7][COLOR=rgb(230, 145, 56)][B][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Mines%20Long.png[/IMG] [/B][/COLOR][/SIZE][B][SIZE=6][COLOR=#ffa64d]Some info about Mines:[/COLOR][/SIZE][/B][/CENTER]
 [LIST]
 [*][SIZE=4][COLOR=#808080][B]Create mines [/B]for players to collect materials.[/COLOR][/SIZE]
@@ -155,8 +174,6 @@
 [*][SIZE=4][COLOR=#808080][B]Many other features, try the Plugin to find out![/B][/COLOR][/SIZE]
 [*][SIZE=4][COLOR=#4da6ff]Mines [/COLOR][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_101_setting_up_mines.md'][COLOR=rgb(128, 128, 128)]guidebook[/COLOR][/URL][COLOR=#4da6ff].[/COLOR][/SIZE]
 [/LIST]
-
-
 [CENTER][B][SIZE=5][COLOR=rgb(128, 128, 128)][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20AutoFeatures%20Long.png[/IMG] [/COLOR][/SIZE]
 [SIZE=7][COLOR=#ffa64d]There're 4 main AutoFeatures:[/COLOR][/SIZE][/B][/CENTER]
 [LIST]
@@ -207,8 +224,6 @@
 [*][COLOR=#808080][SIZE=4]Editable in game, [B]GUIs [/B]and configs.[/SIZE][/COLOR]
 [*][COLOR=#808080][SIZE=4]SellAll [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_113_setting_up_sellall.md']Guidebooks[/URL].[/SIZE][/COLOR]
 [/LIST]
-
-
 [CENTER][SIZE=4][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Placeholders%20Long.png[/IMG] [/SIZE][/CENTER]
 
 [FONT=Verdana][SIZE=5][COLOR=#808080]Placeholders provide Prison's internal data about players, mines, and ranks to other plugins. Prison provides many placeholders so you can get the details that you are needing so you can customize your server the way you envision it. Using placeholder attributes, Prison has an easy way to dynamically format most placeholders so they can best suite your design needs. Placeholder[/COLOR][/SIZE][/FONT]
@@ -239,21 +254,18 @@
 [*][SIZE=4][COLOR=#808080][B]New features[/B], bug fixes, performance improvements, and optimizations will be added to alpha releases. They can be downloaded from the #alpha-versions channel on our discord server.[/COLOR][/SIZE]
 [*][SIZE=4][COLOR=#808080]Check out our [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/changelog_v3.2.x.md']change logs[/URL] for a list of most of the changes. This change log starts with [B]v3.2.0[/B] so you can [B]review [/B]how much prison has evolved in the last years. There has been hundreds and hundreds of changes and many [B]new features[/B].[/COLOR][/SIZE]
 [/LIST]
-
-
 [CENTER][COLOR=#808080][SIZE=4][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Useful%20Links%20Long.png[/IMG] [/SIZE][/COLOR][/CENTER]
 [LIST]
-[*][COLOR=#0080ff][SIZE=5][URL='https://discord.com/invite/DCJ3j6r']Prison's Discord Server[/URL][/COLOR][COLOR=#808080][B].[/B] Get help fast and access to alpha releases of Prison.[/SIZE][/COLOR]
+[*][COLOR=#0080ff][SIZE=5][URL='https://discord.com/invite/DCJ3j6r']Prison's Discord Server[/URL][/SIZE][/COLOR][SIZE=5][COLOR=#808080][B].[/B] Get help fast and access to alpha releases of Prison.[/COLOR][/SIZE]
 
-[*][COLOR=#0080ff][SIZE=5][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md']Prison's Table of Contents[/URL][/COLOR][COLOR=#808080] on Guidebooks and Docs in GitHub.[/COLOR][/SIZE]
+[*][COLOR=#0080ff][SIZE=5][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md']Prison's Table of Contents[/URL][/SIZE][/COLOR][SIZE=5][COLOR=#808080] on Guidebooks and Docs in GitHub.[/COLOR][/SIZE]
 
 [*][COLOR=#0080ff][SIZE=5]Docs: [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_101_setting_up_mines.md']Setting up Mines[/URL][B].[/B][/SIZE][/COLOR]
 [*][COLOR=#0080ff][SIZE=5]Docs: [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_102_setting_up_ranks.md']Setting up Ranks[/URL][B].[/B][/SIZE][/COLOR]
 
-[*][COLOR=#0080ff][SIZE=5][URL='https://github.com/MC-Prison/Prison/issues/']Github Issues[/URL][/COLOR][COLOR=#808080][B].[/B] Discord is the preferred platform for reporting issues and getting help.[/SIZE][/COLOR]
+[*][COLOR=#0080ff][SIZE=5][URL='https://github.com/MC-Prison/Prison/issues/']Github Issues[/URL][/SIZE][/COLOR][SIZE=5][COLOR=#808080][B].[/B] Discord is the preferred platform for reporting issues and getting help.[/COLOR][/SIZE]
 
 [*][COLOR=#0080ff][SIZE=5][URL='https://prison.jar-mc.com/']Prison's Official Website[/URL][B].[/B][/SIZE][/COLOR]
 [*][SIZE=5][COLOR=#0080ff]Official [URL='https://www.youtube.com/channel/UCGKRUDfa3wjljE5BE0gZc_w']Youtube Channel[/URL][/COLOR][B][COLOR=#0080ff].[/COLOR][/B][/SIZE]
 [/LIST]
-
 [SIZE=3][B]TELEMETRY: [/B][COLOR=rgb(153, 153, 153)]This plugin reports statistics to [B]bStats [/B]which are very important for us to better understand what we should support. To opt-out, Change "send-metrics" in config.yml to "false". [URL='https://bstats.org/plugin/bukkit/Prison']View stats here.[/URL][/COLOR][/SIZE]
