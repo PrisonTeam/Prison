@@ -598,8 +598,11 @@ public class AutoManagerFeatures
 		double results = 0.0;
 
 		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-		if ( itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
+		if ( itemInHand != null && itemInHand.getType() != Material.AIR &&
+				itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
+			
 			ItemMeta meta = itemInHand.getItemMeta();
+			
 			if ( meta != null && meta.hasLore()) { 
 				for (String lore : meta.getLore()) {
 					if (lore.startsWith( loreEnabler.name())) {
@@ -636,6 +639,54 @@ public class AutoManagerFeatures
 						}
 					}
 				}
+			}
+		}
+
+		return results;
+	}
+
+	protected double getLoreValue( SpigotItemStack itemInHand, String loreValue ) {
+		double results = 0.0;
+
+		if ( itemInHand != null && !itemInHand.isAir() && loreValue != null && !loreValue.trim().isEmpty() ) {
+			List<String> lores = itemInHand.getLore();
+			
+			for ( String lore : lores ) {
+				
+				if (lore.startsWith( loreValue )) {
+					
+					// Lore detected so set default to 100%:
+					results = 100.0;
+					
+					String value = lore.replace( loreValue, "" ).trim();
+					
+					if (value.length() > 0) {
+						
+						// Content has been found after the lore's name. If it is a number, then
+						// use that to set the lore's percentage.  If it fails at parsing then use 100%.
+						
+						try {
+							results = Double.parseDouble( value );
+						}
+						catch (NumberFormatException e) {
+							
+							// Error: Default to 100%
+							// Do not generate log messages since there will be 1000's...
+							results = 100.0;
+						}
+						
+						// Clean up the parsed number.  Less than zero is zero (disabled).
+						if ( results < 0.0 ) {
+							results = 0.0;
+						}
+						
+						// Cannot exceed 100%
+						if ( results > 100.0 ) {
+							results = 100.0;
+						}
+					}
+				}
+				
 			}
 		}
 

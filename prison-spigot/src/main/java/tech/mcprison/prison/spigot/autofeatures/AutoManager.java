@@ -145,29 +145,42 @@ public class AutoManager
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
 			
+			boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
 			
-			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
-			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
-			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
+			boolean lorePickup = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.lorePickupValue ) );
+			boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
+			boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
 			
-			boolean permPickup = 
-					lorePickup == 100.0 ||
-					lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-			boolean permSmelt = 
-					loreSmelt == 100.0 ||
-					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-			boolean permBlock = 
-					loreBlock == 100.0 ||
-					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
+//			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
+//			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
+//			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
 			
+//			boolean permPickup = 
+//					lorePickup == 100.0 ||
+//					lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
+//			boolean permSmelt = 
+//					loreSmelt == 100.0 ||
+//					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
+//			boolean permBlock = 
+//					loreBlock == 100.0 ||
+//					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
+			
+			
+			boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
+											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+			
+			boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
+											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+			
+			boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
+											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
 			
 			// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
 			//       Ops will have to have the perms set to actually use them.
 					
 			// AutoPickup
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
-					(permPickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ) )) ) {
+					isAutoPickup ) {
 				
 				int count = autoFeaturePickup( block, player, itemInHand );
 				autoPickupCleanup( player, itemInHand, count, e );
@@ -175,27 +188,51 @@ public class AutoManager
 			
 			// AutoSmelt
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
-					(permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ) )) ){
+					isAutoSmelt ){
 				
 				autoFeatureSmelt( block, player, itemInHand );
 			}
 			
 			// AutoBlock
 			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
-					(permBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-							player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ) ) ) {
+					isAutoBlock ) {
 				
-//				Output.get().logInfo( "AutoManager.applyAutoEnvents: AutoBlock  enabled = %b   " +
-//						"%s hasPerm = %b  isSet = %b   has lore = %b ",
-//						isBoolean( AutoFeatures.autoBlockEnabled ),
-//						getMessage( AutoFeatures.permissionAutoBlock ), 
-//						player.hasPermission(getMessage( AutoFeatures.permissionAutoBlock ) ),
-//						player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ),
-//						loreBlock
-//						);
 				autoFeatureBlock( block, player, itemInHand );
 			}
+			
+			
+//			// AutoPickup
+//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+//					(permPickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
+//							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ) )) ) {
+//				
+//				int count = autoFeaturePickup( block, player, itemInHand );
+//				autoPickupCleanup( player, itemInHand, count, e );
+//			}
+//			
+//			// AutoSmelt
+//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
+//					(permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
+//							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ) )) ){
+//				
+//				autoFeatureSmelt( block, player, itemInHand );
+//			}
+//			
+//			// AutoBlock
+//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
+//					(permBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
+//							player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ) ) ) {
+//				
+////				Output.get().logInfo( "AutoManager.applyAutoEnvents: AutoBlock  enabled = %b   " +
+////						"%s hasPerm = %b  isSet = %b   has lore = %b ",
+////						isBoolean( AutoFeatures.autoBlockEnabled ),
+////						getMessage( AutoFeatures.permissionAutoBlock ), 
+////						player.hasPermission(getMessage( AutoFeatures.permissionAutoBlock ) ),
+////						player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ),
+////						loreBlock
+////						);
+//				autoFeatureBlock( block, player, itemInHand );
+//			}
 			
 			// NOTE: This may be in duplication... durability is calculated in auto pickup:
 			// Calculate durability if enabled:
@@ -226,6 +263,19 @@ public class AutoManager
 				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			}
 		}
+	}
+
+
+	private boolean checkLore( SpigotItemStack itemInHand, String loreValue ) {
+		boolean results = false;
+		
+		double lorePercent = getLoreValue( itemInHand, loreValue );
+
+		results = lorePercent == 100.0 ||
+					lorePercent > 0 && 
+					lorePercent <= getRandom().nextDouble() * 100;
+		
+		return results;
 	}
 
 

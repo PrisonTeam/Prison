@@ -18,8 +18,18 @@ that you need.
 
 # v3.2.4-alpha.13 2021-02-15
 
+
+* **Rewrote the lore checks on auto manager to use the prison ItemStacks.**
+Also simplified some of the code since some of the checks were no longer needed since they are now handled with the prison classes.
+
+
+* **Fixed bug of not passing the useNewBlockModle variable to the getBlocksList function; was hard coded with true.**
+Also showing three dots instead of just one when using the new block model so it's a way to visually tell how the server is configured and what block list is being shown.
+
+
 * **Player GUIs now editable**
 You can edit Player GUIs titles from the GuiConfig.yml now.
+
 
 * **Hooked up the new block constraints for max.**
 Now when enabled it will prevent more than the max amount from being spawned.
