@@ -26,8 +26,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
-
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
@@ -38,6 +36,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.BlockOld;
@@ -1543,22 +1542,7 @@ public class MinesCommands
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
         			
-        			String blockName = block.getBlockName().replaceAll("_", " ").toLowerCase();
-        			String percent = dFmt.format(chance) + "%";
-        			
-        			String blockStats = String.format( "  P: %s  T: %s  S: %s  uS: %s",  
-        					iFmt.format( block.getResetBlockCount() ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), dFmt, "" ), 
-        					iFmt.format( block.getBlockCountUnsaved() )
-        					);
-        			
-        			FancyMessage msg = new FancyMessage(
-        					String.format("&7%s - %s  (%s)%s", 
-        									percent, block.getBlockName(), blockName, blockStats))
-        					.suggest("/mines block set " + m.getName() + " " + block.getBlockName() + " %")
-        					.tooltip("&7Click to edit the block's chance.");
-        			builder.add(msg);
+        			builder.add(  addBlockStats( m, block, iFmt, dFmt ) );
         			
         		}
         	}
@@ -1573,23 +1557,7 @@ public class MinesCommands
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
         			
-        			String blockName =
-        					StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-        			String percent = dFmt.format(chance) + "%";
-        			
-        			String blockStats = String.format( " P: %s T: %s  S: %s  uS: %s",  
-        					iFmt.format( block.getResetBlockCount() ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ), 
-        					PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountSession(), dFmt, "" ), 
-        					iFmt.format( block.getBlockCountUnsaved() )
-        					);
-
-        			FancyMessage msg = new FancyMessage(
-        					String.format("&7%s - %s  (%s)%s", 
-        									percent, block.getType().name(), blockName, blockStats) )
-        					.suggest("/mines block set " + m.getName() + " " + block.getType().name() + " %")
-        					.tooltip("&7Click to edit the block's chance.");
-        			builder.add(msg);
+        			builder.add( addBlockStats( m, block, iFmt, dFmt ) );
         			
         		}
         	}
@@ -1602,6 +1570,62 @@ public class MinesCommands
         return builder.build();
     }
 
+    
+	private RowComponent addBlockStats( Mine mine, PrisonBlockStatusData block, 
+														DecimalFormat iFmt, DecimalFormat dFmt )
+	{
+		RowComponent row = new RowComponent();
+		
+		String percent = dFmt.format(block.getChance()) + "%";
+		
+		String text = String.format("&7%s - %s", 
+						percent, block.getBlockName());
+		// Minor padding after the name and chance:
+		if ( text.length() < 30 ) {
+			text += "                              ".substring( text.length() );
+		}
+		FancyMessage msg = new FancyMessage(
+				text )
+				.suggest("/mines block set " + mine.getName() + " " + block.getBlockName() + " %")
+				.tooltip("&7Click to edit the block's chance.");
+		row.addFancy( msg );
+
+		String text1 = formatStringPadRight("  &3Pl: &7%s", 16, iFmt.format( block.getResetBlockCount() ));
+		FancyMessage msg1 = new FancyMessage( text1 )
+								.tooltip("&7Number of blocks of this type &3Pl&7aced in this mine.");
+		row.addFancy( msg1 );
+		
+		String text2 = formatStringPadRight("  &3Rm: &7%s", 16, 
+								iFmt.format( block.getResetBlockCount() - block.getBlockCountUnsaved() ));
+		FancyMessage msg2 = new FancyMessage( text2 )
+								.tooltip("&7Number of blocks of this type &3R&7e&3e&7aining.");
+		row.addFancy( msg2 );
+		
+		FancyMessage msg3 = new FancyMessage(
+				String.format("  &3T: &7%s", 
+						PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" )))
+				.tooltip("&3T&7otal blocks of this type that have been mined.");
+		row.addFancy( msg3 );
+		
+		FancyMessage msg4 = new FancyMessage(
+				String.format("  &3S: &7%s", 
+						PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" )))
+				.tooltip("&7Blocks of this type that have been mined since the server was &3S&7tarted.");
+		row.addFancy( msg4 );
+		
+		return row;
+	}
+
+	private String formatStringPadRight( String text, int totalLength, Object... args ) {
+		StringBuilder sb = new StringBuilder( String.format( text, args ));
+		
+		while ( sb.length() < totalLength ) {
+			sb.append( " " );
+		}
+		
+		return sb.toString();
+	}
+	
     @Command(identifier = "mines reset", permissions = "mines.reset", description = "Resets a mine.")
     public void resetCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to reset, " +
