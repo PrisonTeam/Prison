@@ -16,11 +16,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-14
+# v3.2.4-alpha.13 2021-02-15
+
+
+* **Added block constraints of min and max that will try to constrain the spawning of the blocks.**
+They are hooked up to be saved and loaded through the mine's save file.  They also are hooked up to the commands to set them, remove them, and to include them in the block lists.
+They are not yet hooked up to constrain the block generation yet.
 
 
 * **Added new command /mines block list to complement the other mines block commands.**
-Since the block list was refactored, it was trivial to add this command and only makes sense since new users will see the /mines block listing and may not realize they have to use /mines info with page 2 or ALL to show the block list.  
+Since the block list was refactored, it was trivial to add this command and only makes sense since new users will see the /mines block listing and may not realize they have to use /mines info with page 2 or ALL to show the block list.
 
 
 * **Refactor the display of the mine's block list to eliminate duplicate code**

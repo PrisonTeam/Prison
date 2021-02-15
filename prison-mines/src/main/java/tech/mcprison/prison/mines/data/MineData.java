@@ -459,6 +459,54 @@ public abstract class MineData
         }
     }
     
+    public PrisonBlock getPrisonBlock(String blockName ) {
+    	PrisonBlock results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( PrisonBlock b : getPrisonBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public BlockOld getBlockOld(String blockName ) {
+    	BlockOld results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( BlockOld b : getBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public boolean hasBlock( String blockName ) {
+    	boolean results = false;
+    	
+    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		
+    		if ( useNewBlockModel ) {
+    			results = getPrisonBlock( blockName ) != null;
+    		}
+    		else {
+    			results = getBlockOld( blockName ) != null;
+    		}
+    	}
+        
+        return results;
+    }
+    
     public boolean incrementBlockCount( PrisonBlock block ) {
     	String blockName = block.getBlockName().toLowerCase();
     	return incrementBlockCount( blockName );

@@ -284,6 +284,8 @@ public class Mine
 				String blockTypeName = split[0];
 				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
 				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
 				
 				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
 					// Use the BlockType.name() load the block type:
@@ -328,6 +330,9 @@ public class Mine
 						}
 						
 						BlockOld block = new BlockOld(blockType, chance, blockCount);
+						block.setContraintMin( constraintMin );
+						block.setContraintMax( constraintMax );
+
 						getBlocks().add(block);
 					}
 					else {
@@ -364,6 +369,8 @@ public class Mine
 					String blockTypeName = split[0];
 					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
 					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+					int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+					int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
 
 					if ( blockTypeName != null ) {
 						// The new way to get the PrisonBlocks:  
@@ -373,6 +380,9 @@ public class Mine
 						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
 							prisonBlock.setChance( chance );
 							prisonBlock.setBlockCountTotal( blockCount );
+							prisonBlock.setContraintMin( constraintMin );
+							prisonBlock.setContraintMax( constraintMax );
+
 							
 							if ( prisonBlock.isLegacyBlock() ) {
 								dirty = true;

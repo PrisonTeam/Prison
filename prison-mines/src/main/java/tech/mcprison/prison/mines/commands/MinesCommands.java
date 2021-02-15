@@ -814,7 +814,7 @@ public class MinesCommands
     			onlyPlayers = false, description = "Deletes a block from a mine.")
     public void delBlockCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "block", def = "AIR", description = "The block's name or ID.") String block) {
+        @Arg(name = "block", def = "AIR", description = "The block's name") String block) {
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -1140,6 +1140,126 @@ public class MinesCommands
     	
     }
     
+    
+
+    @Command(identifier = "mines block constraint", permissions = "mines.block", 
+    				description = "Optionally enable constraints on a mine's block generation.")
+    public void constraintsBlockCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
+    		@Arg(name = "blockNme", description = "The block's name") String blockName,
+    		@Arg(name = "contraint", description = "Constraint to apply [min max]",
+    					def = "max") String constraint,
+    		@Arg(name = "value", description = "The value to assign to this constraint. " +
+    					"A value of 0 will remove the constraint.") int value ) {
+
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+
+        if ( m == null ) {
+        	sender.sendMessage( 
+        			String.format( "&7The specified mine named &3%s &7 does not exist. " +
+        					"Please try again.", 
+        					(mineName == null ? "null" : mineName) ));
+        	return;
+        }
+        
+        if ( constraint == null || 
+        		!"max".equalsIgnoreCase( constraint ) && !"min".equalsIgnoreCase( constraint ) ) {
+        	sender.sendMessage( 
+        			String.format( "Valid contraint values are [min max]. Was [%s]", 
+        			(constraint == null ? "null" : constraint) ));
+        	listBlockCommand(sender, m.getName() );
+        	return;
+        }
+
+        if ( blockName == null || !m.hasBlock( blockName ) ) {
+        	sender.sendMessage( 
+        			String.format( "&7The block name &3%s &7 does not exist in the specified mine. " +
+        					"Please try again.", 
+        					(blockName == null ? "null" : blockName) ));
+        	listBlockCommand(sender, m.getName() );
+        	return;
+        }
+
+        if ( value < 0 ) {
+        	sender.sendMessage( 
+        			String.format( "&7The specified value cannot be less than zero. [%s]  " +
+        					"Please try again.", 
+        					Integer.toString( value ) ));
+        	listBlockCommand(sender, m.getName() );
+        	return;
+        }
+        
+        if ( m.getBounds() != null && value > m.getBounds().getTotalBlockCount() ) {
+        	sender.sendMessage( 
+        			String.format( "&7The specified value cannot be more than the total number " +
+        					"of blocks in the mine. value = [%s]  total blocks = [%s]  " +
+        					"Please try again.", 
+        					Integer.toString( value ), 
+        					Integer.toString( m.getBounds().getTotalBlockCount() ) ));
+        	listBlockCommand(sender, m.getName() );
+        	return;
+        }
+        
+        
+    	boolean useNewBlockModel = Prison.get().getPlatform()
+    										.getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+    	PrisonBlockStatusData block = null;
+    	
+    	if ( useNewBlockModel ) {
+    		block = m.getPrisonBlock( blockName );
+    	}
+    	else {
+    		block = m.getBlockOld( blockName );
+    	}
+        
+
+    	if ( "min".equalsIgnoreCase( constraint ) ) {
+    		if ( value > block.getContraintMax() ) {
+            	sender.sendMessage( 
+            			String.format( "&7The specified value for the min constraint cannot " +
+            					"be more than the max constraint value.  value = [%s]  max= %s  " +
+            					"Please try again.", 
+            					Integer.toString( value ), 
+            					Integer.toString( block.getContraintMax() ) ));
+            	listBlockCommand(sender, m.getName() );
+            	return;
+
+    		}
+    		block.setContraintMin( value );
+    	}
+    	if ( "max".equalsIgnoreCase( constraint ) ) {
+    		if ( value < block.getContraintMin() ) {
+    			sender.sendMessage( 
+    					String.format( "&7The specified value for the max constraint cannot " +
+    							"be less than the min constraint value.  value = [%s]  min= %s  " +
+    							"Please try again.", 
+    							Integer.toString( value ), 
+    							Integer.toString( block.getContraintMin() ) ));
+    			listBlockCommand(sender, m.getName() );
+    			return;
+    			
+    		}
+    		block.setContraintMax( value );
+    	}
+        
+        
+        
+        pMines.getMineManager().saveMine( m );
+        
+        
+        String message = String.format( "&7Mine &3%s&7's constraint for &3%s &7has been set to &3%s.", 
+        		m.getName(), constraint,
+        		(value == 0 ? "disabled" : Integer.toString( value ) ));
+        
+        
+        sender.sendMessage( message );
+        
+        
+    }
 	
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
@@ -1552,7 +1672,8 @@ public class MinesCommands
     }
 
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, boolean useNewBlockModel) {
-        BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
+       
+    	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
         DecimalFormat iFmt = new DecimalFormat("#,##0");
         DecimalFormat dFmt = new DecimalFormat("#,##0.00");
@@ -1568,7 +1689,7 @@ public class MinesCommands
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
         			
-        			builder.add(  addBlockStats( m, block, iFmt, dFmt ) );
+        			addBlockStats( m, block, iFmt, dFmt, builder );
         			
         		}
         	}
@@ -1583,7 +1704,7 @@ public class MinesCommands
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
         			
-        			builder.add( addBlockStats( m, block, iFmt, dFmt ) );
+        			addBlockStats( m, block, iFmt, dFmt, builder );
         			
         		}
         	}
@@ -1597,8 +1718,9 @@ public class MinesCommands
     }
 
     
-	private RowComponent addBlockStats( Mine mine, PrisonBlockStatusData block, 
-														DecimalFormat iFmt, DecimalFormat dFmt )
+	private void addBlockStats( Mine mine, PrisonBlockStatusData block, 
+											DecimalFormat iFmt, DecimalFormat dFmt,
+											BulletedListComponent.BulletedListBuilder builder)
 	{
 		RowComponent row = new RowComponent();
 		
@@ -1639,7 +1761,34 @@ public class MinesCommands
 				.tooltip("&7Blocks of this type that have been mined since the server was &3S&7tarted.");
 		row.addFancy( msg4 );
 		
-		return row;
+		builder.add( row );
+		
+		
+		if ( block.getContraintMin() > 0 || block.getContraintMax() > 0 ) {
+			
+			RowComponent row2 = new RowComponent();
+			
+			row2.addTextComponent( "                &3Contraints:  " );
+			
+			String text6 = formatStringPadRight("&2Min: &6%s", 16, 
+					(block.getContraintMin() == 0 ? "disabled" : iFmt.format( block.getContraintMin() )));
+			FancyMessage msg6 = new FancyMessage( text6 )
+									.tooltip("&7During a mine reset, the min constraint will try to " +
+											"be the minimum number of blocks of this type to be added " +
+											"to the mine.");
+			row2.addFancy( msg6 );
+			
+			String text7 = formatStringPadRight("  &2Max: &6%s", 1, 
+					(block.getContraintMax() == 0 ? "disabled" : iFmt.format( block.getContraintMax() )));
+			FancyMessage msg7 = new FancyMessage( text7 )
+									.tooltip("&7During a mine reset, the max constraint will try to " +
+											"be the maximum number of blocks of this type to be added " +
+											"to the mine.");
+			row2.addFancy( msg7 );
+
+			builder.add(  row2 );
+		}
+
 	}
 
 	private String formatStringPadRight( String text, int totalLength, Object... args ) {

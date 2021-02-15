@@ -7,6 +7,10 @@ public class PrisonBlockStatusData {
 	
 	private double chance;
 	
+	private int contraintMin;
+	private int contraintMax;
+
+	
 	private int blockCountOnReset;
 	
 	private long blockCountTotal;
@@ -14,11 +18,17 @@ public class PrisonBlockStatusData {
 	private long blockCountUnsaved;
 	
 	
+	
 	public PrisonBlockStatusData( String blockName, double chance, long blockCountTotal ) {
 		super();
 		
 		this.blockName = blockName;
+		
 		this.chance = chance;
+		
+		this.contraintMin = 0;
+		this.contraintMax = 0;
+
 		
 		this.blockCountOnReset = 0;
 		
@@ -42,7 +52,8 @@ public class PrisonBlockStatusData {
 	}
 	
 	public String toSaveFileFormat() {
-		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal();
+		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal() + "-" + 
+					getContraintMin() + "-" + getContraintMax();
 	}
 	
 	public String getBlockName(){
@@ -85,6 +96,20 @@ public class PrisonBlockStatusData {
 	}
 	public void setBlockCountUnsaved( long blockCountUnsaved ) {
 		this.blockCountUnsaved = blockCountUnsaved;
+	}
+
+	public int getContraintMin() {
+		return contraintMin;
+	}
+	public void setContraintMin( int contraintMin ) {
+		this.contraintMin = contraintMin;
+	}
+
+	public int getContraintMax() {
+		return contraintMax;
+	}
+	public void setContraintMax( int contraintMax ) {
+		this.contraintMax = contraintMax;
 	}
 
 }
