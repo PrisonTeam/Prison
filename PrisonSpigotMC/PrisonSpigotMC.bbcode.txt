@@ -1,5 +1,5 @@
 [CENTER][B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Header%20Prison.png[/IMG] [/SIZE][/COLOR][/B]
-[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.1.0[/COLOR][/SIZE][/FONT]
+[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.1.1[/COLOR][/SIZE][/FONT]
 [COLOR=rgb(230, 145, 56)][SIZE=7][URL='https://discord.com/invite/DCJ3j6r'][IMG]https://camo.githubusercontent.com/b12a95e20b7ca35f918c0ab5103fe56b6f44c067/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383964612e737667[/IMG][/URL] [/SIZE][/COLOR][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/LICENSE.md'][IMG]https://camo.githubusercontent.com/5f2cb15e3e2b3bf7c08ec9a3b597e9e67f9dbca0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d47504c2532304c6963656e736525323076332d626c75652e737667[/IMG] [/URL][URL='https://github.com/PrisonTeam/Prison/actions?query=workflow%3A%22Prison+Build%22'][IMG]https://github.com/PrisonTeam/Prison/workflows/Prison%20Build/badge.svg[/IMG][/URL]
 [COLOR=rgb(230, 145, 56)][SIZE=7]An all-around Open-Source Prison Plugin.[/SIZE][/COLOR]
 
@@ -51,7 +51,7 @@
 [FONT=Verdana][SIZE=5][COLOR=#808080]Prison has many features with many commands.  The main command, [B]/prison[/B], will show all of Prison's main root commands and their registered aliases. When using commands, Prison's command hander provides command lists of valid commands, and also help on each adding the [B]help[/B] keyword after the command. The help also includes the list of permissions if the command requires permissions.[/COLOR][/SIZE][/FONT]
 [SPOILER="Prison Commands - Highlights"]
 
-[FONT=Verdana][SIZE=5][COLOR=#808080]Prison has many commands with this list being a small sub-set of what is available.  Many of these are provide listings of sub-commands and are worth exploring.[/COLOR][/SIZE][/FONT]
+[FONT=Verdana][SIZE=5][COLOR=#808080]Prison has many commands with this list being a small subset of what is available.  Many of these are provide listings of sub-commands and are worth exploring.[/COLOR][/SIZE][/FONT]
 
 [LIST]
 [*][SIZE=5][COLOR=#808080]/prison[/COLOR][/SIZE]
@@ -226,9 +226,10 @@
 [/LIST]
 [CENTER][SIZE=4][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Placeholders%20Long.png[/IMG] [/SIZE][/CENTER]
 
-[FONT=Verdana][SIZE=5][COLOR=#808080]Placeholders provide Prison's internal data about players, mines, and ranks to other plugins. Prison provides many placeholders so you can get the details that you are needing so you can customize your server the way you envision it. Using placeholder attributes, Prison has an easy way to dynamically format most placeholders so they can best suite your design needs. Placeholder[/COLOR][/SIZE][/FONT]
-
-[FONT=Verdana][SIZE=5][COLOR=#808080]Using placeholder attributes, Prison has an easy way to dynamically format most placeholders so they can best suite your design needs. Placeholder attributes are additional settings that are included within the actual placeholder that you define within your other plugins.  These placeholder attributes provide dynamic adjustments to number formatting, including the choice of various units (metric, binary, and standard units), customizations to progress bars, and enabling and alternative translations for hex colors. [/COLOR][/SIZE][/FONT]
+[SPOILER="Placeholders introduction"]
+[FONT=Verdana][SIZE=5][COLOR=#808080][B]Placeholders [/B]provide Prison's internal data about [B]players[/B], [B]mines[/B], and [B]ranks [/B]to other plugins. Prison provides many placeholders so you can get the details that you are needing so you can [B]customize [/B]your server the way you envision it. Using placeholder attributes, Prison has an easy way to [B]dynamically format [/B]most placeholders so they can best suit your design needs.[/COLOR]
+[COLOR=rgb(128, 128, 128)][B]Placeholder attributes[/B] are [B]additional settings [/B]that are included within the actual placeholder that you define within your other plugins.  These placeholder attributes provide [B]dynamic adjustments[/B] to [B]number formatting[/B], including the choice of various [B]units [/B](metric, binary, and standard units), customizations to [B]progress bars[/B], and enabling and alternative translations for [B]hex colors[/B].[/COLOR][/SIZE][/FONT]
+[/SPOILER]
 
 [LIST]
 [*][COLOR=#808080][SIZE=4]Over 100+ Placeholders, including aliases, are available for your server.[/SIZE][/COLOR]
