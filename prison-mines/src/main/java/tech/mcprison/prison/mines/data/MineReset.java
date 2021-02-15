@@ -462,7 +462,9 @@ public abstract class MineReset
 		setStatsResetPageMs( 0 );
 		
 		
+		// Save the if there are unsaved blocks:
 		saveIfUnsavedBlockCounts();
+		
     }
     
     public void saveIfUnsavedBlockCounts() {
@@ -1339,13 +1341,14 @@ public abstract class MineReset
 //    }
 
 
-	private PrisonBlock randomlySelectPrisonBlock( Random random )
-	{
+	private PrisonBlock randomlySelectPrisonBlock( Random random ) {
 		double chance = random.nextDouble() * 100.0d;
 		
 		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
+		
 		for (PrisonBlock block : getPrisonBlocks()) {
-		    if (chance <= block.getChance()) {
+		    if (chance <= block.getChance() && 
+		    		(block.getContraintMax() == 0 || block.getResetBlockCount() < block.getContraintMax()) ) {
 		    	prisonBlock = block;
 		        break;
 		    } else {
@@ -1361,7 +1364,8 @@ public abstract class MineReset
 		BlockOld results = BlockOld.AIR;
 		
 		for (BlockOld block : getBlocks()) {
-			if (chance <= block.getChance()) {
+			if (chance <= block.getChance() && 
+		    		(block.getContraintMax() == 0 || block.getResetBlockCount() < block.getContraintMax())) {
 				results = block;
 				break;
 			} else {

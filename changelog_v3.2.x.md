@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.13 2021-02-15
 
 
+* **Hooked up the new block constraints for max.**
+Now when enabled it will prevent more than the max amount from being spawned.
+The min constraint has not been hooked up yet.
+
+
 * **Added block constraints of min and max that will try to constrain the spawning of the blocks.**
 They are hooked up to be saved and loaded through the mine's save file.  They also are hooked up to the commands to set them, remove them, and to include them in the block lists.
 They are not yet hooked up to constrain the block generation yet.

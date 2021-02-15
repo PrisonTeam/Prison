@@ -1768,7 +1768,7 @@ public class MinesCommands
 			
 			RowComponent row2 = new RowComponent();
 			
-			row2.addTextComponent( "                &3Contraints:  " );
+			row2.addTextComponent( "                &3Constraints:  " );
 			
 			String text6 = formatStringPadRight("&2Min: &6%s", 16, 
 					(block.getContraintMin() == 0 ? "disabled" : iFmt.format( block.getContraintMin() )));
