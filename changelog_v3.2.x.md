@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.13 2021-02-14
 
 
+* **Refactor the display of the mine's block list to eliminate duplicate code**
+since the new block model and old block model has been able to be merged together for some of the functionalities.
+
 
 * **v3.2.4-alpha.13 2021-02-14**
 

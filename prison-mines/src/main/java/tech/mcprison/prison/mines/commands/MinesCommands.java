@@ -1481,47 +1481,29 @@ public class MinesCommands
         
         boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
-        if ( useNewBlockModel ) {
-        	
+        int blockSize = 0;
+        if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
         	if ( cmdPageData.isDebug() ) {
-        		chatDisplay.addText( "&7Block model: &3New" );
+        		chatDisplay.addText( "&7Block model: &3%s", 
+        				( useNewBlockModel ? "New" : "Old") );
         	}
+        	chatDisplay.addText("&3Blocks:");
+        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
         	
-        	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        		chatDisplay.addText("&3Blocks:");
-        		chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
-        		BulletedListComponent list = getBlocksList(m, cmdPageData, true );
-        		
-        		chatDisplay.addComponent(list);
-        	}
-        	
-        	int blockSize =  m.getPrisonBlocks().size();
-        	
-        	String message = blockSize != 0 ? null : " &cNo Blocks Defined";
-        	cmdPageData.generatePagedCommandFooter( chatDisplay, message );
-        	
+        	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
+        	chatDisplay.addComponent(list);
         }
-        if ( !useNewBlockModel || useNewBlockModel && cmdPageData.isDebug() ) {
-        	
-        	if ( cmdPageData.isDebug() ) {
-        		chatDisplay.addText( "&7Block model: &3Old" );
-        	}
-        	
-        	if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        		chatDisplay.addText("&3Blocks:");
-        		chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
-        		BulletedListComponent list = getBlocksList(m, cmdPageData, false );
-        		
-        		chatDisplay.addComponent(list);
-        	}
-        	
-        	int blockSize = m.getBlocks().size();
-        	
-        	String message = blockSize != 0 ? null : " &cNo Blocks Defined";
-        	cmdPageData.generatePagedCommandFooter( chatDisplay, message );
+
+        if ( useNewBlockModel ) {
+        	blockSize =  m.getPrisonBlocks().size();
+        }
+        else {
+        	blockSize = m.getBlocks().size();
         }
         
-
+        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
+        
         chatDisplay.send(sender);
     }
 
