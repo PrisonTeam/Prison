@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.13 2021-02-14
 
 
+* **Added new command /mines block list to complement the other mines block commands.**
+Since the block list was refactored, it was trivial to add this command and only makes sense since new users will see the /mines block listing and may not realize they have to use /mines info with page 2 or ALL to show the block list.  
+
+
 * **Refactor the display of the mine's block list to eliminate duplicate code**
 since the new block model and old block model has been able to be merged together for some of the functionalities.
 

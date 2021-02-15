@@ -1097,6 +1097,50 @@ public class MinesCommands
 		return display;
 	}
 
+	
+
+    @Command(identifier = "mines block list", permissions = "mines.block", 
+    				description = "Searches for a block to add to a mine.")
+    public void listBlockCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName ) {
+
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+        
+        ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
+
+        
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+        int blockSize = 0;
+
+
+        chatDisplay.addText("&3Blocks:");
+        chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.");
+        
+        BulletedListComponent list = getBlocksList(m, null, true );
+        chatDisplay.addComponent(list);
+
+        if ( useNewBlockModel ) {
+        	blockSize =  m.getPrisonBlocks().size();
+        }
+        else {
+        	blockSize = m.getBlocks().size();
+        }
+        
+        if ( blockSize == 0 ) {
+        	String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        	chatDisplay.addText( message );
+        }
+        
+        chatDisplay.send(sender);
+    	
+    }
+    
+	
 
     @Command(identifier = "mines delete", permissions = "mines.delete", onlyPlayers = false, description = "Deletes a mine.")
     public void deleteCommand(CommandSender sender,
