@@ -651,14 +651,20 @@ public class AutoManagerFeatures
 		if ( itemInHand != null && !itemInHand.isAir() && loreValue != null && !loreValue.trim().isEmpty() ) {
 			List<String> lores = itemInHand.getLore();
 			
+			// Clean the loreValue we need to compare everything to.  It must have all color codes removed:
+			String loreValueCleaned = Text.stripColor( loreValue );
+			
 			for ( String lore : lores ) {
 				
-				if (lore.startsWith( loreValue )) {
+				// Remove the color codes so it can be cleanly compared with the loreValue:
+				String loreCleaned = Text.stripColor( lore );
+
+				if (loreCleaned.startsWith( loreValueCleaned )) {
 					
 					// Lore detected so set default to 100%:
 					results = 100.0;
 					
-					String value = lore.replace( loreValue, "" ).trim();
+					String value = loreCleaned.replace( loreValueCleaned, "" ).trim();
 					
 					if (value.length() > 0) {
 						

@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.13 2021-02-15
 
 
+* **Auto manager lore: Strip off color codes so the comparisons work if color codes are enabled.**
+Noticed that sometimes random color codes are added when enchanting.
+
+
 * **Rewrote the lore checks on auto manager to use the prison ItemStacks.**
 Also simplified some of the code since some of the checks were no longer needed since they are now handled with the prison classes.
 
