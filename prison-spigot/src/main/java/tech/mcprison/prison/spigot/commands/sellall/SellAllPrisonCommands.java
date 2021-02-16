@@ -756,6 +756,192 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
+    @Command(identifier = "sellall Trigger", description = "Toggle SellAll Shift+Right Click on a tool to trigger the /sellall sell command, true -> Enabled or False -> Disabled.", permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllToolsTriggerToggle(CommandSender sender,
+                                           @Arg(name = "Boolean", description = "Enable or disable", def = "null") String enable){
+
+        if (!isEnabled()) return;
+
+        if (enable.equalsIgnoreCase("null")){
+            sender.dispatchCommand("sellall toolsTrigger help");
+            return;
+        }
+
+        if (!enable.equalsIgnoreCase("true") && !enable.equalsIgnoreCase("false")){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.InvalidBooleanInput")));
+            return;
+        }
+
+        boolean sellAllTriggerStatus = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
+        boolean enableInput = getBoolean(enable);
+        if (sellAllTriggerStatus == enableInput) {
+            if (sellAllTriggerStatus) {
+
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerAlreadyEnabled")));
+            } else {
+
+                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerAlreadyDisabled")));
+            }
+            return;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.ShiftAndRightClickSellAll.Enabled", enableInput);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            return;
+        }
+
+        if (enableInput){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerEnabled")));
+        } else {
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerDisabled")));
+        }
+
+        sellAllConfigUpdater();
+    }
+
+    @Command(identifier = "sellall Trigger add", description = "Add an Item to trigger the Shift+Right Click -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllTriggerAdd(CommandSender sender,
+                                   @Arg(name = "Item", description = "Item name") String itemID){
+
+        if (!isEnabled()) return;
+
+        boolean sellAllTriggerStatus = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
+        if (!sellAllTriggerStatus){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerIsDisabled")));
+            return;
+        }
+
+        if (itemID == null){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerMissingItem")));
+            return;
+        }
+        itemID = itemID.toUpperCase();
+
+        try {
+            XMaterial blockAdd;
+            try{
+                blockAdd = XMaterial.valueOf(itemID);
+            } catch (IllegalArgumentException ex){
+                Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+                return;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", blockAdd.name());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return;
+            }
+        } catch (IllegalArgumentException ex){
+            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+            return;
+        }
+
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerItemAddSuccess") + " [" + itemID + " ]"));
+        sellAllConfigUpdater();
+    }
+
+    @Command(identifier = "sellall Trigger edit", description = "Edit an Item of the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllTriggerEdit(CommandSender sender,
+                                   @Arg(name = "Item", description = "Item name") String itemID){
+
+        if (!isEnabled()) return;
+
+        boolean sellAllTriggerStatus = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
+        if (!sellAllTriggerStatus){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerIsDisabled")));
+            return;
+        }
+
+        if (itemID == null){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerMissingItem")));
+            return;
+        }
+        itemID = itemID.toUpperCase();
+
+        if (sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID") == null){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerMissingItem")));
+            return;
+        }
+
+        try {
+            XMaterial blockAdd;
+            try{
+                blockAdd = XMaterial.valueOf(itemID);
+            } catch (IllegalArgumentException ex){
+                Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+                return;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", blockAdd.name());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return;
+            }
+        } catch (IllegalArgumentException ex){
+            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllWrongID") + " [" + itemID + "]"));
+            return;
+        }
+
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerItemEditSuccess") + " [" + itemID + " ]"));
+        sellAllConfigUpdater();
+    }
+
+    @Command(identifier = "sellall Trigger delete", description = "Delete an Item from the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllTriggerDelete(CommandSender sender,
+                                    @Arg(name = "Item", description = "Item name") String itemID){
+
+        if (!isEnabled()) return;
+
+        boolean sellAllTriggerStatus = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
+        if (!sellAllTriggerStatus){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerIsDisabled")));
+            return;
+        }
+
+        if (itemID == null){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerMissingItem")));
+            return;
+        }
+        itemID = itemID.toUpperCase();
+
+        if (sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID") == null){
+
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerMissingItem")));
+            return;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemID, null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+            return;
+        }
+
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerItemDeleteSuccess") + " [" + itemID + " ]"));
+        sellAllConfigUpdater();
+    }
+
     @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllSetDefaultCommand(CommandSender sender){
 

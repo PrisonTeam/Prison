@@ -19,6 +19,23 @@ that you need.
 # v3.2.4-alpha.13 2021-02-16
 
 
+* **Added sellall triggers**
+New triggers feature, it's now possible to add items/edit/delete that will trigger the /sellall sell
+  while shifting and right click, there're some options in the sellallconfig for customization
+  too, it's possible to enable this feature while in-game by commands, there still isn't a GUI
+  for this and maybe I'll add one in the future.
+  
+  Permission: prison.admin
+  
+  Command: /sellall trigger <args> <args> -> /sellall trigger true will enable this feature
+/sellall trigger add-edit-delete <item> is for management. 
+  
+
+* **Fixed SellAll Blocks GUI**
+Found and fixed a SellAll config bug not updating, this was breaking many things and
+  also the new feature incoming, this got now fixed.
+
+
 * **Changed the mine resets use of target block collections.**
 Changed the way the data is stored in that collection so it is able to store both the new and old block models
 Every reset now stores their block assignment in this target block collections, of which, paged reset have always used them.  

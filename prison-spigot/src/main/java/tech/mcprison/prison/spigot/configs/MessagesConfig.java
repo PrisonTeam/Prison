@@ -310,6 +310,16 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllDelayNotNumber", "Delay value &cisn't&7 a number!");
         dataConfig("Message.SellAllGUIEmpty", "Sorry but there &caren't&7 Blocks in the SellAll Shop!");
         dataConfig("Message.SellAllGUIEmpty2", "&7[&cTIP&7] &7You can &aadd&7 one using the command /sellall add!");
+        dataConfig("Message.SellAllTriggerAlreadyEnabled", "SellAll trigger's already &aenabled&7.");
+        dataConfig("Message.SellAllTriggerAlreadyDisabled", "SellAll trigger's already &cdisabled&7.");
+        dataConfig("Message.SellAllTriggerEnabled", "SellAll trigger &aEnabled&7.");
+        dataConfig("Message.SellAllTriggerDisabled", "SellAll trigger &cDisabled&7.");
+        dataConfig("Message.SellAllTriggerIsDisabled", "SellAll trigger's &cdisabled&7 in the SellAllConfig.yml.");
+        dataConfig("Message.SellAllTriggerMissingItem", "Please add a valid Item ID for SellAll Shift+Right Click Trigger.");
+        dataConfig("Message.SellAllTriggerItemAddSuccess", "SellAll trigger Item added with &asuccess&7!");
+        dataConfig("Message.SellAllTriggerItemEditSuccess", "SellAll trigger Item edited with &asuccess&7!");
+        dataConfig("Message.SellAllTriggerItemDeleteSuccess", "SellAll trigger Item deleted with &asuccess&7!");
+        dataConfig("Message.SellAllTriggerMissingItem", "There isn't an item in the SellAllConfig.yml trigger like that.");
         dataConfig("Message.TooLowValue", "&cToo low value.");
         dataConfig("Message.TooHighValue", "&cToo high value.");
         dataConfig("Setup.Message.MissingPermission", "Sorry but you don't have the &cpermission&7 [-prison.setup- or -prison.admin-]!");

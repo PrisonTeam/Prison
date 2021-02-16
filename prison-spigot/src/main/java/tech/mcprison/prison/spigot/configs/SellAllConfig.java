@@ -84,6 +84,9 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
         dataConfig("Options.Multiplier_Permission_Only_Higher", "false");
+        dataConfig("Options.ShiftAndRightClickSellAll.Enabled", "false");
+        dataConfig("Options.ShiftAndRightClickSellAll.PermissionEnabled", "false");
+        dataConfig("Options.ShiftAndRightClickSellAll.Permission", "prison.player");
     }
 
     public FileConfiguration getFileSellAllConfig(){

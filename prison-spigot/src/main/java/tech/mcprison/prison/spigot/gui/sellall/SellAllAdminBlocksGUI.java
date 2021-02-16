@@ -41,6 +41,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
     private Inventory buttonsSetup() {
 
         boolean emptyInv = false;
+        int dimension = 9;
 
         try {
             if (sellAllConfig.getConfigurationSection("Items") == null) {
@@ -58,8 +59,13 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         // Get the Items config section
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
+        if (items.size() == 0){
+            p.closeInventory();
+            return null;
+        }
+
         // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(items.size() / 9D) * 9;
+        dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
         if (dimension > 54){
             Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
