@@ -229,4 +229,8 @@ public class PrisonBlock
 		return results;
 	}
 	
+	public boolean isAir() {
+		return compareTo( AIR ) == 0;
+	}
+	
 }

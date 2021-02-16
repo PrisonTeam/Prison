@@ -39,10 +39,10 @@ public class BlockOld
     /**
      * The chance of this block appearing in it's associated mine
      */
-    private double chance; // = 100.0d;
+//    private double chance; // = 100.0d;
 
     
-    private BlockOld( BlockType block ) {
+    protected BlockOld( BlockType block ) {
     	this( block, 0.0d, 0L );
     }
     
@@ -53,13 +53,13 @@ public class BlockOld
     	super(block.name(), chance, blockCountTotal);
     			
         this.type = block;
-        this.chance = chance;
+//        this.chance = chance;
     }
 
     public BlockOld(String blockType, double chance, long blockCountTotal) {
     	super(blockType, chance, blockCountTotal);
     	
-    	this.chance = chance;
+//    	this.chance = chance;
     	
     	BlockType block = BlockType.fromString( blockType );
     	this.type = block;
@@ -109,12 +109,12 @@ public class BlockOld
 		this.type = type;
 	}
 
-	public double getChance()
-	{
-		return chance;
-	}
-	public void setChance( double chance )
-	{
-		this.chance = chance;
-	}
+//	public double getChance()
+//	{
+//		return chance;
+//	}
+//	public void setChance( double chance )
+//	{
+//		this.chance = chance;
+//	}
 }

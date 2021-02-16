@@ -12,6 +12,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
@@ -19,7 +20,6 @@ import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.features.MineMover;
-import tech.mcprison.prison.mines.features.MineTargetBlock;
 import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineTracerBuilder;
@@ -86,12 +86,12 @@ public abstract class MineReset
 	
 	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY = 30000L; // 30 seconds
 	
-	@Deprecated
-	private List<BlockType> randomizedBlocks;
+//	@Deprecated
+//	private List<BlockType> randomizedBlocks;
 	
 	// to replace randomizedBlocks....
-	private List<MineTargetBlock> mineTargetBlocks;
-	private TreeMap<MineTargetBlockKey, MineTargetBlock> mineTargetBlocksMap;
+	private List<MineTargetPrisonBlock> mineTargetPrisonBlocks;
+	private TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> mineTargetPrisonBlocksMap;
 	
 	private MineJob currentJob;
 	
@@ -132,10 +132,10 @@ public abstract class MineReset
 	public MineReset() {
 		super();
 		
-		this.randomizedBlocks = new ArrayList<>();
+//		this.randomizedBlocks = new ArrayList<>();
 		
-		this.mineTargetBlocks = new ArrayList<>();
-		this.mineTargetBlocksMap = new TreeMap<>();
+		this.mineTargetPrisonBlocks = new ArrayList<>();
+		this.mineTargetPrisonBlocksMap = new TreeMap<>();
 		
 		this.currentJob = null;
 		
@@ -231,6 +231,12 @@ public abstract class MineReset
 			// Reset stats:
 			resetStats();
 			
+			// Clear the mineTargetPrisonBlocks List and Map:
+			// This stores a copy of the block with coordinates to keep track of what
+			// the block "was" after it was broke:
+			clearMineTargetPrisonBlocks();
+//			getMineTargetPrisBlocks().clear();
+			
 			
 			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
 				
@@ -253,7 +259,7 @@ public abstract class MineReset
 			
 			long time2 = System.currentTimeMillis();
 			
-			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+//			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
 
 			Location altTp = alternativeTpLocation();
 			altTp.setY( altTp.getBlockY() - 1 ); // Set Y one lower to 
@@ -276,15 +282,16 @@ public abstract class MineReset
 						
 						if ( useNewBlockModel ) {
 							
-							PrisonBlock prisonBlock = targetBlock.isEmpty() ? null :
+							PrisonBlock prisonBlock = targetBlock.isEmpty() ? PrisonBlock.AIR :
 																	targetBlock.getPrisonBlock();
 							
-							if (!isFillMode || 
-									isFillMode && prisonBlock == null ||
-									isFillMode && targetLocation.equals(altTp) && 
-											prisonBlock.getBlockName().equalsIgnoreCase( "GLASS" ) || 
-									isFillMode && targetLocation.equals(altTp) && 
-											prisonBlock.getBlockName().equalsIgnoreCase( "AIR" ) ) {
+//							if (!isFillMode || 
+//									isFillMode && prisonBlock == null ||
+//									isFillMode && prisonBlock.isAir() ||
+//									isFillMode && targetLocation.equals(altTp) && 
+//											prisonBlock.getBlockName().equalsIgnoreCase( "GLASS" ) || 
+//									isFillMode && targetLocation.equals(altTp) && 
+//											prisonBlock.isAir() ) {
 								
 								PrisonBlock targetPrisonBlock = randomlySelectPrisonBlock( random );
 								
@@ -294,22 +301,27 @@ public abstract class MineReset
 									targetPrisonBlock.incrementResetBlockCount();
 									
 									targetBlock.setPrisonBlock( targetPrisonBlock );
+									
+									addMineTargetPrisonBlock( targetPrisonBlock, x, y, z );
+								}
+								else {
+									
+									addMineTargetPrisonBlock( prisonBlock, x, y, z );
 								}
 								i++;
 								
 //							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
-							}
+//							}
 							
-							if ( prisonBlock == null || 
-									prisonBlock.getBlockName().equalsIgnoreCase( "AIR" ) ) {
+							if ( prisonBlock == null || prisonBlock.isAir() ) {
 								incrementBlockBreakCount();
 							}
 						}
 						else {
 							
-							if (!isFillMode || 
-									isFillMode && targetBlock.isEmpty() ||
-									isFillMode && targetLocation.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
+//							if (!isFillMode || 
+//									isFillMode && targetBlock.isEmpty() ||
+//									isFillMode && targetLocation.equals(altTp) && altTp.getBlockAt().getType() == BlockType.GLASS ) {
 								
 								BlockOld tBlock = randomlySelectBlock( random );
 								
@@ -319,10 +331,17 @@ public abstract class MineReset
 									tBlock.incrementResetBlockCount();
 									
 									targetBlock.setType( tBlock.getType() );
+
+									addMineTargetPrisonBlock( tBlock, x, y, z );
+								}
+								else {
+									BlockOld blockOld = new BlockOld( targetBlock.getType() );
+									
+									addMineTargetPrisonBlock( blockOld, x, y, z );
 								}
 								i++;
 //							targetBlock.getBlockAt().setType(getRandomizedBlocks().get(i++));
-							}
+//							}
 							
 							if ( targetBlock.getType() == BlockType.AIR ) {
 								incrementBlockBreakCount();
@@ -354,8 +373,8 @@ public abstract class MineReset
 //			setStatsTeleport2TimeMS(
 //					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
-			// free up memory:
-			getRandomizedBlocks().clear();
+//			// free up memory:
+//			getRandomizedBlocks().clear();
 			
 			
 			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
@@ -662,8 +681,10 @@ public abstract class MineReset
 		
 		Random random = new Random();
 		
-		// Clear the mineTargetBlocks list:
-		getMineTargetBlocks().clear();
+		// Clear the mineTargetBlocks List and Map:
+		clearMineTargetPrisonBlocks();
+//		getMineTargetBlocks().clear();
+
 		
         boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
@@ -679,7 +700,7 @@ public abstract class MineReset
 			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
 				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
 					
-					MineTargetBlock mtb = null;
+//					MineTargetBlock mtb = null;
 					
 					if ( useNewBlockModel ) {
 						
@@ -688,7 +709,8 @@ public abstract class MineReset
 						// Increment the mine's block count. This block is one of the control blocks:
 						prisonBlock.incrementResetBlockCount();
 						
-						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
+						addMineTargetPrisonBlock( prisonBlock, x, y, z );
+//						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 						
 						if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
 //						mAirBlocks[i++] = true;
@@ -703,7 +725,8 @@ public abstract class MineReset
 						// Increment the mine's block count. This block is one of the control blocks:
 						tBlock.incrementResetBlockCount();
 						
-						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
+						addMineTargetPrisonBlock( tBlock, x, y, z );
+//						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
 
 						if ( tBlock.equals( BlockOld.AIR ) ) {
 //							mAirBlocks[i++] = true;
@@ -711,9 +734,9 @@ public abstract class MineReset
 						}
 					}
 					
-					getMineTargetBlocks().add( mtb );
-					getMineTargetBlocksMap().put( mtb.getBlockKey(), mtb );
-					
+//					getMineTargetBlocks().add( mtb );
+//					getMineTargetBlocksMap().put( mtb.getBlockKey(), mtb );
+//					
 				}
 			}
 		}
@@ -789,7 +812,7 @@ public abstract class MineReset
 
     		resetAsynchonouslyUpdate();
     		
-    		if ( getResetPosition() == getMineTargetBlocks().size() ) {
+    		if ( getResetPosition() == getMineTargetPrisonBlocks().size() ) {
     			// Done resetting the mine... wrap up:
     			
         		// If a player falls back in to the mine before it is fully done being reset, 
@@ -992,30 +1015,32 @@ public abstract class MineReset
 			
 			long start = System.currentTimeMillis();
 			
-			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
+//			boolean isFillMode = PrisonMines.getInstance().getConfig().fillMode;
 			
 			int blocksPlaced = 0;
 			long elapsed = 0;
 			
 			int i = getResetPosition();
-			for ( ; i < getMineTargetBlocks().size(); i++ )
+			for ( ; i < getMineTargetPrisonBlocks().size(); i++ )
 			{
-				MineTargetBlock target = getMineTargetBlocks().get(i);
+				MineTargetPrisonBlock target = getMineTargetPrisonBlocks().get(i);
 				
 				Location targetBlock = new Location(world, 
 						target.getBlockKey().getX(), target.getBlockKey().getY(), 
 						target.getBlockKey().getZ());
 				
-				if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
-				} 
+//				if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
+//				} 
 				if ( useNewBlockModel ) {
-					MineTargetPrisonBlock pbTarget = (MineTargetPrisonBlock) target;
+//					MineTargetPrisonBlock pbTarget = (MineTargetPrisonBlock) target;
 					
-					targetBlock.getBlockAt().setPrisonBlock( pbTarget.getPrisonBlock() );
+					targetBlock.getBlockAt().setPrisonBlock( (PrisonBlock) target.getPrisonBlock() );
+//					targetBlock.getBlockAt().setPrisonBlock( pbTarget.getPrisonBlock() );
 				}
 				else {
 					
-					targetBlock.getBlockAt().setType(target.getBlockType());
+					targetBlock.getBlockAt().setType( ((BlockOld) target.getPrisonBlock()).getType() );
+//					targetBlock.getBlockAt().setType(target.getBlockType());
 				}
 				
 				/**
@@ -1554,33 +1579,41 @@ public abstract class MineReset
 	}
 	
 	
-	@Deprecated
-	public List<BlockType> getRandomizedBlocks()
+//	@Deprecated
+//	public List<BlockType> getRandomizedBlocks()
+//	{
+//		return randomizedBlocks;
+//	}
+//    @Deprecated
+//	public void setRandomizedBlocks( List<BlockType> randomizedBlocks )
+//	{
+//		this.randomizedBlocks = randomizedBlocks;
+//	}
+
+    
+    
+    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z ) {
+    	
+    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, x, y, z );
+    	
+		getMineTargetPrisonBlocks().add( mtpb );
+		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );
+    }
+    
+    private void clearMineTargetPrisonBlocks() {
+    	getMineTargetPrisonBlocks().clear();
+    	getMineTargetPrisonBlocksMap().clear();
+    }
+    
+    
+	public List<MineTargetPrisonBlock> getMineTargetPrisonBlocks()
 	{
-		return randomizedBlocks;
-	}
-    @Deprecated
-	public void setRandomizedBlocks( List<BlockType> randomizedBlocks )
-	{
-		this.randomizedBlocks = randomizedBlocks;
+		return mineTargetPrisonBlocks;
 	}
 
-	public List<MineTargetBlock> getMineTargetBlocks()
+	public TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> getMineTargetPrisonBlocksMap()
 	{
-		return mineTargetBlocks;
-	}
-	public void setMineTargetBlocks( List<MineTargetBlock> mineTargetBlocks )
-	{
-		this.mineTargetBlocks = mineTargetBlocks;
-	}
-
-	public TreeMap<MineTargetBlockKey, MineTargetBlock> getMineTargetBlocksMap()
-	{
-		return mineTargetBlocksMap;
-	}
-	public void setMineTargetBlocksMap( TreeMap<MineTargetBlockKey, MineTargetBlock> mineTargetBlocksMap )
-	{
-		this.mineTargetBlocksMap = mineTargetBlocksMap;
+		return mineTargetPrisonBlocksMap;
 	}
 	
 

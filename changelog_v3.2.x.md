@@ -16,7 +16,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-15
+# v3.2.4-alpha.13 2021-02-16
+
+
+* **Changed the mine resets use of target block collections.**
+Changed the way the data is stored in that collection so it is able to store both the new and old block models
+Every reset now stores their block assignment in this target block collections, of which, paged reset have always used them.  
+This is critical for being able to enabling a constraint fo minimal blocks of a specific type. Plus it will be critical to properly logging what the block type was since if prison get's an AIR on a block break event, prison can use that collection to find out what that block was when it was broken so it can properly record it.
 
 
 * **Auto manager lore: Strip off color codes so the comparisons work if color codes are enabled.**

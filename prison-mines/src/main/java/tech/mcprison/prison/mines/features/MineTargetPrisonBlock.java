@@ -1,25 +1,40 @@
 package tech.mcprison.prison.mines.features;
 
-import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 
-public class MineTargetPrisonBlock 
-		extends MineTargetBlock
+public class MineTargetPrisonBlock
+	implements Comparable<MineTargetPrisonBlock>
 {
-	private PrisonBlock prisonBlock;
+	private MineTargetBlockKey blockKey;
 	
-	public MineTargetPrisonBlock( PrisonBlock prisonBlock, int x, int y, int z ) {
-		super( x, y, z );
+	private PrisonBlockStatusData prisonBlock;
+	
+	protected MineTargetPrisonBlock( int x, int y, int z ) {
+		
+		this.blockKey = new MineTargetBlockKey( x, y, z );
+	}
+	
+	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, int x, int y, int z ) {
+		this( x, y, z );
 		
 		this.prisonBlock = prisonBlock;
 	}
 
-	public PrisonBlock getPrisonBlock()
-	{
+	public PrisonBlockStatusData getPrisonBlock() {
 		return prisonBlock;
 	}
-	public void setPrisonBlock( PrisonBlock prisonBlock )
-	{
+	public void setPrisonBlock( PrisonBlockStatusData prisonBlock ) {
 		this.prisonBlock = prisonBlock;
 	}
 
+	
+	public MineTargetBlockKey getBlockKey() {
+		return blockKey;
+	}
+
+
+	@Override 
+	public int compareTo( MineTargetPrisonBlock block ) {
+		return block.getBlockKey().compareTo( block.getBlockKey() );
+	}
 }
