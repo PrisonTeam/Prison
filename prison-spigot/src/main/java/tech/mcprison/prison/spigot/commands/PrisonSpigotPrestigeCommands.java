@@ -124,15 +124,6 @@ public class PrisonSpigotPrestigeCommands
 
         final Player player = getSpigotPlayer( sender );
 
-        listenersPrisonManager.addMode("prestige");
-        listenersPrisonManager.addChatEventPlayer(player);
-        listenersPrisonManager.id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-            if (listenersPrisonManager.chatEventCheck()) {
-                listenersPrisonManager.chatEventDeactivate();
-                Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.PrestigeRanOutOfTime")));
-                listenersPrisonManager.removeChatEventPlayer(player);
-                listenersPrisonManager.removeMode();
-            }
-        }, 20L * 30);
+        listenersPrisonManager.chatInteractData(player, ListenersPrisonManager.ChatMode.Prestige);
     }
 }

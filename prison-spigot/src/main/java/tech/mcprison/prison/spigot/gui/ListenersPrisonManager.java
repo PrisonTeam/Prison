@@ -63,8 +63,15 @@ public class ListenersPrisonManager implements Listener {
     
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
-    public String mode;
     private Optional<RankLadder> ladder;
+    ChatMode mode;
+
+    public enum ChatMode{
+        RankName,
+        MineName,
+        Prestige,
+        SellAll_Currency
+    }
 
 
     public ListenersPrisonManager(){}
@@ -88,7 +95,7 @@ public class ListenersPrisonManager implements Listener {
     public boolean chatEventCheck(){
         return isChatEventActive;
     }
-    public void addMode(String modex){
+    public void addMode(ChatMode modex){
         mode = modex;
     }
     public void removeMode(){
@@ -314,9 +321,13 @@ public class ListenersPrisonManager implements Listener {
         removeMode();
     }
 
-    private void chatInteractData(Player p, String modeName) {
+    /**
+     * Enable chatEvent to do things with chat, requires ChatMode to recognise the active mode and action to use, and
+     * the Player.
+     * */
+    public void chatInteractData(Player p, ChatMode activeMode) {
         isChatEventActive = true;
-        mode = modeName;
+        mode = activeMode;
         addChatEventPlayer(p);
         id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (isChatEventActive) {
@@ -334,13 +345,13 @@ public class ListenersPrisonManager implements Listener {
         // Check the mode
         if (mode == null) {
         // If the mode's prestige will execute this
-        } else if (mode.equalsIgnoreCase("prestige")){
+        } else if (mode == ChatMode.Prestige){
             prestigeAction(e, p, message);
-        } else if (mode.equalsIgnoreCase("sellall_currency")){
+        } else if (mode == ChatMode.SellAll_Currency){
             sellAllCurrencyChat(e, p, message);
-        } else if (mode.equalsIgnoreCase("rankName")){
+        } else if (mode == ChatMode.RankName){
             rankAction(e, p, message);
-        } else if (mode.equalsIgnoreCase("mineName")){
+        } else if (mode == ChatMode.MineName){
             mineAction(e, p, message);
         }
     }
@@ -1109,7 +1120,7 @@ public class ListenersPrisonManager implements Listener {
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat3")));
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat4")));
 
-                chatInteractData(p, "sellall_currency");
+                chatInteractData(p, ChatMode.SellAll_Currency);
                 p.closeInventory();
 
                 break;
@@ -1671,7 +1682,7 @@ public class ListenersPrisonManager implements Listener {
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
             // Start the async task
             tempChatVariable = rankName;
-            chatInteractData(p, "rankName");
+            chatInteractData(p, ChatMode.RankName);
             p.closeInventory();
         }
 
@@ -1947,7 +1958,7 @@ public class ListenersPrisonManager implements Listener {
 
                 // Start the async task
                 tempChatVariable = mineName;
-                chatInteractData(p, "mineName");
+                chatInteractData(p, ChatMode.MineName);
                 p.closeInventory();
                 break;
             }
