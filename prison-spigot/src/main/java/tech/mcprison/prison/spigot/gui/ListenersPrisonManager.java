@@ -54,8 +54,7 @@ public class ListenersPrisonManager implements Listener {
     public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
     public int id;
-    public String rankNameOfChat = null;
-    public String mineNameOfChat = null;
+    public String tempChatVariable = null;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
     
@@ -165,8 +164,8 @@ public class ListenersPrisonManager implements Listener {
 
                 // Check if a permission's required.
                 boolean permissionSellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
-                String permission = sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Permission");
                 if (permissionSellAllTriggerEnabled) {
+                    String permission = sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Permission");
                     if (permission != null && !p.hasPermission(permission)) {
                         return;
                     }
@@ -315,22 +314,34 @@ public class ListenersPrisonManager implements Listener {
         removeMode();
     }
 
+    private void chatInteractData(Player p, String modeName) {
+        isChatEventActive = true;
+        mode = modeName;
+        addChatEventPlayer(p);
+        id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
+            if (isChatEventActive) {
+                removeChatEventPlayer(p);
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
+                isChatEventActive = false;
+            }
+            mode = null;
+            tempChatVariable = null;
+        }, 20L * 30);
+    }
+
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
 
         // Check the mode
         if (mode == null) {
-
-            // Check which one to use
-            if (rankNameOfChat != null) {
-                rankAction(e, p, message);
-            } else if (mineNameOfChat != null) {
-                mineAction(e, p, message);
-            }
         // If the mode's prestige will execute this
         } else if (mode.equalsIgnoreCase("prestige")){
             prestigeAction(e, p, message);
         } else if (mode.equalsIgnoreCase("sellall_currency")){
             sellAllCurrencyChat(e, p, message);
+        } else if (mode.equalsIgnoreCase("rankName")){
+            rankAction(e, p, message);
+        } else if (mode.equalsIgnoreCase("mineName")){
+            mineAction(e, p, message);
         }
     }
 
@@ -373,12 +384,12 @@ public class ListenersPrisonManager implements Listener {
         if (message.equalsIgnoreCase("close")) {
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
         } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + mineNameOfChat + " " + message));
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + tempChatVariable + " " + message));
         }
         // Cancel the event and deactivate the chat event, set boolean to false
         e.setCancelled(true);
         isChatEventActive = false;
-        mineNameOfChat = null;
+        tempChatVariable = null;
     }
 
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -386,12 +397,12 @@ public class ListenersPrisonManager implements Listener {
         if (message.equalsIgnoreCase("close")) {
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
         } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + rankNameOfChat + " " + message));
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + tempChatVariable + " " + message));
         }
         // Cancel the event and set the boolean to false, so it can be deactivated.
         e.setCancelled(true);
         isChatEventActive = false;
-        rankNameOfChat = null;
+        tempChatVariable = null;
     }
 
     /**
@@ -1097,16 +1108,8 @@ public class ListenersPrisonManager implements Listener {
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat2")));
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat3")));
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyChat4")));
-                // Start the async task
-                isChatEventActive = true;
-                mode = "sellall_currency";
-                addChatEventPlayer(p);
-                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                    if (isChatEventActive) {
-                        removeChatEventPlayer(p);
-                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
-                        isChatEventActive = false;
-                    }}, 20L * 30);
+
+                chatInteractData(p, "sellall_currency");
                 p.closeInventory();
 
                 break;
@@ -1667,16 +1670,8 @@ public class ListenersPrisonManager implements Listener {
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRename")));
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
             // Start the async task
-            isChatEventActive = true;
-            rankNameOfChat = rankName;
-            addChatEventPlayer(p);
-            id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                if (isChatEventActive) {
-                    removeChatEventPlayer(p);
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
-                    isChatEventActive = false;
-                }
-            }, 20L * 30);
+            tempChatVariable = rankName;
+            chatInteractData(p, "rankName");
             p.closeInventory();
         }
 
@@ -1949,17 +1944,10 @@ public class ListenersPrisonManager implements Listener {
                 // Send messages to the player
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRename")));
                 Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClose")));
+
                 // Start the async task
-                isChatEventActive = true;
-                mineNameOfChat = mineName;
-                addChatEventPlayer(p);
-                id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
-                    if (isChatEventActive) {
-                        removeChatEventPlayer(p);
-                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.OutOfTimeNoChanges")));
-                        isChatEventActive = false;
-                    }
-                }, 20L * 30);
+                tempChatVariable = mineName;
+                chatInteractData(p, "mineName");
                 p.closeInventory();
                 break;
             }
