@@ -29,7 +29,6 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.Text;
 
 public abstract class MineReset
 	extends MineData
@@ -494,116 +493,39 @@ public abstract class MineReset
 		}
     }
 	
+
+    protected abstract long teleportAllPlayersOut(int targetY);
+    
+    
+    public abstract void teleportPlayerOut(Player player);
+    
+
+    public abstract void teleportPlayerOut(Player player, String targetLocation);
+
+
+	public abstract Location alternativeTpLocation();
+	
+	
+	
     /**
-     * <p>This function teleports players out of existing mines if they are within 
-     * their boundaries within the world where the Mine exists.</p>
+     * This should be used to submit async tasks.
      * 
-     * <p>Using only players within the existing world of the current mine, each
-     * player is checked to see if they are within the mine, and if they are they
-     * are teleported either to the mine's spawn location, or straight up from the
-     * center of the mine, to the top of the mine (assumes air space will exist there).</p>
-     * 
-     * <p>This function eliminates possible bug of players being teleported from other
-     * worlds, and also eliminates the possibility that the destination could
-     * ever be null.</p>
-     * 
-     * @param world - world 
-     * @param targetY
+     * @param callbackAsync
      */
-    private long teleportAllPlayersOut(int targetY) {
-    	long start = System.currentTimeMillis();
-    	
-    	if ( isVirtual() ) {
-    		return 0;
-    	}
-    	
-    	World world = getBounds().getCenter().getWorld();
-
-    	if ( isEnabled() && world != null ) {
-    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    			Prison.get().getPlatform().getOnlinePlayers());
-    		for (Player player : players) {
-    			if ( getBounds().within(player.getLocation()) ) {
-    				
-    				teleportPlayerOut(player);
-    			}
-    		}
-    	}
-    	
-    	return System.currentTimeMillis() - start;
-    }
+    public abstract void submitAsyncTask( PrisonRunnable callbackAsync );
     
+    public abstract void submitSyncTask( PrisonRunnable callbackSync );
+
+
+	
+	
+    protected abstract void broadcastResetMessageToAllPlayersWithRadius();
     
-    public void teleportPlayerOut(Player player) {
-    	teleportPlayerOut( player, "spawn" );
-    }
+    protected abstract void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob);
     
-    /**
-     * <p>This function will teleport the player out of a given mine, or to the given
-     * mine. It will not confirm if the player is within the mine before trying to 
-     * teleport.
-     * </p>
-     * 
-     * <p>This function will teleport the player to the defined spawn location, or it
-     * will teleport the player to the center of the mine, but on top of the
-     * mine's surface.</p>
-     * 
-     * <p>If the player target location has an empty block under its feet, it will 
-     * then spawn in a single glass block so the player will not take fall damage.
-     * If that block is within the mine, it will be reset at a later time when the
-     * mine resets and resets that block.  If it is part of spawn for the mine, then
-     * the glass block will become part of the landscape.
-     * <p>
-     * 
-     * <p>Do not show any TP notifications.  It will be obvious that the mine
-     * just reset and that they were teleported out of the mine.  Since there is no
-     * control over this message, like enabling or disabling, then I'm just 
-     * removing it since it just clutters chat and provides no real additional 
-     * value.
-     * </p>
-     * 
-     * @param player
-     */
-    public void teleportPlayerOut(Player player, String targetLocation) {
-    	
-    	if ( isVirtual() ) {
-    		// ignore:
-    	}
-    	else
-		if ( !isEnabled() ) {
-			player.sendMessage( 
-					String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
-							"Ensure world exists. mine= &3%s ", 
-							getName()  ));
-		}
-		else {
-			Location altTp = alternativeTpLocation();
-			Location target = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
-										getSpawn() : altTp;
-			
-			// Player needs to stand on something.  If block below feet is air, change it to a 
-			// glass block:
-			Location targetGround = new Location( target );
-			targetGround.setY( target.getBlockY() - 1 );
-			if ( targetGround.getBlockAt().isEmpty() ) {
-				targetGround.getBlockAt().setType( BlockType.GLASS );
-			}
-			
-			player.teleport( target );
-			
-//    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-//    			.withReplacements(this.getName()).sendTo(player);
-		}
-
-    }
-
-
-	private Location alternativeTpLocation()
-	{
-		Location altTp = new Location( getBounds().getCenter() );
-    	altTp.setY( getBounds().getyBlockMax() + 1 );
-		return altTp;
-	}
+  
+    
+	
 	
 	public int getPlayerCount() {
 		int count = 0;
@@ -1086,50 +1008,7 @@ public abstract class MineReset
 
     }
     
-    /**
-     * This should be used to submit async tasks.
-     * 
-     * @param callbackAsync
-     */
-    public void submitAsyncTask( PrisonRunnable callbackAsync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
-    			getResetPagePageSubmitDelayTicks() );
-    }
-    
-    public void submitSyncTask( PrisonRunnable callbackSync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
-    			getResetPagePageSubmitDelayTicks() );
-    }
 
-//    /**
-//     * <p>This function will identify how many air blocks are within a mine.
-//     * </p>
-//     */
-//    private void refreshAirCount() {
-//    	refreshAirCount(null);
-//    }
-    
-//    private void refreshAirCount(PrisonRunnable callback) {
-//    	
-//    	long elapsedTarget = getAirCountTimestamp() + MINE_RESET__AIR_COUNT_BASE_DELAY + 
-//    			(getAirCountElapsedTimeMs() * MINE_RESET__AIR_COUNT_BASE_DELAY / 100);
-//    	
-//    	if ( getAirCountTimestamp() == 0L ||
-//    			(elapsedTarget <= System.currentTimeMillis() )) {
-//    		
-//    		MineCountAirBlocksAsyncTask cabAsyncTask = new MineCountAirBlocksAsyncTask(this, callback);
-//    		
-//    		submitSyncTask( cabAsyncTask );
-//    		
-//    		// Cannot run this async
-//    		//submitAsyncTask( cabAsyncTask );
-//    		
-////    		Prison.get().getPlatform().getScheduler().runTaskLaterAsync( cabAsyncTask, 0L );
-//    		
-//    		// Do not run this here, it must be ran as an async task... 
-////    		refreshAirCountAsyncTask();
-//    	}
-//    }
 
     /**
      * This task should be ran upon loading of the mines upon server start.  
@@ -1401,91 +1280,7 @@ public abstract class MineReset
 	}
     
     
-    private void broadcastResetMessageToAllPlayersWithRadius() {
-//    	long start = System.currentTimeMillis();
-    	
-    	if ( isVirtual() ) {
-    		// ignore:
-    	}
-    	else 
-    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
-    		World world = getBounds().getCenter().getWorld();
-    		
-    		if ( world != null ) {
-    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    				Prison.get().getPlatform().getOnlinePlayers());
-    			for (Player player : players) {
-    				
-    				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
-    						getNotificationMode() == MineNotificationMode.radius && 
-    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
-    					
-    					if ( !isUseNotificationPermission() ||
-    						  isUseNotificationPermission() && 
-    						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
-    						
-    						
-    						PrisonMines.getInstance().getMinesMessages()
-    									.getLocalizable("reset_message").withReplacements( getName() )
-    									.sendTo(player);
-    						
-//    						player.sendMessage( "The mine " + getName() + " has just reset." );
-    					}
-    				}
-    			}
-    			
-    		}
-    		
-    	}
-    	
-//        long stop = System.currentTimeMillis();
-        
-//        setStatsMessageBroadcastTimeMS( stop - start );
-    }
-    
-    protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
-    	
-    	if ( isVirtual() ) {
-    		// ignore:
-    	}
-    	else
-    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
-    		World world = getBounds().getCenter().getWorld();
-    		
-    		if ( world != null ) {
-    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    				Prison.get().getPlatform().getOnlinePlayers());
-    			for (Player player : players) {
-    				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
-    						getNotificationMode() == MineNotificationMode.radius && 
-    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
-    					
-    					if ( !isUseNotificationPermission() ||
-      						  isUseNotificationPermission() && 
-      						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
-    						
-    						PrisonMines.getInstance().getMinesMessages()
-    										.getLocalizable("reset_warning")
-    										.withReplacements( getName(), 
-    												Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
-    										.sendTo(player);
-    						
-//    						player.sendMessage( "The mine " + getName() + " will reset in " + 
-//    							Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
-    					}
-    					
-    					
-    				}
-    			}
-    			
-    		}
-    	}
-    }
-
+  
     
     /**
      * This clears the mine, then provides particle tracers around the outer corners.

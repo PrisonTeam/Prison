@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-16
+# v3.2.4-alpha.13 2021-02-17
+
+
+* **Reworked some of the internals on MineResets to prepare for the next phase of work.**
+Created a MinTasks class to house some of the tasks that are more task oriented.
 
 
 * **Added sellall triggers**

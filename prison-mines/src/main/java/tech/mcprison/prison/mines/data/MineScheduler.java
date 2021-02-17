@@ -20,7 +20,7 @@ import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public abstract class MineScheduler
-		extends MineReset
+		extends MineTasks
 		implements PrisonRunnable
 {
 	
