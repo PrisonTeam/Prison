@@ -1219,7 +1219,7 @@ public class MinesCommands
         
 
     	if ( "min".equalsIgnoreCase( constraint ) ) {
-    		if ( value > block.getContraintMax() ) {
+    		if ( block.getContraintMax() != 0 && value > block.getContraintMax() ) {
             	sender.sendMessage( 
             			String.format( "&7The specified value for the min constraint cannot " +
             					"be more than the max constraint value.  value = [%s]  max= %s  " +
