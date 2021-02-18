@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.13 2021-02-18
 
 
+* **SellAll Sell sound play-feedback** 
+It's enabled by default now a sound play-feedback when using the /sellall sell command, it's customizable from
+  the sellallconfig.yml, you can change the sound on success and fail, disable or enable it.
+
+
 * **Hooked up the Min block constraint to the mine resets.**
 Reworked the mine resets for the synchronous reset so it now uses the target block list just as the paging does. This allows reduction of code and simplification, but more importantly, allows the application of the min constraint before placing any of the blocks.
 

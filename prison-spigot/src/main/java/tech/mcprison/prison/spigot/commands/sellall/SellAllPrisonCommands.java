@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -389,6 +390,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         if (signUsed) signUsed = false;
 
+        boolean sellSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
         if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
 
             if (sellAllCommandDelay(p)) return;
@@ -406,15 +408,44 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             rankPlayer.addBalance(currency, moneyToGive);
 
             boolean sellNotifyEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
-            if (sellNotifyEnabled) {
-                if (moneyToGive < 0.001) {
+            if (moneyToGive < 0.001) {
+                if (sellSoundEnabled){
+                    Sound sound;
+                    try {
+                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
+                    } catch (IllegalArgumentException ex){
+                        sound = Sound.BLOCK_ANVIL_PLACE;
+                    }
+                    p.playSound(p.getLocation(), sound, 3, 1);
+                }
+                if (sellNotifyEnabled) {
                     Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
-                } else {
+                }
+            } else {
+                if (sellSoundEnabled){
+                    Sound sound;
+                    try {
+                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
+                    } catch (IllegalArgumentException ex){
+                        sound = Sound.ENTITY_PLAYER_LEVELUP;
+                    }
+                    p.playSound(p.getLocation(), sound, 3, 1);
+                }
+                if (sellNotifyEnabled) {
                     DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
                     Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
                 }
             }
         } else {
+            if (sellSoundEnabled){
+                Sound sound;
+                try {
+                    sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
+                } catch (IllegalArgumentException ex){
+                    sound = Sound.BLOCK_ANVIL_PLACE;
+                }
+                p.playSound(p.getLocation(), sound, 3, 1);
+            }
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
     }
