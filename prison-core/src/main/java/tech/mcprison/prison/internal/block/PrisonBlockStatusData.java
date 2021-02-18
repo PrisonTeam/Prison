@@ -45,6 +45,10 @@ public abstract class PrisonBlockStatusData {
 		blockCountOnReset++;
 	}
 	
+	public void decrementResetBlockCount() {
+		blockCountOnReset--;
+	}
+	
 	public void incrementMiningBlockCount() {
 		blockCountTotal++;
 		blockCountSession++;

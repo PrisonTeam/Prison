@@ -16,7 +16,23 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-17
+# v3.2.4-alpha.13 2021-02-18
+
+
+* **Hooked up the Min block constraint to the mine resets.**
+Reworked the mine resets for the synchronous reset so it now uses the target block list just as the paging does. This allows reduction of code and simplification, but more importantly, allows the application of the min constraint before placing any of the blocks.
+
+
+* **Fixed the /mines block constraint add command to allow a min to be added when max is zero (disabled).**
+
+
+* **Added a reset for the resetBlock count**
+Added toString functions to PrisonBlockStatusData, MineTargetBlockKey, and MineTargetPrisonBlock to help with debugging.
+
+
+* **Made PrisonBlockStatusData an abstract class and added isAir() abstract function.**
+Enabled isAir in both PrisonBlock and BlockOld.
+
 
 
 * **Reworked some of the internals on MineResets to prepare for the next phase of work.**
