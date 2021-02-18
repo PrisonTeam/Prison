@@ -12,6 +12,16 @@ public class MineTargetBlockKey
 		this.y = y;
 		this.z = z;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "(" ).append( x ).append( ", " ).append( y ).append( ", " )
+				.append( z ).append( ")" );
+		
+		return sb.toString();
+	}
 
 	public int getX() {
 		return x;

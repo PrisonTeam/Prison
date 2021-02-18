@@ -565,8 +565,28 @@ public abstract class MineData
     		blockStats.setBlockCountUnsaved( 0 );
     		
     		// Reset the block count for the reset event since the mine will be regenerated:
-    		blockStats.incrementResetBlockCount();
+    		blockStats.setResetBlockCount( 0 );
     	}
+    }
+
+    public void resetResetBlockCounts() {
+
+    	for ( PrisonBlockStatusData block : getBlocks() ) {
+			
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+		}
+    	
+    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+    	}
+    	
+//    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+//    		// Reset the block count for the reset event since the mine will be regenerated:
+//    		blockStats.setResetBlockCount( 0 );
+//    	}
     }
     
     

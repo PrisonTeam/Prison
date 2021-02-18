@@ -20,6 +20,12 @@ public class MineTargetPrisonBlock
 		this.prisonBlock = prisonBlock;
 	}
 
+	@Override
+	public String toString() {
+		return "MineTargetPrisonBlock: key= " + getBlockKey().toString() + 
+											" block= " + getPrisonBlock().toString();
+	}
+	
 	public PrisonBlockStatusData getPrisonBlock() {
 		return prisonBlock;
 	}

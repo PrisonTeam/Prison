@@ -56,6 +56,17 @@ public abstract class PrisonBlockStatusData {
 					getContraintMin() + "-" + getContraintMax();
 	}
 	
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getBlockName() ).append( "  chance= " ).append( getChance() )
+					.append( "%" );
+		
+		return sb.toString();
+	}
+	
 	public abstract boolean isAir();
 	
 	
