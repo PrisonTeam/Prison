@@ -91,7 +91,7 @@ public abstract class MineTasks
     		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
     			Prison.get().getPlatform().getOnlinePlayers());
     		for (Player player : players) {
-    			if ( getBounds().within(player.getLocation()) ) {
+    			if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
     				
     				teleportPlayerOut(player);
     			}
@@ -198,7 +198,7 @@ public abstract class MineTasks
     				
     				// Check for either mode: Within the mine, or by radius from mines center:
     				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
+    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					
@@ -241,7 +241,7 @@ public abstract class MineTasks
     			for (Player player : players) {
     				// Check for either mode: Within the mine, or by radius from mines center:
     				if ( getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopOfMine(player.getLocation() ) ||
+    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					

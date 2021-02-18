@@ -591,11 +591,18 @@ public abstract class MineData
     
     
 
-    public boolean isInMine(Location location) {
+    public boolean isInMineExact(Location location) {
     	if ( isVirtual() ) {
     		return false;
     	}
-        return getBounds().withinIncludeTopOfMine(location);
+        return getBounds().within(location);
+    }
+    
+    public boolean isInMineIncludeTopBottomOfMine(Location location) {
+    	if ( isVirtual() ) {
+    		return false;
+    	}
+    	return getBounds().withinIncludeTopBottomOfMine( location );
     }
     
     public boolean isInMine(BlockType blockType) {

@@ -199,10 +199,20 @@ public class PrisonMines extends Module {
      * @param block
      * @return
      */
-	public Mine findMineLocation( Location locationToCheck ) {
+	public Mine findMineLocationExact( Location locationToCheck ) {
 		Mine mine = null;
 		for ( Mine m : getMines() ) {
-			if ( m.isInMine( locationToCheck ) ) {
+			if ( m.isInMineExact( locationToCheck ) ) {
+				mine = m;
+				break;
+			}
+		}
+		return mine;
+	}
+	public Mine findMineLocationIncludeTopBottomOfMine( Location locationToCheck ) {
+		Mine mine = null;
+		for ( Mine m : getMines() ) {
+			if ( m.isInMineIncludeTopBottomOfMine( locationToCheck ) ) {
 				mine = m;
 				break;
 			}
@@ -222,13 +232,13 @@ public class PrisonMines extends Module {
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
-		if ( mine != null && mine.isInMine( player.getLocation() )) {
+		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
 			results = mine;
 		}
 		else {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
-			results = findMineLocation( player.getLocation() );
+			results = findMineLocationIncludeTopBottomOfMine( player.getLocation() );
 			
 			// Store the mine in the player cache if not null:
 			if ( results != null ) {

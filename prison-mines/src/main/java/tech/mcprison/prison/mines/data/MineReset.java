@@ -558,7 +558,7 @@ public abstract class MineReset
 			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
 				Prison.get().getPlatform().getOnlinePlayers());
 			for (Player player : players) {
-				if ( getBounds().within(player.getLocation()) ) {
+				if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
 					count++;
 				}
 			}

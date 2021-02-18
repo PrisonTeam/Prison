@@ -71,7 +71,8 @@ public class BoundsTest {
         // Feet of player is one layer below of the mine and should be marked as 
         // within the mine since the player's head is within the mine:
         toCheck.setY( 3.0 );
-        assertTrue("Y should be within bounds", bounds.within(toCheck));
+        assertTrue("Y should be within bounds", bounds.withinIncludeTopBottomOfMine(toCheck));
+        assertFalse("Y should NOT be within bounds", bounds.within(toCheck));
               
         // Feet of player is one layer below of the mine and should be marked as 
         // within the mine since the player's head is within the mine:

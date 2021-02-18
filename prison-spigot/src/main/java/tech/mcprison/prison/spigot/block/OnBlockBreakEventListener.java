@@ -198,7 +198,7 @@ public class OnBlockBreakEventListener
     			// Get the cached mine, if it exists:
     			Mine mine = getPlayerCache().get( playerUUIDLSB );
     			
-    			if ( mine == null || !mine.isInMine( block.getLocation() ) ) {
+    			if ( mine == null || !mine.isInMineExact( block.getLocation() ) ) {
     				// Look for the correct mine to use. 
     				// Set mine to null so if cannot find the right one it will return a null:
     				mine = findMineLocation( block );
@@ -293,7 +293,7 @@ public class OnBlockBreakEventListener
     					// Need to wrap in a Prison block so it can be used with the mines:
     					SpigotBlock block = new SpigotBlock(blk);
     					
-    					if ( !mine.isInMine( block.getLocation() ) ) {
+    					if ( !mine.isInMineExact( block.getLocation() ) ) {
     						
     						blockCount++;
     					}
@@ -380,7 +380,7 @@ public class OnBlockBreakEventListener
 						// Need to wrap in a Prison block so it can be used with the mines:
 						SpigotBlock block = new SpigotBlock(blk);
 						
-						if ( !mine.isInMine( block.getLocation() ) ) {
+						if ( !mine.isInMineExact( block.getLocation() ) ) {
 							
 							blockCount++;
 						}
@@ -552,7 +552,7 @@ public class OnBlockBreakEventListener
 	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager().findMineLocation( block.getLocation() );
+		return getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	
 //    /**

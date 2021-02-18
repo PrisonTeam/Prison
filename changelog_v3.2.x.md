@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.13 2021-02-18
 
 
+* **Fixed an issue with block break events and within mine detection.**
+Basically sometime a check to see if something is in a mine needs to be exact, like block breakage, or it needs to include a layer above and below, such as for players.
+So made a distinction between the two so block breakage is now exactly within the mine.
+
+
 * **Starting to add new block constraint for ExcludeTopLayers ExcludeBottomLayers.**
 It's not yet functional.
 
