@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.13 2021-02-18
 
 
+* **Starting to add new block constraint for ExcludeTopLayers ExcludeBottomLayers.**
+It's not yet functional.
+
+
 * **SellAll Sell sound play-feedback** 
 It's enabled by default now a sound play-feedback when using the /sellall sell command, it's customizable from
   the sellallconfig.yml, you can change the sound on success and fail, disable or enable it.

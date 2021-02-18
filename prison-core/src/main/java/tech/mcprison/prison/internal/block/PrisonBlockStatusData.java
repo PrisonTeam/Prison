@@ -1,5 +1,7 @@
 package tech.mcprison.prison.internal.block;
 
+import tech.mcprison.prison.Prison;
+
 public abstract class PrisonBlockStatusData {
 
 	// blockName is more of an internal reference:
@@ -7,9 +9,11 @@ public abstract class PrisonBlockStatusData {
 	
 	private double chance;
 	
-	private int contraintMin;
-	private int contraintMax;
+	private int constraintMin;
+	private int constraintMax;
 
+	private int constraintExcludeTopLayers;
+	private int constraintExcludeBottomLayers;
 	
 	private int blockCountOnReset;
 	
@@ -26,8 +30,8 @@ public abstract class PrisonBlockStatusData {
 		
 		this.chance = chance;
 		
-		this.contraintMin = 0;
-		this.contraintMax = 0;
+		this.constraintMin = 0;
+		this.constraintMax = 0;
 
 		
 		this.blockCountOnReset = 0;
@@ -57,9 +61,41 @@ public abstract class PrisonBlockStatusData {
 	
 	public String toSaveFileFormat() {
 		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal() + "-" + 
-					getContraintMin() + "-" + getContraintMax();
+					getConstraintMin() + "-" + getConstraintMax();
 	}
 	
+	
+	public static PrisonBlock parseFromSaveFileFormat( String blockString ) {
+		
+		PrisonBlock results = null;
+		
+		String[] split = blockString.split("-");
+		String blockTypeName = split[0];
+		if ( blockTypeName != null ) {
+			// The new way to get the PrisonBlocks:  
+			//   The blocks return are cloned so they have their own instance:
+			results = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+			
+			if ( results != null ) {
+				
+				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+				int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
+				int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
+				
+				results.setChance( chance );
+				results.setBlockCountTotal( blockCount );
+				results.setConstraintMin( constraintMin );
+				results.setConstraintMax( constraintMax );
+				results.setConstraintExcludeTopLayers( constraintExcludeTopLayers );
+				results.setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
+			}
+		}
+		
+		return results;
+	}
 	
 	@Override
 	public String toString() {
@@ -116,18 +152,32 @@ public abstract class PrisonBlockStatusData {
 		this.blockCountUnsaved = blockCountUnsaved;
 	}
 
-	public int getContraintMin() {
-		return contraintMin;
+	public int getConstraintMin() {
+		return constraintMin;
 	}
-	public void setContraintMin( int contraintMin ) {
-		this.contraintMin = contraintMin;
+	public void setConstraintMin( int constraintMin ) {
+		this.constraintMin = constraintMin;
 	}
 
-	public int getContraintMax() {
-		return contraintMax;
+	public int getConstraintMax() {
+		return constraintMax;
 	}
-	public void setContraintMax( int contraintMax ) {
-		this.contraintMax = contraintMax;
+	public void setConstraintMax( int constraintMax ) {
+		this.constraintMax = constraintMax;
+	}
+
+	public int getConstraintExcludeTopLayers() {
+		return constraintExcludeTopLayers;
+	}
+	public void setConstraintExcludeTopLayers( int constraintExcludeTopLayers ) {
+		this.constraintExcludeTopLayers = constraintExcludeTopLayers;
+	}
+
+	public int getConstraintExcludeBottomLayers() {
+		return constraintExcludeBottomLayers;
+	}
+	public void setConstraintExcludeBottomLayers( int constraintExcludeBottomLayers ) {
+		this.constraintExcludeBottomLayers = constraintExcludeBottomLayers;
 	}
 
 }

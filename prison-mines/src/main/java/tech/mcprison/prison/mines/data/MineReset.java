@@ -1294,7 +1294,7 @@ public abstract class MineReset
 		
 		for (PrisonBlock block : getPrisonBlocks()) {
 		    if (chance <= block.getChance() && 
-		    		(block.getContraintMax() == 0 || block.getResetBlockCount() < block.getContraintMax()) ) {
+		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax()) ) {
 		    	prisonBlock = block;
 		        break;
 		    } else {
@@ -1311,7 +1311,7 @@ public abstract class MineReset
 		
 		for (BlockOld block : getBlocks()) {
 			if (chance <= block.getChance() && 
-		    		(block.getContraintMax() == 0 || block.getResetBlockCount() < block.getContraintMax())) {
+		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax())) {
 				results = block;
 				break;
 			} else {
@@ -1358,10 +1358,10 @@ public abstract class MineReset
      */
     private void constraintsApplyMin( PrisonBlockStatusData block, boolean useNewBlockModel )
 	{
-    	if ( block.getContraintMin() > 0 ) {
+    	if ( block.getConstraintMin() > 0 ) {
     		
-    		int maxAttempts = (block.getContraintMin() - block.getResetBlockCount()) * 3;
-    		for ( int i = 0; i < maxAttempts && block.getResetBlockCount() < block.getContraintMin(); i++ ) {
+    		int maxAttempts = (block.getConstraintMin() - block.getResetBlockCount()) * 3;
+    		for ( int i = 0; i < maxAttempts && block.getResetBlockCount() < block.getConstraintMin(); i++ ) {
     			
     			int maxSize = getMineTargetPrisonBlocks().size();
     			int rndPos = (int) Math.round( Math.random() * maxSize );
@@ -1369,8 +1369,8 @@ public abstract class MineReset
     			MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( rndPos );
     			
     			if ( targetBlock != null && 
-    					targetBlock.getPrisonBlock().getContraintMin() == 0 &&
-    					targetBlock.getPrisonBlock().getContraintMax() == 0 &&
+    					targetBlock.getPrisonBlock().getConstraintMin() == 0 &&
+    					targetBlock.getPrisonBlock().getConstraintMax() == 0 &&
     					!targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( 
     							block.getBlockName() ) ) {
     				

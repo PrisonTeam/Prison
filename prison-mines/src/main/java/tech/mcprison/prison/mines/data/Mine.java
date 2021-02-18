@@ -27,6 +27,7 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
@@ -330,8 +331,8 @@ public class Mine
 						}
 						
 						BlockOld block = new BlockOld(blockType, chance, blockCount);
-						block.setContraintMin( constraintMin );
-						block.setContraintMax( constraintMax );
+						block.setConstraintMin( constraintMin );
+						block.setConstraintMax( constraintMax );
 
 						getBlocks().add(block);
 					}
@@ -365,39 +366,64 @@ public class Mine
 				
 				if ( docBlock != null ) {
 					
-					String[] split = docBlock.split("-");
-					String blockTypeName = split[0];
-					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
-					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
-					int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
-					int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
-
-					if ( blockTypeName != null ) {
-						// The new way to get the PrisonBlocks:  
-						//   The blocks return are cloned so they have their own instance:
-						PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
+					
+					
+					if ( prisonBlock != null && !validateBlockNames.contains( prisonBlock.getBlockName() )) {
 						
-						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
-							prisonBlock.setChance( chance );
-							prisonBlock.setBlockCountTotal( blockCount );
-							prisonBlock.setContraintMin( constraintMin );
-							prisonBlock.setContraintMax( constraintMax );
-
-							
-							if ( prisonBlock.isLegacyBlock() ) {
-								dirty = true;
-							}
-							addPrisonBlock( prisonBlock );
-							
-							validateBlockNames.add( blockTypeName );
-						}
-						else if (validateBlockNames.contains( blockTypeName ) ) {
-							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+						if ( prisonBlock.isLegacyBlock() ) {
 							dirty = true;
-							inconsistancy = true;
 						}
+						addPrisonBlock( prisonBlock );
 						
+						validateBlockNames.add( prisonBlock.getBlockName() );
 					}
+					else if (validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+						dirty = true;
+						inconsistancy = true;
+					}
+					
+					
+//					String[] split = docBlock.split("-");
+//					String blockTypeName = split[0];
+//					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+//					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+//					int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+//					int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+//					int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
+//					int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
+//
+//					if ( blockTypeName != null ) {
+//						// The new way to get the PrisonBlocks:  
+//						//   The blocks return are cloned so they have their own instance:
+//						PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+//						
+//						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
+//							prisonBlock.setChance( chance );
+//							prisonBlock.setBlockCountTotal( blockCount );
+//							prisonBlock.setConstraintMin( constraintMin );
+//							prisonBlock.setConstraintMax( constraintMax );
+//							prisonBlock.setConstraintExcludeTopLayers( constraintExcludeTopLayers );
+//							prisonBlock.setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
+//
+//							
+//							if ( prisonBlock.isLegacyBlock() ) {
+//								dirty = true;
+//							}
+//							addPrisonBlock( prisonBlock );
+//							
+//							validateBlockNames.add( blockTypeName );
+//						}
+//						else if (validateBlockNames.contains( blockTypeName ) ) {
+//							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+//							dirty = true;
+//							inconsistancy = true;
+//						}
+//						
+//					}
+					
+					
 				}
 			}
 		}
