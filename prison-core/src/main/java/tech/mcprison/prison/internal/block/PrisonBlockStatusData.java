@@ -1,6 +1,6 @@
 package tech.mcprison.prison.internal.block;
 
-public class PrisonBlockStatusData {
+public abstract class PrisonBlockStatusData {
 
 	// blockName is more of an internal reference:
 	private String blockName;
@@ -55,6 +55,9 @@ public class PrisonBlockStatusData {
 		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal() + "-" + 
 					getContraintMin() + "-" + getContraintMax();
 	}
+	
+	public abstract boolean isAir();
+	
 	
 	public String getBlockName(){
 		return blockName;

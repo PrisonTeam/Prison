@@ -108,6 +108,11 @@ public class BlockOld
 	{
 		this.type = type;
 	}
+	
+	@Override
+	public boolean isAir() {
+		return compareTo( AIR ) == 0;
+	}
 
 //	public double getChance()
 //	{

@@ -229,6 +229,7 @@ public class PrisonBlock
 		return results;
 	}
 	
+	@Override
 	public boolean isAir() {
 		return compareTo( AIR ) == 0;
 	}
