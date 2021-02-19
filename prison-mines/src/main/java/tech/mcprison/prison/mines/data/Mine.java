@@ -283,10 +283,10 @@ public class Mine
 				
 				String[] split = docBlock.split("-");
 				String blockTypeName = split[0];
-				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
-				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
-				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
-				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+//				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+//				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+//				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+//				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
 				
 				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
 					// Use the BlockType.name() load the block type:
@@ -330,9 +330,13 @@ public class Mine
 							dirty = true;
 						}
 						
-						BlockOld block = new BlockOld(blockType, chance, blockCount);
-						block.setConstraintMin( constraintMin );
-						block.setConstraintMax( constraintMax );
+						BlockOld block = new BlockOld(blockType);
+
+						block.parseFromSaveFileFormatStats( docBlock );
+						
+//						BlockOld block = new BlockOld(blockType, chance, blockCount);
+//						block.setConstraintMin( constraintMin );
+//						block.setConstraintMax( constraintMax );
 
 						getBlocks().add(block);
 					}

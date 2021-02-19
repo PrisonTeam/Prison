@@ -567,21 +567,7 @@ public abstract class MineReset
 		return count;
 	}
     
-//    /**
-//     * <p>This is a temporary fix until the Bounds.within() checks for the
-//     * same world.  For now, it is assumed that Bounds.min and Bounds.max are 
-//     * the same world, but that may not always be the case.</p>
-//     * 
-//     * @param w1 First world to compare to
-//     * @param w2 Second world to compare to
-//     * @return true if they are the same world
-//     */
-//    private boolean isSameWorld(World w1, World w2) {
-//    	// TODO Need to fix Bounds.within() to test for same worlds:
-//    	return w1 == null && w2 == null ||
-//    			w1 != null && w2 != null &&
-//    			w1.getName().equalsIgnoreCase(w2.getName());
-//    }
+
 
     /**
      * <p>This should now be ran before any mine reset. This generates the list prior to placing
@@ -649,8 +635,12 @@ public abstract class MineReset
 //		setMineAirBlocksOriginal( mAirBlocks );
 		
 		int airCount = 0;
+		int currentLevel = 0;
 		
+		// The reset takes place first with the top-most layer since most mines may have
+		// the player enter from the top, and the reset will appear to be more "instant".
 		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
+			currentLevel++; // One based: First layer is currentLevel == 1
 			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
 				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
 					
@@ -658,7 +648,7 @@ public abstract class MineReset
 					
 					if ( useNewBlockModel ) {
 						
-						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random );
+						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 						
 						// Increment the mine's block count. This block is one of the control blocks:
 						prisonBlock.incrementResetBlockCount();
@@ -674,7 +664,7 @@ public abstract class MineReset
 					else {
 						
 						
-						BlockOld tBlock = randomlySelectBlock( random );
+						BlockOld tBlock = randomlySelectBlock( random, currentLevel );
 						
 						// Increment the mine's block count. This block is one of the control blocks:
 						tBlock.incrementResetBlockCount();
@@ -1287,37 +1277,95 @@ public abstract class MineReset
 //    }
 
 
-	private PrisonBlock randomlySelectPrisonBlock( Random random ) {
-		double chance = random.nextDouble() * 100.0d;
+	private PrisonBlock randomlySelectPrisonBlock( Random random, int currentLevel ) {
+		
+		int targetBlockPosition = getMineTargetPrisonBlocks().size();
 		
 		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
 		
-		for (PrisonBlock block : getPrisonBlocks()) {
-		    if (chance <= block.getChance() && 
-		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax()) ) {
-		    	prisonBlock = block;
-		        break;
-		    } else {
-		        chance -= block.getChance();
-		    }
+		// If a chosen block was skipped, try to find another block, but try no more than 10 times
+		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
+		// would be an air block.
+		boolean success = false;
+		int attempts = 0;
+		while ( !success && attempts++ < 10 ) {
+			double chance = random.nextDouble() * 100.0d;
+			
+			for (PrisonBlock block : getPrisonBlocks()) {
+				boolean skipBlock = block.checkConstraints( currentLevel, targetBlockPosition ) ||
+								(block.getConstraintMax() > 0 && 
+										block.getResetBlockCount() < block.getConstraintMax());
+				
+				if ( chance <= block.getChance()  ) {
+					
+					// If this block is chosen and it was not skipped, then use this block and exit.
+					// Otherwise the chance will be recalculated and tried again to find a valid block,
+					// since the odds have been thrown off...
+					if ( !skipBlock ) {
+						prisonBlock = block;
+						
+						// stop trying to locate a block so success will terminate the search:
+						success = true;
+					}
+					
+					break;
+				} else {
+					chance -= block.getChance();
+				}
+			}
 		}
 		return prisonBlock;
 	}
 	
-	private BlockOld randomlySelectBlock( Random random ) {
-		double chance = random.nextDouble() * 100.0d;
+	private BlockOld randomlySelectBlock( Random random, int currentLevel ) {
 		
+		int targetBlockPosition = getMineTargetPrisonBlocks().size();
+
 		BlockOld results = BlockOld.AIR;
 		
-		for (BlockOld block : getBlocks()) {
-			if (chance <= block.getChance() && 
-		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax())) {
-				results = block;
-				break;
-			} else {
-				chance -= block.getChance();
+		// If a chosen block was skipped, try to find another block, but try no more than 10 times
+		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
+		// would be an air block.
+		boolean success = false;
+		int attempts = 0;
+		while ( !success && attempts++ < 10 ) {
+			double chance = random.nextDouble() * 100.0d;
+			
+			for (BlockOld block : getBlocks()) {
+				boolean skipBlock = block.checkConstraints( currentLevel, targetBlockPosition ) ||
+								(block.getConstraintMax() > 0 && 
+										block.getResetBlockCount() < block.getConstraintMax());
+				
+				if ( chance <= block.getChance()  ) {
+					
+					// If this block is chosen and it was not skipped, then use this block and exit.
+					// Otherwise the chance will be recalculated and tried again to find a valid block,
+					// since the odds have been thrown off...
+					if ( !skipBlock ) {
+						results = block;
+						
+						// stop trying to locate a block so success will terminate the search:
+						success = true;
+					}
+					
+					break;
+				} else {
+					chance -= block.getChance();
+				}
 			}
 		}
+
+		
+//		for (BlockOld block : getBlocks()) {
+//			if (block.checkConstraints( currentLevel, targetBlockPosition ) &&
+//					chance <= block.getChance() && 
+//		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax())) {
+//				results = block;
+//				break;
+//			} else {
+//				chance -= block.getChance();
+//			}
+//		}
 		return results;
 	}
     
@@ -1363,8 +1411,15 @@ public abstract class MineReset
     		int maxAttempts = (block.getConstraintMin() - block.getResetBlockCount()) * 3;
     		for ( int i = 0; i < maxAttempts && block.getResetBlockCount() < block.getConstraintMin(); i++ ) {
     			
-    			int maxSize = getMineTargetPrisonBlocks().size();
-    			int rndPos = (int) Math.round( Math.random() * maxSize );
+//    			int maxSize = getMineTargetPrisonBlocks().size();
+    			
+    			int rangeLow = block.getRangeBlockCountLow();
+    			int rangeHigh = block.getRangeBlockCountHigh();
+    			
+    			
+    			// Each block has a valid range in which it can spawn in the mine.  This range
+    			// is honored by using the rangeHigh and rangeLow values.
+    			int rndPos = ((int) Math.round( Math.random() * (rangeHigh - rangeLow) )) + rangeLow;
     			
     			MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( rndPos );
     			
