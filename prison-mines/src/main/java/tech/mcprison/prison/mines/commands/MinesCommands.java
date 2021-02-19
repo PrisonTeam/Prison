@@ -1149,7 +1149,7 @@ public class MinesCommands
     		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
     		@Arg(name = "blockNme", description = "The block's name") String blockName,
     		@Arg(name = "contraint", description = "Constraint to apply " +
-    						"[min max excludeTopLayers excludeBottomLayers]",
+    						"[min max excludeTop excludeBottom]",
     					def = "max") String constraint,
     		@Arg(name = "value", description = "The value to assign to this constraint. " +
     					"A value of 0 will remove the constraint.") int value ) {
@@ -1168,9 +1168,11 @@ public class MinesCommands
         }
         
         if ( constraint == null || 
-        		!"max".equalsIgnoreCase( constraint ) && !"min".equalsIgnoreCase( constraint ) ) {
+        		!"max".equalsIgnoreCase( constraint ) && !"min".equalsIgnoreCase( constraint ) && 
+        		!"excludeTop".equalsIgnoreCase( constraint ) && !"excludeBottom".equalsIgnoreCase( constraint ) ) {
         	sender.sendMessage( 
-        			String.format( "Valid contraint values are [min max excludeTopLayers excludeBottomLayers]. " +
+        			String.format( "Valid contraint values are [min max excludeTop excludeBottom]. " +
+        					"ExcludeTop and ExcludeBottom are expressed in the number of layers. " +
         					"Was [%s]", 
         			(constraint == null ? "null" : constraint) ));
         	listBlockCommand(sender, m.getName() );
@@ -1248,13 +1250,13 @@ public class MinesCommands
     		}
     		block.setConstraintMax( value );
     	}
-    	if ( "excludeTopLayers".equalsIgnoreCase( constraint ) ) {
+    	if ( "excludeTop".equalsIgnoreCase( constraint ) ) {
     		if ( block.getConstraintExcludeBottomLayers() != 0 &&
     				value > block.getConstraintExcludeBottomLayers() ) {
     			sender.sendMessage( 
-    					String.format( "&7The specified value for the ExcludeTopLayers constraint cannot " +
-    							"be more than the ExcludeBottomLayers constraint value.  " +
-    							"value = [%s]  ExcludeBottomLayers= %s  " +
+    					String.format( "&7The specified value for the ExcludeTop layers constraint cannot " +
+    							"be more than the ExcludeBottom layers constraint value.  " +
+    							"value = [%s]  ExcludeBottom layers= %s  " +
     							"Please try again.", 
     							Integer.toString( value ), 
     							Integer.toString( block.getConstraintExcludeBottomLayers() ) ));
@@ -1264,13 +1266,13 @@ public class MinesCommands
     		}
     		block.setConstraintExcludeTopLayers( value );
     	}
-    	if ( "excludeBottomLayers".equalsIgnoreCase( constraint ) ) {
+    	if ( "excludeBottom".equalsIgnoreCase( constraint ) ) {
     		if ( block.getConstraintExcludeTopLayers() != 0 &&
     						value < block.getConstraintExcludeTopLayers() ) {
     			sender.sendMessage( 
-    					String.format( "&7The specified value for the ExcludeBottomLayers constraint cannot " +
-    							"be less than the ExcludeTopLayers constraint value.  " +
-    							"value = [%s]  ExcludeTopLayers= %s  " +
+    					String.format( "&7The specified value for the ExcludeBottom layers constraint cannot " +
+    							"be less than the ExcludeTop layers constraint value.  " +
+    							"value = [%s]  ExcludeTop layers= %s  " +
     							"Please try again.", 
     							Integer.toString( value ), 
     							Integer.toString( block.getConstraintExcludeTopLayers() ) ));
@@ -1806,10 +1808,10 @@ public class MinesCommands
 			
 			RowComponent row2 = new RowComponent();
 			
-			row2.addTextComponent( "                &3Constraints:  " );
+			row2.addTextComponent( "        &3Constraints:  " );
 			
 			String text6 = formatStringPadRight("&2Min: &6%s", 16, 
-					(block.getConstraintMin() == 0 ? "disabled" : iFmt.format( block.getConstraintMin() )));
+					(block.getConstraintMin() == 0 ? "none" : iFmt.format( block.getConstraintMin() )));
 			FancyMessage msg6 = new FancyMessage( text6 )
 									.tooltip("&7During a mine reset, the min constraint will try to " +
 											"be the minimum number of blocks of this type to be added " +
@@ -1817,15 +1819,15 @@ public class MinesCommands
 			row2.addFancy( msg6 );
 			
 			String text7 = formatStringPadRight("  &2Max: &6%s", 1, 
-					(block.getConstraintMax() == 0 ? "disabled" : iFmt.format( block.getConstraintMax() )));
+					(block.getConstraintMax() == 0 ? "none" : iFmt.format( block.getConstraintMax() )));
 			FancyMessage msg7 = new FancyMessage( text7 )
 									.tooltip("&7During a mine reset, the max constraint will try to " +
 											"be the maximum number of blocks of this type to be added " +
 											"to the mine.");
 			row2.addFancy( msg7 );
 			
-			String text8 = formatStringPadRight("  &ExcludeTopLayers: &6%s", 1, 
-					(block.getConstraintExcludeTopLayers() == 0 ? "disabled" : 
+			String text8 = formatStringPadRight("  &2ExcTop: &6%s", 1, 
+					(block.getConstraintExcludeTopLayers() == 0 ? "none" : 
 								iFmt.format( block.getConstraintExcludeTopLayers() )));
 			FancyMessage msg8 = new FancyMessage( text8 )
 					.tooltip("&7During a mine reset, the Exclude from the Top-n Layers constraint will " +
@@ -1833,8 +1835,8 @@ public class MinesCommands
 							"above.");
 			row2.addFancy( msg8 );
 			
-			String text9 = formatStringPadRight("  &2ExcludeBottomLayers: &6%s", 1, 
-					(block.getConstraintExcludeBottomLayers() == 0 ? "disabled" : 
+			String text9 = formatStringPadRight("  &2ExcBottom: &6%s", 1, 
+					(block.getConstraintExcludeBottomLayers() == 0 ? "none" : 
 								iFmt.format( block.getConstraintExcludeBottomLayers() )));
 			FancyMessage msg9 = new FancyMessage( text9 )
 					.tooltip("&7During a mine reset, the Exclude from the Bottom-n Layers constraint will " +

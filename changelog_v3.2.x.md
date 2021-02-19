@@ -16,7 +16,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-18
+# v3.2.4-alpha.13 2021-02-19
+
+
+* **Clean up a few of the mines constraints to reduce the size of the constraint name.**
+It was too long to type and too long to display. 
+Still having issues with constraints and mine generation, so it's not ready yet.
 
 
 * **Fixed an issue with block break events and within mine detection.**
