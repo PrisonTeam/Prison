@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -92,6 +93,7 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRename"),
                 messages.getString("Lore.MineName") + mineName
         );
+
         List<String> closeGUILore = createLore(
                 messages.getString("Lore.ClickToClose")
         );
@@ -123,14 +125,38 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
 
         ItemStack mineRename = createButton(XMaterial.FEATHER.parseItem(), mineRenameLore, SpigotPrison.format("&3" + "Mine_Name: " + mineName));
 
+        // Mine show Item of Player's GUI aka /gui mines.
+        XMaterial xMaterial = XMaterial.COAL_ORE;
+        String customItem = guiConfig.getString("Options.Mines.MaterialType." + mineName);
+        if (customItem != null){
+            XMaterial mineXMaterial = SpigotUtil.getXMaterial(customItem);
+            if (mineXMaterial != null){
+                xMaterial = mineXMaterial;
+            }
+        }
+
+        // Lore
+        List<String> mineShowItemLore = createLore(
+                messages.getString("Lore.ClickToEdit"),
+                messages.getString("Lore.ShowItem") + xMaterial.name(),
+                "",
+                messages.getString("Lore.ShowItemDescription"),
+                messages.getString("Lore.ShowItemDescription2"),
+                messages.getString("Lore.ShowItemDescription3")
+        );
+
+        // ItemStack
+        ItemStack mineShowItem = createButton(xMaterial.parseItem(), mineShowItemLore, SpigotPrison.format("&3Mine_Show_Item: ") + mineName);
+
         // Position of the button
         inv.setItem(10, resetMine);
         inv.setItem(12, MineSpawn);
         inv.setItem(14, MinesNotifications);
         inv.setItem(16, MinesTP);
-        inv.setItem(29, blocksOfTheMine);
-        inv.setItem(31, mineResetTime);
-        inv.setItem(33, mineRename);
+        inv.setItem(28, blocksOfTheMine);
+        inv.setItem(30, mineResetTime);
+        inv.setItem(32, mineRename);
+        inv.setItem(34, mineShowItem);
         inv.setItem(44, closeGUI);
     }
 }

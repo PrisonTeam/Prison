@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,6 +31,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -38,6 +41,8 @@ import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -712,6 +717,43 @@ public class ListenersPrisonManager implements Listener {
                 case "Edit -> Multiplier": {
 
                     setSellAllPrestigeMultiplier(e, p, parts);
+
+                    break;
+                }
+
+                case "Select -> ShowBlock":{
+
+                    String positionStr = ( parts.length > 2 ? parts[2] : "0" );
+                    int position = 0;
+                    try {
+                        position = Integer.parseInt( positionStr );
+                    }
+                    catch(NumberFormatException ignored) {}
+
+                    if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+                        SpigotBlocksMineListGUI gui = new SpigotBlocksMineListGUI(p, parts[1], position);
+                        p.closeInventory();
+                        gui.open();
+
+                    } else {
+
+                        try {
+                            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+                            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                            conf.set("Options.Mines.MaterialType." + parts[1], parts[0]);
+                            conf.save(sellAllFile);
+                        } catch (IOException ex){
+                            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                            ex.printStackTrace();
+                            return;
+                        }
+
+                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.MineShowItemEditSuccess") + " [" + parts[0] + "]"));
+                        p.closeInventory();
+                    }
+
+                    e.setCancelled(true);
 
                     break;
                 }
@@ -1960,6 +2002,14 @@ public class ListenersPrisonManager implements Listener {
                 tempChatVariable = mineName;
                 chatInteractData(p, ChatMode.MineName);
                 p.closeInventory();
+                break;
+            }
+            case "Mine_Show_Item:":{
+
+                // Open select Block GUI.
+                SpigotBlocksMineListGUI guiBlocks = new SpigotBlocksMineListGUI(p, mineName, 0);
+                guiBlocks.open();
+
                 break;
             }
         }

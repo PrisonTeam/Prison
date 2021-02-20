@@ -103,6 +103,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToPriorPage", "&aClick to see the prior page.");
         dataConfig("Lore.ClickToNextPage", "&aClick to see the next page.");
         dataConfig("Lore.ClickToStartBlockSetup", "&aClick to setup block.");
+        dataConfig("Lore.ClickToSelect", "&7Click to select.");
         dataConfig("Lore.ClickToAddBlock", "&aClick to add a block.");
         dataConfig("Lore.ClickToEnable", "&aClick to enable.");
         dataConfig("Lore.ClickToDisable", "&cClick to disable.");
@@ -164,6 +165,10 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.SpawnPoint2","&8Set the mine spawn point.");
         dataConfig("Lore.SizeOfMine","&3Size of Mine: &7");
         dataConfig("Lore.Selected","&3Selected");
+        dataConfig("Lore.ShowItem", "&3Show Item: &7");
+        dataConfig("Lore.ShowItemDescription", "&7This's the item");
+        dataConfig("Lore.ShowItemDescription2", "&7Shown in the Player's GUI");
+        dataConfig("Lore.ShowItemDescription3", "&7Or /mines GUI.");
         dataConfig("Lore.SellAllDelayInfo", "&8Short delay before using again");
         dataConfig("Lore.SellAllDelayInfo2", "&8the &3/sellall sell &8command.");
         dataConfig("Lore.SellAllCurrencyInfo", "&3Edit SellAll Currency.");
@@ -225,6 +230,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.mineNameRenameClosed", "Rename Mine &cclosed&7, nothing got changed!");
         dataConfig("Message.mineOrGuiDisabled", "GUI and/or GUI Mines is &cdisabled&7. Check GuiConfig.yml.");
         dataConfig("Message.mineMissingGuiPermission", "You lack the &cpermissions&7 to use GUI Mines");
+        dataConfig("Message.MineShowItemEditSuccess", "Mine show item edited with success.");
         dataConfig("Message.OutOfTimeNoChanges", "You ran out of time, &cnothing changed&7.");
         dataConfig("Message.PrestigeCancelled", "Prestige &ccancelled&7!");
         dataConfig("Message.PrestigeCancelledWrongKeyword", "Prestige &ccancelled&7, you didn't type the word: &aconfirm&7.");

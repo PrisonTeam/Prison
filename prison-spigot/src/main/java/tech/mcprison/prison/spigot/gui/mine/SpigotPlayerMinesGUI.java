@@ -17,6 +17,7 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
@@ -88,6 +89,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         ItemStack itemMines;
         Material material;
+
+        GuiConfig guiConfigClass = new GuiConfig();
+        guiConfig = guiConfigClass.getFileGuiConfig();
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
         // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be

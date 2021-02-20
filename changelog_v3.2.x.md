@@ -19,6 +19,11 @@ that you need.
 # v3.2.4-alpha.14 2021-02-20
 
 
+* **/gui mines Blocks are now editable while in-game.**
+You can now edit the Shown block of Mines of the /gui mines, aka player's GUI,  
+while in game from the /gui -> Mines -> Select a mine -> Mine_Show_Item.
+
+
 * **v3.2.4-alpha.14 2021-02-20**
 
 
