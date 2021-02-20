@@ -135,6 +135,11 @@ public class SpigotOfflinePlayer
 	}
 
 	@Override
+    public tech.mcprison.prison.internal.block.Block getLineOfSightBlock() {
+		return null;
+	}
+	
+	@Override
 	public boolean isOp() {
 		return offlinePlayer.isOp();
 	}

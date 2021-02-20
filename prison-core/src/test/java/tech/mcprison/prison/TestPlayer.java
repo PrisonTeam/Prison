@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -92,7 +93,12 @@ public class TestPlayer
     @Override public Location getLocation() {
         return null;
     }
-
+    
+	@Override
+    public Block getLineOfSightBlock() {
+		return null;
+	}
+	
     @Override public void teleport(Location location) {
 
     }

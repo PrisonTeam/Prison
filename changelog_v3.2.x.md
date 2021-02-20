@@ -16,7 +16,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.13 2021-02-19
+# v3.2.4-alpha.13 2021-02-20
+
+
+* **New feature: /mines whereami now includes the block that you are looking at** if it is within a mine and it also includes the distance to that block.
 
 
 * **Clean up a few of the mines constraints to reduce the size of the constraint name.**

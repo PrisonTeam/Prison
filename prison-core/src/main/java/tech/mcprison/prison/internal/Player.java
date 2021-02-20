@@ -18,9 +18,11 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -62,6 +64,16 @@ public interface Player
      */
     Location getLocation();
 
+    
+    /**
+     * Follows the player's line of slight to return the distant 
+     * block that they are looking at.
+     * 
+     * @return
+     */
+    public Block getLineOfSightBlock();
+    
+    
     /**
      * Teleports the player to another location.
      *

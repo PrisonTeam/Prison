@@ -35,6 +35,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
@@ -64,6 +65,7 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.MaterialType;
 import tech.mcprison.prison.util.Text;
 
@@ -3205,9 +3207,20 @@ public class MinesCommands
 
     	PrisonMines pMines = PrisonMines.getInstance();
 
+    	
+    	Mine lookingAtMine = null;
+    	Block sightBlock = player.getLineOfSightBlock();
+    	Location sightLocation = sightBlock != null ? sightBlock.getLocation() : null;
+    	
+    	
     	List<Mine> inMine = new ArrayList<>();
     	TreeMap<Integer, Mine> nearMine = new TreeMap<>();
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
+    		
+    		if ( sightLocation != null && mine.isInMineExact( sightLocation )) {
+    			lookingAtMine = mine;
+    		}
+    		
     		if ( !mine.isVirtual() && mine.getBounds().withinIncludeTopBottomOfMine( player.getLocation() ) ) {
     			inMine.add( mine );
     		}
@@ -3221,6 +3234,13 @@ public class MinesCommands
 //    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
     		}
+    	}
+    	
+    	if ( lookingAtMine != null ) {
+    		double distance = lookingAtMine.getBounds().getDistance3d( player.getLocation() );
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.0");
+    		sender.sendMessage( String.format( "&3You are looking at mine &7%s &3which is &7%s &3blocks away.", 
+    					lookingAtMine.getName(), dFmt.format( distance ) ) );
     	}
     	
     	if ( inMine.size() > 0 ) {

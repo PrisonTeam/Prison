@@ -33,6 +33,7 @@ import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
@@ -506,7 +507,12 @@ public class RankPlayer
 		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
 		return null;
 	}
-
+	
+	@Override
+    public Block getLineOfSightBlock() {
+		return null;
+	}
+	
 	@Override
 	public void teleport( Location location ) {
 		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );

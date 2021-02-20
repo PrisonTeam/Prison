@@ -21,11 +21,14 @@ package tech.mcprison.prison.spigot.game;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import tech.mcprison.prison.internal.ItemStack;
@@ -34,6 +37,7 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -105,7 +109,49 @@ public class SpigotPlayer
         }
         return Optional.empty();
     }
+    
+    @Override
+    public tech.mcprison.prison.internal.block.Block getLineOfSightBlock() {
+    	
+    	SpigotBlock results = null;
+    	
+//    	org.bukkit.Location eyeLocation = getWrapper().getEyeLocation();
+//    	org.bukkit.util.Vector lineOfSight = eyeLocation.getDirection().normalize();
+//    	
+//    	double maxDistance = 256;
+//    	
+//    	for(double i = 0; i < maxDistance; ++i){
+//    	    Block block = eyeLocation.add( lineOfSight.clone().multiply(i) ).getBlock();
+//    	    if( block.getType() != Material.AIR ) {
+////    	    	if( block.getType().isSolid() ) {
+//
+//    	    	results = new SpigotBlock( block );
+//    	    	break;
+//    	    }
+//    	    
+//    	}
+//    	
+//    	return results;
+//    	
 
+        
+    	
+//    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	
+    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 240 );
+    	for ( Block block : blocks ) {
+    		if ( block != null && block.getType() != Material.AIR ) {
+
+    			// return the first non-null and non-AIR block, which will 
+    			// be the one the player is looking at:
+    			results = new SpigotBlock( block );
+    		}
+		}
+    	
+    	return results;
+    }
+
+    
     public org.bukkit.entity.Player getWrapper() {
         return bukkitPlayer;
     }
