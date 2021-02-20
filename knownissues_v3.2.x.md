@@ -9,6 +9,26 @@ issues, and/or to serve as items that should be added, or fixed.
 
 # To Do Items - During Alpha v3.2.4
 
+   
+- Future Block Constraints:
+ - GradientBottom - The block has a greater chance to spawn near the bottom of the mine. 
+ - GradientTop - The block has a greater chance to spawn near the top of the mine.
+
+
+   
+   
+   - TODO: Need to have an alt block list for mines were blocks that are not actually 
+     defined in that mine included there.  This is so air and other blocks that don't find hits can be included with the counts.  Needed for when blocks are changed so it does not lose change status?
+     
+
+- player.getPermission() is not returning anything??
+
+
+- Prestiges max - if at max show 100% or Max, etc... Maybe set "max" on a placeholder attribute?
+
+
+- Add a prestiges config option to auto add a zero rank entry for prestige ranks.
+
 
 - Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
 
@@ -17,18 +37,10 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 - Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
+  - DONE: repair & repairAll
+  - potions and potion effects - in progress
 
 
-- restrict access to the root commands in prison so players cannot run them even though they won't have access to the actual commands.
-
-
-- Fixed: player-mine placeholders do not work
-
-- Fixed: rankup does not work.  This may have looked like some placeholders were not working after a /rankup.
-
-
-- DONE: Hook the paging variables up to config parameters.  OfficiallyGuo needs them.
-  - 
 
 
 - Top Listings
@@ -213,18 +225,6 @@ if 100% block type of IGNORE, then after reset do an full mine air count so zero
 
 
 
-[Plugin Prison - To be able to manage at which layer such or such block appears]
-- For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
-
-  "blocks": [
-    "STONE-20.0-0",         0 when not configured = all layers 
-    "IRON_ORE-25.0-0,5",    0,5 for all layers up to the layer 5
-    "GOLD_ORE-25.0-4,7",    4,7 for layers between layer 4 and 7
-    "EMERALD_ORE-25.0-8,0"  8,0 for all layers after layer 8 (in example : so up to layer 10)
-  ],
-
-
-
 
 # To Do Items - Post v3.2.1
 
@@ -268,8 +268,6 @@ Just had this idea... What if for these main commands, for configuration purpose
 <h2> Higher Priority TO DO Items </h2>
 
 
-* **Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
-They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
 
 
 * **Refactor GUI?**
@@ -390,6 +388,48 @@ I think those few integrations could really provide a huge bootstrap to getting 
 # Features recently added:
 
 
+
+- DONE: Try to for a limit on a certain block type?  M_Malmstedt
+   - a specific number may not work well... but maybe a max limit?  Or a range?
+   - max limit prevent more generation of that block type.
+   - if a min limit and it's not reached, then reset the mine or randomly add that many more to the mine?
+
+
+- DONE: Block generation constraints:
+   Let me "make up" some future constraints so we can better understand how powerful this can become:
+  - Min - Not yet implemented but a work in progress - Ensures a minimal number of blocks to be generated in a mine
+  - Max - Caps the max number of blocks generated in a mine
+  - NoTop - Prevent a block from appearing in the top layer of a mine.  Percent from the top where it cannot spawn.  10% would be no spawn in top 10% layers.
+
+
+DONE:
+[Plugin Prison - To be able to manage at which layer such or such block appears]
+- For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
+
+  "blocks": [
+    "STONE-20.0-0",         0 when not configured = all layers 
+    "IRON_ORE-25.0-0,5",    0,5 for all layers up to the layer 5
+    "GOLD_ORE-25.0-4,7",    4,7 for layers between layer 4 and 7
+    "EMERALD_ORE-25.0-8,0"  8,0 for all layers after layer 8 (in example : so up to layer 10)
+  ],
+
+
+
+
+- DONE: restrict access to the root commands in prison so players cannot run them even though they won't have access to the actual commands.
+
+
+- Fixed: player-mine placeholders do not work
+
+
+- Fixed: rankup does not work.  This may have looked like some placeholders were not working after a /rankup.
+
+
+- DONE: Hook the mine reset paging variables up to config parameters.  OfficiallyGuo needs them.
+  - 
+
+* **DONE: Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
+They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
 
 
 - DONE: Remove obsolete objects:
