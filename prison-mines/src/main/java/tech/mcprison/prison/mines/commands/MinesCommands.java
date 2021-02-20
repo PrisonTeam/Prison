@@ -2053,7 +2053,8 @@ public class MinesCommands
             	//row.addTextComponent( m.getWorldName() + " " );
             	
             	if ( m.getSortOrder() < 1 ) {
-            		row.addTextComponent( "    " );
+//            		row.addTextComponent( "    " );
+
 //            		row.addFancy( 
 //            				new FancyMessage( String.format("&3(&b%s&3) ", 
 //            						"X") )
@@ -2068,9 +2069,9 @@ public class MinesCommands
             	
             	
             	row.addFancy( 
-            			new FancyMessage( String.format("&3Mine: &7%s ", m.getName()) )
+            			new FancyMessage( String.format("&7%s ", m.getName()) )
             					.command("/mines info " + m.getName())
-            					.tooltip("&7Click to view info."));
+            					.tooltip("&7Mine " + m.getName() + ": Click to view more info."));
             	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
             		row.addTextComponent( "%s ", m.getTag() );
@@ -2117,26 +2118,32 @@ public class MinesCommands
             	}
 
             	
-            	row.addTextComponent( "  &3Reset: &7" );
+            	row.addTextComponent( "  &3(&2R: " );
             	
             	if ( !m.isVirtual() ) {
             		row.addFancy( 
-            				new FancyMessage(dFmt.format(m.getRemainingTimeSec()))
+            				new FancyMessage( 
+            						String.format( "&7%s &3sec &3/ ", dFmt.format(m.getRemainingTimeSec())))
+            				
             				.tooltip( "Estimated time in seconds before the mine resets" ) );
-            		row.addTextComponent( " sec &3(&b" );
+//            		row.addTextComponent( " sec &3(&b" );
             	}
             	
             	row.addFancy( 
-            			new FancyMessage(dFmt.format(m.getResetTime()))
+            			new FancyMessage(
+            					String.format( "&7%s &3sec )&b", dFmt.format(m.getResetTime()) ))
             			.tooltip( "Reset time in seconds" ) );
-            	row.addTextComponent( " sec&3)&b" );
+//            	row.addTextComponent( " sec&3)&b" );
             	
             	if ( !m.isVirtual() && player != null && 
             			m.getBounds().withinSameWorld( player.getLocation() ) ) {
             		
-            		row.addTextComponent( "  &3Dist: &7");
+            		double distance = m.getBounds().getDistance3d(player.getLocation());
+            		
+//            		row.addTextComponent( "  &3Dist: &7");
             		row.addFancy( 
-            				new FancyMessage( fFmt.format(m.getBounds().getDistance3d(player.getLocation()))).
+            				new FancyMessage(
+            						String.format( "  &3Dist: &7%s", fFmt.format( distance )) ).
             				tooltip("Distance to the Mine") );
             		
             	}

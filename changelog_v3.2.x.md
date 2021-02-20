@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.13 2021-02-20
 
 
+* **Some adjustments to the /mines list command so its slightly easier to read.**
+
+
 * **Fixes to finalize the mine constraints. Now it's working with min, max, ExcludeTop, and Exclude Bottom.**
 
 
