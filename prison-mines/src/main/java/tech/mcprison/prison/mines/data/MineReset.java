@@ -1292,16 +1292,14 @@ public abstract class MineReset
 			double chance = random.nextDouble() * 100.0d;
 			
 			for (PrisonBlock block : getPrisonBlocks()) {
-				boolean skipBlock = block.checkConstraints( currentLevel, targetBlockPosition ) ||
-								(block.getConstraintMax() > 0 && 
-										block.getResetBlockCount() < block.getConstraintMax());
+				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
 				
 				if ( chance <= block.getChance()  ) {
 					
 					// If this block is chosen and it was not skipped, then use this block and exit.
 					// Otherwise the chance will be recalculated and tried again to find a valid block,
 					// since the odds have been thrown off...
-					if ( !skipBlock ) {
+					if ( isBlockEnabled ) {
 						prisonBlock = block;
 						
 						// stop trying to locate a block so success will terminate the search:
@@ -1332,16 +1330,14 @@ public abstract class MineReset
 			double chance = random.nextDouble() * 100.0d;
 			
 			for (BlockOld block : getBlocks()) {
-				boolean skipBlock = block.checkConstraints( currentLevel, targetBlockPosition ) ||
-								(block.getConstraintMax() > 0 && 
-										block.getResetBlockCount() < block.getConstraintMax());
+				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
 				
 				if ( chance <= block.getChance()  ) {
 					
 					// If this block is chosen and it was not skipped, then use this block and exit.
 					// Otherwise the chance will be recalculated and tried again to find a valid block,
 					// since the odds have been thrown off...
-					if ( !skipBlock ) {
+					if ( isBlockEnabled ) {
 						results = block;
 						
 						// stop trying to locate a block so success will terminate the search:

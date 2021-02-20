@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.13 2021-02-20
 
 
+* **Fixes to finalize the mine constraints. Now it's working with min, max, ExcludeTop, and Exclude Bottom.**
+
+
 * **New feature: /mines whereami now includes the block that you are looking at** if it is within a mine and it also includes the distance to that block.
 
 

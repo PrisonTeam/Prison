@@ -178,7 +178,9 @@ public abstract class PrisonBlockStatusData {
 	}
 	
 	/**
-	 * <p>This function will us the currentLevel for Y to check if the ExcludeTopLayers,
+	 * <p>This function will identify if the currentLevel for Y is valid to be 
+	 * processed for this block.  
+	 * ExcludeTopLayers,
 	 * or ExcludeBottomLayers should exclude the generation of blocks.  If not, then it
 	 * will call setTargetBlockRange and return a value of true from this function.
 	 * </p>
@@ -195,17 +197,28 @@ public abstract class PrisonBlockStatusData {
 	 * @param targetBlockPosition
 	 * @return
 	 */
-	public boolean checkConstraints( int currentLevel, int targetBlockPosition ) {
+	public boolean isBlockConstraintsEnbled( int currentLevel, int targetBlockPosition ) {
 		boolean enabled = false;
 		
-		if ( (getConstraintExcludeTopLayers() == 0 || 
+		if ( 
+			// Is block able to be spawned in these top layer?
+			(getConstraintExcludeTopLayers() == 0 || 
 				currentLevel > getConstraintExcludeTopLayers()) &&
-			  (getConstraintExcludeBottomLayers() == 0 ||
-			    currentLevel < getConstraintExcludeBottomLayers() )) {
 			
+			// Is block able to be spwned in these bottom layers?
+			(getConstraintExcludeBottomLayers() == 0 ||
+			    currentLevel < getConstraintExcludeBottomLayers() ) )  {
+
+			// Need to set the block ranges only if the current layer is within a valid range:
 			setTargetBlockRange( targetBlockPosition );
 			
-			enabled = true;
+			// If Max is enabled (non zero) has the block reached that limit yet?
+			if ( ( getConstraintMax() == 0 || 
+			getConstraintMax() > 0 && getResetBlockCount() < getConstraintMax() )
+					) {
+				
+				enabled = true;
+			}
 		}
 		
 		return enabled;
