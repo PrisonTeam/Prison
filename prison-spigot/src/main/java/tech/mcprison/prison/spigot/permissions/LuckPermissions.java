@@ -71,7 +71,20 @@ public class LuckPermissions
     		permsWrapper.removePermission( holder, permission );
     	}
     }
+	
+    @Override 
+    public void addGroupPermission(Player holder, String groupPermission) {
+    	if ( permsWrapper != null ) {
+    		permsWrapper.addGroupPermission( holder, groupPermission );
+    	}
+    }
     
+    @Override 
+    public void removeGroupPermission(Player holder, String groupPermission) {
+    	if ( permsWrapper != null ) {
+    		permsWrapper.removeGroupPermission( holder, groupPermission );
+    	}
+    }
     @Override
     public List<String> getPermissions(Player holder, boolean detailed) {
     	List<String> results = new ArrayList<>();

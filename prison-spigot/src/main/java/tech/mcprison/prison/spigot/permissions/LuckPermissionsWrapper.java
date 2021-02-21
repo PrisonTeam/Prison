@@ -18,6 +18,13 @@ public class LuckPermissionsWrapper
 {
 	private LuckPermsApi api;
 	
+	private enum LPPermissionType {
+		PERM_ADD,
+		PERM_REMOVE,
+		PERM_GROUP_ADD,
+		PERM_GROUP_REMOVE;
+	}
+	
 	public LuckPermissionsWrapper() {
 		try {
 			api = LuckPerms.getApi();
@@ -32,13 +39,19 @@ public class LuckPermissionsWrapper
 	}
 	
     protected void addPermission(Player holder, String permission) {
-        editPermission(holder.getUUID(), permission, true);
+        editPermission(holder.getUUID(), permission, LPPermissionType.PERM_ADD );
     }
     protected void removePermission(Player holder, String permission) {
-        editPermission(holder.getUUID(), permission, false);
+        editPermission(holder.getUUID(), permission, LPPermissionType.PERM_REMOVE );
+    }
+    protected void addGroupPermission(Player holder, String permission) {
+    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_ADD );
+    }
+    protected void removeGroupPermission(Player holder, String permission) {
+    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_REMOVE );
     }
 
-    protected void editPermission(UUID uuid, String permission, boolean add) {
+    protected void editPermission(UUID uuid, String permission, LPPermissionType permissionType) {
         // get the user
         User user = api.getUser(uuid);
         if (user == null) {
@@ -46,15 +59,42 @@ public class LuckPermissionsWrapper
         }
 
         // build the permission node
-        Node node = api.getNodeFactory().newBuilder(permission).build();
-
+        Node node = null;
+        
         // set the permission
-        DataMutateResult result;
-        if(add) {
-            result = user.setPermission(node);
-        } else {
-            result = user.unsetPermission(node);
-        }
+        DataMutateResult result = null;
+        
+        switch ( permissionType )
+		{
+			case PERM_ADD:
+				node = api.getNodeFactory().newBuilder(permission).build();
+				result = user.setPermission(node);
+				break;
+
+			case PERM_REMOVE:
+				node = api.getNodeFactory().newBuilder(permission).build();
+				result = user.unsetPermission(node);
+				break;
+
+			case PERM_GROUP_ADD:
+				node = api.getNodeFactory().makeGroupNode( permission ).build();
+				result = user.setPermission( node );
+				break;
+				
+			case PERM_GROUP_REMOVE:
+				node = api.getNodeFactory().makeGroupNode( permission ).build();
+				result = user.unsetPermission( node );
+				break;
+				
+			default:
+				break;
+		}
+        
+//        if(add) {
+//            result = user.setPermission(node);
+//        } else {
+//            result = user.unsetPermission(node);
+//        }
 
         // wasn't successful.
         // they most likely already have (or didn't have if add = false) the permission

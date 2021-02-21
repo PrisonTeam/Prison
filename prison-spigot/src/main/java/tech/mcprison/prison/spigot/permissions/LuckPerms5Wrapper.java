@@ -5,7 +5,6 @@ package tech.mcprison.prison.spigot.permissions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -13,12 +12,15 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.context.DefaultContextKeys;
 import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PermissionNode;
+import net.luckperms.api.node.types.WeightNode;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
@@ -27,11 +29,23 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
  * use the same provider name, so additional checking must be performed to see
  * which is actually registered.
  * </p> 
+ * 
+ * <p>Some useful links to api docs:
+ * </p>
+ * 
+ * https://luckperms.net/wiki/Developer-API-Usage#the-basics-of-node
  *
  */
 public class LuckPerms5Wrapper
 {
 	private LuckPerms api = null;
+	
+	private enum LPPermissionType {
+		PERM_ADD,
+		PERM_REMOVE,
+		PERM_GROUP_ADD,
+		PERM_GROUP_REMOVE;
+	}
 	
 	public LuckPerms5Wrapper(RegisteredServiceProvider<net.luckperms.api.LuckPerms> provider) {
 		super();
@@ -40,13 +54,26 @@ public class LuckPerms5Wrapper
 		api = provider.getProvider();
 	}
 	
-	public void addPermission( Player holder, String permission ) {
-		 editPermission(holder.getUUID(), permission, true);
-	}
-	
-	public void removePermission( Player holder, String permission ) {
-		 editPermission(holder.getUUID(), permission, false);
-	}
+    protected void addPermission(Player holder, String permission) {
+        editPermission(holder.getUUID(), permission, LPPermissionType.PERM_ADD );
+    }
+    protected void removePermission(Player holder, String permission) {
+        editPermission(holder.getUUID(), permission, LPPermissionType.PERM_REMOVE );
+    }
+    protected void addGroupPermission(Player holder, String permission) {
+    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_ADD );
+    }
+    protected void removeGroupPermission(Player holder, String permission) {
+    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_REMOVE );
+    }
+    
+//	public void addPermission( Player holder, String permission ) {
+//		 editPermission(holder.getUUID(), permission, true);
+//	}
+//	
+//	public void removePermission( Player holder, String permission ) {
+//		 editPermission(holder.getUUID(), permission, false);
+//	}
 
 	/**
 	 * <p>This function does not return anything, nor is there anything waiting for its
@@ -66,7 +93,7 @@ public class LuckPerms5Wrapper
 	 * @param permission
 	 * @param add
 	 */
-    private void editPermission(UUID uuid, String permission, boolean add) {
+    private void editPermission(UUID uuid, String permission, LPPermissionType permissionType) {
     	if ( api != null ) {
 
 			UserManager um = api.getUserManager();
@@ -76,18 +103,39 @@ public class LuckPerms5Wrapper
     	    
 		    userFuture
 		    	.thenAcceptAsync(lpUser -> {
-		    		changePermission(lpUser, permission, add);
+		    		changePermission(lpUser, permission, permissionType);
 		    });
     	}
 
     }
 
-    private void changePermission( User user, String permission, boolean add ) {
+    private void changePermission( User user, String permission, LPPermissionType permissionType ) {
     	boolean dirty = false;
     	
     	// build a permission node now so we don't have to pass around
     	// the raw components, just this node.
-    	PermissionNode newNode = PermissionNode.builder(permission).build();
+//    	PermissionNode newNode = null; // PermissionNode.builder(permission).build();
+    	
+    	Node newNode = null;
+        boolean enable = permissionType == LPPermissionType.PERM_ADD || 
+        		permissionType == LPPermissionType.PERM_GROUP_ADD;
+        
+        switch ( permissionType )
+		{
+			case PERM_ADD:
+			case PERM_REMOVE:
+				newNode = PermissionNode.builder(permission).build();
+				break;
+				
+			case PERM_GROUP_ADD:
+			case PERM_GROUP_REMOVE:
+				newNode = InheritanceNode.builder(permission).build();
+				break;
+				
+			default:
+				break;
+		}
+    	
     	
     	// Try to remove the perm if it exists.  Even if adding a perm, try to remove it
     	// to prevent possible duplicates.
@@ -95,7 +143,8 @@ public class LuckPerms5Wrapper
     		dirty = true;
     	}
     	
-    	if ( add && user.data().add( newNode ) == DataMutateResult.SUCCESS ) {
+    	// If the node is to be added/enabled, then try to add it:
+    	if ( enable && user.data().add( newNode ) == DataMutateResult.SUCCESS ) {
     		dirty = true;
     	}
     	
@@ -117,7 +166,8 @@ public class LuckPerms5Wrapper
     	    
     	    if (user != null) {
     	    	
-    	    	SortedSet<Node> permNodes = user.getDistinctNodes();
+    	    	SortedSet<Node> permNodes = user.resolveDistinctInheritedNodes( null );
+//    	    	SortedSet<Node> permNodes = user.getDistinctNodes();
     	    	
     	    	for ( Node node : permNodes ) {
     	    		
@@ -142,12 +192,42 @@ public class LuckPerms5Wrapper
     	    				details.append( "expired" );
     	    			}
 
-//    	    			if ( node.isGroup() ) {
-//    	    				if ( details.length() > 0 ) {
-//    	    					details.append( ":" );
-//    	    				}
-//    	    				details.append( "group=" ).append( node.getGroupName() );
-//    	    			}
+    	    			// Group node:
+    	    			if ( node.getType() == NodeType.INHERITANCE ) {
+    	    				if ( details.length() > 0 ) {
+    	    					details.append( ":" );
+    	    				}
+    	    				details.append( "group=" ).append( node.getKey() );
+    	    			}
+    	    			
+    	    			// Permission node:
+    	    			if ( node.getType() == NodeType.PERMISSION ) {
+    	    				if ( details.length() > 0 ) {
+    	    					details.append( ":" );
+    	    				}
+    	    				details.append( "permission=" ).append( node.getKey() );
+    	    			}
+    	    			
+    	    			
+    	    			// Weighted node:
+    	    			if ( node.getType() == NodeType.WEIGHT ) {
+    	    				if ( details.length() > 0 ) {
+    	    					details.append( ":" );
+    	    				}
+    	    				WeightNode weighted = (WeightNode) node;
+    	    				
+    	    				details.append( "weighted=" ).append( weighted.getWeight() );
+    	    			}
+    	    			
+    	    			// Weighted node:
+    	    			if ( node.getContexts().containsKey( DefaultContextKeys.WORLD_KEY ) ) {
+    	    				if ( details.length() > 0 ) {
+    	    					details.append( ":" );
+    	    				}
+    	    				details.append( "Worlds=" ).append( 
+    	    						String.join( ",", 
+    	    								node.getContexts().getValues( DefaultContextKeys.WORLD_KEY ) ));
+    	    			}
     	    			
 //    	    			if ( node.getType() == NodeType.PERMISSION ) {
 //    	    				node.get

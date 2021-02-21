@@ -35,6 +35,15 @@ public abstract class PermissionIntegration
 	public abstract void removePermission(Player holder, String permission);
 
 	
+	
+    public abstract void addGroupPermission(Player holder, String groupPermission);
+    
+    
+    
+    public abstract void removeGroupPermission(Player holder, String groupPermission);
+	
+    
+    
 	/**
 	 * Lists all permissions that a player has.
 	 * 

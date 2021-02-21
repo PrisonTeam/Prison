@@ -60,14 +60,28 @@ public class VaultPermissions
 		}
 	}
 
-	@Override public void addPermission(Player holder, String permission) {
+	@Override 
+	public void addPermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerAdd(player.getWrapper(), permission);
     }
 
-    @Override public void removePermission(Player holder, String permission) {
+    @Override 
+    public void removePermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerRemove(player.getWrapper(), permission);
+    }
+    
+    @Override 
+    public void addGroupPermission(Player holder, String groupPermission) {
+    	SpigotPlayer player = (SpigotPlayer) holder;
+    	this.permissions.playerAddGroup(player.getWrapper(), groupPermission);
+    }
+    
+    @Override 
+    public void removeGroupPermission(Player holder, String groupPermission) {
+    	SpigotPlayer player = (SpigotPlayer) holder;
+    	this.permissions.playerRemoveGroup(player.getWrapper(), groupPermission);
     }
 
     @Override
