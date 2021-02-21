@@ -31,7 +31,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
-import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -58,8 +57,8 @@ public class ListenersPrisonManager implements Listener {
     public static List<String> activeGui = new ArrayList<>();
     public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
-    public int id;
-    public String tempChatVariable = null;
+    private int id;
+    private String tempChatVariable;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
     
@@ -69,7 +68,7 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
     private Optional<RankLadder> ladder;
-    ChatMode mode;
+    public ChatMode mode;
 
     public enum ChatMode{
         RankName,
@@ -77,7 +76,6 @@ public class ListenersPrisonManager implements Listener {
         Prestige,
         SellAll_Currency
     }
-
 
     public ListenersPrisonManager(){}
 
@@ -94,15 +92,7 @@ public class ListenersPrisonManager implements Listener {
     public void chatEventActivator(){
         isChatEventActive = true;
     }
-    public void chatEventDeactivate(){
-        isChatEventActive = false;
-    }
-    public boolean chatEventCheck(){
-        return isChatEventActive;
-    }
-    public void addMode(ChatMode modex){
-        mode = modex;
-    }
+
     public void removeMode(){
         mode = null;
     }
@@ -341,7 +331,6 @@ public class ListenersPrisonManager implements Listener {
                 isChatEventActive = false;
             }
             mode = null;
-            tempChatVariable = null;
         }, 20L * 30);
     }
 
@@ -405,7 +394,6 @@ public class ListenersPrisonManager implements Listener {
         // Cancel the event and deactivate the chat event, set boolean to false
         e.setCancelled(true);
         isChatEventActive = false;
-        tempChatVariable = null;
     }
 
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -418,7 +406,6 @@ public class ListenersPrisonManager implements Listener {
         // Cancel the event and set the boolean to false, so it can be deactivated.
         e.setCancelled(true);
         isChatEventActive = false;
-        tempChatVariable = null;
     }
 
     /**
@@ -723,37 +710,7 @@ public class ListenersPrisonManager implements Listener {
 
                 case "Select -> ShowBlock":{
 
-                    String positionStr = ( parts.length > 2 ? parts[2] : "0" );
-                    int position = 0;
-                    try {
-                        position = Integer.parseInt( positionStr );
-                    }
-                    catch(NumberFormatException ignored) {}
-
-                    if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-
-                        SpigotBlocksMineListGUI gui = new SpigotBlocksMineListGUI(p, parts[1], position);
-                        p.closeInventory();
-                        gui.open();
-
-                    } else {
-
-                        try {
-                            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
-                            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                            conf.set("Options.Mines.MaterialType." + parts[1], parts[0]);
-                            conf.save(sellAllFile);
-                        } catch (IOException ex){
-                            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-                            ex.printStackTrace();
-                            return;
-                        }
-
-                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.MineShowItemEditSuccess") + " [" + parts[0] + "]"));
-                        p.closeInventory();
-                    }
-
-                    e.setCancelled(true);
+                    showBlock(e, p, parts);
 
                     break;
                 }
@@ -794,6 +751,40 @@ public class ListenersPrisonManager implements Listener {
                 playerMinesGUI(p, buttonNameMain);
             }
         }
+    }
+
+    private void showBlock(InventoryClickEvent e, Player p, String[] parts) {
+        String positionStr = ( parts.length > 2 ? parts[2] : "0" );
+        int position = 0;
+        try {
+            position = Integer.parseInt( positionStr );
+        }
+        catch(NumberFormatException ignored) {}
+
+        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+
+            SpigotBlocksMineListGUI gui = new SpigotBlocksMineListGUI(p, parts[1], position);
+            p.closeInventory();
+            gui.open();
+
+        } else {
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Options.Mines.MaterialType." + parts[1], parts[0]);
+                conf.save(sellAllFile);
+            } catch (IOException ex){
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                ex.printStackTrace();
+                return;
+            }
+
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.MineShowItemEditSuccess") + " [" + parts[0] + "]"));
+            p.closeInventory();
+        }
+
+        e.setCancelled(true);
     }
 
     private void setSellAllPrestigeMultiplier(InventoryClickEvent e, Player p, String[] parts) {
