@@ -1163,10 +1163,23 @@ public class RanksCommands
 
 			}
 			
+			boolean isOp = player.isOp();
+			boolean isPlayer = player.isPlayer();
+			boolean isOnline = player.isOnline();
+			
+			boolean isPrisonPlayer = (player instanceof Player);
+			boolean isPrisonOfflineMcPlayer = (player instanceof OfflineMcPlayer);
+
+			if ( !isOnline ) {
+				sendToPlayerAndConsole( sender, "  &7Notice: &3The player is offline so permissions are " +
+														"not available nor accurate." );
+			}
+			
 			double sellallMultiplier = player.getSellAllMultiplier();
 			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
-			String messageCurrency = String.format( "&7  Sellall multiplier: &b%s", 
-					pFmt.format( sellallMultiplier ) );
+			String messageCurrency = String.format( "&7  Sellall multiplier: &b%s %s", 
+					pFmt.format( sellallMultiplier ), 
+					(!isOnline ? "  &5(&2Not Accurate&5)" : "") );
 			sendToPlayerAndConsole( sender, messageCurrency );
 
 			
@@ -1191,13 +1204,6 @@ public class RanksCommands
 				{
 					
 					
-					boolean isOp = player.isOp();
-					boolean isPlayer = player.isPlayer();
-					boolean isOnline = player.isOnline();
-					
-					boolean isPrisonPlayer = (player instanceof Player);
-					boolean isPrisonOfflineMcPlayer = (player instanceof OfflineMcPlayer);
-					
 					sendToPlayerAndConsole( sender, String.format( "  &7Player Perms:  %s%s%s%s", 
 								(isOp ? " &cOP&7" : ""),
 								(isPlayer ? " &3Player&7" : ""),
@@ -1219,7 +1225,6 @@ public class RanksCommands
 //					sendToPlayerAndConsole( sender, "### has perm prison.mines.a: " + 
 //								player.hasPermission( "prison.mines.a" ) );
 					
-					// TODO list perms from integrations:
 					
 					List<Integration> permissionIntegrations = PrisonAPI.getIntegrationManager().getAllForType( IntegrationType.PERMISSION );
 
@@ -1235,15 +1240,7 @@ public class RanksCommands
 						}
 					}
 					
-//					PermissionIntegration integrationPerms = PrisonAPI.getIntegrationManager().getPermission();
-//					
-//					List<String> iPerms = integrationPerms.getPermissions( player, true );
-//					
-//					String permSource = integrationPerms.getDisplayName();
-//					listPermissions( sender, permSource, iPerms );
-					
 				}
-
 	        }
 			
 //			String nextRank = pm.getPlayerNextRankName( rankPlayer );
