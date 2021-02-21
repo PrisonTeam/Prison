@@ -16,7 +16,14 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.14 2021-02-20
+# v3.2.4-alpha.14 2021-02-21
+
+
+* **Hook up integration permission listing to the /ranks player command.**
+Found an issue with the getSellallMultiplier when the player is offline.
+
+
+* **Added addGroupPermission and removeGroupPermission to the PermissionIntegration classes.**
 
 
 * **/gui mines Blocks are now editable while in-game.**

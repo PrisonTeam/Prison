@@ -93,9 +93,33 @@ public class VaultPermissions
         return permissions != null;
     }
 
+    /**
+     * <p>Vault is unable to return a list of permissions for the players.
+     * </p>
+     * 
+     */
 	@Override
 	public List<String> getPermissions( Player holder, boolean detailed ) {
 		List<String> results = new ArrayList<>();
+		
+		
+		boolean hasGroupSupport = permissions.hasGroupSupport();
+		results.add( String.format( "[vault: Group support is %senabled.]", 
+				(hasGroupSupport ? "" : "NOT ")) );
+		
+		if ( holder.isOnline() ) {
+			
+			SpigotPlayer player = (SpigotPlayer) holder;
+			String[] groups = permissions.getPlayerGroups( player.getWrapper() );
+			for ( String group : groups ) {
+				results.add( group );
+			}
+			
+		}
+		else {
+			results.add( "[vault: Player is offline so no perms can be accessed.]" );
+			
+		}
 		
 		return results;
 	}

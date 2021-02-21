@@ -137,8 +137,8 @@ public class SpigotCommandSender implements CommandSender {
     		
     		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
     		
-    		if ( sellall != null ) {
-    			results = sellall.getMultiplier( new SpigotPlayer( (org.bukkit.entity.Player) this ) );
+    		if ( sellall != null && getWrapper() != null ) {
+    			results = sellall.getMultiplier( new SpigotPlayer( (org.bukkit.entity.Player) getWrapper() ) );
     		}
     	}
     	

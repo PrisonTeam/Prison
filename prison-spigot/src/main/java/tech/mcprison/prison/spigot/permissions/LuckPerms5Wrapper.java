@@ -21,6 +21,7 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PermissionNode;
 import net.luckperms.api.node.types.WeightNode;
+import net.luckperms.api.query.QueryOptions;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
@@ -166,7 +167,7 @@ public class LuckPerms5Wrapper
     	    
     	    if (user != null) {
     	    	
-    	    	SortedSet<Node> permNodes = user.resolveDistinctInheritedNodes( null );
+    	    	SortedSet<Node> permNodes = user.resolveDistinctInheritedNodes( QueryOptions.nonContextual() );
 //    	    	SortedSet<Node> permNodes = user.getDistinctNodes();
     	    	
     	    	for ( Node node : permNodes ) {
@@ -200,13 +201,13 @@ public class LuckPerms5Wrapper
     	    				details.append( "group=" ).append( node.getKey() );
     	    			}
     	    			
-    	    			// Permission node:
-    	    			if ( node.getType() == NodeType.PERMISSION ) {
-    	    				if ( details.length() > 0 ) {
-    	    					details.append( ":" );
-    	    				}
-    	    				details.append( "permission=" ).append( node.getKey() );
-    	    			}
+//    	    			// Permission node:
+//    	    			if ( node.getType() == NodeType.PERMISSION ) {
+//    	    				if ( details.length() > 0 ) {
+//    	    					details.append( ":" );
+//    	    				}
+//    	    				details.append( "permission=" ).append( node.getKey() );
+//    	    			}
     	    			
     	    			
     	    			// Weighted node:

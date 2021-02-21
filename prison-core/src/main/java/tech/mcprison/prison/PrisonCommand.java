@@ -256,7 +256,7 @@ public class PrisonCommand {
         display.addText(Text.tab("&7Economy: " + economy));
         
         
-        List<DisplayComponent> integrationRows = Prison.get().getIntegrationManager().getIntegrationComponents();
+        List<DisplayComponent> integrationRows = im.getIntegrationComponents();
         for ( DisplayComponent component : integrationRows )
 		{
         	display.addComponent( component );

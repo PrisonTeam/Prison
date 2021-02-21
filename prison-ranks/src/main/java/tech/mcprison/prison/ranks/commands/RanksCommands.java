@@ -21,6 +21,9 @@ import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.Player;
@@ -1203,6 +1206,9 @@ public class RanksCommands
 									(isPrisonPlayer ? " &3PrisonPlayer&7" : ""))
 							) );
 					
+					if ( !isOnline ) {
+						sendToPlayerAndConsole( sender, "  &7Player is offline so perms may not be available." );
+					}
 					
 					player.recalculatePermissions();
 					
@@ -1210,10 +1216,32 @@ public class RanksCommands
 					
 					listPermissions( sender, "bukkit", perms );
 
-					sendToPlayerAndConsole( sender, "### has perm prison.mines.a: " + 
-								player.hasPermission( "prison.mines.a" ) );
+//					sendToPlayerAndConsole( sender, "### has perm prison.mines.a: " + 
+//								player.hasPermission( "prison.mines.a" ) );
 					
 					// TODO list perms from integrations:
+					
+					List<Integration> permissionIntegrations = PrisonAPI.getIntegrationManager().getAllForType( IntegrationType.PERMISSION );
+
+					for ( Integration pIntegration : permissionIntegrations ) {
+						if ( pIntegration instanceof PermissionIntegration ) {
+							
+							PermissionIntegration integrationPerms = (PermissionIntegration) pIntegration;
+							
+							List<String> iPerms = integrationPerms.getPermissions( player, true );
+							
+							String permSource = integrationPerms.getDisplayName();
+							listPermissions( sender, permSource, iPerms );
+						}
+					}
+					
+//					PermissionIntegration integrationPerms = PrisonAPI.getIntegrationManager().getPermission();
+//					
+//					List<String> iPerms = integrationPerms.getPermissions( player, true );
+//					
+//					String permSource = integrationPerms.getDisplayName();
+//					listPermissions( sender, permSource, iPerms );
+					
 				}
 
 	        }
