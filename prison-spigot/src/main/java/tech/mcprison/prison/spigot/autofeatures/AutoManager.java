@@ -1,5 +1,9 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,6 +16,7 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -89,18 +94,28 @@ public class AutoManager
     	
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
     		
-//    		Output.get().logInfo( "####  AutoManager.OnBlockBreak: " + 
-//    				" x: " + e.getBlock().getX() + " y: " + e.getBlock().getY() +
-//    				" z: " + e.getBlock().getZ() + " cancelled: " + e.isCancelled());
-    		
+        	
+        	Location bLoc = e.getBlock().getLocation();
+        	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
+        	
+        	Output.get().logInfo( "#### AutoManager.OnBlockBreak :  %s   blocks= 1   isCanceled=%b ",
+        			blockId, e.isCancelled() );
+
     		genericBlockEvent( e );
     	}
     }
     
     @Override
     @EventHandler(priority=EventPriority.LOW) 
-    public void onTEBlockExplode(TEBlockExplodeEvent e) {
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
+    	if ( !e.isCancelled() && isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    	    
+        	Location bLoc = e.getBlock().getLocation();
+        	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
+
+        	Output.get().logInfo( "#### AutoManager.onTEBlockExplode :  %s blocks= %s   isCanceled=%b", 
+        			blockId, Integer.toString( e.blockList().size() ), e.isCancelled() );
+
     		genericBlockExplodeEvent( e );
     	}
     }
@@ -123,8 +138,9 @@ public class AutoManager
     
     
     @Override
-    public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount ) {
-    	applyAutoEvents( e, mine, blockCount );
+    public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount, 
+    				List<SpigotBlock> teExplosiveBlocks, boolean dropBlocks ) {
+    	applyAutoEvents( e, mine, blockCount, teExplosiveBlocks, dropBlocks );
     }
     
     // Prevents players from picking up armorStands (used for holograms), only if they're invisible
@@ -141,118 +157,23 @@ public class AutoManager
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
 			
 			Player player = e.getPlayer();
-			
+
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
-			
-			boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
-			
-			boolean lorePickup = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.lorePickupValue ) );
-			boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
-			boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
-			
-//			double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, player );
-//			double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, player );
-//			double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, player );
-			
-//			boolean permPickup = 
-//					lorePickup == 100.0 ||
-//					lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-//			boolean permSmelt = 
-//					loreSmelt == 100.0 ||
-//					loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-//			boolean permBlock = 
-//					loreBlock == 100.0 ||
-//					loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
+
+			int count = applyAutoEvents( player, block, mine );
 			
 			
-			boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-			
-			boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-			
-			boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-											player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
-			
-			// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
-			//       Ops will have to have the perms set to actually use them.
-					
-			// AutoPickup
-			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
-					isAutoPickup ) {
+			if ( count > 0 ) {
 				
-				int count = autoFeaturePickup( block, player, itemInHand );
-				autoPickupCleanup( player, itemInHand, count, e );
+				// Set the broken block to AIR and cancel the event
+				e.setCancelled(true);
+				e.getBlock().setType(Material.AIR);
+
+				// Maybe needed to prevent drop side effects:
+				e.getBlock().getDrops().clear();
+
 			}
-			
-			// AutoSmelt
-			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
-					isAutoSmelt ){
-				
-				autoFeatureSmelt( block, player, itemInHand );
-			}
-			
-			// AutoBlock
-			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
-					isAutoBlock ) {
-				
-				autoFeatureBlock( block, player, itemInHand );
-			}
-			
-			
-//			// AutoPickup
-//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
-//					(permPickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-//							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ) )) ) {
-//				
-//				int count = autoFeaturePickup( block, player, itemInHand );
-//				autoPickupCleanup( player, itemInHand, count, e );
-//			}
-//			
-//			// AutoSmelt
-//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
-//					(permSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-//							player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ) )) ){
-//				
-//				autoFeatureSmelt( block, player, itemInHand );
-//			}
-//			
-//			// AutoBlock
-//			if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
-//					(permBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-//							player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ) ) ) {
-//				
-////				Output.get().logInfo( "AutoManager.applyAutoEnvents: AutoBlock  enabled = %b   " +
-////						"%s hasPerm = %b  isSet = %b   has lore = %b ",
-////						isBoolean( AutoFeatures.autoBlockEnabled ),
-////						getMessage( AutoFeatures.permissionAutoBlock ), 
-////						player.hasPermission(getMessage( AutoFeatures.permissionAutoBlock ) ),
-////						player.isPermissionSet(getMessage( AutoFeatures.permissionAutoBlock ) ),
-////						loreBlock
-////						);
-//				autoFeatureBlock( block, player, itemInHand );
-//			}
-			
-			// NOTE: This may be in duplication... durability is calculated in auto pickup:
-			// Calculate durability if enabled:
-			// isCalculateDurabilityEnabled must be enabled before loreDurabiltyResistance will
-			// even be checked. 
-//			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) && 
-//					e.isCancelled()) {
-//				
-//				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-//
-//				// value of 0 = normal durability. Value 100 = never calculate durability.
-//				int durabilityResistance = 0;
-//				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-//					durabilityResistance = getDurabilityResistance( itemInHand, 
-//							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-//				}
-//				
-//				calculateDurability( player, itemInHand, durabilityResistance );
-//			}
-			
 			
 			// A block was broke... so record that event on the tool:	
 			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && e.isCancelled()) {
@@ -263,6 +184,70 @@ public class AutoManager
 				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			}
 		}
+		
+	}
+	
+	
+	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine ) {
+		int count = 0;
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
+		
+		boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
+		
+		boolean lorePickup = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.lorePickupValue ) );
+		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
+		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
+		
+		
+		boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		
+		boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		
+		boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		
+		// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
+		//       Ops will have to have the perms set to actually use them.
+				
+		// AutoPickup
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+				isAutoPickup ) {
+			
+			count = autoFeaturePickup( block, player, itemInHand );
+			autoPickupCleanup( player, itemInHand, count );
+		}
+		
+		// AutoSmelt
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
+				isAutoSmelt ){
+			
+			autoFeatureSmelt( block, player, itemInHand );
+		}
+		
+		// AutoBlock
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
+				isAutoBlock ) {
+			
+			autoFeatureBlock( block, player, itemInHand );
+		}
+		
+		
+
+//			
+//			// A block was broke... so record that event on the tool:	
+//			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && e.isCancelled()) {
+//
+//				// The event was canceled, so the block was successfully broke, so increment the name counter:
+//				
+////				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+//				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
+//			}
+		
+		return count;
 	}
 
 
@@ -302,29 +287,46 @@ public class AutoManager
 	 * @param e
 	 * @param mine
 	 */
-	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, int blockCount ) {
+	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, int blockCount, 
+						List<SpigotBlock> teExplosiveBlocks, boolean dropBlocks ) {
+		int totalCount = 0;
 		
 		Player player = e.getPlayer();
 		
-//		double lorePickup = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Pickup, p );
-//		double loreSmelt = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Smelt, p );
-//		double loreBlock = doesItemHaveAutoFeatureLore( ItemLoreEnablers.Block, p );
-//		
-//		boolean permPickup = p.isPermissionSet( "prison.autofeatures.pickup" ) ||
-//				lorePickup == 100.0 ||
-//				lorePickup > 0 && lorePickup <= getRandom().nextDouble() * 100;
-//		boolean permSmelt = p.isPermissionSet( "prison.autofeatures.smelt" ) ||
-//				loreSmelt == 100.0 ||
-//				loreSmelt > 0 && loreSmelt <= getRandom().nextDouble() * 100;
-//		boolean permBlock = p.isPermissionSet( "prison.autofeatures.block" ) ||
-//				loreBlock == 100.0 ||
-//				loreBlock > 0 && loreBlock <= getRandom().nextDouble() * 100;
-
-//		if ( permPickup || permSmelt || permBlock ||
-//				isAreEnabledFeatures())
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
 		
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+		
+		if ( isTEExplosiveEnabled ) {
+			
+			// The teExplosiveBlocks list have already been validated as being within the mine:
+			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
+				
+				if ( !dropBlocks && isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
+					
+					totalCount += applyAutoEvents( player, spigotBlock, mine );
+				}
+				else if ( dropBlocks ) {
+					// This will never be called since this function will be called
+					// from auto complete listeners:
+					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
+				}
+				 
+			}
+		}
+		
+		
+		if ( totalCount > 0 ) {
+			
+			// Set the broken block to AIR and cancel the event
+			e.setCancelled(true);
+			e.getBlock().setType(Material.AIR);
+
+			// Maybe needed to prevent drop side effects:
+			e.getBlock().getDrops().clear();
+
+		}
 
 		if (e.isCancelled()) {
 			// The event was canceled, so the block was successfully broke, so increment the name counter:

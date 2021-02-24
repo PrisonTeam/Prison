@@ -16,7 +16,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.14 2021-02-21
+# v3.2.4-alpha.14 2021-02-23
+
+
+* **Rewrite of TEBlockExplodeEvent to properly handle TE Explosive enchants within the prison mines when auto manager is NOT enabled.**
+Most of the rewrite for enable Auto manager is in place but has not been tested or tweaked.
+Prison will cancel the explosive event if it is not within a mine.  This may cause issues with other things, such as use out in the wild, but for now it gets it working within the mines.  The targeted block is the one that is tested to see if the explosion occurs within the mine.  If it does, then all other blocks with in the explosion are tested to ensure they are within the mine, and if they are, then they are broke/dropped.  
+Warning... OP'd players can break blocks outside of the mine, so only test and use as non-op'd player.
+
+
+* **Fixed a bug where the block break count could go negative if there are too many blocks counted as being broken, than what are really broken.  **
 
 
 * **Hook up integration permission listing to the /ranks player command.**

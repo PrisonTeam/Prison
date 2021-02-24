@@ -206,6 +206,15 @@ public class SpigotUtil {
 		
 	}
 	
+	
+	public static void dropItems( SpigotBlock block, SpigotItemStack itemStack ) {
+		
+		
+		block.getWrapper().getLocation().getWorld().dropItem( 
+						block.getWrapper().getLocation(), itemStack.getBukkitStack() );
+		
+	}
+	
 	public static boolean playerInventoryContainsAtLeast( Player player, 
 						SpigotItemStack itemStack, int quantity ) {
 		boolean results = player.getInventory().containsAtLeast( 

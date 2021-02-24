@@ -19,7 +19,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,6 +30,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -107,7 +107,7 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig;
 	}
 
-	protected boolean isBoolean( AutoFeatures feature ) {
+	public boolean isBoolean( AutoFeatures feature ) {
 		return autoFeaturesConfig.isFeatureBoolean( feature );
 	}
 
@@ -253,18 +253,66 @@ public class AutoManagerFeatures
 		return count;
 	}
 
+	
+	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
+		int count = 0;
+		
 
-	protected void autoPickupCleanup( Player player, SpigotItemStack itemInHand, int count, BlockBreakEvent e )
+		// The following is not the correct drops:
+		Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
+//		Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
+
+
+		if (drops != null && drops.size() > 0 ) {
+
+			// Need better drop calculation that is not using the getDrops function.
+			short fortuneLevel = getFortune(itemInHand);
+
+
+			// Adds in additional drop items:
+			calculateDropAdditions( itemInHand, drops );
+
+			if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
+					hasSilkTouch( itemInHand )) {
+
+				calculateSilkTouch( itemInHand, drops );
+			}
+
+			// Drop the items where the origional block was located:
+			for ( SpigotItemStack itemStack : drops ) {
+
+				if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
+					// calculateFortune directly modifies the quantity on the blocks ItemStack:
+					calculateFortune( itemStack, fortuneLevel );
+				}
+
+				count += itemStack.getAmount();
+				
+				dropAtBlock( itemStack, block );
+				
+//				dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
+//				dropExtra( player.getInventory().addItem(itemStack), player, block );
+			}
+
+			
+			// Break the block and change it to air:
+			block.setPrisonBlock( PrisonBlock.AIR );;
+		}
+		
+		return count;
+	}
+
+	protected void autoPickupCleanup( Player player, SpigotItemStack itemInHand, int count )
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
 
-			// Set the broken block to AIR and cancel the event
-			e.setCancelled(true);
-			e.getBlock().setType(Material.AIR);
-
-			// Maybe needed to prevent drop side effects:
-			e.getBlock().getDrops().clear();
+//			// Set the broken block to AIR and cancel the event
+//			e.setCancelled(true);
+//			e.getBlock().setType(Material.AIR);
+//
+//			// Maybe needed to prevent drop side effects:
+//			e.getBlock().getDrops().clear();
 
 			// calculate durability impact: Include item durability resistance.
 			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
@@ -495,6 +543,11 @@ public class AutoManagerFeatures
 				}
 			}
 		}
+	}
+	
+	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {
+		
+		SpigotUtil.dropItems( block, itemStack );
 	}
 
 	private void notifyPlayerThatInventoryIsFull( Player player, SpigotBlock block ) {

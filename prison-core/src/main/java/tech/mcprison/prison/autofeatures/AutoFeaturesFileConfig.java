@@ -51,6 +51,9 @@ public class AutoFeaturesFileConfig {
 				hologramIfInventoryIsFull(general, false),
 
 				
+				isProcessTokensEnchantExplosiveEvents(general, true),
+				
+				
 			permissions(options),
 				permissionAutoPickup(permissions, "prison.automanager.pickup"),
 				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
