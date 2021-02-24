@@ -476,6 +476,8 @@ public abstract class MineReset
     private void resetStats() {
     	setResetPage( 0 ); 
     	
+    	setBlockBreakCount( 0 );
+    	
 		// The reset position is critical in ensuring that all blocks within the mine are reset 
 		// and that when a reset process pages (allows another process to run) then it will be
 		// used to pick up where it left off.
