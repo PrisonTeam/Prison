@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.autofeatures;
 
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +15,6 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -91,15 +89,7 @@ public class AutoManager
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
-    	
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		
-        	
-        	Location bLoc = e.getBlock().getLocation();
-        	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
-        	
-        	Output.get().logInfo( "#### AutoManager.OnBlockBreak :  %s   blocks= 1   isCanceled=%b ",
-        			blockId, e.isCancelled() );
 
     		genericBlockEvent( e );
     	}
@@ -110,12 +100,6 @@ public class AutoManager
     public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
     	if ( !e.isCancelled() && isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
     	    
-        	Location bLoc = e.getBlock().getLocation();
-        	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
-
-        	Output.get().logInfo( "#### AutoManager.onTEBlockExplode :  %s blocks= %s   isCanceled=%b", 
-        			blockId, Integer.toString( e.blockList().size() ), e.isCancelled() );
-
     		genericBlockExplodeEvent( e );
     	}
     }
@@ -306,8 +290,6 @@ public class AutoManager
 		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
 		if ( isTEExplosiveEnabled ) {
-			
-			Output.get().logInfo( "#### AutoManager.applyAutoEvents :  isTEExplosiveEnabled = true" );
 			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {

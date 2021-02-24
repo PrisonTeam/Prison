@@ -9,6 +9,12 @@ issues, and/or to serve as items that should be added, or fixed.
 
 # To Do Items - During Alpha v3.2.4
 
+
+- Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point.
+
+
+- placeholder {prison_rank} does not appear to be working outside of prison some times?  It works when using the placeholder test function.  But papi was not passing to to prison.  1.15.2B environment.
+   
    
 - Future Block Constraints:
  - GradientBottom - The block has a greater chance to spawn near the bottom of the mine. 

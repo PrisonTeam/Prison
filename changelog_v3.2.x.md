@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.14 2021-02-23
 
 
+* **Removed some of the logging and update some of the docs too.**
+
+
 * **Enabled the auto manager's auto pickup to work with TokenEnchant's TEBlockExplosionEvent.**
 Needs more testing to ensure everything is working properly with and without the auto manager enabled.
 

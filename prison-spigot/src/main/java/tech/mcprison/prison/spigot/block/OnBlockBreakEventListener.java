@@ -153,12 +153,6 @@ public class OnBlockBreakEventListener
      */
     @EventHandler(priority=EventPriority.MONITOR) 
     public void onBlockBreak(BlockBreakEvent e) {
-    	
-    	Location bLoc = e.getBlock().getLocation();
-    	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
-    	
-    	Output.get().logInfo( "#### onBlockBreak: MONITOR :  %s   blocks= 1   isCanceled=%b ",
-    			blockId, e.isCancelled() );
 
     	genericBlockEvent( e );
     }
@@ -166,12 +160,6 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.MONITOR) 
     public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
     
-    	Location bLoc = e.getBlock().getLocation();
-    	String blockId = bLoc.getBlockX() + "." + bLoc.getBlockY() + "." + bLoc.getBlockZ();
-
-    	Output.get().logInfo( "#### onTEBlockExplode: MONITOR :  %s blocks= %s   isCanceled=%b", 
-    			blockId, Integer.toString( e.blockList().size() ), e.isCancelled() );
-    	
     	genericBlockExplodeEventMonitor( e );
     }
 
@@ -191,12 +179,6 @@ public class OnBlockBreakEventListener
 		boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
 		if ( !isAutoManagerEnabled && isTEExplosiveEnabled ) {
-			
-			Location bLoc = e.getBlock().getLocation();
-			String blockId = bLoc.getBlockX() + "-" + bLoc.getBlockY() + "-" + bLoc.getBlockZ();
-			
-			Output.get().logInfo( "#### onTEBlockExplode: LOW :  %s blocks= %s   isCanceled=%b", 
-					blockId, Integer.toString( e.blockList().size() ), e.isCancelled() );
 			
 			genericBlockExplodeEvent( e );
 		}
@@ -390,139 +372,21 @@ public class OnBlockBreakEventListener
 
     				else {
     					// Monitor:
+    					// Log block break events and BlockEvents:
     					doActionMonitor( mine, e, teExplosiveBlocks );
     					
-    					// Do not process the actions??
-    					
-    					// Log block break events and BlockEvents:
-    					
     				}
-    				
     			}
-    			
-    			Output.get().logInfo( "#### genericBlockExplodeEvent: blocks= " + 
-    							teExplosiveBlocks.size() + 
-    					"  TEBlockExplodeEvent  Priority: " +
-    					( monitor ? "MONITOR" : "LOW ") );
     		}
     			
     		else {
     			
     			// targeted block was not in the mine, so cancel it:
     			e.setCancelled( true );
-    			
-    			
-    			Output.get().logInfo( "#### genericBlockExplodeEvent: canceled  TEBlockExplodeEvent  " +
-    					"Priority: " +
-    						( monitor ? "MONITOR" : "LOW ") );
     		}
     		
-    		
-    		// for debug use: Uncomment to use.
-//    		String message = incrementUses(System.nanoTime() - startNano);
-//    		if ( message != null ) {
-//    			e.getPlayer().sendMessage( message );
-//    		}
     	}
 	}
-
-	
-//	
-//	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e )
-//	{
-//		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-//    	if ( getPrisonMineManager() != null ) {
-//    		
-//    		// long startNano = System.nanoTime();
-//    		Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
-//    		
-//    		// Get the cached mine, if it exists:
-//    		Mine mine = getPlayerCache().get( playerUUIDLSB );
-//    		
-//    		if ( mine == null ) {
-//    			
-//    			// have to go through all blocks since some blocks may be outside the mine.
-//    			// but terminate search upon first find:
-//    			for ( Block blk : e.blockList() ) {
-//    				// Need to wrap in a Prison block so it can be used with the mines:
-//    				SpigotBlock block = new SpigotBlock(blk);
-//    				
-//    				// Look for the correct mine to use. 
-//    				// Set mine to null so if cannot find the right one it will return a null:
-//    				mine = findMineLocation( block );
-//    				
-//    				// Store the mine in the player cache if not null:
-//    				if ( mine != null ) {
-//    					getPlayerCache().put( playerUUIDLSB, mine );
-//    					
-//    					// we found the mine!
-//    					break;
-//    				}
-//    			}
-//    		}
-//    		else if ( mine != null ) {
-//    			
-//    			// NOTE: Just because the mine is not null, does not mean that the block was tested to be
-//    			//       within the mine.  The block must be tested.
-//    			
-//    			// Need to wrap in a Prison block so it can be used with the mines:
-//				SpigotBlock block = new SpigotBlock(e.getBlock());
-//				
-//				// Set mine to null so if cannot find the right one it will return a null:
-//				mine = findMineLocation( block );
-//    		}
-//    		
-//    		
-//    		// now process all blocks:
-//    		if ( mine != null ) {
-//    			// have to go through all blocks since some blocks may be outside the mine.
-//    			// but terminate search upon first find:
-//    			
-//    			List<SpigotBlock> teExplosiveBlocks = new ArrayList<>();
-//    			
-//    			int blockCount = 0;
-//    			for ( Block blk : e.blockList() ) {
-//    				boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
-//    				
-//    				// If canceled it must be AIR, otherwise if it is not canceled then 
-//    				// count it since it will be a normal drop
-//    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
-//    					
-//    					// Need to wrap in a Prison block so it can be used with the mines:
-//    					SpigotBlock block = new SpigotBlock(blk);
-//    					
-//    					if ( mine.isInMineExact( block.getLocation() ) ) {
-//
-//    						teExplosiveBlocks.add( block );
-//    						
-//    						blockCount++;
-//    					}
-//    					
-//    				}
-//    			}
-//    			if ( blockCount > 0 ) {
-//    				// This is where the processing actually happens:
-//    				doAction( mine, e, teExplosiveBlocks );
-//    				
-//    			}
-//    			
-//    			Output.get().logInfo( "#### genericBlockExplodeEvent: blocks= " + blockCount );
-//    		}
-//    		else {
-//    			// The block that was mined was outside of the mine, so cancel the event:
-//    			
-//    			e.setCancelled( true );
-//    		}
-//    			
-//    		
-//    		
-//    		// for debug use: Uncomment to use.
-////    		String message = incrementUses(System.nanoTime() - startNano);
-////    		if ( message != null ) {
-////    			e.getPlayer().sendMessage( message );
-////    		}
-//    	}
-//	}
 
 	
 	
