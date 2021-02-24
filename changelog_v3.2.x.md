@@ -16,7 +16,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.14 2021-02-23
+# v3.2.4-alpha.14 2021-02-23ù
+
+
+* **Player Mines GUI will now show Mines Tags**
+Player Mines gui (aka /mines or /gui mines) will now show Mines Tags as titles instead
+  of the Mine Name.
+  
+
+* **GUI Prestiges console error fix**
+You won't get an error for trying opening the gui prestiges from the console now.
+  Some other GUIs are involved and fixed too.
 
 
 * **Removed some of the logging and update some of the docs too.**

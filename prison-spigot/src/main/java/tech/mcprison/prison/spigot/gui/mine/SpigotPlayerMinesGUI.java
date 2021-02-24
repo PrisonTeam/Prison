@@ -19,6 +19,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
@@ -94,6 +95,12 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         guiConfig = guiConfigClass.getFileGuiConfig();
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
+        // Get Mine Name.
+        String mineName = m.getName();
+
+        // Add mineName lore for TP.
+        minesLore.add(SpigotPrison.format("&3" + mineName));
+
         // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
         // based upon the XMaterial enumeration name, or supported past names.
         Material mineMaterial = null;
@@ -124,10 +131,25 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
         }
 
-        // Create the button
-        itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + m.getName()));
+        // Get mine Tag.
+        String mineTag = m.getTag();
 
-        // Add the button to the inventory
-        inv.addItem(itemMines);
+        // Check if mineName's null (which shouldn't be) and do actions.
+        if (mineName != null) {
+
+            if (mineTag == null || mineTag.equalsIgnoreCase("null")){
+                mineTag = mineName;
+            }
+
+            if (material == null){
+                material = Material.COAL_ORE;
+            }
+
+            // Create the button.
+            itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + mineTag));
+
+            // Add the button to the inventory.
+            inv.addItem(itemMines);
+        }
     }
 }

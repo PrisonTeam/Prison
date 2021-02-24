@@ -748,7 +748,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (title.equalsIgnoreCase(minesPlayerTitle)){
 
                 // Call the method
-                playerMinesGUI(p, buttonNameMain);
+                playerMinesGUI(p, e);
             }
         }
     }
@@ -1895,12 +1895,20 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void playerMinesGUI(Player p, String buttonNameMain) {
+    private void playerMinesGUI(Player p, InventoryClickEvent e) {
 
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
-        if (p.hasPermission(permission + buttonNameMain) || p.hasPermission(permission.substring(0, permission.length() - 1))){
-            Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + buttonNameMain));
+        String mineName = null;
+
+        if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getLore() != null && e.getCurrentItem().getItemMeta().getLore().get(0) != null) {
+            mineName = e.getCurrentItem().getItemMeta().getLore().get(0).substring(2);
+        }
+
+        if (mineName != null) {
+            if (p.hasPermission(permission + mineName) || p.hasPermission(permission.substring(0, permission.length() - (mineName.length() + 1)))) {
+                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+            }
         }
     }
 

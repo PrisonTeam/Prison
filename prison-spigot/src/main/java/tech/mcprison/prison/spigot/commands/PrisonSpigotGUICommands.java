@@ -74,6 +74,12 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         }
 
         Player player = getSpigotPlayer( sender );
+
+        if (player == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
         SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player );
         gui.open();
     }
