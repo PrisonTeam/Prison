@@ -302,12 +302,16 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected void autoPickupCleanup( Player player, SpigotItemStack itemInHand, int count )
+	protected void autoPickupCleanup( SpigotBlock block, Player player, SpigotItemStack itemInHand, int count )
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
 
 //			// Set the broken block to AIR and cancel the event
+			if ( !block.isEmpty() ) {
+				block.setPrisonBlock( PrisonBlock.AIR );
+			}
+			
 //			e.setCancelled(true);
 //			e.getBlock().setType(Material.AIR);
 //

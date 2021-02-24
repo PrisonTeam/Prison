@@ -32,6 +32,8 @@ public class AutoFeaturesFileConfig {
     	
     	options,
     	
+	    	isProcessTokensEnchantExplosiveEvents(options, true),
+	    	
 	    	general(options),
 	    	
 		    	isAutoManagerEnabled(general, false),
@@ -50,9 +52,6 @@ public class AutoFeaturesFileConfig {
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, false),
 
-				
-				isProcessTokensEnchantExplosiveEvents(general, true),
-				
 				
 			permissions(options),
 				permissionAutoPickup(permissions, "prison.automanager.pickup"),

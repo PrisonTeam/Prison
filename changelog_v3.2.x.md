@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.14 2021-02-23
 
 
+* **Enabled the auto manager's auto pickup to work with TokenEnchant's TEBlockExplosionEvent.**
+Needs more testing to ensure everything is working properly with and without the auto manager enabled.
+
+
 * **Rewrite of TEBlockExplodeEvent to properly handle TE Explosive enchants within the prison mines when auto manager is NOT enabled.**
 Most of the rewrite for enable Auto manager is in place but has not been tested or tweaked.
 Prison will cancel the explosive event if it is not within a mine.  This may cause issues with other things, such as use out in the wild, but for now it gets it working within the mines.  The targeted block is the one that is tested to see if the explosion occurs within the mine.  If it does, then all other blocks with in the explosion are tested to ensure they are within the mine, and if they are, then they are broke/dropped.  

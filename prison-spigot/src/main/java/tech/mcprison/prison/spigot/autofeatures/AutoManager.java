@@ -137,10 +137,16 @@ public class AutoManager
 	}
     
     
+    /**
+     * <p>This function overrides the doAction in OnBlockBreakEventListener and
+     * this is only enabled when auto manager is enabled.
+     * </p>
+     * 
+     */
     @Override
-    public void doAction( Mine mine, TEBlockExplodeEvent e, int blockCount, 
-    				List<SpigotBlock> teExplosiveBlocks, boolean dropBlocks ) {
-    	applyAutoEvents( e, mine, blockCount, teExplosiveBlocks, dropBlocks );
+    public void doAction( Mine mine, TEBlockExplodeEvent e, 
+    				List<SpigotBlock> teExplosiveBlocks ) {
+    	applyAutoEvents( e, mine, teExplosiveBlocks );
     }
     
     // Prevents players from picking up armorStands (used for holograms), only if they're invisible
@@ -218,7 +224,7 @@ public class AutoManager
 				isAutoPickup ) {
 			
 			count = autoFeaturePickup( block, player, itemInHand );
-			autoPickupCleanup( player, itemInHand, count );
+			autoPickupCleanup( block, player, itemInHand, count );
 		}
 		
 		// AutoSmelt
@@ -287,31 +293,34 @@ public class AutoManager
 	 * @param e
 	 * @param mine
 	 */
-	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, int blockCount, 
-						List<SpigotBlock> teExplosiveBlocks, boolean dropBlocks ) {
+	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, 
+						List<SpigotBlock> teExplosiveBlocks ) {
 		int totalCount = 0;
 		
 		Player player = e.getPlayer();
 		
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
-		
+		// Auto manager is enabled if it's going to hit this function so no need to double check:
+//		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
 		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
 		if ( isTEExplosiveEnabled ) {
 			
+			Output.get().logInfo( "#### AutoManager.applyAutoEvents :  isTEExplosiveEnabled = true" );
+			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-				if ( !dropBlocks && isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
-					
+//				if ( isAutoManagerEnabled ) {
+//					
 					totalCount += applyAutoEvents( player, spigotBlock, mine );
-				}
-				else if ( dropBlocks ) {
+//				}
+//				else {
 					// This will never be called since this function will be called
 					// from auto complete listeners:
-					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
-				}
+//					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
+//				}
 				 
 			}
 		}
@@ -330,7 +339,7 @@ public class AutoManager
 
 		if (e.isCancelled()) {
 			// The event was canceled, so the block was successfully broke, so increment the name counter:
-			itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), blockCount);
+			itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
 		}
 	}
 }
