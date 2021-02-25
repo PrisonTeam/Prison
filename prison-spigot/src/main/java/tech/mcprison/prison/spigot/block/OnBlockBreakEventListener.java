@@ -515,8 +515,6 @@ public class OnBlockBreakEventListener
 			mine.incrementTotalBlocksMined();
 			
 			
-			Output.get().logInfo( "#### OnBlockBreak: Monitor: 1" );
-			
 //			boolean isAir = block == null || block.getType() != null && block.getType() == BlockType.AIR;
 //			
 //			// Register the block broken within the mine:

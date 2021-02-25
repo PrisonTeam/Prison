@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.14 2021-02-24
+# v3.2.4-alpha.14 2021-02-25
+
+
+* **New feature: If a player logs out while in a mine, and then logs back in to the game after the mine resets they can suffocate to death.**
+Now this situation is detected and the player is teleported to the mine's spawn point.
 
 
 * **Rewrote how the chat placeholders are processed.**

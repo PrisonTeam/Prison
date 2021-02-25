@@ -18,12 +18,15 @@
 
 package tech.mcprison.prison.spigot;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,6 +40,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
+import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -87,6 +91,21 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
+	@EventHandler public void onPlayerSuffocation( EntityDamageEvent e ) {
+		Entity entity = e.getEntity();
+		
+		if ( entity instanceof Player && e.getCause().equals( 
+								EntityDamageEvent.DamageCause.SUFFOCATION ) ) {
+			
+			SpigotPlayer sPlayer = new SpigotPlayer( (Player) entity );
+			
+			PlayerSuffocationEvent event = new PlayerSuffocationEvent( sPlayer );
+			Prison.get().getEventBus().post( event );
+			
+			doCancelIfShould(event, e);
+		}
+	}
+    
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
@@ -99,7 +118,6 @@ public class SpigotListener implements Listener {
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
     }
-
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
