@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -277,7 +276,7 @@ public class OnBlockBreakEventListener
 	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( !e.isCancelled() && getPrisonMineManager() != null ) {
+    	if ( (monitor || !e.isCancelled()) && getPrisonMineManager() != null ) {
     		
 			List<SpigotBlock> teExplosiveBlocks = new ArrayList<>();
 
@@ -350,7 +349,9 @@ public class OnBlockBreakEventListener
     				
     				// If canceled it must be AIR, otherwise if it is not canceled then 
     				// count it since it will be a normal drop
-    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
+    				if ( monitor && e.isCancelled() && isAir || 
+    					!monitor && !e.isCancelled() && !isAir ) {
+//    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
     					
     					// Need to wrap in a Prison block so it can be used with the mines:
     					SpigotBlock block = new SpigotBlock(blk);
@@ -514,6 +515,8 @@ public class OnBlockBreakEventListener
 			mine.incrementTotalBlocksMined();
 			
 			
+			Output.get().logInfo( "#### OnBlockBreak: Monitor: 1" );
+			
 //			boolean isAir = block == null || block.getType() != null && block.getType() == BlockType.AIR;
 //			
 //			// Register the block broken within the mine:
@@ -571,12 +574,29 @@ public class OnBlockBreakEventListener
 				for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 					
 					// Drop the contents of the individual block breaks
-					totalCount += aMan.calculateNormalDrop( itemInHand, spigotBlock );
+					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
+					totalCount += drop;
+					
+					if ( drop > 0 ) {
+						
+						// If there is a drop, then need to record the block break.
+						// There is a chance it may not break.
+						mine.addBlockBreakCount( 1 );
+						mine.addTotalBlocksMined( 1 );
+					}
 					
 				}
 				
 				
 				if ( totalCount > 0 ) {
+					
+					
+//					// Override blockCount to be exactly the blocks within the mine:
+//					int blockCount = teExplosiveBlocks.size();
+//					
+//					mine.addBlockBreakCount( blockCount );
+//					mine.addTotalBlocksMined( blockCount );
+					
 					
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
@@ -585,7 +605,9 @@ public class OnBlockBreakEventListener
 					//e.getBlock().setType(Material.AIR);
 					
 					// Maybe needed to prevent drop side effects:
-					e.getBlock().getDrops().clear();
+					//e.getBlock().getDrops().clear();
+					
+					
 					
 				}
 				
@@ -599,10 +621,22 @@ public class OnBlockBreakEventListener
 			
 			// Override blockCount to be exactly the blocks within the mine:
 			int blockCount = teExplosiveBlocks.size();
+
 			
-			mine.addBlockBreakCount( blockCount );
-			mine.addTotalBlocksMined( blockCount );
+			// Cannot count the blocks mined since many may be air.  Must count the actual blocks when
+			// they are being broken:
 			
+//			mine.addBlockBreakCount( blockCount );
+//			mine.addTotalBlocksMined( blockCount );
+//			
+			
+			
+//			Output.get().logInfo( "#### AutoManager: MONITOR: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
+//					e.blockList().size() + "  processed : " + blockCount + 
+//					"  blocks remaining= " + mine.getRemainingBlockCount()
+//					);
+			
+
 			
 //			// Register the blocks broken within the mine:
 //			for ( Block bukkitBlock : e.blockList() ) {

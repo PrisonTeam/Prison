@@ -279,7 +279,6 @@ public class AutoManager
 	 */
 	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, 
 						List<SpigotBlock> teExplosiveBlocks ) {
-		int totalCount = 0;
 		
 		Player player = e.getPlayer();
 		
@@ -290,6 +289,8 @@ public class AutoManager
 		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
 		if ( isTEExplosiveEnabled ) {
+
+			int totalCount = 0;
 			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
@@ -305,23 +306,39 @@ public class AutoManager
 //				}
 				 
 			}
-		}
-		
-		
-		if ( totalCount > 0 ) {
 			
-			// Set the broken block to AIR and cancel the event
-			e.setCancelled(true);
-			e.getBlock().setType(Material.AIR);
-
-			// Maybe needed to prevent drop side effects:
-			e.getBlock().getDrops().clear();
-
+			
+//			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
+//					e.blockList().size() + "  processed : " +
+//					teExplosiveBlocks.size() + "  " + totalCount + 
+//					"  blocks remaining= " + mine.getRemainingBlockCount() + 
+//					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
+			
+			
+			if ( totalCount > 0 ) {
+				
+				
+				// Override blockCount to be exactly the blocks within the mine:
+				int blockCount = teExplosiveBlocks.size();
+				
+				mine.addBlockBreakCount( blockCount );
+				mine.addTotalBlocksMined( blockCount );
+				
+				
+				// Set the broken block to AIR and cancel the event
+				e.setCancelled(true);
+				// e.getBlock().setType(Material.AIR);
+				
+				// Maybe needed to prevent drop side effects:
+				//e.getBlock().getDrops().clear();
+				
+			}
+			
+			if (e.isCancelled()) {
+				// The event was canceled, so the block was successfully broke, so increment the name counter:
+				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
+			}
 		}
-
-		if (e.isCancelled()) {
-			// The event was canceled, so the block was successfully broke, so increment the name counter:
-			itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
-		}
+		
 	}
 }
