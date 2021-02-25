@@ -1013,6 +1013,8 @@ public class MineManager
     public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, 
     						PlaceHolderKey placeHolderKey, String identifier ) {
     	String results = null;
+    	
+    	identifier = identifier.toLowerCase();
 
     	if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
     		identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;

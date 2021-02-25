@@ -16,7 +16,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.14 2021-02-23ù
+# v3.2.4-alpha.14 2021-02-24
+
+
+* **Rewrote how the chat placeholders are processed.**
+Found issues with the old way of dealing with it.  This should be more flexible and is able to deal with any case placeholder now.
+There is room for improvement, such as caching PlaceHolderKey's that are related to chat placeholders since they will always be the same (mostly).  Can also refactor some of the other placeholder code that can take advantage of these new techniques.
+
+
+* **TE Explosions are not able to produce accurate block counts.**
+These changes improves the accuracy, but it's still not perfect.  Will address in the future.
 
 
 * **Player Mines GUI will now show Mines Tags**

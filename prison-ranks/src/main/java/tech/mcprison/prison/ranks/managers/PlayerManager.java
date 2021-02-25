@@ -45,6 +45,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -860,9 +861,11 @@ public class PlayerManager
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
     	String results = null;
 
-    	if ( playerUuid != null ) {
+    	if ( playerUuid != null && identifier != null ) {
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		identifier = identifier.toLowerCase();
     		
     		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
@@ -883,6 +886,44 @@ public class PlayerManager
     	
     	return results;
     }
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, PlaceholderResults placeholderResults ) {
+    	String results = null;
+    	
+    	if ( playerUuid != null && placeholderResults.hasResults() ) {
+    		
+    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		String identifier = placeholderResults.getIdentifier();
+    		
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+    		
+    		// placeholder Attributes: 
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		if ( placeholderResults.getPlaceholder() != null ) {
+    			results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeholderResults.getPlaceholder(), attribute );
+    		}
+    		else {
+    			// Need to hunt for the placeholder:
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    				if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+    					results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
+    					break;
+    				}
+    			}
+    		}
+    		
+    	}
+    	
+    	return results;
+    }
+    
+    
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, 
     					PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute ) {
