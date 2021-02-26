@@ -62,8 +62,11 @@ prestige-confirm-gui: true
 
 # NEW: Enable or disable the SellAll command and sub-commands
 # New feature so setting to false since it will override other shop plugins.
-sellall: false
+sellall: true
 
+
+# NEW: Enable backpacks integrated within prison.
+backpacks: false
 
 
 # NEW: Broadcast rankups and demotions to the whole server, in all worlds.

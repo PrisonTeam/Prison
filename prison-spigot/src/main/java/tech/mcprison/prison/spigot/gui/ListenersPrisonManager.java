@@ -7,6 +7,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,6 +18,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -42,10 +45,7 @@ import tech.mcprison.prison.spigot.gui.sellall.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author GABRYCA
@@ -61,6 +61,7 @@ public class ListenersPrisonManager implements Listener {
     private String tempChatVariable;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
+    private boolean isBackPacksGUIActive = false;
     
     // NOTE: sellAllConfig will be null if sellall is not enbled.
 	private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -269,6 +270,75 @@ public class ListenersPrisonManager implements Listener {
 
         // Get the player and remove him from the list
         Player p = (Player) e.getPlayer();
+
+        if (isBackPacksGUIActive){
+
+            File backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+            FileConfiguration backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+
+            Inventory inv = e.getInventory();
+
+            if (inv.getContents() != null){
+                int slot = 0;
+                String displayName = "null";
+
+                try {
+                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+                    backPacksDataConfig.save(backPacksFile);
+                } catch (IOException ex){
+                    ex.printStackTrace();
+                    return;
+                }
+
+                backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+                backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+
+                for (ItemStack item : inv.getContents()){
+                    if (item != null){
+
+                        XMaterial material = XMaterial.matchXMaterial(item);
+
+                        if (item.hasItemMeta()){
+                            displayName = item.getItemMeta().getDisplayName();
+                            int loreNumber = 0;
+                            if (item.getItemMeta().getLore() != null){
+                                for (String lores : item.getItemMeta().getLore()){
+                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".Lores." + loreNumber + ".LORE", lores);
+                                    loreNumber++;
+                                }
+                            }
+                            item.getItemMeta().getEnchants();
+                            Map<Enchantment, Integer> enchants = item.getItemMeta().getEnchants();
+                            int numberEnchants = 0;
+                            if (!enchants.isEmpty()) {
+                                for (Map.Entry<Enchantment,Integer> enchant : enchants.entrySet()) {
+                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ENCHANTMENTS." + numberEnchants + ".ENCHANT", enchant.getKey().getKey().getKey());
+                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ENCHANTMENTS." + numberEnchants + ".LEVEL", enchant.getValue());
+                                    numberEnchants++;
+                                }
+                            }
+                        }
+
+                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".DISPLAYNAME", displayName);
+                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEM_ID", material.name());
+                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() +   ".Items." + slot  + ".AMOUNT", item.getAmount());
+
+                        slot++;
+                    }
+                }
+                if (slot != 0){
+                    try {
+                        backPacksDataConfig.save(backPacksFile);
+                    } catch (IOException ex){
+                        ex.printStackTrace();
+                        return;
+                    }
+                }
+            }
+
+            isBackPacksGUIActive = false;
+        }
+
         activeGui.remove(p.getName());
     }
 
@@ -448,13 +518,19 @@ public class ListenersPrisonManager implements Listener {
 
         if (activeGui.contains(p.getName())) {
 
+            Compatibility compat;
+            compat = SpigotPrison.getInstance().getCompatibility();
+
+            if (compat.getGUITitle(e) != null) {
+                if (backPacksGUI(p, compat.getGUITitle(e).substring(2))) return;
+            }
+
             // GUIs must have the good conditions to work.
             if (guiConditions(e, p)) return;
 
             String buttonNameMain;
             String[] parts;
             Module module;
-            Compatibility compat;
             String title;
             sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
@@ -463,7 +539,6 @@ public class ListenersPrisonManager implements Listener {
                 buttonNameMain = SpigotPrison.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                 parts = buttonNameMain.split(" ");
                 module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
-                compat = SpigotPrison.getInstance().getCompatibility();
                 title = compat.getGUITitle(e).substring(2);
             } catch (ArrayIndexOutOfBoundsException ex){
                 Output.get().sendError(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
@@ -477,6 +552,8 @@ public class ListenersPrisonManager implements Listener {
                 e.setCancelled(true);
                 return;
             }
+
+
 
             String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
             String playerPrestigesTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
@@ -751,6 +828,16 @@ public class ListenersPrisonManager implements Listener {
                 playerMinesGUI(p, e);
             }
         }
+    }
+
+    private boolean backPacksGUI(Player p, String title) {
+
+        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) && title.equalsIgnoreCase(p.getName() + " -> Backpack")){
+            isBackPacksGUIActive = true;
+            return true;
+        }
+
+        return false;
     }
 
     private void showBlock(InventoryClickEvent e, Player p, String[] parts) {

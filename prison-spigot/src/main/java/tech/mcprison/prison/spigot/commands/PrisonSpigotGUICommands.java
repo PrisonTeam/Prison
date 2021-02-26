@@ -7,6 +7,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -25,7 +26,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
      * @param sender
      */
     @Command( identifier = "gui", description = "The Prison's GUI",
-            aliases = {"prisonmanager gui", "gui admin"},
+            aliases = {"gui admin"},
             altPermissions = {"prison.admin", "prison.prisonmanagergui"},
             onlyPlayers = false
     )
@@ -48,7 +49,6 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
 
     @Command( identifier = "gui prestiges", description = "GUI Prestiges",
-            aliases = {"prisonmanager prestiges"},
             onlyPlayers = true )
     private void prisonManagerPrestiges( CommandSender sender ) {
 
@@ -85,7 +85,6 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
 
     @Command( identifier = "gui mines", description = "GUI Mines",
-            aliases = {"prisonmanager mines"},
             onlyPlayers = true )
     private void prisonManagerMines(CommandSender sender) {
 
@@ -117,7 +116,6 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
 
     @Command( identifier = "gui ranks", description = "GUI Ranks",
-            aliases = {"prisonmanager ranks"},
             onlyPlayers = true )
     private void prisonManagerRanks(CommandSender sender) {
 
@@ -153,5 +151,20 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     private void sellAllGuiCommandNew(CommandSender sender){
 
         sender.dispatchCommand("sellall gui");
+    }
+
+    @Command(identifier = "gui backpack", description = "GUI Backpacks for players",
+            onlyPlayers = true )
+    private void prisonBackPacksGUI(CommandSender sender) {
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
+        SpigotPlayerBackPacksGUI gui = new SpigotPlayerBackPacksGUI(p);
+        gui.open();
     }
 }

@@ -19,6 +19,19 @@ that you need.
 # v3.2.4-alpha.15 2021-02-25
 
 
+* **Prison Backpacks are now a thing...**
+This's still a very early access feature but it's already working and powerful, it supports custom
+  items displaynames, lores (not tested lores), enchantments.
+  You can open it with `/backpack` as a player, or `/gui backpack` as an admin.
+  It's possible to enable it from the `config.yml` by turning to true the `backpacks: false` option.
+  When enabled and restarted your server, you'll see a new folder named `backpacks`, where there're 2 files:
+  `backpacksdata.yml` and `backpacksconfig.yml`, all the backpacks options are editable from the backpacksconfig.yml
+  and you should **never** touch backpacksdata.yml.
+  I repeat, this's early access, might be unstable and have a ton of bugs to fix, until then please report all
+  your issues on this new feature and also feel free to make feature requests, it's really appreciated.
+  At the time of writing, SELLALL AND AUTOPICKUP AREN'T SUPPORTED!
+  
+
 * **v3.2.4-alpha.15 2021-02-25**
 
 

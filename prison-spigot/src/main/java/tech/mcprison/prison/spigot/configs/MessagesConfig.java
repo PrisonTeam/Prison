@@ -93,6 +93,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToManageRank","&8Manage this rank.");
         dataConfig("Lore.ClickToManageCommands","&8Manage RankUPCommands.");
         dataConfig("Lore.ClickToOpen","&8Click to open.");
+        dataConfig("Lore.ClickToOpenBackpack", "&8Click to open Prison Backpack.");
         dataConfig("Lore.ClickToRename", "&8Click to rename.");
         dataConfig("Lore.ClickToTeleport","&8Click to teleport.");
         dataConfig("Lore.ClickToUse","&8Click to use.");
