@@ -10,10 +10,27 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.4
 
 
-- Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point.
+
+- Use the mine tag name over the mine's name if it exists.
 
 
-- placeholder {prison_rank} does not appear to be working outside of prison some times?  It works when using the placeholder test function.  But papi was not passing to to prison.  1.15.2B environment.
+
+- TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not bee exact. Not sure why at this time.
+
+
+
+- Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
+  - Partially done.  The chat handler was updated, but the change could be pushed in to other existing code to improve the flexibility and resolve some of the weaknesses that may exist.
+
+
+- /mines set size <mineName> walls 0 is not refreshing.
+  - NOTE: Cannot refresh liners if size is 0. The reason for this is that a liner may not always fill the full edge.  Therefore, a value of 0 cannot tell if there should be a liner block in that position. Normally a liner only replaces existing block when applying the liner, or it forces it so it fills the whole edge.  If it's not normally forced, then it cannot be done.
+
+
+
+- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point.
+
+
    
    
 - Future Block Constraints:

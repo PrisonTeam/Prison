@@ -107,8 +107,8 @@ public class AutoManager
     
     @Override
     @EventHandler(priority=EventPriority.LOW) 
-    public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    public void onCrazyEnchantsBlockExplodeMonitor(BlastUseEvent e) {
+    	if ( !e.isCancelled() && isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
     		genericBlockExplodeEvent( e );
     	}
     }
