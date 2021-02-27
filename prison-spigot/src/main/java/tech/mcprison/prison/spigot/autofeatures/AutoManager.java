@@ -132,14 +132,7 @@ public class AutoManager
     				List<SpigotBlock> teExplosiveBlocks ) {
     	applyAutoEvents( e, mine, teExplosiveBlocks );
     }
-    
-    // Prevents players from picking up armorStands (used for holograms), only if they're invisible
-	@EventHandler
-	public void manipulate(PlayerArmorStandManipulateEvent e) {
-		if(!e.getRightClicked().isVisible()) {
-			e.setCancelled(true);
-		}
-	}
+
 
 	//TODO Use the SpigotBlock within these functions so it can use the new block model and the custom blocks if they exist
 	private void applyAutoEvents( SpigotBlock block, BlockBreakEvent e, Mine mine) {

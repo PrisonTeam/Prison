@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -198,6 +199,15 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
+    
+    // Prevents players from picking up armorStands (used for holograms), only if they're invisible
+	@EventHandler
+	public void manipulate(PlayerArmorStandManipulateEvent e) {
+		if(!e.getRightClicked().isVisible()) {
+			e.setCancelled(true);
+		}
+	}
+	
     @EventHandler(priority=EventPriority.LOW) 
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         PlayerChatEvent event =

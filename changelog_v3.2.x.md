@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.15 2021-02-27
 
 
+* **Moved the PlayerArmorStandManipulateEvent to the correct class.**
+Found it in AutoManager when auto manager has nothing to do with armor stands (hopefully).
+
+
 * **Change how Crazy Enchant explosions work.** 
 Using the same new techniques that TokenEnchant is using to ensure that the blocks are within the mines.  I do not have a copy of CrazyEnchant so I cannot test it.
 
