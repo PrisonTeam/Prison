@@ -17,8 +17,8 @@
 
 package tech.mcprison.prison.ranks.commands;
 
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
@@ -63,20 +63,35 @@ public class RankUpCommand
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
     					"on the default ladder.", 
-    			permissions = "ranks.user", 
-    			altPermissions = "ranks.rankupmax.[ladderName] ranks.rankupmax.prestige", 
+    			altPermissions = {"ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
-    	rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax." );
+
+    	// Not supposed to check perms here... But it is a simple check, and it if works...
+    	if ( sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
+			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
+		}
+    	else {
+            Output.get()
+            .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
+            		"ranks.rankupmax." + ladder.toLowerCase());
+    	}
     }
 	
     @Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = true) 
+			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
     public void rankUp(CommandSender sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
 		) {
+        
+        if ( !sender.isPlayer() ) {
+        	
+        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	return;
+        }
+        
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
 
@@ -107,6 +122,13 @@ public class RankUpCommand
         
         Player player = getPlayer( sender, null );
         
+       if ( !sender.isPlayer() ) {
+        	
+        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	return;
+        }
+
+        
         //UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
@@ -124,18 +146,20 @@ public class RankUpCommand
 		boolean willPrestige = false;
 
 		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
-		if ( ladder!= null && ladder.equalsIgnoreCase("prestiges")) {
+		if (ladder.equalsIgnoreCase("prestiges")) {
 
-			if (!(lm.getLadder("default").isPresent())){
+			RankLadder rankLadder = lm.getLadder("default");
+			
+			if ( rankLadder == null ){
 				sender.sendMessage("&c[ERROR] There isn't a default ladder! Please report this to an admin!");
 				return;
 			}
-			if (!(lm.getLadder("default").get().getLowestRank().isPresent())){
+			if (!rankLadder.getLowestRank().isPresent()){
 				sender.sendMessage("&c[ERROR] Can't get the lowest rank! Please report this to an admin!");
 				return;
 			}
 
-			Rank rank = lm.getLadder("default").get().getLowestRank().get();
+			Rank rank = rankLadder.getLowestRank().get();
 
 			while (rank.getRankNext() != null) {
 				rank = rank.getRankNext();
@@ -154,7 +178,7 @@ public class RankUpCommand
 
 		boolean rankupWithSuccess = false;
 
-        if ( ladder != null && rankPlayer != null ) {
+        if (rankPlayer != null ) {
         	
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
@@ -188,11 +212,11 @@ public class RankUpCommand
 		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 			// Set the player rank to the first one of the default ladder
 			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-											lm.getLadder("default").get().getLowestRank().get().getName() + " default");
+											lm.getLadder("default").getLowestRank().get().getName() + " default");
 			// Get that rank
 			pRankSecond = rankPlayer.getRank("default");
 			// Check if the ranks match
-			if (pRankSecond == lm.getLadder("default").get().getLowestRank().get()) {
+			if (pRankSecond == lm.getLadder("default").getLowestRank().get()) {
 				// Get economy
 				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 				
@@ -306,7 +330,8 @@ public class RankUpCommand
     }
 
 
-    @Command(identifier = "ranks set rank", description = "Sets a play to a specified rank.", 
+    @Command(identifier = "ranks set rank", description = "Sets a player to a specified rank on a ladder, " +
+    		"or remove a player from a ladder (delete player rank).", 
     			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
@@ -325,7 +350,19 @@ public class RankUpCommand
         setPlayerRank( player, rank, ladder, sender );
     }
 
-
+    
+    @Command(identifier = "ranks remove rank", description = "Removes a player from a specified ladder " +
+    		"(delete player rank). This is an alias for /ranks set rank <playerName> -remove- <ladder>.", 
+    		permissions = "ranks.setrank", onlyPlayers = false) 
+    public void removeRank(CommandSender sender,
+    		@Arg(name = "playerName", def = "", description = "Player name") String playerName,
+    		@Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
+    	
+    	setRank( sender, playerName, "-remove-", ladder );
+    	
+    }
+    
+    
 	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         
@@ -349,15 +386,14 @@ public class RankUpCommand
 
 	public String confirmLadder( CommandSender sender, String ladderName ) {
 		String results = null;
-		Optional<RankLadder> ladderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         // The ladder doesn't exist
-        if (!ladderOptional.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
         }
         else {
-        	results = ladderOptional.get().getName();
+        	results = ladder.getName();
         }
         return results;
 	}
@@ -365,17 +401,17 @@ public class RankUpCommand
 
 	public RankPlayer getRankPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
 		
-		Optional<RankPlayer> playerOptional =
+		RankPlayer player =
 							PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
-        if (!playerOptional.isPresent()) {
+        if ( player == null ) {
             Output.get().sendError(sender,
                 "You don't exist! The server has no records of you. Try rejoining, " +
             									"or contact a server administrator for help.");
         }
 
-        return playerOptional.isPresent() ? playerOptional.get() : null;
+        return player;
 	}
 
 
@@ -418,10 +454,11 @@ public class RankUpCommand
 				}
                 break;
             case RANKUP_CANT_AFFORD:
+            	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
                 Output.get().sendError(sender,
-                    "You don't have enough money to rank up! The next rank costs %s.",
-                    RankUtil.doubleToDollarString(
-                    				results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()));
+                    "You don't have enough money to rank up! The next rank costs %s %s.",
+                    dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
+                    results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency() );
                 break;
             case RANKUP_LOWEST:
             	Output.get().sendInfo(sender, "%s already at the lowest rank!",

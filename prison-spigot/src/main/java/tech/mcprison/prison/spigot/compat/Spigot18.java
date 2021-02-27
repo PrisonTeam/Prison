@@ -24,9 +24,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
  * @author Faizaan A. Datoo
@@ -42,16 +44,20 @@ public class Spigot18
         return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
     }
 
-    @SuppressWarnings( "deprecation" )
 	@Override 
 	public ItemStack getItemInMainHand(PlayerInteractEvent e) {
-        return e.getPlayer().getItemInHand();
+        return getItemInMainHand( e.getPlayer() );
     }
 
-    @SuppressWarnings( "deprecation" )
     @Override 
     public ItemStack getItemInMainHand(Player player ) {
-    	return player.getItemInHand();
+    	return getItemInMainHand( player.getInventory() );
+    }
+    
+    @SuppressWarnings( "deprecation" )
+	@Override 
+    public ItemStack getItemInMainHand(PlayerInventory playerInventory) {
+    	return playerInventory.getItemInHand();
     }
     
     
@@ -63,6 +69,38 @@ public class Spigot18
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
 
+	@Override 
+	public ItemStack getItemInOffHand(PlayerInteractEvent e) {
+        return getItemInOffHand( e.getPlayer() );
+    }
+
+    @Override 
+    public ItemStack getItemInOffHand(Player player ) {
+    	return getItemInOffHand( player.getInventory() );
+    }
+    
+    /**
+     * This function does not exist in v1.8 so returns null.
+     */
+    public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
+    	return null;
+    }
+    
+    @SuppressWarnings( "deprecation" )
+	@Override
+    public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
+    	
+    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+    			.setItemInHand( itemStack.getBukkitStack() );
+    }
+    
+    /**
+     * Spigot v1.8 does not have an off hand, so set it to main hand.
+     */
+	@Override
+    public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
+    	setItemStackInMainHand( inventory, itemStack );
+    }
     
     @Override 
     public void playIronDoorSound(Location loc) {
@@ -74,7 +112,14 @@ public class Spigot18
 	public void breakItemInMainHand( Player player ) {
 		player.setItemInHand( null );
 		
-		player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F); 
+		try
+		{
+			player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F);
+		}
+		catch ( NoSuchFieldError e )
+		{
+			// Sound does not exist for this version of spigot.  Ignore.
+		} 
 	}
 
 }

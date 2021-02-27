@@ -339,11 +339,11 @@ public class Bounds {
     }
 
     public boolean within(Location location) {
-    	return within( location, false );
+    	return within( location, false, false );
     }
     
-    public boolean withinIncludeTopOfMine(Location location) {
-    	return within( location, true );
+    public boolean withinIncludeTopBottomOfMine(Location location) {
+    	return within( location, true, true );
     }
     
     /**
@@ -357,7 +357,7 @@ public class Bounds {
      * @param location The {@link Location} to check.
      * @return true if the location is within the bounds, false otherwise.
      */
-    private boolean within(Location location, boolean includeTopOfMine ) {
+    private boolean within(Location location, boolean includeTopOfMine, boolean includeOneBelowMine ) {
     	boolean results = false;
     	
     	if ( withinSameWorld( location )) {
@@ -367,7 +367,8 @@ public class Bounds {
     		double ourZ = Math.floor(location.getZ());
     		
     		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= (getyMin() - 1) && ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
+    				&& ourY >= (getyMin() - (includeOneBelowMine ? 1 : 0)) && 
+    					ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
     				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
     	}
 

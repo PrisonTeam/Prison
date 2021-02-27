@@ -208,37 +208,37 @@ public class PrisonCommand {
     public ChatDisplay displayVersion() {
     	
         ChatDisplay display = new ChatDisplay("/prison version");
-        display.text("&7Prison Version: &3%s", Prison.get().getPlatform().getPluginVersion());
+        display.addText("&7Prison Version: &3%s", Prison.get().getPlatform().getPluginVersion());
 
-        display.text("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
-        display.text("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
+        display.addText("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
+        display.addText("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
 
-        display.text("");
+        display.addText("");
         
-        display.text("&7Commands: &2/prison");
+        display.addText("&7Commands: &2/prison");
         
         for ( Module module : Prison.get().getModuleManager().getModules() ) {
         	
-        	display.text( "&7Module: &3%s&3 : %s %s", module.getName(), 
+        	display.addText( "&7Module: &3%s&3 : %s %s", module.getName(), 
         			module.getStatus().getStatusText(),
         			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
         						"&d[" + module.getStatus().getMessage() + "&d]" : "")
         			);
-        	display.text( "    &7Base Commands: %s", module.getBaseCommands() );
+        	display.addText( "    &7Base Commands: %s", module.getBaseCommands() );
         }
         
         List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
         if ( disabledModules.size() > 0 ) {
-        	display.text( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
         	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-        		display.text( "&a    &cDisabled Module: &7%s&a. Related commands and placeholders are non-functional. ",
+        		display.addText( "&a    &cDisabled Module: &7%s&a. Related commands and placeholders are non-functional. ",
         				disabledModule );
         	}
         }
          
         
-        display.text("");
-        display.text("&7Integrations:");
+        display.addText("");
+        display.addText("&7Integrations:");
 
         IntegrationManager im = Prison.get().getIntegrationManager();
         String permissions =
@@ -246,17 +246,17 @@ public class PrisonCommand {
                 "&a" + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
                 "&cNone");
 
-        display.text(Text.tab("&7Permissions: " + permissions));
+        display.addText(Text.tab("&7Permissions: " + permissions));
 
         String economy =
         		(im.hasForType(IntegrationType.ECONOMY) ?
                 "&a" + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
                 "&cNone");
 
-        display.text(Text.tab("&7Economy: " + economy));
+        display.addText(Text.tab("&7Economy: " + economy));
         
         
-        List<DisplayComponent> integrationRows = Prison.get().getIntegrationManager().getIntegrationComponents();
+        List<DisplayComponent> integrationRows = im.getIntegrationComponents();
         for ( DisplayComponent component : integrationRows )
 		{
         	display.addComponent( component );
@@ -267,7 +267,7 @@ public class PrisonCommand {
         // NOTE: This list of plugins is good enough and the detailed does not have all the info.
         // Display all loaded plugins:
         if ( getRegisteredPlugins().size() > 0 ) {
-        	display.text( "&7Registered Plugins: " );
+        	display.addText( "&7Registered Plugins: " );
         	StringBuilder sb = new StringBuilder();
         	for ( String plugin : getRegisteredPlugins() ) {
         		if ( sb.length() == 0) {
@@ -276,12 +276,12 @@ public class PrisonCommand {
         		} else {
         			sb.append( ",  " );
         			sb.append( plugin );
-        			display.text( sb.toString() );
+        			display.addText( sb.toString() );
         			sb.setLength( 0 );
         		}
         	}
         	if ( sb.length() > 0 ) {
-        		display.text( sb.toString());
+        		display.addText( sb.toString());
         	}
         }
         
@@ -324,11 +324,43 @@ public class PrisonCommand {
         return display;
     }
 
+	
+    /**
+     * A test to see if these dummny command placeholders could possibly lock out
+     * players who don't have permission to view the subcommands?
+     * 
+     */
+
+    @Command(identifier = "prison", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison help" );
+    }
+ 
+    @Command(identifier = "prison placeholders", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonPlaceholdersSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison placeholders help" );
+    }
+    
+    @Command(identifier = "prison reload", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonReloadSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison reload help" );
+    }
+    
+    @Command(identifier = "prison utils", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void prisonUtilsSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "prison utils help" );
+    }
+    
+    
     @Command(identifier = "prison modules", onlyPlayers = false, permissions = "prison.modules", 
     				description = "Lists the modules that hook into Prison to give it functionality.")
     public void modulesCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("/prison modules");
-        display.emptyLine();
+        display.addEmptyLine();
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -360,9 +392,9 @@ public class PrisonCommand {
         }
 
         ChatDisplay display = new ChatDisplay("Result Summary");
-        display.text("&7Troubleshooter name: &b%s", name.toLowerCase()) //
-            .text("&7Result type: &b%s", result.getResult().name()) //
-            .text("&7Result details: &b%s", result.getDescription()) //
+        display.addText("&7Troubleshooter name: &b%s", name.toLowerCase()) //
+            .addText("&7Result type: &b%s", result.getResult().name()) //
+            .addText("&7Result details: &b%s", result.getDescription()) //
             .send(sender);
 
     }
@@ -371,7 +403,7 @@ public class PrisonCommand {
 //    						onlyPlayers = false, permissions = "prison.troubleshoot")
     public void troubleshootListCommand(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Troubleshooters");
-        display.text("&8Type /prison troubleshoot <name> to run a troubleshooter.");
+        display.addText("&8Type /prison troubleshoot <name> to run a troubleshooter.");
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -389,10 +421,35 @@ public class PrisonCommand {
     		description = "Converts any Prison placeholders in the test string to their values", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
+    		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
+    							def = "." ) String playerName,
     		@Wildcard(join=true)
     		@Arg(name = "text", 
     			description = "Placeholder text to test using { } as escape characters" ) String text ) {
     	
+    	
+    	// blank defaults do not work when there are more than one at a time.  So had to
+    	// default to periods.  So convert periods to blanks initially:
+    	playerName = (playerName.equals( "." ) ? "" : playerName );
+    	
+    	// Try to get player from the supplied playerName first:
+    	Player player = getPlayer( null, playerName );
+    	if ( player == null ) {
+    		// No player found, or none specified. Need to shift parameters over by one:
+    		if ( text != null && text.trim().length() > 0 ) {
+    			
+    			// playerName should be moved to the pageNumber, after pageNumber is moved to patterns:
+    			text = (playerName.trim() + " " + text).trim();
+    		} 
+    		else {
+    			text = playerName;
+    		}
+    		
+    		// Try to get player from the sender:
+    		player = getPlayer( sender );
+    	}
+    	
+
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
         BulletedListComponent.BulletedListBuilder builder =
@@ -403,7 +460,6 @@ public class PrisonCommand {
         	return;
         }
         
-    	Player player = getPlayer( sender );
     	UUID playerUuid = (player == null ? null : player.getUUID());
     	String translated = Prison.get().getPlatform().getPlaceholders()
     					.placeholderTranslateText( playerUuid, sender.getName(), text );
@@ -575,12 +631,12 @@ public class PrisonCommand {
     	
     	ChatDisplay display = new ChatDisplay("Placeholders List");
     	
-    	display.text( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
-    	display.text( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
-    	display.text( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
+    	display.addText( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
+    	display.addText( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
+    	display.addText( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
     	
     	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-    		display.text( "&a    &cDisabled Module: &7%s&a. Related placeholders maybe listed but are non-functional. ",
+    		display.addText( "&a    &cDisabled Module: &7%s&a. Related placeholders maybe listed but are non-functional. ",
     				disabledModule );
     	}
     	
@@ -633,23 +689,23 @@ public class PrisonCommand {
      */
     @Command(identifier = "prison autofeatures", 
     		description = "Autofeatures for prison: pickup, smelt, and block", 
-    		onlyPlayers = false )
+    		onlyPlayers = false, permissions = "prison.autofeatures" )
 //    		, altPermissions = { "prison.autofeatures.pickup", "prison.autofeatures.smelt" , 
 //    				"prison.autofeatures.block" })
     public void autoFeaturesInformation(CommandSender sender) {
     	
     	ChatDisplay display = new ChatDisplay("Auto Features Information");
     	
-    	display.text( "&a Prison auto features provide the following options:");
-    	display.text( "&7   Auto pickup - &aUpon block break, items are placed directly in to player inventory.");
-    	display.text( "&7   Auto smelt - &aItems that can be smelted will be smelted automatically.");
-    	display.text( "&7   Auto block - &aConverts ores to blocks.");
-    	display.text( "&7   Tool lore starts with: Pickup, Smelt, or Block. Only one per line." );
-    	display.text( "&7   Tool lore 100 percent with just name. Can have value 0.001 to 100.0 percent." );
-    	display.text( "&7   Tool lore examples: Pickup, Pickup 7.13, Smelt 55, Block 75.123" );
+    	display.addText( "&a Prison auto features provide the following options:");
+    	display.addText( "&7   Auto pickup - &aUpon block break, items are placed directly in to player inventory.");
+    	display.addText( "&7   Auto smelt - &aItems that can be smelted will be smelted automatically.");
+    	display.addText( "&7   Auto block - &aConverts ores to blocks.");
+    	display.addText( "&7   Tool lore starts with: Pickup, Smelt, or Block. Only one per line." );
+    	display.addText( "&7   Tool lore 100 percent with just name. Can have value 0.001 to 100.0 percent." );
+    	display.addText( "&7   Tool lore examples: Pickup, Pickup 7.13, Smelt 55, Block 75.123" );
     	
-    	display.text( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
-    	display.text( "&a Or better yet, you can use the &7/prison gui");
+    	display.addText( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
+    	display.addText( "&a Or better yet, you can use the &7/prison gui");
     	
     	List<AutoFeatures> afs = AutoFeatures.permissions.getChildren();
     	StringBuilder sb = new StringBuilder();
@@ -659,8 +715,8 @@ public class PrisonCommand {
 			}
 			sb.append( af.getMessage() );
 		}
-    	display.text( "&3Permissions:" );
-    	display.text( "&b   %s", sb.toString() );
+    	display.addText( "&3Permissions:" );
+    	display.addText( "&b   %s", sb.toString() );
     	
     	display.send(sender);
     	
@@ -675,7 +731,7 @@ public class PrisonCommand {
     
     @Command(identifier = "prison debug", 
     		description = "For internal use only. Do not use until instructed since this is not hookedup.", 
-    		onlyPlayers = false )
+    		onlyPlayers = false, permissions = "prison.debug" )
     public void toggleDebug(CommandSender sender ) {
     	
     	Output.get().setDebug( !Output.get().isDebug() );

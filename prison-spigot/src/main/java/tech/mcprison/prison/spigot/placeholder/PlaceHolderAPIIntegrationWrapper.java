@@ -33,6 +33,19 @@ public class PlaceHolderAPIIntegrationWrapper
         return true;
     }
     
+    /**
+     * Because this is an internal class,
+     * you must override this method to let PlaceholderAPI know to not unregister your expansion class when
+     * PlaceholderAPI is reloaded
+     *
+     * @return true to persist through reloads
+     */
+    @Override
+    public boolean persist(){
+        return true;
+    }
+
+    
 	@Override
 	public String getAuthor(){
 		return "PrisonTeam";

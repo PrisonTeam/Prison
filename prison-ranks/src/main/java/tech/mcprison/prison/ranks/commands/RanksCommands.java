@@ -3,6 +3,7 @@ package tech.mcprison.prison.ranks.commands;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,11 @@ import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
@@ -32,7 +37,6 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankLadder.PositionRank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
@@ -60,6 +64,35 @@ public class RanksCommands
 		this.rankCommandCommands = rankCommandCommands;
 	}
 
+    @Command(identifier = "ranks command", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksCommandSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks command help" );
+    }
+    
+    @Command(identifier = "ranks ladder", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksLadderSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks ladder help" );
+    }
+    
+    @Command(identifier = "ranks perms", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksPermsSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks perms help" );
+    }
+    
+    @Command(identifier = "ranks remove", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksRemoveSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks remove help" );
+    }
+    
+    @Command(identifier = "ranks set", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void ranksSetSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "ranks set help" );
+    }
 
 	@Command(identifier = "ranks create", description = "Creates a new rank", 
     							onlyPlayers = false, permissions = "ranks.create")
@@ -90,9 +123,9 @@ public class RanksCommands
 
         // Fetch the ladder first, so we can see if it exists
 
-        Optional<RankLadder> rankLadderOptional =
-            PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
-        if (!rankLadderOptional.isPresent()) {
+        RankLadder rankLadder = PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
+        
+        if ( rankLadder == null ) {
             Output.get().sendWarn(sender, "&3A ladder by the name of '&7%s&3' does not exist.", ladder);
             return success;
         }
@@ -125,9 +158,9 @@ public class RanksCommands
 
         // Add the ladder
 
-        rankLadderOptional.get().addRank(newRank);
+        rankLadder.addRank(newRank);
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadderOptional.get());
+            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
             
             success = true;
             
@@ -138,7 +171,7 @@ public class RanksCommands
         } catch (IOException e) {
             Output.get().sendError(sender,
                 "&3The '&7%s&3' ladder could not be saved to disk. Check the console for details.",
-                rankLadderOptional.get().getName());
+                rankLadder.getName());
             Output.get().logError("&3Ladder could not be written to disk.", e);
         }
 
@@ -414,7 +447,8 @@ public class RanksCommands
 	
     @Command(identifier = "ranks delete", description = "Removes a rank, and deletes its files.", 
     								onlyPlayers = false, permissions = "ranks.delete")
-    public void removeRank(CommandSender sender, @Arg(name = "rankName") String rankName) {
+    public void removeRank(CommandSender sender, 
+    			@Arg(name = "rankName") String rankName) {
         // Check to ensure the rank exists
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
@@ -422,8 +456,8 @@ public class RanksCommands
             return;
         }
 
-        if (PrisonRanks.getInstance().getDefaultLadder().containsRank(rank.getId())
-            && PrisonRanks.getInstance().getDefaultLadder().getPositionRanks().size() == 1) {
+        if (PrisonRanks.getInstance().getDefaultLadder().getRanks().contains( rank ) 
+            && PrisonRanks.getInstance().getDefaultLadder().getRanks().size() == 1) {
             Output.get().sendError(sender,
                 "You can't remove this rank because it's the only rank in the default ladder.");
             return;
@@ -447,23 +481,24 @@ public class RanksCommands
     	boolean hasPerm = sender.hasPermission("ranks.list") ||
     					sender.isOp();
     	
-        Optional<RankLadder> ladderOpt =
+        RankLadder ladder =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if (!ladderOpt.isPresent()) {
+        if ( ladder == null ) {
             Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
             return;
         }
 
-        RankLadder ladder = ladderOpt.get();
-        Rank rank = null;
-        for (PositionRank pRank : ladder.getPositionRanks()) {
-            Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
-            if (rankOptional.isPresent()) {
-            	rank = rankOptional.get();
-            	break;
-            }
-        }
+        Rank rank = ladder.getLowestRank().orElse( null );
+
+//        Rank rank = null;
+//        for (Rank pRank : ladder.getPositionRanks()) {
+//            Optional<Rank> rankOptional = ladder.getByPosition(pRank.getPosition());
+//            if (rankOptional.isPresent()) {
+//            	rank = rankOptional.get();
+//            	break;
+//            }
+//        }
         
 
         String rankHeader = "Ranks" + 
@@ -472,7 +507,7 @@ public class RanksCommands
         ChatDisplay display = new ChatDisplay( rankHeader );
         
         if ( hasPerm ) {
-        	display.text("&7Click on a rank's name to view more info.");
+        	display.addText("&7Click on a rank's name to view more info.");
         }
         
 
@@ -597,16 +632,16 @@ public class RanksCommands
 
         ChatDisplay display = new ChatDisplay("Rank " + rank.getTag());
 
-        display.text("&3Rank Name: &7%s", rank.getName());
-        display.text("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.getTag(), rank.getTag());
+        display.addText("&3Rank Name: &7%s", rank.getName());
+        display.addText("&3Rank Tag:  &7%s  &3Raw: &7\\Q%s\\E", rank.getTag(), rank.getTag());
         
         // (I know this is confusing) Ex. Ladder(s): default, test, and test2.
-        display.text("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
+        display.addText("&3%s: &7%s", Text.pluralize("Ladder", ladders.size()),
             Text.implodeCommaAndDot(
                 ladders.stream().map(rankLadder -> rankLadder.getName()).collect(Collectors.toList())));
         
         if ( rank.getMines().size() == 0 ) {
-        	display.text( "&3This rank is not linked to any mines" );
+        	display.addText( "&3This rank is not linked to any mines" );
         }
         else {
         	StringBuilder sb = new StringBuilder();
@@ -619,26 +654,26 @@ public class RanksCommands
 				sb.append( mine.getName() );
 			}
         	
-        	display.text( "&3Mines linked to this rank: %s", sb.toString() );
+        	display.addText( "&3Mines linked to this rank: %s", sb.toString() );
         }
 
-        display.text("&3Cost: &7%s", Text.numberToDollars(rank.getCost()));
+        display.addText("&3Cost: &7%s", Text.numberToDollars(rank.getCost()));
         
-        display.text("&3Currency: &7<&a%s&7>", (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) );
+        display.addText("&3Currency: &7<&a%s&7>", (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) );
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
         		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
         		.collect(Collectors.toList());
-        display.text("&7There %s &3%s players &7with this rank.", 
+        display.addText("&7There %s &3%s players &7with this rank.", 
         				(players.size() == 1 ? "is": "are"), 
         				players.size() + "");
 
         if (sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
-            display.text("&8[Admin Only]");
-            display.text("&6Rank ID: &7%s", rank.getId());
+            display.addText("&8[Admin Only]");
+            display.addText("&6Rank ID: &7%s", rank.getId());
 
             FancyMessage del =
                 new FancyMessage("&7[&c-&7] Delete").command("/ranks delete " + rank.getName())
@@ -792,7 +827,7 @@ public class RanksCommands
         RankLadder ladder = rank.getLadder();
 
         ChatDisplay display = new ChatDisplay("Rank Permissions and Groups for " + rank.getName());
-        display.text("&8Click a Permission to remove it.");
+        display.addText("&8Click a Permission to remove it.");
         BulletedListComponent.BulletedListBuilder builder =
         									new BulletedListComponent.BulletedListBuilder();
 
@@ -1053,9 +1088,12 @@ public class RanksCommands
     
     
     
-    @Command(identifier = "ranks player", description = "Shows a player their rank", onlyPlayers = false)
+    @Command(identifier = "ranks player", description = "Shows a player their rank", 
+    		onlyPlayers = false, altPermissions = "ranks.admin" )
     public void rankPlayer(CommandSender sender,
-    			@Arg(name = "player", def = "", description = "Player name") String playerName){
+    			@Arg(name = "player", def = "", description = "Player name") String playerName
+//    			@Arg(name = "options", def = "", description = "Options [allPerms]") String options
+    			){
     	
     	Player player = getPlayer( sender, playerName );
     	
@@ -1065,23 +1103,22 @@ public class RanksCommands
     	}
 
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		Optional<RankPlayer> oPlayer = pm.getPlayer(player.getUUID(), player.getName());
+		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 		
-		if ( oPlayer.isPresent() ) {
+		if ( rankPlayer != null ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			
 			// Collect all currencies in the default ladder:
 			Set<String> currencies = new LinkedHashSet<>();
 			LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 			
-			for ( Rank rank : lm.getLadder( "default" ).get().getRanks() ) {
+			for ( Rank rank : lm.getLadder( "default" ).getRanks() ) {
 				if ( rank.getCurrency() != null && !currencies.contains( rank.getCurrency() )) {
 					currencies.add( rank.getCurrency() );
 				}
 			}
 			
 			
-			RankPlayer rankPlayer = oPlayer.get();
 			Map<RankLadder, Rank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
@@ -1113,31 +1150,97 @@ public class RanksCommands
 			// Print out the player's balances: 
 
 			// The default currency first:
-			double balance = getPlayerBalance( player );
+			double balance = rankPlayer.getBalance();
 			String message = String.format( "&7The current balance for &b%s &7is &b%s", 
 					player.getName(), dFmt.format( balance ) );
 			sendToPlayerAndConsole( sender, message );
 			
 			for ( String currency : currencies ) {
-				double balanceCurrency = getPlayerBalance( player, currency );
+				double balanceCurrency = rankPlayer.getBalance( currency );
 				String messageCurrency = String.format( "&7The current balance for &b%s &7is &b%s &2%s", 
 						player.getName(), dFmt.format( balanceCurrency ), currency );
 				sendToPlayerAndConsole( sender, messageCurrency );
+
 			}
 			
+			boolean isOp = player.isOp();
+			boolean isPlayer = player.isPlayer();
+			boolean isOnline = player.isOnline();
 			
-			if (sender.hasPermission("ranks.admin") && rankPlayer.getNames().size() > 1) {
+			boolean isPrisonPlayer = (player instanceof Player);
+			boolean isPrisonOfflineMcPlayer = (player instanceof OfflineMcPlayer);
+
+			if ( !isOnline ) {
+				sendToPlayerAndConsole( sender, "  &7Notice: &3The player is offline so permissions are " +
+														"not available nor accurate." );
+			}
+			
+			double sellallMultiplier = player.getSellAllMultiplier();
+			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
+			String messageCurrency = String.format( "&7  Sellall multiplier: &b%s %s", 
+					pFmt.format( sellallMultiplier ), 
+					(!isOnline ? "  &5(&2Not Accurate&5)" : "") );
+			sendToPlayerAndConsole( sender, messageCurrency );
+
+			
+			
+			if ( sender.hasPermission("ranks.admin") ) {
 	            // This is admin-exclusive content
 
 				sendToPlayerAndConsole( sender, "&8[Admin Only]" );
-				sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
 				
-				for ( RankPlayerName rpn : rankPlayer.getNames() ) {
+				if ( rankPlayer.getNames().size() > 1 ) {
 					
-					sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
+					sendToPlayerAndConsole( sender, "  &7Past Player Names and Date Changed:" );
+					
+					for ( RankPlayerName rpn : rankPlayer.getNames() ) {
+						
+						sendToPlayerAndConsole( sender, "    &b" + rpn.toString() );
+					}
 				}
 
+				
+//				if ( options != null && options.toLowerCase().contains( "allperms" ) ) 
+				{
+					
+					
+					sendToPlayerAndConsole( sender, String.format( "  &7Player Perms:  %s%s%s%s", 
+								(isOp ? " &cOP&7" : ""),
+								(isPlayer ? " &3Player&7" : ""),
+								(isOnline ? " &3Online&7" : " &3Offline&7"),
+								(isPrisonOfflineMcPlayer ? " &3PrisonOfflinePlayer&7" : 
+									(isPrisonPlayer ? " &3PrisonPlayer&7" : ""))
+							) );
+					
+					if ( !isOnline ) {
+						sendToPlayerAndConsole( sender, "  &7Player is offline so perms may not be available." );
+					}
+					
+					player.recalculatePermissions();
+					
+					List<String> perms = player.getPermissions();
+					
+					listPermissions( sender, "bukkit", perms );
 
+//					sendToPlayerAndConsole( sender, "### has perm prison.mines.a: " + 
+//								player.hasPermission( "prison.mines.a" ) );
+					
+					
+					List<Integration> permissionIntegrations = PrisonAPI.getIntegrationManager().getAllForType( IntegrationType.PERMISSION );
+
+					for ( Integration pIntegration : permissionIntegrations ) {
+						if ( pIntegration instanceof PermissionIntegration ) {
+							
+							PermissionIntegration integrationPerms = (PermissionIntegration) pIntegration;
+							
+							List<String> iPerms = integrationPerms.getPermissions( player, true );
+							
+							String permSource = integrationPerms.getDisplayName();
+							listPermissions( sender, permSource, iPerms );
+						}
+					}
+					
+				}
 	        }
 			
 //			String nextRank = pm.getPlayerNextRankName( rankPlayer );
@@ -1158,6 +1261,30 @@ public class RanksCommands
 			sender.sendMessage( "&3No ranks found for &c" + player.getDisplayName() );
 		}
     }
+
+	private void listPermissions( CommandSender sender, String prefix, List<String> perms )
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		Collections.sort( perms );
+		
+		for ( String perm : perms ) {
+			sb.append( perm ).append( " " );
+			
+			if ( sb.length() > 70 ) {
+				String message = String.format( "    &7* (%s) &3%s", 
+						prefix, sb.toString());
+				sendToPlayerAndConsole( sender, message );
+				sb.setLength( 0 );
+			}
+		}
+		if ( sb.length() > 0 ) {
+			String message = String.format( "    &7* (%s) &3%s", 
+					prefix, sb.toString());
+			sendToPlayerAndConsole( sender, message );
+			sb.setLength( 0 );
+		}
+	}
 
 	private void sendToPlayerAndConsole( CommandSender sender, String messageRank )
 	{
@@ -1180,7 +1307,7 @@ public class RanksCommands
 
     	
     	if ( !ladderName.equalsIgnoreCase( "all" ) && 
-    			!PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ).isPresent() ) {
+    			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
     		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not ALL.", ladderName);
     		return;
     	}

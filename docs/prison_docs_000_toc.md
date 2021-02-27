@@ -16,11 +16,11 @@
 
 
 ## Build logs
- - **[v3.2.4-alpha - Current](changelog_v3.2.x.md)**
- - **[v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)**
- - **[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)**
- - **[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)**
- - **[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)**
+ - **[v3.2.4-alpha - Current](../changelog_v3.2.x.md)**
+ - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
+**[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
+**[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
+**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**
  
  
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -189,7 +189,7 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 
-* [Setting up Prestiges](prison_docs_107_setting_up_pestiges.md)
+* [Setting up Prestiges](prison_docs_107_setting_up_prestiges.md)
 	Configuring and using Prestiges.
 
 

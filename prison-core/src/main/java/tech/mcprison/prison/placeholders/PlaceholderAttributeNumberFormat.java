@@ -39,6 +39,10 @@ import tech.mcprison.prison.util.Text;
  *        <li><b>kmg</b>: Uses one character units: kMGTPEZY. Transforms results by 
  *        			dividing by 1000.0 until value is less than 1000.0, and 
  *        			each time it increments the unit.</li>
+ *        <li><b>kmbt</b>: Uses one character units: KMBTqQsS. Transforms results by 
+ *     				dividing by 1000.0 until value is less than 1000.0, and 
+ *     				each time it increments the unit character.  
+ *     				k=1,000, M=1,000,000 and etc. These are non-standard codes.</li>
  *        <li><b>binary</b>: Uses a base-two divisor of 1024 along with the units: 
  *        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
  *        			</li>
@@ -181,6 +185,10 @@ public class PlaceholderAttributeNumberFormat
 					
 				case kmg:
 					results = PlaceholdersUtil.formattedMetricSISize( value, dFmt, spaces );
+					break;
+					
+				case kmbt:
+					results = PlaceholdersUtil.formattedKmbtSISize( value, dFmt, spaces );
 					break;
 					
 				case binary:

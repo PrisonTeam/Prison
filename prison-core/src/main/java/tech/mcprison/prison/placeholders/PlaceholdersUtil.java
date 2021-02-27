@@ -27,32 +27,40 @@ public class PlaceholdersUtil {
 	}
 	
 	
-	public static String formattedTime( double time ) {
+	/**
+	 * <p>Formats seconds to 0d 0h 0m 0s.
+	 * Input is in seconds.
+	 * </p>
+	 * 
+	 * @param timeSec Time in seconds.
+	 * @return
+	 */
+	public static String formattedTime( double timeSec ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	long days = (long)(time / TIME_DAY);
-    	time -= (days * TIME_DAY);
+    	long days = (long)(timeSec / TIME_DAY);
+    	timeSec -= (days * TIME_DAY);
     	if ( days > 0 ) {
     		sb.append( days );
     		sb.append( "d " );
     	}
     	
-    	long hours = (long)(time / TIME_HOUR);
-    	time -= (hours * TIME_HOUR);
+    	long hours = (long)(timeSec / TIME_HOUR);
+    	timeSec -= (hours * TIME_HOUR);
     	if ( sb.length() > 0 || hours > 0 ) {
     		sb.append( hours );
     		sb.append( "h " );
     	}
     	
-    	long mins = (long)(time / TIME_MINUTE);
-    	time -= (mins * TIME_MINUTE);
+    	long mins = (long)(timeSec / TIME_MINUTE);
+    	timeSec -= (mins * TIME_MINUTE);
     	if ( sb.length() > 0 || mins > 0 ) {
     		sb.append( mins );
     		sb.append( "m " );
     	}
     	
-    	double secs = (double)(time / TIME_SECOND);
-    	time -= (secs * TIME_SECOND);
+    	double secs = (double)(timeSec / TIME_SECOND);
+    	timeSec -= (secs * TIME_SECOND);
     	DecimalFormat dFmt = new DecimalFormat("#0");
     	sb.append( dFmt.format( secs ));
     	sb.append( "s " );
@@ -84,6 +92,16 @@ public class PlaceholdersUtil {
     	
     	String results = dFmt.format( amount ) + spaces + unit.toString();
 
+		return results.trim();
+	}
+	
+	public static String formattedKmbtSISize( double amount, DecimalFormat dFmt, String spaces  ) { 
+		StringBuilder unit = new StringBuilder();
+		
+		amount = divBy1000( amount, unit, " KMBTqQsS" );
+		
+		String results = dFmt.format( amount ) + spaces + unit.toString();
+		
 		return results.trim();
 	}
 	

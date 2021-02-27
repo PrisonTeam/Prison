@@ -143,13 +143,16 @@ public class PrisonMines extends Module {
      * shutdown since they will never be in a dirty state; they will always be saved.
      * </p>
      * 
-     * <p>This should shutdown all active mines.  Future to do item.
+     * <p>Block counts are now being stored in the mines and should be saved
+     * on every mine reset and also when the server is shutting down.
      * </p>
      * 
      */
     @Override
 	public void disable() {
-		// Nothing to do...
+    	
+    	// Shutdown the mines by saving any unsaved block stats:
+    	getMineManager().saveMinesIfUnsavedBlockCounts();
     }
 	
 	
@@ -196,10 +199,20 @@ public class PrisonMines extends Module {
      * @param block
      * @return
      */
-	public Mine findMineLocation( Location locationToCheck ) {
+	public Mine findMineLocationExact( Location locationToCheck ) {
 		Mine mine = null;
 		for ( Mine m : getMines() ) {
-			if ( m.isInMine( locationToCheck ) ) {
+			if ( m.isInMineExact( locationToCheck ) ) {
+				mine = m;
+				break;
+			}
+		}
+		return mine;
+	}
+	public Mine findMineLocationIncludeTopBottomOfMine( Location locationToCheck ) {
+		Mine mine = null;
+		for ( Mine m : getMines() ) {
+			if ( m.isInMineIncludeTopBottomOfMine( locationToCheck ) ) {
 				mine = m;
 				break;
 			}
@@ -212,25 +225,31 @@ public class PrisonMines extends Module {
 	}
 	
 	public Mine findMineLocation( Player player ) {
-		Mine result = null;
+		Mine results = null;
 		
 		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
 		
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
-		if ( mine == null || !mine.isInMine( player.getLocation() ) ) {
+		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
+			results = mine;
+		}
+		else {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
-			mine = findMineLocation( player.getLocation() );
+			results = findMineLocationIncludeTopBottomOfMine( player.getLocation() );
 			
 			// Store the mine in the player cache if not null:
-			if ( mine != null ) {
-				getPlayerCache().put( playerUUIDLSB, mine );
+			if ( results != null ) {
+				getPlayerCache().put( playerUUIDLSB, results );
+			}
+			else {
+				getPlayerCache().remove( playerUUIDLSB );
 			}
 		}
 
-		return result;
+		return results;
 	}
 
 //    private void initMines() {

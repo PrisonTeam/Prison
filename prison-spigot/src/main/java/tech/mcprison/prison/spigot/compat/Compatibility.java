@@ -22,8 +22,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
  * Different Spigot versions have different methods.
@@ -41,9 +43,21 @@ public interface Compatibility
 
     public ItemStack getItemInMainHand(Player player);
     
+    public ItemStack getItemInMainHand(PlayerInventory playerInventory);
+    
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e);
     
     public SpigotItemStack getPrisonItemInMainHand(Player player);
+    
+    public ItemStack getItemInOffHand(PlayerInteractEvent e);
+
+    public ItemStack getItemInOffHand(Player player);
+    
+    public ItemStack getItemInOffHand(PlayerInventory playerInventory);
+    
+    public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
+    
+    public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
     
     public void breakItemInMainHand(Player player);
     

@@ -105,7 +105,32 @@ public abstract class Spigot18Blocks
 			
 			results = getCachedBlockType( spigotStack, (byte) data );
 			if ( results == null ) {
+				
 				results = BlockType.getBlock(id, data);
+				
+				if ( results == null ) {
+					
+					// NOTE: Some items may have invalid data values.  Example are with pickaxes
+					//       should have a value of zero, but could range from +- 256.
+					// Try to use XMaterial to map back to a BlockType (old block model).
+					XMaterial xMat = XMaterial.matchXMaterial( spigotStack );
+					
+					if ( xMat != null ) {
+						results = BlockType.getBlock( xMat.name() );
+					}
+					
+					if ( results == null ) {
+						
+						String message = String.format( "Spigot18Blocks: getBlockType(): " +
+								"Unable to map to a BlockType. XMaterial = %s :: %s %s " +
+								"Material = %s ", 
+								(xMat == null ? "null" : xMat.name()), 
+								Integer.toString( id ), Integer.toString( data ), 
+								spigotStack.getType().name() );
+						
+						Output.get().logInfo( message );
+					}
+				}
 				
 				putCachedBlockType( spigotStack, (byte) data, results );
 			}
@@ -381,7 +406,12 @@ public abstract class Spigot18Blocks
 	
 	
 	public int getDurabilityMax( SpigotItemStack itemInHand ) {
-		return itemInHand.getBukkitStack().getType().getMaxDurability();
+		int results = 0;
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
+			results =  itemInHand.getBukkitStack().getType().getMaxDurability();
+		}
+		return results;
 	}
 	
 	@SuppressWarnings( "deprecation" )
@@ -389,7 +419,7 @@ public abstract class Spigot18Blocks
 	public boolean hasDurability( SpigotItemStack itemStack ) {
 		boolean results = false;
 		
-		if ( itemStack != null ) {
+		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			results = itemStack.getBukkitStack().getDurability() > 0;
 		}
 		
@@ -401,7 +431,7 @@ public abstract class Spigot18Blocks
 	public int getDurability( SpigotItemStack itemStack ) {
 		int results = 0;
 		
-		if ( itemStack != null ) {
+		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			results = itemStack.getBukkitStack().getDurability();
 		}
 		
@@ -412,7 +442,7 @@ public abstract class Spigot18Blocks
 	@Override
 	public boolean setDurability( SpigotItemStack itemStack, int damage ) {
 		boolean results = false;
-		if ( itemStack != null ) {
+		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			itemStack.getBukkitStack().setDurability( (short) damage );
 			results = true;
 		}

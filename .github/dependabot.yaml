@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    # path to build.gradle
+    directory: "/prison-spigot"
+    schedule:
+      interval: "daily"

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -46,6 +45,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -71,6 +71,8 @@ public class PlayerManager
     private Collection collection;
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
+    
+    private List<RankPlayer> playersByTop;
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
@@ -193,27 +195,34 @@ public class PlayerManager
      * @param uid
      * @return
      */
-    public Optional<RankPlayer> getPlayer(UUID uid, String playerName) {
+    public RankPlayer getPlayer(UUID uid, String playerName) {
     	
-    	Optional<RankPlayer> results = Optional.ofNullable( null );
+    	RankPlayer results = null;
     	boolean dirty = false;
     	
-    	for ( RankPlayer rankPlayer : players ) {
-			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
-				 uid == null && playerName != null && playerName.trim().length() > 0 &&
-				 rankPlayer.getDisplayName() != null &&
-				 rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
-				
-				// This checks to see if they have a new name, if so, then adds it to the history:
-				// But the UID must match:
-				if ( uid != null && rankPlayer.getUUID().equals(uid) ) {
-					dirty = rankPlayer.checkName( playerName );
-				}
-				
-				results = Optional.ofNullable( rankPlayer );
-				break;
-			}
-		}
+    	if ( playerName != null && getPlayersByName().containsKey( playerName ) ) {
+    		results = getPlayersByName().get( playerName );
+    	}
+    	
+    	if ( results == null ) {
+    		
+    		for ( RankPlayer rankPlayer : players ) {
+    			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
+    					uid == null && playerName != null && playerName.trim().length() > 0 &&
+    					rankPlayer.getDisplayName() != null &&
+    					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
+    				
+    				// This checks to see if they have a new name, if so, then adds it to the history:
+    				// But the UID must match:
+    				if ( uid != null && rankPlayer.getUUID().equals(uid) ) {
+    					dirty = rankPlayer.checkName( playerName );
+    				}
+    				
+    				results = rankPlayer;
+    				break;
+    			}
+    		}
+    	}
     	
 //    	Optional<RankPlayer> results = players.stream().filter(
 //    			player -> (uid != null ? 
@@ -221,15 +230,15 @@ public class PlayerManager
 //    						( playerName != null || playerName.trim().length() == 0 ? false :
 //    							player.checkName( playerName )))).findFirst();
     	
-    	if ( !results.isPresent() ) {
-    		results = Optional.ofNullable( addPlayer(uid, playerName) );
-    		dirty = results.isPresent();
+    	if ( results == null && playerName != null && !"console".equalsIgnoreCase( playerName ) ) {
+    		results = addPlayer(uid, playerName);
+    		dirty = results != null;
     	}
     	
     	// Save if dirty (change or new):
-    	if ( dirty && results.isPresent() ) {
+    	if ( dirty && results != null ) {
     		try {
-				savePlayer( results.get() );
+				savePlayer( results );
 			}
 			catch ( IOException e ) {
 				String message = String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
@@ -244,6 +253,14 @@ public class PlayerManager
     	
     	
     	return results;
+    }
+    
+    public RankPlayer getPlayer( Player player ) {
+    	RankPlayer rPlayer = null;
+    	if ( player != null ) {
+    		rPlayer = getPlayer( player.getUUID(), player.getName() );
+    	}
+    	return rPlayer;
     }
     
     
@@ -327,7 +344,8 @@ public class PlayerManager
      * Listeners
      */
 
-    @Subscribe public void onPlayerJoin(PlayerJoinEvent event) {
+    @Subscribe 
+    public void onPlayerJoin(PlayerJoinEvent event) {
     	
     	Player player = event.getPlayer();
     	
@@ -386,7 +404,7 @@ public class PlayerManager
     		}
     	}
     	
-    	return sb.toString();
+    	return (sb.length() == 0 ? "0" : sb.toString());
     }
     
     /**
@@ -843,9 +861,11 @@ public class PlayerManager
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
     	String results = null;
 
-    	if ( playerUuid != null ) {
+    	if ( playerUuid != null && identifier != null ) {
     		
     		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		identifier = identifier.toLowerCase();
     		
     		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
@@ -866,6 +886,44 @@ public class PlayerManager
     	
     	return results;
     }
+    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, PlaceholderResults placeholderResults ) {
+    	String results = null;
+    	
+    	if ( playerUuid != null && placeholderResults.hasResults() ) {
+    		
+    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		String identifier = placeholderResults.getIdentifier();
+    		
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+    		
+    		// placeholder Attributes: 
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		if ( placeholderResults.getPlaceholder() != null ) {
+    			results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeholderResults.getPlaceholder(), attribute );
+    		}
+    		else {
+    			// Need to hunt for the placeholder:
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    				if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+    					results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
+    					break;
+    				}
+    			}
+    		}
+    		
+    	}
+    	
+    	return results;
+    }
+    
+    
     
     public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, 
     					PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute ) {
@@ -877,10 +935,9 @@ public class PlayerManager
 			
 			String ladderName = placeHolderKey.getData();
 			
-			Optional<RankPlayer> oPlayer = getPlayer(playerUuid, playerName);
+			RankPlayer rankPlayer = getPlayer(playerUuid, playerName);
 			
-			if ( oPlayer.isPresent() ) {
-				RankPlayer rankPlayer = oPlayer.get();
+			if ( rankPlayer != null ) {
 				
 				switch ( placeHolder ) {
 					case prison_r:

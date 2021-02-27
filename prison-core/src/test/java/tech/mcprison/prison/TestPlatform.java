@@ -251,6 +251,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public long getConfigLong( String key, long defaultValue ) {
+		return defaultValue;
+	}
+	
+	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return null;
 	}
@@ -281,6 +286,11 @@ public class TestPlatform implements Platform {
 		return 0;
 	}
 	
+	@Override
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+		return null;
+	}
+
 	@Override
 	public void autoCreateMineBlockAssignment() {
 		

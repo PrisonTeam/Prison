@@ -3,9 +3,12 @@ package tech.mcprison.prison.spigot.game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.OfflineMcPlayer;
@@ -46,14 +49,28 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public boolean isOnline() {
-		return false;
+		return offlinePlayer.isOnline();
+//		return false;
 	}
 	
-	@Override
-	public boolean hasPermission( String perm ) {
-		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
-		return false;
-	}
+	/**
+	 * NOTE: A SpigotOfflinePlayer does not represent an online player with inventory.  
+	 *       This class is not "connected" to the underlying bukkit player
+	 *       so technically this is not a player object, especially since it
+	 *       always represents offline players too.
+	 */
+    @Override 
+    public boolean isPlayer() {
+    	return ( offlinePlayer != null && offlinePlayer.getPlayer() != null &&
+    					offlinePlayer.getPlayer() instanceof Player );
+//    	return false;
+    }
+    
+//	@Override
+//	public boolean hasPermission( String perm ) {
+//		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
+//		return false;
+//	}
 	
 	@Override
 	public void setDisplayName( String newDisplayName ) {
@@ -118,8 +135,21 @@ public class SpigotOfflinePlayer
 	}
 
 	@Override
+    public tech.mcprison.prison.internal.block.Block getLineOfSightBlock() {
+		return null;
+	}
+	
+	@Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	return results;
+	}
+	
+	
+	@Override
 	public boolean isOp() {
-		return false;
+		return offlinePlayer.isOp();
 	}
 
 	@Override
@@ -136,9 +166,39 @@ public class SpigotOfflinePlayer
 		
 	}
 	
+	public OfflinePlayer getWrapper() {
+		return offlinePlayer;
+	}
+
+	/**
+	 * <p>Technically, offline players do not have any perms through bukkkit so
+	 * bukkit cannot recalculate any permissions.
+	 * </p>
+	 */
+	@Override
+	public void recalculatePermissions() {
+		
+//		offlinePlayer.getPlayer().recalculatePermissions();
+	}
+	
     @Override
     public List<String> getPermissions() {
     	List<String> results = new ArrayList<>();
+    	
+    	if ( offlinePlayer.getPlayer() != null ) {
+    		
+    		Set<PermissionAttachmentInfo> perms = offlinePlayer.getPlayer().getEffectivePermissions();
+    		for ( PermissionAttachmentInfo perm : perms )
+    		{
+    			results.add( perm.getPermission() );
+    		}
+    	}
+    	else {
+    		// try to use vault:
+    		
+    		// TODO add permission integrations here!!
+    	}
+    	
     	
     	return results;
     }
@@ -156,22 +216,75 @@ public class SpigotOfflinePlayer
     	return results;
     }
     
+	@Override
+	public boolean hasPermission( String perm ) {
+		boolean hasPerm = false;
+		
+		if ( offlinePlayer.getPlayer() != null ) {
+			
+			hasPerm = offlinePlayer.getPlayer().hasPermission( perm );
+		}
+		else {
+			List<String> perms = getPermissions( perm );
+			hasPerm = perms.contains( perm );
+		}
+		
+		return hasPerm;
+		
+//		List<String> perms = getPermissions( perm );
+//		return perms.contains( perm );
+	}
+    
+//    @Override
+//    public List<String> getPermissions() {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	return results;
+//    }
+//    
+//    @Override
+//    public List<String> getPermissions( String prefix ) {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	for ( String perm : getPermissions() ) {
+//			if ( perm.startsWith( prefix ) ) {
+//				results.add( perm );
+//			}
+//		}
+//    	
+//    	return results;
+//    }
+    
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
+
     
     /**
-     * <p>This is not the active online player instance, so therefore prison would not have
-     * access to the player's inventory if it is defaulting to this Player class. 
-     * Therefore, this function should *never* be used in any calculations dealing with
-     * the sales of inventory items.
-     * </p>
-     * 
-     * <p>This is being set to a value of 1.0 so as not to change any other value that may
-     * be used with this function.
+     * <p>SpigotOfflinePlayer represents a player that is offline, and the only time 
+     * when bukkit has the player's perms loaded is when they are online.  If the 
+     * player is online, when you have an instance of this object, then they will
+     * be available through the bukkit's OfflinePlayer.getPlayer() function, otherwise
+     * it will be null. 
      * </p>
      * 
      */
     @Override
     public double getSellAllMultiplier() {
-    	return 1.0;
+    	double results = 1.0;
+    	
+    	SpigotPlayer sPlayer = null;
+    	
+    	if ( getWrapper().getPlayer() != null ) {
+    		sPlayer = new SpigotPlayer( getWrapper().getPlayer() );
+
+    		results = sPlayer.getSellAllMultiplier();
+    	}
+    	
+    	return results;
     }
     
 }

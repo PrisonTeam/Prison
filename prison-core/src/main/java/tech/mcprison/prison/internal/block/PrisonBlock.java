@@ -10,6 +10,7 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
  *
  */
 public class PrisonBlock
+			extends PrisonBlockStatusData
 			implements Comparable<PrisonBlock> {
 	
 	public static PrisonBlock AIR;
@@ -19,9 +20,9 @@ public class PrisonBlock
 	private PrisonBlockType blockType;
 	private boolean useBlockTypeAsPrefix = false;
 	
-	private String blockName;
+//	private String blockName;
 	
-	private double chance;
+//	private double chance;
 	
 	private boolean valid = true;
 	private boolean block = true;
@@ -46,14 +47,14 @@ public class PrisonBlock
 	 * @param blockName
 	 */
 	public PrisonBlock( String blockName ) {
-		this( PrisonBlockType.minecraft, blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0, 0);
 	}
 	public PrisonBlock( PrisonBlockType blockType, String blockName ) {
-		this( blockType, blockName, 0);
+		this( blockType, blockName, 0, 0);
 	}
 	
 	public PrisonBlock( String blockName, boolean block ) {
-		this( PrisonBlockType.minecraft, blockName, 0);
+		this( PrisonBlockType.minecraft, blockName, 0, 0);
 		this.block = block;
 	}
 
@@ -63,18 +64,18 @@ public class PrisonBlock
 	 * @param blockName
 	 * @param chance
 	 */
-	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance ) {
-		super();
+	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
+		super( blockName, chance, blockCountTotal );
 
 		this.blockType = blockType;
 		
-		this.blockName = blockName.toLowerCase();
-		this.chance = chance;
+//		this.blockName = blockName.toLowerCase();
+//		this.chance = chance;
 		
 	}
 	
 	public PrisonBlock( PrisonBlock clonable ) {
-		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance() );
+		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance(), clonable.getBlockCountTotal() );
 		
 		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
 		this.valid = clonable.isValid();
@@ -95,12 +96,12 @@ public class PrisonBlock
 		this.blockType = blockType;
 	}
 
-	public String getBlockName() {
-		return blockName;
-	}
-	public void setBlockName( String blockName ) {
-		this.blockName = blockName;
-	}
+//	public String getBlockName() {
+//		return blockName;
+//	}
+//	public void setBlockName( String blockName ) {
+//		this.blockName = blockName;
+//	}
 	
 	/**
 	 * <p>This function always prefixes the block name with the BlockType.
@@ -152,12 +153,12 @@ public class PrisonBlock
 		this.useBlockTypeAsPrefix = useBlockTypeAsPrefix;
 	}
 	
-	public double getChance() {
-		return chance;
-	}
-	public void setChance( double chance ) {
-		this.chance = chance;
-	}
+//	public double getChance() {
+//		return chance;
+//	}
+//	public void setChance( double chance ) {
+//		this.chance = chance;
+//	}
 
 	public boolean isValid() {
 		return valid;
@@ -226,6 +227,11 @@ public class PrisonBlock
 		}
 			
 		return results;
+	}
+	
+	@Override
+	public boolean isAir() {
+		return compareTo( AIR ) == 0;
 	}
 	
 }

@@ -87,7 +87,7 @@ public class PrisonAPI {
         Prison.get().getPlatform().dispatchCommand(cmd);
     }
     
-    public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
+    public static void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
     	Prison.get().getPlatform().dispatchCommand( sender, cmd);
     }
 

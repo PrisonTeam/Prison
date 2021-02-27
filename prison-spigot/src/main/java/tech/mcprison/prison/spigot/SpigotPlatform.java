@@ -194,7 +194,7 @@ class SpigotPlatform
     		List<String> unavailableWorlds = mineManager.getUnavailableWorldsListings();
     		for ( String uWorld : unavailableWorlds ) {
     			
-    			display.text( uWorld );
+    			display.addText( uWorld );
     		}
     		
     	}
@@ -292,7 +292,7 @@ class SpigotPlatform
     		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
     			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     			
-    			RankPlayer rankPlayer = pm.getPlayer( uuid, name ).orElse( null );
+    			RankPlayer rankPlayer = pm.getPlayer( uuid, name );
     			if ( rankPlayer != null ) {
     				if ( uuid != null && rankPlayer.getUUID().equals( uuid ) || 
     					 uuid == null && name != null && rankPlayer.getName() != null && 
@@ -650,16 +650,16 @@ class SpigotPlatform
         
         if ( isPlugManPresent ) {
         	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
-        	chatDisplay.text( "&7The use of PlugMan on this Prison server will corrupt internals" );
-        	chatDisplay.text( "&7of Prison and may lead to a non-functional state, or even total" );
-        	chatDisplay.text( "&7corruption of the internal settings, the saved files, and maybe" );
-        	chatDisplay.text( "&7even the mines and surrounding areas too." );
-        	chatDisplay.text( "&7The only safe way to restart Prison is through a server restart." );
-        	chatDisplay.text( "&7Use of PlugMan at your own risk.  You have been warned. " );
-        	chatDisplay.text( "&7Prison support team has no obligation to help recover, or repair," );
-        	chatDisplay.text( "&7any troubles that may result of the use of PlugMan." );
-        	chatDisplay.text( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
-        	chatDisplay.text( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
+        	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
+        	chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
+        	chatDisplay.addText( "&7even the mines and surrounding areas too." );
+        	chatDisplay.addText( "&7The only safe way to restart Prison is through a server restart." );
+        	chatDisplay.addText( "&7Use of PlugMan at your own risk.  You have been warned. " );
+        	chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
+        	chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
+        	chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
+        	chatDisplay.addText( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
         	
         	chatDisplay.sendtoOutputLogInfo();;
         }
@@ -792,6 +792,28 @@ class SpigotPlatform
 
 			try {
 				results = Integer.parseInt( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an integer but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public long getConfigLong( String key, long defaultValue ) {
+		long results = defaultValue;
+		
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+			
+			try {
+				results = Long.parseLong( config );
 			}
 			catch ( NumberFormatException e ) {
 				Output.get().logInfo( "Invalid config.yml value. The setting " +
@@ -1063,6 +1085,82 @@ class SpigotPlatform
 		return results;
 	}
 	
+	/**
+	 * <p>This function takes a CommandSender for a player, and tries to find a mine
+	 * that would be associated with that player.  This is a very complex process
+	 * since mines don't have to be associated with mines, and you can have multiple 
+	 * mines per rank.  This only processes ranks on the default ladder. Both 
+	 * the Ranks and Mines modules must be enabled too.
+	 * </p>
+	 * 
+	 * <p>First, the CommandSender has to be converted to a Player object, then
+	 * mapped to a RankPlayer.  This process can only happen with a RankPlayer object
+	 * since that is where a Player is associated with ranks. 
+	 * </p>
+	 * 
+	 * <p>If the player has a rank on the default ladder, then that rank will be
+	 * used to continue the search for the mine.  If there is more than one mine 
+	 * associated with the rank, then it tries to find a mine with the same name.
+	 * Otherwise it will take the first mine in the list.
+	 * </p>
+	 * 
+	 * <p>The result, if not null, is the best mine that can be found. It is recognized
+	 * that if multiple mines exist, then it may not always be the one intended.
+	 * </p>
+	 * 
+	 * @param sender
+	 * @return
+	 */
+	@Override
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+		Mine results = null;
+		
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() &&
+				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() 
+				) {
+			
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		Player player = pm.getPlayer( sender );
+    		RankPlayer rankPlayer = pm.getPlayer( player );
+
+    		if ( rankPlayer != null ) {
+    			Rank rank = rankPlayer.getRank( "default" );
+    			
+    			if ( rank != null ) {
+    				
+    				// First check to see if there are any mines linked to a rank:
+    				if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
+    					
+    					for ( ModuleElement mineME : rank.getMines() ) {
+							if ( mineME.getName().equalsIgnoreCase( rank.getName() )) {
+								// Found a mine with the same name as the rank. Give high priority:
+								
+								results = (Mine) mineME;
+								break;
+							}
+						}
+    					
+    					if ( results == null ) {
+    						results = (Mine) rank.getMines().get(0);
+    					}
+    				}
+    				
+    				if ( results == null ) {
+    					// Check to see if there are any mines with the same name:
+    					
+    					MineManager mm = PrisonMines.getInstance().getMineManager();
+    					results = mm.getMine( rank.getName() );
+    				}
+    				
+    			}
+    			
+    		}
+			
+		}
+		
+		return results;
+	}
+	
 	
 	/**
 	 * <p>This function assigns blocks to all of the generated mines.  It is intended that
@@ -1129,19 +1227,48 @@ class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				tech.mcprison.prison.mines.data.Block block = 
-						new tech.mcprison.prison.mines.data.Block( 
-								mBlocks.get( i ), percents.get( i ) );
-				
-				mine.getBlocks().add( block );
-
-				total += block.getChance();
-				
-				// If this is the last block and the totals are not 100%, then
-				// add the balance to the last block.
-				if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-					double remaining = 100.0d - total;
-					block.setChance( remaining + block.getChance() );
+				if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+					
+					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+	            	if ( prisonBlock != null ) {
+	            	
+	            		prisonBlock.setChance( percents.get( i ) );
+	            		prisonBlock.setBlockCountTotal( 0 );
+	            		
+	            		mine.getPrisonBlocks().add( prisonBlock );
+	            		
+	            		total += prisonBlock.getChance();
+	            		
+	            		// If this is the last block and the totals are not 100%, then
+	            		// add the balance to the last block.
+	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+	            			double remaining = 100.0d - total;
+	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
+	            		}
+	            	}
+	            	else {
+	            		Output.get().logInfo(
+	            				String.format( "AutoConfigure block assignment failure: New Block Model: " +
+	            						"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
+	            						mBlocks.get( i ) ) );
+	            	}
+				}
+				else {
+					
+					tech.mcprison.prison.mines.data.BlockOld block = 
+							new tech.mcprison.prison.mines.data.BlockOld( 
+									mBlocks.get( i ), percents.get( i ), 0 );
+					
+					mine.getBlocks().add( block );
+					
+					total += block.getChance();
+					
+					// If this is the last block and the totals are not 100%, then
+					// add the balance to the last block.
+					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+						double remaining = 100.0d - total;
+						block.setChance( remaining + block.getChance() );
+					}
 				}
 				
 			}

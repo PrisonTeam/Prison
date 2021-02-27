@@ -271,8 +271,8 @@ public enum BlockType {
 
 	CACTUS( 81, "minecraft:cactus", 0, MaterialType.BLOCK ),
 
-	CLAY( 82, "minecraft:clay", 0, MaterialType.BLOCK ),
-	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE" ),
+	CLAY( 82, "minecraft:clay", 0, MaterialType.BLOCK, "HARD_CLAY" ),
+	SUGAR_CANES( 83, "minecraft:reeds", 0, MaterialType.BLOCK, "SUGAR_CANE", "SUGAR_CANE_BLOCK" ),
 	JUKEBOX( 84, "minecraft:jukebox", 0, MaterialType.BLOCK ),
 	OAK_FENCE( 85, "minecraft:fence", 0, MaterialType.BLOCK ),
 	PUMPKIN( 86, "minecraft:pumpkin", 0, MaterialType.BLOCK ),
@@ -462,7 +462,7 @@ public enum BlockType {
 	GREEN_CARPET( 171, "minecraft:carpet", 13, MaterialType.BLOCK ),
 	RED_CARPET( 171, "minecraft:carpet", 14, MaterialType.BLOCK ),
 	BLACK_CARPET( 171, "minecraft:carpet", 15, MaterialType.BLOCK ),
-	HARDENED_CLAY( 172, "minecraft:hardened_clay", 0, MaterialType.BLOCK, "TERRACOTTA", "HARD_CLAY" ),
+	HARDENED_CLAY( 172, "minecraft:hardened_clay", 0, MaterialType.BLOCK, "TERRACOTTA" ),
 
 	COAL_BLOCK( 173, "minecraft:coal_block", 0, MaterialType.BLOCK, "BLOCK_OF_COAL" ),
 	BLOCK_OF_COAL( 173, "minecraft:coal_block", 0, MaterialType.BLOCK ), // obsolete...

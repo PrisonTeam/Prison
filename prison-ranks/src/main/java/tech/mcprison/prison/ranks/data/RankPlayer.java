@@ -22,18 +22,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.top.RankPlayerBalance;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -51,14 +57,27 @@ public class RankPlayer
      */
 
     private UUID uid;
-    private HashMap<String, Integer> ranks; // <Ladder Name, Rank ID>
-    private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
+    
+    
+    private HashMap<RankLadder, Rank> ladderRanks;
+    
+    // ranks is the storage structure used to save the player's ladder & ranks:
+    private HashMap<String, Integer> ranksRefs; // <Ladder Name, Rank ID>
+    
+    // This prestige is not used.  Current prestige is just another ladder.
+    //private HashMap<String, Integer> prestige; // <Ladder Name, Prestige>
     
     private List<RankPlayerName> names;
     
     // Block name, count
     private HashMap<String, Integer> blocksMined;
 
+    
+    // For tops processing.  Need current balance.
+    private TreeMap<String, RankPlayerBalance> playerBalances;
+    //x
+    
+    
     /*
      * Document-related
      */
@@ -66,8 +85,12 @@ public class RankPlayer
     public RankPlayer() {
     	super();
     	
-        this.ranks = new HashMap<>();
-        this.prestige = new HashMap<>();
+    	this.ladderRanks = new HashMap<>();
+    	
+        this.ranksRefs = new HashMap<>();
+        //this.prestige = new HashMap<>();
+        
+        this.playerBalances = new TreeMap<>();
     }
     
     public RankPlayer( UUID uid ) {
@@ -89,8 +112,8 @@ public class RankPlayer
         this.uid = UUID.fromString((String) document.get("uid"));
         LinkedTreeMap<String, Object> ranksLocal =
             (LinkedTreeMap<String, Object>) document.get("ranks");
-        LinkedTreeMap<String, Object> prestigeLocal =
-            (LinkedTreeMap<String, Object>) document.get("prestige");
+//        LinkedTreeMap<String, Object> prestigeLocal =
+//            (LinkedTreeMap<String, Object>) document.get("prestige");
         
         LinkedTreeMap<String, Object> blocksMinedLocal =
         		(LinkedTreeMap<String, Object>) document.get("blocksMined");
@@ -99,12 +122,12 @@ public class RankPlayer
         
 
         for (String key : ranksLocal.keySet()) {
-            ranks.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
+            ranksRefs.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
         }
         
-        for (String key : prestigeLocal.keySet()) {
-            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
-        }
+//        for (String key : prestigeLocal.keySet()) {
+//            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
+//        }
         
         this.blocksMined = new HashMap<>();
         if ( blocksMinedLocal != null ) {
@@ -135,8 +158,8 @@ public class RankPlayer
     public Document toDocument() {
         Document ret = new Document();
         ret.put("uid", this.uid);
-        ret.put("ranks", this.ranks);
-        ret.put("prestige", this.prestige);
+        ret.put("ranks", this.ranksRefs);
+//        ret.put("prestige", this.prestige);
         
         ret.put("names", this.names);
 
@@ -256,11 +279,16 @@ public class RankPlayer
         String ladderName = ladder.getName();
         
         // Remove the current rank on this ladder first
-        if (ranks.containsKey(ladderName)) {
-            ranks.remove(ladderName);
+        if (ranksRefs.containsKey(ladderName)) {
+            ranksRefs.remove(ladderName);
+        }
+        
+        if ( ladderRanks.containsKey( ladder ) ) {
+        	ladderRanks.remove( ladder );
         }
 
-        ranks.put(ladderName, rank.getId());
+        ranksRefs.put(ladderName, rank.getId());
+        ladderRanks.put( ladder, rank );
     }
 
     /**
@@ -271,21 +299,30 @@ public class RankPlayer
      */
     public void removeRank(Rank rank) {
 
-        // When we loop through, we have to store our ladder name outside the loop to
-        // avoid a concurrent modification exception. So, we'll retrieve the data we need...
-        String ladderName = null;
-        for (Map.Entry<String, Integer> rankEntry : ranks.entrySet()) {
-            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
-                ladderName = rankEntry.getKey();
-            }
-        }
-
-        // ... and then remove it!
-        ranks.remove(ladderName);
+    	if ( rank != null && rank.getLadder() != null ) {
+    		
+    		ladderRanks.remove( rank.getLadder() );
+    		
+    		ranksRefs.remove( rank.getLadder().getName() );
+    	}
+        
+//        // When we loop through, we have to store our ladder name outside the loop to
+//        // avoid a concurrent modification exception. So, we'll retrieve the data we need...
+//        String ladderName = null;
+//        for (Map.Entry<String, Integer> rankEntry : ranksRefs.entrySet()) {
+//            if (rankEntry.getValue() == rank.getId()) { // This is our rank!
+//                ladderName = rankEntry.getKey();
+//            }
+//        }
+//
+//        // ... and then remove it!
+//        ranksRefs.remove(ladderName);
+//        
+//        ladderRanks.remove( rank.getLadder() );
     }
     
     public boolean hasLadder( String ladderName ) {
-    	return ranks.containsKey( ladderName );
+    	return ranksRefs.containsKey( ladderName );
     }
 
     /**
@@ -297,9 +334,15 @@ public class RankPlayer
     public boolean removeLadder(String ladderName) {
     	boolean results = false;
         if ( !ladderName.equalsIgnoreCase("default") ) {
-        	Integer id = ranks.remove(ladderName);
+        	Integer id = ranksRefs.remove(ladderName);
         	results = (id != null);
+        	
+        	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
+        		ladderRanks.remove( ladder );
+        	}
         }
+        
         return results;
     }
 
@@ -313,13 +356,19 @@ public class RankPlayer
      * @param ladder The ladder to check.
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
-    @Deprecated
-    public Optional<Rank> getRank(RankLadder ladder) {
-        if (!ranks.containsKey(ladder.getName())) {
-            return Optional.empty();
-        }
-        int id = ranks.get(ladder.getName());
-        return PrisonRanks.getInstance().getRankManager().getRankOptional(id);
+    public Rank getRank(RankLadder ladder) {
+    	
+    	if ( !ladderRanks.containsKey( ladder ) ) {
+    		return null;
+    	}
+    	
+    	return ladderRanks.get( ladder );
+    	
+//        if (!ranksRefs.containsKey(ladder.getName())) {
+//            return null;
+//        }
+//        int id = ranksRefs.get(ladder.getName());
+//        return PrisonRanks.getInstance().getRankManager().getRank(id);
     }
     
     /**
@@ -328,26 +377,30 @@ public class RankPlayer
      * @param ladder The ladder name to check.
      * @return The {@link Rank} if found, otherwise null;
      */
-    public Rank getRank(String ladder) {
-    	Rank results = null;
-    	if (ladder != null && ranks.containsKey(ladder)) {
-    		int id = ranks.get(ladder);
-    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
-    	}
-    	return results;
+    public Rank getRank( String ladderName ) {
+    	
+    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+    	return getRank( ladder );
+    	
+//    	Rank results = null;
+//    	if (ladder != null && ranksRefs.containsKey(ladder)) {
+//    		int id = ranksRefs.get(ladder);
+//    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
+//    	}
+//    	return results;
     }
 
     
 
-	public HashMap<String, Integer> getPrestige() {
-		return prestige;
-	}
-	public void setPrestige( HashMap<String, Integer> prestige ) {
-		this.prestige = prestige;
-	}
+//	public HashMap<String, Integer> getPrestige() {
+//		return prestige;
+//	}
+//    public void setPrestige( HashMap<String, Integer> prestige ) {
+//		this.prestige = prestige;
+//	}
 
 	public void setRanks( HashMap<String, Integer> ranks ) {
-		this.ranks = ranks;
+		this.ranksRefs = ranks;
 	}
 
 	/**
@@ -357,30 +410,34 @@ public class RankPlayer
      */
     public Map<RankLadder, Rank> getLadderRanks() {
     	
-        Map<RankLadder, Rank> ret = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : ranks.entrySet()) {
-            Optional<RankLadder> ladder =
-                PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
-            if (!ladder.isPresent()) {
-                continue; // Skip it
-            }
+    	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
+    		
+    		//Map<RankLadder, Rank> ret = new HashMap<>();
+    		for (Map.Entry<String, Integer> entry : ranksRefs.entrySet()) {
+    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
+    			
+    			if ( ladder == null ) {
+    				continue; // Skip it
+    			}
+    			
+    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
+    			if ( rank == null ) {
+    				continue; // Skip it
+    			}
+    			
+    			ladderRanks.put(ladder, rank);
+    		}
+    	}
 
-            Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
-            if ( rank == null ) {
-                continue; // Skip it
-            }
-
-            ret.put(ladder.get(), rank);
-        }
-
-        return ret;
+        return ladderRanks;
     }
 
     /*
      * equals() and hashCode()
      */
 
-    @Override public boolean equals(Object o) {
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -393,7 +450,8 @@ public class RankPlayer
         return uid.equals(that.uid);
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         return uid.hashCode();
     }
 
@@ -411,9 +469,8 @@ public class RankPlayer
 	@Override
 	public void dispatchCommand( String command )
 	{
-		// TODO Auto-generated method stub
-		
 	}
+	
 	@Override
 	public boolean hasPermission( String perm ) {
 		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
@@ -450,7 +507,20 @@ public class RankPlayer
 		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
 		return null;
 	}
-
+	
+	@Override
+    public Block getLineOfSightBlock() {
+		return null;
+	}
+	
+	@Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	return results;
+	}
+	
+	
 	@Override
 	public void teleport( Location location ) {
 		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );
@@ -479,8 +549,22 @@ public class RankPlayer
 
 	@Override
 	public boolean isOp() {
-		return false;
+		Player player = getPlayer();
+		return (player != null ? player.isOp() : false );
 	}
+	
+	
+	/**
+	 * NOTE: A RankPlayer does not represent an online player with inventory.  
+	 *       This class is not "connected" to the underlying bukkit Player
+	 *       so technically this is not a bukkit Player object, especially since it
+	 *       always represents offline players too.
+	 */
+    @Override 
+    public boolean isPlayer() {
+    	return false;
+    }
+	
 
 	@Override
 	public void updateInventory() {
@@ -496,27 +580,49 @@ public class RankPlayer
 		
 	}
 	
+	/**
+	 * <p>Player is not cached in this class, so if using it in a function 
+	 * make a local variable to save it instead of calling this function multiple
+	 * times since it is a high impact lookup.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	private Player getPlayer() {
+		Player player = null;
+		
+		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( uid );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		return player;
+	}
+	
+	@Override
+	public void recalculatePermissions() {
+		Player player = getPlayer();
+		if ( player != null ) {
+			player.recalculatePermissions();
+		}
+	}
+	
     @Override
     public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	return results;
+    	Player player = getPlayer();
+    	return (player == null ? new ArrayList<>() : player.getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
-    	
-    	return results;
+    	Player player = getPlayer();
+    	return (player == null ? new ArrayList<>() : player.getPermissions( prefix ) );
     }
     
-    /**
+
+
+	
+	/**
      * <p>This will called by the placeholders, so need to get the actual
      * multipliers that exists in the SpigotPlayer object.
      * </p>
@@ -532,14 +638,219 @@ public class RankPlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
-    	
-    	if ( player.isPresent() ) {
-    		results = player.get().getSellAllMultiplier();
+    	Player player = getPlayer();
+    	if ( player != null ) {
+    		results = player.getSellAllMultiplier();
     	}
+//    	
+//    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
+//    	
+//    	if ( player.isPresent() ) {
+//    		results = player.get().getSellAllMultiplier();
+//    	}
     	
     	return results;
     }
-    
 
+    
+    
+    public TreeMap<String, RankPlayerBalance> getPlayerBalances() {
+		return playerBalances;
+	}
+	public void setPlayerBalances( TreeMap<String, RankPlayerBalance> playerBalances ) {
+		this.playerBalances = playerBalances;
+	}
+	
+	
+	
+    private void addCachedRankPlayerBalance( String currency, double amount ) {
+    	// Since the cache will be updated, do not allow it fetch the player's balance:
+    	RankPlayerBalance balance = getCachedRankPlayerBalance( currency, false );
+
+    	balance.addBalance( amount );
+    }
+    
+    private void setCachedRankPlayerBalance( String currency, double amount ) {
+    	// Since the cache will be updated, do not allow it fetch the player's balance:
+    	RankPlayerBalance balance = getCachedRankPlayerBalance( currency, false );
+
+    	balance.setBalance( amount );
+    }
+    
+    
+    public RankPlayerBalance getCachedRankPlayerBalance( String currency ) {
+    	return getCachedRankPlayerBalance( currency, true );
+    }
+    
+    /**
+     * <p>This get's the player's cached balance for the given currency.  If it does not
+     * exist, it will be added.
+     * </p>
+     * 
+     * <p>This function should never be called from outside of this RankPlayer class 
+     * because the getBalance(), addBalance(), and setBalance() functions will only
+     * call this function IFF the economy to support the currency exists.
+     * </p>
+     * 
+     * @param currency Optional. If null or blank, then sets it to the internal representation
+     * 					of the DEFAULT_CURRENCY.
+     * @param updateBalance A boolean that if true will get the player's current balance.
+     * 					Otherwise if false, will not even if the cache is too old.
+     * @return Returns the RankPlayerBalance object that contains the actual
+     * 					balance and the currency that's related to it.
+     */
+	private RankPlayerBalance getCachedRankPlayerBalance( String currency, boolean updateBalance ) {
+		RankPlayerBalance balance = null;
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			currency = RankPlayerBalance.DEFAULT_CURRENCY;
+		}
+		
+		if ( !getPlayerBalances().containsKey( currency ) ) {
+			getPlayerBalances().put( currency, new RankPlayerBalance( currency, 0 ) );
+		}
+
+		balance = getPlayerBalances().get( currency );
+		
+		// if allowed to updateBalance && is time to refresh:
+		if ( updateBalance && balance.isRefreshBalance() ) {
+			// refresh the balance
+			if ( RankPlayerBalance.DEFAULT_CURRENCY.equalsIgnoreCase( balance.getCurrency() ) ) {
+				balance.setBalance( getBalance() );
+			}
+			else {
+				balance.setBalance( getBalance( currency ) );
+			}
+			
+		}
+		
+		return balance;
+	}
+
+	public double getBalance() {
+		double results = 0;
+		
+		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		
+		if ( economy != null ) {
+			
+			results = economy.getBalance( this );
+			setCachedRankPlayerBalance( null, results );
+		}
+		
+		return results;
+	}
+	
+	public void addBalance( double amount ) {
+		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+
+		if ( economy != null ) {
+			economy.addBalance( this, amount );
+			addCachedRankPlayerBalance( null, amount );
+		}
+	}
+	
+	public void removeBalance( double amount ) {
+		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		
+		if ( economy != null ) {
+			economy.removeBalance( this, amount );
+			addCachedRankPlayerBalance( null, -1 * amount );
+		}
+	}
+	
+	public void setBalance( double amount ) {
+		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		
+		if ( economy != null ) {
+			economy.setBalance( this, amount );
+			setCachedRankPlayerBalance( null, amount );
+		}
+	}
+	
+	
+	public double getBalance( String currency ) {
+		double results = 0;
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			results = getBalance();
+		}
+		else {
+			
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency( currency );
+			if ( currencyEcon != null ) {
+				
+				results = currencyEcon.getBalance( this, currency );
+				setCachedRankPlayerBalance( currency, results );
+			}
+		}
+		
+		return results;
+	}
+	
+	public void addBalance( String currency, double amount ) {
+
+		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
+			// No currency specified, so use the default currency:
+			
+//			double pre = getBalance();
+			addBalance( amount );
+//			double post = getBalance();
+//			Output.get().logInfo( "###  RankPlayer.addBalance() amount= %s  pre= %s  post= %s", 
+//					Double.toString( amount ), Double.toString( pre ), Double.toString( post ));
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.addBalance( this, amount, currency );
+				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+	}
+	
+	public void removeBalance( String currency, double amount ) {
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			removeBalance( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.removeBalance( this, amount, currency );
+				addCachedRankPlayerBalance( currency, -1 * amount );
+			}
+		}
+	}
+	
+	public void setBalance( String currency, double amount ) {
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			setBalance( amount );
+		}
+		else {
+			
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				currencyEcon.setBalance( this, amount, currency );
+				setCachedRankPlayerBalance( currency, amount );
+			}
+		}
+	}
+
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
 }

@@ -6,3 +6,15 @@
 
 ranks: true
 mines: true
+
+utils:
+  enabled: true
+  repair:
+    enabled: true
+    repairAll: true
+    repairHand: true
+  potions:
+    enabled: true
+    potionEffects: true
+    potions: true
+    

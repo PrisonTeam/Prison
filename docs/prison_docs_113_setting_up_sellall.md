@@ -65,7 +65,7 @@ players **without** special permissions with just the blocks and their values as
 
 # ADVANCED FEATURES
 
-**Multipliers:**
+## Multipliers:
 
 To use this feature, you'll need to enable prestiges in your ```config.yml``` by editing ```prestiges: false``` to ```prestiges: true```, add some Prestiges and enable
 multipliers in your sellallconfig.yml by editing ```Multiplier_Enabled: false``` to ```Multiplier_Enabled: true```.
@@ -83,7 +83,24 @@ How Multipliers work -> they'll just multiply the value of what you sold, for ex
 so ```1000 * 1 = 1000``` is what you'll get (by default this's the value in the sellallconfig.yml), but if you've a Prestige with a multiplier of maybe ```1.5```, then
 you'll get ```1000 * 1.5 = 1500```, this isn't even hard math but could make you some confusion. 
 
-**SellaAll Signs:**
+## Permission Multipliers:
+
+It's possible to give a **permission** to a player with an **extra multiplier**, this if **enabled** will sum with
+the **default multiplier** and **Prestiges multipliers**, permissions multipliers are **stackable** so this means it's possible
+to **add more permissions multipliers to a player**, if you don't want this you can `enable` an option
+to only choose and use the **higher one**.
+
+Multiplier Permission format: `prison.sellall.multiplier.<multiplier>`
+Example: `prison.sellall.multiplier.1` (this will add a 1x multiplier to a 1x default, so you'll get perm-mult + default-mult = 1 + 1 = 2x total multiplier).
+
+Permission multipliers available options (at time of writing):
+```
+Multiplier_Permission_Only_Higher: 'false'
+Multiplier_Command_Permission_Enabled: 'true'
+Multiplier_Command_Permission: prison.admin
+```
+
+## SellaAll Signs:
 
 Open your config.yml and turn on true the sellall sign like this: 
 ```
@@ -100,7 +117,9 @@ the tag from the config.yml which's shown in the sign.
 To make a Sign, just place a sign and add as the first line ```[SellAll]```, also be sure to have the permissions ```prison.sign```.
 If everything's right, the sign will look like the sellall-sign-visible-tag from the config.yml, and will work on right clicking it.
 
-**SellAll Auto**
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+# SellAll Auto
 
 You can turn on or off from the SellAllConfig.yml file the SellAll Auto feature, which will sell everything sellable from the player inventory when it's full.
 Just edit these config lines like this:
@@ -118,6 +137,8 @@ The admin can enable this feature from the `sellAllConfig.yml`, by changing this
 ```
     Options.Full_Inv_AutoSell_perUserToggleable: false
 ```
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 # LIST OF COMMANDS
 ```

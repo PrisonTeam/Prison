@@ -1,6 +1,11 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +19,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,6 +30,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -102,7 +107,7 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig;
 	}
 
-	protected boolean isBoolean( AutoFeatures feature ) {
+	public boolean isBoolean( AutoFeatures feature ) {
 		return autoFeaturesConfig.isFeatureBoolean( feature );
 	}
 
@@ -110,6 +115,16 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig.getFeatureMessage( feature );
 	}
 
+	protected List<String> getListString( AutoFeatures feature ) {
+		List<String> results = null;
+		if ( feature.isStringList() ) {
+			results = autoFeaturesConfig.getFeatureStringList( feature );
+		}
+		else {
+			results = new ArrayList<>();
+		}
+		return results;
+	}
 
 //	/**
 //     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
@@ -238,18 +253,70 @@ public class AutoManagerFeatures
 		return count;
 	}
 
+	
+	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
+		int count = 0;
+		
 
-	protected void autoPickupCleanup( Player player, SpigotItemStack itemInHand, int count, BlockBreakEvent e )
+		// The following is not the correct drops:
+		Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
+//		Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
+
+
+		if (drops != null && drops.size() > 0 ) {
+
+			// Need better drop calculation that is not using the getDrops function.
+			short fortuneLevel = getFortune(itemInHand);
+
+
+			// Adds in additional drop items:
+			calculateDropAdditions( itemInHand, drops );
+
+			if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
+					hasSilkTouch( itemInHand )) {
+
+				calculateSilkTouch( itemInHand, drops );
+			}
+
+			// Drop the items where the origional block was located:
+			for ( SpigotItemStack itemStack : drops ) {
+
+				if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
+					// calculateFortune directly modifies the quantity on the blocks ItemStack:
+					calculateFortune( itemStack, fortuneLevel );
+				}
+
+				count += itemStack.getAmount();
+				
+				dropAtBlock( itemStack, block );
+				
+//				dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
+//				dropExtra( player.getInventory().addItem(itemStack), player, block );
+			}
+
+			
+			// Break the block and change it to air:
+			block.setPrisonBlock( PrisonBlock.AIR );;
+		}
+		
+		return count;
+	}
+
+	protected void autoPickupCleanup( SpigotBlock block, Player player, SpigotItemStack itemInHand, int count )
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
 
-			// Set the broken block to AIR and cancel the event
-			e.setCancelled(true);
-			e.getBlock().setType(Material.AIR);
-
-			// Maybe needed to prevent drop side effects:
-			e.getBlock().getDrops().clear();
+//			// Set the broken block to AIR and cancel the event
+			if ( !block.isEmpty() ) {
+				block.setPrisonBlock( PrisonBlock.AIR );
+			}
+			
+//			e.setCancelled(true);
+//			e.getBlock().setType(Material.AIR);
+//
+//			// Maybe needed to prevent drop side effects:
+//			e.getBlock().getDrops().clear();
 
 			// calculate durability impact: Include item durability resistance.
 			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
@@ -436,30 +503,33 @@ public class AutoManagerFeatures
 	 */
 	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, SpigotBlock block ) {
 
-		Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-
 		if ( extra != null && extra.size() > 0 ) {
 
-			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
+			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
+			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
 				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
 
 					UUID playerUUID = player.getUniqueId();
 
 					if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
-						if (!sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+						if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
+							if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
+								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+							}
+
+							Bukkit.dispatchCommand(player, "sellall sell");
 							return;
 						}
 					}
+				} else {
+					if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
+						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					}
+
+					Bukkit.dispatchCommand(player, "sellall sell");
+					return;
 				}
-
-				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-					player.sendMessage(SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
-				}
-
-				Bukkit.dispatchCommand(player, "sellall sell");
-
-				return;
 			}
 
 			for ( SpigotItemStack itemStack : extra.values() ) {
@@ -472,13 +542,16 @@ public class AutoManagerFeatures
 
 					SpigotUtil.dropPlayerItems( player, itemStack );
 					notifyPlayerThatInventoryIsFull( player, block );
-				}
-				else {
+				} else {
 					notifyPlayerThatInventoryIsFullLosingItems( player, block );
 				}
-
 			}
 		}
+	}
+	
+	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {
+		
+		SpigotUtil.dropItems( block, itemStack );
 	}
 
 	private void notifyPlayerThatInventoryIsFull( Player player, SpigotBlock block ) {
@@ -582,8 +655,11 @@ public class AutoManagerFeatures
 		double results = 0.0;
 
 		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-		if ( itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
+		if ( itemInHand != null && itemInHand.getType() != Material.AIR &&
+				itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
+			
 			ItemMeta meta = itemInHand.getItemMeta();
+			
 			if ( meta != null && meta.hasLore()) { 
 				for (String lore : meta.getLore()) {
 					if (lore.startsWith( loreEnabler.name())) {
@@ -626,6 +702,72 @@ public class AutoManagerFeatures
 		return results;
 	}
 
+	protected double getLoreValue( SpigotItemStack itemInHand, String loreValue ) {
+		double results = 0.0;
+
+		if ( itemInHand != null && !itemInHand.isAir() && loreValue != null && !loreValue.trim().isEmpty() ) {
+			List<String> lores = itemInHand.getLore();
+			
+			// Clean the loreValue we need to compare everything to.  It must have all color codes removed:
+			String loreValueCleaned = Text.stripColor( loreValue );
+			
+			for ( String lore : lores ) {
+				
+				// Remove the color codes so it can be cleanly compared with the loreValue:
+				String loreCleaned = Text.stripColor( lore );
+
+				if (loreCleaned.startsWith( loreValueCleaned )) {
+					
+					// Lore detected so set default to 100%:
+					results = 100.0;
+					
+					String value = loreCleaned.replace( loreValueCleaned, "" ).trim();
+					
+					if (value.length() > 0) {
+						
+						// Content has been found after the lore's name. If it is a number, then
+						// use that to set the lore's percentage.  If it fails at parsing then use 100%.
+						
+						try {
+							results = Double.parseDouble( value );
+						}
+						catch (NumberFormatException e) {
+							
+							// Error: Default to 100%
+							// Do not generate log messages since there will be 1000's...
+							results = 100.0;
+						}
+						
+						// Clean up the parsed number.  Less than zero is zero (disabled).
+						if ( results < 0.0 ) {
+							results = 0.0;
+						}
+						
+						// Cannot exceed 100%
+						if ( results > 100.0 ) {
+							results = 100.0;
+						}
+					}
+				}
+				
+			}
+		}
+
+		return results;
+	}
+
+	
+	/**
+	 * <p>If using autoPickupBlockNameList then must use XMaterial's name.
+	 * If block type is CustomItems, then it must be prefixed with CustomIems:BlockName. Minecraft
+	 * blocks can be prefixed with minecraft:BlockName but they don't have to be.
+	 * </p>
+	 * 
+	 * @param block
+	 * @param p
+	 * @param itemInHand
+	 * @return
+	 */
 	protected int autoFeaturePickup( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
 
 
@@ -633,11 +775,23 @@ public class AutoManagerFeatures
 //		String blockName = brokenBlock.toString().toLowerCase();
 //		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( p );
 		int count = 0;
+		
+		// Use this is a block name lisst based upon the following:  blockType:blockName if not minecraft, or blockName
+		List<String> autoPickupBlockNameList =
+				isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) ? 
+						getListString( AutoFeatures.autoPickupBlockNameList ) : null;
 
 		if (isBoolean(AutoFeatures.autoPickupAllBlocks)) {
 			count += autoPickup( true, p, itemInHand, block );
 
-		} else {
+		}
+		
+		else if ( isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) && autoPickupBlockNameList.size() > 0 && 
+							autoPickupBlockNameList.contains( block.getPrisonBlock().getBlockName() ) ) {
+			count += autoPickup( true, p, itemInHand, block );
+		}
+			
+		else {
 
 			switch (block.getPrisonBlock().getBlockNameSearch() ) {
 
@@ -1110,19 +1264,40 @@ public class AutoManagerFeatures
 			// Material name selection which will fit for the version of MC that is
 			// being ran.
 			BlockType block = blocks.getMaterial();
-
-			if (block == BlockType.COAL ||
-					block == BlockType.DIAMOND ||
-					block == BlockType.EMERALD ||
-					block == BlockType.LAPIS_BLOCK ||
-					block == BlockType.GOLD_BLOCK ||
-					block == BlockType.QUARTZ_BLOCK ||
+			
+				
+			if ( 
+					isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ) ||
+					
 					block == BlockType.COAL_ORE ||
 					block == BlockType.DIAMOND_ORE ||
 					block == BlockType.EMERALD_ORE ||
+					block == BlockType.IRON_ORE ||
+					block == BlockType.LAPIS_LAZULI_ORE ||
 					block == BlockType.LAPIS_ORE ||
 					block == BlockType.GOLD_ORE ||
-					block == BlockType.NETHER_QUARTZ_ORE) {
+					block == BlockType.NETHER_GOLD_ORE ||
+					block == BlockType.NETHER_QUARTZ_ORE ||
+					
+					block == BlockType.BLOCK_OF_COAL ||
+					block == BlockType.COAL ||
+					block == BlockType.COAL_BLOCK ||
+					block == BlockType.DIAMOND ||
+					block == BlockType.DIAMOND_BLOCK ||
+					block == BlockType.EMERALD ||
+					block == BlockType.EMERALD_BLOCK ||
+					block == BlockType.GOLD_BLOCK ||
+					block == BlockType.IRON_BLOCK ||
+					block == BlockType.LAPIS_BLOCK ||
+					block == BlockType.LAPIS_LAZULI_BLOCK ||
+					block == BlockType.NETHER_WART_BLOCK ||
+					block == BlockType.NETHERITE_BLOCK ||
+					block == BlockType.PURPUR_BLOCK ||
+					block == BlockType.QUARTZ_BLOCK ||
+					block == BlockType.REDSTONE_BLOCK ||
+					block == BlockType.SLIME_BLOCK ||
+					block == BlockType.SNOW_BLOCK
+					) {
 
 				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
 
@@ -1133,6 +1308,7 @@ public class AutoManagerFeatures
 					block == BlockType.REDSTONE ||
 					block == BlockType.SEA_LANTERN ||
 					block == BlockType.GLOWING_REDSTONE_ORE ||
+					block == BlockType.REDSTONE_ORE ||
 					block == BlockType.PRISMARINE ||
 
 					block == BlockType.BEETROOT_SEEDS ||
@@ -1250,6 +1426,76 @@ public class AutoManagerFeatures
 	}
 
 
+	/**
+	 * <p>Fortune is calculated using the standard calculations used by vanilla
+	 * minecraft when the tool's fortuneLevel is three or lower.
+	 * </p>
+	 * 
+	 * <p>This function also supports non-standard higher fortune levels. Fortune 
+	 * levels of 4 and 5 are fixed at lower levels.  Levels 6 and higher uses a
+	 * formula with an initial threshold of 80%, but the threshold increases 
+	 * as the fortuneLevel increases.  There is no upper limit on the calculations, 
+	 * but anything greater than a fortune level of 200 has a 100% chance of 
+	 * the calculated multiplier being applied.
+	 * </p>
+	 * 
+	 * <p>Fortune Levels and the resulting multipliers are based upon random chance
+	 * between 0 and 100:
+	 * 
+	 * </p>
+	 * <ul>
+	 *   <li>Fortune 1: <ul>
+	 *   	<li><b>2</b> :: rnd <= 33</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 2: <ul>
+	 *   	<li><b>2</b> :: rnd <= 25</li>
+	 *   	<li><b>3</b> :: rnd <= 50</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 3: <ul>
+	 *   	<li><b>2</b> :: rnd <= 20</li>
+	 *   	<li><b>3</b> :: rnd <= 40</li>
+	 *   	<li><b>4</b> :: rnd <= 60</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 4: <ul>
+	 *   	<li><b>2</b> :: rnd <= 16</li>
+	 *   	<li><b>3</b> :: rnd <= 32</li>
+	 *   	<li><b>4</b> :: rnd <= 48</li>
+	 *   	<li><b>5</b> :: rnd <= 64</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 5: <ul>
+	 *   	<li><b>2</b> :: rnd <= 14</li>
+	 *   	<li><b>3</b> :: rnd <= 28</li>
+	 *   	<li><b>4</b> :: rnd <= 42</li>
+	 *   	<li><b>5</b> :: rnd <= 56</li>
+	 *   	<li><b>6</b> :: rnd <= 70</li>
+	 *   	</ul></li>
+	 *   </li>
+	 *
+	 *   <li>Fortune 6 & Higher: <ul>
+	 *     <li>Threshold is set to 80%</li>
+	 *     <li>For every fortuneLevel of 10, threshold is increased by 1%</li>
+	 *     <li>Threshold can only reach a max value of 100</li>
+	 *     <li>If rnd is greater than threshold, then multiplier is only 1</li>
+	 *     <li>chancePerUnit = threshold / fortuneLevel</li>
+	 *     <li>multiplier = the floor value of chancePerUnit * rnd</li>
+	 *     <li>If modified threshold hit 100, then chancePerUnit is always calculated.</li>
+	 *     <li>No upper limit on fortuneLevel.</li>
+	 *     </ul></li>
+	 *   </li>
+	 * </ul
+	 * 
+	 * @param fortuneLevel
+	 * @param multiplier
+	 * @return
+	 */
 	private int calculateFortuneMultiplier(int fortuneLevel, int multiplier) {
 		int rnd = getRandom().nextInt( 100 );
 
@@ -1299,25 +1545,66 @@ public class AutoManagerFeatures
 				}
 				break;
 
-			default:
+			case 5:
 				// values of 5 or higher
-				if (rnd <= 16) {
+				if (rnd <= 14) {
 					multiplier = 2;
 				}
-				else if (rnd <= 32) {
+				else if (rnd <= 28) {
 					multiplier = 3;
 				}
-				else if (rnd <= 48) {
+				else if (rnd <= 42) {
 					multiplier = 4;
 				}
-				else if (rnd <= 64) {
+				else if (rnd <= 56) {
 					multiplier = 5;
 				}
-				else if (rnd <= 74) {
+				else if (rnd <= 70) {
 					// Only 8% not 16% chance
 					multiplier = 6;
 				}
 				break;
+				
+			default:
+				
+				// Fortune is over 5, so apply a special formula:
+				
+				// Take the fortune level and divide by 10 and then take the 
+				// floor value of that and use it as the threshold modifier.
+				
+				int thresholdModifier = Math.floorDiv( fortuneLevel, 10 );
+				
+				// Max thresholdModifier can only be 100.
+				if ( thresholdModifier > 100 ) {
+					thresholdModifier = 100;
+				}
+				
+				// Calculate the threshold to apply the multiplier, starting 
+				// with 80%, then add the thresholdModifier so the higher the
+				// fortune, then the greater the odds of engaging the the 
+				// multiplier, where a fortune of 200 will guarantee the 
+				// the multiplier will always be enabled.
+				
+				double threshold = 80.0d + thresholdModifier;
+				
+				// Use a random number that is a double:
+				double rndD = getRandom().nextDouble();
+				
+				if ( rndD <= threshold ) {
+					// Passed the threshold, so calculate the multiplier.
+					
+					// The chancesPerUnit represents how to subdivide the 
+					// threshold in to number of fortuneLevels.
+					double chancesPerUnit = threshold / fortuneLevel;
+					
+					// Calculate how many units are in the rndD number:
+					double units = rndD / chancesPerUnit;
+					
+					// The multiplier is the floor of units. Do not round up.
+					multiplier = 1 + (int) Math.floor( units );
+					
+				}
+				
 		}
 		return multiplier;
 	}

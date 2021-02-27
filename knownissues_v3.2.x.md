@@ -7,12 +7,109 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.3
+# To Do Items - During Alpha v3.2.4
 
+
+
+- Use the mine tag name over the mine's name if it exists.
+
+
+
+- TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not bee exact. Not sure why at this time.
+
+
+
+- Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
+  - Partially done.  The chat handler was updated, but the change could be pushed in to other existing code to improve the flexibility and resolve some of the weaknesses that may exist.
+
+
+- /mines set size <mineName> walls 0 is not refreshing.
+  - NOTE: Cannot refresh liners if size is 0. The reason for this is that a liner may not always fill the full edge.  Therefore, a value of 0 cannot tell if there should be a liner block in that position. Normally a liner only replaces existing block when applying the liner, or it forces it so it fills the whole edge.  If it's not normally forced, then it cannot be done.
+
+
+
+- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point.
+
+
+   
+   
+- Future Block Constraints:
+ - GradientBottom - The block has a greater chance to spawn near the bottom of the mine. 
+ - GradientTop - The block has a greater chance to spawn near the top of the mine.
+
+
+   
+   
+   - TODO: Need to have an alt block list for mines were blocks that are not actually 
+     defined in that mine included there.  This is so air and other blocks that don't find hits can be included with the counts.  Needed for when blocks are changed so it does not lose change status?
+     
+
+- player.getPermission() is not returning anything??
+
+
+- Prestiges max - if at max show 100% or Max, etc... Maybe set "max" on a placeholder attribute?
+
+
+- Add a prestiges config option to auto add a zero rank entry for prestige ranks.
+
+
+- Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+
+
+- For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
+
+
+- Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
+  - DONE: repair & repairAll
+  - potions and potion effects - in progress
+
+
+
+
+- Top Listings
+	- Ranks & Prestiges
+	- Individual Ranks
+	- Mine base
+	- placeholders - dynamic - position in list
+	- How to dynamically keep this in memory, without lag or delays? 
+	  - Timer to track updates to player's balance so it's not always performing updates
+	- Sort order:
+	  - Ladder, Rank, percent, name
+	  - Penalty for going over 100%?
+	    - Encourage ranking up instead of sitting at one rank to dominate.
+	    - if > 100% - Take excess and get % of rankup cost and divide by 10, then subtract.
+	    - if rankup cost is 1 million and player has 2 M, then they will have a calculated rank score of 90.00.
+	      - if cost is 1 M and they have 3 M then it will score them at 80.00
+	      
+	      
+- Provide a generic placeholder that can have the value supplied through the placeholder.
+	
+
+- Prepare for sellall integration to the new block model (simple way to put it)
+  - PrisonBlock - add "price" - Maybe keyed by "shop".
+    - custom currency support like ranks?
+    - shop, currency, price, item
+  - RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
+  - Hook startup for PrisonBlock to sellall to preload the price 
+  - PrisonBlock - add quantity
+  - Add a utility method for converting a PrisonBlock to ItemStack
+  
+
+
+- blockEvent
+  - simplify add - use common defaults - can change features with the other commands
+  - Add a target block name
+  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
+  
+  
+- auto features
+  - custom list of blocks for fortune
+  - allow to work outside the mines
+  
 
 - Issue with /ranks demote and refunding player.
   If the current rank has a custom currency and the player is demoted with a refund,
-  the refund is creditd to the wrong currency
+  the refund is credited to the wrong currency
   - This will be easier to fix once currencies are fixed
   
 
@@ -151,18 +248,6 @@ if 100% block type of IGNORE, then after reset do an full mine air count so zero
 
 
 
-[Plugin Prison - To be able to manage at which layer such or such block appears]
-- For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
-
-  "blocks": [
-    "STONE-20.0-0",         0 when not configured = all layers 
-    "IRON_ORE-25.0-0,5",    0,5 for all layers up to the layer 5
-    "GOLD_ORE-25.0-4,7",    4,7 for layers between layer 4 and 7
-    "EMERALD_ORE-25.0-8,0"  8,0 for all layers after layer 8 (in example : so up to layer 10)
-  ],
-
-
-
 
 # To Do Items - Post v3.2.1
 
@@ -206,8 +291,6 @@ Just had this idea... What if for these main commands, for configuration purpose
 <h2> Higher Priority TO DO Items </h2>
 
 
-* **Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
-They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
 
 
 * **Refactor GUI?**
@@ -326,6 +409,74 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+
+- DONE: Try to for a limit on a certain block type?  M_Malmstedt
+   - a specific number may not work well... but maybe a max limit?  Or a range?
+   - max limit prevent more generation of that block type.
+   - if a min limit and it's not reached, then reset the mine or randomly add that many more to the mine?
+
+
+- DONE: Block generation constraints:
+   Let me "make up" some future constraints so we can better understand how powerful this can become:
+  - Min - Not yet implemented but a work in progress - Ensures a minimal number of blocks to be generated in a mine
+  - Max - Caps the max number of blocks generated in a mine
+  - NoTop - Prevent a block from appearing in the top layer of a mine.  Percent from the top where it cannot spawn.  10% would be no spawn in top 10% layers.
+
+
+DONE:
+[Plugin Prison - To be able to manage at which layer such or such block appears]
+- For example if I create a mine of 10 high, with iron_ore, gold_ore, emerald_ore,... I would like choose between which layers a particular bloc appears.
+
+  "blocks": [
+    "STONE-20.0-0",         0 when not configured = all layers 
+    "IRON_ORE-25.0-0,5",    0,5 for all layers up to the layer 5
+    "GOLD_ORE-25.0-4,7",    4,7 for layers between layer 4 and 7
+    "EMERALD_ORE-25.0-8,0"  8,0 for all layers after layer 8 (in example : so up to layer 10)
+  ],
+
+
+
+
+- DONE: restrict access to the root commands in prison so players cannot run them even though they won't have access to the actual commands.
+
+
+- Fixed: player-mine placeholders do not work
+
+
+- Fixed: rankup does not work.  This may have looked like some placeholders were not working after a /rankup.
+
+
+- DONE: Hook the mine reset paging variables up to config parameters.  OfficiallyGuo needs them.
+  - 
+
+* **DONE: Need to figure out how to better handle the Spigot commands that bypass the prison command interface**
+They are inconsistent and non-standard to prison. They do not support the `help` keyword, nor do they show what perms they need.  
+
+
+- DONE: Remove obsolete objects:
+  - prison-spigot/out
+  
+
+- DONE: use the spiget jar and remove the maven hook since maven has been going down frequently.
+   - There were strange issues when "trying" to remove the maven hooks. I don't think they were caused by that, but more so could have been triggered because the core of gradle has changed.  Most of the issues manifested themselves in unit test packages where core classes were missing at the running of the junit tests.  Such failures should not happen since the environments for unit tests should not exclude core classes that are available within the main source.
+   
+
+- DONE: /mines tp - mineName optional - default to the highest ranking Rank's mine.
+
+
+- DONE: auto pickup fortune - formula for levels greater than 5?
+   - Allows unlimited fortune levels.
+
+
+- DONE: Remove a player from a ladder. (This already existed)
+  - Cannot remove from the default ladder
+
+-
+- DONE: new placeholder - user - prison placeholder for total multiplier
+  - see the new API... 
+  
 
 
 - DONE: Placeholder Attributes:

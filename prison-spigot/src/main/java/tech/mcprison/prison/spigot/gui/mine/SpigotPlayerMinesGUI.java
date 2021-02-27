@@ -17,8 +17,15 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+/**
+ * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
+ */
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -39,20 +46,20 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoMines")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoMines")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyMines")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> PlayerMines"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerMinesGUI")));
 
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList()) {
@@ -72,7 +79,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, m, minesLore);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }
@@ -83,7 +90,16 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         ItemStack itemMines;
         Material material;
+
+        GuiConfig guiConfigClass = new GuiConfig();
+        guiConfig = guiConfigClass.getFileGuiConfig();
         String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
+
+        // Get Mine Name.
+        String mineName = m.getName();
+
+        // Add mineName lore for TP.
+        minesLore.add(SpigotPrison.format("&3" + mineName));
 
         // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
         // based upon the XMaterial enumeration name, or supported past names.
@@ -115,10 +131,25 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
         }
 
-        // Create the button
-        itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + m.getName()));
+        // Get mine Tag.
+        String mineTag = m.getTag();
 
-        // Add the button to the inventory
-        inv.addItem(itemMines);
+        // Check if mineName's null (which shouldn't be) and do actions.
+        if (mineName != null) {
+
+            if (mineTag == null || mineTag.equalsIgnoreCase("null")){
+                mineTag = mineName;
+            }
+
+            if (material == null){
+                material = Material.COAL_ORE;
+            }
+
+            // Create the button.
+            itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + mineTag));
+
+            // Add the button to the inventory.
+            inv.addItem(itemMines);
+        }
     }
 }

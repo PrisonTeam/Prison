@@ -18,6 +18,9 @@
 
 package tech.mcprison.prison.spigot.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -57,14 +60,28 @@ public class VaultPermissions
 		}
 	}
 
-	@Override public void addPermission(Player holder, String permission) {
+	@Override 
+	public void addPermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerAdd(player.getWrapper(), permission);
     }
 
-    @Override public void removePermission(Player holder, String permission) {
+    @Override 
+    public void removePermission(Player holder, String permission) {
         SpigotPlayer player = (SpigotPlayer) holder;
         this.permissions.playerRemove(player.getWrapper(), permission);
+    }
+    
+    @Override 
+    public void addGroupPermission(Player holder, String groupPermission) {
+    	SpigotPlayer player = (SpigotPlayer) holder;
+    	this.permissions.playerAddGroup(player.getWrapper(), groupPermission);
+    }
+    
+    @Override 
+    public void removeGroupPermission(Player holder, String groupPermission) {
+    	SpigotPlayer player = (SpigotPlayer) holder;
+    	this.permissions.playerRemoveGroup(player.getWrapper(), groupPermission);
     }
 
     @Override
@@ -75,5 +92,36 @@ public class VaultPermissions
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }
+
+    /**
+     * <p>Vault is unable to return a list of permissions for the players when they
+     * are offline.  Vault can only return lists of groups the player is in.  And
+     * those group names do not include the prefix "group." which may be added
+     * by some permission plugins.
+     * </p>
+     * 
+     */
+	@Override
+	public List<String> getPermissions( Player holder, boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		boolean hasGroupSupport = permissions.hasGroupSupport();
+		
+		if ( holder.isOnline() ) {
+			results.add( String.format( "[vault: Group support is %senabled.]", 
+					(hasGroupSupport ? "" : "NOT ")) );
+			
+			SpigotPlayer player = (SpigotPlayer) holder;
+			String[] groups = permissions.getPlayerGroups( player.getWrapper() );
+			for ( String group : groups ) {
+				results.add( group );
+			}
+		}
+//		else {
+//			results.add( "[vault: Player is offline. Perms cannot be accessed.]" );
+//		}
+		
+		return results;
+	}
 
 }

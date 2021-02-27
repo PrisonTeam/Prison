@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.modules.ModuleElement;
@@ -64,7 +66,7 @@ public abstract class MineData
 	 * phased out since it has limited flexibility and complex issues with 
 	 * supporting magic values with the older bukkit versions.
 	 */
-    private List<Block> blocks;
+    private List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -82,6 +84,10 @@ public abstract class MineData
      * and more importantly, which custom block plugin needs to be checked.
      */
     private transient Set<PrisonBlockType> prisonBlockTypes;
+    
+    
+    private TreeMap<String, PrisonBlockStatusData> blockStats;
+    
     
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
@@ -146,6 +152,8 @@ public abstract class MineData
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	this.prisonBlockTypes = new HashSet<>();
+    	
+    	this.blockStats = new TreeMap<>();
     	
     	
     	this.enabled = false;
@@ -238,7 +246,7 @@ public abstract class MineData
     }
 
     public String getTag() {
-    	return tag;
+    	return ( tag == null || tag.trim().isEmpty() ? getName() : tag );
     }
     public void setTag( String tag ) {
     	this.tag = tag;
@@ -364,7 +372,7 @@ public abstract class MineData
         		setVirtual( false );
         		setEnabled( true );
         		
-        		Output.get().logInfo( "Mine " + getName() + ": world has been set and is now enabled." );
+        		Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
         	}
         	else {
         		setEnabled( false );
@@ -382,7 +390,7 @@ public abstract class MineData
     	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
-    public List<Block> getBlocks() {
+    public List<BlockOld> getBlocks() {
         return blocks;
     }
     
@@ -441,7 +449,7 @@ public abstract class MineData
         this.prisonBlocks.clear();
         
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new Block(entry.getKey(), entry.getValue()));
+            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
             
             PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
             if ( prisonBlock != null ) {
@@ -450,20 +458,159 @@ public abstract class MineData
             }
         }
     }
+    
+    public PrisonBlock getPrisonBlock(String blockName ) {
+    	PrisonBlock results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( PrisonBlock b : getPrisonBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public BlockOld getBlockOld(String blockName ) {
+    	BlockOld results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( BlockOld b : getBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public boolean hasBlock( String blockName ) {
+    	boolean results = false;
+    	
+    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		
+    		if ( useNewBlockModel ) {
+    			results = getPrisonBlock( blockName ) != null;
+    		}
+    		else {
+    			results = getBlockOld( blockName ) != null;
+    		}
+    	}
+        
+        return results;
+    }
+    
+    public boolean incrementBlockCount( PrisonBlock block ) {
+    	String blockName = block.getBlockName().toLowerCase();
+    	return incrementBlockCount( blockName );
+    }
+    
+    public boolean incrementBlockCount( BlockOld block ) {
+    	String blockName = block.getType().name().toLowerCase();
+    	return incrementBlockCount( blockName );
+    }
+    
+    private boolean incrementBlockCount( String blockName ) {
+    	boolean results = false;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		
+    		if ( !getBlockStats().containsKey( blockName ) ) {
+    			for ( PrisonBlock b : getPrisonBlocks() ) {
+    				if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    					getBlockStats().put( b.getBlockName(), b );
+    					
+    					b.incrementMiningBlockCount();
+    					results = true;
+    					break;
+    				}
+    			}
+    		}
+    		else {
+    			
+    			getBlockStats().get( blockName ).incrementMiningBlockCount();
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    
+    public boolean hasUnsavedBlockCounts() {
+    	return getUnsavedBlockCount() > 0;
+    }
+    
+    public long getUnsavedBlockCount() {
+    	long results = 0;
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+			results += blockStats.getBlockCountUnsaved();
+		}
 
-    public boolean isInMine(Location location) {
+    	return results;
+    }
+    
+    
+    public void resetUnsavedBlockCounts() {
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+    		// Since the mine was just saved reset the unsaved value :
+    		blockStats.setBlockCountUnsaved( 0 );
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		blockStats.setResetBlockCount( 0 );
+    	}
+    }
+
+    public void resetResetBlockCounts() {
+
+    	for ( PrisonBlockStatusData block : getBlocks() ) {
+			
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+		}
+    	
+    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+    	}
+    	
+//    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+//    		// Reset the block count for the reset event since the mine will be regenerated:
+//    		blockStats.setResetBlockCount( 0 );
+//    	}
+    }
+    
+    
+
+    public boolean isInMineExact(Location location) {
     	if ( isVirtual() ) {
     		return false;
     	}
         return getBounds().within(location);
     }
     
-    public boolean isInMine(BlockType blockType) {
-    	//TODO Not sure if virtual should return false... they do have blocks.
+    public boolean isInMineIncludeTopBottomOfMine(Location location) {
     	if ( isVirtual() ) {
     		return false;
     	}
-        for (Block block : getBlocks()) {
+    	return getBounds().withinIncludeTopBottomOfMine( location );
+    }
+    
+    public boolean isInMine(BlockType blockType) {
+    	//TODO Not sure if virtual should return false... they do have blocks.
+//    	if ( isVirtual() ) {
+//    		return false;
+//    	}
+        for (BlockOld block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;
             }
@@ -733,6 +880,10 @@ public abstract class MineData
 	}
 	public void setLinerData( MineLinerData linerData ) {
 		this.linerData = linerData;
+	}
+
+	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+		return blockStats;
 	}
 	
 }

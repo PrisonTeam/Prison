@@ -24,13 +24,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
@@ -38,7 +38,7 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -47,7 +47,9 @@ import tech.mcprison.prison.util.Location;
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotPlayer extends SpigotCommandSender implements Player {
+public class SpigotPlayer 
+				extends SpigotCommandSender 
+				implements Player {
 
     private org.bukkit.entity.Player bukkitPlayer;
 
@@ -56,7 +58,8 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         this.bukkitPlayer = bukkitPlayer;
     }
 
-    @Override public UUID getUUID() {
+    @Override 
+    public UUID getUUID() {
         return bukkitPlayer.getUniqueId();
     }
 
@@ -107,16 +110,83 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         }
         return Optional.empty();
     }
+    
+    @Override
+    public tech.mcprison.prison.internal.block.Block getLineOfSightBlock() {
+    	
+    	SpigotBlock results = null;
+    	
+//    	org.bukkit.Location eyeLocation = getWrapper().getEyeLocation();
+//    	org.bukkit.util.Vector lineOfSight = eyeLocation.getDirection().normalize();
+//    	
+//    	double maxDistance = 256;
+//    	
+//    	for(double i = 0; i < maxDistance; ++i){
+//    	    Block block = eyeLocation.add( lineOfSight.clone().multiply(i) ).getBlock();
+//    	    if( block.getType() != Material.AIR ) {
+////    	    	if( block.getType().isSolid() ) {
+//
+//    	    	results = new SpigotBlock( block );
+//    	    	break;
+//    	    }
+//    	    
+//    	}
+//    	
+//    	return results;
+//    	
 
-    @Override public boolean isOp() {
-        return bukkitPlayer.isOp();
+        
+    	
+//    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	
+    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
+    	for ( Block block : blocks ) {
+    		if ( block != null && block.getType() != Material.AIR ) {
+
+    			// return the first non-null and non-AIR block, which will 
+    			// be the one the player is looking at:
+    			results = new SpigotBlock( block );
+    		}
+		}
+    	
+    	return results;
     }
 
+    
+    /**
+     * <p>This will return a list of blocks that are in the line of sight of the player.
+     * It will initially ignore all air blocks until it hits a non-air block, then it will
+     * collect a total of 20 of the next blocks.  
+     * </p>
+     * @return
+     */
+    @Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	
+    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
+    	for ( Block block : blocks ) {
+    		if ( block != null && 
+    				(results.size() == 0 && block.getType() != Material.AIR ||
+    				results.size() > 0 && results.size() < 20 )) {
+
+    			// return the first non-null and non-AIR block, which will 
+    			// be the one the player is looking at:
+    			results.add( new SpigotBlock( block ) );
+    		}
+		}
+    	
+    	return results;
+    }
+
+    
     public org.bukkit.entity.Player getWrapper() {
         return bukkitPlayer;
     }
 
-    @Override public Inventory getInventory() {
+    @Override 
+    public Inventory getInventory() {
         return new SpigotPlayerInventory(getWrapper().getInventory());
     }
 
@@ -124,32 +194,85 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
         bukkitPlayer.updateInventory();
     }
 
-    @Override
-    public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
-    	for ( PermissionAttachmentInfo perm : perms )
-		{
-			results.add( perm.getPermission() );
-		}
-    	
-    	return results;
-    }
+//	@Override
+//	public void recalculatePermissions() {
+//		bukkitPlayer.recalculatePermissions();
+//	}
+
+
+//    @Override 
+//    public boolean isOp() {
+//        return bukkitPlayer.isOp();
+//    }
+    
+//	@Override
+//	public boolean hasPermission( String perm ) {
+//		List<String> perms = getPermissions( perm );
+//		return perms.contains( perm );
+//	}
+
+    
+//    @Override
+//    public List<String> getPermissions() {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
+//    	for ( PermissionAttachmentInfo perm : perms )
+//		{
+//			results.add( perm.getPermission() );
+//		}
+//    	
+//    	return results;
+//    }
+    
+    
+//    @Override
+//    public List<String> getPermissions( String prefix ) {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	for ( String perm : getPermissions() ) {
+//			if ( perm.startsWith( prefix ) ) {
+//				results.add( perm );
+//			}
+//		}
+//    	
+//    	return results;
+//    }
+    
+    
+//    /**
+//     * <p>This uses the sellall configs for the permission name to use to get the list of
+//     * multipliers.  It then adds all of the multipliers together to ...
+//     * 
+//     * </p>
+//     * 
+//     */
+//    @Override
+//    public double getSellAllMultiplier() {
+//    	double results = 1.0;
+//    	
+//    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+//    	
+//    	if ( sellall != null ) {
+//    		results = sellall.getMultiplier( this );
+//    	}
+//    	
+//    	return results;
+//    }
     
     @Override
-    public List<String> getPermissions( String prefix ) {
-    	List<String> results = new ArrayList<>();
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
     	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
+    	sb.append( "SpigotPlayer: " ).append( getName() )
+    		.append( "  isOp=" ).append( isOp() )
+    		.append( "  isOnline=" ).append( isOnline() )
+    		.append( "  isPlayer=" ).append( isPlayer() );
     	
-    	return results;
+    	return sb.toString();
     }
-    
+
+	
     /**
      * This class is an adaptation of the NmsHelper class in the Rosetta library by Max Roncace. The
      * library is licensed under the New BSD License. See the {@link tech.mcprison.prison.localization}
@@ -334,25 +457,5 @@ public class SpigotPlayer extends SpigotCommandSender implements Player {
     	}
     }
     
-    
-    /**
-     * <p>This uses the sellall configs for the permission name to use to get the list of
-     * multipliers.  It then adds all of the multipliers together to ...
-     * 
-     * </p>
-     * 
-     */
-    @Override
-    public double getSellAllMultiplier() {
-    	double results = 1.0;
-    	
-    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-    	
-    	if ( sellall != null ) {
-    		results = sellall.getMultiplier( this );
-    	}
-    	
-    	return results;
-    }
     
 }

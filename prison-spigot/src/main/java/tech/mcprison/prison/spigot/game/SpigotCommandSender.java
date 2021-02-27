@@ -18,10 +18,21 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -34,6 +45,15 @@ public class SpigotCommandSender implements CommandSender {
     public SpigotCommandSender(org.bukkit.command.CommandSender sender) {
         this.bukkitSender = sender;
     }
+    
+//    @Override 
+//    public UUID getUUID() {
+//    	UUID uuid = null;
+//    	if ( isPlayer() ) {
+//    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
+//    	}
+//        return uuid;
+//    }
 
     @Override public String getName() {
         return bukkitSender.getName();
@@ -45,10 +65,6 @@ public class SpigotCommandSender implements CommandSender {
 
     @Override public boolean doesSupportColors() {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
-    }
-
-    @Override public boolean hasPermission(String perm) {
-        return bukkitSender.hasPermission(perm);
     }
 
     @Override public void sendMessage(String message) {
@@ -71,6 +87,104 @@ public class SpigotCommandSender implements CommandSender {
     @Override
     public boolean isOp() {
     	return bukkitSender.isOp();
+    }
+   
+	@Override
+	public void recalculatePermissions() {
+		bukkitSender.recalculatePermissions();
+	}
+	
+
+    @Override
+    public boolean hasPermission(String perm) {
+        return bukkitSender.hasPermission(perm);
+    }
+    
+    
+    @Override
+    public List<String> getPermissions() {
+    	List<String> results = new ArrayList<>();
+    	
+    	Set<PermissionAttachmentInfo> perms = bukkitSender.getEffectivePermissions();
+    	for ( PermissionAttachmentInfo perm : perms )
+		{
+			results.add( perm.getPermission() );
+		}
+    	
+    	return results;
+    }
+    
+    
+    @Override
+    public List<String> getPermissions( String prefix ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	for ( String perm : getPermissions() ) {
+			if ( perm.startsWith( prefix ) ) {
+				results.add( perm );
+			}
+		}
+    	
+    	return results;
+    }
+
+    
+    @Override
+    public double getSellAllMultiplier() {
+    	double results = 1.0;
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			results = sellall.getMultiplier( new SpigotPlayer( (org.bukkit.entity.Player) getWrapper() ) );
+    		}
+    	}
+    	
+    	return results;
+
+//    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+//    	
+//    	if ( oPlayer.isPresent() ) {
+//    		results = oPlayer.get().getSellAllMultiplier();
+//    	}
+//    	
+//    	return results;
+    }
+    
+    public List<String> getPermissionsIntegrations( boolean detailed ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+    	
+    	if ( oPlayer.isPresent() ) {
+    		
+    		PermissionIntegration perms = PrisonAPI.getIntegrationManager() .getPermission();
+    		if ( perms != null ) {
+    			results = perms.getPermissions( oPlayer.get(), detailed );
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    
+    
+    @Override 
+    public boolean isPlayer() {
+    	return bukkitSender != null && bukkitSender instanceof org.bukkit.entity.Player;
+    }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( "SpigotCommandSender: " ).append( getName() )
+    		.append( "  isOp=" ).append( isOp() )
+    		.append( "  isPlayer=" ).append( isPlayer() );
+    	
+    	return sb.toString();
     }
     
     public org.bukkit.command.CommandSender getWrapper() {

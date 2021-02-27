@@ -18,6 +18,10 @@
 
 group 'tech.mcprison'
 
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
 repositories {
     mavenCentral()
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
@@ -25,13 +29,17 @@ repositories {
     maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
     maven { url = "https://repo.lucko.me/" }
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
-    maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
+    //maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+    maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
     
     maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
   //  maven { url = 'https://maven.enginehub.org/repo/' }
+  
+  	//maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
+  	
     jcenter()
 }
 
@@ -41,14 +49,18 @@ dependencies {
     implementation project(':prison-core')
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
+    
     implementation 'org.bstats:bstats-bukkit:1.5'
-    implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
+    
+    // Repo keeps going down:
+    //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
+    // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
+    
 	implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'me.clip:placeholderapi:2.9.1'
     
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
-    
     
 	implementation 'com.github.cryptomorin:XSeries:7.8.0'
 //	implementation 'com.github.cryptomorin:XSeries:7.6.0.0.1'
@@ -57,14 +69,18 @@ dependencies {
 //	implementation 'com.github.cryptomorin:XSeries:6.3.2.1'
 
 
+//  This includes 535KB when all we need is 1 class! 
+//	implementation 'me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'
+
 	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
 //    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
 	// 1.12.2-R0.1-SNAPSHOT works well:
 //    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 	// 1.13.2 fails since deprecated functions have been removed.
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
-    
-    
+
+    compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
+
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
         exclude group: 'org.spigotmc'
@@ -72,14 +88,24 @@ dependencies {
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
  
-    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-18.11.3.jar'])
-    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.11.3.jar'])
+
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
+    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
+    compile fileTree(dir: 'lib', 
+    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
+    					
+//    compile fileTree(dir: 'lib', include: ['SPIGET__BUKKIT-1.4.2-SNAPSHOT.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])
+
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 
 }
 
@@ -106,8 +132,11 @@ shadowJar {
         include(dependency('com.google.code.gson:gson:2.8.6'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
         include(dependency('me.clip:placeholderapi:2.9.1'))
-        include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
+        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(dependency('com.github.cryptomorin:XSeries:7.8.0'))
+        
+        //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
+        
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
@@ -116,6 +145,8 @@ shadowJar {
     relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
+
+    //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
     classifier ''
     archiveVersion = ''

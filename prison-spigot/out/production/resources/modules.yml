@@ -1,8 +1,0 @@
-# Defines which modules load and which modules don't.
-# You can use this if, say, you want to use Prison Mines but
-# prefer a different plugin instead of Prison Ranks.
-
-# Key: 'true' means they will load, 'false' means they won't.
-
-ranks: true
-mines: true

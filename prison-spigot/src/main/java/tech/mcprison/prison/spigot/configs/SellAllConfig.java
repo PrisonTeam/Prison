@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
@@ -20,9 +19,7 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public SellAllConfig(){
 
-    	//if ( Prison.get().getPlatform().getConfigBooleanFalse("sellall")) {
         initialize();
-    	//}
     }
 
     public void initialize(){
@@ -65,10 +62,20 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.GUI_Permission","prison.admin");
         dataConfig("Options.Sell_Permission_Enabled","false");
         dataConfig("Options.Sell_Permission","prison.admin");
-        dataConfig("Options.Add_Permission_Enabled","true");
-        dataConfig("Options.Add_Permission","prison.admin");
-        dataConfig("Options.Delete_Permission_Enabled","true");
-        dataConfig("Options.Delete_Permission","prison.admin");
+        dataConfig("Options.Sell_Delay_Enabled", "false");
+        dataConfig("Options.Sell_Delay_Seconds", "5");
+        dataConfig("Options.Sell_Notify_Enabled", "true");
+        dataConfig("Options.Sell_Sound_Enabled", "true");
+        dataConfig("Options.Sell_Sound_Success_Name", "ENTITY_PLAYER_LEVELUP");
+        dataConfig("Options.Sell_Sound_Fail_Name", "BLOCK_ANVIL_PLACE");
+        dataConfig("Options.SellAll_Currency", "default");
+        dataConfig("Options.SellAll_Sign_Enabled", "false");
+        dataConfig("Options.SellAll_Sign_Use_Permission_Enabled", "false");
+        dataConfig("Options.SellAll_Sign_Use_Permission", "prison.sign");
+        dataConfig("Options.SellAll_By_Sign_Only", "false");
+        dataConfig("Options.SellAll_By_Sign_Only_Bypass_Permission", "prison.admin");
+        dataConfig("Options.SellAll_Sign_Notify", "false");
+        dataConfig("Options.SellAll_Sign_Visible_Tag", "&7[&3SellAll&7]");
         dataConfig("Options.Player_GUI_Enabled","true");
         dataConfig("Options.Player_GUI_Permission_Enabled","false");
         dataConfig("Options.Player_GUI_Permission","prison.sellall.playergui");
@@ -80,8 +87,9 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
         dataConfig("Options.Multiplier_Permission_Only_Higher", "false");
-        dataConfig("Options.Multiplier_Command_Permission_Enabled", "true");
-        dataConfig("Options.Multiplier_Command_Permission", "prison.admin");
+        dataConfig("Options.ShiftAndRightClickSellAll.Enabled", "false");
+        dataConfig("Options.ShiftAndRightClickSellAll.PermissionEnabled", "false");
+        dataConfig("Options.ShiftAndRightClickSellAll.Permission", "prison.player");
     }
 
     public FileConfiguration getFileSellAllConfig(){

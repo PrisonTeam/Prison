@@ -12,9 +12,11 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
-import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholderResults;
+import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -159,9 +161,20 @@ public class SpigotPlaceholders
 					results == null ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			if ( mm != null ) {
-				results = mm.getTranslateMinesPlaceHolder( identifier );
+				results = mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, identifier );
+
+				if ( results == null ) {
+					results = mm.getTranslateMinesPlaceHolder( identifier );
+				}
 			}
+			
 		}
+		
+//		if ( results == null ) {
+//			Output.get().logInfo( "### ### SpigotPlaceholders.placeholderTranslate: " +
+//					"could not translate identifyer: %s  playerUuid: %s  playerName: %s", 
+//					(identifier == null ? "(null)" : identifier), playerUuid, playerName );
+//		}
 		
 		return results;
 	}
@@ -176,6 +189,7 @@ public class SpigotPlaceholders
     public String placeholderTranslateText( String text) {
 		String results = text;
 
+		
 		if ( results != null && PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			
@@ -198,8 +212,13 @@ public class SpigotPlaceholders
 //								"idx2= " + idx2 + " identifier=[" + identifier + "] ";
 //						Output.get().logInfo( msg );
 						
-						results = results.replace("{" + identifier + "}", 
-								mm.getTranslateMinesPlaceHolder( identifier ) );
+						String replacement = mm.getTranslateMinesPlaceHolder( placeHolderKey, identifier );
+						if ( replacement == null ) {
+							replacement = "";
+						}
+						
+						results = results.replace("{" + identifier + "}", replacement );
+
 					}
 					
 					//String key = "{" + placeHolderKey.getKey() + "}";
@@ -211,6 +230,9 @@ public class SpigotPlaceholders
 			}
 		}
 		
+		
+
+
 		return results;
 	}
     
@@ -232,30 +254,106 @@ public class SpigotPlaceholders
     	String results = text;
     	
     	// First the player specific placeholder, which must have a UUID:
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
-    			playerUuid != null ) {
+    	if ( text != null && PrisonRanks.getInstance() != null && 
+    			PrisonRanks.getInstance().isEnabled() && playerUuid != null ) {
+    		
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		
     		List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
     		
     		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
     			
-				
-	    		String key1 = "{" + placeHolderKey.getKey();
-	    		String key2 = "}";
-	    		
-	    		int idx = results.indexOf( key1 );
-	    		if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
-	    			
-	    			String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
-	    			
-	    			results = results.replace("{" + identifier + "}", 
-	    							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
-	    		}
-
+    			PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
     			
+    			if ( results != null && identifier != null && identifier.hasResults() ) {
+    				
+    				
+    				results = results.replace( identifier.getEscapedIdentifier(), 
+							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier.getIdentifier() ) );
+    			}
+    			
+//    			// Rank in to an issue with placeholders: prison_mbm_minename and prison_mbm_pm, 
+//    			// because the mine P has a placeholder prison_mbm_p which gets hit for the
+//    			// prison_mbm_pm.  So to zero in on the correct placeholder, but bracket the end
+//    			// of the placeholder with either } or :: to ensure the correct association.
+//    			String test1 = "{" + placeHolderKey.getKey().toLowerCase() + "}";
+//    			String test2 = "{" + placeHolderKey.getKey().toLowerCase() + 
+//    								PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR;
+//    			
+//    			String resultsLowercase = results.toLowerCase();
+//    			if ( resultsLowercase.contains( test1 ) || resultsLowercase.contains( test2 ) ) {
+//    				
+//    				// The key1 and key2 helps ensure that the full placeholder, 
+//    				// including the attribute, is replaced:
+//    				String key1 = "{" + placeHolderKey.getKey().toLowerCase();
+//    				String key2 = "}";
+//    				
+//    				int idx = resultsLowercase.indexOf( key1 );
+//    				int idx2 = ( idx == -1 ? -1 : resultsLowercase.indexOf( key2, idx + key1.length() - 1 ) );
+//    				if ( idx > -1 && idx2 > -1 ) {
+//    					
+//    					String identifier = results.substring( idx + 1, idx2 );
+//    					
+//    					results = results.replace("{" + identifier + "}", 
+//    							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
+//    				}
+//    			}
+
     		}
     	}
+    	
+    	
+    	
+		// Check the mine's playerMines placeholders:
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			if ( mm != null ) {
+				
+	    		List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
+	    		
+	    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+	    			
+	    			PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
+	    			
+	    			if ( identifier.hasResults() ) {
+	    				results = results.replace( identifier.getEscapedIdentifier(), 
+								mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
+													placeHolderKey, identifier.getIdentifier() ) );
+	    			}
+	   
+	    			
+//	    			// Rank in to an issue with placeholders: prison_mbm_minename and prison_mbm_pm, 
+//	    			// because the mine P has a placeholder prison_mbm_p which gets hit for the
+//	    			// prison_mbm_pm.  So to zero in on the correct placeholder, but bracket the end
+//	    			// of the placeholder with either } or :: to ensure the correct association.
+//	    			String test1 = "{" + placeHolderKey.getKey() + "}";
+//	    			String test2 = "{" + placeHolderKey.getKey() + 
+//	    								PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR;
+//	    			if ( results.contains( test1 ) || results.contains( test2 ) ) {
+//	    				
+//	    				// The key1 and key2 helps ensure that the full placeholder, 
+//	    				// including the attribute, is replaced:
+//	    				String key1 = "{" + placeHolderKey.getKey();
+//	    				String key2 = "}";
+//	    				
+//	    				int idx = results.indexOf( key1 );
+//	    				if ( idx > -1 && results.indexOf( key2, idx ) > -1 ) {
+//	    					
+//	    					String identifier = results.substring( idx + 1, results.indexOf( key2, idx ) );
+//	    					String target = "{" + identifier + "}";
+//	    					
+//	    					String replacement = mm.getTranslatePlayerMinesPlaceHolder( 
+//	    										playerUuid, playerName, placeHolderKey, identifier );
+//	    					
+//	    					results = results.replace( target, 
+//		    									(replacement == null ? "" : replacement) );
+//	    				}
+//	    			}
+	    			
+	    		}
+			}
+			
+		}
 
     	// Then translate any remaining non-player (mine) related placeholders:
     	results = placeholderTranslateText( results);
@@ -304,7 +402,8 @@ public class SpigotPlaceholders
 				
 				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ))) {
-					value = mm.getTranslateMinesPlaceHolder( placeHolderKey, null );
+					PlaceholderAttribute attribute = null;
+					value = mm.getTranslateMinesPlaceHolder( placeHolderKey, attribute );
 				}
 				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER ) || 
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {

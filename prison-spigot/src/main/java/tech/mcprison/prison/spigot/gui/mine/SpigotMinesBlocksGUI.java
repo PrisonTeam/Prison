@@ -12,13 +12,16 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.Block;
+import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
  */
 public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
@@ -71,7 +74,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         } else {
         	
         	// For every block makes a button
-        	for (Block block : m.getBlocks()) {
+        	for (BlockOld block : m.getBlocks()) {
         		
         		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
@@ -95,18 +98,18 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
         return false;
     }
     
-    private boolean guiBuilder(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private boolean guiBuilder(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
     	try {
     		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
-    		p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+    		Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
     		ex.printStackTrace();
     		return true;
     	}
@@ -143,7 +146,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         inv.addItem(block1);
     }
 
-    private void buttonsSetup(Inventory inv, Block block, String blockmaterial, String blockmaterialdisplay) {
+    private void buttonsSetup(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
 
         // Create the lore
     	List<String> blockslore = createLore(

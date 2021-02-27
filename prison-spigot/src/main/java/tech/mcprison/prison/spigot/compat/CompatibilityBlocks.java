@@ -32,13 +32,13 @@ public interface CompatibilityBlocks {
 	public BlockTestStats testCountAllBlockTypes();
 	
 
-    public int getDurabilityMax( SpigotItemStack itemInHand );
+    public int getDurabilityMax( SpigotItemStack itemStack );
 	
     public boolean hasDurability( SpigotItemStack itemStack );
     
-    public int getDurability( SpigotItemStack itemInHand );
+    public int getDurability( SpigotItemStack itemStack );
     
-    public boolean setDurability( SpigotItemStack itemInHand, int newDurability );
+    public boolean setDurability( SpigotItemStack itemStack, int newDurability );
     
 //	public int getDurability( SpigotItemStack itemInHand );
 //	

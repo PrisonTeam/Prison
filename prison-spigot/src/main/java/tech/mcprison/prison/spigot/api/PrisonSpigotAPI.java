@@ -261,7 +261,7 @@ public class PrisonSpigotAPI {
     			// Get the cached mine, if it exists:
     			Mine mine = getPlayerCache().get( playerUUIDLSB );
     			
-    			if ( mine == null || !mine.isInMine( spigotBlock.getLocation() ) ) {
+    			if ( mine == null || !mine.isInMineExact( spigotBlock.getLocation() ) ) {
     				// Look for the correct mine to use. 
     				// Set mine to null so if cannot find the right one it will return a null:
     				mine = findMineLocation( spigotBlock );
@@ -305,7 +305,7 @@ public class PrisonSpigotAPI {
 	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager().findMineLocation( block.getLocation() );
+		return getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 
 
@@ -342,7 +342,7 @@ public class PrisonSpigotAPI {
         }
 
 		if (sellAll != null){
-			return sellAll.getMoneyWithMultiplier(player);
+			return sellAll.getMoneyWithMultiplier(player, false);
 		}
 
 		return null;

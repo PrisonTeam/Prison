@@ -17,6 +17,11 @@
 
 package tech.mcprison.prison.ranks.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -24,12 +29,6 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Manages the creation, removal, and management of ladders.
@@ -172,10 +171,9 @@ public class LadderManager {
      * This new ladder will be loaded, but will not be written to disk until {@link #saveLadder(RankLadder, String)} is called.
      *
      * @param name The name of this ladder, for use with the user (i.e. this will be shown to the user).
-     * @return An optional containing either the {@link RankLadder} if it could be created, or empty
-     * if the ladder's creation failed.
+     * @return A {@link RankLadder} if it could be created, or null if the ladder's creation failed.
      */
-    public Optional<RankLadder> createLadder(String name) {
+    public RankLadder createLadder(String name) {
         // Set the default values...
         RankLadder newLadder = new RankLadder( getNextAvailableId(), name );
 
@@ -183,7 +181,7 @@ public class LadderManager {
         loadedLadders.add(newLadder);
 
         // ...and return it.
-        return Optional.of(newLadder);
+        return newLadder;
     }
 
     /**
@@ -241,18 +239,32 @@ public class LadderManager {
      * @param name The ladder's name, case-sensitive.
      * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified name.
      */
-    public Optional<RankLadder> getLadder(String name) {
-        return loadedLadders.stream().filter(ladder -> ladder.getName().equals(name)).findFirst();
+    public RankLadder getLadder(String name) {
+    	RankLadder results = null;
+    	for ( RankLadder rankLadder : loadedLadders ) {
+			if ( rankLadder.getName().equalsIgnoreCase( name ) ) {
+				results = rankLadder;
+				break;
+			}
+		}
+    	return results;
     }
 
     /**
      * Returns the ladder with the specified ID.
      *
      * @param id The ladder's ID.
-     * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified id.
+     * @return the {@link RankLadder} if it could be found, or null if it does not exist by the specified id.
      */
-    public Optional<RankLadder> getLadder(int id) {
-        return loadedLadders.stream().filter(ladder -> ladder.getId() == id).findFirst();
+    public RankLadder getLadder(int id) {
+    	RankLadder results = null;
+    	for ( RankLadder rankLadder : loadedLadders ) {
+			if ( rankLadder.getId() == id ) {
+				results = rankLadder;
+				break;
+			}
+		}
+    	return results;
     }
 
     /**

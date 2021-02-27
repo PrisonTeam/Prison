@@ -322,30 +322,45 @@ public class Text {
         return STRIP_COLOR_PATTERN.matcher(text).replaceAll("");
     }
 
+    
+    /**
+     * <p>This function translates Hex Color codes while taking in to consideration
+     * quoted text not to translate.  It uses the regular expression quotes of
+     * \\Q through \\E, where java requires escaping the slash.  So normally you would
+     * not need a double.  This supports multiple occurrences of quotes.
+     * </p>
+     * 
+     * @param text
+     * @param targetColorCode
+     * @return
+     */
     public static String translateHexColorCodes( String text, char targetColorCode ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	int idxStart = text.indexOf( "\\Q" );
-    	int idxEnd = -1;
-    	
-    	if ( idxStart == -1 ) {
-    		sb.append( translateHexColorCodesCore( text, targetColorCode ) );
-    	}
-    	else {
+    	if ( text != null && !text.trim().isEmpty() ) {
     		
-    		while ( idxStart >= 0 ) {
-    			sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
+    		int idxStart = text.indexOf( "\\Q" );
+    		int idxEnd = -1;
+    		
+    		if ( idxStart == -1 ) {
+    			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
+    		}
+    		else {
     			
-    			idxEnd = text.indexOf( "\\E", idxStart );
-    			
-    			if ( idxEnd == -1 ) {
-    				sb.append( text.substring( idxStart ) );
-    				idxStart = -1;
-    			}
-    			else {
-    				sb.append( text.substring( idxStart, idxEnd ) );
+    			while ( idxStart >= 0 ) {
+    				sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
     				
-    				idxStart = text.indexOf( "\\Q", idxEnd );
+    				idxEnd = text.indexOf( "\\E", idxStart );
+    				
+    				if ( idxEnd == -1 ) {
+    					sb.append( text.substring( idxStart ) );
+    					idxStart = -1;
+    				}
+    				else {
+    					sb.append( text.substring( idxStart, idxEnd ) );
+    					
+    					idxStart = text.indexOf( "\\Q", idxEnd );
+    				}
     			}
     		}
     	}
@@ -358,28 +373,31 @@ public class Text {
      * 
      * https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
      * 
-     * @param startTag
-     * @param endTag
      * @param message
+     * @param targetColorCode the char value that is used to inject as a color code
      * @return
      */
     public static String translateHexColorCodesCore(String message, char targetColorCode) {
+    	String results = "";
     	
-//    	String startTag = "";
-//    	String endTag = "";
+    	if ( message != null ) {
+    		
 //        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
-        
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, targetColorCode + "x"
-                    + targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
-                    + targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
-                    + targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
-                    );
-        }
-        return matcher.appendTail(buffer).toString();
+    		
+    		Matcher matcher = HEX_PATTERN.matcher(message);
+    		StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+    		while (matcher.find()) {
+    			String group = matcher.group(1);
+    			matcher.appendReplacement(buffer, targetColorCode + "x"
+    					+ targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
+    					+ targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
+    					+ targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
+    					);
+    		}
+    		results = matcher.appendTail(buffer).toString();
+    	}
+    	
+    	return results;
     }
     	      
 

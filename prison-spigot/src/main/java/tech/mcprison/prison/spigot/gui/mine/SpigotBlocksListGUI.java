@@ -17,6 +17,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
     private final Player p;
