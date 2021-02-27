@@ -33,6 +33,8 @@ public class AutoFeaturesFileConfig {
     	options,
     	
 	    	isProcessTokensEnchantExplosiveEvents(options, true),
+	    	isProcessCrazyEnchantsBlockExplodeEvents(options, true),
+	    	
 	    	
 	    	general(options),
 	    	

@@ -16,7 +16,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.15 2021-02-25
+# v3.2.4-alpha.15 2021-02-27
+
+
+* **Change how Crazy Enchant explosions work.** 
+Using the same new techniques that TokenEnchant is using to ensure that the blocks are within the mines.  I do not have a copy of CrazyEnchant so I cannot test it.
+
+
+* **Setup a different way to calculate line of sight to find a target location.**
+This will be used with /mines whereami so it can look through walls, such as mine liners, to detect if the player is looking through walls.
+
+
+* **Using the mine tag instead of mine name where it can be used that way.**
 
 
 * **Backpacks compatibility with 1.8.8 tested**
