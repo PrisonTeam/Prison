@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.15 2021-02-27
 
 
+* **Fixes crazy enchant's explosion event to work with normal drops.**
+
+
 * **Moved the PlayerArmorStandManipulateEvent to the correct class.**
 Found it in AutoManager when auto manager has nothing to do with armor stands (hopefully).
 

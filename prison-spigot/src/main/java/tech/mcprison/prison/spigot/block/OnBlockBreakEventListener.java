@@ -449,49 +449,68 @@ public class OnBlockBreakEventListener
 			
 			if ( mine == null ) {
 				
-				// The first block is considered the block that the player actually mined.
-				// not so clear about that though, but have to choose one.
-				SpigotBlock block = new SpigotBlock(e.getBlockList().get( 0 ));
-				
-				// Look for the correct mine to use. 
-				// Set mine to null so if cannot find the right one it will return a null:
-				mine = findMineLocation( block );
-				
-				// Store the mine in the player cache if not null:
-				if ( mine != null ) {
-					getPlayerCache().put( playerUUIDLSB, mine );
-					
-					// we found the mine!
-				}
-
-//				// have to go through all blocks since some blocks may be outside the mine.
-//				// but terminate search upon first find:
-//				for ( Block blk : e.getBlockList() ) {
-//					// Need to wrap in a Prison block so it can be used with the mines:
-//					SpigotBlock block = new SpigotBlock(blk);
+//				// The first block is considered the block that the player actually mined.
+//				// not so clear about that though, but have to choose one.
+//				SpigotBlock block = new SpigotBlock(e.getBlockList().get( 0 ));
+//				
+//				// Look for the correct mine to use. 
+//				// Set mine to null so if cannot find the right one it will return a null:
+//				mine = findMineLocation( block );
+//				
+//				// Store the mine in the player cache if not null:
+//				if ( mine != null ) {
+//					getPlayerCache().put( playerUUIDLSB, mine );
 //					
-//					// Look for the correct mine to use. 
-//					// Set mine to null so if cannot find the right one it will return a null:
-//					mine = findMineLocation( block );
-//					
-//					// Store the mine in the player cache if not null:
-//					if ( mine != null ) {
-//						getPlayerCache().put( playerUUIDLSB, mine );
-//						
-//						// we found the mine!
-//						break;
-//					}
+//					// we found the mine!
 //				}
+
+				// have to go through all blocks since some blocks may be outside the mine.
+				// but terminate search upon first find:
+				for ( Block blk : e.getBlockList() ) {
+					// Need to wrap in a Prison block so it can be used with the mines:
+					SpigotBlock block = new SpigotBlock(blk);
+					
+					// Look for the correct mine to use. 
+					// Set mine to null so if cannot find the right one it will return a null:
+					mine = findMineLocation( block );
+					
+					// Store the mine in the player cache if not null:
+					if ( mine != null ) {
+						getPlayerCache().put( playerUUIDLSB, mine );
+						
+						// we found the mine!
+						break;
+					}
+				}
 			}
     		else if ( mine != null ) {
     			
     			// NOTE: Just because the mine is not null, does not mean that the block was tested to be
     			//       within the mine.  The block must be tested.
     			
-				SpigotBlock block = new SpigotBlock(e.getBlockList().get( 0 ));
+//				SpigotBlock block = new SpigotBlock(e.getBlockList().get( 0 ));
+//				
+//				// Set mine to null so if cannot find the right one it will return a null:
+//				mine = findMineLocation( block );
 				
-				// Set mine to null so if cannot find the right one it will return a null:
-				mine = findMineLocation( block );
+				// have to go through all blocks since some blocks may be outside the mine.
+				// but terminate search upon first find:
+				for ( Block blk : e.getBlockList() ) {
+					// Need to wrap in a Prison block so it can be used with the mines:
+					SpigotBlock block = new SpigotBlock(blk);
+					
+					// Look for the correct mine to use. 
+					// Set mine to null so if cannot find the right one it will return a null:
+					mine = findMineLocation( block );
+					
+					// Store the mine in the player cache if not null:
+					if ( mine != null ) {
+						getPlayerCache().put( playerUUIDLSB, mine );
+						
+						// we found the mine!
+						break;
+					}
+				}
 
     		}
 			
