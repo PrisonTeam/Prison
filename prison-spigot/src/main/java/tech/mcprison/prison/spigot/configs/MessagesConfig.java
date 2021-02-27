@@ -202,6 +202,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
+        dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");
         dataConfig("Message.DefaultLadderEmpty", "The default ladder is &cempty&7.");
         dataConfig("Message.NoSellAllItems", "Sorry but &cthere aren't&7 SellAll Items to show.");
         dataConfig("Message.EmptyGui", "Sorry, the GUI's &cempty.");

@@ -19,6 +19,16 @@ that you need.
 # v3.2.4-alpha.15 2021-02-25
 
 
+* **On join backpack item**
+By default this will be enabled, you can disable it from the backpacksconfig.yml, this feature
+  will give you an item to open the backpack on join.
+
+
+* **/Backpack item command**
+It is now possible to get a copy of the that's being used to open the backpack while in game with the command
+  /backpack item.
+  
+
 * **Prison Backpacks skull support**
 Skulls are now supported by Prison backpacks, everything from an ItemStack should be now supported.
 

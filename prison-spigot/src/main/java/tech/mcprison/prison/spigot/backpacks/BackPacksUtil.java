@@ -1,22 +1,29 @@
 package tech.mcprison.prison.spigot.backpacks;
 
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class BackPacksUtil {
 
     private static BackPacksUtil instance;
+    private Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     private File backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
     private FileConfiguration backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
@@ -117,6 +124,14 @@ public class BackPacksUtil {
                     ex.printStackTrace();
                 }
             }
+        } else {
+            // If it's null just delete the whole stored inventory.
+            try {
+                backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+                backPacksDataConfig.save(backPacksFile);
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -192,6 +207,106 @@ public class BackPacksUtil {
         Inventory inv = p.getInventory();
         inv.removeItem(item);
         setInventory(p, inv);
+    }
+
+    /**
+     * Give backpack item to a player.
+     **/
+    public void giveBackPackToPlayer(Player p){
+        backPackItem(p);
+    }
+
+    private void backPackItem(Player p) {
+
+        if (!getBoolean(backPacksConfig.getString("Options.Back_Pack_GUI_Opener_Item"))) {
+            return;
+        }
+
+        boolean playerHasItemBackPack = false;
+
+        Inventory inv = p.getInventory();
+
+        for (ItemStack item : inv.getContents()) {
+            if (item != null){
+
+                ItemStack materialConf = SpigotUtil.getXMaterial(backPacksConfig.getString("Options.BackPack_Item")).parseItem();
+
+                if (materialConf != null && item.getType() == materialConf.getType() && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(backPacksConfig.getString("Options.BackPack_Item_Title")))){
+                    playerHasItemBackPack = true;
+                }
+            }
+        }
+
+        if (!playerHasItemBackPack){
+
+            ItemStack item;
+
+            List<String> itemLore = createLore(
+                    messages.getString("Lore.ClickToOpenBackpack")
+            );
+
+            item = createButton(SpigotUtil.getXMaterial(backPacksConfig.getString("Options.BackPack_Item")).parseItem(), itemLore, backPacksConfig.getString("Options.BackPack_Item_Title"));
+
+            if (item != null) {
+                inv.addItem(item);
+            }
+        }
+    }
+
+    /**
+     * Create a Lore for an Item in the GUI.
+     *
+     * @param lores
+     * */
+    private List<String> createLore( String... lores ) {
+        List<String> results = new ArrayList<>();
+        for ( String lore : lores ) {
+            results.add( SpigotPrison.format(lore) );
+        }
+        return results;
+    }
+
+    /**
+     * Create a button for the GUI using ItemStack.
+     *
+     * @param item
+     * @param lore
+     * @param display
+     * */
+    private ItemStack createButton(ItemStack item, List<String> lore, String display) {
+
+        if (item == null){
+            item = XMaterial.BARRIER.parseItem();
+        }
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null){
+            meta = XMaterial.BARRIER.parseItem().getItemMeta();
+        }
+
+        return getItemStack(item, lore, display, meta);
+    }
+
+    /**
+     * Get ItemStack of an Item.
+     *
+     * @param item
+     * @param lore
+     * @param display
+     * @param meta
+     * */
+    private ItemStack getItemStack(ItemStack item, List<String> lore, String display, ItemMeta meta) {
+        if (meta != null) {
+            meta.setDisplayName(SpigotPrison.format(display));
+            try {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            } catch (NoClassDefFoundError ignored){}
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+
+        return item;
     }
 
     /**

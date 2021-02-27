@@ -54,9 +54,10 @@ public class BackPacksConfig extends SpigotConfigComponents{
     private void values(){
         dataConfig("Options.BackPack_Use_Permission_Enabled", "false");
         dataConfig("Options.BackPack_Use_Permission", "prison.backpack");
-        //dataConfig("Options.Back_Pack_GUI_Opener_Item", "false");
-        //dataConfig("Options.BackPack_Item", "CHEST");
-        //dataConfig("Options.BackPack_Item_Title", "&3Backpack");
+        dataConfig("Options.Back_Pack_GUI_Opener_Item", "true");
+        dataConfig("Options.BackPack_Item", "CHEST");
+        dataConfig("Options.BackPack_Item_Title", "&3Backpack");
+        dataConfig("Options.BackPack_Item_OnJoin", "true");
         dataConfig("Options.BackPack_Lose_Items_On_Death", "false");
     }
 

@@ -143,24 +143,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return multiplier;
     }
 
-    /**
-     * Java getBoolean's broken so I made my own.
-     * */
-    public boolean getBoolean(String string){
-
-        if (string == null){
-            return false;
-        }
-
-        if (string.equalsIgnoreCase("true")){
-            return true;
-        } else if (string.equalsIgnoreCase("false")){
-            return false;
-        }
-
-        return false;
-    }
-
     @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
     private void sellAllCurrency(CommandSender sender,
     @Arg(name = "currency", description = "Currency name.", def = "default") @Wildcard String currency){

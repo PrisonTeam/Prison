@@ -19,6 +19,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
 
     /**
      * NOTE: onlyPlayers needs to be false so players can use /gui help on the command, even from console.
@@ -161,6 +162,12 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
         if (p == null) {
             Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
+        String permission = backPacksConfig.getString("Options.BackPack_Use_Permission");
+        if (getBoolean(backPacksConfig.getString("Options.BackPack_Use_Permission_Enabled")) && permission != null && !sender.hasPermission(permission)){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + permission + "]"));
             return;
         }
 
