@@ -514,6 +514,14 @@ public class RankPlayer
 	}
 	
 	@Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	return results;
+	}
+	
+	
+	@Override
 	public void teleport( Location location ) {
 		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );
 	}

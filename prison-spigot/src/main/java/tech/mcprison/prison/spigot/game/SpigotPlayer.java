@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot.game;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -138,13 +139,41 @@ public class SpigotPlayer
     	
 //    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
     	
-    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 240 );
+    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
     	for ( Block block : blocks ) {
     		if ( block != null && block.getType() != Material.AIR ) {
 
     			// return the first non-null and non-AIR block, which will 
     			// be the one the player is looking at:
     			results = new SpigotBlock( block );
+    		}
+		}
+    	
+    	return results;
+    }
+
+    
+    /**
+     * <p>This will return a list of blocks that are in the line of sight of the player.
+     * It will initially ignore all air blocks until it hits a non-air block, then it will
+     * collect a total of 20 of the next blocks.  
+     * </p>
+     * @return
+     */
+    @Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	
+    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
+    	for ( Block block : blocks ) {
+    		if ( block != null && 
+    				(results.size() == 0 && block.getType() != Material.AIR ||
+    				results.size() > 0 && results.size() < 20 )) {
+
+    			// return the first non-null and non-AIR block, which will 
+    			// be the one the player is looking at:
+    			results.add( new SpigotBlock( block ) );
     		}
 		}
     	

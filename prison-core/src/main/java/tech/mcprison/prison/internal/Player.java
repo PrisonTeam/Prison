@@ -74,6 +74,11 @@ public interface Player
     public Block getLineOfSightBlock();
     
     
+
+    public List<Block> getLineOfSightBlocks();
+    	
+    	
+    	
     /**
      * Teleports the player to another location.
      *
