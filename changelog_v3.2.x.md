@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.15 2021-02-25
 
 
+* **Backpacks compatibility with 1.8.8 tested**
+Tested and fixed an error of backpacks, not it's working with 1.8.8 just fine.
+
+
 * **On join backpack item**
 By default this will be enabled, you can disable it from the backpacksconfig.yml, this feature
   will give you an item to open the backpack on join.

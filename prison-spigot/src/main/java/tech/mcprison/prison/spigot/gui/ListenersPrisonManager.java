@@ -153,8 +153,10 @@ public class ListenersPrisonManager implements Listener {
         if (backPacksConfig != null){
             if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) && getBoolean(backPacksConfig.getString("Options.Back_Pack_GUI_Opener_Item"))){
 
+                Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+
                 Player p = e.getPlayer();
-                ItemStack inHandItem = p.getInventory().getItemInMainHand();
+                ItemStack inHandItem = compat.getItemInMainHand(p);
                 ItemStack materialConf = SpigotUtil.getXMaterial(backPacksConfig.getString("Options.BackPack_Item")).parseItem();
 
                 if (materialConf != null && inHandItem.getType() == materialConf.getType() && inHandItem.hasItemMeta() && inHandItem.getItemMeta().hasDisplayName() && inHandItem.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(backPacksConfig.getString("Options.BackPack_Item_Title")))){
@@ -507,8 +509,7 @@ public class ListenersPrisonManager implements Listener {
 
         if (activeGui.contains(p.getName())) {
 
-            Compatibility compat;
-            compat = SpigotPrison.getInstance().getCompatibility();
+            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
             if (compat.getGUITitle(e) != null) {
                 if (backPacksGUI(p, compat.getGUITitle(e).substring(2))) return;
