@@ -3215,17 +3215,35 @@ public class MinesCommands
 
     	
     	Mine lookingAtMine = null;
-    	Block sightBlock = player.getLineOfSightBlock();
-    	Location sightLocation = sightBlock != null ? sightBlock.getLocation() : null;
+    	
+    	List<Block> sightBlocks = player.getLineOfSightBlocks();
+    	
+//    	Block sightBlock = player.getLineOfSightBlock();
+//    	Location sightLocation = sightBlock != null ? sightBlock.getLocation() : null;
     	
     	
     	List<Mine> inMine = new ArrayList<>();
     	TreeMap<Integer, Mine> nearMine = new TreeMap<>();
     	for ( Mine mine : pMines.getMineManager().getMines() ) {
     		
-    		if ( sightLocation != null && mine.isInMineExact( sightLocation )) {
-    			lookingAtMine = mine;
+    		
+    		// Check the first 10 blocks in the line of sight to see if any are in a mine.
+    		// The reason why the first 10 are checked is to "look" through mine liners.
+    		if ( lookingAtMine == null && sightBlocks.size() > 0 ) {
+    			int cnt = 0;
+    			for ( Block sightBlock : sightBlocks ) {
+    				if ( mine.isInMineExact( sightBlock.getLocation() ) ) {
+    					lookingAtMine = mine;
+    					break;
+    				}
+					if ( cnt++ < 10 ) {
+						break;
+					}
+				}
     		}
+//    		if ( sightLocation != null && mine.isInMineExact( sightLocation )) {
+//    			lookingAtMine = mine;
+//    		}
     		
     		if ( !mine.isVirtual() && mine.getBounds().withinIncludeTopBottomOfMine( player.getLocation() ) ) {
     			inMine.add( mine );
