@@ -265,9 +265,7 @@ public class SpigotPrison extends JavaPlugin {
     public FileConfiguration getBackPacksConfig() {
 
         if (backPacksEnabled) {
-            if (backPacksConfig == null) {
-                backPacksConfig = new BackPacksConfig();
-            }
+            backPacksConfig = new BackPacksConfig();
         } else {
             return null;
         }

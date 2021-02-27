@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.15 2021-02-25
 
 
+* **Prison Backpacks skull support**
+Skulls are now supported by Prison backpacks, everything from an ItemStack should be now supported.
+
+
 * **Prison Backpacks are now a thing...**
 This's still a very early access feature but it's already working and powerful, it supports custom
   items displaynames, lores (not tested lores), enchantments.

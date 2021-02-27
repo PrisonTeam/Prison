@@ -7,7 +7,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -296,32 +295,7 @@ public class ListenersPrisonManager implements Listener {
                 for (ItemStack item : inv.getContents()){
                     if (item != null){
 
-                        XMaterial material = XMaterial.matchXMaterial(item);
-
-                        if (item.hasItemMeta()){
-                            displayName = item.getItemMeta().getDisplayName();
-                            int loreNumber = 0;
-                            if (item.getItemMeta().getLore() != null){
-                                for (String lores : item.getItemMeta().getLore()){
-                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".Lores." + loreNumber + ".LORE", lores);
-                                    loreNumber++;
-                                }
-                            }
-                            item.getItemMeta().getEnchants();
-                            Map<Enchantment, Integer> enchants = item.getItemMeta().getEnchants();
-                            int numberEnchants = 0;
-                            if (!enchants.isEmpty()) {
-                                for (Map.Entry<Enchantment,Integer> enchant : enchants.entrySet()) {
-                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ENCHANTMENTS." + numberEnchants + ".ENCHANT", enchant.getKey().getKey().getKey());
-                                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ENCHANTMENTS." + numberEnchants + ".LEVEL", enchant.getValue());
-                                    numberEnchants++;
-                                }
-                            }
-                        }
-
-                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".DISPLAYNAME", displayName);
-                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEM_ID", material.name());
-                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() +   ".Items." + slot  + ".AMOUNT", item.getAmount());
+                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK", item);
 
                         slot++;
                     }
