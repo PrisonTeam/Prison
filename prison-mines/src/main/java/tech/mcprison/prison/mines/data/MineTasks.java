@@ -208,7 +208,7 @@ public abstract class MineTasks
     						
     						
     						PrisonMines.getInstance().getMinesMessages()
-    									.getLocalizable("reset_message").withReplacements( getName() )
+    									.getLocalizable("reset_message").withReplacements( getTag() )
     									.sendTo(player);
     						
 //    						player.sendMessage( "The mine " + getName() + " has just reset." );
@@ -251,7 +251,7 @@ public abstract class MineTasks
     						
     						PrisonMines.getInstance().getMinesMessages()
     										.getLocalizable("reset_warning")
-    										.withReplacements( getName(), 
+    										.withReplacements( getTag(), 
     												Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
     										.sendTo(player);
     						

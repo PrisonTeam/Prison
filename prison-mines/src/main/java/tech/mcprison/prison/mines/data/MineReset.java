@@ -190,7 +190,7 @@ public abstract class MineReset
 		// Tie to the command stats mode so it logs it if stats are enabled:
 		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0");
-			Output.get().logInfo("&cMine reset: &7" + getName() + 
+			Output.get().logInfo("&cMine reset: &7" + getTag() + 
 					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
 					statsMessage() );
 		}
@@ -808,7 +808,7 @@ public abstract class MineReset
                 if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
                 		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
                 	DecimalFormat dFmt = new DecimalFormat("#,##0");
-                	Output.get().logInfo("&cMine reset: &7" + getName() + 
+                	Output.get().logInfo("&cMine reset: &7" + getTag() + 
                 			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
                 			statsMessage() );
                 }

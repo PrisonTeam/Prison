@@ -246,7 +246,7 @@ public abstract class MineData
     }
 
     public String getTag() {
-    	return tag;
+    	return ( tag == null || tag.trim().isEmpty() ? getName() : tag );
     }
     public void setTag( String tag ) {
     	this.tag = tag;
@@ -372,7 +372,7 @@ public abstract class MineData
         		setVirtual( false );
         		setEnabled( true );
         		
-        		Output.get().logInfo( "Mine " + getName() + ": world has been set and is now enabled." );
+        		Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
         	}
         	else {
         		setEnabled( false );

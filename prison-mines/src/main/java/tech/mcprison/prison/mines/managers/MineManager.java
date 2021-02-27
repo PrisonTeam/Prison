@@ -766,7 +766,8 @@ public class MineManager
 					case prison_mines_tag_minename:
 					case prison_mt_pm:
 					case prison_mines_tag_playermines:
-						results = mine.getTag() == null ? mine.getName() : mine.getTag();
+						// getTag() now defaults to the mine's name if it does not exist:
+						results = mine.getTag();
 						break;
 						
 					case prison_mi_minename:
