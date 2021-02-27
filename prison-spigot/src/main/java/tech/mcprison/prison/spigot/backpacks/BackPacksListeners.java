@@ -42,7 +42,6 @@ public class BackPacksListeners implements Listener {
                 backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
                 backPacksDataConfig.save(backPacksFile);
             } catch (IOException ex){
-                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                 ex.printStackTrace();
                 return;
             }

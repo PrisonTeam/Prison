@@ -279,7 +279,6 @@ public class ListenersPrisonManager implements Listener {
 
             if (inv.getContents() != null){
                 int slot = 0;
-                String displayName = "null";
 
                 try {
                     backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
