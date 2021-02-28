@@ -11,11 +11,13 @@ import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
@@ -23,7 +25,7 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-public class MineData
+public abstract class MineData
 		implements ModuleElement {
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
@@ -508,8 +510,17 @@ public class MineData
         return results;
     }
     
-    public boolean incrementBlockCount( PrisonBlock block ) {
-    	String blockName = block.getBlockName().toLowerCase();
+    public boolean incrementBlockCount( Block block ) {
+    	
+    	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
+
+    	// If the block is AIR get the original block:
+    	if ( block.getPrisonBlock().isAir() ) {
+    		MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
+    		
+    		String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
+    		blockName = targetBlockName;
+    	}
     	return incrementBlockCount( blockName );
     }
     
@@ -541,13 +552,14 @@ public class MineData
     		else {
     			
     			getBlockStats().get( blockName ).incrementMiningBlockCount();
+    			results = true;
     		}
     	}
     	
     	return results;
     }
         
-    
+    abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
     
     public boolean hasUnsavedBlockCounts() {
     	return getUnsavedBlockCount() > 0;

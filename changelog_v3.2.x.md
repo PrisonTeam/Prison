@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.15 2021-02-27
+# v3.2.4-alpha.15 2021-02-28
+
+
+* **Added totals to the block list along with the block remaining counts.**
+Hooked up the block counts to the mines.  Still having issues with accurate counts on the explosions.
 
 
 * **Start to hook up block counts for mines.**

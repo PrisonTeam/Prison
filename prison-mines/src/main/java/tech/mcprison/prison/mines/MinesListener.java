@@ -44,6 +44,10 @@ public class MinesListener {
     		
     		player.sendMessage( "&7You have been teleported out of the mine to prevent suffocating." );
     	}
+    	else {
+    		player.sendMessage( "&7You cannot be teleported to safety.  Good luck." );
+    		
+    	}
     }
     
     

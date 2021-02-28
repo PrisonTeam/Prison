@@ -11,6 +11,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -1577,6 +1578,13 @@ public abstract class MineReset
 		return mineTargetPrisonBlocksMap;
 	}
 	
+	public MineTargetPrisonBlock getTargetPrisonBlock( Block block ) {
+		
+		Location loc = block.getLocation();
+		MineTargetBlockKey key = new MineTargetBlockKey( loc );
+		
+		return getMineTargetPrisonBlocksMap().get( key );
+	}
 
 //	public boolean[] getMineAirBlocksOriginal()
 //	{

@@ -224,6 +224,22 @@ public abstract class PrisonBlockStatusData {
 		return enabled;
 	}
 	
+	/**
+	 * <p>The Block that is passed to this function will be added to this block. This function
+	 * acts as a way to gather totals from other block.
+	 * </p>
+	 * 
+	 * @param block2
+	 */
+	public void addStats( PrisonBlockStatusData block ) {
+		
+		setResetBlockCount( getResetBlockCount() + block.getResetBlockCount() );
+		setBlockCountSession( getBlockCountSession() + block.getBlockCountSession() );
+		setBlockCountTotal( getBlockCountTotal() + block.getBlockCountTotal() );
+		setBlockCountUnsaved( getBlockCountUnsaved() + block.getBlockCountUnsaved() );
+		
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

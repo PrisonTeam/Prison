@@ -153,10 +153,10 @@ public class AutoManager
 
 
 	//TODO Use the SpigotBlock within these functions so it can use the new block model and the custom blocks if they exist
-	private void applyAutoEvents( SpigotBlock block, BlockBreakEvent e, Mine mine) {
+	private void applyAutoEvents( SpigotBlock spigotBlock, BlockBreakEvent e, Mine mine) {
 
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled() && 
-			!block.isEmpty() ) {
+			!spigotBlock.isEmpty() ) {
 			
 			
 //			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
@@ -168,8 +168,13 @@ public class AutoManager
 
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
+			
+			// Record the block break before it is changed to AIR:
+			mine.incrementBlockCount( spigotBlock );
 
-			int count = applyAutoEvents( player, block, mine );
+			
+
+			int count = applyAutoEvents( player, spigotBlock, mine );
 			
 			
 			if ( count > 0 ) {
@@ -314,15 +319,17 @@ public class AutoManager
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
+				
+				// Record the block break before it is changed to AIR:
+				mine.incrementBlockCount( spigotBlock );
+				
+
 				int count = applyAutoEvents( player, spigotBlock, mine );
 				totalCount += count;
 
 				
 				if ( count > 0 ) {
 					
-					// If there is a drop, then need to record the block break.
-					// There is a chance it may not break.
-					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 					
 					String triggered = null;
 					
@@ -400,17 +407,16 @@ public class AutoManager
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-//				if ( isAutoManagerEnabled ) {
-//					
+				
+				// Record the block break before it is changed to AIR:
+				mine.incrementBlockCount( spigotBlock );
+
+				
 				int count = applyAutoEvents( player, spigotBlock, mine );
 				totalCount += count;
 
 				
 				if ( count > 0 ) {
-					
-					// If there is a drop, then need to record the block break.
-					// There is a chance it may not break.
-					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 					
 					
 					// Process mine block break events:

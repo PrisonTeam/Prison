@@ -525,7 +525,7 @@ public class MinesCommands
         		.withReplacements(block, mineName).sendTo(sender);
         }
 
-        getBlocksList(m, null, useNewBlockModel).send(sender);
+        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
     }
@@ -731,7 +731,7 @@ public class MinesCommands
         }
         
         
-        getBlocksList(m, null, useNewBlockModel ).send(sender);
+        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
 
@@ -873,7 +873,7 @@ public class MinesCommands
         	deleteBlock( sender, pMines, m, blockType );
         }
         
-        getBlocksList(m, null, useNewBlockModel).send(sender);
+        getBlocksList(m, null, useNewBlockModel, true).send(sender);
     }
 
     /**
@@ -1110,9 +1110,21 @@ public class MinesCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
+        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
+      	
+      	if ( !m.isVirtual() ) {
+      		RowComponent row = new RowComponent();
+      		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
+      				dFmt.format( m.getRemainingBlockCount() ), 
+      				fFmt.format( m.getPercentRemainingBlockCount() ) );
+      		
+      		chatDisplay.addComponent( row );
+      	}
         
         boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
@@ -1123,7 +1135,7 @@ public class MinesCommands
         chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
         		(useNewBlockModel ? ".." : ""));
         
-        BulletedListComponent list = getBlocksList(m, null, useNewBlockModel );
+        BulletedListComponent list = getBlocksList(m, null, useNewBlockModel, true );
         chatDisplay.addComponent(list);
 
         if ( useNewBlockModel ) {
@@ -1693,7 +1705,7 @@ public class MinesCommands
         	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
         			(useNewBlockModel ? ".." : ""));
         	
-        	BulletedListComponent list = getBlocksList(m, cmdPageData, useNewBlockModel );
+        	BulletedListComponent list = getBlocksList(m, cmdPageData, useNewBlockModel, true );
         	chatDisplay.addComponent(list);
         }
 
@@ -1710,7 +1722,8 @@ public class MinesCommands
         chatDisplay.send(sender);
     }
 
-    private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, boolean useNewBlockModel) {
+    private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, 
+    							boolean useNewBlockModel, boolean includeTotals ) {
        
     	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
@@ -1719,11 +1732,15 @@ public class MinesCommands
         double totalChance = 0.0d;
         int count = 0;
         
+        PrisonBlock totals = new PrisonBlock("Totals");
+        
         if ( useNewBlockModel ) {
 
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
         		totalChance += chance;
+        		
+        		totals.addStats( block );
         		
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
@@ -1740,6 +1757,8 @@ public class MinesCommands
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
         		totalChance += chance;
         		
+        		totals.addStats( block );
+
         		if ( cmdPageData == null ||
         				count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() ) {
         			
@@ -1753,6 +1772,10 @@ public class MinesCommands
             builder.add("&e%s - Air", dFmt.format(100.0d - totalChance) + "%");
         }
 
+        if ( includeTotals ) {
+        	addBlockStats( m, totals, iFmt, dFmt, builder );
+        }
+        
         return builder.build();
     }
 
@@ -1763,19 +1786,26 @@ public class MinesCommands
 	{
 		RowComponent row = new RowComponent();
 		
-		String percent = dFmt.format(block.getChance()) + "%";
-		
-		String text = String.format("&7%s - %s", 
-						percent, block.getBlockName());
-		// Minor padding after the name and chance:
-		if ( text.length() < 30 ) {
-			text += "                              ".substring( text.length() );
+		if ( block.getBlockName().equalsIgnoreCase( "totals" )) {
+			String text = "                   &dTotals:  ";
+			row.addTextComponent( text );
 		}
-		FancyMessage msg = new FancyMessage(
-				text )
-				.suggest("/mines block set " + mine.getName() + " " + block.getBlockName() + " %")
-				.tooltip("&7Click to edit the block's chance.");
-		row.addFancy( msg );
+		else {
+			
+			String percent = dFmt.format(block.getChance()) + "%";
+			
+			String text = String.format("&7%s - %s", 
+					percent, block.getBlockName());
+			// Minor padding after the name and chance:
+			if ( text.length() < 30 ) {
+				text += "                              ".substring( text.length() );
+			}
+			FancyMessage msg = new FancyMessage(
+					text )
+					.suggest("/mines block set " + mine.getName() + " " + block.getBlockName() + " %")
+					.tooltip("&7Click to edit the block's chance.");
+			row.addFancy( msg );
+		}
 
 		String text1 = formatStringPadRight("  &3Pl: &7%s", 16, iFmt.format( block.getResetBlockCount() ));
 		FancyMessage msg1 = new FancyMessage( text1 )
@@ -2442,7 +2472,7 @@ public class MinesCommands
     			Player player = getPlayer( sender );
     			Output.get().logInfo( "&7Mine &b%s Zero Block Reset Delay: &b%s &7set it to &b%s &7sec",
     					(player == null ? "console" : player.getDisplayName()), 
-    					m.getTag(), dFmt.format( resetTime )  );
+    					m, dFmt.format( resetTime )  );
     		}
     		catch ( NumberFormatException e ) {
     			Output.get().sendWarn( sender, 

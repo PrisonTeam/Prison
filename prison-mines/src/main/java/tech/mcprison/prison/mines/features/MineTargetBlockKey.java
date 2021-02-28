@@ -1,5 +1,7 @@
 package tech.mcprison.prison.mines.features;
 
+import tech.mcprison.prison.util.Location;
+
 public class MineTargetBlockKey
 	implements Comparable<MineTargetBlockKey>
 {
@@ -11,6 +13,10 @@ public class MineTargetBlockKey
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public MineTargetBlockKey( Location location ) {
+		this( location.getBlockX(), location.getBlockY(), location.getBlockZ() );
 	}
 	
 	@Override

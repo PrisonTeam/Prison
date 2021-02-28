@@ -151,7 +151,7 @@ public class OnBlockBreakEventListener
      * @param e
      */
     @EventHandler(priority=EventPriority.MONITOR) 
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onBlockBreakMonitor(BlockBreakEvent e) {
 
     	genericBlockEventMonitor( e );
     }
@@ -167,6 +167,13 @@ public class OnBlockBreakEventListener
 		
     	genericBlockExplodeEvent( e, true );
 	}
+    
+    
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onBlockBreak(BlockBreakEvent e) {
+
+    	genericBlockEvent( e );
+    }
     
     
     @EventHandler(priority=EventPriority.LOW) 
@@ -204,6 +211,10 @@ public class OnBlockBreakEventListener
     
     protected void genericBlockEventMonitor( BlockBreakEvent e ) {
     	genericBlockEvent( e, true );
+    }
+    
+    protected void genericBlockEvent( BlockBreakEvent e ) {
+    	genericBlockEvent( e, false );
     }
 
 	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
@@ -656,16 +667,15 @@ public class OnBlockBreakEventListener
 //						"  blocks remaining= " + 
 //						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
 //						);
-				
+			
 				
 				// Drop the contents of the individual block breaks
 				int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 				
 				if ( drop > 0 ) {
 					
-					// If there is a drop, then need to record the block break.
-					// There is a chance it may not break.
-					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
+					// Record the block break before it is changed to AIR:
+					mine.incrementBlockCount( spigotBlock );
 					
 					
 					// Process mine block break events:
@@ -690,7 +700,7 @@ public class OnBlockBreakEventListener
 //						);
 				
 				
-				mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
+				mine.incrementBlockCount( spigotBlock );
 
 				// Other possible processing:
 				
@@ -760,9 +770,9 @@ public class OnBlockBreakEventListener
 					
 					if ( drop > 0 ) {
 						
-						// If there is a drop, then need to record the block break.
-						// There is a chance it may not break.
-						mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
+						// Record the block break before it is changed to AIR:
+						mine.incrementBlockCount( spigotBlock );
+						
 						
 						String triggered = null;
 						
@@ -885,15 +895,15 @@ public class OnBlockBreakEventListener
 				// The CrazyEnchants block list have already been validated as being within the mine:
 				for ( SpigotBlock spigotBlock : explodedBlocks ) {
 					
+					
 					// Drop the contents of the individual block breaks
 					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 					totalCount += drop;
 					
 					if ( drop > 0 ) {
 						
-						// If there is a drop, then need to record the block break.
-						// There is a chance it may not break.
-						mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
+						// Record the block break before it is changed to AIR:
+						mine.incrementBlockCount( spigotBlock );
 						
 						// Process mine block break events:
 						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
