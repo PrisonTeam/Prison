@@ -665,9 +665,7 @@ public class OnBlockBreakEventListener
 					
 					// If there is a drop, then need to record the block break.
 					// There is a chance it may not break.
-					mine.incrementBlockBreakCount();
-					mine.incrementTotalBlocksMined();
-					
+					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 					
 					
 					// Process mine block break events:
@@ -692,8 +690,7 @@ public class OnBlockBreakEventListener
 //						);
 				
 				
-				mine.incrementBlockBreakCount();
-				mine.incrementTotalBlocksMined();
+				mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 
 				// Other possible processing:
 				
@@ -765,9 +762,7 @@ public class OnBlockBreakEventListener
 						
 						// If there is a drop, then need to record the block break.
 						// There is a chance it may not break.
-						mine.addBlockBreakCount( 1 );
-						mine.addTotalBlocksMined( 1 );
-						
+						mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 						
 						String triggered = null;
 						
@@ -898,9 +893,7 @@ public class OnBlockBreakEventListener
 						
 						// If there is a drop, then need to record the block break.
 						// There is a chance it may not break.
-						mine.addBlockBreakCount( 1 );
-						mine.addTotalBlocksMined( 1 );
-						
+						mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 						
 						// Process mine block break events:
 						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
@@ -951,27 +944,40 @@ public class OnBlockBreakEventListener
 
 	
 	
-	public void doAction( Mine mine, BlastUseEvent e, int blockCount ) {
-		if ( mine != null ) {
-			
-			mine.addBlockBreakCount( blockCount );
-			mine.addTotalBlocksMined( blockCount );
-			
-			// Other possible processing:
-			
-			String triggered = null;
-			
-			// Process mine block break events:
-			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
-					triggered );
-			
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
+//	/**
+//	 * This function should not be used since it really needs to report 
+//	 * the actual block that is being used.
+//	 * 
+//	 * @param mine
+//	 * @param e
+//	 * @param blockCount
+//	 */
+//	public void doAction( Mine mine, BlastUseEvent e, int blockCount ) {
+//		if ( mine != null ) {
+//			
+//			// Need to wrap in a Prison block so it can be used with the mines:
+//			SpigotBlock block = new SpigotBlock(blk);
+//			
+//			
+//			???
+//					
+//			mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
+//			
+//			// Other possible processing:
+//			
+//			String triggered = null;
+//			
+//			// Process mine block break events:
+//			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+//			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
+//					triggered );
+//			
+//			
+//			// Checks to see if the mine ran out of blocks, and if it did, then
+//			// it will reset the mine:
+//			mine.checkZeroBlockReset();
+//		}
+//	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
 		return getPrisonMineManager().findMineLocationExact( block.getLocation() );

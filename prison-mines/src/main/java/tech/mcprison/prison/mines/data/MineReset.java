@@ -107,7 +107,7 @@ public abstract class MineReset
 	private long airCountElapsedTimeMs = 0L;
 	
 	
-	private int blockBreakCount = 0;
+//	private int blockBreakCount = 0;
 	
 	
 //	private boolean[] mineAirBlocksOriginal;
@@ -1686,18 +1686,18 @@ public abstract class MineReset
 		this.airCountElapsedTimeMs = airCountElapsedTimeMs;
 	}
 
-	public int addBlockBreakCount( int blockCount ) {
-		return blockBreakCount += blockCount;
-	}
-	public int incrementBlockBreakCount() {
-		return ++blockBreakCount;
-	}
-	public int getBlockBreakCount() {
-		return blockBreakCount;
-	}
-	public void setBlockBreakCount( int blockBreakCount ) {
-		this.blockBreakCount = blockBreakCount;
-	}
+//	public int addBlockBreakCount( int blockCount ) {
+//		return blockBreakCount += blockCount;
+//	}
+//	public int incrementBlockBreakCount() {
+//		return ++blockBreakCount;
+//	}
+//	public int getBlockBreakCount() {
+//		return blockBreakCount;
+//	}
+//	public void setBlockBreakCount( int blockBreakCount ) {
+//		this.blockBreakCount = blockBreakCount;
+//	}
 
 	public long getStatsResetTimeMS()
 	{

@@ -19,6 +19,9 @@ that you need.
 # v3.2.4-alpha.15 2021-02-27
 
 
+* **Start to hook up block counts for mines.**
+
+
 * **Hook up auto manager to CrazyEnchant explosions.**
 Also reworked how auto manager auto pickup deals with explosions and block counts.  They are more accurate now.  Plus they now support reporting the block names so that can be added as a new filter type in the future.  Monitor has been changed to only support mine resets.
 

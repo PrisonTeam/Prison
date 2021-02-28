@@ -322,8 +322,7 @@ public class AutoManager
 					
 					// If there is a drop, then need to record the block break.
 					// There is a chance it may not break.
-					mine.incrementBlockBreakCount();
-					mine.incrementTotalBlocksMined();
+					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 					
 					String triggered = null;
 					
@@ -411,8 +410,7 @@ public class AutoManager
 					
 					// If there is a drop, then need to record the block break.
 					// There is a chance it may not break.
-					mine.addBlockBreakCount( 1 );
-					mine.addTotalBlocksMined( 1 );
+					mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
 					
 					
 					// Process mine block break events:
@@ -463,7 +461,6 @@ public class AutoManager
 		
 	}
 	
-
 	private boolean isTeExplosionTriggerEnabled() {
 		return teExplosionTriggerEnabled;
 	}

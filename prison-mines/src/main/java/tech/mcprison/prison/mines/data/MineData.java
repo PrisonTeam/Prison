@@ -23,7 +23,7 @@ import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
-public abstract class MineData
+public class MineData
 		implements ModuleElement {
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
@@ -89,6 +89,7 @@ public abstract class MineData
     private TreeMap<String, PrisonBlockStatusData> blockStats;
     
     
+	private int blockBreakCount = 0;
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
 
@@ -520,6 +521,10 @@ public abstract class MineData
     private boolean incrementBlockCount( String blockName ) {
     	boolean results = false;
     	
+		incrementBlockBreakCount();
+		incrementTotalBlocksMined();
+
+    	
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
     		
     		if ( !getBlockStats().containsKey( blockName ) ) {
@@ -541,6 +546,7 @@ public abstract class MineData
     	
     	return results;
     }
+        
     
     
     public boolean hasUnsavedBlockCounts() {
@@ -756,6 +762,20 @@ public abstract class MineData
 		this.resetCount = resetCount;
 	}
 
+	
+	public int addBlockBreakCount( int blockCount ) {
+		return blockBreakCount += blockCount;
+	}
+	public int incrementBlockBreakCount() {
+		return ++blockBreakCount;
+	}
+	public int getBlockBreakCount() {
+		return blockBreakCount;
+	}
+	public void setBlockBreakCount( int blockBreakCount ) {
+		this.blockBreakCount = blockBreakCount;
+	}
+	
 	/**
 	 * May not be 100% thread safe, but odds of collisions will be minimal and
 	 * if its off by a few blocks its not a big deal since the value resets
