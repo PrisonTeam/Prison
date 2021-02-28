@@ -640,9 +640,6 @@ public class OnBlockBreakEventListener
 		if ( mine != null ) {
 			
 			
-			
-			
-			
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
 			
 			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
@@ -655,10 +652,10 @@ public class OnBlockBreakEventListener
 
 			if ( isProcessNormalDropsEnabled ) {
 
-				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: normal drop :: " + mine.getName() + "  " + 
-						"  blocks remaining= " + 
-						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
-						);
+//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: normal drop :: " + mine.getName() + "  " + 
+//						"  blocks remaining= " + 
+//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
+//						);
 				
 				
 				// Drop the contents of the individual block breaks
@@ -689,10 +686,10 @@ public class OnBlockBreakEventListener
 			}
 			else {
 				
-				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: no drop :: " + mine.getName() + "  " + 
-						"  blocks remaining= " + 
-						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
-						);
+//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: no drop :: " + mine.getName() + "  " + 
+//						"  blocks remaining= " + 
+//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
+//						);
 				
 				
 				mine.incrementBlockBreakCount();
@@ -884,11 +881,11 @@ public class OnBlockBreakEventListener
 					sb.append( spigotBlock.toString() ).append( " " );
 				}
 				
-				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlastUseEvent: :: " + mine.getName() + "  e.blocks= " + 
-						e.getBlockList().size() + "  blockSize : " + explodedBlocks.size() + 
-						"  blocks remaining= " + 
-						mine.getRemainingBlockCount() + " [" + sb.toString() + "]"
-						);
+//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlastUseEvent: :: " + mine.getName() + "  e.blocks= " + 
+//						e.getBlockList().size() + "  blockSize : " + explodedBlocks.size() + 
+//						"  blocks remaining= " + 
+//						mine.getRemainingBlockCount() + " [" + sb.toString() + "]"
+//						);
 				
 				// The CrazyEnchants block list have already been validated as being within the mine:
 				for ( SpigotBlock spigotBlock : explodedBlocks ) {

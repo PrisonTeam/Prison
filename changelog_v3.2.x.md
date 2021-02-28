@@ -19,6 +19,13 @@ that you need.
 # v3.2.4-alpha.15 2021-02-27
 
 
+* **Hook up auto manager to CrazyEnchant explosions.**
+Also reworked how auto manager auto pickup deals with explosions and block counts.  They are more accurate now.  Plus they now support reporting the block names so that can be added as a new filter type in the future.  Monitor has been changed to only support mine resets.
+
+
+* **Some tweaks to get the CrazyEnchants explosions to work correctly.**
+
+
 * **Change how blockevents fire for explosions.**  They now fire when the blocks are broken, instead of at the monitor event time.  The reason for this shift for explosions is due to the fact that it is impossible to tell what blocks were just exploded at the monitor event since the block list can contain air to begin with.
 Also modified the MineBlockEvent class to provide an isFireEvent function that will perform the check on chance, event type, block name, and triggered (for TE Explosions).
 

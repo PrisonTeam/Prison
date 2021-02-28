@@ -14,10 +14,12 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 /**
@@ -27,6 +29,8 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 public class AutoManager 
 	extends AutoManagerFeatures
 	implements Listener {
+	
+	private boolean teExplosionTriggerEnabled;
 	
 	public AutoManager() {
         super();
@@ -141,8 +145,8 @@ public class AutoManager
      * </p>
      * 
      */
-//    @Override
-    public void doActionX( Mine mine, BlastUseEvent e, 
+    @Override
+    public void doAction( Mine mine, BlastUseEvent e, 
     		List<SpigotBlock> teExplosiveBlocks ) {
     	applyAutoEvents( e, mine, teExplosiveBlocks );
     }
@@ -152,13 +156,13 @@ public class AutoManager
 	private void applyAutoEvents( SpigotBlock block, BlockBreakEvent e, Mine mine) {
 
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled() && 
-				!	block.isEmpty() ) {
+			!block.isEmpty() ) {
 			
 			
-			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
-					"  blocks remaining= " + 
-					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
-					);
+//			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
+//					"  blocks remaining= " + 
+//					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
+//					);
 			
 			Player player = e.getPlayer();
 
@@ -223,6 +227,7 @@ public class AutoManager
 			
 			count = autoFeaturePickup( block, player, itemInHand );
 			autoPickupCleanup( block, player, itemInHand, count );
+			
 		}
 		
 		// AutoSmelt
@@ -309,16 +314,57 @@ public class AutoManager
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-//				if ( isAutoManagerEnabled ) {
-//					
-					totalCount += applyAutoEvents( player, spigotBlock, mine );
-//				}
-//				else {
-					// This will never be called since this function will be called
-					// from auto complete listeners:
-//					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
-//				}
-				 
+				int count = applyAutoEvents( player, spigotBlock, mine );
+				totalCount += count;
+
+				
+				if ( count > 0 ) {
+					
+					// If there is a drop, then need to record the block break.
+					// There is a chance it may not break.
+					mine.incrementBlockBreakCount();
+					mine.incrementTotalBlocksMined();
+					
+					String triggered = null;
+					
+					// Please be aware:  This function is named the same as the auto features setting, but this is 
+					// not related.  This is only trying to get the name of the enchantment that triggered the event.
+					if ( isTeExplosionTriggerEnabled() ) {
+						
+						try {
+							triggered = e.getTrigger();
+						}
+						catch ( Exception | NoSuchMethodError ex ) {
+							// Only print the error the first time, then suppress the error:
+							String error = ex.getMessage();
+							
+							Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+									"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+									"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+									"The Prison BlockEvents can be filtered by this triggered value. " +
+									error );
+							
+							// Disable collecting the trigger.
+							setTeExplosionTriggerEnabled( false );
+							
+						}
+					}
+					
+					
+					// Process mine block break events:
+					SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+					
+					
+					// move in to the loop when blocks are tracked?... ??? 
+					String blockName = spigotBlock.getPrisonBlock().getBlockName();
+					mine.processBlockBreakEventCommands( blockName, sPlayer, BlockEventType.TEXplosion,
+							triggered );
+
+					e.setCancelled( true );
+				}
+
+
+				
 			}
 			
 			
@@ -329,24 +375,6 @@ public class AutoManager
 //					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
 			
 			
-			if ( totalCount > 0 ) {
-				
-				
-				// Override blockCount to be exactly the blocks within the mine:
-				int blockCount = teExplosiveBlocks.size();
-				
-				mine.addBlockBreakCount( blockCount );
-				mine.addTotalBlocksMined( blockCount );
-				
-				
-				// Set the broken block to AIR and cancel the event
-				e.setCancelled(true);
-				// e.getBlock().setType(Material.AIR);
-				
-				// Maybe needed to prevent drop side effects:
-				//e.getBlock().getDrops().clear();
-				
-			}
 			
 			if (e.isCancelled()) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
@@ -375,13 +403,28 @@ public class AutoManager
 				
 //				if ( isAutoManagerEnabled ) {
 //					
-				totalCount += applyAutoEvents( player, spigotBlock, mine );
-//				}
-//				else {
-				// This will never be called since this function will be called
-				// from auto complete listeners:
-//					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
-//				}
+				int count = applyAutoEvents( player, spigotBlock, mine );
+				totalCount += count;
+
+				
+				if ( count > 0 ) {
+					
+					// If there is a drop, then need to record the block break.
+					// There is a chance it may not break.
+					mine.addBlockBreakCount( 1 );
+					mine.addTotalBlocksMined( 1 );
+					
+					
+					// Process mine block break events:
+					SpigotPlayer sPlayer = new SpigotPlayer( player );
+					
+					
+					// move in to the loop when blocks are tracked?... ??? 
+					String blockName = spigotBlock.getPrisonBlock().getBlockName();
+					mine.processBlockBreakEventCommands( blockName, sPlayer, BlockEventType.CEXplosion, null );
+
+				}
+
 				
 			}
 			
@@ -393,24 +436,24 @@ public class AutoManager
 //					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
 			
 			
-			if ( totalCount > 0 ) {
-				
-				
-				// Override blockCount to be exactly the blocks within the mine:
-				int blockCount = teExplosiveBlocks.size();
-				
-				mine.addBlockBreakCount( blockCount );
-				mine.addTotalBlocksMined( blockCount );
-				
-				
-				// Set the broken block to AIR and cancel the event
-				e.setCancelled(true);
-				// e.getBlock().setType(Material.AIR);
-				
-				// Maybe needed to prevent drop side effects:
-				//e.getBlock().getDrops().clear();
-				
-			}
+//			if ( totalCount > 0 ) {
+//				
+//				
+//				// Override blockCount to be exactly the blocks within the mine:
+//				int blockCount = teExplosiveBlocks.size();
+//				
+//				mine.addBlockBreakCount( blockCount );
+//				mine.addTotalBlocksMined( blockCount );
+//				
+//				
+//				// Set the broken block to AIR and cancel the event
+//				e.setCancelled(true);
+//				// e.getBlock().setType(Material.AIR);
+//				
+//				// Maybe needed to prevent drop side effects:
+//				//e.getBlock().getDrops().clear();
+//				
+//			}
 			
 			if (e.isCancelled()) {
 				// The event was canceled, so the block was successfully broke, so increment the name counter:
@@ -419,4 +462,14 @@ public class AutoManager
 		}
 		
 	}
+	
+
+	private boolean isTeExplosionTriggerEnabled() {
+		return teExplosionTriggerEnabled;
+	}
+
+	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
+		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
+	}
+
 }
