@@ -1585,6 +1585,23 @@ public abstract class MineReset
 		
 		return getMineTargetPrisonBlocksMap().get( key );
 	}
+	
+	
+	public String getTargetPrisonBlockName( Block block ) {
+		String results = block.getPrisonBlock().getBlockName();
+		
+		if ( "AIR".equalsIgnoreCase( results ) ) {
+			MineTargetPrisonBlock targetBlock = getTargetPrisonBlock( block );
+			
+			if ( targetBlock != null ) {
+				results = targetBlock.getPrisonBlock().getBlockName();
+			}
+		}
+		
+		
+		return results;
+	}
+	
 
 //	public boolean[] getMineAirBlocksOriginal()
 //	{

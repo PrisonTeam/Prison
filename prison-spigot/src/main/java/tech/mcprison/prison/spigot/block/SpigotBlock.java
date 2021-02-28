@@ -70,6 +70,10 @@ public class SpigotBlock implements Block {
     	return sb.toString();
     }
 
+    public String getBlockName() {
+    	return getPrisonBlock().getBlockName();
+    }
+    
     @Override public Location getLocation() {
         return SpigotUtil.bukkitLocationToPrison(bBlock.getLocation());
     }

@@ -18,6 +18,10 @@ that you need.
 
 # v3.2.4-alpha.16 2021-02-28
 
+* **Restructuring of some of the handling of block names prior to processing the block events (block break or explosions) to preserve the original block names.**
+This is important too, since if the block name is AIR, it is understood that it could not have been broken with a standard BlockBreakEvent.  The explosion events appear to never eliminate AIR blocks, but prior processing before passing to those points of execution, the AIR blocks were filtered out.  So in general, they should never be AIR, but they could be tied back to the original block names too.  But with explosions, one has to be very careful since erroneous AIR blocks can get counted multiple times and hence throw off the actual counts for the mines.
+
+* **Fixed issue with the logic. Need slight different groupings.**
 
 
 * **v3.2.4-alpha.16 2021-02-28**

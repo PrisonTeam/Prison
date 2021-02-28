@@ -169,16 +169,26 @@ public class AutoManager
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
 			
-			// Record the block break before it is changed to AIR:
-			mine.incrementBlockCount( spigotBlock );
+			String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
 
-			
 
 			int count = applyAutoEvents( player, spigotBlock, mine );
 			
 			
 			if ( count > 0 ) {
 				
+				// Record the block break before it is changed to AIR:
+				mine.incrementBlockCount( targetBlockName );
+				
+				// Process mine block break events:
+				SpigotPlayer sPlayer = new SpigotPlayer( player );
+				
+				
+				// move in to the loop when blocks are tracked?... ??? 
+//				String blockName = spigotBlock.getPrisonBlock().getBlockName();
+				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.blockBreak, null );
+
+
 				// Set the broken block to AIR and cancel the event
 				e.setCancelled(true);
 				e.getBlock().setType(Material.AIR);
@@ -319,16 +329,19 @@ public class AutoManager
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-				
-				// Record the block break before it is changed to AIR:
-				mine.incrementBlockCount( spigotBlock );
-				
 
+				String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
+
+				
 				int count = applyAutoEvents( player, spigotBlock, mine );
 				totalCount += count;
 
 				
 				if ( count > 0 ) {
+					
+					
+					// Record the block break before it is changed to AIR:
+					mine.incrementBlockCount( targetBlockName );
 					
 					
 					String triggered = null;
@@ -362,8 +375,8 @@ public class AutoManager
 					
 					
 					// move in to the loop when blocks are tracked?... ??? 
-					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-					mine.processBlockBreakEventCommands( blockName, sPlayer, BlockEventType.TEXplosion,
+//					String blockName = spigotBlock.getPrisonBlock().getBlockName();
+					mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.TEXplosion,
 							triggered );
 
 					e.setCancelled( true );
@@ -389,8 +402,10 @@ public class AutoManager
 		}
 		
 	}
+	
+	
 	private void applyAutoEvents( BlastUseEvent e, Mine mine, 
-			List<SpigotBlock> teExplosiveBlocks ) {
+										List<SpigotBlock> teExplosiveBlocks ) {
 		
 		Player player = e.getPlayer();
 		
@@ -407,9 +422,7 @@ public class AutoManager
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-				
-				// Record the block break before it is changed to AIR:
-				mine.incrementBlockCount( spigotBlock );
+				String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
 
 				
 				int count = applyAutoEvents( player, spigotBlock, mine );
@@ -418,14 +431,17 @@ public class AutoManager
 				
 				if ( count > 0 ) {
 					
+					// Record the block break before it is changed to AIR:
+					mine.incrementBlockCount( targetBlockName );
+					
 					
 					// Process mine block break events:
 					SpigotPlayer sPlayer = new SpigotPlayer( player );
 					
 					
 					// move in to the loop when blocks are tracked?... ??? 
-					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-					mine.processBlockBreakEventCommands( blockName, sPlayer, BlockEventType.CEXplosion, null );
+//					String blockName = spigotBlock.getPrisonBlock().getBlockName();
+					mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.CEXplosion, null );
 
 				}
 

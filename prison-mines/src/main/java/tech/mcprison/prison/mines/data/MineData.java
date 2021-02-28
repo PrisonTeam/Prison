@@ -518,9 +518,18 @@ public abstract class MineData
     	if ( block.getPrisonBlock().isAir() ) {
     		MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
     		
-    		String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
-    		blockName = targetBlockName;
+    		if ( targetPrisonBlock != null ) {
+
+    			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
+    			blockName = targetBlockName;
+    			
+    		}
+    		
+//    		Output.get().logInfo( "#### MineData.incrementBlockCount: " +
+//    							"oBlock= AIR  tBlock= %s  target= [%s]", blockName,
+//    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
     	}
+    	
     	return incrementBlockCount( blockName );
     }
     
@@ -529,18 +538,60 @@ public abstract class MineData
     	return incrementBlockCount( blockName );
     }
     
-    private boolean incrementBlockCount( String blockName ) {
+    // MineTargetPrisonBlock getTargetPrisonBlock( Block block )
+    
+    /**
+     * <p>This function is not as obvious it appears. Basically when this function 
+     * should be called, it may be too late to get the correct block value before 
+     * it is lost (set to AIR).  So it is critical that getTargetPrisonBlockName( Block block )
+     * is called first before the original block is processed (broke or auto picked up).
+     * </p>
+     * 
+     * <p>The end result of calling getTargetPrisonBlockName( Block block ) first is that
+     * the block name will have already been resolved to the correct original block name.
+     * There is also a higher chance that the block name extracted then, may never
+     * be AIR to begin with.
+     * </p> 
+     * 
+     * <p>Keep in mind, that if the original block was AIR before being processed for
+     * a natural break, or auto pickup, then it may not have been properly mined since
+     * AIR cannot be mined.  That said, if another process intercepted prison's 
+     * event handlers, then the targetBlocks will not exist until the mine is reset 
+     * for the first time when the server starts up.  So server startups will
+     * have higher risk of not being able to resolve the correct block type to 
+     * report.
+     * </p>
+     * 
+     * @param blockName
+     * @return
+     */
+    public boolean incrementBlockCount( String targetBlockName ) {
     	boolean results = false;
     	
 		incrementBlockBreakCount();
 		incrementTotalBlocksMined();
 
     	
-    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    	if ( targetBlockName != null && !targetBlockName.trim().isEmpty() ) {
     		
-    		if ( !getBlockStats().containsKey( blockName ) ) {
+    		// The block name should have been resolved to non-AIR before being 
+    		// processed by calling getTargetPrisonBlockName( Block block ) prior to
+    		// processing.  So if AIR now, then original block name has been lost
+    		// forever.
+//    		if ( "AIR".equalsIgnoreCase( blockName ) ) {
+//    			MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( blockName );
+//        		
+//        		if ( targetPrisonBlock != null ) {
+//
+//        			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
+//        			blockName = targetBlockName;
+//        			
+//        		}
+//    		}
+    		
+    		if ( !getBlockStats().containsKey( targetBlockName ) ) {
     			for ( PrisonBlock b : getPrisonBlocks() ) {
-    				if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				if ( b.getBlockName().equalsIgnoreCase( targetBlockName ) ) {
     					getBlockStats().put( b.getBlockName(), b );
     					
     					b.incrementMiningBlockCount();
@@ -551,7 +602,7 @@ public abstract class MineData
     		}
     		else {
     			
-    			getBlockStats().get( blockName ).incrementMiningBlockCount();
+    			getBlockStats().get( targetBlockName ).incrementMiningBlockCount();
     			results = true;
     		}
     	}
@@ -560,6 +611,8 @@ public abstract class MineData
     }
         
     abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
+    
+    abstract public String getTargetPrisonBlockName( Block block );
     
     public boolean hasUnsavedBlockCounts() {
     	return getUnsavedBlockCount() > 0;

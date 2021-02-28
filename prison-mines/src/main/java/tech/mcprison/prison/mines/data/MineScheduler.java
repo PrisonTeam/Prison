@@ -482,15 +482,14 @@ public abstract class MineScheduler
 	 * @param player 
 	 */
 	public void processBlockBreakEventCommands( String blockName, Player player, 
-			BlockEventType eventType, String triggered ) {
+							BlockEventType eventType, String triggered ) {
 		
+		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
 			Random random = new Random();
 			
-			// Only one block is processed here:
-			double chance = random.nextDouble() * 100;
-			
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+				double chance = random.nextDouble() * 100;
 				
 				processBlockEventDetails( player, blockName, eventType, chance, blockEvent, triggered );
 			}
@@ -498,32 +497,33 @@ public abstract class MineScheduler
 	}
 
 	
-	/**
-	 * <p>This function checks if the block break event should execute a 
-	 * given command or not. If it needs to, then it will submit them to run as 
-	 * a task instead of running them in this thread.
-	 * </p>
-	 * 
-	 * @param blockCount
-	 * @param player 
-	 */
-	public void processBlockBreakEventCommands( int blockCount, Player player, 
-					BlockEventType eventType, String triggered ) {
-		
-		if ( getBlockEvents().size() > 0 ) {
-			Random random = new Random();
-			
-			for ( int i = 0; i < blockCount; i ++ ) {
-				double chance = random.nextDouble() * 100;
-				
-				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
-					
-					processBlockEventDetails( player, null, eventType, chance, blockEvent, triggered );
-				}
-				
-			}
-		}
-	}
+//	/**
+//	 * <p>This function checks if the block break event should execute a 
+//	 * given command or not. If it needs to, then it will submit them to run as 
+//	 * a task instead of running them in this thread.
+//	 * </p>
+//	 * 
+//	 * @param blockCount
+//	 * @param player 
+//	 */
+//	@Deprecated
+//	public void processBlockBreakEventCommands( int blockCount, Player player, 
+//							BlockEventType eventType, String triggered ) {
+//		
+//		if ( getBlockEvents().size() > 0 ) {
+//			Random random = new Random();
+//			
+//			for ( int i = 0; i < blockCount; i ++ ) {
+//				
+//				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+//					double chance = random.nextDouble() * 100;
+//					
+//					processBlockEventDetails( player, null, eventType, chance, blockEvent, triggered );
+//				}
+//				
+//			}
+//		}
+//	}
 
 	private void processBlockEventDetails( Player player, String blockName, BlockEventType eventType, 
 				double chance, 
