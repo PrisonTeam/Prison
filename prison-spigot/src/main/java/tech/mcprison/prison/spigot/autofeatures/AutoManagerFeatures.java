@@ -1588,7 +1588,7 @@ public class AutoManagerFeatures
 				double threshold = 80.0d + thresholdModifier;
 				
 				// Use a random number that is a double:
-				double rndD = getRandom().nextDouble();
+				double rndD = getRandom().nextDouble() * 100d;
 				
 				if ( rndD <= threshold ) {
 					// Passed the threshold, so calculate the multiplier.

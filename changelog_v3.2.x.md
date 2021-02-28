@@ -19,6 +19,10 @@ that you need.
 # v3.2.4-alpha.15 2021-02-28
 
 
+* **Fixed a bug with calculating the fortune above level 5 where the random number was not being multiplied by 100.**
+This now works.
+
+
 * **Added totals to the block list along with the block remaining counts.**
 Hooked up the block counts to the mines.  Still having issues with accurate counts on the explosions.
 
