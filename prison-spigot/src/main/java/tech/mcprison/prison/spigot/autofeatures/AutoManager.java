@@ -8,13 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -91,7 +91,7 @@ public class AutoManager
     public void onBlockBreak(BlockBreakEvent e) {
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 
-    		genericBlockEvent( e );
+    		genericBlockEvent( e, false );
     	}
     }
     
@@ -117,6 +117,7 @@ public class AutoManager
     
     @Override
 	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
+    	
     	applyAutoEvents( block, e, mine );
 	}
     
@@ -132,12 +133,32 @@ public class AutoManager
     				List<SpigotBlock> teExplosiveBlocks ) {
     	applyAutoEvents( e, mine, teExplosiveBlocks );
     }
+    
+    
+    /**
+     * <p>This function overrides the doAction in OnBlockBreakEventListener and
+     * this is only enabled when auto manager is enabled.
+     * </p>
+     * 
+     */
+//    @Override
+    public void doActionX( Mine mine, BlastUseEvent e, 
+    		List<SpigotBlock> teExplosiveBlocks ) {
+    	applyAutoEvents( e, mine, teExplosiveBlocks );
+    }
 
 
 	//TODO Use the SpigotBlock within these functions so it can use the new block model and the custom blocks if they exist
 	private void applyAutoEvents( SpigotBlock block, BlockBreakEvent e, Mine mine) {
 
-		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
+		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled() && 
+				!	block.isEmpty() ) {
+			
+			
+			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
+					"  blocks remaining= " + 
+					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
+					);
 			
 			Player player = e.getPlayer();
 
@@ -298,6 +319,70 @@ public class AutoManager
 //					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
 //				}
 				 
+			}
+			
+			
+//			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
+//					e.blockList().size() + "  processed : " +
+//					teExplosiveBlocks.size() + "  " + totalCount + 
+//					"  blocks remaining= " + mine.getRemainingBlockCount() + 
+//					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
+			
+			
+			if ( totalCount > 0 ) {
+				
+				
+				// Override blockCount to be exactly the blocks within the mine:
+				int blockCount = teExplosiveBlocks.size();
+				
+				mine.addBlockBreakCount( blockCount );
+				mine.addTotalBlocksMined( blockCount );
+				
+				
+				// Set the broken block to AIR and cancel the event
+				e.setCancelled(true);
+				// e.getBlock().setType(Material.AIR);
+				
+				// Maybe needed to prevent drop side effects:
+				//e.getBlock().getDrops().clear();
+				
+			}
+			
+			if (e.isCancelled()) {
+				// The event was canceled, so the block was successfully broke, so increment the name counter:
+				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
+			}
+		}
+		
+	}
+	private void applyAutoEvents( BlastUseEvent e, Mine mine, 
+			List<SpigotBlock> teExplosiveBlocks ) {
+		
+		Player player = e.getPlayer();
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		
+		// Auto manager is enabled if it's going to hit this function so no need to double check:
+//		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
+		boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+		
+		if ( isCEBlockExplodeEnabled ) {
+			
+			int totalCount = 0;
+			
+			// The teExplosiveBlocks list have already been validated as being within the mine:
+			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
+				
+//				if ( isAutoManagerEnabled ) {
+//					
+				totalCount += applyAutoEvents( player, spigotBlock, mine );
+//				}
+//				else {
+				// This will never be called since this function will be called
+				// from auto complete listeners:
+//					totalCount += calculateNormalDrop( itemInHand, spigotBlock );
+//				}
+				
 			}
 			
 			

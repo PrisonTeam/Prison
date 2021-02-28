@@ -32,6 +32,7 @@ public class AutoFeaturesFileConfig {
     	
     	options,
     	
+    		isProcessNormalDropsEvents(options, true),
 	    	isProcessTokensEnchantExplosiveEvents(options, true),
 	    	isProcessCrazyEnchantsBlockExplodeEvents(options, true),
 	    	
