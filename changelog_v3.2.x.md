@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.15 2021-02-28
+# v3.2.4-alpha.16 2021-02-28
+
+
+
+* **v3.2.4-alpha.16 2021-02-28**
 
 
 * **Fixed a bug with calculating the fortune above level 5 where the random number was not being multiplied by 100.**

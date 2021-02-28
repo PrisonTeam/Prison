@@ -540,18 +540,30 @@ Please notice that we have defined two WorldGuard regions: prison_mines_a and pr
 Please note that these instructions apply to Prison v3.2.4-alpha.15 and later only.
 
 
-- Enable the WorldGuard's setting for __global__ to prevent block breaks within the world where the mines are.
-- Define a **simple region** in the mine the same size as the mine. Name it as suggested at the top of this document, such as prison_mine_c as an example.  The "simple" region only includes defining the region, setting the priority to 10, and add a permission group member.  You may add the other flags if you want, as suggested at the top of this document.
-- TokenEnchant must be configured properly to enable Explosive enchantment. Place the TE-ExplosiveEnchant-8.7.0_4.jar in the `plugins/TokenEnchant/enchants/` directory.  Start the server to have TE generate the configuration files related to that enhancement.
-  - TokenEnchant must not process the TEBlockExplosionEvent and the default settings must be turned off.  TE's auto pickup is defined within TE's config file: `plugins/TokenEnchant/config.yml` at bottom with the two settings: `TEBlockExplodeEvent.process: true` and `TEBlockExplodeEvent.pickup: true` as default values.  Both of these must be set to `false` for this to work with prison.
- - In order for TEBlockExplosiveEvent to be fired, the `plugins/TokenEnchant/enchants/Exposive_config.yml` must be adjusted. First run your server to generate this file if you have not done so yet. Then locate the setting of `Potions.Explosive.event_map.BlockBreakEvent: HIGHEST` which is the default value (HIGHEST), and change it to a value of `LOWEST`.  Failure to change this setting will result in the failure of TE from being able to fire the TEBlockExplodeEvent.
-- Within the configuration file `plugins/Prison/autoFeaturesConfig.yml` change the setting `options.isProcessTokensEnchantExplosiveEvents: true` to a value of `true`.  The default value is true, but double check to ensure it set correctly.  PLEASE NOTE: This setting is used even if **options.general.isAutoManagerEnabled: false** is disabled (set to false).
-- Enable **Auto Features** and **Auto Pickup** and all blocks from the explosion event will be placed in the player's inventory.
-- If **Auto Features** is disabled (which means auto pickup is also disabled), then the blocks will be broken by prison, with the drops being calculated as if auto pickup was enabled, but the contents of the block break events will be dropped at the location of where the broken block was.
+- **WorldGuard:** Enable the WorldGuard's setting for __global__ to prevent block breaks within the world where the mines are.
+- **WorldGuard:** Define a **simple region** in the mine the same size as the mine. Name it as suggested at the top of this document, such as prison_mine_c as an example.  The "simple" region only includes defining the region, setting the priority to 10, and add a permission group member. Example: `prison.mines.a`.  You may add the other flags if you want, as suggested at the top of this document.
+- **WorldGuard:** Please note: Sometimes you might have to add the WorldGuard flag block-break in order to get this to work. `/region flag prison_mine_<mine-name> block-break allow` It may be a WG version issue.  Spigot v1.8.8 requires this flag, while Spigot v1.15.2 does not.  Your success may vary.
 
+
+- **Player Permissions:** You may have to first create the group within your permission plugin before you can assign it to a player.  Example using LuckPerms: `lp creategroup prison.mines.a`
+- **Player Permissions:** The player must have the permission that is tied to the afore mentioned region.  For example the group perm: `prison.mines.a`  And assign it with: `/lp user RoyalBlueRanger parent set prison.mines.a true`
+
+
+- **TokenEnchant:** TokenEnchant must be configured properly to enable Explosive enchantment. Place the TE-ExplosiveEnchant-8.7.0_4.jar in the `plugins/TokenEnchant/enchants/` directory.  Start the server to have TE generate the configuration files related to that enhancement.
+- **TokenEnchant:** TokenEnchant must not process the TEBlockExplosionEvent and the default settings must be turned off.  TE's auto pickup is defined within TE's config file: `plugins/TokenEnchant/config.yml` at bottom with the two settings: `TEBlockExplodeEvent.process: true` and `TEBlockExplodeEvent.pickup: true` as default values.  Both of these must be set to `false` for this to work with prison.
+- **TokenEnchant:** In order for TEBlockExplosiveEvent to be fired, the `plugins/TokenEnchant/enchants/Exposive_config.yml` must be adjusted. First run your server to generate this file if you have not done so yet. Then locate the setting of `Potions.Explosive.event_map.BlockBreakEvent: HIGHEST` which is the default value (HIGHEST), and change it to a value of `LOWEST`.  Failure to change this setting will result in the failure of TE from being able to fire the TEBlockExplodeEvent.
+
+
+- **Prison: Auto Manager:** Within the configuration file `plugins/Prison/autoFeaturesConfig.yml` change the setting `options.isProcessTokensEnchantExplosiveEvents: true` to a value of `true`.  The default value is true, but double check to ensure it set correctly.  PLEASE NOTE: This setting is used even if **options.general.isAutoManagerEnabled: false** is disabled (set to false).
+- **Prison: Auto Manager:** Enable **Auto Features** and **Auto Pickup** and all blocks from the explosion event will be placed in the player's inventory.
+- **Prison: Auto Manager:** If **Auto Features** is disabled (which means auto pickup is also disabled), then the blocks will be broken by prison, with the drops being calculated as if auto pickup was enabled, but the contents of the block break events will be dropped at the location of where the broken block was.
+
+
+- **Testing:** Deop yourself if you are testing this.
   
   
-- WARNINGS:
+  
+#####  **WARNINGS:**
   - If anyone is OP'd then they can break blocks outside of the mine through the TE event. This is the result of WorldGuard bypassing the restrictions on the regions and has nothing to do with prison.
   - If TokenEnchant is set to handle the explosion events, with or without their auto pickup enabled, then TE will break blocks outside of the mine and prison will NOT be able to control that.  If you have those settings enabled, then that is outside of the control of prison and you assume all risks of breaking and destroying builds around the mines.
 
