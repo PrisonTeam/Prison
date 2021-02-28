@@ -226,8 +226,8 @@
 [*][COLOR=#808080][SIZE=4]Editable in game, [B]GUIs [/B]and configs.[/SIZE][/COLOR]
 [*][COLOR=#808080][SIZE=4]SellAll [URL='https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_113_setting_up_sellall.md']Guidebooks[/URL].[/SIZE][/COLOR]
 [/LIST]
-[CENTER][SIZE=7][COLOR=#808080][B]BACKPACKS[/B][/COLOR][/SIZE]
-[SIZE=6][B][COLOR=#ffa64d]What are Backpacks:[/COLOR][/B][/SIZE]
+[CENTER][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional%20Subheader%20Backpacks%20Long.png[/IMG]   
+[SIZE=6][B][COLOR=#ffa64d]What are Backpacks [/COLOR][COLOR=#ff0000][New - Early Access][/COLOR][COLOR=#ffa64d]:[/COLOR][/B][/SIZE]
 [SIZE=5][COLOR=#808080][B]Backpacks[/B] are a feature that gives you the ability to own a second virtual inventory to store your items.
 
 [B]Main commands:[/B][/COLOR][/SIZE][/CENTER]
