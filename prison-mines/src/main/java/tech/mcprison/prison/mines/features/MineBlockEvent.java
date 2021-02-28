@@ -235,6 +235,50 @@ public class MineBlockEvent {
 	
 	 
 	
+	/**
+	 * <p>This simple function checks to see if the chance applies to this event.
+	 * If it does, then it checks to ensure if the eventType matches the targeted
+	 * even type that this BlockEvent is targeting.  
+	 * </p>
+	 * 
+	 * <p><b>NOTE:</b> This does not check the player's permissions.  That
+	 * must be done outside of this class.
+	 * </p>
+	 * 
+	 * 
+	 * @param eventType
+	 * @param chance
+	 * @param blockName
+	 * @param triggered
+	 * @return
+	 */
+	public boolean isFireEvent( double chance, BlockEventType eventType, 
+					String blockName, String triggered ) {
+		boolean results = false;
+		
+		// First check chance, since that's perhaps the quickest check:
+		if ( chance <= getChance() &&
+				
+				// Make sure we have the correct eventTypes:
+				eventType == BlockEventType.TEXplosion && 
+				eventType == getEventType() && 
+					( getTriggered() == null || 
+						getTriggered().equalsIgnoreCase( triggered )) ||
+					
+				getEventType() == BlockEventType.all || 
+				getEventType() == eventType ) {
+			
+			// The check for the player's perms will have to be done outside of this 
+			// function.
+			
+			results = true;
+		}
+		
+		
+		return results;
+	}
+	
+	
 	public double getChance() {
 		return chance;
 	}

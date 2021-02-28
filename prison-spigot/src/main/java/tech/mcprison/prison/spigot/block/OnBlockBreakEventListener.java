@@ -366,6 +366,13 @@ public class OnBlockBreakEventListener
     		}
     		
     		
+    		if ( mine != null && monitor ) {
+    			// Monitor:
+				// Log block break events and BlockEvents:
+				doActionMonitor( mine, e, explodedBlocks );
+				
+    		}
+
     		// now process all blocks:
     		if ( mine != null ) {
     			
@@ -394,17 +401,17 @@ public class OnBlockBreakEventListener
     			}
     			if ( explodedBlocks.size() > 0 ) {
     				
-    				if ( !monitor ) {
+//    				if ( !monitor ) {
     					// This is where the processing actually happens:
     					doAction( mine, e, explodedBlocks );
-    				}
-
-    				else {
-    					// Monitor:
-    					// Log block break events and BlockEvents:
-    					doActionMonitor( mine, e, explodedBlocks );
-    					
-    				}
+//    				}
+//
+//    				else {
+//    					// Monitor:
+//    					// Log block break events and BlockEvents:
+//    					doActionMonitor( mine, e, explodedBlocks );
+//    					
+//    				}
     			}
     		}
     			
@@ -514,8 +521,16 @@ public class OnBlockBreakEventListener
 
     		}
 			
+			
+    		if ( mine != null && monitor ) {
+    			// Monitor:
+				// Log block break events and BlockEvents:
+				doActionMonitor( mine, e, explodedBlocks );
+				
+    		}
+
 			// now process all blocks:
-			if ( mine != null ) {
+    		else if ( mine != null ) {
 				
 				
 				// have to go through all blocks since some blocks may be outside the mine.
@@ -544,17 +559,17 @@ public class OnBlockBreakEventListener
 				
     			if ( explodedBlocks.size() > 0 ) {
     				
-    				if ( !monitor ) {
+//    				if ( !monitor ) {
     					// This is where the processing actually happens:
     					doAction( mine, e, explodedBlocks );
-    				}
-
-    				else {
-    					// Monitor:
-    					// Log block break events and BlockEvents:
-    					doActionMonitor( mine, e, explodedBlocks );
-    					
-    				}
+//    				}
+//
+//    				else {
+//    					// Monitor:
+//    					// Log block break events and BlockEvents:
+//    					doActionMonitor( mine, e, explodedBlocks );
+//    					
+//    				}
     			}
 
 				
@@ -676,8 +691,44 @@ public class OnBlockBreakEventListener
 						// There is a chance it may not break.
 						mine.addBlockBreakCount( 1 );
 						mine.addTotalBlocksMined( 1 );
+						
+						
+						String triggered = null;
+						
+						// Please be aware:  This function is named the same as the auto features setting, but this is 
+						// not related.  This is only trying to get the name of the enchantment that triggered the event.
+						if ( isTeExplosionTriggerEnabled() ) {
+							
+							try {
+								triggered = e.getTrigger();
+							}
+							catch ( Exception | NoSuchMethodError ex ) {
+								// Only print the error the first time, then suppress the error:
+								String error = ex.getMessage();
+								
+								Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+										"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+										"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+										"The Prison BlockEvents can be filtered by this triggered value. " +
+										error );
+								
+								// Disable collecting the trigger.
+								setTeExplosionTriggerEnabled( false );
+								
+							}
+						}
+						
+						
+						// Process mine block break events:
+						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+						
+						
+						// move in to the loop when blocks are tracked?... ??? 
+						String blockName = spigotBlock.getPrisonBlock().getBlockName();
+						mine.processBlockBreakEventCommands( blockName, player, BlockEventType.TEXplosion,
+								triggered );
+
 					}
-					
 				}
 				
 				
@@ -700,8 +751,6 @@ public class OnBlockBreakEventListener
 					// Maybe needed to prevent drop side effects:
 					//e.getBlock().getDrops().clear();
 					
-					
-					
 				}
 				
 			}
@@ -713,7 +762,7 @@ public class OnBlockBreakEventListener
 		if ( mine != null ) {
 			
 			// Override blockCount to be exactly the blocks within the mine:
-			int blockCount = explodedBlocks.size();
+//			int blockCount = explodedBlocks.size();
 
 			
 			// Cannot count the blocks mined since many may be air.  Must count the actual blocks when
@@ -745,86 +794,86 @@ public class OnBlockBreakEventListener
 //			}
 			
 			// Other possible processing:
-			
-			String triggered = null;
-			
-			// Please be aware:  This function is named the same as the auto features setting, but this is 
-			// not related.  This is only trying to get the name of the enchantment that triggered the event.
-			if ( isTeExplosionTriggerEnabled() ) {
-				
-				try {
-					triggered = e.getTrigger();
-				}
-				catch ( Exception | NoSuchMethodError ex ) {
-					// Only print the error the first time, then suppress the error:
-					String error = ex.getMessage();
-					
-					Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
-							"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
-							"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
-							"The Prison BlockEvents can be filtered by this triggered value. " +
-							error );
-					
-					// Disable collecting the trigger.
-					setTeExplosionTriggerEnabled( false );
-					
-				}
-			}
-			
-			
-//			int totalCount = 0;
-			
-			// Process mine block break events:
-			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			
-			
-//			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
-
-//			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-			
-//			boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-			
-			
-//			if ( isTEExplosiveEnabled ) {
+//			
+//			String triggered = null;
+//			
+//			// Please be aware:  This function is named the same as the auto features setting, but this is 
+//			// not related.  This is only trying to get the name of the enchantment that triggered the event.
+//			if ( isTeExplosionTriggerEnabled() ) {
 //				
-//				// The teExplosiveBlocks list have already been validated as being within the mine:
-//				for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
-//					
-//					if ( !aMan.isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
-//						
-//						
-//						// DO NOT Drop the contents of the individual block breaks here
-//						// since this is the monitor event:
-//						//totalCount += aMan.calculateNormalDrop( itemInHand, spigotBlock );
-//						
-//						// Move in to here when block type is added:
-//						// mine.processBlockBreakEventCommands
-//					}
-//					 
+//				try {
+//					triggered = e.getTrigger();
 //				}
-//
-//				
-//				if ( totalCount > 0 ) {
+//				catch ( Exception | NoSuchMethodError ex ) {
+//					// Only print the error the first time, then suppress the error:
+//					String error = ex.getMessage();
 //					
-//					// Set the broken block to AIR and cancel the event
-//					e.setCancelled(true);
-//					e.getBlock().setType(Material.AIR);
+//					Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+//							"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+//							"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+//							"The Prison BlockEvents can be filtered by this triggered value. " +
+//							error );
 //					
-//					// Maybe needed to prevent drop side effects:
-//					e.getBlock().getDrops().clear();
+//					// Disable collecting the trigger.
+//					setTeExplosionTriggerEnabled( false );
 //					
 //				}
-//				
-//				
 //			}
-	
-			
-			
-			// move in to the loop when blocks are tracked?... ??? 
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
-					triggered );
-
-			
+//			
+//			
+////			int totalCount = 0;
+//			
+//			// Process mine block break events:
+//			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+//			
+//			
+////			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
+//
+////			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+//			
+////			boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+//			
+//			
+////			if ( isTEExplosiveEnabled ) {
+////				
+////				// The teExplosiveBlocks list have already been validated as being within the mine:
+////				for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
+////					
+////					if ( !aMan.isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled()) {
+////						
+////						
+////						// DO NOT Drop the contents of the individual block breaks here
+////						// since this is the monitor event:
+////						//totalCount += aMan.calculateNormalDrop( itemInHand, spigotBlock );
+////						
+////						// Move in to here when block type is added:
+////						// mine.processBlockBreakEventCommands
+////					}
+////					 
+////				}
+////
+////				
+////				if ( totalCount > 0 ) {
+////					
+////					// Set the broken block to AIR and cancel the event
+////					e.setCancelled(true);
+////					e.getBlock().setType(Material.AIR);
+////					
+////					// Maybe needed to prevent drop side effects:
+////					e.getBlock().getDrops().clear();
+////					
+////				}
+////				
+////				
+////			}
+//	
+//			
+//			
+//			// move in to the loop when blocks are tracked?... ??? 
+//			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
+//					triggered );
+//
+//			
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
 			// it will reset the mine:
@@ -877,8 +926,24 @@ public class OnBlockBreakEventListener
 						// There is a chance it may not break.
 						mine.addBlockBreakCount( 1 );
 						mine.addTotalBlocksMined( 1 );
+						
+						
+//						Output.get().logInfo( "#### AutoManager: BlastUseEvent: doAction:: " + mine.getName() + "  e.blocks= " + 
+//								e.getBlockList().size() + "  processed : " + blockCount + 
+//								"  blocks remaining= " + mine.getRemainingBlockCount()
+//								);
+						
+						
+						
+						// Process mine block break events:
+						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+						
+						
+						// move in to the loop when blocks are tracked?... ??? 
+						String blockName = spigotBlock.getPrisonBlock().getBlockName();
+						mine.processBlockBreakEventCommands( blockName, player, BlockEventType.CEXplosion, null );
+
 					}
-					
 				}
 				
 				
@@ -911,31 +976,31 @@ public class OnBlockBreakEventListener
 	private void doActionMonitor( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
 		if ( mine != null ) {
 			
-			// Override blockCount to be exactly the blocks within the mine:
-			int blockCount = explodedBlocks.size();
-
-			
-			// Cannot count the blocks mined since many may be air.  Must count the actual blocks when
-			// they are being broken:
-			
-//			mine.addBlockBreakCount( blockCount );
-//			mine.addTotalBlocksMined( blockCount );
+//			// Override blockCount to be exactly the blocks within the mine:
+//			int blockCount = explodedBlocks.size();
+//
 //			
-			
-			
-//			Output.get().logInfo( "#### AutoManager: MONITOR: doActionMonitor:: " + mine.getName() + "  e.blocks= " + 
-//					e.getBlockList().size() + "  processed : " + blockCount + 
-//					"  blocks remaining= " + mine.getRemainingBlockCount()
-//					);
-			
-			
-			
-			// Process mine block break events:
-			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-			
-			
-			// move in to the loop when blocks are tracked?... ??? 
-			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.CEXplosion, null );
+//			// Cannot count the blocks mined since many may be air.  Must count the actual blocks when
+//			// they are being broken:
+//			
+////			mine.addBlockBreakCount( blockCount );
+////			mine.addTotalBlocksMined( blockCount );
+////			
+//			
+//			
+////			Output.get().logInfo( "#### AutoManager: MONITOR: doActionMonitor:: " + mine.getName() + "  e.blocks= " + 
+////					e.getBlockList().size() + "  processed : " + blockCount + 
+////					"  blocks remaining= " + mine.getRemainingBlockCount()
+////					);
+//			
+//			
+//			
+//			// Process mine block break events:
+//			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+//			
+//			
+//			// move in to the loop when blocks are tracked?... ??? 
+//			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.CEXplosion, null );
 
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then

@@ -19,6 +19,14 @@ that you need.
 # v3.2.4-alpha.15 2021-02-27
 
 
+* **Change how blockevents fire for explosions.**  They now fire when the blocks are broken, instead of at the monitor event time.  The reason for this shift for explosions is due to the fact that it is impossible to tell what blocks were just exploded at the monitor event since the block list can contain air to begin with.
+Also modified the MineBlockEvent class to provide an isFireEvent function that will perform the check on chance, event type, block name, and triggered (for TE Explosions).
+
+
+* **Rough start of spatial indexing.**
+The purpose of a spatial index is not so much for within a mine, but to help identify if a location is within a mine.  At this time, each mine will need to be checked one at a time, blindly, to see if a location is within a mine, and it may not be. The basic server may have about 30 mines, but a larger, more complex server, may have 40+ mines.  Use of a spatial index will return one or two mines near the point in question, so it will cut down on the amount of blind checks.
+
+
 * **Fixes crazy enchant's explosion event to work with normal drops.**
 
 
