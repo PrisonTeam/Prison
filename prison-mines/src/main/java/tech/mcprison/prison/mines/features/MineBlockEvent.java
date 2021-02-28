@@ -260,13 +260,13 @@ public class MineBlockEvent {
 		if ( chance <= getChance() &&
 				
 				// Make sure we have the correct eventTypes:
-				eventType == BlockEventType.TEXplosion && 
+			(eventType == BlockEventType.TEXplosion && 
 				eventType == getEventType() && 
 					( getTriggered() == null || 
 						getTriggered().equalsIgnoreCase( triggered )) ||
 					
 				getEventType() == BlockEventType.all || 
-				getEventType() == eventType ) {
+				getEventType() == eventType) ) {
 			
 			// The check for the player's perms will have to be done outside of this 
 			// function.
