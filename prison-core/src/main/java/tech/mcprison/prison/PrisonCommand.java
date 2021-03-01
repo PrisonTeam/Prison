@@ -698,6 +698,7 @@ public class PrisonCommand {
     	
     	display.addText( "&a Prison auto features provide the following options:");
     	display.addText( "&7   Auto pickup - &aUpon block break, items are placed directly in to player inventory.");
+    	display.addText( "&a     - Features for enabling XP, Durability, and Fortune are within the config file.");
     	display.addText( "&7   Auto smelt - &aItems that can be smelted will be smelted automatically.");
     	display.addText( "&7   Auto block - &aConverts ores to blocks.");
     	display.addText( "&7   Tool lore starts with: Pickup, Smelt, or Block. Only one per line." );
@@ -706,6 +707,14 @@ public class PrisonCommand {
     	
     	display.addText( "&a To configure modify plugin/Prison/autoFeaturesConfig.yml");
     	display.addText( "&a Or better yet, you can use the &7/prison gui");
+    	
+    	display.addText( "&a");
+    	display.addText( "&aPrison supports TokenEnchant's explosion based enchants.  Please see our online " +
+    			"documentation related to WorldGuard and LuckPerms with protecting mines (its near the bottom). " +
+    			"TE's configurations may not be obvious without reading the document.");
+    	display.addText( "&a");
+    	display.addText( "&aPrison also supports Crazy Enchant's explosion based enchantments too.  ");
+    	
     	
     	List<AutoFeatures> afs = AutoFeatures.permissions.getChildren();
     	StringBuilder sb = new StringBuilder();
