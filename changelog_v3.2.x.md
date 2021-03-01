@@ -18,6 +18,9 @@ that you need.
 
 # v3.2.4-alpha.16 2021-03-01
 
+* **Added support in Mine BlockEvents for the new placeholders `{msg}` and `{broadcast}`**
+which runs the commands `/prison utils msg {player}` and `/prison utils broadcast`.
+
 
 * **Added support for prison utils messages.**
 Provides an easy way to send messages to a specific player or to all players. To be used in scripts and within prison commands such as block events or rank commands.

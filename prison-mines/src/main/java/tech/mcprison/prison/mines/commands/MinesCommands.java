@@ -3550,7 +3550,9 @@ public class MinesCommands
 	
 
 	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine. " +
-			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands.", 
+			"To send messages use {msg} or {broadcast} followed by the formatted message. " +
+			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. " +
+			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventAdd(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,

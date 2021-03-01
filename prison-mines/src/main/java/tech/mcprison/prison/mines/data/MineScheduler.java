@@ -543,8 +543,10 @@ public abstract class MineScheduler
 				
 				 {
 					
-					String formatted = blockEvent.getCommand().
-							replace("{player}", player.getName())
+					String formatted = blockEvent.getCommand()
+							.replace( "{msg}", "prison utils msg {player} " )
+							.replace( "{broadcast}", "prison utils broadcast " )
+							.replace("{player}", player.getName())
 							.replace("{player_uid}", player.getUUID().toString());
 					
 					// Split multiple commands in to a List of individual tasks:
