@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.17 2021-03-01
+# v3.2.4 2021-03-01
+
+
+* **v3.2.4 2021-03-01**
+  Release v3.2.4.
 
 
 * **Backpacks default size editable**
