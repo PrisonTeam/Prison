@@ -19,7 +19,9 @@ that you need.
 # v3.2.4-alpha.17 2021-03-01
 
 
-
+* **Backpacks default size editable**
+  It's now possible to edit the backpacks default size from the backpacksconfig.yml that will 
+  be set for each new player when joining the server.
 
 * **v3.2.4-alpha.17 2021-03-01**
 
@@ -75,7 +77,6 @@ The purpose of a spatial index is not so much for within a mine, but to help ide
 
 * **Moved the PlayerArmorStandManipulateEvent to the correct class.**
 Found it in AutoManager when auto manager has nothing to do with armor stands (hopefully).
-
 
 * **Change how Crazy Enchant explosions work.** 
 Using the same new techniques that TokenEnchant is using to ensure that the blocks are within the mines.  I do not have a copy of CrazyEnchant so I cannot test it.
