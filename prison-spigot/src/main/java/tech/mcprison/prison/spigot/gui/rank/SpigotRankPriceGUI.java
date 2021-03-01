@@ -3,11 +3,12 @@ package tech.mcprison.prison.spigot.gui.rank;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -20,12 +21,11 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String rankName;
     private final Integer val;
-    private final Configuration messages = messages();
 
-    public SpigotRankPriceGUI(Player p, Integer val, String rankname){
+    public SpigotRankPriceGUI(Player p, Integer val, String rankName){
         this.p = p;
         this.val = val;
-        this.rankName = rankname;
+        this.rankName = rankName;
     }
 
     public void open() {
@@ -49,7 +49,7 @@ public class SpigotRankPriceGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

@@ -3,10 +3,11 @@
 ## Prison Build Logs for v3.2.x
 
 ## Build logs
- - **[v3.2.3-alpha - Current](changelog_v3.2.x.md)**
- - **[v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)**
- - **[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)**
- - **[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)**
+ - **[v3.2.4-alpha - Current](changelog_v3.2.x.md)**
+ - [v3.2.0 - 2019-12-03](docs/prison_changelog_v3.2.0.md)&nbsp;&nbsp;
+[v3.2.1 - 2020-09-27](docs/prison_changelog_v3.2.1.md)&nbsp;&nbsp;
+[v3.2.2 - 2020-11-21](docs/prison_changelog_v3.2.2.md)&nbsp;&nbsp;
+[v3.2.3 - 2020-12-25](docs/prison_changelog_v3.2.3.md)
  
 
 Greetings!  I'm delighted that you are interested in the build logs for the
@@ -15,9 +16,854 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# V3.2.3 2020-12-25
+# v3.2.4 2021-03-01
 
 
+* **v3.2.4 2021-03-01**
+  Release v3.2.4.
+
+
+* **Backpacks default size editable**
+  It's now possible to edit the backpacks default size from the backpacksconfig.yml that will 
+  be set for each new player when joining the server.
+
+* **v3.2.4-alpha.17 2021-03-01**
+
+
+* **Added support in Mine BlockEvents for the new placeholders `{msg}` and `{broadcast}`**
+which runs the commands `/prison utils msg {player}` and `/prison utils broadcast`.
+
+
+* **Added support for prison utils messages.**
+Provides an easy way to send messages to a specific player or to all players. To be used in scripts and within prison commands such as block events or rank commands.
+
+
+* **More tweaks to get the block counts updated when the server starts up so they will be accurate and won't need to wait until the next reset.**
+
+
+* **Restructuring of some of the handling of block names prior to processing the block events (block break or explosions) to preserve the original block names.**
+This is important too, since if the block name is AIR, it is understood that it could not have been broken with a standard BlockBreakEvent.  The explosion events appear to never eliminate AIR blocks, but prior processing before passing to those points of execution, the AIR blocks were filtered out.  So in general, they should never be AIR, but they could be tied back to the original block names too.  But with explosions, one has to be very careful since erroneous AIR blocks can get counted multiple times and hence throw off the actual counts for the mines.
+
+* **Fixed issue with the logic. Need slight different groupings.**
+
+
+* **v3.2.4-alpha.16 2021-02-28**
+
+
+* **Fixed a bug with calculating the fortune above level 5 where the random number was not being multiplied by 100.**
+This now works.
+
+
+* **Added totals to the block list along with the block remaining counts.**
+Hooked up the block counts to the mines.  Still having issues with accurate counts on the explosions.
+
+
+* **Start to hook up block counts for mines.**
+
+
+* **Hook up auto manager to CrazyEnchant explosions.**
+Also reworked how auto manager auto pickup deals with explosions and block counts.  They are more accurate now.  Plus they now support reporting the block names so that can be added as a new filter type in the future.  Monitor has been changed to only support mine resets.
+
+
+* **Some tweaks to get the CrazyEnchants explosions to work correctly.**
+
+
+* **Change how blockevents fire for explosions.**  They now fire when the blocks are broken, instead of at the monitor event time.  The reason for this shift for explosions is due to the fact that it is impossible to tell what blocks were just exploded at the monitor event since the block list can contain air to begin with.
+Also modified the MineBlockEvent class to provide an isFireEvent function that will perform the check on chance, event type, block name, and triggered (for TE Explosions).
+
+
+* **Rough start of spatial indexing.**
+The purpose of a spatial index is not so much for within a mine, but to help identify if a location is within a mine.  At this time, each mine will need to be checked one at a time, blindly, to see if a location is within a mine, and it may not be. The basic server may have about 30 mines, but a larger, more complex server, may have 40+ mines.  Use of a spatial index will return one or two mines near the point in question, so it will cut down on the amount of blind checks.
+
+
+* **Fixes crazy enchant's explosion event to work with normal drops.**
+
+
+* **Moved the PlayerArmorStandManipulateEvent to the correct class.**
+Found it in AutoManager when auto manager has nothing to do with armor stands (hopefully).
+
+* **Change how Crazy Enchant explosions work.** 
+Using the same new techniques that TokenEnchant is using to ensure that the blocks are within the mines.  I do not have a copy of CrazyEnchant so I cannot test it.
+
+
+* **Setup a different way to calculate line of sight to find a target location.**
+This will be used with /mines whereami so it can look through walls, such as mine liners, to detect if the player is looking through walls.
+
+
+* **Using the mine tag instead of mine name where it can be used that way.**
+
+
+* **Backpacks compatibility with 1.8.8 tested**
+Tested and fixed an error of backpacks, not it's working with 1.8.8 just fine.
+
+
+* **On join backpack item**
+By default this will be enabled, you can disable it from the backpacksconfig.yml, this feature
+  will give you an item to open the backpack on join.
+
+
+* **/Backpack item command**
+It is now possible to get a copy of the that's being used to open the backpack while in game with the command
+  /backpack item.
+  
+
+* **Prison Backpacks skull support**
+Skulls are now supported by Prison backpacks, everything from an ItemStack should be now supported.
+
+
+* **Prison Backpacks are now a thing...**
+This's still a very early access feature but it's already working and powerful, it supports custom
+  items displaynames, lores (not tested lores), enchantments.
+  You can open it with `/backpack` as a player, or `/gui backpack` as an admin.
+  It's possible to enable it from the `config.yml` by turning to true the `backpacks: false` option.
+  When enabled and restarted your server, you'll see a new folder named `backpacks`, where there're 2 files:
+  `backpacksdata.yml` and `backpacksconfig.yml`, all the backpacks options are editable from the backpacksconfig.yml
+  and you should **never** touch backpacksdata.yml.
+  I repeat, this's early access, might be unstable and have a ton of bugs to fix, until then please report all
+  your issues on this new feature and also feel free to make feature requests, it's really appreciated.
+  At the time of writing, SELLALL AND AUTOPICKUP AREN'T SUPPORTED!
+  
+
+* **v3.2.4-alpha.15 2021-02-25**
+
+
+* **New feature: If a player logs out while in a mine, and then logs back in to the game after the mine resets they can suffocate to death.**
+Now this situation is detected and the player is teleported to the mine's spawn point.
+
+
+* **Rewrote how the chat placeholders are processed.**
+Found issues with the old way of dealing with it.  This should be more flexible and is able to deal with any case placeholder now.
+There is room for improvement, such as caching PlaceHolderKey's that are related to chat placeholders since they will always be the same (mostly).  Can also refactor some of the other placeholder code that can take advantage of these new techniques.
+
+
+* **TE Explosions are not able to produce accurate block counts.**
+These changes improves the accuracy, but it's still not perfect.  Will address in the future.
+
+
+* **Player Mines GUI will now show Mines Tags**
+Player Mines gui (aka /mines or /gui mines) will now show Mines Tags as titles instead
+  of the Mine Name.
+  
+
+* **GUI Prestiges console error fix**
+You won't get an error for trying opening the gui prestiges from the console now.
+  Some other GUIs are involved and fixed too.
+
+
+* **Removed some of the logging and update some of the docs too.**
+
+
+* **Enabled the auto manager's auto pickup to work with TokenEnchant's TEBlockExplosionEvent.**
+Needs more testing to ensure everything is working properly with and without the auto manager enabled.
+
+
+* **Rewrite of TEBlockExplodeEvent to properly handle TE Explosive enchants within the prison mines when auto manager is NOT enabled.**
+Most of the rewrite for enable Auto manager is in place but has not been tested or tweaked.
+Prison will cancel the explosive event if it is not within a mine.  This may cause issues with other things, such as use out in the wild, but for now it gets it working within the mines.  The targeted block is the one that is tested to see if the explosion occurs within the mine.  If it does, then all other blocks with in the explosion are tested to ensure they are within the mine, and if they are, then they are broke/dropped.  
+Warning... OP'd players can break blocks outside of the mine, so only test and use as non-op'd player.
+
+
+* **Fixed a bug where the block break count could go negative if there are too many blocks counted as being broken, than what are really broken.  **
+
+
+* **Hook up integration permission listing to the /ranks player command.**
+Found an issue with the getSellallMultiplier when the player is offline.
+
+
+* **Added addGroupPermission and removeGroupPermission to the PermissionIntegration classes.**
+
+
+* **/gui mines Blocks are now editable while in-game.**
+You can now edit the Shown block of Mines of the /gui mines, aka player's GUI,  
+while in game from the /gui -> Mines -> Select a mine -> Mine_Show_Item.
+
+
+* **v3.2.4-alpha.14 2021-02-20**
+
+
+* **Some adjustments to the /mines list command so its slightly easier to read.**
+
+
+* **Fixes to finalize the mine constraints. Now it's working with min, max, ExcludeTop, and Exclude Bottom.**
+
+
+* **New feature: /mines whereami now includes the block that you are looking at** if it is within a mine and it also includes the distance to that block.
+
+
+* **Clean up a few of the mines constraints to reduce the size of the constraint name.**
+It was too long to type and too long to display. 
+Still having issues with constraints and mine generation, so it's not ready yet.
+
+
+* **Fixed an issue with block break events and within mine detection.**
+Basically sometime a check to see if something is in a mine needs to be exact, like block breakage, or it needs to include a layer above and below, such as for players.
+So made a distinction between the two so block breakage is now exactly within the mine.
+
+
+* **Starting to add new block constraint for ExcludeTopLayers ExcludeBottomLayers.**
+It's not yet functional.
+
+
+* **SellAll Sell sound play-feedback** 
+It's enabled by default now a sound play-feedback when using the /sellall sell command, it's customizable from
+  the sellallconfig.yml, you can change the sound on success and fail, disable or enable it.
+
+
+* **Hooked up the Min block constraint to the mine resets.**
+Reworked the mine resets for the synchronous reset so it now uses the target block list just as the paging does. This allows reduction of code and simplification, but more importantly, allows the application of the min constraint before placing any of the blocks.
+
+
+* **Fixed the /mines block constraint add command to allow a min to be added when max is zero (disabled).**
+
+
+* **Added a reset for the resetBlock count**
+Added toString functions to PrisonBlockStatusData, MineTargetBlockKey, and MineTargetPrisonBlock to help with debugging.
+
+
+* **Made PrisonBlockStatusData an abstract class and added isAir() abstract function.**
+Enabled isAir in both PrisonBlock and BlockOld.
+
+
+
+* **Reworked some of the internals on MineResets to prepare for the next phase of work.**
+Created a MinTasks class to house some of the tasks that are more task oriented.
+
+
+* **Added sellall triggers**
+New triggers feature, it's now possible to add items/edit/delete that will trigger the /sellall sell
+  while shifting and right click, there're some options in the sellallconfig for customization
+  too, it's possible to enable this feature while in-game by commands, there still isn't a GUI
+  for this and maybe I'll add one in the future.
+  
+  Permission: prison.admin
+  
+  Command: /sellall trigger <args> <args> -> /sellall trigger true will enable this feature
+/sellall trigger add-edit-delete <item> is for management. 
+  
+
+* **Fixed SellAll Blocks GUI**
+Found and fixed a SellAll config bug not updating, this was breaking many things and
+  also the new feature incoming, this got now fixed.
+
+
+* **Changed the mine resets use of target block collections.**
+Changed the way the data is stored in that collection so it is able to store both the new and old block models
+Every reset now stores their block assignment in this target block collections, of which, paged reset have always used them.  
+This is critical for being able to enabling a constraint fo minimal blocks of a specific type. Plus it will be critical to properly logging what the block type was since if prison get's an AIR on a block break event, prison can use that collection to find out what that block was when it was broken so it can properly record it.
+
+
+* **Auto manager lore: Strip off color codes so the comparisons work if color codes are enabled.**
+Noticed that sometimes random color codes are added when enchanting.
+
+
+* **Rewrote the lore checks on auto manager to use the prison ItemStacks.**
+Also simplified some of the code since some of the checks were no longer needed since they are now handled with the prison classes.
+
+
+* **Fixed bug of not passing the useNewBlockModle variable to the getBlocksList function; was hard coded with true.**
+Also showing three dots instead of just one when using the new block model so it's a way to visually tell how the server is configured and what block list is being shown.
+
+
+* **Player GUIs now editable**
+You can edit Player GUIs titles from the GuiConfig.yml now.
+
+
+* **Hooked up the new block constraints for max.**
+Now when enabled it will prevent more than the max amount from being spawned.
+The min constraint has not been hooked up yet.
+
+
+* **Added block constraints of min and max that will try to constrain the spawning of the blocks.**
+They are hooked up to be saved and loaded through the mine's save file.  They also are hooked up to the commands to set them, remove them, and to include them in the block lists.
+They are not yet hooked up to constrain the block generation yet.
+
+
+* **Added new command /mines block list to complement the other mines block commands.**
+Since the block list was refactored, it was trivial to add this command and only makes sense since new users will see the /mines block listing and may not realize they have to use /mines info with page 2 or ALL to show the block list.
+
+
+* **Refactor the display of the mine's block list to eliminate duplicate code**
+since the new block model and old block model has been able to be merged together for some of the functionalities.
+
+
+* **v3.2.4-alpha.13 2021-02-14**
+
+
+* Cleaned up some of the player permissions with SpigotCommandSender, SpigotPlayer, and SpigotOfflinePlayer to ensure they are using the correct bukkit internal functions.**
+
+
+* **SellAll Permissions edited**
+Removed some SellAll permissions options from the SellAll config because kind of useless.
+
+
+* **Bug fix: SellAll broken**
+Working on fixing many SellAll broken permissions, now booleans are working again.
+
+
+* **Buf fix: GUI error.**
+Improved Prison GUIs handler that won't trigger without opening a true Prison GUI, this will
+  fix random Prison GUI errors.
+
+
+* **Bug fix: This audio file does not exist on 1.8 so catch the exception and ignore.**
+A sound still plays so not sure the point of this actually.
+
+
+* **Add the stats on block counts to the /mines info details.**
+Includes the number of blocks that are present in the mine (P), the Total (T), the Session (S) since server start, and the Un-Saved (US) counts.
+
+
+* **Setup blocks mined counts for each mine.**
+There are a few stats being tracked: blocks placed during a reset, total blocks mined, total mined since server start (session), and unsaved blocks mined.
+This is not fully hooked up yet.
+
+
+* **Clean up some of the messages related to the /mines stats command.**  
+Eliminated the stats on TP events and broadcasting messages since they are trivial in time it takes to run those parts. Fixed a stats bug in the synchronous reset page count should have been always 1, but it was accumulating after each update.
+
+
+* **Provide some docs on the PlaceholdersUtil.formattedTime() function.**
+Also changed the parameter name to timeSec so it reflects the unit that is expected.
+
+
+* **If the mine file is manually edited**
+and a comma is added to the end of one of the block lists, then docBlock could be null and cause a problem when trying to split the percentage from the block name.  This can also be caused if the last block in the block list is deleted and the comma is not removed. The bottom line is the files should not be manually edited. This issue, if it happens again, will be ignored when parsing the files in the future.
+			
+
+* **A work in progress: Adding the ability to get the list of player perms from the integrations.**
+This will allow for listing perms when the player is offline.  Also will have the ability to include more details with the perms which will be for display purposes only.
+
+
+* **Change around the /mines block search command to allow the searching for non-block items**
+with the new command /mines block searchAll.
+It appears like some blocks may not be marked properly as blocks or items, so this at least allows finding items to confirm that they exist.  They player could try to add items to mines, but they will fail to be placed.
+
+
+* **Initial setup of the /ranks player command to include the players rank if the one who is issuing the command has the perm ranks.admin.**
+
+
+* **Redesigned how the player permissions are worked to make sure more of the are actually working**
+instead of being dead functions.  Also ensure they are trying to use active players to ensure that the permissions have the best chance of being retrieved.  Changed the offline player to actually check for OP and "try" to get the player's perms instead of just return nothing or false.
+
+
+* **Lockout players from listing prison commands.** 
+The subcommands related to prison have been tied to the permission `prison.command` and calls itself with the help keyword.  So the subcommand `/mines set` is locked down with the permission `prison.commmand` and when used submits `/mines set help`.   So the behavior is similar as before, but non-op'd admins need to be granted the permission to list the commands.
+
+
+* **Fix the CommandHander so it will not print a blank line if the description was not set.**
+
+
+* **SellAll sell earned money formatted**
+SellAll sell money's now formatted properly.
+
+
+* **New SellAll set Multiplier GUI**
+By clicking on a Prestige on the /sellall gui -> Prestige Multiplier -> Click on a prestige
+  it's now possible to open an editor to edit the SellAll Multiplier Prestige of that prestige
+  directly from the GUI.
+
+ 
+* **SellAll GUI shortcut**
+It's now possible to use /sellall gui even with the command /gui sellall.
+  
+
+* **GUIs permissions fixes**
+It should be now possible to use GUIs command without permissions issues.
+
+
+* **v3.2.4-alpha.12 2021-02-08**
+
+
+* **Hooked up the new /prison utils module.**
+I added it as a module so the whole thing can be disabled and won't be loaded, and it can take advantage of the prison module's infrastructure.
+Initially this has command line access for /prison utils repair and /prison utils repairAll with a few different options.  These commands, and future util commands, are targeted to be used with blockEvents, or other rank and mine commands. Or they can even be used outside of prison if desired.  These utils will support spigot v1.8 through v1.16.
+The next utils command will provide potion effects.  That is not yet enabled or tested.
+
+
+* **When getting the player's rank number, if it player does not have a rank on that ladder, then it will now return a zero.**
+
+
+* **Fixed issues with item stacks and support for compatibility issues.**
+Reworked some of the compatibility functions to handle different situations where it failing.  Now for spigot 1.8, if it fails to map a block, an item, a tool, a weapon, or armor to a valid BlockType, it will fall back to XMaterial to make that mapping possible.  Found that were some items are defined with a data value of zero, in reality, the value could be anything.  So prison's old block model uses the "book" values, but when those fail, then it defers to XMaterial to apply a more aggressive mapping.  Also fixed some of the SpigotPlayerInventory functions since they were not hooked in to the compatibility functions so they were being problematic.
+
+
+
+* **Allow the rankup command be ran from console and through other commands.**  It will not allow it to actually run, since a player name cannot be provided, but it will now allow /rankup help from console.  Added a function isPlayer() to all player objects to identify if being ran by a player, or from the console.
+
+
+* **Fixes prison's placeholders so that way when papi is reloaded it will no longer forget what prison registered.**
+
+
+* **v3.2.4-alpha.11b 2021-02-06**
+Note: alpha.11 was built, but the changes to the build files were not committed.  11.b now represents an accurately set version. 
+
+
+* **SellAll new GUI and many changes.** 
+Added new GUI and button. Minor changes and some fixes. Remove unused imports.
+Fixed some Optional permissions, essentially I was getting the permission path instead of the value from the config with that path.  Fixed a sellall issue when the permission was enabled it was using the permission for the path instead of getting it from the config.
+
+
+* **Mines GUI pages fixed**
+Fixed a simple error of Mines GUI opening the Ladders GUI new page instead of the Mines new page.
+  
+
+
+* **SellAll Prestige Multipliers GUI**
+Added a new button to the /sellall gui to open the Prestige Multipliers SellAll GUI.
+  For now you can only see Multipliers values and delete them with a right-click.
+
+
+* **SellAll Optional Permissions review and fix**
+Some Optional Permission weren't working, now this got fixed, there may be
+  more errors like this, if you find any please report it to me (@GABRYCA).
+
+
+* **SellAll Sign Permission**
+It's now possible to enable a permission to use the SellAll sign, from the SellAll Config you can toggle 
+  `SellAll_Sign_Use_Permission_Enabled: false` to `true` to enable it, the permission's also editable 
+  from the same config, by default it's like this: `SellAll_Sign_Use_Permission: prison.sign`
+
+
+* **SellAll Sell only trough sign**
+Added a new option, by the name if enabled you'll be able to use `/sellall sell` only trough a sign
+  (make a sellall sign and click it), just toggle this option to true to enable it: `SellAll_By_Sign_Only: true`
+  from the config, by default it's `false`, **Note:** there's a bypass permission
+  so, if you're OP you'll still get access to it but players won't, the permission's editable
+  from the SellAllConfig too and by default it's like this: `SellAll_By_Sign_Only_Bypass_Permission: prison.admin`.
+  
+
+* **SellAll Sell notify option:**
+It's now possible to disable or enable from the SellAll config the message telling 
+  you the amount of money earned, to disable the message just turn this option to false
+  like this `Sell_Notify_Enabled: false` by default it's on true.
+
+
+* **Starting to hook up some of the first prison utils** 
+That can be used within blockEvents to provide more functionality for the mines.  This is not yet enabled.
+
+
+* **Add some new functions to Prison's SpigotItemStack and SpigotOffilnePlayer to prepare for the next enhancement pertaining to Utility functions.**
+
+
+* **Fixed issue with blockEvents by using the newer versions of the BlockEventType.**
+There was a change last week to simplify them, and not all references to the old types were changed. 
+It's setup that when loaded from the files it will auto convert to the correct new version.
+
+
+* **SellAll set currency from GUI.**
+  It's now possible to edit the SellAll Currency from the /sellall GUI using the SellAll-Currency button.
+
+
+* **Fixed the issue with the chat handling of the placeholders.**
+The issue I saw was where one placeholder was being processed instead of the correct one.  So what i saw was trying to use the placeholder prison_mbm_pm but it was targeting prison_mbm_p which is a prison_mbm_minename instead.  This was fixed by anchoring the end of the placeholder so the whole placeholder is tested from { to }, or from { to :: if an attribute is being used.
+
+
+* **Fixed a few more things pertaining to the playermines placeholders.**
+Works now, but still issues when used in chat messages (will fix next).
+
+
+* **Ranks,Ladders, Mines GUI now support more than 54 Ranks/Ladders/Mines:** It's possible to see now
+more than 54 Ranks, Ladders or Mines, a new button got added to go to the next page if more than 45 Ranks/Ladders
+  are added, there's also a Prior button, this works like the "add blocks GUI" for Mines, just with Mines, Ranks and ladders.
+
+
+* alpha.10d
+
+* **New feature: This update hooks up the support for `options.autopickup.autoPickupBlockNameList`.**
+To enable this list, you must set `options.autopickup.autoPickupBlockNameListEnabled` to true.
+The block list names must be from this list of values and must be valid for your server's version of spigot: 
+https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/com/cryptomorin/xseries/XMaterial.java
+NOTE: This new feature has not been tested yet.
+
+
+* **This is a work in progress.  Working on getting playermines placeholders working.  Not yet functional.**
+
+
+* **Include top of mines within the check for a location being within a mine.**  Also allows a virtual mine to perform a check if a block is within a mine's config.
+
+
+* alpha.10c
+
+* **Bug fix: Fixed a bug where it was not able to properly change ranks or remove ranks.**
+This was related to an internal change where the main processes had to constantly look up ranks and ladders because they were using magic numbers for all the references.  It was changed over to use an object oriented design so nothing has to be cross referenced and looked up by magic numbers.  This should result in a performance boost under heavy loads.
+
+
+* **Map currency name "default" to the default currency.**
+
+
+* **Add new option: isCalculateFortuneOnAllBlocksEnabled which defaults to false.**
+When set to true it will apply fortune to every block that is mined, ignoring the type of block.
+
+
+* **Sellall fix for custom currency.**
+The bug was basically within the RankPlayer object. 
+Hooked up sellall to the RankPlayer for the currency usage which will update the player's currency cache.
+
+
+* **v3.2.4-alpha.10 2021-01-28**
+
+
+* **Some adjustments to the RankPlayer's econ functions.**
+Reworked the rankup code to use the RankPlayer functions for economy.
+
+
+* **Setup new mine related parameters to fine-tune control reset-paging.**
+This can be disastrous if the admins do not know what they are doing.
+
+
+* **Added support to parse Long parameter values through the Platform.**
+This is needed so as to prevent the need of casting a long to an int.  The actual parameters used may not require actual long values, but the targeted fields and data types are of type long so these need to be properly reflected in the configs.
+
+
+* **Sellall sell improvements:** 
+It was possible to use `/sellall sell` even without the permission when enabled, and sometimes it didn't  worked for everyone.
+
+
+* **`SellAll set currency <currency>` with currency names with spaces fixed.**
+- Because Spigot recognizes spaces as multiple arguments, a custom currency name with spaces would lead to a missing economy (for example "Euro Broken" would be recognized as "Euro" and not with the full name, which's an error).
+
+**NOTE: Custom currencies with spaces in their name may not work with ranks.  Use spaces at your own risk.**
+
+
+
+* **PLEASE DELETE YOUR OLD MESSAGES CONFIG TO APPLY CHANGES!**
+  To do it please open the Prison folder on your server, then module_conf and lang, there delete your old config en_US.yml
+  (for example) to apply all changes and avoid double messages, **Prison will try to automatically update already existing messages**
+  with an integrated converter, it'll try to remove tags from messages, but sometimes they don't work properly,
+  so some tags might still be there, if you want please *move on and delete them manually*.
+
+
+* **Edited Spigot Messages config.**
+Edited the Spigot messages config, removed Prison tags and now using default Prison standards methods for all messages.
+  
+
+* **Fixed some SellAll bugs.**
+Spotted some weird things about some command of SellAll not updating correctly (like /sellall delete) and
+  fixed them.
+
+
+
+* **Fixed critical SellAll value!**
+Literally, one logic character was missing for sellall and kind of breaking it, fixed.
+
+
+* **v3.2.4-alpha.9 2021-01-27**
+
+
+* **Add support for Crazy Enchant's BlastUseEvent so prison will pickup explosion events within the mines.**
+
+
+* **Fixed the currency issue with RANKUP_CANT_AFFORD.**
+It was using the local currency, which was injecting symbols that cannot be displayed within minecraft, like non-breaking spaces.  
+It now just formats the number naturally with commas and will display the rank's custom currency if it is provided.
+
+
+* **Hooked up a new way of storing ranks in ladders.**
+Eliminate a lot of the old ways that used the PositionRank object (which was eliminated).  Also eliminating references by rankId and by position.  Position is now fabricated and will be phased out, but in the mean time it has been moved to Rank.
+
+
+* **Edited many messages.**
+Edited many messages at the messages file (path /module_conf/lang/), they'll apply
+  only if you delete your old one, be careful because if you do it all your custom
+  or edited/translated messages inside this config will get resetted.
+
+
+* **SellAll delay set moved to SellAll set delay**
+Moved the command /Sellall delay set to /sellall set delay.
+
+
+* **SellAll set currency**
+Added a new command, like the /ranks set currency <currency>, this will allow SellAll to work with custom currencies.
+
+
+* **SellAll BackPacks support**
+  Added support for MinesBackPacks.
+
+
+* **Start work on the prison's top player enhancement**
+Moving economy functions to the RankPlayer object to minimize having to have external hooks to get those details.  Provide for a player's balance cache to help reduce hits on the server to full fill requests for placeholders that will be added soon.
+
+
+* **v3.2.4-alpha.8 2021-01-19**
+
+
+* **SellAll Delay GUI**
+Added a new Button to the SellAll GUI and also a new sub-GUI for the SellAll Delay
+  feature.
+
+
+* **AutoFeatures GUI redesign**
+New design for AutoFeatures GUI.
+
+
+* **Added Ranks GUI Progress Bar.**
+Just added a progress bar to the Ranks GUI to see the next Rank how far is to get available for unlock/rankup.
+
+
+* **Added spiget as a jar instead of using the maven repo since it's been going down frequently and the builds were failing remotely.**
+
+
+* **Setup** `/mines tp` **or just** `/mtp` **to teleport to them mine associated with the current player's rank**
+on the default ladder.  Only will work when mines are associated to ranks.  If there is more than one mine tied to a rank, it will first try to select the mine that has the same name as the rank, otherwise it uses the first mine (arbitrary mine).
+
+
+* **Added an alias for removing ranks from a player: /ranks remove rank.**
+This is a shortcut for /ranks set rank -remove-.
+Updated the docs on rankup to reflect these changes and to cover how to remove ranks from a player.  Also added information on /ranks players.
+
+
+* **Added a formula to calculate the fortune multiplier on all fortune levels greater than 5.**
+This allows for an highly OP tool with no limit on fortune levels.
+ 
+
+* **Bug fix with enabling fortune being applied.**
+Needed to check to ensure the bukkitStack object was not null prior to updating.  The bukkitStack may not always exist especially if the stack is created.
+
+
+* **V3.2.4-alpha.7 2021-01-16**
+
+
+* **Added many more ores and blocks to the fortune.**
+Some of which are not normally found in "nature" (man made) so they would never be mined (most of the blocks).
+
+
+* **Bug fix: This fixes an issue with the fortune enchantment not providing more drops.**
+The code that generates the additional drops was found to be good.  But what was wrong, was Prison's SpigotItemStack's internal value was not being reflected back in to the spigot's ItemStack that backed the object.  The fix for the setAmount function is to set the amount value for both the prison's SpigotItemStack and also bukkit's ItemStack.
+This probably was causing potential issues elsewhere too.
+
+
+* **Text.translateHexColorCodes: Fix a potential NPE when the text is null.**
+  It should not happen, but suspect it could be caused if there isn't a value, such as if it is trying to get the rank of a player on a ladder of which the player is not a part of.
+
+
+* **Added playerName as a parameter to the /prison placeholder test command**
+so it can use stats from that player.  If the playerName cannot be resolved, then the value used within the playerName variable is added to the search text field so nothing is lost and playerName is strictly optional.
+
+
+* **Added a new unit type for placeholder formatting.  kmbt**
+which uses KMBTqQsS as units.
+Example of use: /prison placeholders test {prison_mines_size_temp5::nFormat:#,##0.00:0:kmbt}
+Where temp5 is a mine name.
+
+
+* **V3.2.4-alpha.6 2021-01-15**
+
+
+* **Add ability to select to TP to either the spawn location for a mine, or the mine's center location even if the spawn point exists.**
+This is useful if spawn gets disconnected from the mine and there is no easy way to find the mine.
+
+
+* **Fixed a NoSuchMethodException on BlockEvents for TE Explosion events.**
+Thought that Exception would have caught it.  Must be due to the fact that it is generally assumed that the NoSuchMethodException is mostly a compile time exception and not a runtime exception so they split it out as far as what it extends from?  
+
+
+* **SellAll delay.**
+ Added SellAll sell delay, it's now possible to add a delay to execute sellall sell, global
+  permission for editing: `prison.sell.delay`.
+  - New /sellall delay <true/false> command, you can now disable sellAll delay while in game.
+  - New /sellall delay set <Delay_Seconds> command, you can now edit sellAll delay while in game.
+
+
+* **Fix a mapping of terracotta to hardend clay only, and not hard clay.**
+The two are different. This may "fix" this in the mappings for BlockType, but this still won't work well, since XMaterial is incorrectly mapped with terracotta.  I submitted a pull request to fix it but last check they did not pull it.
+
+
+* **A few edits to the beginning of the spigotmc.org resource page document.**
+Added a couple of screen prints for examples of a couple of commands.
+
+
+* **Many updates and a lot of great work put in to the spigotmc.org's page design**
+by Gabryca and graphics by Madog24 this week.  A lot of greate progress has been made.
+
+
+* **ChatDisplay changed function text to addText and changed emptyLine to addEmptyLine**
+to better align these commands with the other text based message handling functions.
+
+
+* **Started to add Block names to BlockEvents so blocks can be targeted with the blockEvents.**
+What makes this more dificult to deal with, is the fact that you can specify more than one block per BlockEvent.  This makes it more complex for the editor since I want to be more selection based so the end user does not have to type in hugely long commands.  
+This is a work in progress and is not yet functional... it's enabled, but does not cause errors or adds the actual blocks as of yet.
+For the blockEvents: changed the use of .command to .suggest since suggest will not run the command for the user, but will allow them to make the final edits on it before submitting.  Plus it acts as a "confirmation" to follow through on the command. 
+
+
+* **New SellAll Admin GUI and Sub-GUIs**
+Rework of the admin SellAll GUI, added AutoSell GUI, moved the old Admin GUI to a Blocks GUI.
+
+* **New SellAll AutoSell perusertoggleable commands**
+It's now possible to edit while in game the perUserToggleable AutoSell feature with a command:
+  - `/sellall autosell perusertoggleable true` `prison.autosell.edit`.
+  - `/sellall autosell perusertoggleable false` `prison.autosell.edit`.
+
+
+* **Rework the BlockEvents to simplify the add command.**
+Now to get some features you must make changes after with the editing with the other commands.
+Added player task modes and made it an enum.  So a task can now be ran as the player instead of just as console.
+Changed the names of the BlockEventTypes to simplify them, but set them up to translate to the new enum names.
+
+
+
+* **Added new AutoSell enable and disable commands**
+It's now possible to enable and disable autosell while in game for everyone (enable or disable the whole feature).
+commands:
+  - `/sellall autosell true` `prison.autosell.edit`
+  - `/sellall autosell true` `prison.autosell.edit`
+
+
+
+* **Added new placeholder: prison_player_sellall_multiplier**
+with an alias of prison_psm.  This will return the value of the multiplier and if nothing is configured for it (no ranks, no sellall, no perms, ect) then it will return a value of 1.0.  This placeholder works with the nFormat placeholder attribute so the value can be formatted as desired.
+
+
+* **Add the rank commands for managing rank permissions and rank permission groups.**
+This is not functional other than adding these perms to the ranks.
+
+
+
+* **Work on Ladder and Rank Perms.**
+Got the Ladder perms hooked up to both the loading and saving, and also the command interfaces to add and remove them.
+This is a work in progress and is non-functional.  The ladder perms working from the sense that you can add them, list them, and remove them.  But they currently do nothing.
+The next step is to finish working on the rank perms commands to get them functional with adding and removing... they should already be functional with saving an loading.
+But even at that point, this will not be functional.  The whole core of the perms and the perm integrations need to be rewritten to utilize the expanded features.
+
+
+* **GUI code cleanup and optimizations.**
+The GUI's improving and getting more stable, the code got some refactoring, this won't really change things for the end user but it'll for devs who are wanting
+to edit GUIs, I hope to manage in the future to improve it even more.
+
+* **V3.2.4-alpha.5 2021-01-02**
+
+
+* **Add new feature to reset all mines with one command.**
+This works for all mine types, including mines setup for paging.
+This will build a list of reset commands for all mines, then it will submit each one to run.  When each mine finishes, then it will submit the next reset command to run until there are no more mines to reset.  It's using synchronous jobs to manage the resets so as not to dominate the processing and to yield to other tasks needing to be processed.
+The mine resets can also be canceled.
+The following are examples, with additional processing options of `details` will provide some information on the reset progress.  Details is optional.
+
+
+When running a reset for all mines, it also automatically enables the noCommands option on all resets.  If a mine is setup with a mine command to reset another mine, then this could cause an endless loop.  Therefore no mine commands are ran when all are rest.
+
+```
+/mines reset help
+/mines reset *all*
+/mines reset *all* details
+/mines reset *cancel*
+```
+
+
+* **When setting the area of a mine, it now refreshes the liners and shows the tracers.**
+
+
+* **New feature: Force a reset but be able to not run any of the mine commands.**
+This allows for chaining of mine resets to other mines.
+
+
+* **V3.2.4-alpha.4 2021-01-01**
+
+
+* **Start to setup the ranks perms listing: disabled.**  It will work, but I turned off the command since it is not ready yet.
+
+
+
+* **Changes to the Gems Economy integration wrapper to support the new version of Gems Economy.**
+This uses reflection to get around the problems which was introduced with v4.9.0 where the API and its methods remained the same, but one class that is used for the method variable had its package name changed.  Thus breaking support for gems economy v4.9.x when the project is compiled for v4.8.3 and earlier.  This reflection modifications should also work if the project is compiled with GE v4.9.x and the deplyment is using v4.8.3 or earlier.
+Tested with being compiled with v4.8.3 and works well with v4.9.1 that is running on v1.16.4 (v1.16.x requires v4.9.1). Tested and works on v1.8.8 with v1.8.8 running either v4.9.1 or v.4.8.3.
+It has not yet been tested with compiling prison with v4.9.1, but it should work even when running on 1.8.8 with v4.8.3.
+
+
+* **Made the selection of ranks case insensitive.**
+Many commands in rank commands required the proper case spelling of the rank name.  Changed it so it is now case insensitive so it will be easier for players to select ranks.
+
+
+* **For a few rank commands: Clean up some formating with currency names.**
+Collect all currencies used within the default ladder, then display the player's balance with each of those currencies.
+
+
+* **Fixed a problem with the addition of the permission and permission groups.**
+The loading of of these was failing since the the arrays were not being instantiated. 
+
+
+* **Updated the RankLadder and RankPlayer so the class variables are not accessible from the outside of those classes.**
+
+
+* **Update Rank to fix issues with Rank class variables** being directly accessible from outside the class.  Class variables should never be directly accessed by outside classes.
+
+
+* **V3.2.4-alpha.3 2020-12-30**
+Bump the version.
+
+
+* **Add support for a new Placeholder Attribute called text.**
+This is strictly for debug purposes and also to format hex colors if they are not working in the other plugins that are using prison's placeholders.
+This actually works very well, and has been tested with v1.16.x.
+Update the docs and a few comments on the other attributes.
+
+
+
+* **Added an alternative hex formatting for the placeholder attributes.**
+This is another way to try to get hex color codes to work with plugins that do not support them directly.  
+With testing, I found that hex2 format actually worked very well with other plugins and resulted in the hex colors working well.
+
+
+* **Placeholder Attributes: Changed how debug works so hex can be added too.**  Instead of using a String array, converted it over to use a list.  The value of hex and debug are extracted prior to extracting any other parameters since those two values are now non-positional and can appear in any parameter location.
+Debug statement now includes the original raw string that is non-converted to the spigot color codes so you can see what the original raw codes were for debugging purposes.  The parameter hex now will convert the color codes before sending the resulting placeholder value back to the plugin that is requesting it.  This may allow the successful use of hex colors in plugins that do not yet support them since the hex codes would have already been correctly converted.
+
+
+* **Full support for hex color codes.**
+The use of #abcdef will be converted to the correct color codes.  This applies only to prison messages and will not provide any translation for placeholders that are sent back to the requesting plugins that are using them.  They would have to support hex colors on their own.
+This is only a feature that works with minecraft v1.16.x and newer.  Older versions of minecraft and spigot may produce undesirable artifacts.
+
+
+* **V3.2.4-alpha.2 2020-12-29**
+Bump version.
+
+
+* **Upgrade Cryptomorin's XSeries to v7.8.0 from v7.6.0.0.1.**
+
+
+* **Upgrade TokenEnchant to v18.11.3 to support the new TokenExplosionEvent's getTrigger().**
+This allows BlockEvents to now support filtering on TE's plugins that trigger the explosion event.
+Added support for editing and displaying the triggered parameter.
+
+
+* **Added a new unit type to the number format attribute: binary.**
+Binary is based upon the power of two and uses 1024 as a divisor instead of the base 10's 1000.
+
+
+* **Updates for the placeholder attribute bar to work with the debug mode.**
+
+
+* **New features added to the PrisonSpigotAPI to locate the given mine a block was broken in**,
+or where a player is standing.  If it is being used for block related usage, then it would be best to base it upon the block that was actually broken since the player could be standing outside of the mine while mining (such as on top or to the side).
+This code utilizes an internal prison player cache to help reduce overhead in location the mines.  The last mine a player was in when they successfully mined a block from a mine will be use as the first check. If they are not in that mine, then the others will be searched, but odds are that if they are mining blocks, then they will be getting more than just one before going elsewhere.
+This code is similar to what's being used within the auto features.
+
+
+* **Enhancement that provides for a way to prevent the translation of color codes within a given text String.**
+Ran in to an issue with for display purposes, had to show the raw codes that were used, but there was no way to do so since they were being translated.  So added support for regular expression style of quotes to skip over a section of the string when translating.  These quotes are \\Q and \\E.  Everything between them will be ignored when translating color codes.
+
+
+* **Hook up support for placeholder attribute support for bar graph customizations.**
+Appears to be working well.
+
+
+* **Updates to the placeholder attributes for the number formatting... little changes to get it to work better.**
+This appears to be working really well. 
+
+
+* **New feature: Placeholder attributes. Dynamic placeholder customizations.**
+Allows for dynamic customization of different placeholders.  
+The first placeholder attribute that is supported is the number format: nFormat.  This allows for full customization to be defined within a placeholder itself, so each use of that placeholder could be configured differently.
+For example this placeholder provides the number of blocks remaining in a mine: %prison_mr_temp5%'
+This can be customized with the following examples: 
+  %prison_mr_temp5::nFormat:0.000:1:kmg% 
+  %prison_mr_temp5::nFormat:#,##0.##:0:kmg%
+  %prison_mr_temp5::nFormat:'&4$&2'#,##0.00'&7':3:kmg:debug%
+The last example shows that formatting codes could be enclosed within the placeholder too, but probably shouldn't be use this way, but it can. 
+The placeholder attributes also suports the debug parameter so as to provide detailed information in the log for admins to help diagnose possible issues when testing different settings.
+
+
+* **v3.2.4-alpha1 2020-12-26**
+Setup the alpha release.
 
 
 # V3.2.3 2020-12-25 
@@ -25,412 +871,7 @@ that you need.
 Release of next bug update.
 
 
-* **fix for placeholdermanager's setup**
 
-
-* **Placeholder refactoring to prepare for the use of dynamic customization by the users**, such as customizing each and every bar graph, or number formatting, where each use of the same placeholder could have different settings.
-
-
-* **Added 4 new placeholders for rank number**
-The new placeholders identifies the ladder position of a rank on their ladder.  The lowest rank has a value of 1.  These prison_rn, prison_rank_name, prison_rn_laddername, and prison_rank_number_laddername.
-
-
-* **Setup editing options for BlockEvents**
-so there are now an add, eventType, list, mode, percent, permission, and remove options to work with the BlockEvents so once created they can be better maintained without having to delete them and readd them.
-
-
-* **V3.2.3-alpha.13 2020-12-24**
-
-
-* **Added the ability to tie a BlockEvent to either a normal block break event, or a TE Explosion event, or both.**
-This allows a more focused approach and flexibility.
-Hooked this up to a few more things and finalized more of it.
-
-
-* **Found some obscure bugs with the command handler and fixed it. Was generating a NPE.**
-
-
-* **Changes to ranks autoConfigure to force a generation if ranks and mines already exist.**
-If there is a conflict with a preexisting rank, it iwill be skipped and so will the generation of the mine by the same name.
-
-
-* **Hook up the auto assignment of mine liners to the mines when running the ranks autoConfigure command.**
-The selection of the liners is random and are applied to the walls and bottom using the force setting to ensure they generate in a void world.
-
-
-* **Add support for assigning random liners to the auto generated mines.**
-Does not include the last LinerPattern since it is for repair. 
-
-
-* **More work on the mine liner.  Pretty much working well with /mines set size.**
-Still need to hook up to a few other areas.
-
-
-* **Hooking up the saving of mine liners so they can eventually be used to regenerate themselves when resizing or moving the mine.**
-Still needs more work, but getting closer.
-
-
-* **Update some of the changelog docs.**
-It was getting very long, so broke them out in by release version for easier tracking of changes.
-
-
-
-* **Refactored some of the Mine related classes** to better organize them since they will be undergoing some changes soon.
-
-
-
-* **Initial support for hex colors.**
-Works, but its a pain until I can auto parse the hex automatically.  But for now it can be entered and will work well with v1.16.x and will degrade to something reasonable for even v1.8.8.
-So instead of using &#abcdef for right now, you need to enter it as &x&a&b&c&d&e&f.  I'll hook up the proper translator later, but the expanded format should always work.
-
-
-* **3.2.3-alpha.12 2020-12-21**
-
-* **Fixes a potential issue where players are attempted to be added in an async thread which will end with a failure since the commands on rankup cannot be ran in an async thread.**
-This now detects if the thread is async (not the primary bukkit thread) and then submits a future sync task to run in zero ticks that will add the new player to Prison, which will result in a rankup.
-
-
-* **Move the PrisonRunnable out of the Mines module and placed it in core since it needs to be used elsewhere.**
-
-
-* **RankUpEvent now contains more information and can now cancel a rankup.**
-As a result to allow the canceling of a rankup, the rankup code had to be modified to fire the event before anything is applied to the rankup.
-
-
-* **3.2.3-alpha.11 2020-12-19**
-
-
-* **Reenabled the global broadcast of rankups**, which this time it's hooked p to the config setting broadcast-rankups in the config.yml file.
-
-
-* **Enabled new feature prestige.resetMoney** 
-that will control if the player's money is reset upon presetiging. The new permission is `presetige.resetMoney`.  If the permission is not set, then it will default to true.  This also changes the configs in config.yml with prestiges being deprecated but will remain for a while.
-
-
-* **SellAll auto toggle permission**, added the ability to enable or disable a permission in the SellAllConfig.yml for the full inventory SellAll auto per-user toggleable.
-  
-  
-* **SellAll Sell Multiplier Permission**, added the ability to give multipliers to players by adding to the user
-the permission prison.sellall.multiplier.valueOfTheMultiplier here, example: prison.sellall.multiplier.2 will add a 2x multiplier to the 1x of the default, so the total multiplier will be 3x, this multiplier system will add to the existing multipliers. If you give player 2 or more permission multipliers, they'll be added to the default multiplier within the sellallconfig.yml. If any multipliers have a total value of zero, then the player will receive no money. Example: GABRYCA has prison.sellall.multiplier.2 and prison.sellall.multiplier.3, along with a default value one of 1, then the total multiplier will be 2+3+1=6x. As a result, if GABRYCA sells one COAL that has a value of 10, then with the multipliers applied it will result in 60 cash.
-
-
-* **SpigotPlayer: added a function to get a list of all perms the player has, and also a function to filter by prefix.**
-
-
-* **Changed the MineBlockEvent to have an inline mode and sync mode to run the given commands.**
-Changed around the save and load for the BlockEvent to support these changes.**
-
-
-* **Added the ability to remove a ladder from a player** 
-using /ranks set rank help using the rank "name" of -remove-.
-
-
-* **3.2.3-alpha.10 2020-12-14**
-
-
-* **Bug fix: BlockEvents were not being submitted** unless there was more than one command that was being ran.
-
-
-* **For the BlockEvent commands, disabled async mode**
-since the it will submit an async task to run in the future, then it will try to run a sync dispatch command and will fail.  So impossible to run commands async.
-
-
-* **Added a new feature to this config: a List of String values.**
-Appears to work, but not yet hooked up to anything that would use it yet.  Needs more testing too.
-The intended purpose of this is to provide dynamic blocks lists for auto features.
-
-
-* **Added SellAllAuto per-User toggleable**: the instructions to use this feature are on the SellAll Guidebook,
-  the user will be able to enable or disable the sellAll auto on its own by running the command `/sellall auto toggle` if
-  this option's enabled in the `SellAllConfig.yml`.
-
-
-* **3.2.3-alpha.9 2020-12-12**
-
-
-* **To fix the reported issue of smelt and blocking always being performed when auto pickup is enabled**, changed the hasPermission to isPermissionSet so OPs will not just blindly trigger these features.
-
-
-* **Some adjustments to the BlockEvent task submission.**
-
-
-* **Change MineBlockEvents to submitted so they do not run in the same process as the block break event.**
-It was causing lag, and now its much better.
-Also added async submission.  And the player can add more than one command per task.
-
-
-* **Issues with ItemMeta not working correctly with auto features.**
-Need to do more testing to see if this works, but initial tests are not looking too good.
-
-
-* **Bug Fix: fixed issue with calculating and applying the durability.**
-Turned out there were a few issues, but mostly after the durability was set, the itemMeta was not being resaved to the tool.
-
-
-* **3.2.3-alpha.9 2020-12-08**  Version increase.
-
-
-* **Broadcast rankup messages changes:**
-Disabled white text by default of prison Broadcast for now, they'll be again available in the future when
-  we'll update the lang support.
-
-
-* **Start to setup the ability to use auto features outside of the mines.**
-It's not fully enabled yet, so this won't work if it is tried to be used.
-
-
-* **Able to dynamically toggle a debug mode to dynamically control logging at the debug level.**
-
-
-* **Had a few issues with players modifying the contents of the save files for ranks, mines, etc, and the result was invalid json which would fail to load.**
-These failure would not normally be encountered if using Prison's commands.  Due to amount of time chasing down bugs that don't exist, I added this catch statement to catch malformed json and then generate an error in the console.
-
-
-* **Fixed the links to the add and remove blockEvent commands.**
-Had a space in there from an earlier version.
-
-
-* **Bug with the saving of the world name** Parenthesis were not used correctly.
-
-
-
-* **Fixed an issue with the lore being "set" when it really wasn't.**
-This was forcing the auto block and auto smelt to be used, and also probably auto pickup too.
-
-
-* **Corrected a typo in an add message on the add BlockEvent**
-
-
-* **SellAll fix** 
-Fixed the sellAll sell bug, it wasn't updating the configs when it should've, now it'll update (even if less efficiently than
-before) and it's working.
-
-
-* **3.2.3-alpha.8 - 2020-12-08**
-
-
-* **New Feature: Mine BlockEvent Commands!**  
-Now define events to run on block break events within a mine.  Each BlockEvent has a chance and an optional permission.  The chance is based upon a range between 0.0000 and 100.0.  One command will be chosen out of many that may be defined for the mine.  If a TokenEnchant explosion event is handled, then for each block broken it will try for a BlockEvent, so an explosion event could produce multiple BlockEvents.  These commands are able to use {player} and {player_uid} within the commands.
-
-
-* **3.2.3-alpha.7 - 2020-12-07**
-
-
-* **Bug fix: Fixes a bug that prevents comparison between ItemStack and SpigotItemStack objects, which should be equalable.**
-One of the side effects of this bug is the failure of the selection wand to be used since it was not able to  able to identify that it is actually a selection wand.
-
-
-* **A strange error was found where a virtual mine has its area set, that it fails to load when restarting the server.**
-This situation appeared to be related to the world name not being correctly saved and as such, when reloading the mine, it would result in a failure to initialize the mine.  Actions were taken to try to ensure that if the mine is corrupted in memory, then it is still able to be saved correctly so upon loading it is no longer corrupted.
-
-
-* **Found an issue that when a custom blocks plugin is added, used, then the plugin is removed while the blocks are still defined in the mines.** 
-It was resulting in nulls for the integration handling.
-This deals better with the loss of the integration so it does not cause problems.
-
-
-* **Fixed a few issues with blocks returning null PrisonBlocks, or at least deal with the null blocks better.**
-
-
-* **Attempts to better handle exceptions when running the commands.**
-So far, without being able to produce many failures, it does not appear like this is capturing any exceptions? Will have to wait and see if it is able to provide better error messages.
-
-
-* **Major changes to the Auto Manager to remove as much bukkit/spigot specific code as possible**
-since that will be limiting support for custom blocks.  This is the first phase of changes, and the change to support custom blocks will come later.
-Due to the major changes that occurred, there could be bugs so an alpha release should not be generated without more testing.
-
-
-* **Changes to some of the functions in the compatibility classes to prepare for changes with auto manager.**
-
-
-* **Additional functionality and changes in the way block related things are used and processed.**
-This is preparing for changes to auto manager.
-
-
-* **SellAll Material support**
-This should make sellall support all material, from legacy to 1.16 (all XMaterials).
-  
-* **SellAll signs**
-Added the ability to make SellAll signs. 
-The **sign** should have the **first line** as `[SellAll]` to make this works, also when clicked it's
-  Just a shortcut to the **/sellall sell** command, very simple (also to use the sign you must RIGHT CLICK IT).
-    - To create a sign you need to have the permission`prison.sign`.
-This feature needs to be enabled from the `config.yml`
-by editing or adding (if missing you should add this line manually or delete the config, then
-restart the server) this like from:
-`sellall-sign: false` to `sellall-sign: true`.
-It's possible to edit the tag of the sign when generated from the `config.yml` by editing this:
-  - `sellall-sign-visible-tag: "&7[&3SellAll&7]"`
-  
-* **SellAll AutoSell**
-Added the ability to enable the autoSell, autosell's a feature (also needs autoFeatures to be enabled and AutoPickup) with
-  the goal of triggering the SellAll command when the player inventory's full.
-  You can enable this feature from the SellAllConfig.yml and by default's disabled, to `enable` it
-  just turn edit this under the Options config section from `Full_Inv_AutoSell: false` to `Full_Inv_AutoSell: true`.
-  It's also possible to enable or disable a notification telling the player that the AutoSell got triggered, by default
-  it's under the Options section sellAllConfig.yml section like this: `Full_Inv_AutoSell_Notification: true`, to disable it
-  just turn it to `false`, you can also edit this message by editing the Messages en_US.yml at this path `/module_conf/lang/`,
-  in other worlds you can find the messages config en_US.yml in the Prison folder, then open the module_cong and the lang
-  folders, the line to edit's under the `Message` section with the name of `SellAllAutoSell`.
-
-## tag v3.2.3-alpha.6 - 2020-12-04
-
-
-* **Setup modules to have a deferredStartup() function.**
-This allows code that is dependent upon other integrations to be ran after the integrations are fully setup.
-Mines have to load after the integrations are loaded due to the new block model and specifically the new support for custom blocks, which means all custom block integrations must be loaded before anything tries to use the blocks, such as loading of mines.
-Placeholders have to be reloaded after the deferredStartup() function is finished.
-
-
-
-* **Disable unused code dealing with MinesPlayer and the auto pickup and smelt and block within the Mines module.**
-
-
-
-* **Setup the file I/O to be specifically UTF-8 enabled.**
-The old file I/O would default to the platform defaults, which may not have been UTF-8.  This code has been tested and works with UTF-8 encoded characters, although Prison is unable to display them.  It is unclear if this is a limitation of Prison or Spigot.  This has been tested with Spigot v1.8.8, v1.12.2, and v1.13.3.  The test consisted of directly adding a UTF-8 character to a rank save file with a utf-8 compliant editor (not WordPad), starting the server, making a change to the rank to force a save with the new data, then inspecting the contents of the new rank file to confirm that the utf-8 character is still encoded as utf-8.  All tests were successful.  Future work will be done to see if there are any other ways to enable it, but for now, at least the file I/O has been fixed and proven to be good and working.
-
-
-* **v3.2.2-alpha.6 - 2020-12-01**
-
-
-* **Added UUID to the player look up options which hits the bukkit offline players.**
-
-
-* **Added a logPlain function to the platform that bypasses color code translations** and removal.  Used for debugging situations.
-
-
-* **Minor changes to address some issues with the new block model.**
-For MineReset.resetSynchonouslyInternal() the way the Block is created to a variable now, eliminates a lot overhead since it was being called multiple times, of which it has to go through the construction of that object each time.  So it should be better performance this way.
-
-
-* **More updates to better support block break events for custom blocks.**
-Not yet hooked up, but getting there.
-
-
-* **Changed the name of a block from pillar_quartz_block to quartz_pillar so it would be supported in both XMaterial and the old prison's BlockTypes.**
-
-
-* **Fix the way DoubleArgumentHandler and DoubleClassArgumentHandler deals with replacement of the $ and % symbols.**
-Needed to use replaceAll() instead of replace().
-
-
-* **Updates to the /sellall command** 
-Hooked /sellall up to the prison command handler.
-
-
-* **Expanded the command handlers to include more types** to allow a greater variety of parameter types on all prison commands.
-
-
-* **v3.2.2-alpha.5 - 2020-11-29**
-
-* **Bug fix: Tried to reset a mine with over 400,000 blocks**
-and ran in to issues.  Had to set a delay of one tick when resubmitting the next page of blocks.  Works fine now, but the one tick delay does add to the overall time, which is not bad considering.
-
-
-* **More enhancements to hook up custom blocks and enabling the new block model.**
-Have them loading and being added to the PrisonBlockTypes as valid blocks.  Also hooked up to be used with block search and can be assigned to the mines.  These custom blocks are also being saved.
-
-
-* **Changed the offset time from seconds to milliseconds.**
-Enabled the config.yml setting prison-mines-reset-gap. This will allow better tuning of the mine gaps, but could cause server lag problems if the gap is too small.
-
-
-* **Changed Pgd to Paged so it makes more sense in /mines list.**
-
-
-* **Clean up placeholders list.**
-Very few placeholders are able to be shown on the same line as another.  So eliminate the code that is trying to add to same line.  This also makes it more difficult to find a placeholder.
-
-
-* **Fixed an issue with the logic statement when using RankPlayers for substitution of offline players**
-
-
-* **Updated a few documents**
-Added a document on setting up Vault.  Added more information on how to reload the placeholders in a few documents.  Added a few screen prints.
-
-
-* **Prison's placeholders are now fully registered on PlaceholderAPI's wiki**
-Prison still dynamically registers its plugins upon startup because everyone has to be generated and expanded.
-
-
-* **Bug fix: Found a couple of placeholders were mis-configured.  **
-
-
-* **Upgrade Cryptomorin XSeries to v7.6.0.0.1**
-
-
-* **v3.2.3-alpha.4 - 2020-11-27**
-
-
-* **Bug Fix: Fixed a typo on enabling prestiges based upon the config.yml setting.**
-
-
-* **For prestige this gets rid of the requirement that perms exist for the player to use prestige**
-the rankup on the prestige ladder.  All that is needed is to have prestige enabled in the config.yml
-
-
-* **Simplify some of the rankup code so it's directly using rankNext and rankPrior.** 
-Get rid of some optionals to simplify the code too.
-
-
-* **Significant change: RankPlayer now extends from the Player interface.**
-This allows using RankPlayers when cannot get an OfflinePlayer so admins can perform more function on players when they are offline.  For example promote and demote.
-This resulted in some major internal changes on how RankPlayers are tracked and managed.
-
-
-* **Rank up commands were using a misleading generic RANKUP_FAILURE**
-which had an associate error message that was misleading and was reporting that there was a failure with reading or writing data and that the files may be corrupt.
-Such a situation was not true.  Added other error messages to better explain the situation.
-
-
-* **Hook up the new Custom Items integrations and tie them in to the prison new block model**
-so if the the Custom Items plugin is active, it will automatically add the custom blocks to the available list of block types. 
-This is working and the custom blocks show up in the block search.
-
-
-* **Setup a new Custom Block integration type and added CustomItems integration.**
-
-
-
-* **v3.2.3-alpha.3 - 2020-11-23**
-
-
-* **Fixes to sellall**
-Optimization of sellAll and fix of unloaded configs when updated. Fixed configs when edited didn't load with the updated one.
-
-
-* **v3.2.2-alpha.2 - 2020-11-23**
-Bump version because of a lot of improvements to the new block model. It actually appears to be working very well.  Still need to do more testing and will not enable by default for a while.  It will have to be an opt in feature for now.
-
-
-* **Found a typo in the old block model for weeping_vines** so it was not being recognized.  It's working now.
-
-* **Some fixes to get more of the new block model functional.**
-Added some support to help fall back to the correct XMaterial for a few block types such as WATER and STATIONARY_WATER which is not mapping for 1.8.8 because of the data value representing the flow height, but yet, XMaterial is trying to map it to an resource using data (it shouldn't though).
-
-
-* **For the new prison block model, when dealing with PrisonBlocks**, it needs to record invalid block types so they can be logged and hopefully fixed.
-
-
-* **Setup more of the new prison block model to work with paged mine resets.**
-Sharing the MineTargetBlock behavior through the use of MineTargetPrisonBlock to reduce complexity and reuse existing structures. Still a work in progress.
-
-
-* **Bug fix: Fix an NPE with /sellall**
-Remove of many NPE Objects and new messages for sellAll.  New messages added for sellAll in the messageConfig config
-
-
-* **v3.2.3-alpha.1 2020-11-22**
-
-
-* **Bug fix: Allows blocks to be added to mines now.**
-Thought for sure I removed this code before.  Not sure what happened, but must have missed testing with adding blocks. :(
-Will re-release the v3.2.2 version.
-
-
-
-# **V3.2.2 Release - 2020-11-21**
+# V3.2.2 Release - 2020-11-21
 
 

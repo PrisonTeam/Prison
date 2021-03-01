@@ -99,11 +99,11 @@ public class PrisonBlockTypes {
 		}
 	}
 
-	public List<PrisonBlock> getBlockTypes( String searchTerm ) {
+	public List<PrisonBlock> getBlockTypes( String searchTerm, boolean restrictToBlocks ) {
 		List<PrisonBlock> results = new ArrayList<>();
     	
     	for ( PrisonBlock pBlock : getBlockTypes() ) {
-    		if ( pBlock.isBlock() && 
+    		if ( (!restrictToBlocks || restrictToBlocks && pBlock.isBlock()) && 
     				pBlock.getBlockNameSearch().toLowerCase().contains( searchTerm.toLowerCase()  )) {
     			results.add( pBlock );
     		}
@@ -118,6 +118,15 @@ public class PrisonBlockTypes {
 		this.blockTypes = blockTypes;
 	}
 
+	/**
+	 * <p>Gets the block by name.  The block that is returned is cloned so 
+	 * each mine can have it's own independent instance so as to prevent conflict with
+	 * the stats.
+	 * </p>
+	 * 
+	 * @param blockName
+	 * @return
+	 */
 	public PrisonBlock getBlockTypesByName( String blockName ) {
 		blockName = blockName.toLowerCase();
 		if ( blockName.startsWith( PrisonBlockType.minecraft.name() + ":" )) {

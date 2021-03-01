@@ -30,10 +30,10 @@ public class PrisonSortableRanksTest
 		unsortedList.add( rA );
 		
 
-		assertEquals( "D", unsortedList.get( 0 ).name );
-		assertEquals( "c", unsortedList.get( 1 ).name );
-		assertEquals( "b", unsortedList.get( 2 ).name );
-		assertEquals( "A", unsortedList.get( 3 ).name );
+		assertEquals( "D", unsortedList.get( 0 ).getName() );
+		assertEquals( "c", unsortedList.get( 1 ).getName() );
+		assertEquals( "b", unsortedList.get( 2 ).getName() );
+		assertEquals( "A", unsortedList.get( 3 ).getName() );
 		
 		TreeSet<Rank> ranks = new TreeSet<>( new PrisonSortComparableRanks() );
 		
@@ -46,10 +46,10 @@ public class PrisonSortableRanksTest
 			System.out.println(r.toString());
 		}
 		
-		assertEquals( "A", sortedList.get( 0 ).name );
-		assertEquals( "b", sortedList.get( 1 ).name );
-		assertEquals( "c", sortedList.get( 2 ).name );
-		assertEquals( "D", sortedList.get( 3 ).name );
+		assertEquals( "A", sortedList.get( 0 ).getName() );
+		assertEquals( "b", sortedList.get( 1 ).getName() );
+		assertEquals( "c", sortedList.get( 2 ).getName() );
+		assertEquals( "D", sortedList.get( 3 ).getName() );
 
 		
 	}

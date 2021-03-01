@@ -19,7 +19,12 @@
 package tech.mcprison.prison.util;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -43,16 +48,18 @@ public class Text {
             millisPerSecond);
     private static String headingLine = repeat("-", 52);
     
-    private static final char COLOR_CHAR = '\u00A7';
+    public static final char COLOR_CHAR = '\u00A7';
     private static final String COLOR_ = String.valueOf(COLOR_CHAR);
     
     public static final Pattern STRIP_COLOR_PATTERN =
     						Pattern.compile("(?i)" + COLOR_ + "#[A-Fa-f0-9]{6}|" + 
-    												 COLOR_ + "[0-9A-FK-OR]");
+    												 COLOR_ + "[0-9A-FK-ORxX]");
 
    
     public static final Pattern STRIP_COLOR_PATTERN_ORIGINAL =
     		Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+    
+    public static final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     
     
     //#([A-Fa-f0-9]){6}
@@ -202,33 +209,69 @@ public class Text {
     }
 
     /**
+     * <p>
      * Translates the color codes (a-f) (A-F) (0-9), prefixed by a certain character, into
      * Minecraft-readable color codes. <p> <p>Use of this method is discouraged. Implementations are
      * recommended to translate color codes using their native internal's APIs. This assumes that the
      * server mod will accept vanilla Minecraft color codes, although implementations such as Sponge
      * do not do this. However, because there are some practical uses for a method like this, it
      * exists in a non-deprecated but discouraged state.
-     *
+     * </p>
+     * 
+     * <p>Borrowing from regular expressions on quoting, \Q quotes through either the
+     * end of the text, or until it reaches an \E.  This function has been modified to
+     * honor such quotes so as to allow selected use of character codes to pass through
+     * without being translated.  Prior to leaving this function, all traces of \Q and \E
+     * will be removed.
+     * <p>
+     * 
      * @param text   The text to translate color codes in.
      * @param prefix The color code prefix, which comes before the color codes.
      * @return The translated string.
      */
     public static String translateColorCodes(String text, char prefix) {
-        if (prefix == 167) {
+    	return translateColorCodes( text, prefix, COLOR_CHAR, COLOR_CHAR );
+    }
+    
+    
+    public static String translateColorCodes(String text, char prefix, 
+    							char targetColorCode, char targetHexColorCode) {
+        if (prefix == COLOR_CHAR) {
             return text; // No need to translate, it's already been translated
         }
-        char[] b = text.toCharArray();
+        
+        char[] b = translateHexColorCodes( text, targetHexColorCode ).toCharArray();
 
+        int len = b.length;
         boolean dirty = false;
-        for (int i = 0; i < b.length - 1; ++i) {
-            if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
-                b[i] = 167; // Section symbol
+        boolean quote = false;
+        boolean quoted = false;
+        
+        for (int i = 0; i < len - 1; ++i) {
+        	if ( !quote && b[i] == '\\' && i < len && b[i + 1] == 'Q' ) {
+        		// Encountered a \Q: Start quoting.
+        		quote = true;
+        		quoted = true;
+        	}
+        	else if ( quote && b[i] == '\\' && i < len && b[i + 1] == 'E'  ) {
+        		// Encountered a \E: End quoting.
+        		quote = false;
+        	}
+        	else if ( quote ) {
+        		// skip processing:
+        	}
+        	else if (b[i] == prefix && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr#xX".indexOf(b[i + 1]) > -1) {
+                b[i] = targetColorCode; // COLOR_CHAR; // 167; // Section symbol
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
                 dirty = true;
             }
         }
 
-        return dirty ? new String(b) : text;
+        String results = dirty ? new String(b) : text;
+        if ( quoted ) {
+        	results = results.replace( "\\Q", "" ).replace( "\\E", "" );
+        }
+        return results;
     }
 
     /**
@@ -247,6 +290,22 @@ public class Text {
         return translateColorCodes(text, '&');
     }
 
+    
+    
+    /**
+     * <p>This function will convert normal color codes to use the COLOR_CHAR prefix,
+     * but it converts the hex color codes to be converted to use & as the prefix. 
+     * This may allow for pass through to other plugins so they will work better 
+     * with hex colors.  This would primarily be used with placeholders.
+     * </p>
+     * 
+     * @param text
+     * @param prefix
+     * @return
+     */
+    public static String translateAmpColorCodesAltHexCode(String text) {
+    	return translateColorCodes( text, '&', COLOR_CHAR, '&' );
+    }
     /**
      * Strips the given message of all color codes
      *
@@ -263,6 +322,84 @@ public class Text {
         return STRIP_COLOR_PATTERN.matcher(text).replaceAll("");
     }
 
+    
+    /**
+     * <p>This function translates Hex Color codes while taking in to consideration
+     * quoted text not to translate.  It uses the regular expression quotes of
+     * \\Q through \\E, where java requires escaping the slash.  So normally you would
+     * not need a double.  This supports multiple occurrences of quotes.
+     * </p>
+     * 
+     * @param text
+     * @param targetColorCode
+     * @return
+     */
+    public static String translateHexColorCodes( String text, char targetColorCode ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ( text != null && !text.trim().isEmpty() ) {
+    		
+    		int idxStart = text.indexOf( "\\Q" );
+    		int idxEnd = -1;
+    		
+    		if ( idxStart == -1 ) {
+    			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
+    		}
+    		else {
+    			
+    			while ( idxStart >= 0 ) {
+    				sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
+    				
+    				idxEnd = text.indexOf( "\\E", idxStart );
+    				
+    				if ( idxEnd == -1 ) {
+    					sb.append( text.substring( idxStart ) );
+    					idxStart = -1;
+    				}
+    				else {
+    					sb.append( text.substring( idxStart, idxEnd ) );
+    					
+    					idxStart = text.indexOf( "\\Q", idxEnd );
+    				}
+    			}
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    /**
+     * Based upon a message at:
+     * 
+     * https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867804
+     * 
+     * @param message
+     * @param targetColorCode the char value that is used to inject as a color code
+     * @return
+     */
+    public static String translateHexColorCodesCore(String message, char targetColorCode) {
+    	String results = "";
+    	
+    	if ( message != null ) {
+    		
+//        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
+    		
+    		Matcher matcher = HEX_PATTERN.matcher(message);
+    		StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+    		while (matcher.find()) {
+    			String group = matcher.group(1);
+    			matcher.appendReplacement(buffer, targetColorCode + "x"
+    					+ targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
+    					+ targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
+    					+ targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
+    					);
+    		}
+    		results = matcher.appendTail(buffer).toString();
+    	}
+    	
+    	return results;
+    }
+    	      
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).

@@ -3,11 +3,12 @@ package tech.mcprison.prison.spigot.gui.sellall;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -20,7 +21,6 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
     private final Player p;
     private final String itemID;
     private final Double val;
-    private final Configuration messages = messages();
 
     public SellAllPriceGUI(Player p, Double val, String itemID){
         this.p = p;
@@ -44,7 +44,7 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

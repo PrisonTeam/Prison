@@ -2,19 +2,22 @@ package tech.mcprison.prison.spigot.gui.rank;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public SpigotConfirmPrestigeGUI(Player p) {
         this.p = p;
@@ -36,7 +39,7 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -65,5 +68,4 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         inv.setItem(2, confirm);
         inv.setItem(6, cancel);
     }
-
 }

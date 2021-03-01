@@ -24,6 +24,7 @@ public class SpigotItemStack
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
         	  setAmount( 0 );
               setMaterial( BlockType.AIR );
+              setDisplayName( "air" );
         }
         else {
         	
@@ -33,18 +34,26 @@ public class SpigotItemStack
         	} else {
         		meta = bukkitStack.getItemMeta();
         	}
+
+        	
+        	
+        	// We are getting the bukkit amount here, but if it changes, we must set the amount
+        	// in the bukkitStack:
+        	int amount = bukkitStack.getAmount();
+        	
+        	BlockType type = SpigotPrison.getInstance().getCompatibility()
+        			.getBlockType( bukkitStack );
+//        BlockType type = materialToBlockType(bukkitStack.getType());
+        	
         	
         	String displayName = null;
         	
         	if (meta.hasDisplayName()) {
         		displayName = meta.getDisplayName();
         	}
-        	
-        	int amount = bukkitStack.getAmount();
-        	
-        	BlockType type = SpigotPrison.getInstance().getCompatibility()
-        			.getBlockType( bukkitStack );
-//        BlockType type = materialToBlockType(bukkitStack.getType());
+        	else if ( type != null ) {
+        		displayName = type.name().toLowerCase();
+        	}
         	
         	List<String> lores = new ArrayList<>();
         	
@@ -62,6 +71,54 @@ public class SpigotItemStack
 
 		
     }
+	
+	/**
+	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
+	 * same behavior of setting the amount to the requested value, but it also updates
+	 * the bukkitStack's amount to ensure that it is the correct value.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void setAmount( int amount ) {
+		super.setAmount( amount );
+		
+		if ( bukkitStack != null ) {
+			bukkitStack.setAmount( amount );
+		}
+	}
+	
+	
+	
+	public boolean isAir() {
+		boolean results = false;
+		
+		if ( getMaterial() != null && getMaterial() == BlockType.AIR ||
+				getName() != null && "air".equalsIgnoreCase( getName() ) ) {
+			results = true;
+		}
+		else if ( getBukkitStack() != null ) {
+			results = getBukkitStack().getType().equals( Material.AIR );
+		}
+		
+		return results;
+	}
+	
+	public boolean isBlock() {
+		boolean results = false;
+		
+		if ( getBukkitStack() != null ) {
+			results = getBukkitStack().getType().isBlock();
+//			XMaterial xMat = XMaterial.matchXMaterial( getBukkitStack() );
+//			if ( xMat != null ) {
+//				results = xMat.parseMaterial().isBlock();
+//			}
+		}
+		
+		return results;
+	}
+	
+
 	
     public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {
         super(displayName, amount, material, lore );

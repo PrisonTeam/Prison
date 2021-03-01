@@ -14,12 +14,13 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineBlockEvent.TaskMode;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public abstract class MineScheduler
-		extends MineReset
+		extends MineTasks
 		implements PrisonRunnable
 {
 	
@@ -37,7 +38,7 @@ public abstract class MineScheduler
 	 */
 	private List<MineJob> jobWorkflow;
 	private Stack<MineJob> jobStack;
-	private MineJob currentJob;
+//	private MineJob currentJob;
 	private Integer taskId = null;
 	
 	public MineScheduler() {
@@ -45,7 +46,7 @@ public abstract class MineScheduler
 		
 		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
-		this.currentJob = null;
+
 	}
 
     /**
@@ -93,6 +94,13 @@ public abstract class MineScheduler
 		FORCED;
 	}
 	
+	public enum MineResetActions {
+		NO_COMMANDS,
+		CHAINED_RESETS,
+		DETAILS
+		;
+	}
+	
 	/**
 	 * <p>This class represents a workflow action.  The action can be one of either MESSAGE, or
 	 * RESET.  The delayActionSec is how many seconds the job must wait until taking action.
@@ -112,6 +120,7 @@ public abstract class MineScheduler
 		private double delayActionSec;
 		private double resetInSec;
 		private MineResetType resetType;
+		private List<MineResetActions> resetActions;
 		
 		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
 		{
@@ -122,6 +131,15 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 			
 			this.resetType = MineResetType.NORMAL;
+			
+			this.resetActions = new ArrayList<>();
+		}
+		
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetType resetType )
+		{
+			this( action, delayActionSec, resetInSec );
+			
+			this.resetType = resetType;
 		}
 		
 		public double getJobSubmitResetInSec() {
@@ -130,48 +148,53 @@ public abstract class MineScheduler
 		
 		@Override
 		public String toString() {
+			StringBuilder ra = new StringBuilder();
+			for ( MineResetActions resetAction : getResetActions() ) {
+				ra.append( resetAction.name() ).append( " " );
+			}
+			
 			return "Action: " + getAction().name() + 
 					"  Reset at submit: " + getJobSubmitResetInSec() +
 					"  Delay before running: " + getDelayActionSec() + 
-					"  Reset at run: " + getResetInSec();
+					"  Reset at run: " + getResetInSec() +
+					"  ResetType: " + getResetType().name() + 
+					"  ResetActions: " + ra.toString();
 		}
 
-		public MineJobAction getAction()
-		{
+		public MineJobAction getAction() {
 			return action;
 		}
-		public void setAction( MineJobAction action )
-		{
+		public void setAction( MineJobAction action ) {
 			this.action = action;
 		}
 
-		public double getDelayActionSec()
-		{
+		public double getDelayActionSec() {
 			return delayActionSec;
 		}
-		public void setDelayActionSec( double delayActionSec )
-		{
+		public void setDelayActionSec( double delayActionSec ) {
 			this.delayActionSec = delayActionSec;
 		}
 
-		public double getResetInSec()
-		{
+		public double getResetInSec() {
 			return resetInSec;
 		}
-		public void setResetInSec( double resetInSec )
-		{
+		public void setResetInSec( double resetInSec ) {
 			this.resetInSec = resetInSec;
 		}
 
-		public MineResetType getResetType()
-		{
+		public MineResetType getResetType() {
 			return resetType;
 		}
-		public void setResetType( MineResetType resetType )
-		{
+		public void setResetType( MineResetType resetType ) {
 			this.resetType = resetType;
 		}
 
+		public List<MineResetActions> getResetActions() {
+			return resetActions;
+		}
+		public void setResetActions( List<MineResetActions> resetActions ) {
+			this.resetActions = resetActions;
+		}
 
 	}
 	
@@ -447,17 +470,6 @@ public abstract class MineScheduler
 		submitTask();
 	}
 
-	/**
-	 * This is called by the MineCommand.resetCommand() function, which is 
-	 * triggered by a player.
-	 * 
-	 */
-	public void manualReset() {
-		
-		if ( !isVirtual() ) {
-			manualReset( MineResetType.FORCED, 0 );
-		}
-	}
 	
 	
 	/**
@@ -469,27 +481,58 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( int blockCount, Player player, BlockEventType eventType ) {
+	public void processBlockBreakEventCommands( String blockName, Player player, 
+							BlockEventType eventType, String triggered ) {
 		
+		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
 			Random random = new Random();
 			
-			for ( int i = 0; i < blockCount; i ++ ) {
+			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
-				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
-					
-					processBlockEventDetails( player, eventType, chance, blockEvent );
-				}
-				
+				processBlockEventDetails( player, blockName, eventType, chance, blockEvent, triggered );
 			}
 		}
 	}
 
-	private void processBlockEventDetails( Player player, BlockEventType eventType, double chance, MineBlockEvent blockEvent )
+	
+//	/**
+//	 * <p>This function checks if the block break event should execute a 
+//	 * given command or not. If it needs to, then it will submit them to run as 
+//	 * a task instead of running them in this thread.
+//	 * </p>
+//	 * 
+//	 * @param blockCount
+//	 * @param player 
+//	 */
+//	@Deprecated
+//	public void processBlockBreakEventCommands( int blockCount, Player player, 
+//							BlockEventType eventType, String triggered ) {
+//		
+//		if ( getBlockEvents().size() > 0 ) {
+//			Random random = new Random();
+//			
+//			for ( int i = 0; i < blockCount; i ++ ) {
+//				
+//				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
+//					double chance = random.nextDouble() * 100;
+//					
+//					processBlockEventDetails( player, null, eventType, chance, blockEvent, triggered );
+//				}
+//				
+//			}
+//		}
+//	}
+
+	private void processBlockEventDetails( Player player, String blockName, BlockEventType eventType, 
+				double chance, 
+					MineBlockEvent blockEvent, String triggered )
 	{
-		if ( blockEvent.getEventType() == BlockEventType.eventTypeAll || 
-				blockEvent.getEventType() == eventType ) {
+
+		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, blockName, triggered );
+		
+		if ( fireEvent ) {
 			
 			// If perms are set, check them, otherwise ignore perm check:
 			String perms = blockEvent.getPermission();
@@ -498,13 +541,15 @@ public abstract class MineScheduler
 					perms.trim().length() == 0
 					) {
 				
-				if ( chance <= blockEvent.getChance() ) {
+				 {
 					
-					String formatted = blockEvent.getCommand().
-							replace("{player}", player.getName())
+					String formatted = blockEvent.getCommand()
+							.replace( "{msg}", "prison utils msg {player} " )
+							.replace( "{broadcast}", "prison utils broadcast " )
+							.replace("{player}", player.getName())
 							.replace("{player_uid}", player.getUUID().toString());
 					
-					// Split multiple commands in to a List of indivual tasks:
+					// Split multiple commands in to a List of individual tasks:
 					List<String> tasks = new ArrayList<>( 
 							Arrays.asList( formatted.split( ";" ) ));
 					
@@ -513,19 +558,25 @@ public abstract class MineScheduler
 						
 						String errorMessage = "BlockEvent: Player: " + player.getName();
 						
+						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
+											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
+						
 						PrisonDispatchCommandTask task = 
-								new PrisonDispatchCommandTask( tasks, errorMessage );
+								new PrisonDispatchCommandTask( tasks, errorMessage, 
+												player, playerTask );
 						
 						
-						switch ( blockEvent.getMode() )
+						switch ( blockEvent.getTaskMode() )
 						{
-							case "inline":
+							case inline:
+							case inlinePlayer:
 								// Don't submit, but run it here within this thread:
 								task.run();
 								break;
 								
-							case "sync":
-							case "async": // async will cause failures so run as sync:
+							case sync:
+							case syncPlayer:
+							//case "async": // async will cause failures so run as sync:
 								
 								// submit task: 
 								@SuppressWarnings( "unused" ) 
@@ -566,6 +617,32 @@ public abstract class MineScheduler
 	}
 	
 	/**
+	 * This is called by the MineCommand.resetCommand() function, which is 
+	 * triggered by a player.
+	 * 
+	 */
+	public void manualReset() {
+		manualReset( MineResetType.FORCED );
+	}
+	public void manualReset( MineResetType resetType ) {
+		
+		if ( !isVirtual() ) {
+			manualReset( resetType, 0 );
+		}
+	}
+	
+	private void manualReset( MineResetType resetType, double delayActionSec ) {
+		List<MineResetActions> resetActions = new ArrayList<>();
+		
+		manualReset( resetType, delayActionSec, resetActions );
+	}
+	public void manualReset( MineResetType resetType, List<MineResetActions> resetActions ) {
+		
+		manualReset( resetType, 0, resetActions );
+	}
+	
+	
+	/**
 	 * <p>This function should only be called from the commands to manually force a mine to reset.
 	 * How this should work, is it should cancel (remove) the scheduled reset for this mine, then 
 	 * run the actual reset, with the intentions of resubmitting the whole workflow from the
@@ -576,7 +653,8 @@ public abstract class MineScheduler
 	 * @param delayActionSec Delay in seconds before resetting mine. 
 	 * 
 	 */
-	private void manualReset( MineResetType resetType, double delayActionSec ) {
+	private void manualReset( MineResetType resetType, double delayActionSec, 
+			List<MineResetActions> resetActions ) {
 		
 		if ( isVirtual() ) {
 			// Nope... nothing to reset... 
@@ -594,8 +672,10 @@ public abstract class MineScheduler
 		MineJobAction action = isUsePagingOnReset() ? 
 				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
 		
-		MineJob mineJob = new MineJob( action, delayActionSec, 0);
+		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
 		mineJob.setResetType( resetType );
+		mineJob.setResetActions( resetActions );
+		
 		setCurrentJob( mineJob );
     	
 		// Force reset even if skip is enabled:
@@ -620,15 +700,6 @@ public abstract class MineScheduler
 	public void setJobStack( Stack<MineJob> jobStack )
 	{
 		this.jobStack = jobStack;
-	}
-
-	public MineJob getCurrentJob()
-	{
-		return currentJob;
-	}
-	public void setCurrentJob( MineJob currentJob )
-	{
-		this.currentJob = currentJob;
 	}
 
 	public Integer getTaskId()

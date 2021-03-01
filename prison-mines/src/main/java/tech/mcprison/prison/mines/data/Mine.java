@@ -27,6 +27,7 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.MineException;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
@@ -275,69 +276,86 @@ public class Mine
 
         List<String> docBlocks = (List<String>) document.get("blocks");
 		for (String docBlock : docBlocks) {
-            String[] split = docBlock.split("-");
-            String blockTypeName = split[0];
-            double chance = Double.parseDouble(split[1]);
+			
+			// If the file is manually edited and a comma is added to the end of the block list,
+			// then docBlock could be null.  Skip processing if null.
+			if ( docBlock != null ) {
+				
+				String[] split = docBlock.split("-");
+				String blockTypeName = split[0];
+//				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+//				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+//				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+//				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+				
+				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
+					// Use the BlockType.name() load the block type:
+					BlockType blockType = BlockType.getBlock(blockTypeName);
+					if ( blockType != null ) {
+						
+						
+						/**
+						 * <p>The following is code to correct the use of items being used as a
+						 * block in a mine, which will cause a failure in trying to place an 
+						 * item as a block.
+						 * </p>
+						 * 
+						 * <p>This is intended for the old block model and is temp code to ensure 
+						 * that there are less errors the end user will experience.
+						 * </p>
+						 */
+						String errorMessage = "Warning! An invalid block type of %s was " +
+								"detect when loading blocks for " +
+								"mine %s. %s is not a valid block type. Using " +
+								"%s instead. If this is incorrect please fix manually.";
+						
+						if ( blockType == BlockType.REDSTONE ) {
+							BlockType itemType = blockType;
+							blockType = BlockType.REDSTONE_ORE;
+							
+							Output.get().logError( 
+									String.format( errorMessage, itemType.name(), getName(), 
+											"Redstone dust", blockType.name()) );
+							
+							dirty = true;
+						}
+						else if ( blockType == BlockType.NETHER_BRICK ) {
+							BlockType itemType = blockType;
+							blockType = BlockType.DOUBLE_NETHER_BRICK_SLAB;
+							
+							Output.get().logError( 
+									String.format( errorMessage, itemType.name(), getName(), 
+											"Individual nether brick", blockType.name()) );
+							
+							dirty = true;
+						}
+						
+						BlockOld block = new BlockOld(blockType);
 
-            if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
-            	// Use the BlockType.name() load the block type:
-            	BlockType blockType = BlockType.getBlock(blockTypeName);
-            	if ( blockType != null ) {
-            		
-            		
-            		/**
-            		 * <p>The following is code to correct the use of items being used as a
-            		 * block in a mine, which will cause a failure in trying to place an 
-            		 * item as a block.
-            		 * </p>
-            		 * 
-            		 * <p>This is intended for the old block model and is temp code to ensure 
-            		 * that there are less errors the end user will experience.
-            		 * </p>
-            		 */
-            		String errorMessage = "Warning! An invalid block type of %s was " +
-            				"detect when loading blocks for " +
-        					"mine %s. %s is not a valid block type. Using " +
-        					"%s instead. If this is incorrect please fix manually.";
-            		
-            		if ( blockType == BlockType.REDSTONE ) {
-            			BlockType itemType = blockType;
-            			blockType = BlockType.REDSTONE_ORE;
-            			
-            			Output.get().logError( 
-            					String.format( errorMessage, itemType.name(), getName(), 
-            							"Redstone dust", blockType.name()) );
-            					            			
-            			dirty = true;
-            		}
-            		else if ( blockType == BlockType.NETHER_BRICK ) {
-            			BlockType itemType = blockType;
-            			blockType = BlockType.DOUBLE_NETHER_BRICK_SLAB;
-            			
-            			Output.get().logError( 
-            					String.format( errorMessage, itemType.name(), getName(), 
-            							"Individual nether brick", blockType.name()) );
-            			
-            			dirty = true;
-            		}
-            		
-            		Block block = new Block(blockType, chance);
-            		getBlocks().add(block);
-            	}
-            	else {
-            		String message = String.format( "Failure in loading block type from %s mine's " +
-            				"save file. Block type %s has no mapping.", getName(),
-            				blockTypeName );
-            		Output.get().logError( message );
-            	}
-            	
-            	validateBlockNames.add( blockTypeName );
-            }
-            else if (validateBlockNames.contains( blockTypeName ) ) {
-            	// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
-            	dirty = true;
-            	inconsistancy = true;
-            }
+						block.parseFromSaveFileFormatStats( docBlock );
+						
+//						BlockOld block = new BlockOld(blockType, chance, blockCount);
+//						block.setConstraintMin( constraintMin );
+//						block.setConstraintMax( constraintMax );
+
+						getBlocks().add(block);
+					}
+					else {
+						String message = String.format( "Failure in loading block type from %s mine's " +
+								"save file. Block type %s has no mapping.", getName(),
+								blockTypeName );
+						Output.get().logError( message );
+					}
+					
+					validateBlockNames.add( blockTypeName );
+				}
+				else if (validateBlockNames.contains( blockTypeName ) ) {
+					// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+					dirty = true;
+					inconsistancy = true;
+				}
+			}
+			
         }
         
         
@@ -349,29 +367,67 @@ public class Mine
 		if ( docPrisonBlocks != null ) {
 			
 			for (String docBlock : docPrisonBlocks) {
-				String[] split = docBlock.split("-");
-				String blockTypeName = split[0];
-				double chance = Double.parseDouble(split[1]);
 				
-				if ( blockTypeName != null ) {
-					// The new way to get the PrisonBlocks:
-					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+				if ( docBlock != null ) {
 					
-					if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
-						prisonBlock.setChance( chance );
+					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
+					
+					
+					if ( prisonBlock != null && !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+						
 						if ( prisonBlock.isLegacyBlock() ) {
 							dirty = true;
 						}
 						addPrisonBlock( prisonBlock );
 						
-						validateBlockNames.add( blockTypeName );
+						validateBlockNames.add( prisonBlock.getBlockName() );
 					}
-		            else if (validateBlockNames.contains( blockTypeName ) ) {
-		            	// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
-		            	dirty = true;
-		            	inconsistancy = true;
-		            }
-
+					else if (validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+						dirty = true;
+						inconsistancy = true;
+					}
+					
+					
+//					String[] split = docBlock.split("-");
+//					String blockTypeName = split[0];
+//					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+//					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+//					int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+//					int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+//					int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
+//					int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
+//
+//					if ( blockTypeName != null ) {
+//						// The new way to get the PrisonBlocks:  
+//						//   The blocks return are cloned so they have their own instance:
+//						PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+//						
+//						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
+//							prisonBlock.setChance( chance );
+//							prisonBlock.setBlockCountTotal( blockCount );
+//							prisonBlock.setConstraintMin( constraintMin );
+//							prisonBlock.setConstraintMax( constraintMax );
+//							prisonBlock.setConstraintExcludeTopLayers( constraintExcludeTopLayers );
+//							prisonBlock.setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
+//
+//							
+//							if ( prisonBlock.isLegacyBlock() ) {
+//								dirty = true;
+//							}
+//							addPrisonBlock( prisonBlock );
+//							
+//							validateBlockNames.add( blockTypeName );
+//						}
+//						else if (validateBlockNames.contains( blockTypeName ) ) {
+//							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+//							dirty = true;
+//							inconsistancy = true;
+//						}
+//						
+//					}
+					
+					
 				}
 			}
 		}
@@ -381,11 +437,13 @@ public class Mine
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
-        	for ( Block block : getBlocks() ) {
+        	for ( BlockOld block : getBlocks() ) {
         		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block.getType().name() );
             	if ( prisonBlock != null ) {
             		
             		prisonBlock.setChance( block.getChance() );
+            		prisonBlock.setBlockCountTotal( block.getBlockCountTotal() );
+            		
             		addPrisonBlock( prisonBlock );
 
             		dirty = true;
@@ -496,10 +554,13 @@ public class Mine
         Set<String> validateBlockNames = new HashSet<>();
 
         List<String> blockStrings = new ArrayList<>();
-        for (Block block : getBlocks()) {
+        for (BlockOld block : getBlocks()) {
         	if ( !validateBlockNames.contains( block.getType().name() )) {
-        		// Use the BlockType.name() to save the block type to the file:
-        		blockStrings.add(block.getType().name() + "-" + block.getChance());
+        		
+        		blockStrings.add( block.toSaveFileFormat() );
+        		
+//        		// Use the BlockType.name() to save the block type to the file:
+//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
 //            blockStrings.add(block.getType().getId() + "-" + block.getChance());
         		validateBlockNames.add( block.getType().name() );
         	}
@@ -513,7 +574,10 @@ public class Mine
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
         	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
-        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
+        		
+        		prisonBlockStrings.add( pBlock.toSaveFileFormat() );
+        		
+//        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
         		validateBlockNames.add( pBlock.getBlockNameFormal() );
         	}
         }
@@ -587,7 +651,7 @@ public class Mine
         	}
         }
         else {
-        	for ( Block block : getBlocks() ) {
+        	for ( BlockOld block : getBlocks() ) {
         		if ( sb.length() > 0 ) {
         			sb.append( ", " );
         		}

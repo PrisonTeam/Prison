@@ -206,6 +206,15 @@ public class SpigotUtil {
 		
 	}
 	
+	
+	public static void dropItems( SpigotBlock block, SpigotItemStack itemStack ) {
+		
+		
+		block.getWrapper().getLocation().getWorld().dropItem( 
+						block.getWrapper().getLocation(), itemStack.getBukkitStack() );
+		
+	}
+	
 	public static boolean playerInventoryContainsAtLeast( Player player, 
 						SpigotItemStack itemStack, int quantity ) {
 		boolean results = player.getInventory().containsAtLeast( 
@@ -237,7 +246,8 @@ public class SpigotUtil {
 				ItemStack itemStack = xMat.parseItem();
 				if ( itemStack != null ) {
 					
-					if ( itemStack.getType().isBlock() ) {
+					//if ( itemStack.getType().isBlock() ) 
+					{
 						
 						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
 						
@@ -567,8 +577,12 @@ public class SpigotUtil {
    */
 
     public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
+    	SpigotItemStack results = null;
     	
-    	SpigotItemStack results = new SpigotItemStack( bukkitStack );
+    	if ( bukkitStack != null ) {
+    		results = new SpigotItemStack( bukkitStack );
+    	}
+    	
     	return results;
     }
 

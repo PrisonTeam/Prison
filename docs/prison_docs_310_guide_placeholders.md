@@ -22,11 +22,11 @@ Add in to the mix, that different plugins deal with placeholders in slightly dif
 # Placeholder Types and Counts
 
 * **Rank Related:** 4 including aliases
-* **Rankup Related:** 16 including aliases
+* **Rankup Related:** 18 including aliases
 
 
 * **Rank Ladder Related:** 4 including aliases **times** each ladder
-* **Rankup Ladder Related:** 16 including aliases **times** each ladder
+* **Rankup Ladder Related:** 18 including aliases **times** each ladder
 
 
 * **Player Balance Related:** 2 including aliases
@@ -37,10 +37,10 @@ Add in to the mix, that different plugins deal with placeholders in slightly dif
 * **Mine Player Related:** 14 including aliases
 
 
-**Total base Placeholders:** 86 including aliases
+**Total base Placeholders:** 90 including aliases
 
 
-**Total if 26 Mines and 3 Ladders:** 836 placeholder including aliases (20 + 24*3 ladder + 2 + 28*26 mines + 14) 
+**Total if 26 Mines and 3 Ladders:** 844 placeholder including aliases (22 + 26*3 ladder + 2 + 28*26 mines + 14) 
 	
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -79,7 +79,254 @@ Internally, placeholders within Prison are case insensitive.  But Prison uses lo
 
 Also, internally, prison only responds to the placeholder name without the escape characters.  The escape characters are generally curly braces { }, or percents % %, but may be other characters.  All placeholder plugins strip off the escape characters before passing anything to prison.  So proper use of placeholders is dependent upon what is being required by your placeholder plugin and may require a mix of escape characters.
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Placeholder Customization with Placeholder Attributes
+
+*Since Prison v3.2.4-alpha.2*
+
+
+Placeholders within prison can now be dynamically customized without having to make any changes to any configurations.  The same placeholder can be used in multiple place, each with different configurations.  This is now possible through the use of placeholder attributes and offers a large degree of customization.
+
+
+The placeholder attributes is additional text that is added at the end of a placeholder but within the escape characters.  The placeholder attribute always begins with a double colon `::` and each parameter is separated with a single colon `:`.  Some placeholders cannot use the attributes, and not all attributes can be used on a placeholder that will work with an attribute.  See additonal information below pertain to each attribute.
+
+
+Here are a couple of basic placeholders, as they are listed, and as they would be used for a mine named **temp5**.
+
+* **prison_mines_size_minename** - `{prison_mines_size_temp5}`
+* **prison_mines_remaining_minename** - `{prison_mines_remaining_temp5}`
+* **prison_mines_remaining_bar_minename** - `{prison_mines_remaining_bar_temp5}`
+* **prison_mines_timeleft_bar_minename** - `{prison_mines_timeleft_bar_temp5}`
+
+
+And these are some examples of using the attributes:
+
+* `{prison_mines_size_temp5::nFormat:#,##0}` - **654,321**
+* `{prison_mines_size_temp5::nFormat:#,##0:0:none}` - **654,321**
+* `{prison_mines_size_temp5::nFormat:#,##0.00:1:kmg}` - **654.32 k**
+* `{prison_mines_size_temp5::nFormat:#,##0:0:kmg}` - **654k**
+
+
+* `{prison_mines_remaining_bar_temp5}` - Normally displays as (no color)
+    * **>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<**
+* `{prison_mines_remaining_bar_temp5::bar:10}` - Using default values, but change length to 10
+    * **>>>>>>>>><**
+* `{prison_mines_remaining_bar_temp5::bar:10:&2:#:&d:-}` - Change all settings
+    * **#######---**
+* `{prison_mines_timeleft_bar_temp5::bar:40:&2:O:&d:x:debug}` - Enable debug mode for the attribute
+    * **OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOxxxxxxxx**
+
+
+
+
+The examples above don't show the color for the bar graphs, but here is a screen print that uses a prison command to test the placeholders dynamically within prison:
+
+
+The placeholder: `{prison_mines_timeleft_bar_temp5::bar:40:&2:O:&d:x:debug}`
+
+The full command:
+`/prison placeholders test {prison_mines_timeleft_bar_temp5::bar:40:&2:O:&d:x:debug}`
+
+
+<img src="images/prison_docs_310_guide_placeholders_8.png" alt="Example of an attribute with debug" title="Example of an attribute with debug" width="800" />
+
+When debug mode is enabled, it will print to the console information about the placeholder attribute, as seen in the above screen print.  This could be useful when testing the configuration of placeholder attributes
+
+
+Using the command `/prison placeholders test` should be used to test and perfect the use of the placeholder attributes.
+
+<hr style="height: 1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+### Placeholder Attribute - Numeric Formats
+
+The Numeric Format attribute will only work on placeholders that return plain numbers.  If there is a "_format" version of the placeholder, then an attribute will override the default formatting.
+
+Example of this attribute's usage is as follows, using descriptions for each parameter.
+
+`::nFormat:format:spaces:unitType:hex:hex2:debug`
+
+<ul>
+  <li><b>nFormat</b>: the keyword to identify this attribute.</li>
+  <li><b>format</b>: formatting based upon Java's DecimalFormat class.
+  					**Required.** Defaults to #,##0.00. 
+     <ul>
+       <li>#,###</li>
+       <li>#,###.00</li>
+       <li>#,###.00000</li>
+    </ul>
+  </li>
+  <li><b>spaces</b>: number of spaces between format and unit of measure. 
+  				**Optional.** Defaults to 1.</li>
+  <li><b>unitType</b>: unit type to display or to use to transform the results.
+  				**Optional.** Defaults to the placeholder type that is used.
+  	<ul>
+      <li><b>none</b>: No display of units. No transformations.</li>
+      <li><b>kmg</b>: Uses one character units: kMGTPEZY. Transforms results by 
+       			dividing by 1000.0 until value is less than 1000.0, and 
+       			each time it increments the unit character.  
+       			k=1,000, M=1,000,000 and etc. These are metric SI codes.</li>
+      <li><b>kmbt</b>: Uses one character units: KMBTqQsS. Transforms results by 
+       			dividing by 1000.0 until value is less than 1000.0, and 
+       			each time it increments the unit character.  
+       			k=1,000, M=1,000,000 and etc. These are non-standard codes.</li>       			
+	  <li><b>binary</b>: Uses a base-two divisor of 1024 along with the units: 
+       			KB, MB, GB, TB, PB, EB, ZB, and YB.  
+       			</li>
+      <li><i>Note:</i> Other unitTypes can be added along with different style of
+       			reducers.</p>
+  	</ul>
+  </li>
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
+   				will log to the console the status of this attribute, along with
+   				any error messages that may occur when applying the attribute.
+  </li>
+  
+</ul>
+
+
+The parameters that are optional do not have to be included, unless another parameter after the optional ones are needed. Then the optional parameter must be supplied and cannot be empty.
+
+
+`{prison_mines_size_temp5::nFormat:#,##0.00:1:kmg}`
+
+
+
+Although it is not suggested to include color codes in the formatting of numbers, it may be possible with the addition of the quoting them with single quotes.  The following use of **hex2** format works well with testing on a scoreboard that does not support hex colors, and is a way to inject the hex color when it cannot be used directly in the scoreboard configs.
+
+```
+{prison_mines_size_temp5::nFormat:'#af33ff'#,##0.00:1:kmg:hex}
+{prison_mines_size_temp5::nFormat:'#af33ff'#,##0.00:1:kmg:hex2}
+```
+
+
+
+<hr style="height: 1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+### Placeholder Attribute - Bar Graphs
+
+The bar placeholder attribute only works with placeholders with the word bar in them. 
+
+
+Example of this attribute's usage is as follows, using descriptions for each parameter.
+
+`::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug`
+
+<ul>
+  <li><b>bar</b>: the keyword to identify this attribute.</li>
+  <li><b>size</b>: The number of segments to generate.</li>
+  <li><b>Positive Color</b>: The color code to use for the positive segments. 
+  						Color codes should start with an &.</li>
+  <li><b>Positive Segment</b>: The value that will be used for the positive
+  						segment.</li>
+  <li><b>Negative Color</b>: The color code to use for the negative segments. 
+  						Color codes should start with an &.</li>
+  <li><b>Negative Segment</b>: The value that will be used for the negative
+  						segment.</li>
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
+   				will log to the console the status of this attribute, along with
+   				any error messages that may occur when applying the attribute.
+  </li>
+</ul>
+
+The parameters are all optional and if they are not supplied then the default values for the bar graph will be used instead. 
+
+`{prison_mines_remaining_bar_temp5::bar:10}`
+
+`{prison_mines_remaining_bar_temp5::bar:10:&2:#:&d:-}`
+
+`{prison_mines_timeleft_bar_temp5::bar:40:&2:O:&d:x:debug}`
+
+
+To use hex color codes within the bar graphs, the plugins that are requesting them, may not always support hex colors.  So the options of **hex** and **hex2** are options to provide pre-formatting of the hex colors so that way the hex colors could work with plugins that do not support them.  If the use of **hex** does not work, then **hex2** may.
+
+
+Examples of using hex color codes in a bar graph placeholder. Try it first with **hex**, and if that does not work, then try **hex2**.  
+
+```
+{prison_mines_timeleft_bar_a::bar:15:#abcdef:O:#5a3c7f:x:hex}
+{prison_mines_timeleft_bar_a::bar:15:#abcdef:O:#5a3c7f:x:hex2}
+```
+
+
+
+<hr style="height: 1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+### Placeholder Attribute - Text
+
+
+This placeholder attribute is for text formatting the placeholder results.  The only thing it does is to process the hex, hex2, and debug options.
+
+
+This placeholder attribute can be used with any placeholder, even for placeholders
+that have other attributes to format their content.  Since this is strictly processing
+the hex color codes, it will operate upon the final text output from the other
+placeholders.
+
+
+
+Example of this attribute's usage is as follows, using descriptions for each parameter.
+
+`::text:hex:hex2:debug`
+
+
+<ul>
+  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex". When enabled it will translate
+  				hex color codes, and other color codes before sending the placeholder
+  				results back to the requestor. This is useful for plugins that
+  				do not directly support hex color codes.
+  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "hex2". When enabled it will translate
+  				hex color codes to their intermediate state, which uses '&' color 
+  				codes, sending the placeholder results back to the requestor. 
+  				This is useful for plugins that do not directly support hex 
+  				color codes and may work when 'hex' does not.
+  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+  				Only valid value is "debug". When enabled it
+   				will log to the console the status of this attribute, along with
+   				any error messages that may occur when applying the attribute.
+  </li>
+</ul>
+
+
+
+
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Rank Command Placeholders

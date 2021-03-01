@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +17,17 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+/**
+ * @author GABRYCA
+ * @author RoyalBlueRanger (rBluer)
+ */
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
-    private final Configuration GuiConfig = guiConfig();
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -32,13 +35,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        // Init the ItemStack
-        // ItemStack itemMines;
-
         // Get the mines - In sort order, minus any marked as suppressed
     	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
-//    	Set<Mine> mines = new PrisonSortableMines().getSortedSet();
-        //PrisonMines pMines = PrisonMines.getInstance();
 
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
@@ -47,20 +45,20 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.NoMines")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoMines")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            p.sendMessage(SpigotPrison.format(messages.getString("Message.TooManyMines")));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> PlayerMines"));
+        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerMinesGUI")));
 
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList()) {
@@ -80,7 +78,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, m, minesLore);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }
@@ -89,19 +87,23 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv, Mine m, List<String> minesLore) {
 
-    	// Don't load this every time a button is created.... making it a class variable:
-        // Configuration messages = SpigotPrison.getGuiMessagesConfig();
-
         ItemStack itemMines;
         Material material;
-        String permission = SpigotPrison.format(GuiConfig.getString("Options.Mines.PermissionWarpPlugin"));
 
-        /**
-         * The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
-         * based upon the XMaterial enumeration name, or supported past names.
-         */
+        GuiConfig guiConfigClass = new GuiConfig();
+        guiConfig = guiConfigClass.getFileGuiConfig();
+        String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
+
+        // Get Mine Name.
+        String mineName = m.getName();
+
+        // Add mineName lore for TP.
+        minesLore.add(SpigotPrison.format("&3" + mineName));
+
+        // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
+        // based upon the XMaterial enumeration name, or supported past names.
         Material mineMaterial = null;
-        String materialTypeStr = GuiConfig.getString("Options.Mines.MaterialType." + m.getName());
+        String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
         if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
         	XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
         	if ( mineXMaterial != null ) {
@@ -128,10 +130,25 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
         }
 
-        // Create the button
-        itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + m.getName()));
+        // Get mine Tag.
+        String mineTag = m.getTag();
 
-        // Add the button to the inventory
-        inv.addItem(itemMines);
+        // Check if mineName's null (which shouldn't be) and do actions.
+        if (mineName != null) {
+
+            if (mineTag == null || mineTag.equalsIgnoreCase("null")){
+                mineTag = mineName;
+            }
+
+            if (material == null){
+                material = Material.COAL_ORE;
+            }
+
+            // Create the button.
+            itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + mineTag));
+
+            // Add the button to the inventory.
+            inv.addItem(itemMines);
+        }
     }
 }

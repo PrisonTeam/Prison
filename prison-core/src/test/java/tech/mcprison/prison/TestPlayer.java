@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.util.Gamemode;
@@ -34,7 +35,8 @@ import tech.mcprison.prison.util.Location;
 /**
  * @author Faizaan A. Datoo
  */
-public class TestPlayer implements Player {
+public class TestPlayer 
+				implements Player {
 
     // just allows input to be given to the user
 
@@ -91,7 +93,20 @@ public class TestPlayer implements Player {
     @Override public Location getLocation() {
         return null;
     }
-
+    
+	@Override
+    public Block getLineOfSightBlock() {
+		return null;
+	}
+	
+	@Override
+    public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
+    	
+    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+    	return results;
+	}
+	
+	
     @Override public void teleport(Location location) {
 
     }
@@ -120,6 +135,11 @@ public class TestPlayer implements Player {
         return true;
     }
 
+    @Override
+    public boolean isPlayer() {
+    	return false;
+    }
+    
     @Override public Inventory getInventory() {
         return null;
     }
@@ -128,6 +148,11 @@ public class TestPlayer implements Player {
     public void printDebugInventoryInformationToConsole() {
     	
     }
+    
+    public void recalculatePermissions() {
+    	
+    }
+    
     
     @Override
     public List<String> getPermissions() {
@@ -147,6 +172,19 @@ public class TestPlayer implements Player {
 		}
     	
     	return results;
+    }
+    
+	@Override
+	public List<String> getPermissionsIntegrations( boolean detailed ) {
+		List<String> results = new ArrayList<>();
+		
+		return results;
+	}
+
+    
+    @Override
+    public double getSellAllMultiplier() {
+    	return 1.0;
     }
     
 }

@@ -58,7 +58,22 @@ public class SpigotBlock implements Block {
         
         this.prisonBlockTypes = new HashSet<>();
     }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( getPrisonBlock().getBlockName() ).append( " " )
+    			.append( getLocation().toCoordinates() );
+    	
+    	
+    	return sb.toString();
+    }
 
+    public String getBlockName() {
+    	return getPrisonBlock().getBlockName();
+    }
+    
     @Override public Location getLocation() {
         return SpigotUtil.bukkitLocationToPrison(bBlock.getLocation());
     }

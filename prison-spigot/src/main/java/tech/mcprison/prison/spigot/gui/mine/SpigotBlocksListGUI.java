@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +17,14 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+/**
+ * @author GABRYCA
+ */
 public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
     private int counter;
-
-    private final Configuration messages = messages();
 
     public SpigotBlocksListGUI(Player p, String mineName, int counter){
         this.p = p;
@@ -35,7 +35,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
     public void open(){
 
         // Get the dimensions and if needed increases them
-        int dimension = 54; // , inventorySlot = 0, secondCounter = 0;
+        int dimension = 54;
         int pageSize = 45;
         
         // Create the inventory
@@ -48,7 +48,6 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
-    	
         List<PrisonBlock> blockTypes = prisonBlockTypes.getBlockTypes();
         
         // Only loop over the blocks that we need to show:

@@ -1,15 +1,10 @@
 package tech.mcprison.prison.ranks;
 
-import java.util.List;
-
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.integration.PlaceHolderKey;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
-import tech.mcprison.prison.ranks.managers.PlayerManager;
-import tech.mcprison.prison.util.Text;
 
 /**
  * Handles replacing chat messages for all players.
@@ -52,23 +47,45 @@ public class ChatHandler {
     @Subscribe
     public void onPlayerChat(PlayerChatEvent e) {
     	String newFormat = e.getFormat();
-    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+
+//    	Output.get().logDebug( "ChatHandler.onPlayerChat: before: %s", newFormat.replace( "%", "^" ) );
+    	
     	
     	Player player = e.getPlayer();
     	
-    	List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
+    	String results = Prison.get().getPlatform().getPlaceholders()
+    							.placeholderTranslateText( player.getUUID(), player.getName(), newFormat );
+
+//    	Output.get().logDebug( "ChatHandler.onPlayerChat: after: %s", results.replace( "%", "^" ) );
     	
-    	for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-    		String key = "{" + placeHolderKey.getKey() + "}";
-    		if ( newFormat.contains( key )) {
-    			newFormat = newFormat.replace(key, Text.translateAmpColorCodes(
-    					pm.getTranslatePlayerPlaceHolder( player.getUUID(), player.getName(), placeHolderKey ) ));
-    		}
-    	}
-        
-//        String prefix = getPrefix(e.getPlayer().getUUID());
-//        String newFormat = e.getFormat().replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
-        e.setFormat(newFormat);
+    	e.setFormat( results );
+    	
+//    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//    	
+//    	
+//    	List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
+//    	
+//    	for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+//    		String key1 = "{" + placeHolderKey.getKey();
+//    		String key2 = "}";
+//    		
+//    		int idx = newFormat.indexOf( key1 );
+//    		if ( idx > -1 && newFormat.indexOf( key2, idx ) > -1 ) {
+//    			
+//    			String identifier = newFormat.substring( idx + 1, newFormat.indexOf( key2, idx ) );
+//    			
+////        		// placeholder Attributes:
+////        		String placeholder = PlaceholderManager.extractPlaceholderString( identifier );
+////        		PlaceholderAttribute attribute = PlaceholderManager.extractPlaceholderExtractAttribute( identifier );
+//
+//    			newFormat = newFormat.replace( "{" + identifier + "}", Text.translateAmpColorCodes(
+//    					pm.getTranslatePlayerPlaceHolder( player.getUUID(), player.getName(), identifier ) ));
+//    		}
+//    	}
+//        
+////        String prefix = getPrefix(e.getPlayer().getUUID());
+////        String newFormat = e.getFormat().replace("{PRISON_RANK}", Text.translateAmpColorCodes(prefix));
+//        e.setFormat(newFormat);
     }
 
 //    /*

@@ -9,11 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import tech.mcprison.prison.chat.FancyMessage;
-import tech.mcprison.prison.integration.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.TextComponent;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 
 /**
  * The IntegrationManager stores instances of each {@link Integration} and allows
@@ -82,9 +82,14 @@ public class IntegrationManager {
     	integrations.get(iType).add(i);
     }
     
+    public PermissionIntegration getPermission() {
+    	return (PermissionIntegration) getForType(IntegrationType.PERMISSION)
+							.orElse( null );
+    }
+    
     public EconomyIntegration getEconomy() {
     	return (EconomyIntegration) getForType(IntegrationType.ECONOMY)
-							.orElse( null );
+    			.orElse( null );
     }
 
     public EconomyCurrencyIntegration getEconomyForCurrency(String currency) {

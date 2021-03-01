@@ -3,14 +3,15 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -22,7 +23,6 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final String mineName;
-    private final Configuration messages = messages();
 
     public SpigotMineNotificationsGUI(Player p, String mineName){
         this.p = p;
@@ -50,7 +50,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, enabledOrDisabled);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p),SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -138,5 +138,4 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
 
         }
     }
-
 }

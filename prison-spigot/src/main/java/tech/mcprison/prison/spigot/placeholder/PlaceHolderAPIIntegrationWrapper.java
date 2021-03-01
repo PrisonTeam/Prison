@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.PlaceholderManager;
+import tech.mcprison.prison.placeholders.PlaceholderManager;
 
 public class PlaceHolderAPIIntegrationWrapper
 	extends PlaceholderExpansion 
@@ -32,6 +32,19 @@ public class PlaceHolderAPIIntegrationWrapper
     public boolean canRegister(){
         return true;
     }
+    
+    /**
+     * Because this is an internal class,
+     * you must override this method to let PlaceholderAPI know to not unregister your expansion class when
+     * PlaceholderAPI is reloaded
+     *
+     * @return true to persist through reloads
+     */
+    @Override
+    public boolean persist(){
+        return true;
+    }
+
     
 	@Override
 	public String getAuthor(){

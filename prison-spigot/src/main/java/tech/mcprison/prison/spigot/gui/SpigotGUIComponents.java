@@ -6,6 +6,7 @@ import java.util.List;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -14,8 +15,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author rbluer RoyalBlueRanger
@@ -23,7 +26,18 @@ import tech.mcprison.prison.spigot.SpigotPrison;
  */
 public abstract class SpigotGUIComponents {
 
-    // createButton method (create a button for the GUI - item)
+    public Configuration messages = getMessages();
+    public Configuration guiConfig = getGuiConfig();
+    public Configuration sellAllConfig = getSellAll();
+
+    /**
+     * Create a button for the GUI using Material.
+     *
+     * @param id
+     * @param amount
+     * @param lore
+     * @param display
+     * */
     protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
 
         if (id == null){
@@ -32,17 +46,16 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        if ( meta != null ) {
-        	meta.setDisplayName(SpigotPrison.format(display));
-        	try {
-        		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        	} catch (NoClassDefFoundError ignored){}
-        	meta.setLore(lore);
-        	item.setItemMeta(meta);
-        }
-
-        return item;
+        return getItemStack(item, lore, display, meta);
     }
+
+    /**
+     * Create a button for the GUI using ItemStack.
+     *
+     * @param item
+     * @param lore
+     * @param display
+     * */
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
 
         if (item == null){
@@ -55,19 +68,37 @@ public abstract class SpigotGUIComponents {
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
         }
 
-    	if ( meta != null ) {
-    		meta.setDisplayName(SpigotPrison.format(display));
-    		try {
-    			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-    		} catch (NoClassDefFoundError ignored){}
-    		meta.setLore(lore);
-    		item.setItemMeta(meta);
-    	}
-    	
-    	return item;
+        return getItemStack(item, lore, display, meta);
     }
 
-    // createLore method (create a lore for the button)
+    /**
+     * Get ItemStack of an Item.
+     *
+     * @param item
+     * @param lore
+     * @param display
+     * @param meta
+     * */
+    private ItemStack getItemStack(ItemStack item, List<String> lore, String display, ItemMeta meta) {
+        if (meta != null) {
+            meta.setDisplayName(SpigotPrison.format(display));
+            try {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            } catch (NoClassDefFoundError ignored){}
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+
+        return item;
+    }
+
+
+
+    /**
+     * Create a Lore for an Item in the GUI.
+     *
+     * @param lores
+     * */
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
         for ( String lore : lores ) {
@@ -76,33 +107,54 @@ public abstract class SpigotGUIComponents {
         return results;
     }
 
-    // checkRanks method (check if the ranks module's enabled with success or disabled)
+    /**
+     * Check if the Ranks module's enabled.
+     *
+     * @param p
+     * */
     protected boolean checkRanks(Player p){
         Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
         if(!(module instanceof PrisonRanks)){
-            p.sendMessage(SpigotPrison.format("&c[ERROR] The GUI can't open because the &3Ranks module &cisn't loaded"));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&c[ERROR] The GUI can't open because the &3Ranks module &cisn't loaded"));
             p.closeInventory();
         }
         return module instanceof PrisonRanks;
     }
 
-
-    protected static Configuration messages(){
+    /**
+     * Get Messages config.
+     * */
+    protected static Configuration getMessages(){
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
-    protected static Configuration sellAll(){
+    /**
+     * Get SellAll config.
+     * */
+    protected static Configuration getSellAll(){
         return SpigotPrison.getInstance().getSellAllConfig();
     }
 
-    protected static Configuration guiConfig(){
+    /**
+     * Get GUI config.
+     * */
+    protected static Configuration getGuiConfig(){
         return SpigotPrison.getInstance().getGuiConfig();
     }
 
-    protected static AutoFeaturesFileConfig AutoFeaturesFileConfig() {
+    /**
+     * Get autoFeatures Config.
+     * */
+    public static AutoFeaturesFileConfig afConfig() {
         return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
     }
 
+    /**
+     * Open and register GUIs.
+     *
+     * @param p
+     * @param inv
+     * */
     protected void openGUI(Player p, Inventory inv){
 
         // Open the inventory

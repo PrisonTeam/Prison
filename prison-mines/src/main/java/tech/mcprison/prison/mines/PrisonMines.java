@@ -31,6 +31,8 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -141,13 +143,16 @@ public class PrisonMines extends Module {
      * shutdown since they will never be in a dirty state; they will always be saved.
      * </p>
      * 
-     * <p>This should shutdown all active mines.  Future to do item.
+     * <p>Block counts are now being stored in the mines and should be saved
+     * on every mine reset and also when the server is shutting down.
      * </p>
      * 
      */
     @Override
 	public void disable() {
-		// Nothing to do...
+    	
+    	// Shutdown the mines by saving any unsaved block stats:
+    	getMineManager().saveMinesIfUnsavedBlockCounts();
     }
 	
 	
@@ -194,10 +199,20 @@ public class PrisonMines extends Module {
      * @param block
      * @return
      */
-	public Mine findMineLocation( Location locationToCheck ) {
+	public Mine findMineLocationExact( Location locationToCheck ) {
 		Mine mine = null;
 		for ( Mine m : getMines() ) {
-			if ( m.isInMine( locationToCheck ) ) {
+			if ( m.isInMineExact( locationToCheck ) ) {
+				mine = m;
+				break;
+			}
+		}
+		return mine;
+	}
+	public Mine findMineLocationIncludeTopBottomOfMine( Location locationToCheck ) {
+		Mine mine = null;
+		for ( Mine m : getMines() ) {
+			if ( m.isInMineIncludeTopBottomOfMine( locationToCheck ) ) {
 				mine = m;
 				break;
 			}
@@ -210,25 +225,31 @@ public class PrisonMines extends Module {
 	}
 	
 	public Mine findMineLocation( Player player ) {
-		Mine result = null;
+		Mine results = null;
 		
 		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
 		
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
-		if ( mine == null || !mine.isInMine( player.getLocation() ) ) {
+		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
+			results = mine;
+		}
+		else {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
-			mine = findMineLocation( player.getLocation() );
+			results = findMineLocationIncludeTopBottomOfMine( player.getLocation() );
 			
 			// Store the mine in the player cache if not null:
-			if ( mine != null ) {
-				getPlayerCache().put( playerUUIDLSB, mine );
+			if ( results != null ) {
+				getPlayerCache().put( playerUUIDLSB, results );
+			}
+			else {
+				getPlayerCache().remove( playerUUIDLSB );
 			}
 		}
 
-		return result;
+		return results;
 	}
 
 //    private void initMines() {
@@ -237,6 +258,42 @@ public class PrisonMines extends Module {
 ////        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
 //    }
 
+
+	/**
+	 * <p>Submit all mines to reset.  This should only be called once since
+	 * it starts the chain of commands that will start the process.
+	 * </p>
+	 * 
+	 * @param resetType
+	 * @param resetActions 
+	 */
+	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+		getMineManager().resetAllMines( resetType, resetActions );
+	}
+	
+	/**
+	 * <p>Run the mine reset for the next mine in the queue.
+	 * The mine reset command will be submitted to be ran as a task.
+	 * </p>
+	 * 
+	 */
+	public void resetAllMinesNext() {
+		getMineManager().resetAllMinesNext();
+	}
+	
+	/**
+	 * <p>Cancel all the remaining mine resets, including any jobs that have been
+	 * submitted, but not yet started.  If a mine is in the middle of a reset it
+	 * will not be terminated, but it will be allowed to complete.
+	 * </p>
+	 * 
+	 */
+	public void cancelResetAllMines() {
+		getMineManager().cancelResetAllMines();;
+	}
+	
+	
+	
     public JsonFileIO getJsonFileIO()
 	{
 		return jsonFileIO;
@@ -285,5 +342,6 @@ public class PrisonMines extends Module {
 	public void setMinesCommands( MinesCommands minesCommands ) {
 		this.minesCommands = minesCommands;
 	}
+
 
 }

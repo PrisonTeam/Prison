@@ -7,13 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
@@ -64,7 +68,7 @@ public abstract class MineData
 	 * phased out since it has limited flexibility and complex issues with 
 	 * supporting magic values with the older bukkit versions.
 	 */
-    private List<Block> blocks;
+    private List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -83,6 +87,11 @@ public abstract class MineData
      */
     private transient Set<PrisonBlockType> prisonBlockTypes;
     
+    
+    private TreeMap<String, PrisonBlockStatusData> blockStats;
+    
+    
+	private int blockBreakCount = 0;
     private long totalBlocksMined = 0;
     private double zeroBlockResetDelaySec;
 
@@ -146,6 +155,8 @@ public abstract class MineData
     	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	this.prisonBlockTypes = new HashSet<>();
+    	
+    	this.blockStats = new TreeMap<>();
     	
     	
     	this.enabled = false;
@@ -238,7 +249,7 @@ public abstract class MineData
     }
 
     public String getTag() {
-    	return tag;
+    	return ( tag == null || tag.trim().isEmpty() ? getName() : tag );
     }
     public void setTag( String tag ) {
     	this.tag = tag;
@@ -364,7 +375,7 @@ public abstract class MineData
         		setVirtual( false );
         		setEnabled( true );
         		
-        		Output.get().logInfo( "Mine " + getName() + ": world has been set and is now enabled." );
+        		Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
         	}
         	else {
         		setEnabled( false );
@@ -382,7 +393,7 @@ public abstract class MineData
     	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
-    public List<Block> getBlocks() {
+    public List<BlockOld> getBlocks() {
         return blocks;
     }
     
@@ -441,7 +452,7 @@ public abstract class MineData
         this.prisonBlocks.clear();
         
         for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new Block(entry.getKey(), entry.getValue()));
+            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
             
             PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
             if ( prisonBlock != null ) {
@@ -450,20 +461,248 @@ public abstract class MineData
             }
         }
     }
+    
+    public PrisonBlock getPrisonBlock(String blockName ) {
+    	PrisonBlock results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( PrisonBlock b : getPrisonBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public BlockOld getBlockOld(String blockName ) {
+    	BlockOld results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		for ( BlockOld b : getBlocks() ) {
+    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+    				results = b;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public boolean hasBlock( String blockName ) {
+    	boolean results = false;
+    	
+    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+    		
+    		if ( useNewBlockModel ) {
+    			results = getPrisonBlock( blockName ) != null;
+    		}
+    		else {
+    			results = getBlockOld( blockName ) != null;
+    		}
+    	}
+        
+        return results;
+    }
+    
+    public boolean incrementBlockMiningCount( Block block ) {
+    	
+    	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
 
-    public boolean isInMine(Location location) {
+    	// If the block is AIR get the original block:
+    	if ( block.getPrisonBlock().isAir() ) {
+    		MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
+    		
+    		if ( targetPrisonBlock != null ) {
+
+    			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
+    			blockName = targetBlockName;
+    			
+    		}
+    		
+//    		Output.get().logInfo( "#### MineData.incrementBlockCount: " +
+//    							"oBlock= AIR  tBlock= %s  target= [%s]", blockName,
+//    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
+    	}
+    	
+    	return incrementBlockMiningCount( blockName );
+    }
+    
+    public boolean incrementBlockMiningCount( BlockOld block ) {
+    	String blockName = block.getType().name().toLowerCase();
+    	return incrementBlockMiningCount( blockName );
+    }
+    
+    // MineTargetPrisonBlock getTargetPrisonBlock( Block block )
+    
+    /**
+     * <p>This function is not as obvious it appears. Basically when this function 
+     * should be called, it may be too late to get the correct block value before 
+     * it is lost (set to AIR).  So it is critical that getTargetPrisonBlockName( Block block )
+     * is called first before the original block is processed (broke or auto picked up).
+     * </p>
+     * 
+     * <p>The end result of calling getTargetPrisonBlockName( Block block ) first is that
+     * the block name will have already been resolved to the correct original block name.
+     * There is also a higher chance that the block name extracted then, may never
+     * be AIR to begin with.
+     * </p> 
+     * 
+     * <p>Keep in mind, that if the original block was AIR before being processed for
+     * a natural break, or auto pickup, then it may not have been properly mined since
+     * AIR cannot be mined.  That said, if another process intercepted prison's 
+     * event handlers, then the targetBlocks will not exist until the mine is reset 
+     * for the first time when the server starts up.  So server startups will
+     * have higher risk of not being able to resolve the correct block type to 
+     * report.
+     * </p>
+     * 
+     * @param blockName
+     * @return
+     */
+    public boolean incrementBlockMiningCount( String targetBlockName ) {
+    	boolean results = false;
+    	
+		incrementBlockBreakCount();
+		incrementTotalBlocksMined();
+
+    	PrisonBlockStatusData sBlock = getBlockStats( targetBlockName );
+    	if ( sBlock != null ) {
+    		
+    		sBlock.incrementMiningBlockCount();
+    	}
+    	
+    	return results;
+    }
+        
+    abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
+    
+    abstract public String getTargetPrisonBlockName( Block block );
+    
+    
+    
+    public boolean hasUnsavedBlockCounts() {
+    	return getUnsavedBlockCount() > 0;
+    }
+    
+    public long getUnsavedBlockCount() {
+    	long results = 0;
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+			results += blockStats.getBlockCountUnsaved();
+		}
+
+    	return results;
+    }
+    
+    
+    public void resetUnsavedBlockCounts() {
+    	
+    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+    		// Since the mine was just saved reset the unsaved value :
+    		blockStats.setBlockCountUnsaved( 0 );
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		blockStats.setResetBlockCount( 0 );
+    	}
+    }
+
+    public void resetResetBlockCounts() {
+
+    	for ( PrisonBlockStatusData block : getBlocks() ) {
+			
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+		}
+    	
+    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+    		
+    		// Reset the block count for the reset event since the mine will be regenerated:
+    		block.setResetBlockCount( 0 );
+    	}
+    	
+//    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+//    		// Reset the block count for the reset event since the mine will be regenerated:
+//    		blockStats.setResetBlockCount( 0 );
+//    	}
+    }
+    
+    /**
+     * <p>This is the incrementing counter for when resetting the blocks in the mine
+     * or when the server starts up and need to take inventory of what exists.
+     * </p>
+     * 
+     * @param statsBlock
+     */
+    public void incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
+    	
+    	PrisonBlockStatusData sBlock = getBlockStats( statsBlock );
+    	if ( sBlock != null ) {
+    		
+    		sBlock.incrementResetBlockCount();
+    	}
+    			
+    }
+    
+    public PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {
+    	return getBlockStats( statsBlock.getBlockName() );
+    }
+    
+    public PrisonBlockStatusData getBlockStats( String blockName ) {
+    	PrisonBlockStatusData results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+
+    		if ( !getBlockStats().containsKey( blockName ) ) {
+    			for ( PrisonBlock block : getPrisonBlocks() ) {
+    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+    					getBlockStats().put( block.getBlockName(), block );
+    					
+    					results = block;
+    					break;
+    				}
+    			}
+    		}
+    		else {
+    			
+    			results = getBlockStats().get( blockName );
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+		return blockStats;
+	}
+    
+	
+
+    public boolean isInMineExact(Location location) {
     	if ( isVirtual() ) {
     		return false;
     	}
         return getBounds().within(location);
     }
     
-    public boolean isInMine(BlockType blockType) {
-    	//TODO Not sure if virtual should return false... they do have blocks.
+    public boolean isInMineIncludeTopBottomOfMine(Location location) {
     	if ( isVirtual() ) {
     		return false;
     	}
-        for (Block block : getBlocks()) {
+    	return getBounds().withinIncludeTopBottomOfMine( location );
+    }
+    
+    public boolean isInMine(BlockType blockType) {
+    	//TODO Not sure if virtual should return false... they do have blocks.
+//    	if ( isVirtual() ) {
+//    		return false;
+//    	}
+        for (BlockOld block : getBlocks()) {
             if (blockType == block.getType()) {
                 return true;
             }
@@ -609,6 +848,20 @@ public abstract class MineData
 		this.resetCount = resetCount;
 	}
 
+	
+	public int addBlockBreakCount( int blockCount ) {
+		return blockBreakCount += blockCount;
+	}
+	public int incrementBlockBreakCount() {
+		return ++blockBreakCount;
+	}
+	public int getBlockBreakCount() {
+		return blockBreakCount;
+	}
+	public void setBlockBreakCount( int blockBreakCount ) {
+		this.blockBreakCount = blockBreakCount;
+	}
+	
 	/**
 	 * May not be 100% thread safe, but odds of collisions will be minimal and
 	 * if its off by a few blocks its not a big deal since the value resets
@@ -734,5 +987,6 @@ public abstract class MineData
 	public void setLinerData( MineLinerData linerData ) {
 		this.linerData = linerData;
 	}
+
 	
 }

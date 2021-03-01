@@ -6,9 +6,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 public class Spigot113
 	extends Spigot113GUI
@@ -25,15 +27,19 @@ public class Spigot113
 
     @Override 
     public ItemStack getItemInMainHand(PlayerInteractEvent e) {
-        return e.getPlayer().getInventory().getItemInMainHand();
+        return getItemInMainHand( e.getPlayer() );
     }
 
     @Override 
     public ItemStack getItemInMainHand(Player player) {
-    	return player.getInventory().getItemInMainHand();
+    	return getItemInMainHand( player.getInventory() );
     }
     
-    
+	@Override 
+    public ItemStack getItemInMainHand(PlayerInventory playerInventory) {
+    	return playerInventory.getItemInMainHand();
+    }
+   
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
     }
@@ -42,6 +48,33 @@ public class Spigot113
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
     
+	@Override 
+	public ItemStack getItemInOffHand(PlayerInteractEvent e) {
+        return getItemInOffHand(e.getPlayer());
+    }
+
+    @Override 
+    public ItemStack getItemInOffHand(Player player ) {
+    	return getItemInOffHand(player.getInventory());
+    }
+    
+    public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
+    	return playerInventory.getItemInOffHand();
+    }
+    
+    @Override
+    public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
+    	
+    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+    			.setItemInMainHand( itemStack.getBukkitStack() );
+    }
+    
+    @Override
+    public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
+    	
+    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+    	.setItemInOffHand( itemStack.getBukkitStack() );
+    }
     
     @Override 
     public void playIronDoorSound(Location loc) {

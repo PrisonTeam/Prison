@@ -26,7 +26,6 @@ import java.util.UUID;
 
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -37,6 +36,7 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
@@ -288,6 +288,8 @@ public interface Platform {
 	
 	public int getConfigInt( String key, int defaultValue );
 	
+	public long getConfigLong( String key, long defaultValue );
+	
 
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 
@@ -311,6 +313,9 @@ public interface Platform {
 
 	
 	public int getModuleElementCount( ModuleElementType elementType );
+	
+	
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender );
 	
 	
 	public void autoCreateMineBlockAssignment();

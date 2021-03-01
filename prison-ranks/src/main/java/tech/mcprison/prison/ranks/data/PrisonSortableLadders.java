@@ -26,14 +26,14 @@ public class PrisonSortableLadders
 			else if ( l2 == null ) {
 				results = 1;
 			}
-			else if ( "default".equalsIgnoreCase( l1.name ) ) {
+			else if ( "default".equalsIgnoreCase( l1.getName() ) ) {
 				results = -999999;
 			} 
-			else if ( "prestige".equalsIgnoreCase( l1.name )) {
+			else if ( "prestige".equalsIgnoreCase( l1.getName() )) {
 				results = 999999;
 			} 
 			else {
-				results = l1.name.toLowerCase().compareTo( l2.name.toLowerCase() );
+				results = l1.getName().toLowerCase().compareTo( l2.getName().toLowerCase() );
 			}
 
 			return results;

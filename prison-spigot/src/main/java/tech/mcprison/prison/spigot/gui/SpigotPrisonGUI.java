@@ -1,16 +1,15 @@
 package tech.mcprison.prison.spigot.gui;
 
-import java.util.List;
-
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.cryptomorin.xseries.XMaterial;
-
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
+
+import java.util.List;
 
 /**
  * @author GABRYCA
@@ -18,7 +17,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = messages();
 
     public SpigotPrisonGUI(Player p){
         this.p = p;
@@ -40,7 +38,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv);
         } catch (NullPointerException ex){
-            p.sendMessage(SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -68,7 +66,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
 
         // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + "Ranks"));
+        ItemStack ranks = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + "Ranks - Ladders"));
         ItemStack autoManager = createButton(XMaterial.IRON_PICKAXE.parseItem(), prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
         ItemStack mines = createButton(XMaterial.DIAMOND_ORE.parseItem(), minesLore, SpigotPrison.format("&3" + "Mines"));
         ItemStack sellAll = createButton(XMaterial.CHEST.parseItem(), sellAllLore, SpigotPrison.format("&3" + "SellAll"));

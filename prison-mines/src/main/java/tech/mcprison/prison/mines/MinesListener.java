@@ -2,7 +2,10 @@ package tech.mcprison.prison.mines;
 
 import com.google.common.eventbus.Subscribe;
 
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.selection.SelectionCompletedEvent;
 import tech.mcprison.prison.util.Bounds;
 
@@ -26,6 +29,25 @@ public class MinesListener {
     	String worldName = e.getWorldName();
     	PrisonMines.getInstance().getMineManager().assignAvailableWorld( worldName );
     	
+    }
+    
+    @Subscribe
+    public void onPlayerSuffocationListener( PlayerSuffocationEvent e ) {
+    	
+    	Player player = e.getPlayer();
+    	Mine mine = PrisonMines.getInstance().findMineLocation( player );
+
+    	if ( mine != null ) {
+    		e.setCanceled( true );
+    		
+    		mine.teleportPlayerOut( player );
+    		
+    		player.sendMessage( "&7You have been teleported out of the mine to prevent suffocating." );
+    	}
+    	else {
+    		player.sendMessage( "&7You cannot be teleported to safety.  Good luck." );
+    		
+    	}
     }
     
     

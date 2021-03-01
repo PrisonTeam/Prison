@@ -31,8 +31,6 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.integration.PlaceholderManager.PlaceHolderFlags;
-import tech.mcprison.prison.integration.Placeholders;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
@@ -45,6 +43,8 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -251,6 +251,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public long getConfigLong( String key, long defaultValue ) {
+		return defaultValue;
+	}
+	
+	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return null;
 	}
@@ -281,6 +286,11 @@ public class TestPlatform implements Platform {
 		return 0;
 	}
 	
+	@Override
+	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+		return null;
+	}
+
 	@Override
 	public void autoCreateMineBlockAssignment() {
 		

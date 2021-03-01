@@ -23,6 +23,7 @@ import java.util.List;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
@@ -39,18 +40,21 @@ public class Rank
     /*
      * Fields & Constants
      */
+	
+	// This is to help eliminate RankLadder.PositionRank object:
+	private int position; 
 
     // The unique identifier used to distinguish this rank from others - this never changes.
-    public int id;
+    private int id;
 
     // The name of this rank, which is used with the user to identify ranks.
-    public String name;
+    private String name;
 
     // The tag that this rank has. It can be used as either a prefix or a suffix, depending on user preferences.
-    public String tag;
+    private String tag;
 
     // The general cost of this rank, unit-independent. This value holds true for both XP and cost.
-    public double cost;
+    private double cost;
 
     /** 
      * <p>Special currency to use. If null, then will use the standard currencies. 
@@ -59,19 +63,25 @@ public class Rank
      * </p>
      * 
      */
-    public String currency;
+    private String currency;
     
     // The commands that are run when this rank is attained.
-    public List<String> rankUpCommands;
+    private List<String> rankUpCommands;
 
     
-    public transient Rank rankPrior;
-    public transient Rank rankNext;
+    private List<String> permissions;
+    private List<String> permissionGroups;
+    
+    
+    private transient Rank rankPrior;
+    private transient Rank rankNext;
     
     
     private List<ModuleElement> mines;
     private List<String> mineStrings;
     
+    
+    private transient RankLadder ladder;
     
     /*
      * Document-related
@@ -84,6 +94,21 @@ public class Rank
     	
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
+    	
+    	this.permissions = new ArrayList<>();
+    	this.permissionGroups =  new ArrayList<>();
+    	
+    }
+    
+    public Rank( int position, int id, String name, String tag, double cost ) {
+    	this();
+    	
+    	this.position = position;
+    	
+    	this.id = id;
+    	this.name = name;
+    	this.tag = tag;
+    	this.cost = cost;
     }
     
     /**
@@ -95,14 +120,20 @@ public class Rank
      * @param name
      */
     protected Rank( String name ) {
+    	this.position = 0;
     	this.id = 0;
     	this.name = name;
     }
 
     @SuppressWarnings( "unchecked" )
 	public Rank(Document document) {
+    	this();
+    	
         try
 		{
+        	Object pos = document.get("position");
+        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
+        	
 			this.id = RankUtil.doubleToInt(document.get("id"));
 			this.name = (String) document.get("name");
 			this.tag = (String) document.get("tag");
@@ -135,6 +166,26 @@ public class Rank
 				setMineStrings( mineStrings );
 			}
 			
+			
+			getPermissions().clear();
+			Object perms = document.get( "permissions" );
+			if ( perms != null ) {
+				List<String> permissions = (List<String>) perms;
+				for ( String permission : permissions ) {
+					getPermissions().add( permission );
+				}
+			}
+	        
+			
+			getPermissionGroups().clear();
+			Object permsGroups = document.get( "permissionGroups" );
+			if ( perms != null ) {
+				List<String> permissionGroups = (List<String>) permsGroups;
+				for ( String permissionGroup : permissionGroups ) {
+					getPermissionGroups().add( permissionGroup );
+				}
+			}
+			
 		}
 		catch ( Exception e )
 		{
@@ -150,6 +201,7 @@ public class Rank
 
     public Document toDocument() {
         Document ret = new Document();
+        ret.put("position", this.position );
         ret.put("id", this.id);
         ret.put("name", this.name);
         ret.put("tag", this.tag);
@@ -175,9 +227,54 @@ public class Rank
         }
         ret.put("mines", mineStrings);
         
+        ret.put( "permissions", getPermissions() );
+        ret.put( "permissionGroups", getPermissionGroups() );
+        
         return ret;
     }
     
+    
+
+    /**
+     * <p>Identifies of the Ladder contains a permission.
+     * </p>
+     * 
+     * @param permission
+     * @return
+     */
+	public boolean hasPermission( String permission ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissions() ) {
+			if ( perm.equalsIgnoreCase( permission ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * <p>Identifies if the Ladder contains a permission group.
+	 * </p>
+	 * 
+	 * @param permissionGroup
+	 * @return
+	 */
+	public boolean hasPermissionGroup( String permissionGroup ) {
+		boolean results = false;
+		
+		for ( String perm : getPermissionGroups() ) {
+			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+
     
     @Override
     public String toString() {
@@ -188,6 +285,18 @@ public class Rank
     	return "rank_" + id;
     }
     
+    
+    public RankLadder getLadder() {
+    	if ( ladder == null ) {
+    		
+    		ladder = PrisonRanks.getInstance().getLadderManager().getLadder( this );
+    	}
+    	
+    	return ladder;
+    }
+    public void setLadder( RankLadder ladder ) {
+    	this.ladder = ladder;
+    }
     
     /*
      * equals() and hashCode()
@@ -236,6 +345,14 @@ public class Rank
         return result;
     }
 
+    
+	public int getPosition() {
+		return position;
+	}
+	public void setPosition( int position ) {
+		this.position = position;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -279,6 +396,20 @@ public class Rank
 	}
 	public void setRankUpCommands( List<String> rankUpCommands ) {
 		this.rankUpCommands = rankUpCommands;
+	}
+	
+	public List<String> getPermissions() {
+		return permissions;
+	}
+	public void setPermissions( List<String> permissions ) {
+		this.permissions = permissions;
+	}
+
+	public List<String> getPermissionGroups() {
+		return permissionGroups;
+	}
+	public void setPermissionGroups( List<String> permissionGroups ) {
+		this.permissionGroups = permissionGroups;
 	}
 
 	public Rank getRankPrior() {
