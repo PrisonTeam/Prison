@@ -654,7 +654,7 @@ public abstract class MineReset
 						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 						
 						// Increment the mine's block count. This block is one of the control blocks:
-						prisonBlock.incrementResetBlockCount();
+						incrementResetBlockCount( prisonBlock );
 						
 						addMineTargetPrisonBlock( prisonBlock, x, y, z );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
@@ -670,7 +670,7 @@ public abstract class MineReset
 						BlockOld tBlock = randomlySelectBlock( random, currentLevel );
 						
 						// Increment the mine's block count. This block is one of the control blocks:
-						tBlock.incrementResetBlockCount();
+						incrementResetBlockCount( tBlock );
 						
 						addMineTargetPrisonBlock( tBlock, x, y, z );
 //						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
@@ -1140,7 +1140,12 @@ public abstract class MineReset
 							if ( useNewBlockModel ) {
 								
 								PrisonBlock pBlock = tBlock.getPrisonBlock();
+
+								// Increment the mine's block count. This block is one of the control blocks:
+								incrementResetBlockCount( pBlock );
+								
 								addMineTargetPrisonBlock( pBlock, x, y, z );
+								
 								
 								if ( pBlock == null ||
 										pBlock.equals( PrisonBlock.AIR ) ) {
@@ -1150,7 +1155,12 @@ public abstract class MineReset
 							else {
 								
 								BlockOld oBlock = new BlockOld( tBlock.getType() );
+
+								// Increment the mine's block count. This block is one of the control blocks:
+								incrementResetBlockCount( oBlock );
+								
 								addMineTargetPrisonBlock( oBlock, x, y, z );
+								
 								
 								if ( tBlock.getType() == BlockType.AIR ) {
 									airCount++;

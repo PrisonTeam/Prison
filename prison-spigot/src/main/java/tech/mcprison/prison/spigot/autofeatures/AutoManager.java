@@ -178,7 +178,7 @@ public class AutoManager
 			if ( count > 0 ) {
 				
 				// Record the block break before it is changed to AIR:
-				mine.incrementBlockCount( targetBlockName );
+				mine.incrementBlockMiningCount( targetBlockName );
 				
 				// Process mine block break events:
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
@@ -341,7 +341,7 @@ public class AutoManager
 					
 					
 					// Record the block break before it is changed to AIR:
-					mine.incrementBlockCount( targetBlockName );
+					mine.incrementBlockMiningCount( targetBlockName );
 					
 					
 					String triggered = null;
@@ -432,7 +432,7 @@ public class AutoManager
 				if ( count > 0 ) {
 					
 					// Record the block break before it is changed to AIR:
-					mine.incrementBlockCount( targetBlockName );
+					mine.incrementBlockMiningCount( targetBlockName );
 					
 					
 					// Process mine block break events:

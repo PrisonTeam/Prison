@@ -10,12 +10,20 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.4
 
 
-
-- Use the mine tag name over the mine's name if it exists.
-
+- /prison utils message - add ability to send message to player or broadcast
 
 
-- TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not bee exact. Not sure why at this time.
+-DONE: COUNT blocks upon startup when doing the air counts:
+
+- DONE: build targetBlockList when counting air blocks upon server startup.
+
+
+
+- DONE: Use the mine tag name over the mine's name if it exists.
+
+
+
+- DONE: TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not been exact. Not sure why at this time.
 
 
 
@@ -28,7 +36,8 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 
-- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point.
+- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point. 
+ - This is done, but the player has to take damage before the event is fired.  Therefore it is not instant when they log in.  Also if they cannot take damage, such they are in god mode, then it won't kick in either.  I've also seen this where it won't tp myself to the mine's spawn because I don't have the perms to go there, but not really sure if that was the cause.
 
 
    

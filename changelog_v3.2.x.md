@@ -16,7 +16,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.4-alpha.16 2021-02-28
+# v3.2.4-alpha.16 2021-03-01
+
+
+* **More tweaks to get the block counts updated when the server starts up so they will be accurate and won't need to wait until the next reset.**
+
 
 * **Restructuring of some of the handling of block names prior to processing the block events (block break or explosions) to preserve the original block names.**
 This is important too, since if the block name is AIR, it is understood that it could not have been broken with a standard BlockBreakEvent.  The explosion events appear to never eliminate AIR blocks, but prior processing before passing to those points of execution, the AIR blocks were filtered out.  So in general, they should never be AIR, but they could be tied back to the original block names too.  But with explosions, one has to be very careful since erroneous AIR blocks can get counted multiple times and hence throw off the actual counts for the mines.

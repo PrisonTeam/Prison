@@ -510,7 +510,7 @@ public abstract class MineData
         return results;
     }
     
-    public boolean incrementBlockCount( Block block ) {
+    public boolean incrementBlockMiningCount( Block block ) {
     	
     	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
 
@@ -530,12 +530,12 @@ public abstract class MineData
 //    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
     	}
     	
-    	return incrementBlockCount( blockName );
+    	return incrementBlockMiningCount( blockName );
     }
     
-    public boolean incrementBlockCount( BlockOld block ) {
+    public boolean incrementBlockMiningCount( BlockOld block ) {
     	String blockName = block.getType().name().toLowerCase();
-    	return incrementBlockCount( blockName );
+    	return incrementBlockMiningCount( blockName );
     }
     
     // MineTargetPrisonBlock getTargetPrisonBlock( Block block )
@@ -565,46 +565,16 @@ public abstract class MineData
      * @param blockName
      * @return
      */
-    public boolean incrementBlockCount( String targetBlockName ) {
+    public boolean incrementBlockMiningCount( String targetBlockName ) {
     	boolean results = false;
     	
 		incrementBlockBreakCount();
 		incrementTotalBlocksMined();
 
-    	
-    	if ( targetBlockName != null && !targetBlockName.trim().isEmpty() ) {
+    	PrisonBlockStatusData sBlock = getBlockStats( targetBlockName );
+    	if ( sBlock != null ) {
     		
-    		// The block name should have been resolved to non-AIR before being 
-    		// processed by calling getTargetPrisonBlockName( Block block ) prior to
-    		// processing.  So if AIR now, then original block name has been lost
-    		// forever.
-//    		if ( "AIR".equalsIgnoreCase( blockName ) ) {
-//    			MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( blockName );
-//        		
-//        		if ( targetPrisonBlock != null ) {
-//
-//        			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
-//        			blockName = targetBlockName;
-//        			
-//        		}
-//    		}
-    		
-    		if ( !getBlockStats().containsKey( targetBlockName ) ) {
-    			for ( PrisonBlock b : getPrisonBlocks() ) {
-    				if ( b.getBlockName().equalsIgnoreCase( targetBlockName ) ) {
-    					getBlockStats().put( b.getBlockName(), b );
-    					
-    					b.incrementMiningBlockCount();
-    					results = true;
-    					break;
-    				}
-    			}
-    		}
-    		else {
-    			
-    			getBlockStats().get( targetBlockName ).incrementMiningBlockCount();
-    			results = true;
-    		}
+    		sBlock.incrementMiningBlockCount();
     	}
     	
     	return results;
@@ -613,6 +583,8 @@ public abstract class MineData
     abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
     
     abstract public String getTargetPrisonBlockName( Block block );
+    
+    
     
     public boolean hasUnsavedBlockCounts() {
     	return getUnsavedBlockCount() > 0;
@@ -660,7 +632,56 @@ public abstract class MineData
 //    	}
     }
     
+    /**
+     * <p>This is the incrementing counter for when resetting the blocks in the mine
+     * or when the server starts up and need to take inventory of what exists.
+     * </p>
+     * 
+     * @param statsBlock
+     */
+    public void incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
+    	
+    	PrisonBlockStatusData sBlock = getBlockStats( statsBlock );
+    	if ( sBlock != null ) {
+    		
+    		sBlock.incrementResetBlockCount();
+    	}
+    			
+    }
     
+    public PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {
+    	return getBlockStats( statsBlock.getBlockName() );
+    }
+    
+    public PrisonBlockStatusData getBlockStats( String blockName ) {
+    	PrisonBlockStatusData results = null;
+    	
+    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+
+    		if ( !getBlockStats().containsKey( blockName ) ) {
+    			for ( PrisonBlock block : getPrisonBlocks() ) {
+    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+    					getBlockStats().put( block.getBlockName(), block );
+    					
+    					results = block;
+    					break;
+    				}
+    			}
+    		}
+    		else {
+    			
+    			results = getBlockStats().get( blockName );
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+		return blockStats;
+	}
+    
+	
 
     public boolean isInMineExact(Location location) {
     	if ( isVirtual() ) {
@@ -967,8 +988,5 @@ public abstract class MineData
 		this.linerData = linerData;
 	}
 
-	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
-		return blockStats;
-	}
 	
 }

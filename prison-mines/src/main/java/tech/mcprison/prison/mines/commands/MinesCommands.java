@@ -1786,7 +1786,9 @@ public class MinesCommands
 	{
 		RowComponent row = new RowComponent();
 		
-		if ( block.getBlockName().equalsIgnoreCase( "totals" )) {
+		boolean totals = block.getBlockName().equalsIgnoreCase( "totals" );
+		
+		if ( totals ) {
 			String text = "                   &dTotals:  ";
 			row.addTextComponent( text );
 		}
@@ -1807,25 +1809,30 @@ public class MinesCommands
 			row.addFancy( msg );
 		}
 
-		String text1 = formatStringPadRight("  &3Pl: &7%s", 16, iFmt.format( block.getResetBlockCount() ));
+		String text1 = formatStringPadRight(
+				(totals ? "      &b%s" : "  &3Pl: &7%s"), 
+					16, iFmt.format( block.getResetBlockCount() ));
 		FancyMessage msg1 = new FancyMessage( text1 )
 								.tooltip("&7Number of blocks of this type &3Pl&7aced in this mine.");
 		row.addFancy( msg1 );
 		
-		String text2 = formatStringPadRight("  &3Rm: &7%s", 16, 
+		String text2 = formatStringPadRight(
+				(totals ? "    &b%s" : "  &3Rm: &7%s"), 16, 
 								iFmt.format( block.getResetBlockCount() - block.getBlockCountUnsaved() ));
 		FancyMessage msg2 = new FancyMessage( text2 )
 								.tooltip("&7Number of blocks of this type &3R&7e&3e&7aining.");
 		row.addFancy( msg2 );
 		
 		FancyMessage msg3 = new FancyMessage(
-				String.format("  &3T: &7%s", 
+				String.format(
+						(totals ? " &b%s" : "  &3T: &7%s"), 
 						PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" )))
 				.tooltip("&3T&7otal blocks of this type that have been mined.");
 		row.addFancy( msg3 );
 		
 		FancyMessage msg4 = new FancyMessage(
-				String.format("  &3S: &7%s", 
+				String.format(
+						(totals ? "      &b%s" : "  &3S: &7%s"), 
 						PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" )))
 				.tooltip("&7Blocks of this type that have been mined since the server was &3S&7tarted.");
 		row.addFancy( msg4 );

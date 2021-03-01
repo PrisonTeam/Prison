@@ -676,7 +676,7 @@ public class OnBlockBreakEventListener
 				if ( drop > 0 ) {
 					
 					// Record the block break before it is changed to AIR:
-					mine.incrementBlockCount( targetBlockName );
+					mine.incrementBlockMiningCount( targetBlockName );
 					
 					
 					// Process mine block break events:
@@ -701,7 +701,7 @@ public class OnBlockBreakEventListener
 //						);
 				
 				
-				mine.incrementBlockCount( targetBlockName );
+				mine.incrementBlockMiningCount( targetBlockName );
 
 				// Other possible processing:
 				
@@ -774,7 +774,7 @@ public class OnBlockBreakEventListener
 					if ( drop > 0 ) {
 						
 						// Record the block break before it is changed to AIR:
-						mine.incrementBlockCount( targetBlockName );
+						mine.incrementBlockMiningCount( targetBlockName );
 						
 						
 						String triggered = null;
@@ -908,7 +908,7 @@ public class OnBlockBreakEventListener
 					if ( drop > 0 ) {
 						
 						// Record the block break before it is changed to AIR:
-						mine.incrementBlockCount( targetBlockName );
+						mine.incrementBlockMiningCount( targetBlockName );
 						
 						// Process mine block break events:
 						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
