@@ -37,9 +37,23 @@ public class PrisonUtilsModule
 				utils.setEnableRepairAll( isEnabled( "utils.repair.repairAll", true ) );
 				utils.setEnableRepairHand( isEnabled( "utils.repair.repairHand", true ) );
 				
-			Prison.get().getCommandHandler().registerCommands( utils );
+				Prison.get().getCommandHandler().registerCommands( utils );
 
 			}
+			
+			if ( isEnabled( "utils.messages.enabled", true ) ) {
+				
+				PrisonUtilsMessages utils = new PrisonUtilsMessages();
+				
+				utils.setEnableMessageMsg( isEnabled( "utils.messages.msg", true ) );
+				utils.setEnableMessageBroadcast( isEnabled( "utils.messages.broadcast", true ) );
+				
+				Prison.get().getCommandHandler().registerCommands( utils );
+				
+			}
+			
+			
+			
 		}
 		
 //		if ( isEnabled( "utils.potions.enabled", true ) ) {
