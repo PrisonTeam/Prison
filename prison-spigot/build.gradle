@@ -57,7 +57,7 @@ dependencies {
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
     
 	implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'me.clip:placeholderapi:2.9.1'
+    implementation 'me.clip:placeholderapi:2.10.9'
     
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
