@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.backpacks;
 
-
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -84,6 +83,24 @@ public class BackPacksUtil {
 
         if (getBoolean(backPacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
             Bukkit.dispatchCommand(p, "backpack item");
+        }
+
+        updateCachedBackpack();
+    }
+
+    /**
+     * Reset a player's inventory.
+     * */
+    public void resetBackpack(Player p) {
+
+        updateCachedBackpack();
+
+        try {
+            backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+            backPacksDataConfig.save(backPacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return;
         }
 
         updateCachedBackpack();
