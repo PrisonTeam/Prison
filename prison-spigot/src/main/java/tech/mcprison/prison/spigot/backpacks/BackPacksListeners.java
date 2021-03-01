@@ -20,27 +20,14 @@ public class BackPacksListeners implements Listener {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private File backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
     private FileConfiguration backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+    private BackPacksUtil backPacksUtil = BackPacksUtil.get();
 
     @EventHandler
     public void createInventoryFirst(PlayerJoinEvent e){
 
         Player p = e.getPlayer();
 
-        if (backPacksConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null){
-            try {
-                backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
-                backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
-                backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
-                backPacksDataConfig.save(backPacksFile);
-            } catch (IOException ex){
-                ex.printStackTrace();
-                return;
-            }
-        }
-
-        if (getBoolean(backPacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
-            Bukkit.dispatchCommand(p, "backpack item");
-        }
+        backPacksUtil.setDefaultBackpackPlayer(p);
     }
 
     @EventHandler
