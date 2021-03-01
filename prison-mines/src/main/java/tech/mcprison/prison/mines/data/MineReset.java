@@ -1071,6 +1071,10 @@ public abstract class MineReset
      * <p>This function performs the air count and should be ran as an async task.
      * </p>
      * 
+     * <p>This also should be used to generate the targetBlockList to help identify
+     * unknown blocks when being processed.
+     * </p>
+     * 
      * <p>WARNING: This generates a ton of async failures upon startup or during other
      * times.  This MUST be ran synchronously...
      * </p>
@@ -1116,6 +1120,11 @@ public abstract class MineReset
 			World world = worldOptional.get();
 			
 			
+			// Reset the target block lists:
+			clearMineTargetPrisonBlocks();
+			
+			
+			
 			int airCount = 0;
 			int errorCount = 0;
 			StringBuilder sb = new StringBuilder();
@@ -1126,17 +1135,24 @@ public abstract class MineReset
 						
 						try {
 							Location targetBlock = new Location(world, x, y, z);
+							Block tBlock = targetBlock.getBlockAt();
 							
 							if ( useNewBlockModel ) {
 								
-								if ( targetBlock.getBlockAt().getPrisonBlock() == null ||
-										targetBlock.getBlockAt().getPrisonBlock().equals( PrisonBlock.AIR ) ) {
+								PrisonBlock pBlock = tBlock.getPrisonBlock();
+								addMineTargetPrisonBlock( pBlock, x, y, z );
+								
+								if ( pBlock == null ||
+										pBlock.equals( PrisonBlock.AIR ) ) {
 									airCount++;
 								}
 							}
 							else {
 								
-								if ( targetBlock.getBlockAt().getType() == BlockType.AIR ) {
+								BlockOld oBlock = new BlockOld( tBlock.getType() );
+								addMineTargetPrisonBlock( oBlock, x, y, z );
+								
+								if ( tBlock.getType() == BlockType.AIR ) {
 									airCount++;
 								}
 							}
