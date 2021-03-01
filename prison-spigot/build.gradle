@@ -82,7 +82,7 @@ dependencies {
     compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
-    compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
+    compileOnly('be.maximvdw:MVdWPlaceholderAPI:3.1.1-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
 
