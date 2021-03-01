@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.backpacks;
 
-
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -39,6 +38,11 @@ public class BackPacksUtil {
         backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     }
 
+    public void updateCachedBackpack(){
+        backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+        backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+    }
+
     /**
      * Get SellAll instance.
      * */
@@ -48,6 +52,100 @@ public class BackPacksUtil {
         }
 
         return instance;
+    }
+
+    /**
+     * Set default backpack for new players.
+     *
+     * @param p - Player
+     * */
+    public void setDefaultBackpackPlayer(Player p) {
+
+        updateCachedBackpack();
+
+        int size = 54;
+        try {
+            size = Integer.parseInt(backPacksConfig.getString("Options.BackPack_Default_Size"));
+        } catch (NumberFormatException ignored){}
+
+        if (backPacksConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null){
+            try {
+                backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+                backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+                backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
+                backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".Size", size);
+                backPacksDataConfig.save(backPacksFile);
+            } catch (IOException ex){
+                ex.printStackTrace();
+                return;
+            }
+        }
+
+        if (getBoolean(backPacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
+            Bukkit.dispatchCommand(p, "backpack item");
+        }
+
+        updateCachedBackpack();
+    }
+
+    /**
+     * Reset a player's inventory.
+     * */
+    public void resetBackpack(Player p) {
+
+        updateCachedBackpack();
+
+        try {
+            backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+            backPacksDataConfig.save(backPacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
+
+        updateCachedBackpack();
+    }
+
+    /**
+     * Set Player Backpacks max dimensions.
+     * NOTE: Should be a multiple of 9.
+     * Max dimension for now's 54.
+     *
+     * @param p - Player
+     * @param size - Size
+     *
+     * */
+    public void setBackpackSize(Player p, int size){
+
+        updateCachedBackpack();
+
+        // Must be multiple of 9.
+        if (size % 9 != 0 || size > 54){
+            return;
+        }
+
+        updateCachedBackpack();
+
+        backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".Size", size);
+
+        try {
+            backPacksDataConfig.save(backPacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        updateCachedBackpack();
+    }
+
+    public int getBackpackSize(Player p){
+
+        updateCachedBackpack();
+
+        int backPackSize = 0;
+
+        try {
+            backPackSize = Integer.parseInt(backPacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Size"));
+        } catch (NumberFormatException ignored){}
+        return backPackSize;
     }
 
     /**
@@ -63,6 +161,8 @@ public class BackPacksUtil {
      * BackPacksUtil.setInventory(inv);
      *
      * @param p player
+     *
+     * @return inv - Inventory
      * */
     public Inventory getInventory(Player p){
 
@@ -73,13 +173,42 @@ public class BackPacksUtil {
         try {
             slots = backPacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId() + ".Items").getKeys(false);
         } catch (NullPointerException ex){
-            return null;
+            return inv;
         }
         if (slots.size() != 0) {
             for (String slot : slots) {
                 ItemStack finalItem = backPacksDataConfig.getItemStack("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
                     inv.setItem(Integer.parseInt(slot), finalItem);
+                }
+            }
+        }
+
+        return inv;
+    }
+
+    /**
+     * Adding the extra inventory argument will just modify your already
+     * made inventory with the backpack content.
+     * */
+    public Inventory getInventory(Player p, Inventory inv){
+
+        // Get the Items config section
+        Set<String> slots;
+        try {
+            slots = backPacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId() + ".Items").getKeys(false);
+        } catch (NullPointerException ex){
+            return inv;
+        }
+        if (slots.size() != 0) {
+            for (String slot : slots) {
+                ItemStack finalItem = backPacksDataConfig.getItemStack("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK");
+                if (finalItem != null) {
+                    try {
+                        inv.setItem(Integer.parseInt(slot), finalItem);
+                    } catch (ArrayIndexOutOfBoundsException ex){
+                        return inv;
+                    }
                 }
             }
         }
@@ -95,6 +224,8 @@ public class BackPacksUtil {
      * */
     public void setInventory(Player p, Inventory inv){
 
+        updateCachedBackpack();
+
         if (inv.getContents() != null){
             int slot = 0;
 
@@ -106,8 +237,7 @@ public class BackPacksUtil {
                 return;
             }
 
-            backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
-            backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+            updateCachedBackpack();
 
             for (ItemStack item : inv.getContents()){
                 if (item != null){
@@ -133,6 +263,8 @@ public class BackPacksUtil {
                 ex.printStackTrace();
             }
         }
+
+        updateCachedBackpack();
     }
 
     /**

@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
@@ -31,6 +30,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.backpacks.BackPacksUtil;
 import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -62,6 +62,7 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
     private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     private boolean isBackPacksGUIActive = false;
+    private BackPacksUtil backPacksUtil = BackPacksUtil.get();
     
     // NOTE: sellAllConfig will be null if sellall is not enbled.
 	private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -289,44 +290,7 @@ public class ListenersPrisonManager implements Listener {
         Player p = (Player) e.getPlayer();
 
         if (isBackPacksGUIActive){
-
-            File backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
-            FileConfiguration backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
-
-            Inventory inv = e.getInventory();
-
-            if (inv.getContents() != null){
-                int slot = 0;
-
-                try {
-                    backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
-                    backPacksDataConfig.save(backPacksFile);
-                } catch (IOException ex){
-                    ex.printStackTrace();
-                    return;
-                }
-
-                backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
-                backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
-
-                for (ItemStack item : inv.getContents()){
-                    if (item != null){
-
-                        backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK", item);
-
-                        slot++;
-                    }
-                }
-                if (slot != 0){
-                    try {
-                        backPacksDataConfig.save(backPacksFile);
-                    } catch (IOException ex){
-                        ex.printStackTrace();
-                        return;
-                    }
-                }
-            }
-
+            backPacksUtil.setInventory(p, e.getInventory());
             isBackPacksGUIActive = false;
         }
 
