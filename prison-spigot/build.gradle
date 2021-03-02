@@ -50,7 +50,7 @@ dependencies {
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
     
-    implementation 'org.bstats:bstats-bukkit:1.5'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
     // Repo keeps going down:
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
