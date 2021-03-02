@@ -56,7 +56,7 @@ dependencies {
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
     
-	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'me.clip:placeholderapi:2.9.1'
     
     implementation 'net.luckperms:api:5.0'
@@ -128,7 +128,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.10'))
+        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
         include(dependency('me.clip:placeholderapi:2.9.1'))
