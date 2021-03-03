@@ -7,10 +7,12 @@ import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
@@ -114,6 +116,10 @@ public class OnBlockBreakEventListener
 	private long usesElapsedTimeNano = 0L;
 	
 	private boolean teExplosionTriggerEnabled;
+	
+	private boolean isMCMMOChecked = false;
+	private RegisteredListener registeredListenerMCMMO = null; 
+	
 	
 	public OnBlockBreakEventListener() {
 		super();
@@ -294,6 +300,9 @@ public class OnBlockBreakEventListener
     					doActionMonitor( block, mine, e );
     				}
     				else {
+    					
+    					// check mcmmo
+    					checkMCMMO( e );
     					
     					doAction( block, mine, e );
     				}
@@ -957,7 +966,41 @@ public class OnBlockBreakEventListener
 		}
 	}
 
-	
+	/**
+	 * <p>Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered
+	 * function that will do it's processing before prison will process the blocks.
+	 * </p>
+	 * 
+	 * <p>This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	private void checkMCMMO( BlockBreakEvent e ) {
+		
+		if ( !isMCMMOChecked ) {
+			
+			for ( RegisteredListener rListener : e.getHandlers().getRegisteredListeners() ) {
+				if ( rListener.getPlugin().isEnabled() && 
+						rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
+					
+					registeredListenerMCMMO = rListener;
+				}
+			}
+			
+			isMCMMOChecked = true;
+		}
+		
+		if ( registeredListenerMCMMO != null ) {
+			
+			try {
+				registeredListenerMCMMO.callEvent( e );
+			}
+			catch ( EventException e1 ) {
+				e1.printStackTrace();
+			}
+		}
+	}
 	
 //	/**
 //	 * This function should not be used since it really needs to report 

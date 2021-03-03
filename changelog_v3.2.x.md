@@ -20,6 +20,12 @@ that you need.
 # v3.2.5-alpha.1 2021-03-01
 
 
+* **NEW FEATURE: Now supports mcMMO within the mines!**
+Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered function that will do it's processing before prison will process the blocks.
+This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.
+
+
+* **Update the spigotmc.org's text for prison's resource page.**  
 
 
 * **v3.2.5-alpha.1 2021-03-01**
