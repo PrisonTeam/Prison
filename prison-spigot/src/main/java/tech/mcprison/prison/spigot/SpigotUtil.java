@@ -18,17 +18,14 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,6 +40,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.backpacks.BackPacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
@@ -186,10 +184,28 @@ public class SpigotUtil {
 		
 		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
 		Set<Integer> keys = overflow.keySet();
-		for ( Integer key : keys ) {
-			results.put( key, new SpigotItemStack( overflow.get( key ) ));
+
+		if (SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
+				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+			for (Integer key : keys){
+
+				Inventory inv = BackPacksUtil.get().getInventory(player);
+				HashMap<Integer, ItemStack> overflowBackPack = inv.addItem(overflow.get(key));
+				BackPacksUtil.get().setInventory(player, inv);
+
+				if (!overflowBackPack.isEmpty()){
+					Set<Integer> keys2 = overflowBackPack.keySet();
+					for (Integer key2 : keys2) {
+						results.put(key2, new SpigotItemStack(overflowBackPack.get(key2)));
+					}
+				}
+			}
+		} else {
+			for (Integer key : keys) {
+				results.put(key, new SpigotItemStack(overflow.get(key)));
+			}
 		}
-		
+
 		return results;
 	}
 	

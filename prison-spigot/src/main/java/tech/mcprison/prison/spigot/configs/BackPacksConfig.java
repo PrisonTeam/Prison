@@ -60,6 +60,7 @@ public class BackPacksConfig extends SpigotConfigComponents{
         dataConfig("Options.BackPack_Item_Title", "&3Backpack");
         dataConfig("Options.BackPack_Item_OnJoin", "true");
         dataConfig("Options.BackPack_Lose_Items_On_Death", "false");
+        dataConfig("Options.BackPack_AutoPickup_Usable", "true");
     }
 
     public FileConfiguration getFileBackPacksConfig(){

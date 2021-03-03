@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.backpacks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +20,13 @@ public class BackPacksListeners implements Listener {
 
         Player p = e.getPlayer();
 
-        backPacksUtil.setDefaultBackpackPlayer(p);
+        if (backPacksUtil.getInventory(p) == null) {
+            backPacksUtil.setDefaultBackpackPlayer(p);
+        }
+
+        if (getBoolean(backPacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
+            Bukkit.dispatchCommand(p, "backpack item");
+        }
     }
 
     @EventHandler

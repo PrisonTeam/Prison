@@ -20,6 +20,15 @@ that you need.
 # v3.2.5-alpha.1 2021-03-01
 
 
+* **Prison Backpack autopickup support**
+Prison backpack now supports autopickup and there're options for it in the backpacksconfig.yml.
+
+
+* **Prison BackPack setting back default size bug fixed**
+Fixed a but on player join that was setting the backpack size
+  back to the default one for some reasons.
+
+
 * **Prison Backpack SellAll support**
 Fixed some issues with Prison Backpacks API and also added support
   for sellall.

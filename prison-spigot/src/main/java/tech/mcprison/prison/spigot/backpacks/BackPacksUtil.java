@@ -169,7 +169,7 @@ public class BackPacksUtil {
      * */
     public Inventory getInventory(Player p){
 
-        Inventory inv = Bukkit.createInventory(p, 54, SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
+        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
 
         // Get the Items config section
         Set<String> slots;
@@ -242,6 +242,7 @@ public class BackPacksUtil {
 
             updateCachedBackpack();
 
+            backPacksDataConfig.set("Inventories." + p.getUniqueId() + "Size", inv.getSize());
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
