@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.BackPacksConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +42,10 @@ public class BackPacksUtil {
     public void updateCachedBackpack(){
         backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
         backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
+    }
+
+    public Configuration getBackPacksConfig(){
+        return backPacksConfig;
     }
 
     /**
@@ -116,8 +121,6 @@ public class BackPacksUtil {
      *
      * */
     public void setBackpackSize(Player p, int size){
-
-        updateCachedBackpack();
 
         // Must be multiple of 9.
         if (size % 9 != 0 || size > 54){
@@ -286,32 +289,7 @@ public class BackPacksUtil {
      * @param item - itemstack
      * */
     public void addItem(Player p, ItemStack item){
-
-        /*backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
-        backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
-
-        boolean hasError = false;
-        int slot = 0;
-        // Get the Items config section
-        Set<String> slots = null;
-        try {
-            slots = backPacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId() + ".Items").getKeys(false);
-        } catch (NullPointerException ignored){}
-        if (slots != null) {
-            slot = slots.size();
-        }
-
-        if (item != null){
-            backPacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK", item);
-        }
-
-        try{
-            backPacksDataConfig.save(backPacksFile);
-        } catch (IOException ex){
-            hasError = true;
-        }*/
-
-        Inventory inv = p.getInventory();
+        Inventory inv = getInventory(p);
         inv.addItem(item);
         setInventory(p, inv);
     }
@@ -336,7 +314,7 @@ public class BackPacksUtil {
      * @param item - itemstack
      * */
     public void removeItem(Player p, ItemStack item){
-        Inventory inv = p.getInventory();
+        Inventory inv = getInventory(p);
         inv.removeItem(item);
         setInventory(p, inv);
     }

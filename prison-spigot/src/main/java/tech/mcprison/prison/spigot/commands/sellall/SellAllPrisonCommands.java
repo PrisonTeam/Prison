@@ -36,6 +36,7 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackPacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -47,13 +48,26 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
  */
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
+    private BackPacksUtil backPacksUtil = BackPacksUtil.get();
     private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     private static SellAllPrisonCommands instance;
     public static List<String> activePlayerDelay = new ArrayList<>();
     public MinepacksPlugin minepacksPlugin = SpigotPrison.getMinepacks();
     public boolean isEnabledMinePacks = SpigotPrison.MinepacksPresent();
     public boolean signUsed = false;
+    public inventorySellMode mode = inventorySellMode.PlayerInventory;
+
+
+    /**
+     * SellAll mode.
+     * */
+    public enum inventorySellMode{
+        PlayerInventory,
+        MinesBackPack,
+        PrisonBackPack,
+    }
 
     /**
      * Get SellAll instance.
@@ -998,27 +1012,45 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         Inventory inv = p.getInventory();
 
         // Get the items from the player inventory and for each of them check the conditions.
+        mode = inventorySellMode.PlayerInventory;
         for (ItemStack itemStack : inv.getContents()){
-            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, false, removeItems);
+            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
         }
 
-        if (isEnabledMinePacks){
+        if (isEnabledMinePacks && getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"))) {
 
+            mode = inventorySellMode.MinesBackPack;
             Backpack backPack = minepacksPlugin.getBackpackCachedOnly(p);
 
-            if (backPack == null){
-                return moneyToGive;
+            if (backPack != null) {
+                for (ItemStack itemStack : backPack.getInventory().getContents()) {
+                    if (itemStack != null) {
+                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                    }
+                }
+            }
+        }
+
+        if (backPacksUtil != null && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
+                getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))){
+
+            mode = inventorySellMode.PrisonBackPack;
+            Inventory backPack = backPacksUtil.getInventory(p);
+
+            if (backPack != null){
+                for (ItemStack itemStack : backPack.getContents()){
+                    if (itemStack != null){
+                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                    }
+                }
             }
 
-            for (ItemStack itemStack : backPack.getInventory().getContents()){
-                moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, true, removeItems);
-            }
         }
 
         return moneyToGive;
     }
 
-    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean backPackMode, boolean removeItems) {
+    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean removeItems) {
 
         double moneyToGive = 0;
 
@@ -1057,10 +1089,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 if (!hasError && itemMaterial == invMaterial) {
                     amount = itemStack.getAmount();
                     if (removeItems) {
-                        if (!backPackMode) {
+                        if (mode == inventorySellMode.PlayerInventory) {
                             p.getInventory().remove(itemStack);
-                        } else {
+                        } else if (mode == inventorySellMode.MinesBackPack){
                             minepacksPlugin.getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                        } else if (mode == inventorySellMode.PrisonBackPack){
+                            backPacksUtil.removeItem(p, itemStack);
                         }
                     }
                 }

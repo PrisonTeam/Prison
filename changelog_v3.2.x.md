@@ -20,6 +20,12 @@ that you need.
 # v3.2.5-alpha.1 2021-03-01
 
 
+* **Prison Backpack SellAll support**
+Fixed some issues with Prison Backpacks API and also added support
+  for sellall.
+  There're some editable options in the sellallconfig.yml for it.
+
+
 * **NEW FEATURE: Now supports mcMMO within the mines!**
 Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered function that will do it's processing before prison will process the blocks.
 This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.

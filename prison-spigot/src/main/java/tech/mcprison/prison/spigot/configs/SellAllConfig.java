@@ -68,6 +68,8 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Sell_Sound_Enabled", "true");
         dataConfig("Options.Sell_Sound_Success_Name", "ENTITY_PLAYER_LEVELUP");
         dataConfig("Options.Sell_Sound_Fail_Name", "BLOCK_ANVIL_PLACE");
+        dataConfig("Options.Sell_Prison_BackPack_Items", "true");
+        dataConfig("Options.Sell_MinesBackPacks_Plugin_Backpack", "true");
         dataConfig("Options.SellAll_Currency", "default");
         dataConfig("Options.SellAll_Sign_Enabled", "false");
         dataConfig("Options.SellAll_Sign_Use_Permission_Enabled", "false");
