@@ -113,7 +113,7 @@ public abstract class Spigot18Blocks
 					// NOTE: Some items may have invalid data values.  Example are with pickaxes
 					//       should have a value of zero, but could range from +- 256.
 					// Try to use XMaterial to map back to a BlockType (old block model).
-					XMaterial xMat = XMaterial.matchXMaterial( spigotStack );
+					XMaterial xMat = xMatMatchXMaterial( spigotStack );
 					
 					if ( xMat != null ) {
 						results = BlockType.getBlock( xMat.name() );
@@ -137,6 +137,64 @@ public abstract class Spigot18Blocks
 		}
 		
 		return results == BlockType.NULL_BLOCK ? null : results;
+	}
+	
+	/**
+	 * <p>Something is causing XMaterial to throw an exception that makes no sense
+	 * since the item listed does not exist in game.
+	 * </p>
+	 * 
+	 *  <pre>
+	 *  Caused by: java.lang.IllegalArgumentException: Unsupported material from item: BED (14)
+	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.lambda$matchXMaterial$1(XMaterial.java:1559) ~[?:?]
+	at tech.mcprison.prison.cryptomorin.xseries.XMaterial$$Lambda$197/0x0000000069039ff0.get(Unknown Source) ~[?:?]
+	at java.util.Optional.orElseThrow(Optional.java:290) ~[?:1.8.0_272]
+	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.matchXMaterial(XMaterial.java:1559) ~[?:?]
+	at tech.mcprison.prison.spigot.compat.Spigot18Blocks.getBlockType(Spigot18Blocks.java:116) ~[?:?]
+	at tech.mcprison.prison.spigot.block.SpigotItemStack.<init>(SpigotItemStack.java:45) ~[?:?]
+	at tech.mcprison.prison.spigot.SpigotUtil.bukkitItemStackToPrison(SpigotUtil.java:583) ~[?:?]
+	at tech.mcprison.prison.spigot.SpigotListener.onPlayerInteract(SpigotListener.java:172) ~[?:?]
+	at sun.reflect.GeneratedMethodAccessor64.invoke(Unknown Source) ~[?:?]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_272]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_272]
+	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:302) ~[spigot-1.12.2.jar:git-Spigot-eb3d921-2b93d83]
+	... 17 more
+	 *  </pre>
+	 *  
+	 *  
+	 * NOTE: Some items may have invalid data values.  Example are with pickaxes 
+	 *     should have a value of zero, but could range from +- 256. 
+	 *     Try to use XMaterial to map back to a BlockType (old block model).
+	 *     
+	 * @param spigotStack
+	 * @return
+	 */
+	@SuppressWarnings( "deprecation" )
+	private XMaterial xMatMatchXMaterial( ItemStack spigotStack ) {
+		XMaterial xMat = null;
+		
+		if ( spigotStack != null ) {
+			
+			try {
+				xMat = XMaterial.matchXMaterial( spigotStack );
+			}
+			catch ( Exception e ) {
+				
+				int id = spigotStack.getType().getId();
+				short data = spigotStack.getData().getData();
+				
+				// Invalid type from the stack:
+				Output.get().logDebug( "Spigot188Blocks: unable to matchXMaterial.  " +
+						"Type=%s  Qty=%s  id=%s  data=%s  Error=[%s]",
+						spigotStack.getType().name(), 
+						Integer.toString( spigotStack.getAmount() ),
+						Integer.toString( id ),
+						Integer.toString( data ),
+						e.getMessage() );
+			}
+		}
+		
+		return xMat;
 	}
 	
 	@SuppressWarnings( "deprecation" )

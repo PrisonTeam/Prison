@@ -20,6 +20,11 @@ that you need.
 # v3.2.5-alpha.1 2021-03-04
 
 
+* **Issue with XMaterial and parsing an item stack.**
+Trying to at least catch an exception so it does not flood the console.  The reported item being picked up does not match what's actually going on.  tech.mcprison.prison.spigot.compat.Spigot18Blocks.getBlockType(ItemStack).
+Should update XMaterial too.
+
+
 * **Update the MineLiner so it can be removed.**
 Added a remove command that will remove a specific edge. Added a removeAll that will remove all liners.
 
