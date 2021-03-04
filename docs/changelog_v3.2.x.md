@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.1 2021-03-03
 
 
+* **Update the spigotmc.org doc to remove spaces from the file names.**
+Renamed the files to remove them.  This is to clean up the use of %20 which is used to represent spaces.
+
+
 * **Moved a few of the doc files in to the doc directory.**
 This is important for supporting the github pages.
 
