@@ -212,6 +212,31 @@ public class SpigotUtil {
 		return results;
 	}
 	
+	
+	
+	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory2( 
+								Player player, SpigotItemStack itemStack ) {
+		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
+		
+		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+		
+		if ( overflow.size() > 0 && 
+				SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
+				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+			
+			Inventory inv = BackPacksUtil.get().getInventory(player);
+			overflow = inv.addItem( overflow.values().toArray( new ItemStack[0] ) );
+			BackPacksUtil.get().setInventory(player, inv);
+		}
+
+		for ( Integer key : overflow.keySet() ) {
+			results.put(key, new SpigotItemStack(overflow.get(key)));
+		}
+
+		return results;
+	}
+	
+
 	/**
 	 * Used in AutoManagerFeatures.
 	 * @param player
