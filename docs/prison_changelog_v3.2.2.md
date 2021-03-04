@@ -3,7 +3,7 @@
 # Prison Build Logs for v3.2.2 - 2020-11-21
 
 ## Build logs
- - **[v3.2.4-alpha - Current](../changelog_v3.2.x.md)**
+ - **[v3.2.5-alpha - Current](changelog_v3.2.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;

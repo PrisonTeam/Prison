@@ -1,4 +1,4 @@
-[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
 # Prison Known Issues and To Do's for v3.2.x
 
@@ -7,7 +7,7 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.4
+# To Do Items - During Alpha v3.2.5
 
 
 - /prison utils message - add ability to send message to player or broadcast

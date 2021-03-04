@@ -7,8 +7,8 @@
 
 * **[Prison README.md](../README.md)**
 * **[Prison LICENSE.md](../LICENSE.md)**
-* **[Prison Change logs](../changelog_v3.2.x.md)** Detailed changes to prison.
-* **[Prison Known Issues](../knownissues_v3.2.x.md)** Known Issues and To Do's.
+* **[Prison Change logs](changelog_v3.2.x.md)** Detailed changes to prison.
+* **[Prison Known Issues](knownissues_v3.2.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
@@ -16,7 +16,7 @@
 
 
 ## Build logs
- - **[v3.2.4-alpha - Current](../changelog_v3.2.x.md)**
+ - **[v3.2.5-alpha - Current](changelog_v3.2.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
