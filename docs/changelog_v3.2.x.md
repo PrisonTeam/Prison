@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.1 2021-03-03
+# v3.2.5-alpha.1 2021-03-04
+
+
+* **Update the documentation for TE explosion events and Crazy Enchant's BlockExplodeEvents.** 
+Kept some detailed information in that document that was used to identify the nature of the issue when it wasn't working correctly.  This will be removed soon, but by committing it will preserve a copy in the project's history.
 
 
 * **Update the spigotmc.org doc to remove spaces from the file names.**
