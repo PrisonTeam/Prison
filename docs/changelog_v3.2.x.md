@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.1 2021-03-04
 
 
+* **Prevent a NPE when getPrisonBlock cannot return a value.**
+Auto features when getting the block to process.
+
+
 * **Remove the temporary details on what was causing the issues with TE issues.**
 
 
