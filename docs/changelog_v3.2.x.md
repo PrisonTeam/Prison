@@ -25,6 +25,10 @@ Trying to at least catch an exception so it does not flood the console.  The rep
 Should update XMaterial too.
 
 
+* **Backpack conflict fix**
+Fixed a conflict of backpacks when more peoples are using it at the same time.
+
+
 * **Update the MineLiner so it can be removed.**
 Added a remove command that will remove a specific edge. Added a removeAll that will remove all liners.
 

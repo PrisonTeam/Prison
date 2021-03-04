@@ -13,8 +13,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +41,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
@@ -54,6 +58,7 @@ public class ListenersPrisonManager implements Listener {
 
     private static ListenersPrisonManager instance;
     public static List<String> activeGui = new ArrayList<>();
+    public static List<String> activeBackpack = new ArrayList<>();
     public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
     private int id;
@@ -162,6 +167,7 @@ public class ListenersPrisonManager implements Listener {
 
                 if (materialConf != null && inHandItem.getType() == materialConf.getType() && inHandItem.hasItemMeta() && inHandItem.getItemMeta().hasDisplayName() && inHandItem.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(backPacksConfig.getString("Options.BackPack_Item_Title")))){
                     Bukkit.dispatchCommand(p, "gui backpack");
+                    e.setCancelled(true);
                 }
             }
         }
@@ -289,9 +295,9 @@ public class ListenersPrisonManager implements Listener {
         // Get the player and remove him from the list
         Player p = (Player) e.getPlayer();
 
-        if (isBackPacksGUIActive){
+        if (activeBackpack.contains(p.getName())){
             backPacksUtil.setInventory(p, e.getInventory());
-            isBackPacksGUIActive = false;
+            activeBackpack.remove(p.getName());
         }
 
         activeGui.remove(p.getName());
@@ -359,80 +365,6 @@ public class ListenersPrisonManager implements Listener {
         }, 20L * 30);
     }
 
-    private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the mode
-        if (mode == null) {
-        // If the mode's prestige will execute this
-        } else if (mode == ChatMode.Prestige){
-            prestigeAction(e, p, message);
-        } else if (mode == ChatMode.SellAll_Currency){
-            sellAllCurrencyChat(e, p, message);
-        } else if (mode == ChatMode.RankName){
-            rankAction(e, p, message);
-        } else if (mode == ChatMode.MineName){
-            mineAction(e, p, message);
-        }
-    }
-
-    private void sellAllCurrencyChat(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check message and do the action
-        if (message.equalsIgnoreCase("cancel")){
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditCancelled")));
-        } else if (message.equalsIgnoreCase("default")){
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency default"));
-        } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency " + message));
-        }
-
-        // Cancel event.
-        e.setCancelled(true);
-        // Set the event to false, because it's finished.
-        isChatEventActive = false;
-    }
-
-    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the chat message and do the actions
-        if (message.equalsIgnoreCase("cancel")) {
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelled")));
-        } else if (message.equalsIgnoreCase("confirm")) {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-        } else {
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelledWrongKeyword")));
-        }
-        // Cancel the event
-        e.setCancelled(true);
-        // Set the event to false, because it got deactivated
-        isChatEventActive = false;
-    }
-
-    private void mineAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the chat message and do the action
-        if (message.equalsIgnoreCase("close")) {
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
-        } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + tempChatVariable + " " + message));
-        }
-        // Cancel the event and deactivate the chat event, set boolean to false
-        e.setCancelled(true);
-        isChatEventActive = false;
-    }
-
-    private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
-        // Check the chat message and do the action
-        if (message.equalsIgnoreCase("close")) {
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
-        } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + tempChatVariable + " " + message));
-        }
-        // Cancel the event and set the boolean to false, so it can be deactivated.
-        e.setCancelled(true);
-        isChatEventActive = false;
-    }
-
     /**
      * Java getBoolean's broken so I made my own.
      * */
@@ -476,7 +408,7 @@ public class ListenersPrisonManager implements Listener {
             Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
             if (compat.getGUITitle(e) != null) {
-                if (backPacksGUI(p, compat.getGUITitle(e).substring(2))) return;
+                if (backPacksGUI(p, compat.getGUITitle(e).substring(2), e)) return;
             }
 
             // GUIs must have the good conditions to work.
@@ -503,11 +435,8 @@ public class ListenersPrisonManager implements Listener {
             // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
                 p.closeInventory();
-                e.setCancelled(true);
                 return;
             }
-
-
 
             String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
             String playerPrestigesTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
@@ -784,10 +713,13 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private boolean backPacksGUI(Player p, String title) {
+    private boolean backPacksGUI(Player p, String title, InventoryClickEvent e) {
 
         if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) && title.equalsIgnoreCase(p.getName() + " -> Backpack")){
-            isBackPacksGUIActive = true;
+            if (!activeBackpack.contains(p.getName())) {
+                activeBackpack.add(p.getName());
+            }
+
             return true;
         }
 
@@ -2681,6 +2613,80 @@ public class ListenersPrisonManager implements Listener {
 
     }
 
+
+    private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
+
+        // Check the mode
+        if (mode == null) {
+            // If the mode's prestige will execute this
+        } else if (mode == ChatMode.Prestige){
+            prestigeAction(e, p, message);
+        } else if (mode == ChatMode.SellAll_Currency){
+            sellAllCurrencyChat(e, p, message);
+        } else if (mode == ChatMode.RankName){
+            rankAction(e, p, message);
+        } else if (mode == ChatMode.MineName){
+            mineAction(e, p, message);
+        }
+    }
+
+    private void sellAllCurrencyChat(AsyncPlayerChatEvent e, Player p, String message) {
+
+        // Check message and do the action
+        if (message.equalsIgnoreCase("cancel")){
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditCancelled")));
+        } else if (message.equalsIgnoreCase("default")){
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency default"));
+        } else {
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency " + message));
+        }
+
+        // Cancel event.
+        e.setCancelled(true);
+        // Set the event to false, because it's finished.
+        isChatEventActive = false;
+    }
+
+    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
+
+        // Check the chat message and do the actions
+        if (message.equalsIgnoreCase("cancel")) {
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelled")));
+        } else if (message.equalsIgnoreCase("confirm")) {
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
+        } else {
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.PrestigeCancelledWrongKeyword")));
+        }
+        // Cancel the event
+        e.setCancelled(true);
+        // Set the event to false, because it got deactivated
+        isChatEventActive = false;
+    }
+
+    private void mineAction(AsyncPlayerChatEvent e, Player p, String message) {
+
+        // Check the chat message and do the action
+        if (message.equalsIgnoreCase("close")) {
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.mineNameRenameClosed")));
+        } else {
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + tempChatVariable + " " + message));
+        }
+        // Cancel the event and deactivate the chat event, set boolean to false
+        e.setCancelled(true);
+        isChatEventActive = false;
+    }
+
+    private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
+        // Check the chat message and do the action
+        if (message.equalsIgnoreCase("close")) {
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClosed")));
+        } else {
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + tempChatVariable + " " + message));
+        }
+        // Cancel the event and set the boolean to false, so it can be deactivated.
+        e.setCancelled(true);
+        isChatEventActive = false;
+    }
 
     /**
      * Save the auto features, and then cancel the event and close the inventory.
