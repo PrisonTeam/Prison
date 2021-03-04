@@ -2988,7 +2988,10 @@ public class MinesCommands
     		@Arg(name = "mineName", description = "The name of the mine") String mineName,
     		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
-    		@Arg(name = "pattern", description = "pattern to use [?]", def = "bright") String pattern,
+    		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
+    				"'repair' will attempt to repair missing blocks outside of the liner. " +
+    				"'remove' will remove the liner from the mine. 'removeAll' removes alll liners. [?]", 
+    				def = "bright") String pattern,
     		@Arg(name = "force", description = "Force liner if air [force no]", def = "no") String force
     		
     		) {
@@ -2997,16 +3000,17 @@ public class MinesCommands
     		return;
     	}
     	
+    	if ( pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
+    		
+    		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
+    		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
+    		return;
+    	}
+    	
     	Edges e = Edges.fromString( edge );
     	if ( e == null ) {
     		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
     		return;
-    	}
-    	
-    	if ( pattern != null && "?".equals( pattern )) {
-    		sender.sendMessage( "&3Available Patterns: [&7" + 
-    				LinerPatterns.toStringAll() + "&3]" );
-    		
     	}
     	
     	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
@@ -3034,9 +3038,18 @@ public class MinesCommands
 //    		return;
 //    	}
     	
-    	mine.getLinerData().setLiner( e, linerPattern, isForced );
-    	
-    	new MineLinerBuilder( mine, e, linerPattern, isForced );
+    	if ( linerPattern == LinerPatterns.removeAll ) {
+    		mine.getLinerData().removeAll();
+    		sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
+    	}
+    	else if ( linerPattern == LinerPatterns.remove ) {
+    		mine.getLinerData().remove( e );
+    		sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    	}
+    	else {
+    		mine.getLinerData().setLiner( e, linerPattern, isForced );
+    		new MineLinerBuilder( mine, e, linerPattern, isForced );
+    	}
     	
     	pMines.getMineManager().saveMine( mine );
     	

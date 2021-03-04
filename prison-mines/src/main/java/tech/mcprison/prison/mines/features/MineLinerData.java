@@ -282,6 +282,21 @@ public class MineLinerData {
 		return results;
 	}
 		
+	
+	public void removeAll() {
+		for ( Edges edge : Edges.values() ) {
+			remove( edge );
+		}
+	}
+
+	public void remove( Edges edge ) {
+		
+		if ( edge != null ) {
+			String pattern = null;
+			setLiner( edge, pattern, false );
+		}
+	}
+	
 	public String getNorth() {
 		return north;
 	}
@@ -379,7 +394,6 @@ public class MineLinerData {
 	public void setForceBottom( boolean forceBottom ) {
 		this.forceBottom = forceBottom;
 	}
-
 
 	
 }

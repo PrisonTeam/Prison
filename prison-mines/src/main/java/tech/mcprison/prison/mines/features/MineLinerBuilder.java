@@ -43,7 +43,9 @@ public class MineLinerBuilder {
 		beacon,
 		bricked,
 		
-		repair
+		repair,
+		remove,
+		removeAll
 		;
 		
 		public static LinerPatterns fromString( String pattern ) {
