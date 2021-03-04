@@ -535,46 +535,6 @@ Please notice that we have defined two WorldGuard regions: prison_mines_a and pr
 
 
 
-# Testing TokenEnchant Explosions - Identifying the Issues
-
-
-
-There have been a number of issues pertaining to TE Explosions not working well within the mines.  These are general comments and test results based upon v3.2.4-alpha.14 as of 2021-02-22.  These details will be deleted from this document once the fixes are fully tested.  Please see instructions below on how to enable TE Explosions with v3.2.5-alpha.15 and later.
-
-
-Here are some details pertaining to TE Explosion events.
-
-Setup TokenEnchant as you would normally.  Download the `TE-ExplosiveEnchant-8-x.y_z.jar` and place it in the `plugins/TokenEnchant/enchants` folder.  Run your server once and it will auto generate the config files in that same folder.  Edit `Explosive_config.yml` file if you wish, but you don't have to. Find `Potions.Explosive.occurrence: random` and change it to `always` for testing purposes.  
-
-From within the game, give yourself a diamond pickaxe (`/give <playerName> diamond_pickaxe 1` or `diamondpickaxe`) and enchant it with `/te enchant Explosive 1` or up to a level of 10.  If you need tokens to use, give yourself some from the console with `/te add <playerName> 100`.
-
-
-
-* If you setup `__global__` as defined at the top of this document, then the following will apply as long as you are not within another WG region:
-  - If you are OP'd you can break blocks anywhere with a normal pickaxe.
-  - If you are OP'd you can break blocks anywhere with a TE Enchanted pickax with Explosive enchantment.
-  - If you are OP'd you can break blocks within a mine with a TE Enchanted pickax with Explosive enchantment if no other regions are defined over the mine.
-  - If you are not OP'd then you cannot break any blocks anywhere in the world or within the mines with both a normal pickaxe or even a TE enchanted Explosive pickaxe.
-  - Define a **simple region** in the mine the same size as the mine. Name it as suggested at the top of this document, such as prison_mine_c as an example.  The "simple" region only includes defining the region, setting the priority to 10, and add a permission group member.
-  - Prison's auto manager is turned off and prison is not using auto pickup.
-  - If you are not OP'd in a mine that has a **simple region** defined, you cannot break any blocks with a normal pickaxe if you, the player, has not been give the group permission that has been assigned to the region.  A TE enchanted pickaxe with Explosive will not work either.
-  - If you are not OP'd and a **simple region** is defined within a mine (see a few lines above), then you can break blocks within a mine with auto features turned off (auto pickup) **with** the specified permission group added to your player.  The blocks will drop normally.
-  - If you are not OP'd and a **simple region** is defined and prison's auto features turned off, then TE's explosive event will break the blocks in the mine and place the items in the player's inventory (auto pickup even with prison's auto features turned off).  TE's auto pickup is defined within TE's config file: `plugins/TokenEnchant/config.yml` at bottom with the two settings: `TEBlockExplodeEvent.process: true` and `TEBlockExplodeEvent.pickup: true`. 
-  - WARNING: TokenEnchant Explosive Enchantment will **destroy blocks outside of the mine**. This is beyond the ability of prison to prevent TE from breaking blocks outside of the mine.  It appears like only the targeted block is tested to see if it is breakable by the player, then the explosive event does not check if the player has permission to break the other blocks involved. The TE Explosive event will break blocks above, below, and to the side of the mine.  It will break the mine liners and ladders, and any other decorations applied within the area around the mine.
-  - With the two TEBlockExplodeEvent settings set to false, (see the two statements above), then normal diamond pickaxe will behave the same as above, and a pickaxe enchanted with the TE's Explosive event will break only one block, and perform the particle and smoke effects, but it will not break any other blocks around it. 
-  - With the two TEBlockExplodeEvent settings set to false, and with prison auto pickup enabled, the normal diamond pickaxe behaves the same with the auto pickup enabled.  When auto pickup is enabled in this situation, the single block is broke and there are no effects.  
-  - This last situation, where there is no effects, implies that TE does not handle the event before prison's auto pickup handled the situation.
-  - With the two TEBlockExplodeEvent settings set to false, and with prison auto pickup disabled, the normal pickaxe behaves the same and drops the blocks. With the TE enchanted pick with Explosive it breaks the block normally, without the effects, nor does it break any other blocks.  It does not fire the TEBlockExplodeEvent.  It should be noted that this is with the TE's `plugins/TokenEnchant/enchants/Explosive_config.yml` setting of `Potions.Explosive.event_map.BlockBreakEvent: HIGHEST` which is the default value (HIGHEST).
-  - **Key to get TE Explosive enchant to work with prison:** With the two TEBlockExplodeEvent settings set to false (see above), and prison's auto pickup **enabled**, not OP'd, and in survival game mode, TE is able to fire their TEBlockExplodeEvent when the TE's `plugins/TokenEnchant/enchants/Explosive_config.yml` setting is changed to **LOWEST** `Potions.Explosive.event_map.BlockBreakEvent: LOWEST`.  
-  
-  - NOTE: Prison will be adjusted to deal with how the TE explosion event works when auto features is disabled.  But there is no way to force prison to handle a TE explosion event when auto features is enabled because that event never happens.
-  
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
 # To get TokenEnchant's TEBlockExplosionEvent to work with prison, you must follow these settings:
 
 

@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.1 2021-03-04
 
 
+* **Remove the temporary details on what was causing the issues with TE issues.**
+
+
 * **Update the documentation for TE explosion events and Crazy Enchant's BlockExplodeEvents.** 
 Kept some detailed information in that document that was used to identify the nature of the issue when it wasn't working correctly.  This will be removed soon, but by committing it will preserve a copy in the project's history.
 
