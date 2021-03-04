@@ -187,11 +187,12 @@ public class SpigotUtil {
 
 		if (SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
 				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
-			for (Integer key : keys){
 
-				Inventory inv = BackPacksUtil.get().getInventory(player);
-				HashMap<Integer, ItemStack> overflowBackPack = inv.addItem(overflow.get(key));
-				BackPacksUtil.get().setInventory(player, inv);
+			// Get backpack.
+			Inventory prisonBackpack = BackPacksUtil.get().getInventory(player);
+
+			for (Integer key : keys){
+				HashMap<Integer, ItemStack> overflowBackPack = prisonBackpack.addItem(overflow.get(key));
 
 				if (!overflowBackPack.isEmpty()){
 					Set<Integer> keys2 = overflowBackPack.keySet();
@@ -200,6 +201,8 @@ public class SpigotUtil {
 					}
 				}
 			}
+			// Save backpack with new items if not full.
+			BackPacksUtil.get().setInventory(player, prisonBackpack);
 		} else {
 			for (Integer key : keys) {
 				results.put(key, new SpigotItemStack(overflow.get(key)));
