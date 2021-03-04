@@ -170,15 +170,9 @@ public class SpigotUtil {
 		
 		return itemStack;
 	}
-	
-	/**
-	 * Used in AutoManagerFeatures.
-	 * 
-	 * @param player
-	 * @param itemStack
-	 * @return
-	 */
-	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory( 
+
+
+	/*public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
 			Player player, SpigotItemStack itemStack ) {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
@@ -210,11 +204,17 @@ public class SpigotUtil {
 		}
 
 		return results;
-	}
-	
-	
-	
-	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory2( 
+	}*/
+
+
+	/**
+	 * Used in AutoManagerFeatures.
+	 *
+	 * @param player
+	 * @param itemStack
+	 * @return
+	 */
+	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
 								Player player, SpigotItemStack itemStack ) {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
