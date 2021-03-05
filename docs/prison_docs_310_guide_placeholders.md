@@ -181,11 +181,9 @@ Example of this attribute's usage is as follows, using descriptions for each par
        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
        			</li>
       <li><i>Note:</i> Other unitTypes can be added along with different style of
-       			reducers.</p></li>
+       			reducers.</li>
   	</ul>
   </li>
-</ul>
-<li>
   <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
@@ -203,6 +201,8 @@ Example of this attribute's usage is as follows, using descriptions for each par
    				any error messages that may occur when applying the attribute.</li>
   
 </ul>
+
+
 
 
 The parameters that are optional do not have to be included, unless another parameter after the optional ones are needed. Then the optional parameter must be supplied and cannot be empty.
