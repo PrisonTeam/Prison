@@ -154,7 +154,7 @@ Example of this attribute's usage is as follows, using descriptions for each par
 <ul>
   <li><b>nFormat</b>: the keyword to identify this attribute.</li>
   <li><b>format</b>: formatting based upon Java's DecimalFormat class.
-  					**Required.** Defaults to #,##0.00. 
+  					<b>Required.</b> Defaults to #,##0.00. 
      <ul>
        <li>#,###</li>
        <li>#,###.00</li>
@@ -186,18 +186,17 @@ Example of this attribute's usage is as follows, using descriptions for each par
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
-  				do not directly support hex color codes.
+  				do not directly support hex color codes.</li>
   <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
-  				color codes and may work when 'hex' does not.
+  				color codes and may work when 'hex' does not.</li>
   <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
-   				any error messages that may occur when applying the attribute.
-  </li>
+   				any error messages that may occur when applying the attribute.</li>
   
 </ul>
 
