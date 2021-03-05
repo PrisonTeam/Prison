@@ -59,7 +59,7 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'me.clip:placeholderapi:2.9.1'
     
-    implementation 'net.luckperms:api:5.0'
+    implementation 'net.luckperms:api:5.3'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
     
 	implementation 'com.github.cryptomorin:XSeries:7.8.0'
