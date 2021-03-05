@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.1 2021-03-04
 
 
+* **Update documents to work better with GitHub's sites for the documentation.**
+All documents within the directory prison/docs/ will be automatically added to, and published to, the site.  Therefore none of the docs within the docs directory can refer to documents outside of it, or it will result in a 404 when the player is viewing them.
+
+
 * **Issue with XMaterial and parsing an item stack.**
 Trying to at least catch an exception so it does not flood the console.  The reported item being picked up does not match what's actually going on.  tech.mcprison.prison.spigot.compat.Spigot18Blocks.getBlockType(ItemStack).
 Should update XMaterial too.

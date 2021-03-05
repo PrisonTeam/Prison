@@ -13,20 +13,6 @@ issues, and/or to serve as items that should be added, or fixed.
 - /prison utils message - add ability to send message to player or broadcast
 
 
--DONE: COUNT blocks upon startup when doing the air counts:
-
-- DONE: build targetBlockList when counting air blocks upon server startup.
-
-
-
-- DONE: Use the mine tag name over the mine's name if it exists.
-
-
-
-- DONE: TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not been exact. Not sure why at this time.
-
-
-
 - Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
   - Partially done.  The chat handler was updated, but the change could be pushed in to other existing code to improve the flexibility and resolve some of the weaknesses that may exist.
 
@@ -35,12 +21,6 @@ issues, and/or to serve as items that should be added, or fixed.
   - NOTE: Cannot refresh liners if size is 0. The reason for this is that a liner may not always fill the full edge.  Therefore, a value of 0 cannot tell if there should be a liner block in that position. Normally a liner only replaces existing block when applying the liner, or it forces it so it fills the whole edge.  If it's not normally forced, then it cannot be done.
 
 
-
-- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point. 
- - This is done, but the player has to take damage before the event is fired.  Therefore it is not instant when they log in.  Also if they cannot take damage, such they are in god mode, then it won't kick in either.  I've also seen this where it won't tp myself to the mine's spawn because I don't have the perms to go there, but not really sure if that was the cause.
-
-
-   
    
 - Future Block Constraints:
  - GradientBottom - The block has a greater chance to spawn near the bottom of the mine. 
@@ -53,8 +33,6 @@ issues, and/or to serve as items that should be added, or fixed.
      defined in that mine included there.  This is so air and other blocks that don't find hits can be included with the counts.  Needed for when blocks are changed so it does not lose change status?
      
 
-- player.getPermission() is not returning anything??
-
 
 - Prestiges max - if at max show 100% or Max, etc... Maybe set "max" on a placeholder attribute?
 
@@ -63,9 +41,6 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 - Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
-
-
-- For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
 
 
 - Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
@@ -121,14 +96,6 @@ issues, and/or to serve as items that should be added, or fixed.
   the refund is credited to the wrong currency
   - This will be easier to fix once currencies are fixed
   
-
-- Possible issue with auto features preventing WorldGuard from protecting a
-  mine.  In the auto features GUI, when the bottom three features are turned 
-  off then WG won't protect the region.
-
-
-- ? auto features - issue with lore
-- world guard - not working properly
 
 
 * **Custom block issues**
@@ -418,6 +385,37 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+
+- DONE: COUNT blocks upon startup when doing the air counts:
+
+
+- DONE: build targetBlockList when counting air blocks upon server startup.
+
+
+- DONE: Use the mine tag name over the mine's name if it exists.
+
+
+- DONE: TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not been exact. Not sure why at this time.
+
+
+- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point. 
+ - This is done, but the player has to take damage before the event is fired.  Therefore it is not instant when they log in.  Also if they cannot take damage, such they are in god mode, then it won't kick in either.  I've also seen this where it won't tp myself to the mine's spawn because I don't have the perms to go there, but not really sure if that was the cause.
+
+
+- DONE: For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
+
+
+- DONE: player.getPermission() is not returning anything??
+
+
+- DONE: Possible issue with auto features preventing WorldGuard from protecting a mine.  In the auto features GUI, when the bottom three features are turned off then WG won't protect the region.
+
+
+- DONE: ? auto features - issue with lore. world guard - not working properly
+
+
 
 
 
