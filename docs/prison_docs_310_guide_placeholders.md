@@ -232,34 +232,35 @@ Example of this attribute's usage is as follows, using descriptions for each par
 
 
 
-<ul>
-  <li><b>bar</b>: the keyword to identify this attribute.</li>
-  <li><b>size</b>: The number of segments to generate.</li>
-  <li><b>Positive Color</b>: The color code to use for the positive segments. 
-  						Color codes should start with an &.</li>
-  <li><b>Positive Segment</b>: The value that will be used for the positive
-  						segment.</li>
-  <li><b>Negative Color</b>: The color code to use for the negative segments. 
-  						Color codes should start with an &.</li>
-  <li><b>Negative Segment</b>: The value that will be used for the negative
-  						segment.</li>
-  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **bar**: the keyword to identify this attribute.
+- **size**: The number of segments to generate.
+- **Positive Color**: The color code to use for the positive segments. 
+  						Color codes should start with an &.
+- **Positive Segment**: The value that will be used for the positive
+  						segment.
+- **Negative Color**: The color code to use for the negative segments. 
+  						Color codes should start with an &.
+- **Negative Segment**: The value that will be used for the negative
+  						segment.
+  	
+      
+- **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
   				do not directly support hex color codes.
-  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **hex2**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
   				color codes and may work when 'hex' does not.
-  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **debug**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
-   				any error messages that may occur when applying the attribute.
-  </li>
-</ul>
+   				any error messages that may occur when applying the attribute.					
+  						
+
 
 The parameters are all optional and if they are not supplied then the default values for the bar graph will be used instead. 
 
@@ -305,25 +306,22 @@ Example of this attribute's usage is as follows, using descriptions for each par
 `::text:hex:hex2:debug`
 
 
-
-<ul>
-  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+      
+- **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
   				do not directly support hex color codes.
-  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **hex2**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
   				color codes and may work when 'hex' does not.
-  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **debug**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
-  </li>
-</ul>
 
 
 
