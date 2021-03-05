@@ -38,6 +38,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
@@ -54,17 +55,13 @@ public class ListenersPrisonManager implements Listener {
 
     private static ListenersPrisonManager instance;
     public static List<String> activeGui = new ArrayList<>();
-    public static List<String> activeBackpack = new ArrayList<>();
     public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
     private int id;
     private String tempChatVariable;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
-    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
-    private boolean isBackPacksGUIActive = false;
-    private BackPacksUtil backPacksUtil = BackPacksUtil.get();
-    
+
     // NOTE: sellAllConfig will be null if sellall is not enbled.
 	private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     
@@ -151,22 +148,6 @@ public class ListenersPrisonManager implements Listener {
 
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e){
-
-        if (backPacksConfig != null){
-            if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) && getBoolean(backPacksConfig.getString("Options.Back_Pack_GUI_Opener_Item"))){
-
-                Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-
-                Player p = e.getPlayer();
-                ItemStack inHandItem = compat.getItemInMainHand(p);
-                ItemStack materialConf = SpigotUtil.getXMaterial(backPacksConfig.getString("Options.BackPack_Item")).parseItem();
-
-                if (materialConf != null && inHandItem.getType() == materialConf.getType() && inHandItem.hasItemMeta() && inHandItem.getItemMeta().hasDisplayName() && inHandItem.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(backPacksConfig.getString("Options.BackPack_Item_Title")))){
-                    Bukkit.dispatchCommand(p, "gui backpack");
-                    e.setCancelled(true);
-                }
-            }
-        }
 
         sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
         if (sellAllConfig != null) {
@@ -291,12 +272,6 @@ public class ListenersPrisonManager implements Listener {
         // Get the player and remove him from the list
         Player p = (Player) e.getPlayer();
 
-        if (activeBackpack.contains(p.getName())){
-            backPacksUtil.setInventory(p, e.getInventory());
-            activeBackpack.remove(p.getName());
-            //TODO close backpack message if enabled and maybe sound.
-        }
-
         activeGui.remove(p.getName());
     }
 
@@ -402,18 +377,10 @@ public class ListenersPrisonManager implements Listener {
 
         if (activeGui.contains(p.getName())) {
 
-            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-
-            if (compat.getGUITitle(e) != null) {
-                if (e.getClickedInventory() == null && activeBackpack.contains(p.getName())){
-                    p.closeInventory();
-                    return;
-                }
-                if (backPacksGUI(p, compat.getGUITitle(e).substring(2), e)) return;
-            }
-
             // GUIs must have the good conditions to work.
             if (guiConditions(e, p)) return;
+
+            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
             String buttonNameMain;
             String[] parts;
@@ -712,19 +679,6 @@ public class ListenersPrisonManager implements Listener {
                 playerMinesGUI(p, e);
             }
         }
-    }
-
-    private boolean backPacksGUI(Player p, String title, InventoryClickEvent e) {
-
-        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) && title.equalsIgnoreCase(p.getName() + " -> Backpack")){
-            if (!activeBackpack.contains(p.getName())) {
-                activeBackpack.add(p.getName());
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private void showBlock(InventoryClickEvent e, Player p, String[] parts) {

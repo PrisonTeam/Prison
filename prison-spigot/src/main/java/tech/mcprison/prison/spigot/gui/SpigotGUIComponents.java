@@ -18,6 +18,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -160,5 +161,18 @@ public abstract class SpigotGUIComponents {
         // Open the inventory
         p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
+    }
+
+    /**
+     * Open and register GUIs.
+     *
+     * @param p
+     * @param inv
+     * */
+    protected void openBackpack(Player p, Inventory inv){
+
+        // Open the inventory
+        p.openInventory(inv);
+        BackPacksListeners.get().addToBackpackActive(p);
     }
 }
