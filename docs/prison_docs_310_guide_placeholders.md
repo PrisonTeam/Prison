@@ -161,10 +161,12 @@ Example of this attribute's usage is as follows, using descriptions for each par
        <li>#,###.00000</li>
     </ul>
   </li>
+</ul>
+<ul>
   <li><b>spaces</b>: number of spaces between format and unit of measure. 
-  				**Optional.** Defaults to 1.</li>
+  				<b>Optional.</b> Defaults to 1.</li>
   <li><b>unitType</b>: unit type to display or to use to transform the results.
-  				**Optional.** Defaults to the placeholder type that is used.
+  				<b>Optional.</b> Defaults to the placeholder type that is used.
   	<ul>
       <li><b>none</b>: No display of units. No transformations.</li>
       <li><b>kmg</b>: Uses one character units: kMGTPEZY. Transforms results by 
@@ -179,9 +181,11 @@ Example of this attribute's usage is as follows, using descriptions for each par
        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
        			</li>
       <li><i>Note:</i> Other unitTypes can be added along with different style of
-       			reducers.</p>
+       			reducers.</p></li>
   	</ul>
   </li>
+</ul>
+<li>
   <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
