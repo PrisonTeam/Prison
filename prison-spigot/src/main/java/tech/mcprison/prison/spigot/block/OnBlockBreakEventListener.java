@@ -451,7 +451,11 @@ public class OnBlockBreakEventListener
     		else {
     			
     			// targeted block was not in the mine, so cancel it:
-    			e.setCancelled( true );
+    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+    				
+    				e.setCancelled( true );
+    			}
     		}
     		
     	}
@@ -698,7 +702,12 @@ public class OnBlockBreakEventListener
 					mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
 							triggered );
 
-					e.setCancelled( true );
+
+	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+	    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+	    				
+	    				e.setCancelled( true );
+	    			}
 				}
 				
 			}
@@ -721,7 +730,11 @@ public class OnBlockBreakEventListener
 				mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.blockBreak, triggered );
 
 				
-				e.setCancelled( true );
+    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+    				
+    				e.setCancelled( true );
+    			}
 
 			}
 			
@@ -836,7 +849,12 @@ public class OnBlockBreakEventListener
 					
 					
 					// Set the broken block to AIR and cancel the event
-					e.setCancelled(true);
+	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+	    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	    				
+	    				e.setCancelled( true );
+	    			}
+
 					
 					// The block should be set to air already:
 					//e.getBlock().setType(Material.AIR);

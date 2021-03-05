@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.1 2021-03-04
 
 
+* **For debugging purposes only, added ability to turn off event canceling on BlockBreakEvents and TEExplosionEvents.**
+This may cause a lot of problems and result in many issues.  These should never be used.
+
+
 * **Update documents to work better with GitHub's sites for the documentation.**
 All documents within the directory prison/docs/ will be automatically added to, and published to, the site.  Therefore none of the docs within the docs directory can refer to documents outside of it, or it will result in a 404 when the player is viewing them.
 

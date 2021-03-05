@@ -3039,6 +3039,7 @@ public class MinesCommands
 //    	}
     	
     	if ( linerPattern == LinerPatterns.removeAll ) {
+    		
     		mine.getLinerData().removeAll();
     		sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
     	}
@@ -3052,7 +3053,6 @@ public class MinesCommands
     	}
     	
     	pMines.getMineManager().saveMine( mine );
-    	
     }
     
     

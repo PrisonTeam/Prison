@@ -190,7 +190,11 @@ public class AutoManager
 
 
 				// Set the broken block to AIR and cancel the event
-				e.setCancelled(true);
+    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+    				
+    				e.setCancelled( true );
+    			}
 				e.getBlock().setType(Material.AIR);
 
 				// Maybe needed to prevent drop side effects:
@@ -379,7 +383,12 @@ public class AutoManager
 					mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.TEXplosion,
 							triggered );
 
-					e.setCancelled( true );
+	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
+	    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	    				
+	    				e.setCancelled( true );
+	    			}
+
 				}
 
 

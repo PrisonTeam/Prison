@@ -125,6 +125,10 @@ public class AutoFeaturesFileConfig {
 		    	autoBlockLapisBlock(autoBlock, true),
 		    	autoBlockSnowBlock(autoBlock, true),
 		    	autoBlockGlowstone(autoBlock, true),
+		    	
+	    	debug(options),
+	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
+	    		isDebugSupressOnTEExplodeEventCancels(debug, false)
 
     	;
 
