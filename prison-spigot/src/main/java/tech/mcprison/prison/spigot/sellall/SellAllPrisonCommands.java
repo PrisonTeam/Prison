@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.commands.sellall;
+package tech.mcprison.prison.spigot.sellall;
 
 import java.io.File;
 import java.io.IOException;

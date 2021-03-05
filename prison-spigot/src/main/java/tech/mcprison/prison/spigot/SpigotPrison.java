@@ -59,7 +59,7 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.*;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;

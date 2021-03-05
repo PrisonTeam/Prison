@@ -22,7 +22,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;

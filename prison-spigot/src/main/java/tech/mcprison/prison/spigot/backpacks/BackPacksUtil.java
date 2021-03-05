@@ -43,7 +43,18 @@ public class BackPacksUtil {
         backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
     }
 
+    public Configuration getBackPacksDataConfig(){
+
+        if (backPacksDataConfig == null){
+            updateCachedBackpack();
+        }
+
+        return backPacksDataConfig;
+    }
     public Configuration getBackPacksConfig(){
+        if (backPacksConfig == null){
+            backPacksConfigUpdater();
+        }
         return backPacksConfig;
     }
 
@@ -142,7 +153,7 @@ public class BackPacksUtil {
 
         updateCachedBackpack();
 
-        int backPackSize = 0;
+        int backPackSize = Integer.parseInt(backPacksConfig.getString("Options.BackPack_Default_Size"));
 
         try {
             backPackSize = Integer.parseInt(backPacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Size"));

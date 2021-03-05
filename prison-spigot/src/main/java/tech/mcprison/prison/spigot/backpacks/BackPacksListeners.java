@@ -23,6 +23,7 @@ public class BackPacksListeners implements Listener {
 
     private static BackPacksListeners instance;
     private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
+    private Configuration backPacksDataConfig = BackPacksUtil.get().getBackPacksDataConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private BackPacksUtil backPacksUtil = BackPacksUtil.get();
     public List<String> activeBackpack = new ArrayList<>();
@@ -43,7 +44,7 @@ public class BackPacksListeners implements Listener {
 
         Player p = e.getPlayer();
 
-        if (backPacksUtil.getInventory(p) == null) {
+        if (backPacksUtil.getInventory(p) == null || backPacksDataConfig == null || backPacksDataConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null) {
             backPacksUtil.setDefaultBackpackPlayer(p);
         }
 

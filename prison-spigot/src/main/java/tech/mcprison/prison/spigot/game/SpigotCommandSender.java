@@ -32,7 +32,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.util.Text;
 
 /**
