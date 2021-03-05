@@ -13,11 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +38,6 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
@@ -298,6 +294,7 @@ public class ListenersPrisonManager implements Listener {
         if (activeBackpack.contains(p.getName())){
             backPacksUtil.setInventory(p, e.getInventory());
             activeBackpack.remove(p.getName());
+            //TODO close backpack message if enabled and maybe sound.
         }
 
         activeGui.remove(p.getName());
@@ -408,6 +405,10 @@ public class ListenersPrisonManager implements Listener {
             Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
             if (compat.getGUITitle(e) != null) {
+                if (e.getClickedInventory() == null && activeBackpack.contains(p.getName())){
+                    p.closeInventory();
+                    return;
+                }
                 if (backPacksGUI(p, compat.getGUITitle(e).substring(2), e)) return;
             }
 

@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.BackPacksConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.util.Set;
 public class BackPacksUtil {
 
     private static BackPacksUtil instance;
-    private Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     private File backPacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
     private FileConfiguration backPacksDataConfig = YamlConfiguration.loadConfiguration(backPacksFile);
