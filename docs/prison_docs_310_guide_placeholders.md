@@ -141,13 +141,15 @@ Using the command `/prison placeholders test` should be used to test and perfect
 
 
 
-### Placeholder Attribute - Numeric Formats
+## Placeholder Attribute - Numeric Formats
+
 
 The Numeric Format attribute will only work on placeholders that return plain numbers.  If there is a "_format" version of the placeholder, then an attribute will override the default formatting.
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
 `::nFormat:format:spaces:unitType:hex:hex2:debug`
+
 
 <ul>
   <li><b>nFormat</b>: the keyword to identify this attribute.</li>
@@ -221,7 +223,8 @@ Although it is not suggested to include color codes in the formatting of numbers
 
 
 
-### Placeholder Attribute - Bar Graphs
+## Placeholder Attribute - Bar Graphs
+
 
 The bar placeholder attribute only works with placeholders with the word bar in them. 
 
@@ -229,6 +232,8 @@ The bar placeholder attribute only works with placeholders with the word bar in 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
 `::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug`
+
+
 
 <ul>
   <li><b>bar</b>: the keyword to identify this attribute.</li>
@@ -285,7 +290,7 @@ Examples of using hex color codes in a bar graph placeholder. Try it first with 
 
 
 
-### Placeholder Attribute - Text
+## Placeholder Attribute - Text
 
 
 This placeholder attribute is for text formatting the placeholder results.  The only thing it does is to process the hex, hex2, and debug options.
@@ -301,6 +306,7 @@ placeholders.
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
 `::text:hex:hex2:debug`
+
 
 
 <ul>
@@ -331,22 +337,30 @@ Example of this attribute's usage is as follows, using descriptions for each par
 
 # Rank Command Placeholders
 
+
 The Rank Commands recognize only two placeholders, but they are not considered part of the standard placeholders.  There are also only two placeholders that are recognized and both are case sensitive (must be lower case), and must also include curly braces too.
+
 
 * {player}
 * {player_uid}
 
+
 This is mentioned here since these rank command placeholders are not part of all the other placeholders, so as such, it may be difficult to find information for these items.
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+
 # Placeholder Commands
+
 
 *Since Prison v3.2.1-alpha.13*
 
+
 There are a few commands within prison that will allow you list placeholders, search for placeholders, and to test random text that includes placeholders.
+
 
 * **/prison placeholders**
 
@@ -381,6 +395,7 @@ Example of the list of placeholders that is available through **/prison placehol
 
 
 <h3>Prison Placeholder Search with Two Search Patterns</h3>
+
 
 <img src="images/prison_docs_310_guide_placeholders_3.png" alt="Prison Placeholder Search" title="Prison Placeholder Search" width="500" />
 
