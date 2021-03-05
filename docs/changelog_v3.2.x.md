@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.1 2021-03-05
 
 
+* **Since prison's fortune has no max upper limits, added a maxFortuneLevel** so the admin can put a cap on what's being calculated.  Of course it may be easier to cap the enchantments too.
+
+
 * **Hooked up the mcMMO enablement in auto manager to a config setting so it could be turned off.**
 
 

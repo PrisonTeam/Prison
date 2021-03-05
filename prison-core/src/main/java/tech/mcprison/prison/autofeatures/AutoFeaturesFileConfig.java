@@ -46,6 +46,7 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	isCalculateFortuneEnabled(general, true),
 		    	isCalculateFortuneOnAllBlocksEnabled(general, false),
+		    	maxFortuneLevel(general, 0),
 		    	
 		    	isCalculateSilkEnabled(general, true),
 		    	
@@ -223,6 +224,24 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
     	}
+    	private AutoFeatures(AutoFeatures section, int value) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = true;
+    		this.isLong = false;
+    		this.isDouble = false;
+    		this.isStringList = false;
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = value;
+    		this.longValue = null;
+    		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+    	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
     		this.parent = section;
     		this.isSection = false;
@@ -367,6 +386,21 @@ public class AutoFeaturesFileConfig {
     		}
     		else if ( getValue() != null ) {
     			results = getValue().booleanValue();
+    		}
+    		
+    		return results;
+    	}
+    	
+    	
+    	public int getInteger( Map<String, ValueNode> conf ) {
+    		int results = 0;
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isIntegerNode() ) {
+    			IntegerNode intValue = (IntegerNode) conf.get( getKey() );
+    			results = intValue.getValue();
+    		}
+    		else if ( getValue() != null ) {
+    			results = getIntValue();
     		}
     		
     		return results;
@@ -544,6 +578,10 @@ public class AutoFeaturesFileConfig {
 	
 	public String getFeatureMessage( AutoFeatures feature ) {
 		return feature.getMessage( getConfig() );
+	}
+	
+	public int getInteger( AutoFeatures feature ) {
+		return feature.getInteger( getConfig() );
 	}
 	
 	public List<String> getFeatureStringList( AutoFeatures feature ) {

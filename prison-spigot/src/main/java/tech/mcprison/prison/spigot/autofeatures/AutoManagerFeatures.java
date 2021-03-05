@@ -115,6 +115,10 @@ public class AutoManagerFeatures
 		return autoFeaturesConfig.getFeatureMessage( feature );
 	}
 
+	protected int getInteger( AutoFeatures feature ) {
+		return autoFeaturesConfig.getInteger( feature );
+	}
+	
 	protected List<String> getListString( AutoFeatures feature ) {
 		List<String> results = null;
 		if ( feature.isStringList() ) {
@@ -1256,6 +1260,11 @@ public class AutoManagerFeatures
 	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevel) {
 
 		if (fortuneLevel > 0) {
+			
+			int maxFortuneLevel = getInteger( AutoFeatures.maxFortuneLevel );
+			if ( maxFortuneLevel > 0 && fortuneLevel > maxFortuneLevel ) {
+				fortuneLevel = maxFortuneLevel;
+			}
 
 			int count = blocks.getAmount();
 			int multiplier = 1;
