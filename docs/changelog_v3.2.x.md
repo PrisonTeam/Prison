@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.1 2021-03-04
+# v3.2.5-alpha.1 2021-03-05
+
+
+* **Hooked up the mcMMO enablement in auto manager to a config setting so it could be turned off.**
 
 
 * **For debugging purposes only, added ability to turn off event canceling on BlockBreakEvents and TEExplosionEvents.**

@@ -998,12 +998,19 @@ public class OnBlockBreakEventListener
 		
 		if ( !isMCMMOChecked ) {
 			
-			for ( RegisteredListener rListener : e.getHandlers().getRegisteredListeners() ) {
-				if ( rListener.getPlugin().isEnabled() && 
-						rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
-					
-					registeredListenerMCMMO = rListener;
+	    	AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+	    	boolean isProcessMcMMOBlockBreakEvents = aMan.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
+
+			if ( isProcessMcMMOBlockBreakEvents ) {
+				
+				for ( RegisteredListener rListener : e.getHandlers().getRegisteredListeners() ) {
+					if ( rListener.getPlugin().isEnabled() && 
+							rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
+						
+						registeredListenerMCMMO = rListener;
+					}
 				}
+				
 			}
 			
 			isMCMMOChecked = true;
