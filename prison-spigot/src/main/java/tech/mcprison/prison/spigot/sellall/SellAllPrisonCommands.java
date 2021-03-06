@@ -612,6 +612,30 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
+    public void sellAllAddCommand( XMaterial blockAdd, Double value){
+
+    	String itemID = blockAdd.name();
+    	
+    	// If the block or item was already cnfigured, then skip this:
+        if (sellAllConfig.getConfigurationSection("Items." + itemID) != null){
+            return;
+        }
+
+        try {
+        	File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+        	FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+        	conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
+        	conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        	conf.save(sellAllFile);
+        } catch (IOException e) {
+        	Output.get().logError( SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")), e);
+        	return;
+        }
+
+        Output.get().logInfo(SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
+        sellAllConfigUpdater();
+    }
+    
     @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
