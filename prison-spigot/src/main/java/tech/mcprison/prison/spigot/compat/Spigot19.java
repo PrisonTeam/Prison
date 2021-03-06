@@ -102,7 +102,16 @@ public class Spigot19
     public void playIronDoorSound(Location loc) {
         loc.getWorld().playEffect(loc, Effect.IRON_DOOR_TOGGLE, null);
     }
-    
+
+    @Override
+    public Sound getAnvilSound() {
+        return Sound.valueOf("BLOCK_ANVIL_BREAK");
+    }
+
+    @Override
+    public Sound getLevelUpSound() {
+        return Sound.valueOf("ENTITY_PLAYER_LEVELUP");
+    }
 
 	@Override
 	public void breakItemInMainHand( Player player ) {

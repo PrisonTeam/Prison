@@ -107,7 +107,17 @@ public class Spigot18
         loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
     }
 
-	@SuppressWarnings( "deprecation" )
+    @Override
+    public Sound getAnvilSound() {
+        return Sound.valueOf("ANVIL_LAND");
+    }
+
+    @Override
+    public Sound getLevelUpSound() {
+        return Sound.valueOf("LEVEL_UP");
+    }
+
+    @SuppressWarnings( "deprecation" )
 	@Override
 	public void breakItemInMainHand( Player player ) {
 		player.setItemInHand( null );

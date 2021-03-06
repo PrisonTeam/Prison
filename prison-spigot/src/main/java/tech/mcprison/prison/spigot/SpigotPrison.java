@@ -109,6 +109,7 @@ public class SpigotPrison extends JavaPlugin {
     private PrisonBlockTypes prisonBlockTypes;
 
     private static SpigotPrison config;
+    private static boolean isBackPacksEnabled = false;
 
     public static SpigotPrison getInstance(){
         return config;
@@ -209,6 +210,9 @@ public class SpigotPrison extends JavaPlugin {
 //        	String value = "&7" + name + " &3(&a" + version + "&3)";
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
+        try {
+            isBackPacksEnabled = getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
+        } catch (NullPointerException ignored){}
 
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );

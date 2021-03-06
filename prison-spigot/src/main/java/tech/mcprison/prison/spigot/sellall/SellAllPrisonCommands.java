@@ -36,6 +36,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
+import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -382,6 +383,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (signUsed) signUsed = false;
 
         boolean sellSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
+        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
         if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
 
             if (sellAllCommandDelay(p)) return;
@@ -405,7 +407,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     try {
                         sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
                     } catch (IllegalArgumentException ex){
-                        sound = Sound.BLOCK_ANVIL_PLACE;
+                        sound = compat.getAnvilSound();
                     }
                     p.playSound(p.getLocation(), sound, 3, 1);
                 }
@@ -418,7 +420,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     try {
                         sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
                     } catch (IllegalArgumentException ex){
-                        sound = Sound.ENTITY_PLAYER_LEVELUP;
+                        sound = compat.getLevelUpSound();
                     }
                     p.playSound(p.getLocation(), sound, 3, 1);
                 }
@@ -433,7 +435,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 try {
                     sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
                 } catch (IllegalArgumentException ex){
-                    sound = Sound.BLOCK_ANVIL_PLACE;
+                    sound = compat.getAnvilSound();
                 }
                 p.playSound(p.getLocation(), sound, 3, 1);
             }
