@@ -35,6 +35,7 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -1061,11 +1062,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        /*if (backPacksUtil != null && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
+        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
                 getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))){
 
             mode = inventorySellMode.PrisonBackPack;
-            Inventory backPack = backPacksUtil.getInventory(p);
+            Inventory backPack = BackpacksUtil.get().getBackpack(p);
 
             if (backPack != null){
                 for (ItemStack itemStack : backPack.getContents()){
@@ -1075,7 +1076,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 }
             }
 
-        }*/
+        }
 
         return moneyToGive;
     }
@@ -1124,7 +1125,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                         } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
                         	IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
                         } else if (mode == inventorySellMode.PrisonBackPack){
-                            //backPacksUtil.removeItem(p, itemStack);
+                            BackpacksUtil.get().removeItem(p, itemStack);
                         }
                     }
                 }
