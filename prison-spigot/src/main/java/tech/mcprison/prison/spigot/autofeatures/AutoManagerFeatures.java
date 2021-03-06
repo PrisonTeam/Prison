@@ -362,12 +362,13 @@ public class AutoManagerFeatures
 		}
 		
 		
+		// A block was broke... so record that event on the tool:	
+		itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
+		
+		
 		// Record the block break before it is changed to AIR:
 		mine.incrementBlockMiningCount( targetBlockName );
 		
-		
-		// A block was broke... so record that event on the tool:	
-		itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 		
 		// move in to the loop when blocks are tracked?... ??? 
 //				String blockName = spigotBlock.getPrisonBlock().getBlockName();

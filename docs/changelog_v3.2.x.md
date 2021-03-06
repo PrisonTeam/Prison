@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.2 2021-03-05
 
 
+* **Move Slime Fun to a new package that has slime in the name.**
+Boost X and Z a little.
+
 
 * **v3.2.5-alpha.2 2021-03-05**
 
