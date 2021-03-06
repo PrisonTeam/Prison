@@ -751,6 +751,20 @@ public class PrisonCommand {
     }
     
     
+    @Command(identifier = "prison findCmd", 
+    		description = "For internal use only. Do not use.", 
+    		onlyPlayers = false, permissions = "prison.debug" )
+    public void findCommand(CommandSender sender,
+    		@Arg(name = "command", description = "The command to search for" ) String command
+    		) {
+    	
+    	String registered = Prison.get().getCommandHandler().findRegisteredCommand( command );
+    	
+    	Output.get().logInfo( "&7Prison Find Registered Command: original= &3%s  &7registered= &3%s", 
+    			command, registered );
+    }
+    
+    
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
 //							    then they must first upgrade to

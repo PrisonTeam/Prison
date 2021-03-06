@@ -101,7 +101,7 @@ public class RegisteredCommand
     	StringBuilder sb = new StringBuilder();
     	
     	sb.append( getUsage() )
-    			.append( "  isRoot: " ).append( this instanceof RootCommand )
+    			.append( "  isRoot: " ).append( isRoot() )
     			.append( "  isAlias: " ).append( isAlias() )
     			.append( "  suffixCnt: " ).append( getSuffixes().size() )
     			.append( "  hasAliasParent: " ).append( getParentOfAlias() != null );
@@ -261,6 +261,10 @@ public class RegisteredCommand
         }
 
         return argumentHandler;
+    }
+    
+    public boolean isRoot() {
+    	return (this instanceof RootCommand);
     }
 
     public List<CommandArgument> getArguments() {

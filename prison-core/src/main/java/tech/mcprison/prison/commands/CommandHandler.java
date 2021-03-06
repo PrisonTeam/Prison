@@ -675,4 +675,41 @@ public class CommandHandler {
     	return results;
     }
  */
+   
+    /**
+     * <p>This takes a prison command as entered on the command line and will translate it to the
+     * command that was actually registered.  If attempting to register a command, and bukkit
+     * finds that another plugin already registered that command, it will prefix it with the plugin's
+     * prefix until it is unique.  This function will ensure that we use the registered version
+     * of the command that is specified.
+     * </p>
+     * 
+     * @param command
+     * @return
+     */
+    public String findRegisteredCommand(String command) {
+    	
+    	String[] patternParts = command.split( " " );
+    	
+    	if ( patternParts.length > 0 ) {
+    		String rootPattern = patternParts[0];
+    		
+    		for ( RegisteredCommand cmd : allRegisteredCommands ) {
+    			
+    			if ( cmd.getLabel().equalsIgnoreCase( rootPattern ) ) {
+    				
+    				if ( cmd.isRoot() ) {
+    					
+    					RootCommand rootCommand = (RootCommand) cmd;
+    					if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
+
+    						patternParts[0] = rootCommand.getBukkitCommand().getLabelRegistered();
+    					}
+    				}
+    			}
+    		}
+    	}
+    	
+    	return String.join( " ", patternParts );
+    }
 }

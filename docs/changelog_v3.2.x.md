@@ -20,6 +20,14 @@ that you need.
 # v3.2.5-alpha.2 2021-03-06
 
 
+* **Setup a CommandHandler to translate and lookup prison commands to get their registered command.**
+This is important to ensure that internally the commands can be ran and they are running the prison version of the command.
+
+
+* **Implementing spigot overflow/underflow on addItem or removeItem from inventory for backpacks too.**
+Inventory addItem and removeItem features with HashMap returns for overflow/underflow are now supported by Prison backpacks.
+
+
 * **Move support for automatically adding to the Minepack backpack to the SpigotUtil.addItemToPlayerInventory()**, 
 which is where the prison's backpack code is located.  The idea with that is when that function is used (from anywhere) it will try to add to the backpacks automatically if the main inventory is full. 
 Also fixed a few issues with addItems on the IntegrationMinepacksPlugin.  Also added a pure bukkit function to use that directly to eliminate a lot of the intermediate classes generation when it's not needed.
