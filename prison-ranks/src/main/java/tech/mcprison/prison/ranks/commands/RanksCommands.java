@@ -202,8 +202,10 @@ public class RanksCommands
 		int mineCount = Prison.get().getPlatform().getModuleElementCount( ModuleElementType.MINE );
 		
 		if (!force && ( rankCount > 0 || mineCount > 0 ) ) {
-			String message = String.format( "&3Cannot run &7/ranks autoConfigure &3 with any " +
-					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d", 
+			String message = String.format( "&3You should not run &7/ranks autoConfigure &3 with any " +
+					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d " +
+					"Add the option 'force' to force it to run.  If there is a conflict with a " +
+					"preexisting rank or mine, then they will be skipped with no configuration.", 
 					rankCount, mineCount );
 			Output.get().logWarn( message );
 			return;
