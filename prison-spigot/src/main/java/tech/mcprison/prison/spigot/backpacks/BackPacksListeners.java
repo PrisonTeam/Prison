@@ -84,9 +84,12 @@ public class BackPacksListeners implements Listener {
         }
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onDropEvent(PlayerDropItemEvent e){
-    }*/
+        if (hasClosedBackpack.contains(e.getPlayer().getName())){
+            e.getPlayer().closeInventory();
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerClickInventory(InventoryClickEvent e) {
@@ -95,9 +98,14 @@ public class BackPacksListeners implements Listener {
                 && SpigotPrison.getInstance().getCompatibility().getGUITitle(e).substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
 
             Player p = (Player) e.getWhoClicked();
-            if (activeBackpack.contains(p.getName())) {
-                if (!hasEditedBackpack.contains(p.getName())) {
-                    addToHasEditedBackpack(p);
+            if (!hasClosedBackpack.contains(p.getName())) {
+                if (activeBackpack.contains(p.getName())) {
+                    if (!hasEditedBackpack.contains(p.getName())) {
+                        addToHasEditedBackpack(p);
+                    }
+                } else {
+                    e.setCancelled(true);
+                    p.closeInventory();
                 }
             } else {
                 e.setCancelled(true);
@@ -109,11 +117,11 @@ public class BackPacksListeners implements Listener {
     @EventHandler
     public void closeBackpackEvent(InventoryCloseEvent e){
 
-        if (activeBackpack.contains(e.getPlayer().getName())){
+        if (activeBackpack.contains(e.getPlayer().getName()) && !hasClosedBackpack.contains(e.getPlayer().getName())){
             removeFromActiveBackpack((Player) e.getPlayer());
             addToHasClosedBackpack((Player) e.getPlayer());
         }
-        if (hasEditedBackpack.contains(e.getPlayer().getName())){
+        if (hasEditedBackpack.contains(e.getPlayer().getName()) && !hasClosedBackpack.contains(e.getPlayer().getName())){
             Player p = (Player) e.getPlayer();
             backPacksUtil.setInventory(p, e.getInventory());
             removeFromHasEditedBackpack(p);
@@ -124,36 +132,37 @@ public class BackPacksListeners implements Listener {
 
     public void addToHasClosedBackpack(Player p){
         if (!hasClosedBackpack.contains(p.getName())){
-            //p.sendMessage("Adding " + p.getName()  + " to closed backpacks");
+            hasClosedBackpack.add(p.getName());
+            p.sendMessage("Adding " + p.getName()  + " to closed backpacks");
         }
     }
 
     public void removeFromHasClosedBackpack(Player p){
         hasClosedBackpack.remove(p.getName());
-        //p.sendMessage("Removing " + p.getName() + " from closed backpacks");
+        p.sendMessage("Removing " + p.getName() + " from closed backpacks");
     }
 
     public void addToHasEditedBackpack(Player p){
         if (!hasEditedBackpack.contains(p.getName())){
             hasEditedBackpack.add(p.getName());
-            //p.sendMessage("Adding "  + p.getName() + " to backpacks editors");
+            p.sendMessage("Adding "  + p.getName() + " to backpacks editors");
         }
     }
 
     public void removeFromHasEditedBackpack(Player p){
         hasEditedBackpack.remove(p.getName());
-        //p.sendMessage("Removing " + p.getName() + " from backpacks editors");
+        p.sendMessage("Removing " + p.getName() + " from backpacks editors");
     }
 
     public void removeFromActiveBackpack(Player p){
         activeBackpack.remove(p.getName());
-        //p.sendMessage("Removing " + p.getName() + " from active backpacks");
+        p.sendMessage("Removing " + p.getName() + " from active backpacks");
     }
 
     public void addToBackpackActive(Player p){
         if (!activeBackpack.contains(p.getName())){
             activeBackpack.add(p.getName());
-            //p.sendMessage("Adding " + p.getName() + " to the active backpacks");
+            p.sendMessage("Adding " + p.getName() + " to the active backpacks");
         }
     }
 
