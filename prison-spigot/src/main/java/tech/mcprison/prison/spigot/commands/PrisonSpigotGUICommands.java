@@ -6,6 +6,7 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
@@ -151,4 +152,18 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
         sender.dispatchCommand("sellall gui");
     }
+
+    @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
+    private void backpackGUIOpenCommand(CommandSender sender){
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
+        BackpacksUtil.get().openBackpack(p);
+    }
+
 }

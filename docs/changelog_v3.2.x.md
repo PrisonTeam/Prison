@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.2 2021-03-06
 
 
+* **Backpacks recode**
+Backpacks are back and the bug is finally fixed, hopefully.
+
+
 * **SellAll Sounds fix**
 Fixed sellall sounds errors for 1.8.8.
 

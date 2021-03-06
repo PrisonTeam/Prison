@@ -54,6 +54,8 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
+import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
@@ -63,6 +65,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
@@ -105,6 +108,7 @@ public class SpigotPrison extends JavaPlugin {
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
+    private BackpacksConfig backpacksConfig;
 
     private PrisonBlockTypes prisonBlockTypes;
 
@@ -174,6 +178,14 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
+        try {
+            isBackPacksEnabled = getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
+        } catch (NullPointerException ignored){}
+
+        if (isBackPacksEnabled){
+            Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
+        }
+
         initIntegrations();
         
         // NOTE: Put all commands within the initModulesAndCommands() function.
@@ -210,9 +222,6 @@ public class SpigotPrison extends JavaPlugin {
 //        	String value = "&7" + name + " &3(&a" + version + "&3)";
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
-        try {
-            isBackPacksEnabled = getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
-        } catch (NullPointerException ignored){}
 
 		ChatDisplay cdVersion = cmdVersion.displayVersion();
 		cdVersion.toLog( LogLevel.INFO );
@@ -256,6 +265,14 @@ public class SpigotPrison extends JavaPlugin {
     	}
     	
         return messagesConfig.getFileGuiMessagesConfig();
+    }
+
+    public FileConfiguration getBackpacksConfig() {
+        if (backpacksConfig == null){
+            backpacksConfig = new BackpacksConfig();
+        }
+
+        return backpacksConfig.getFileBackpacksConfig();
     }
     
     public AutoManagerFeatures getAutoFeatures() {
@@ -502,9 +519,9 @@ public class SpigotPrison extends JavaPlugin {
         }
 
         // Load backpacks commands if enabled
-        /*if (backPacksEnabled){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackPacksCommands());
-        }*/
+        if (isBackPacksEnabled){
+            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackpackCommands());
+        }
 
         // This registers the admin's /gui commands
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
