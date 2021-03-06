@@ -162,17 +162,4 @@ public abstract class SpigotGUIComponents {
         p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
-
-    /**
-     * Open and register GUIs.
-     *
-     * @param p
-     * @param inv
-     * */
-    protected void openBackpack(Player p, Inventory inv){
-
-        // Open the inventory
-        p.openInventory(inv);
-        BackPacksListeners.get().addToBackpackActive(p);
-    }
 }

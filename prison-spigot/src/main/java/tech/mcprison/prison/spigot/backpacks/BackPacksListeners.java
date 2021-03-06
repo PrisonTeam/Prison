@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -26,8 +28,9 @@ public class BackPacksListeners implements Listener {
     private Configuration backPacksDataConfig = BackPacksUtil.get().getBackPacksDataConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private BackPacksUtil backPacksUtil = BackPacksUtil.get();
-    public List<String> activeBackpack = new ArrayList<>();
-    private int colorNumber = 1;
+    public static List<String> activeBackpack = new ArrayList<>();
+    public static List<String> hasEditedBackpack = new ArrayList<>();
+    public static List<String> hasClosedBackpack = new ArrayList<>();
 
     /**
      * Get BackPacksListeners instance.
@@ -62,39 +65,6 @@ public class BackPacksListeners implements Listener {
 
     }
 
-    /*@EventHandler
-    public void onDropEvent(PlayerDropItemEvent e){
-
-    }*/
-
-    @EventHandler
-    public void playerClickInventory(InventoryClickEvent e){
-
-        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-        String title = compat.getGUITitle(e);
-        if (title != null){
-            title = title.substring(2);
-            if (title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")){
-                Player p = (Player) e.getWhoClicked();
-                if (!activeBackpack.contains(p.getName())){
-                    activeBackpack.add(p.getName());
-                }
-            }
-        }
-
-    }
-
-    @EventHandler
-    public void closeBackpackEvent(InventoryCloseEvent e){
-
-        if (activeBackpack.contains(e.getPlayer().getName())){
-            Player p = (Player) e.getPlayer();
-            backPacksUtil.setInventory(p, e.getInventory());
-            activeBackpack.remove(p.getName());
-            //TODO close backpack message if enabled and maybe sound.
-        }
-    }
-
     @EventHandler
     public void playerInteractEventBackpackItem(PlayerInteractEvent e){
         if (backPacksConfig != null){
@@ -114,9 +84,76 @@ public class BackPacksListeners implements Listener {
         }
     }
 
+    /*@EventHandler
+    public void onDropEvent(PlayerDropItemEvent e){
+    }*/
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void playerClickInventory(InventoryClickEvent e) {
+
+        if (e.getWhoClicked() instanceof Player && SpigotPrison.getInstance().getCompatibility().getGUITitle(e) != null
+                && SpigotPrison.getInstance().getCompatibility().getGUITitle(e).substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
+
+            Player p = (Player) e.getWhoClicked();
+            if (activeBackpack.contains(p.getName())) {
+                if (!hasEditedBackpack.contains(p.getName())) {
+                    addToHasEditedBackpack(p);
+                }
+            } else {
+                e.setCancelled(true);
+                p.closeInventory();
+            }
+        }
+    }
+
+    @EventHandler
+    public void closeBackpackEvent(InventoryCloseEvent e){
+
+        if (activeBackpack.contains(e.getPlayer().getName())){
+            removeFromActiveBackpack((Player) e.getPlayer());
+            addToHasClosedBackpack((Player) e.getPlayer());
+        }
+        if (hasEditedBackpack.contains(e.getPlayer().getName())){
+            Player p = (Player) e.getPlayer();
+            backPacksUtil.setInventory(p, e.getInventory());
+            removeFromHasEditedBackpack(p);
+            addToHasClosedBackpack(p);
+            //TODO close backpack message if enabled and maybe sound.
+        }
+    }
+
+    public void addToHasClosedBackpack(Player p){
+        if (!hasClosedBackpack.contains(p.getName())){
+            //p.sendMessage("Adding " + p.getName()  + " to closed backpacks");
+        }
+    }
+
+    public void removeFromHasClosedBackpack(Player p){
+        hasClosedBackpack.remove(p.getName());
+        //p.sendMessage("Removing " + p.getName() + " from closed backpacks");
+    }
+
+    public void addToHasEditedBackpack(Player p){
+        if (!hasEditedBackpack.contains(p.getName())){
+            hasEditedBackpack.add(p.getName());
+            //p.sendMessage("Adding "  + p.getName() + " to backpacks editors");
+        }
+    }
+
+    public void removeFromHasEditedBackpack(Player p){
+        hasEditedBackpack.remove(p.getName());
+        //p.sendMessage("Removing " + p.getName() + " from backpacks editors");
+    }
+
+    public void removeFromActiveBackpack(Player p){
+        activeBackpack.remove(p.getName());
+        //p.sendMessage("Removing " + p.getName() + " from active backpacks");
+    }
+
     public void addToBackpackActive(Player p){
         if (!activeBackpack.contains(p.getName())){
             activeBackpack.add(p.getName());
+            //p.sendMessage("Adding " + p.getName() + " to the active backpacks");
         }
     }
 

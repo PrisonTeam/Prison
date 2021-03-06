@@ -256,7 +256,6 @@ public class BackPacksUtil {
 
             updateCachedBackpack();
 
-            backPacksDataConfig.set("Inventories." + p.getUniqueId() + ".Size", inv.getSize());
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
