@@ -306,7 +306,7 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected void autoPickupCleanup( SpigotBlock block, Player player, SpigotItemStack itemInHand, int count )
+	protected void autoPickupCleanup( SpigotBlock block, int count )
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
@@ -316,24 +316,6 @@ public class AutoManagerFeatures
 				block.setPrisonBlock( PrisonBlock.AIR );
 			}
 			
-//			e.setCancelled(true);
-//			e.getBlock().setType(Material.AIR);
-//
-//			// Maybe needed to prevent drop side effects:
-//			e.getBlock().getDrops().clear();
-
-			// calculate durability impact: Include item durability resistance.
-//			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
-//
-//				// value of 0 = normal durability. Value 100 = never calculate durability.
-//				int durabilityResistance = 0;
-//				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-//					durabilityResistance = getDurabilityResistance( itemInHand,
-//							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-//				}
-//
-//				calculateDurability( player, itemInHand, durabilityResistance );
-//			}
 		}
 	}
 	

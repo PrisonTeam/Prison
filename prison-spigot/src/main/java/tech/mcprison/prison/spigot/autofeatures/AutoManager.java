@@ -233,7 +233,7 @@ public class AutoManager
 				isAutoPickup ) {
 			
 			count = autoFeaturePickup( block, player, itemInHand );
-			autoPickupCleanup( block, player, itemInHand, count );
+			autoPickupCleanup( block, count );
 			
 		}
 		
