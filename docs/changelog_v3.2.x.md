@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.1 2021-03-05
+# v3.2.5-alpha.2 2021-03-05
+
+
+
+* **v3.2.5-alpha.2 2021-03-05**
 
 
 * **Modified how Auto Features deals with items such as player XP, durability, item lore, update block break counts, and process block events.**
