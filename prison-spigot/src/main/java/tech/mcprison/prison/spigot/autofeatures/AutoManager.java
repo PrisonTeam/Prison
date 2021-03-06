@@ -19,7 +19,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 /**
@@ -177,16 +176,9 @@ public class AutoManager
 			
 			if ( count > 0 ) {
 				
-				// Record the block break before it is changed to AIR:
-				mine.incrementBlockMiningCount( targetBlockName );
 				
-				// Process mine block break events:
-				SpigotPlayer sPlayer = new SpigotPlayer( player );
-				
-				
-				// move in to the loop when blocks are tracked?... ??? 
-//				String blockName = spigotBlock.getPrisonBlock().getBlockName();
-				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.blockBreak, null );
+				processBlockBreakage( spigotBlock, mine, player, targetBlockName, count, BlockEventType.blockBreak, null,
+							itemInHand );
 
 
 				// Set the broken block to AIR and cancel the event
@@ -202,17 +194,13 @@ public class AutoManager
 
 			}
 			
-			// A block was broke... so record that event on the tool:	
-			if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) && e.isCancelled()) {
-
-				// The event was canceled, so the block was successfully broke, so increment the name counter:
-				
-//				ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
-				itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
-			}
+			checkZeroBlockReset( mine );
+	
 		}
 		
 	}
+
+
 	
 	
 	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine ) {
@@ -279,19 +267,6 @@ public class AutoManager
 	}
 
 
-	private boolean checkLore( SpigotItemStack itemInHand, String loreValue ) {
-		boolean results = false;
-		
-		double lorePercent = getLoreValue( itemInHand, loreValue );
-
-		results = lorePercent == 100.0 ||
-					lorePercent > 0 && 
-					lorePercent <= getRandom().nextDouble() * 100;
-		
-		return results;
-	}
-
-
 	/**
 	 * <p>This function gets called for EACH block that is impacted by the
 	 * explosion event.  The event may have have a list of blocks, but not all
@@ -328,21 +303,16 @@ public class AutoManager
 		
 		if ( isTEExplosiveEnabled ) {
 
-			int totalCount = 0;
 			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
 				
-
 				String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
-
 				
 				int count = applyAutoEvents( player, spigotBlock, mine );
-				totalCount += count;
 
 				
 				if ( count > 0 ) {
-					
 					
 					// Record the block break before it is changed to AIR:
 					mine.incrementBlockMiningCount( targetBlockName );
@@ -374,26 +344,20 @@ public class AutoManager
 					}
 					
 					
-					// Process mine block break events:
-					SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+					processBlockBreakage( spigotBlock, mine, player, targetBlockName, count, BlockEventType.TEXplosion, triggered, 
+									itemInHand );
 					
-					
-					// move in to the loop when blocks are tracked?... ??? 
-//					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-					mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.TEXplosion,
-							triggered );
 
 	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
 	    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
 	    				
 	    				e.setCancelled( true );
 	    			}
-
 				}
 
-
-				
 			}
+			
+			checkZeroBlockReset( mine );
 			
 			
 //			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
@@ -404,10 +368,10 @@ public class AutoManager
 			
 			
 			
-			if (e.isCancelled()) {
-				// The event was canceled, so the block was successfully broke, so increment the name counter:
-				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
-			}
+//			if (e.isCancelled()) {
+//				// The event was canceled, so the block was successfully broke, so increment the name counter:
+//				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
+//			}
 		}
 		
 	}
@@ -421,12 +385,10 @@ public class AutoManager
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 		
 		// Auto manager is enabled if it's going to hit this function so no need to double check:
-//		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
 		boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
 		
 		if ( isCEBlockExplodeEnabled ) {
 			
-			int totalCount = 0;
 			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
 			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
@@ -435,7 +397,6 @@ public class AutoManager
 
 				
 				int count = applyAutoEvents( player, spigotBlock, mine );
-				totalCount += count;
 
 				
 				if ( count > 0 ) {
@@ -444,18 +405,13 @@ public class AutoManager
 					mine.incrementBlockMiningCount( targetBlockName );
 					
 					
-					// Process mine block break events:
-					SpigotPlayer sPlayer = new SpigotPlayer( player );
-					
-					
-					// move in to the loop when blocks are tracked?... ??? 
-//					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-					mine.processBlockBreakEventCommands( targetBlockName, sPlayer, BlockEventType.CEXplosion, null );
-
+					processBlockBreakage( spigotBlock, mine, player, targetBlockName, count, BlockEventType.CEXplosion, null,
+										itemInHand );
 				}
 
-				
 			}
+			
+			checkZeroBlockReset( mine );
 			
 			
 //			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
@@ -465,29 +421,11 @@ public class AutoManager
 //					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
 			
 			
-//			if ( totalCount > 0 ) {
-//				
-//				
-//				// Override blockCount to be exactly the blocks within the mine:
-//				int blockCount = teExplosiveBlocks.size();
-//				
-//				mine.addBlockBreakCount( blockCount );
-//				mine.addTotalBlocksMined( blockCount );
-//				
-//				
-//				// Set the broken block to AIR and cancel the event
-//				e.setCancelled(true);
-//				// e.getBlock().setType(Material.AIR);
-//				
-//				// Maybe needed to prevent drop side effects:
-//				//e.getBlock().getDrops().clear();
-//				
-//			}
 			
-			if (e.isCancelled()) {
-				// The event was canceled, so the block was successfully broke, so increment the name counter:
-				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
-			}
+//			if (e.isCancelled()) {
+//				// The event was canceled, so the block was successfully broke, so increment the name counter:
+//				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
+//			}
 		}
 		
 	}

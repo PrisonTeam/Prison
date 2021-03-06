@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -17,7 +16,6 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -31,6 +29,8 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -323,19 +323,79 @@ public class AutoManagerFeatures
 //			e.getBlock().getDrops().clear();
 
 			// calculate durability impact: Include item durability resistance.
-			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
-
-				// value of 0 = normal durability. Value 100 = never calculate durability.
-				int durabilityResistance = 0;
-				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-					durabilityResistance = getDurabilityResistance( itemInHand,
-							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-				}
-
-				calculateDurability( player, itemInHand, durabilityResistance );
-			}
+//			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
+//
+//				// value of 0 = normal durability. Value 100 = never calculate durability.
+//				int durabilityResistance = 0;
+//				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+//					durabilityResistance = getDurabilityResistance( itemInHand,
+//							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+//				}
+//
+//				calculateDurability( player, itemInHand, durabilityResistance );
+//			}
 		}
 	}
+	
+	
+
+	public void processBlockBreakage( SpigotBlock spigotBlock, Mine mine, Player player, String targetBlockName, int count,
+			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
+	{
+		// Process mine block break events:
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+
+		// Calculate XP on block break if enabled:
+		calculateAndGivePlayerXP( sPlayer, spigotBlock, count );
+
+		// calculate durability impact: Include item durability resistance.
+		if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
+
+			// value of 0 = normal durability. Value 100 = never calculate durability.
+			int durabilityResistance = 0;
+			if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+				durabilityResistance = getDurabilityResistance( itemInHand,
+						getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+			}
+
+			calculateAndApplyDurability( player, itemInHand, durabilityResistance );
+		}
+		
+		
+		// Record the block break before it is changed to AIR:
+		mine.incrementBlockMiningCount( targetBlockName );
+		
+		
+		// A block was broke... so record that event on the tool:	
+		itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
+		
+		// move in to the loop when blocks are tracked?... ??? 
+//				String blockName = spigotBlock.getPrisonBlock().getBlockName();
+		mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+	}
+	
+	public void checkZeroBlockReset( Mine mine ) {
+		if ( mine != null ) {
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+		}
+	}
+
+	protected boolean checkLore( SpigotItemStack itemInHand, String loreValue ) {
+		boolean results = false;
+		
+		double lorePercent = getLoreValue( itemInHand, loreValue );
+
+		results = lorePercent == 100.0 ||
+					lorePercent > 0 && 
+					lorePercent <= getRandom().nextDouble() * 100;
+		
+		return results;
+	}
+
+	
 
 	protected void autoSmelt( boolean autoSmelt, String sourceStr, String destinationStr, Player p, SpigotBlock block  ) {
 
@@ -780,7 +840,7 @@ public class AutoManagerFeatures
 //		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( p );
 		int count = 0;
 		
-		// Use this is a block name lisst based upon the following:  blockType:blockName if not minecraft, or blockName
+		// Use this is a block name list based upon the following:  blockType:blockName if not minecraft, or blockName
 		List<String> autoPickupBlockNameList =
 				isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) ? 
 						getListString( AutoFeatures.autoPickupBlockNameList ) : null;
@@ -865,8 +925,9 @@ public class AutoManagerFeatures
 			}
 		}
 
+		// Moved out of this function since it shouldn't have been placed here.
 		// Calculate XP on block break if enabled:
-		calculateXP( p, block, count );
+//		calculateXP( p, block, count );
 
 //				Output.get().logInfo( "In mine: %s  blockName= [%s] %s  drops= %s  count= %s  dropNumber= %s ",
 //						mine.getName(), blockName, Integer.toString( dropNumber ),
@@ -916,53 +977,66 @@ public class AutoManagerFeatures
 		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
 	}
 
+	/**
+	 * <p>This adds a lore counter to the tool if it is enabled.
+	 * </p>
+	 * 
+	 * @param itemInHand
+	 * @param itemLore
+	 * @param blocks
+	 */
 	protected void itemLoreCounter( SpigotItemStack itemInHand, String itemLore, int blocks) {
 
-		if (itemInHand.getBukkitStack().hasItemMeta()) {
+		// A block was broke... so record that event on the tool:	
+		if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) ) {
 
-			List<String> lore = new ArrayList<>();
-			itemLore = itemLore.trim() + " ";
-			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
-			ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
-
+			if (itemInHand.getBukkitStack().hasItemMeta()) {
+				
+				List<String> lore = new ArrayList<>();
+				itemLore = itemLore.trim() + " ";
+				itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
+				ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
+				
 //			String prisonBlockBroken = itemLore.getLore();
-
-
-			if (meta.hasLore()) {
-				lore = meta.getLore();
-				boolean found = false;
-
-				for( int i = 0; i < lore.size(); i++ ) {
-					if ( lore.get( i ).startsWith( itemLore ) ) {
-						String val = lore.get( i ).replace( itemLore, "" ).trim();
-						int count = blocks;
-
-						try {
-							count += Integer.parseInt(val);
-						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool counter failure. lore= [" + lore.get(i) + "] val= [" + val + "] error: " + e1.getMessage());								}
-
-						lore.set(i, itemLore + count);
-						found = true;
-
-						break;
+				
+				
+				if (meta.hasLore()) {
+					lore = meta.getLore();
+					boolean found = false;
+					
+					for( int i = 0; i < lore.size(); i++ ) {
+						if ( lore.get( i ).startsWith( itemLore ) ) {
+							String val = lore.get( i ).replace( itemLore, "" ).trim();
+							int count = blocks;
+							
+							try {
+								count += Integer.parseInt(val);
+							} catch (NumberFormatException e1) {
+								Output.get().logError("AutoManager: tool counter failure. lore= [" + lore.get(i) + "] val= [" + val + "] error: " + e1.getMessage());								}
+							
+							lore.set(i, itemLore + count);
+							found = true;
+							
+							break;
+						}
 					}
-				}
-
-				if ( !found ) {
+					
+					if ( !found ) {
+						lore.add(itemLore + 1);
+					}
+					
+				} else {
 					lore.add(itemLore + 1);
 				}
-
-			} else {
-				lore.add(itemLore + 1);
+				
+				meta.setLore(lore);
+				itemInHand.getBukkitStack().setItemMeta(meta);
+				
+				// incrementCounterInName( itemInHand, meta );
+				
 			}
-
-			meta.setLore(lore);
-			itemInHand.getBukkitStack().setItemMeta(meta);
-
-			// incrementCounterInName( itemInHand, meta );
-
 		}
+		
 	}
 
 	/**
@@ -1100,7 +1174,7 @@ public class AutoManagerFeatures
 	 * 			Zero always disables this calculation and allows normal durability calculations
 	 * 			to be performed. 100 always prevents wear.
 	 */
-	protected void calculateDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
+	protected void calculateAndApplyDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
 
 		short damage = 1;  // Generally 1 unless instant break block then zero.
 
@@ -1139,7 +1213,7 @@ public class AutoManagerFeatures
 		}
 	}
 
-	private void calculateXP(Player player, SpigotBlock block, int count) {
+	protected void calculateAndGivePlayerXP(SpigotPlayer player, SpigotBlock block, int count) {
 
 		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && block != null ) {
 
@@ -1156,9 +1230,9 @@ public class AutoManagerFeatures
 
 					if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
 
-						Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-						((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
-
+						player.dropXPOrbs( xp );
+//						tech.mcprison.prison.util.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+//						((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
 					}
 					else {
 						player.giveExp( xp );
@@ -1631,7 +1705,7 @@ public class AutoManagerFeatures
 
 		for (SpigotItemStack itemStack : drops) {
 
-			// If stack is gravel, then there is a 10% chance of droping flint.
+			// If stack is gravel, then there is a 10% chance of dropping flint.
 
 		}
 	}

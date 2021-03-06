@@ -612,6 +612,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
+    /**
+     * <p>This will add the XMaterial and value to the sellall.
+     * This will update even if the sellall has not been enabled.
+     * </p>
+     * 
+     * @param blockAdd
+     * @param value
+     */
     public void sellAllAddCommand( XMaterial blockAdd, Double value){
 
     	String itemID = blockAdd.name();

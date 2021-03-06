@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,7 +27,6 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -399,12 +399,12 @@ public class OnBlockBreakEventListener
     		}
     		
     		
-    		if ( mine != null && monitor ) {
-    			// Monitor:
-				// Log block break events and BlockEvents:
-				doActionMonitor( mine, e, explodedBlocks );
-				
-    		}
+//    		if ( mine != null && monitor ) {
+//    			// Monitor:
+//				// Log block break events and BlockEvents:
+//				doActionMonitor( mine, e, explodedBlocks );
+//				
+//    		}
 
     		// now process all blocks:
     		if ( mine != null ) {
@@ -692,15 +692,17 @@ public class OnBlockBreakEventListener
 					mine.incrementBlockMiningCount( targetBlockName );
 					
 					
-					// Process mine block break events:
-					SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+					Player player = e.getPlayer();
+					
+					aMan.processBlockBreakage( spigotBlock, mine, player, targetBlockName, drop, BlockEventType.blockBreak, null,
+										itemInHand );
 					
 					
-					// move in to the loop when blocks are tracked?... ??? 
-//					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-					String triggered = null;
-					mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
-							triggered );
+//					// move in to the loop when blocks are tracked?... ??? 
+////					String blockName = spigotBlock.getPrisonBlock().getBlockName();
+//					String triggered = null;
+//					mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
+//							triggered );
 
 
 	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
@@ -708,6 +710,7 @@ public class OnBlockBreakEventListener
 	    				
 	    				e.setCancelled( true );
 	    			}
+	    			
 				}
 				
 			}
@@ -723,11 +726,18 @@ public class OnBlockBreakEventListener
 
 				// Other possible processing:
 				
-				// Process mine block break events:
-				SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-//				String blockName = spigotBlock.getPrisonBlock().getBlockName();
-				String triggered = null;
-				mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.blockBreak, triggered );
+				
+				Player player = e.getPlayer();
+				
+				aMan.processBlockBreakage( spigotBlock, mine, player, targetBlockName, 1, BlockEventType.blockBreak, null,
+									itemInHand );
+
+				
+//				// Process mine block break events:
+//				SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+////				String blockName = spigotBlock.getPrisonBlock().getBlockName();
+//				String triggered = null;
+//				mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.blockBreak, triggered );
 
 				
     			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
@@ -737,6 +747,8 @@ public class OnBlockBreakEventListener
     			}
 
 			}
+			
+			aMan.checkZeroBlockReset( mine );
 			
 //			boolean isAir = block == null || block.getType() != null && block.getType() == BlockType.AIR;
 //			
@@ -825,16 +837,24 @@ public class OnBlockBreakEventListener
 						}
 						
 						
-						// Process mine block break events:
-						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), targetBlockName, drop, 
+								BlockEventType.TEXplosion, triggered,
+								itemInHand );
 						
 						
-						// move in to the loop when blocks are tracked?... ??? 
-//						String blockName = spigotBlock.getPrisonBlock().getBlockName();
-						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
-								triggered );
+//						// Process mine block break events:
+//						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+//						
+//						
+//						// move in to the loop when blocks are tracked?... ??? 
+////						String blockName = spigotBlock.getPrisonBlock().getBlockName();
+//						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
+//								triggered );
 
+						
 					}
+					
+					aMan.checkZeroBlockReset( mine );
 				}
 				
 				
@@ -869,14 +889,14 @@ public class OnBlockBreakEventListener
 		}
 	}
 	
-	private void doActionMonitor( Mine mine, TEBlockExplodeEvent e, List<SpigotBlock> explodedBlocks ) {
-		if ( mine != null ) {
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
+//	public void checkZeroBlockReset( Mine mine ) {
+//		if ( mine != null ) {
+//			
+//			// Checks to see if the mine ran out of blocks, and if it did, then
+//			// it will reset the mine:
+//			mine.checkZeroBlockReset();
+//		}
+//	}
 	
 	
 	
@@ -937,13 +957,18 @@ public class OnBlockBreakEventListener
 						// Record the block break before it is changed to AIR:
 						mine.incrementBlockMiningCount( targetBlockName );
 						
-						// Process mine block break events:
-						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+						
+						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), targetBlockName, drop, BlockEventType.CEXplosion, null,
+								itemInHand );
 						
 						
-						// move in to the loop when blocks are tracked?... ??? 
-//						String blockName = spigotBlock.getPrisonBlock().getBlockName();
-						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.CEXplosion, null );
+//						// Process mine block break events:
+//						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
+//						
+//						
+//						// move in to the loop when blocks are tracked?... ??? 
+////						String blockName = spigotBlock.getPrisonBlock().getBlockName();
+//						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.CEXplosion, null );
 
 					}
 				}

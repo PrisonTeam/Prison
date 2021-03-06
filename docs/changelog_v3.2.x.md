@@ -20,6 +20,21 @@ that you need.
 # v3.2.5-alpha.1 2021-03-05
 
 
+* **Modified how Auto Features deals with items such as player XP, durability, item lore, update block break counts, and process block events.**
+Now there is only one function that controls all of these and it's called from all locations where blocks are modified.  This applies to auto pickup and block breaks naturally.  And also for block break events, TE Explosion events, and Crazy Enchants blast events.
+
+
+* **Update the ranks autoConfigure message to explain the force option.**
+
+
+* **Setup sellall prices for the blocks being used in the auto configure.**
+While it's running to generate the mine's blocks allocation it will insert about 87 items for sellall.
+
+
+* **Added direction (vector) to the prison's Location class, and provide a way to add vectors to the current location.**
+SpigotPlayer now has the ability to give the player XP and drop XP orbs at their feet.
+
+
 * **Fixed issue of not adding a 1 to the durability when calculating the damage to the tools.**
 The result is that a tool will have a quicker wear on their tool.
 
