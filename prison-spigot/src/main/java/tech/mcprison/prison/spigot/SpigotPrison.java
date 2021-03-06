@@ -109,7 +109,7 @@ public class SpigotPrison extends JavaPlugin {
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
     private BackPacksConfig backPacksConfig;
-    private final boolean backPacksEnabled = getConfig().getString("backpacks").equalsIgnoreCase("true");
+    private final boolean backPacksEnabled = false;
 
     private PrisonBlockTypes prisonBlockTypes;
 
