@@ -1369,33 +1369,34 @@ class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.ANDESITE, 5, true) );
 		blockList.add( new SellAllBlockData( XMaterial.DIORITE, 6, true) );
 		blockList.add( new SellAllBlockData( XMaterial.COAL_ORE, 13, true) );
-
 		blockList.add( new SellAllBlockData( XMaterial.GRANITE, 8, true) );
+
 		blockList.add( new SellAllBlockData( XMaterial.STONE, 9, true) );
 		blockList.add( new SellAllBlockData( XMaterial.IRON_ORE, 18, true) );
 		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7, true) );
-
 		blockList.add( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
 		blockList.add( new SellAllBlockData( XMaterial.COAL_BLOCK, 135, true) );
 		blockList.add( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true) );
-
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_ORE, 100, true) );
 		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true) );
 		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_ORE, 200, true) );
 
 		blockList.add( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true) );
-
 		blockList.add( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true) );
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 950, true) );
 		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
+		
+		
 		
 //		blockList.add( XMaterial.SLIME_BLOCK.name() );
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
-		blockList.add( new SellAllBlockData( XMaterial.OBSIDIAN, 350 ) );
+		blockList.add( new SellAllBlockData( XMaterial.OBSIDIAN, 450 ) );
+		
 		
 		
 		// these are not used to generate the mine blocks:
