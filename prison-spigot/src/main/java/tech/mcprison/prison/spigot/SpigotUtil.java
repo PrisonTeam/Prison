@@ -45,6 +45,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -221,6 +222,8 @@ public class SpigotUtil {
 		
 		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
 
+		
+		// Insert overflow in to Prison's backpack:
 		if (overflow.size() > 0 && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
 			BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable");
 			Inventory inv = BackpacksUtil.get().getBackpack(player);
@@ -228,6 +231,14 @@ public class SpigotUtil {
 			BackpacksUtil.get().setInventory(player, inv);
 		}
 
+		
+		// Insert overflow in to Minepacks backpack:
+		if ( overflow.size() > 0 && IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+			overflow = IntegrationMinepacksPlugin.getInstance().addItemsBukkit( player, overflow );						
+		}
+
+		
+		// Cannot stick it anywhere else, so return the extras:
 		for ( Integer key : overflow.keySet() ) {
 			results.put(key, new SpigotItemStack(overflow.get(key)));
 		}
@@ -242,11 +253,12 @@ public class SpigotUtil {
 	 * @param itemStack
 	 */
 	public static void dropPlayerItems( Player player, SpigotItemStack itemStack ) {
-		
-		org.bukkit.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-		
-		player.getWorld().dropItem( dropPoint, itemStack.getBukkitStack() );
-		
+		if ( itemStack != null && itemStack.getAmount() > 0 ) {
+			
+			org.bukkit.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+			
+			player.getWorld().dropItem( dropPoint, itemStack.getBukkitStack() );
+		}
 	}
 	
 	

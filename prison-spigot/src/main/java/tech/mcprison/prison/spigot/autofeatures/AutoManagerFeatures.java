@@ -251,11 +251,6 @@ public class AutoManagerFeatures
 					
 					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
 					
-					// Insert Minepacks backpack additions here:
-					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
-						extras = IntegrationMinepacksPlugin.getInstance().addItems( player, extras );						
-					}
-					
 					dropExtra( extras, player, block );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}

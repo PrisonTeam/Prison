@@ -13,6 +13,7 @@ import com.cryptomorin.xseries.XMaterial;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 
 public class IntegrationMinepacksPlugin
@@ -62,19 +63,52 @@ public class IntegrationMinepacksPlugin
     	
     	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
     	
-    	if ( isEnabled() ) {
+    	if ( items != null && items.size() > 0 && isEnabled() ) {
     		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
 
     		if ( bp != null ) {
     			
     			for ( SpigotItemStack spigotItemStack : items.values() ) {
     				
-    				ItemStack iStack = spigotItemStack.getBukkitStack();
+    				ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
+//    				ItemStack iStack = spigotItemStack.getBukkitStack();
     				
-    				ItemStack extra = bp.addItem( iStack );
-    				extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
+    				if ( iStack != null ) {
+    					ItemStack extra = bp.addItem( iStack );
+    					extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
+    					
+    					bp.setChanged();
+    				}
+    			}
+    		}
+    		else {
+    			extras.putAll( items );
+    		}
+    	}
+    	else {
+    		extras.putAll( items );
+    	}
+    	
+    	return extras;
+    }
+    
+    public HashMap<Integer, ItemStack> addItemsBukkit( Player player, HashMap<Integer, ItemStack> items ) {
+    	
+    	HashMap<Integer, ItemStack> extras = new HashMap<>();
+    	
+    	if ( items != null && items.size() > 0 && isEnabled() ) {
+    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
+    		
+    		if ( bp != null ) {
+    			
+    			for ( ItemStack itemStack : items.values() ) {
     				
-    				bp.setChanged();
+    				if ( itemStack != null ) {
+    					ItemStack extra = bp.addItem( itemStack );
+    					extras.put( Integer.valueOf( extras.size() ), extra );
+    					
+    					bp.setChanged();
+    				}
     			}
     		}
     		else {

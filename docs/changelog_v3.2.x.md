@@ -20,6 +20,11 @@ that you need.
 # v3.2.5-alpha.2 2021-03-06
 
 
+* **Move support for automatically adding to the Minepack backpack to the SpigotUtil.addItemToPlayerInventory()**, 
+which is where the prison's backpack code is located.  The idea with that is when that function is used (from anywhere) it will try to add to the backpacks automatically if the main inventory is full. 
+Also fixed a few issues with addItems on the IntegrationMinepacksPlugin.  Also added a pure bukkit function to use that directly to eliminate a lot of the intermediate classes generation when it's not needed.
+
+
 * **Backpacks recode**
 Backpacks are back and the bug is finally fixed, hopefully.
 
