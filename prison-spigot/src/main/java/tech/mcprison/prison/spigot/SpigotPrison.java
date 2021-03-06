@@ -60,6 +60,7 @@ import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.*;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -79,7 +80,6 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 

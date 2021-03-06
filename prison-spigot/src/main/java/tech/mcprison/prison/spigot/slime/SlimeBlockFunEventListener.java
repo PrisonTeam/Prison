@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.player;
+package tech.mcprison.prison.spigot.slime;
 
 import java.text.DecimalFormat;
 import java.util.TreeMap;
@@ -122,7 +122,12 @@ public class SlimeBlockFunEventListener
 	 */
 	private Vector calculateVelocityY( double boost, Vector velocityOriginal, Player player ) {
 		Vector newVelocity = velocityOriginal.clone();
+		
 		double velocityY = newVelocity.getY() * boost;
+		
+		double velocityX = newVelocity.getX() * boost * 0.13d;
+		double velocityZ = newVelocity.getZ() * boost * 0.13d;
+		
 		
 		if ( velocityY > 1024.0 ) {
 			DecimalFormat f4Fmt = new DecimalFormat("#,##0.0000");
@@ -133,7 +138,9 @@ public class SlimeBlockFunEventListener
 			velocityY = 1024.0;
 		}
 		
+		newVelocity.setX( velocityX );
 		newVelocity.setY( velocityY );
+		newVelocity.setZ( velocityZ );
 
 		return newVelocity;
 	}
