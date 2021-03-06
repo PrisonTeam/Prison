@@ -11,17 +11,18 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 - minepacks plugin - NoClassDefFoundError - pcgamingfreaks/Minepacks/bukkit/API/MinepacksPlugin
- 
+  - Not an issue: I think this was a non-related issue that someone else was happening. They later reported it was woring well.
 
-- ranks autoConfigure 
-  - add blocks that are assigned to the mines to sellall
+- DONE: ranks autoConfigure 
+  - DONE: add blocks that are assigned to the mines to sellall
      - add a block price to the blocks - base upon essentialsX?
-  - enable sellall
+  - DONE: enable sellall
 
-- DONE?: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
+- DONE: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
 
 
-- /prison utils message - add ability to send message to player or broadcast
+
+- DONE: /prison utils message - add ability to send message to player or broadcast
 
 
 - Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
