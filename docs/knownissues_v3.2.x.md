@@ -10,6 +10,17 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
+- minepacks plugin - NoClassDefFoundError - pcgamingfreaks/Minepacks/bukkit/API/MinepacksPlugin
+ 
+
+- ranks autoConfigure 
+  - add blocks that are assigned to the mines to sellall
+     - add a block price to the blocks - base upon essentialsX?
+  - enable sellall
+
+- DONE?: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
+
+
 - /prison utils message - add ability to send message to player or broadcast
 
 

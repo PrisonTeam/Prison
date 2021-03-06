@@ -111,9 +111,9 @@ public class RankLadder
         		rankPrison = rankManager.getRank( rRankId );
         		addRank( rankPrison );
 
-        		Output.get().logInfo( "RankLadder load : " + getName() + 
-        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
-        				" " + rankPrison.getPosition() );
+//        		Output.get().logInfo( "RankLadder load : " + getName() + 
+//        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
+//        				" " + rankPrison.getPosition() );
         		
 //        		// if null look it up from loaded ranks:
 //        		if ( rRankName == null  ) {
