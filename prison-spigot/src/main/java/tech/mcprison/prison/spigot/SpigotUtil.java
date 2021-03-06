@@ -25,7 +25,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,7 +39,6 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.backpacks.BackPacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
@@ -220,15 +218,13 @@ public class SpigotUtil {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
 		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
-		
-		if ( overflow.size() > 0 && 
-				SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
-				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
-			
-			/*Inventory inv = BackPacksUtil.get().getInventory(player);
+
+		/*if (overflow.size() > 0 && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
+			SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable");
+		Inventory inv = BackPacksUtil.get().getInventory(player);
 			overflow = inv.addItem( overflow.values().toArray( new ItemStack[0] ) );
-			BackPacksUtil.get().setInventory(player, inv);*/
-		}
+			BackPacksUtil.get().setInventory(player, inv);
+		}*/
 
 		for ( Integer key : overflow.keySet() ) {
 			results.put(key, new SpigotItemStack(overflow.get(key)));

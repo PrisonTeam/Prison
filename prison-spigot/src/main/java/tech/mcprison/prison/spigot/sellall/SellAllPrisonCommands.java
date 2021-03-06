@@ -35,7 +35,6 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.backpacks.BackPacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -48,10 +47,8 @@ import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
  */
 public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
-    private BackPacksUtil backPacksUtil = BackPacksUtil.get();
     private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
     private static SellAllPrisonCommands instance;
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;

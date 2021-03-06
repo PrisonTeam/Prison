@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.2 2021-03-06
 
 
+* **Backpacks support shutdown**
+Removed Prison backpacks until further notice.
+
+
 * **Setup minepacks as an integration.**
 Add to auto pickup and auto smelt.  Not complete yet.  Have to add auto block.  Then do some testing.
 

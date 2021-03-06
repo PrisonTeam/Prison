@@ -54,7 +54,6 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
-import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
@@ -64,7 +63,6 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
-import tech.mcprison.prison.spigot.configs.BackPacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
@@ -107,8 +105,6 @@ public class SpigotPrison extends JavaPlugin {
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
-    private BackPacksConfig backPacksConfig;
-    private final boolean backPacksEnabled = false;
 
     private PrisonBlockTypes prisonBlockTypes;
 
@@ -175,11 +171,6 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
         Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
-
-        if (backPacksEnabled){
-            Bukkit.getPluginManager().registerEvents(new BackPacksListeners(), this);
-        }
-
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
         initIntegrations();
@@ -261,17 +252,6 @@ public class SpigotPrison extends JavaPlugin {
     	}
     	
         return messagesConfig.getFileGuiMessagesConfig();
-    }
-
-    public FileConfiguration getBackPacksConfig() {
-
-        if (backPacksEnabled) {
-            backPacksConfig = new BackPacksConfig();
-        } else {
-            return null;
-        }
-
-        return backPacksConfig.getFileBackPacksConfig();
     }
     
     public AutoManagerFeatures getAutoFeatures() {

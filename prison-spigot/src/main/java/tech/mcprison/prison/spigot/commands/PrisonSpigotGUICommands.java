@@ -18,7 +18,6 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
 
     /**
      * NOTE: onlyPlayers needs to be false so players can use /gui help on the command, even from console.
