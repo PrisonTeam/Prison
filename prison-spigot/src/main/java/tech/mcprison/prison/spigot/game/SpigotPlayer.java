@@ -30,6 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import tech.mcprison.prison.internal.ItemStack;
@@ -456,6 +457,27 @@ public class SpigotPlayer
     				iStack.getType().name(), iStack.getAmount() );
     	}
     }
+
+	public void giveExp( int xp )
+	{
+		if ( getWrapper() != null ) {
+			getWrapper().giveExp( xp );
+		}
+	}
+
+	public void dropXPOrbs( int xp ) {
+
+		if ( getWrapper() != null ) {
+			
+			Location dropPoint = getLocation().add( getLocation().getDirection());
+			org.bukkit.Location bukkitLocation = new org.bukkit.Location( getWrapper().getWorld(), 
+									dropPoint.getX(), dropPoint.getY(), dropPoint.getZ() );
+			
+			((ExperienceOrb) getWrapper().getWorld().spawn(bukkitLocation, ExperienceOrb.class)).setExperience(xp);
+		}
+		
+		
+	}
     
     
 }

@@ -32,32 +32,29 @@ public class Location {
     private World world;
     private double x, y, z;
     private float pitch, yaw;
+    
+    private Vector direction;
 
+    public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
+    	this.world = world;
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    	this.pitch = pitch;
+    	this.yaw = yaw;
+    	this.direction = direction;
+    }
     public Location(World world, double x, double y, double z, float pitch, float yaw) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pitch = pitch;
-        this.yaw = yaw;
+    	this( world, x, y, z, pitch, yaw, new Vector() );
     }
 
     public Location(World world, double x, double y, double z) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pitch = 0.0f;
-        this.yaw = 0.0f;
+    	this( world, x, y, z, 0.0f, 0.0f);
     }
 
     public Location(Location clone) {
-    	this.world = clone.getWorld();
-    	this.x = clone.getX();
-    	this.y = clone.getY();
-    	this.z = clone.getZ();
-    	this.pitch = clone.getPitch();
-    	this.yaw = clone.getYaw();
+    	this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
+    			clone.getPitch(), clone.getYaw(), clone.getDirection());
     }
     
     public Location() {
@@ -111,7 +108,15 @@ public class Location {
         this.yaw = yaw;
     }
 
-    public int getBlockX() {
+    public Vector getDirection() {
+		return direction;
+	}
+    
+	public void setDirection( Vector direction ) {
+		this.direction = direction;
+	}
+    
+	public int getBlockX() {
         return Math.toIntExact(Math.round(getX()));
     }
 
@@ -182,5 +187,16 @@ public class Location {
     public String toBlockCoordinates() {
         return "(" + Math.round(x) + ", " + Math.round(y) + ", " + Math.round(z) + ")";
     }
+	public Location add( Vector direction )
+	{
+		Location results = new Location( this );
+		results.setDirection( direction );
+		
+		results.setX( results.getX() + direction.getX() );
+		results.setY( results.getY() + direction.getY() );
+		results.setZ( results.getZ() + direction.getZ() );
+
+		return results;
+	}
 
 }

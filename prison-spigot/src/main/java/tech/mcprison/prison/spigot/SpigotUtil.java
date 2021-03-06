@@ -48,6 +48,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
+import tech.mcprison.prison.util.Vector;
 
 /**
  * Utilities for converting Prison-Core types to Spigot types.
@@ -605,9 +606,13 @@ public class SpigotUtil {
    */
 
     public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
+    	org.bukkit.util.Vector v = bukkitLocation.getDirection();
+    	Vector direction = new Vector( v.getX(), v.getY(), v.getZ() );
+    	
         return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
             bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
-            bukkitLocation.getYaw());
+            bukkitLocation.getYaw(), 
+            direction );
     }
 
     public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
