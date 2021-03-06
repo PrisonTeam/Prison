@@ -18,6 +18,7 @@ import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -184,8 +185,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param p - player
      * @param item - itemstack
      * */
-    public void addItem(Player p, ItemStack item){
-        addItemToBackpack(p, item);
+    public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item){
+        return addItemToBackpack(p, item);
     }
 
 
@@ -207,8 +208,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param p - player
      * @param item - itemstack
      * */
-    public void removeItem(Player p, ItemStack item){
-        removeItemFromBackpack(p, item);
+    public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item){
+        return removeItemFromBackpack(p, item);
     }
 
     /**
@@ -484,16 +485,18 @@ public class BackpacksUtil extends SpigotConfigComponents {
         updateCachedBackpack();
     }
 
-    private void addItemToBackpack(Player p, ItemStack item) {
+    private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item) {
         Inventory inv = getBackpack(p);
-        inv.addItem(item);
+        HashMap<Integer, ItemStack> overflow = inv.addItem(item);
         setInventory(p, inv);
+        return overflow;
     }
 
-    private void removeItemFromBackpack(Player p, ItemStack item) {
+    private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item) {
         Inventory inv = getBackpack(p);
-        inv.removeItem(item);
+        HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
         setInventory(p, inv);
+        return underflow;
     }
 
     private void backPackItem(Player p) {
