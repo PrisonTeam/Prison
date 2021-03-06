@@ -31,12 +31,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
@@ -58,9 +56,11 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.*;
-import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
-import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotBackPacksCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -80,6 +80,8 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
@@ -430,17 +432,6 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
-    public static MinepacksPlugin getMinepacks() {
-        Plugin bukkitPlugin = Bukkit.getPluginManager().getPlugin("Minepacks");
-        if(!(bukkitPlugin instanceof MinepacksPlugin)) {
-            return null;
-        }
-        return (MinepacksPlugin) bukkitPlugin;
-    }
-
-    public static boolean MinepacksPresent() {
-        return getMinepacks() != null;
-    }
 	
 	/**
 	 * <p>This "tries" to reload the placeholder integrations, which may not

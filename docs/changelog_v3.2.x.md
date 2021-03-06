@@ -17,7 +17,14 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.2 2021-03-05
+# v3.2.5-alpha.2 2021-03-06
+
+
+* **Setup minepacks as an integration.**
+Add to auto pickup and auto smelt.  Not complete yet.  Have to add auto block.  Then do some testing.
+
+
+* **Removed unused parameters in the AutoManagerFeatures classes**
 
 
 * **Move Slime Fun to a new package that has slime in the name.**

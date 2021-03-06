@@ -39,6 +39,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -247,7 +248,15 @@ public class AutoManagerFeatures
 					}
 
 					count += itemStack.getAmount();
-					dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
+					
+					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
+					
+					// Insert Minepacks backpack additions here:
+					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+						extras = IntegrationMinepacksPlugin.getInstance().addItems( player, extras );						
+					}
+					
+					dropExtra( extras, player, block );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 
@@ -400,6 +409,20 @@ public class AutoManagerFeatures
 					SpigotUtil.playerInventoryRemoveItem( p, sourceStack );
 
 					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, destStack );
+					
+					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+						extras.putAll( IntegrationMinepacksPlugin.getInstance().smeltItems( p, source, destStack));
+						
+						// After smelting items may stack better in their inventory so try to add it all back:
+						extras = IntegrationMinepacksPlugin.getInstance().addItems( p, extras );
+//						
+//						for ( SpigotItemStack iStack : extras.values() )
+//						{
+//							SpigotUtil.addItemToPlayerInventory( p, iStack );
+//							
+//						}
+					}
+					
 					dropExtra( extras, p, block );
 				}
 			}
