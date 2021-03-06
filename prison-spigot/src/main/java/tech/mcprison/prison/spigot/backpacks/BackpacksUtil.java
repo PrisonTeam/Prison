@@ -1,6 +1,12 @@
 package tech.mcprison.prison.spigot.backpacks;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,17 +16,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 
 public class BackpacksUtil extends SpigotConfigComponents {
 
@@ -337,7 +341,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
         }
 
         if (getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
-            Bukkit.dispatchCommand(p, "backpack item");
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack item" );
+            Bukkit.dispatchCommand(p, registeredCmd);
         }
     }
 
