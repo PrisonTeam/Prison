@@ -7,7 +7,6 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -152,26 +151,5 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     private void sellAllGuiCommandNew(CommandSender sender){
 
         sender.dispatchCommand("sellall gui");
-    }
-
-    @Command(identifier = "gui backpack", description = "GUI Backpacks for players",
-            onlyPlayers = true )
-    private void prisonBackPacksGUI(CommandSender sender) {
-
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
-            return;
-        }
-
-        String permission = backPacksConfig.getString("Options.BackPack_Use_Permission");
-        if (getBoolean(backPacksConfig.getString("Options.BackPack_Use_Permission_Enabled")) && permission != null && !sender.hasPermission(permission)){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + permission + "]"));
-            return;
-        }
-
-        SpigotPlayerBackPacksGUI gui = new SpigotPlayerBackPacksGUI(p);
-        gui.open();
     }
 }

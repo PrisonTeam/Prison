@@ -1062,7 +1062,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        if (backPacksUtil != null && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
+        /*if (backPacksUtil != null && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
                 getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))){
 
             mode = inventorySellMode.PrisonBackPack;
@@ -1076,7 +1076,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 }
             }
 
-        }
+        }*/
 
         return moneyToGive;
     }
@@ -1125,7 +1125,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                         } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
                         	IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
                         } else if (mode == inventorySellMode.PrisonBackPack){
-                            backPacksUtil.removeItem(p, itemStack);
+                            //backPacksUtil.removeItem(p, itemStack);
                         }
                     }
                 }

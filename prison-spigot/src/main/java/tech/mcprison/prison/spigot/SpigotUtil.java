@@ -225,9 +225,9 @@ public class SpigotUtil {
 				SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
 				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
 			
-			Inventory inv = BackPacksUtil.get().getInventory(player);
+			/*Inventory inv = BackPacksUtil.get().getInventory(player);
 			overflow = inv.addItem( overflow.values().toArray( new ItemStack[0] ) );
-			BackPacksUtil.get().setInventory(player, inv);
+			BackPacksUtil.get().setInventory(player, inv);*/
 		}
 
 		for ( Integer key : overflow.keySet() ) {

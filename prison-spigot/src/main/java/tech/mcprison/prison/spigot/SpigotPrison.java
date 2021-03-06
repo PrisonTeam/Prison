@@ -56,7 +56,6 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotBackPacksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
@@ -519,9 +518,9 @@ public class SpigotPrison extends JavaPlugin {
         }
 
         // Load backpacks commands if enabled
-        if (backPacksEnabled){
+        /*if (backPacksEnabled){
             Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackPacksCommands());
-        }
+        }*/
 
         // This registers the admin's /gui commands
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
