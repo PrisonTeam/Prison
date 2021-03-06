@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.2 2021-03-06
 
 
+* **SellAll Sounds fix**
+Fixed sellall sounds errors for 1.8.8.
+
+
 * **Backpacks support shutdown**
 Removed Prison backpacks until further notice.
 
