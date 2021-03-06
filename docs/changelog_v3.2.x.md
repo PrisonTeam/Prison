@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.1 2021-03-05
 
 
+* **Fixed issue of not adding a 1 to the durability when calculating the damage to the tools.**
+The result is that a tool will have a quicker wear on their tool.
+
+
 * **Since prison's fortune has no max upper limits, added a maxFortuneLevel** so the admin can put a cap on what's being calculated.  Of course it may be easier to cap the enchantments too.
 
 

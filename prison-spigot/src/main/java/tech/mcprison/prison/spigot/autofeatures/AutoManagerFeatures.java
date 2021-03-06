@@ -1117,7 +1117,7 @@ public class AutoManagerFeatures
 
 			// the chance of losing durability is 1 in (1+level)
 			// So if the random int == 0, then take damage, otherwise none.
-			if (getRandom().nextInt( durabilityLevel ) > 0) {
+			if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
 				damage = 0;
 			}
 		}
