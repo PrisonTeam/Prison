@@ -1003,7 +1003,17 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private void sellAllSetDefaultCommand(CommandSender sender){
 
         if (!isEnabled()) return;
+        
+		// Setup all the prices in sellall:
+        SpigotPlatform platform = (SpigotPlatform) Prison.get().getPlatform();
+		for ( SellAllBlockData xMatCost : platform.buildBlockListXMaterial() ) {
+			
+			// Add blocks to sellall:
+			sellAllAddCommand( xMatCost.getBlock(), xMatCost.getPrice() );
+		}
 
+        
+		/*
         valueSaver("COBBLESTONE", 50, sender);
         valueSaver("STONE", 50, sender);
         valueSaver("COAL",50, sender);
@@ -1020,19 +1030,21 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         valueSaver("EMERALD_BLOCK", 2700, sender);
         valueSaver("LAPIS_LAZULI", 70, sender);
         valueSaver("LAPIS_BLOCK", 630, sender);
+        */
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultSuccess")));
     }
 
-    private void valueSaver(String material, int value, CommandSender sender){
-        Material materialM = Material.matchMaterial(material);
-        if (materialM == null){
-            return;
-        } else {
-            material = materialM.name();
-        }
-        sender.dispatchCommand( "sellall add " + material + " " + value);
-    }
+//    private void valueSaver(String material, int value, CommandSender sender){
+//        Material materialM = Material.matchMaterial(material);
+//        if (materialM == null){
+//            return;
+//        } else {
+//            material = materialM.name();
+//        }
+//        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall add" );
+//        sender.dispatchCommand( registeredCmd + " " + material + " " + value);
+//    }
 
     private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
 

@@ -96,7 +96,7 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
-class SpigotPlatform 
+public class SpigotPlatform 
 	implements Platform {
 
     private SpigotPrison plugin;
@@ -1362,7 +1362,7 @@ class SpigotPlatform
 	 * 
 	 * @return
 	 */
-	protected List<SellAllBlockData> buildBlockListXMaterial() {
+	public List<SellAllBlockData> buildBlockListXMaterial() {
 		List<SellAllBlockData> blockList = new ArrayList<>();
 		
 		blockList.add( new SellAllBlockData( XMaterial.COBBLESTONE, 4, true) );
