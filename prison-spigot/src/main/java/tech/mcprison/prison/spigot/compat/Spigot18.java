@@ -117,6 +117,16 @@ public class Spigot18
         return Sound.valueOf("LEVEL_UP");
     }
 
+    @Override
+    public Sound getOpenChestSound() {
+        return Sound.valueOf("CHEST_OPEN");
+    }
+
+    @Override
+    public Sound getCloseChestSound() {
+        return Sound.valueOf("CHEST_CLOSE");
+    }
+
     @SuppressWarnings( "deprecation" )
 	@Override
 	public void breakItemInMainHand( Player player ) {

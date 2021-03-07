@@ -68,6 +68,10 @@ public interface Compatibility
 
     public Sound getLevelUpSound();
 
+    public Sound getOpenChestSound();
+
+    public Sound getCloseChestSound();
+
     enum EquipmentSlot {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
     }

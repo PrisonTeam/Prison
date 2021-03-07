@@ -24,10 +24,13 @@ public class BackpacksListeners implements Listener {
 
     @EventHandler
     public void onBackpackCloseEvent(InventoryCloseEvent e){
-        if (BackpacksUtil.openBackpacks.contains(e.getPlayer().getName()) && BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())){
-            BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory());
+        if (BackpacksUtil.openBackpacks.contains(e.getPlayer().getName())){
             BackpacksUtil.get().removeFromOpenBackpacks((Player) e.getPlayer());
-            BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+            BackpacksUtil.get().playBackpackCloseSound(((Player) e.getPlayer()));
+            if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())){
+                BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory());
+                BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+            }
         }
     }
 
@@ -40,7 +43,6 @@ public class BackpacksListeners implements Listener {
 
     @EventHandler
     public void onPlayerBackpackEdit(InventoryClickEvent e){
-
         if (BackpacksUtil.openBackpacks.contains(e.getWhoClicked().getName())) {
             Compatibility compat = SpigotPrison.getInstance().getCompatibility();
             String title = compat.getGUITitle(e);

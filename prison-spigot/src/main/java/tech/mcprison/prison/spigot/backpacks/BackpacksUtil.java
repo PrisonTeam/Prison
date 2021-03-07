@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,6 +23,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 
@@ -29,12 +31,13 @@ import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 public class BackpacksUtil extends SpigotConfigComponents {
 
     private static BackpacksUtil instance;
-    private Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
     private File backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
     private FileConfiguration backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
     public static List<String> openBackpacks = new ArrayList<>();
     public static List<String> backpackEdited = new ArrayList<>();
+    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
     /**
      * Check if BackPacks's enabled.
@@ -45,10 +48,6 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
     private void backpacksConfigUpdater(){
         backpackConfigUpdater();
-    }
-
-    public List<String> getOpenBackpacks(){
-        return openBackpacks;
     }
 
     public void removeFromOpenBackpacks(Player p){
@@ -176,7 +175,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
     /**
      * Adding the extra inventory argument will just modify your already
-     * made inventory with the backpack content.
+     * made inventory and add the backpack content if possible.
      * */
     public Inventory getBackpack(Player p, Inventory inv){
         return getBackpackCustom(p, inv);
@@ -238,12 +237,32 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
-     * Give backpack item to a player.
+     * Give backpack item to a Player.
      *
      * @param p - Player
      **/
     public void giveBackpackToPlayer(Player p){
         backPackItem(p);
+    }
+
+    /**
+     * PLay close backpack sound to a Player.
+     * Must be enabled in the backpack config.
+     *
+     * @param p - Player
+     * */
+    public void playBackpackCloseSound(Player p){
+        playCloseBackpackSoundToPlayer(p);
+    }
+
+    /**
+     * Play backpack close sound to a PLayer.
+     * Must be enabled in the backpack config.
+     *
+     * @param p - Player
+     * */
+    public void playOpenBackpackSound(Player p) {
+        playOpenBackpackSoundToPlayer(p);
     }
 
     /**
@@ -439,6 +458,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     private void openBackpackDefault(Player p) {
+        playOpenBackpackSound(p);
         Inventory inv = getBackpack(p);
         p.openInventory(inv);
         if (!openBackpacks.contains(p.getName())){
@@ -564,4 +584,25 @@ public class BackpacksUtil extends SpigotConfigComponents {
             }
         }
     }
+
+    private void playCloseBackpackSoundToPlayer(Player p) {
+        if (getBoolean(backpacksConfig.getString("Options.BackPack_Close_Sound_Enabled"))) {
+            Sound sound = compat.getCloseChestSound();
+            try {
+                sound = Sound.valueOf(backpacksConfig.getString("Options.BackPack_Close_Sound"));
+            } catch (IllegalArgumentException ignored) {}
+            p.playSound(p.getLocation(), sound, 3, 1);
+        }
+    }
+
+    private void playOpenBackpackSoundToPlayer(Player p) {
+        if (getBoolean(backpacksConfig.getString("Options.BackPack_Open_Sound_Enabled"))){
+            Sound sound = compat.getOpenChestSound();
+            try{
+                sound = Sound.valueOf(backpacksConfig.getString("Options.BackPack_Open_Sound"));
+            } catch (IllegalArgumentException ignored){}
+            p.playSound(p.getLocation(), sound,3, 1);
+        }
+    }
+
 }

@@ -113,7 +113,17 @@ public class Spigot19
         return Sound.valueOf("ENTITY_PLAYER_LEVELUP");
     }
 
-	@Override
+    @Override
+    public Sound getOpenChestSound() {
+        return Sound.valueOf("BLOCK_CHEST_OPEN");
+    }
+
+    @Override
+    public Sound getCloseChestSound() {
+        return Sound.valueOf("BLOCK_CHEST_CLOSE");
+    }
+
+    @Override
 	public void breakItemInMainHand( Player player ) {
 		player.getInventory().setItemInMainHand( null );
 		
