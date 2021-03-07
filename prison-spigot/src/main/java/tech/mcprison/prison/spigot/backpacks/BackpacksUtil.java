@@ -34,6 +34,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     private File backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
     private FileConfiguration backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
     public static List<String> openBackpacks = new ArrayList<>();
+    public static List<String> backpackEdited = new ArrayList<>();
 
     /**
      * Check if BackPacks's enabled.
@@ -64,6 +65,26 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * */
     public static BackpacksUtil get() {
         return getInstance();
+    }
+
+    /**
+     * Add player to edited backpacks.
+     *
+     * @param p - Player
+     * */
+    public void addToEditedBackpack(Player p){
+        if (!backpackEdited.contains(p.getName())){
+            backpackEdited.add(p.getName());
+        }
+    }
+
+    /**
+     * Remove from edited backpacks.
+     *
+     * @param p - Player
+     * */
+    public void removeFromEditedBackpack(Player p){
+        backpackEdited.remove(p.getName());
     }
 
     /**
@@ -393,6 +414,9 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
     @NotNull
     private Inventory getBackpackDefault(Player p) {
+
+        updateCachedBackpack();
+
         Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
 
         // Get the Items config section
