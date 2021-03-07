@@ -124,10 +124,15 @@ public class Spigot19
     }
 
     @Override
+    public Sound getEntityItemBreakSound() {
+        return Sound.valueOf("ENTITY_ITEM_BREAK");
+    }
+
+    @Override
 	public void breakItemInMainHand( Player player ) {
 		player.getInventory().setItemInMainHand( null );
 		
-		player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F); 
+		player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
 	}
 
 }

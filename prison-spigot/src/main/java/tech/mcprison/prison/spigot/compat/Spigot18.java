@@ -127,6 +127,11 @@ public class Spigot18
         return Sound.valueOf("CHEST_CLOSE");
     }
 
+    @Override
+    public Sound getEntityItemBreakSound() {
+        return Sound.valueOf("ITEM_BREAK");
+    }
+
     @SuppressWarnings( "deprecation" )
 	@Override
 	public void breakItemInMainHand( Player player ) {
@@ -134,7 +139,7 @@ public class Spigot18
 		
 		try
 		{
-			player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F);
+			player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
 		}
 		catch ( NoSuchFieldError e )
 		{

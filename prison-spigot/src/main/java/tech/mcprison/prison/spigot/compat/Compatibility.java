@@ -72,6 +72,8 @@ public interface Compatibility
 
     public Sound getCloseChestSound();
 
+    public Sound getEntityItemBreakSound();
+
     enum EquipmentSlot {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD
     }
