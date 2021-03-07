@@ -402,10 +402,10 @@ public class AutoManagerFeatures
 	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr,
 							  int targetCount, Player p, SpigotBlock block  ) {
 
-		XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-		XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
-
 		if ( autoBlock ) {
+			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
+			XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
+			
 			int count = itemCount(source, p);
 			if ( count >= targetCount ) {
 				int mult = count / targetCount;
@@ -1704,13 +1704,17 @@ public class AutoManagerFeatures
 	 * @param drops
 	 */
 	private void calculateDropAdditions(SpigotItemStack itemInHand, Collection<SpigotItemStack> drops) {
-
+		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
+		
 		for (SpigotItemStack itemStack : drops) {
 
 			// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
 			// But if has silk touch, then never drop flint.
-			calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops );
+			adds.addAll( 
+					calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
 		}
+		
+		drops.addAll( adds );
 	}
 
 
@@ -1729,8 +1733,10 @@ public class AutoManagerFeatures
 	 * @param itemStack
 	 * @param drops
 	 */
-	private void calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, SpigotItemStack itemStack,
+	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, SpigotItemStack itemStack,
 												   Collection<SpigotItemStack> drops ) {
+		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
+		
 		if (itemStack.getMaterial() == BlockType.GRAVEL && !hasSilkTouch(itemInHand)) {
 
 			int quantity = 1;
@@ -1767,9 +1773,10 @@ public class AutoManagerFeatures
 
 //				ItemStack flintStack = new ItemStack(Material.FLINT, quantity);
 				SpigotItemStack flintStack = new SpigotItemStack( quantity, BlockType.FLINT);
-				drops.add(flintStack);
+				adds.add(flintStack);
 			}
 		}
+		return adds;
 	}
 
 	public Random getRandom() {

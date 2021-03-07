@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.3 2021-03-06
+# v3.2.5-alpha.3 2021-03-07
+
+
+* **Changes to prevent a concurrent modification exception when mining gravel and it is trying to add flint to the drops.**
 
 
 * **Created a singeton wrapper for the AutoFeatures so they can be used with the prison core instead of just being restricted to the spigot module.**  Hooking it up to the command /prison autofeatures.
