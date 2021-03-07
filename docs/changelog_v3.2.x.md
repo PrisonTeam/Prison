@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.3 2021-03-07
 
 
+* **Adding in support for remove all of a specific type from all inventories, including backpacks.**
+A work in progress.
+
+
 * **Per block sellall permission:**
 You can now enable a permission in the `sellallconfig.yml` to sell blocks,
   if enabled a player will need the permission `prison.sellall.<blockname>`, for example

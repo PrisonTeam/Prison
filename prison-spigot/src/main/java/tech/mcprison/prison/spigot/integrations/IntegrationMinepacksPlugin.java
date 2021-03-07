@@ -137,7 +137,7 @@ public class IntegrationMinepacksPlugin
     			
     			if ( inv.containsAtLeast( sourceStack.getBukkitStack(), 1 ) ) {
     				
-    				int count = itemCount( source, player, inv );
+    				int count = SpigotUtil.itemStackCount( source, inv );
     				if ( count > 0 ) {
     					sourceStack.setAmount( count );
     					destStack.setAmount( count );
@@ -160,18 +160,46 @@ public class IntegrationMinepacksPlugin
     	return extras;
     }
     
-	private int itemCount(XMaterial source, Player player, Inventory inv ) {
-		int count = 0;
-		if ( source != null ) {
-			ItemStack testStack = source.parseItem();
-
-			for (ItemStack is : inv.getContents() ) {
-				if ( is != null && is.isSimilar( testStack ) ) {
-					count += is.getAmount();
+    /**
+     * <p>Removes a given XMaterial from the Minepack's backpack if it exists.
+     * This function returns the number of items that were removed.
+     * </p>
+     * 
+     * @param player
+     * @param xMat
+     * @return
+     */
+	public int itemStackRemoveAll(Player player, XMaterial xMat) {
+		int removed = 0;
+		
+		if ( xMat != null && isEnabled() ) {
+			
+			Backpack bp = getMinepacks().getBackpackCachedOnly(player);
+			
+			if ( bp != null ) {
+				
+				removed += SpigotUtil.itemStackRemoveAll( xMat, bp.getInventory() );
+				
+				if ( removed > 0 ) {
+					bp.setChanged();
 				}
 			}
 		}
-		return count;
+		return removed;
 	}
+    
+//	private int itemCount(XMaterial source, Inventory inv ) {
+//		int count = 0;
+//		if ( source != null ) {
+//			ItemStack testStack = source.parseItem();
+//
+//			for (ItemStack is : inv.getContents() ) {
+//				if ( is != null && is.isSimilar( testStack ) ) {
+//					count += is.getAmount();
+//				}
+//			}
+//		}
+//		return count;
+//	}
 
 }

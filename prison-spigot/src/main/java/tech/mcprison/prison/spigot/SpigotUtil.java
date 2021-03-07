@@ -217,7 +217,7 @@ public class SpigotUtil {
 	 * @return
 	 */
 	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
-								Player player, SpigotItemStack itemStack ) {
+															Player player, SpigotItemStack itemStack ) {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
 		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
@@ -225,7 +225,7 @@ public class SpigotUtil {
 		
 		// Insert overflow in to Prison's backpack:
 		if (overflow.size() > 0 && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
-			BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable");
+//			BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable");
 			Inventory inv = BackpacksUtil.get().getBackpack(player);
 			overflow = inv.addItem( overflow.values().toArray( new ItemStack[0] ) );
 			BackpacksUtil.get().setInventory(player, inv);
@@ -246,7 +246,105 @@ public class SpigotUtil {
 		return results;
 	}
 	
+//	public static int countItemsInPlayerInventory(
+//								Player player, SpigotItemStack itemStackSource, 
+//								SpigotItemStack itemStackTarget, int quantity ) {
+//		int count = 0;
+//
+//		player.getInventory().
+//		
+//		
+//		
+//		return count ;
+//	}
+//	
+//	public static HashMap<Integer, SpigotItemStack> exchangeItemsFromPlayerInventory(
+//			Player player, SpigotItemStack itemStackSource, 
+//			SpigotItemStack itemStackTarget, int quantity ) {
+//		HashMap<Integer, SpigotItemStack> overflow = new HashMap<>();
+//		
+//		HashMap<Integer, SpigotItemStack> removed = new HashMap<>();
+//		
+//		
+//		
+//		return overflow ;
+//	}
 
+	
+	public static int itemStackCount(XMaterial xMat, Inventory inv ) {
+		int count = 0;
+		if ( xMat != null && inv != null ) {
+			ItemStack testStack = xMat.parseItem();
+
+			for (ItemStack is : inv.getContents() ) {
+				if ( is != null && is.isSimilar( testStack ) ) {
+					count += is.getAmount();
+				}
+			}
+		}
+		return count;
+	}
+	
+	public static int itemStackRemoveAll(Player player, XMaterial xMat ) {
+		int removed = 0;
+
+		// First remove from the player's inventory:
+		removed += itemStackRemoveAll( xMat, player.getInventory() );
+
+		
+		// Insert overflow in to Prison's backpack:
+		if ( SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
+		
+			Inventory inv = BackpacksUtil.get().getBackpack(player);
+			removed += itemStackRemoveAll( xMat, inv );
+		}
+		
+		
+		// Insert overflow in to Minepacks backpack:
+		if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+			removed += IntegrationMinepacksPlugin.getInstance().itemStackRemoveAll(player, xMat);
+		}
+	
+	return removed;
+	}
+
+	/**
+	 * <p>This function will remove a given XMaterial from an Inventory and as 
+	 * a result, this function will return a count of how many were removed.
+	 * </p>
+	 * 
+	 * @param xMat The XMaterial that needs to b removed from the inventory
+	 * @param inv The Inventory object
+	 * @return count of how many items were removed
+	 */
+	public static int itemStackRemoveAll( XMaterial xMat, Inventory inv ) {
+		int count = 0;
+		if ( xMat != null && inv != null ) {
+			ItemStack testStack = xMat.parseItem();
+			
+			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
+			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
+			
+			for (ItemStack is : inv.getContents() ) {
+				if ( is != null && is.isSimilar( testStack ) ) {
+					count += is.getAmount();
+					Integer key = Integer.valueOf( is.getAmount() );
+					if ( !deleteHolder.containsKey( key )) {
+						deleteHolder.put( key, is );
+					}
+				}
+			}
+			
+			// Now remove the items stacks from the inventory:
+			for ( ItemStack itemStack : deleteHolder.values() ) {
+				inv.remove( itemStack );
+			}
+			
+		}
+		return count;
+	}
+
+	
 	/**
 	 * Used in AutoManagerFeatures.
 	 * @param player
