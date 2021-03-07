@@ -26,7 +26,6 @@ import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
@@ -88,8 +87,6 @@ public class AutoManagerFeatures
 
 	private Random random = new Random();
 
-	private AutoFeaturesFileConfig autoFeaturesConfig = null;
-
 
 	public AutoManagerFeatures() {
 		super();
@@ -100,35 +97,8 @@ public class AutoManagerFeatures
 
 	private void setup() {
 
-		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
+//		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
 
-	}
-
-	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
-		return autoFeaturesConfig;
-	}
-
-	public boolean isBoolean( AutoFeatures feature ) {
-		return autoFeaturesConfig.isFeatureBoolean( feature );
-	}
-
-	protected String getMessage( AutoFeatures feature ) {
-		return autoFeaturesConfig.getFeatureMessage( feature );
-	}
-
-	protected int getInteger( AutoFeatures feature ) {
-		return autoFeaturesConfig.getInteger( feature );
-	}
-	
-	protected List<String> getListString( AutoFeatures feature ) {
-		List<String> results = null;
-		if ( feature.isStringList() ) {
-			results = autoFeaturesConfig.getFeatureStringList( feature );
-		}
-		else {
-			results = new ArrayList<>();
-		}
-		return results;
 	}
 
 //	/**
@@ -635,7 +605,7 @@ public class AutoManagerFeatures
 
 	private void notifyPlayerWithSound( Player player, SpigotBlock block, AutoFeatures messageId ) {
 
-		String message = autoFeaturesConfig.getFeatureMessage( messageId );
+		String message = getMessage( messageId );
 
 		// Play sound when full
 		if (isBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {

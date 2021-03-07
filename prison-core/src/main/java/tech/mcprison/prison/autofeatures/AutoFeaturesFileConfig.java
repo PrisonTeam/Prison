@@ -453,7 +453,7 @@ public class AutoFeaturesFileConfig {
     
     }
     
-    public AutoFeaturesFileConfig() {
+    protected AutoFeaturesFileConfig() {
         
     	this.config = new LinkedHashMap<>();
     	

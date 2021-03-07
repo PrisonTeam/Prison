@@ -20,6 +20,8 @@ that you need.
 # v3.2.5-alpha.3 2021-03-06
 
 
+* **Created a singeton wrapper for the AutoFeatures so they can be used with the prison core instead of just being restricted to the spigot module.**  Hooking it up to the command /prison autofeatures.
+
 
 **v3.2.5-alpha.3 2021-03-06**
 

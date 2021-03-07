@@ -182,8 +182,7 @@ public class AutoManager
 
 
 				// Set the broken block to AIR and cancel the event
-    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
     				
     				e.setCancelled( true );
     			}
@@ -348,8 +347,7 @@ public class AutoManager
 									itemInHand );
 					
 
-	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-	    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
 	    				
 	    				e.setCancelled( true );
 	    			}

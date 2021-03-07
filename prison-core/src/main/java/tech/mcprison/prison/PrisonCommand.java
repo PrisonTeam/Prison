@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -726,7 +727,41 @@ public class PrisonCommand {
 		}
     	display.addText( "&3Permissions:" );
     	display.addText( "&b   %s", sb.toString() );
+
     	
+    	
+    	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+    	
+    	display.addText( "&b   " );
+    	display.addText( "&b   options.isProcessNormalDropsEvents =  %s", 
+    									afw.isBoolean( AutoFeatures.isProcessNormalDropsEvents ) );
+    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents =   %s", 
+    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents =   %s", 
+    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+
+    	display.addText( "&b " );
+    	
+    	display.addText( "&b   options.general.isAutoManagerEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    	
+    	
+    	display.addText( "&b " );
+	
+    	
+    	display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
+    									afw.isBoolean( AutoFeatures.autoPickupEnabled ));
+    	
+    	display.addText( "&b   options.autoSmelt.isAutoManagerEnabled %s", 
+    									afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
+    	display.addText( "&b   options.autoBlock.isAutoManagerEnabled %s", 
+    									afw.isBoolean( AutoFeatures.autoBlockEnabled ));
+    	
+    	
+    	display.addText( "&b   options.lore.isLoreEnabled %s", 
+										afw.isBoolean( AutoFeatures.isLoreEnabled ));
+
+
     	display.send(sender);
     	
     	// altPermissions are now a part of this command.

@@ -20,6 +20,8 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -121,14 +123,44 @@ public class OnBlockBreakEventListener
 	private RegisteredListener registeredListenerMCMMO = null; 
 	
 	
+	private AutoFeaturesWrapper autoFeatureWrapper = null;
+	
+	
 	public OnBlockBreakEventListener() {
 		super();
+		
+		this.autoFeatureWrapper = AutoFeaturesWrapper.getInstance();
 		
 //		this.playerCache = new TreeMap<>();
 		this.prisonMineManager = null;
 		
 		this.teExplosionTriggerEnabled = true;
 	}
+	
+
+
+	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
+		return autoFeatureWrapper.getAutoFeaturesConfig();
+	}
+
+	public boolean isBoolean( AutoFeatures feature ) {
+		return autoFeatureWrapper.isBoolean( feature );
+	}
+
+	public String getMessage( AutoFeatures feature ) {
+		return autoFeatureWrapper.getMessage( feature );
+	}
+
+	public int getInteger( AutoFeatures feature ) {
+		return autoFeatureWrapper.getInteger( feature );
+	}
+	
+	protected List<String> getListString( AutoFeatures feature ) {
+		return autoFeatureWrapper.getListString( feature );
+	}
+	
+	
+	
 	
     /**
      * <p>The EventPriorty.MONITOR means that the state of the event is OVER AND DONE,
@@ -185,10 +217,8 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
     
-		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-		
-		boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-		boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
+		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
 		if ( !isAutoManagerEnabled && isTEExplosiveEnabled ) {
 			
@@ -201,10 +231,8 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	
-    	AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-    	
-    	boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-    	boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
+    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
     	if ( !isAutoManagerEnabled && isTEExplosiveEnabled ) {
     		
@@ -451,8 +479,7 @@ public class OnBlockBreakEventListener
     		else {
     			
     			// targeted block was not in the mine, so cancel it:
-    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
     				
     				e.setCancelled( true );
     			}
@@ -671,7 +698,7 @@ public class OnBlockBreakEventListener
 			
 			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isProcessNormalDropsEnabled = aMan.isBoolean( AutoFeatures.isProcessNormalDropsEvents );
+			boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
 			
 			String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
 
@@ -705,8 +732,7 @@ public class OnBlockBreakEventListener
 //							triggered );
 
 
-	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-	    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+	    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
 	    				
 	    				e.setCancelled( true );
 	    			}
@@ -740,8 +766,7 @@ public class OnBlockBreakEventListener
 //				mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.blockBreak, triggered );
 
 				
-    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-    					AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
     				
     				e.setCancelled( true );
     			}
@@ -791,7 +816,7 @@ public class OnBlockBreakEventListener
 			
 			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isTEExplosiveEnabled = aMan.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+			boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 			
 			
 			if ( isTEExplosiveEnabled ) {
@@ -869,8 +894,7 @@ public class OnBlockBreakEventListener
 					
 					
 					// Set the broken block to AIR and cancel the event
-	    			if ( SpigotPrison.getInstance().getAutoFeatures().isBoolean( 
-	    					AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
 	    				
 	    				e.setCancelled( true );
 	    			}
@@ -925,7 +949,7 @@ public class OnBlockBreakEventListener
 			
 			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isCEBlockExplodeEnabled = aMan.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
 			
 			
 			if ( isCEBlockExplodeEnabled ) {
@@ -1023,8 +1047,8 @@ public class OnBlockBreakEventListener
 		
 		if ( !isMCMMOChecked ) {
 			
-	    	AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-	    	boolean isProcessMcMMOBlockBreakEvents = aMan.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
+//	    	AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+	    	boolean isProcessMcMMOBlockBreakEvents = isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
 
 			if ( isProcessMcMMOBlockBreakEvents ) {
 				
