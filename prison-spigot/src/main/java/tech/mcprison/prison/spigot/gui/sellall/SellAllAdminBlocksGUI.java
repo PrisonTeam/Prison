@@ -81,6 +81,11 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
                     messages.getString("Lore.Value") + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
             );
 
+            if (sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled").equalsIgnoreCase("true")){
+                itemsLore.add("");
+                itemsLore.add(SpigotPrison.format(messages.getString("Lore.Permission") + "&7" + sellAllConfig.getString("Options.Sell_Per_Block_Permission") + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+            }
+
             ItemStack item = createButton(SpigotUtil.getItemStack(SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), 1), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);
         }

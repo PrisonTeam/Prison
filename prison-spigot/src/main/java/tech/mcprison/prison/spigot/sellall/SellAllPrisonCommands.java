@@ -1099,8 +1099,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     hasError = true;
                 }
 
-
-
                 // Get value
                 double value = 0;
                 try {

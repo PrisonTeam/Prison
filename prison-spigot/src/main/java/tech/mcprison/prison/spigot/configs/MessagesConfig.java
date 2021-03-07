@@ -136,6 +136,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Multiplier", "&3Multiplier: &f");
         dataConfig("Lore.Name","&3Rank Name: &7");
         dataConfig("Lore.Notifications","&8Edit Mines notifications.");
+        dataConfig("Lore.Permission", "&3Permission: ");
         dataConfig("Lore.PlayersWithTheRank","&3Players at rank: &7");
         dataConfig("Lore.PrestigeWarning", "&3Prestige will reset: ");
         dataConfig("Lore.PrestigeWarning2", "&3 - &bRank");
