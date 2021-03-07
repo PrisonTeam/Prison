@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +33,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
@@ -185,9 +185,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (sender.hasPermission("prison.admin")) {
-            sender.dispatchCommand("sellall help");
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall help" );
+            sender.dispatchCommand(registeredCmd);
         } else {
-            sender.dispatchCommand("sellall sell");
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+            sender.dispatchCommand(registeredCmd);
         }
     }
 
@@ -737,7 +739,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        sender.dispatchCommand("sellall multiplier help");
+        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
+        sender.dispatchCommand(registeredCmd);
     }
 
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier. Permission multipliers for player's prison.sellall.multiplier.<valueHere>, example prison.sellall.multiplier.2 will add a 2x multiplier",
@@ -820,7 +823,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (enable.equalsIgnoreCase("null")){
-            sender.dispatchCommand("sellall toolsTrigger help");
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall toolsTrigger help" );
+            sender.dispatchCommand(registeredCmd);
             return;
         }
 

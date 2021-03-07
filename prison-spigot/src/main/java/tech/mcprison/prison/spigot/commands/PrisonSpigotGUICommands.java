@@ -2,6 +2,8 @@ package tech.mcprison.prison.spigot.commands;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
@@ -150,7 +152,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "gui sellall", description = "SellAll GUI command", onlyPlayers = true)
     private void sellAllGuiCommandNew(CommandSender sender){
 
-        sender.dispatchCommand("sellall gui");
+    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall gui" );
+        sender.dispatchCommand(registeredCmd);
     }
 
     @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)

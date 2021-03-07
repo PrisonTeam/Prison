@@ -178,7 +178,8 @@ public class ListenersPrisonManager implements Listener {
                             XMaterial xMaterialConf = SpigotUtil.getXMaterial(sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID"));
                             XMaterial inHandXMaterial = SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType());
                             if (xMaterialConf == inHandXMaterial) {
-                                Bukkit.dispatchCommand(p, "sellall sell");
+                            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+                                Bukkit.dispatchCommand(p, registeredCmd);
                                 return;
                             }
                         }
@@ -241,7 +242,8 @@ public class ListenersPrisonManager implements Listener {
                                 }
 
                                 // Execute the sellall command
-                                Bukkit.dispatchCommand(p, "sellall sell");
+                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+                                Bukkit.dispatchCommand(p, registeredCmd);
                             }
                         } catch (IndexOutOfBoundsException ignored) {
                         }
@@ -734,7 +736,8 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"sellall multiplier add " + part2 + " " + part3);
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier add" );
+                Bukkit.dispatchCommand(p, registeredCmd + " " + part2 + " " + part3);
 
                 // Close the inventory
                 p.closeInventory();
@@ -829,7 +832,8 @@ public class ListenersPrisonManager implements Listener {
         // Check the clicks
         if (e.isRightClick()) {
             // Execute the command
-            Bukkit.dispatchCommand(p, "sellall multiplier delete " + buttonNameMain);
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier delete" );
+            Bukkit.dispatchCommand(p, registeredCmd + " " + buttonNameMain);
             // Cancel the event
             e.setCancelled(true);
             // Close the inventory
@@ -874,7 +878,8 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"sellall delay set " + part3);
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay set" );
+                Bukkit.dispatchCommand(p, registeredCmd + " " + part3);
 
                 // Close the inventory
                 p.closeInventory();
@@ -960,7 +965,8 @@ public class ListenersPrisonManager implements Listener {
 
             case "PerUserToggleable":{
 
-                Bukkit.dispatchCommand(p, "sellall autosell perusertoggleable false");
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell perusertoggleable" );
+                Bukkit.dispatchCommand(p, registeredCmd + " false");
                 SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
                 gui.open();
 
@@ -969,7 +975,8 @@ public class ListenersPrisonManager implements Listener {
 
             case "PerUserToggleable-Disabled":{
 
-                Bukkit.dispatchCommand(p, "sellall autosell perusertoggleable true");
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell perusertoggleable" );
+                Bukkit.dispatchCommand(p, registeredCmd + " true");
                 SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
                 gui.open();
 
@@ -978,7 +985,8 @@ public class ListenersPrisonManager implements Listener {
 
             case "AutoSell":{
 
-                Bukkit.dispatchCommand(p, "Sellall autosell false");
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
+                Bukkit.dispatchCommand(p, registeredCmd + " false");
                 SellAllAdminGUI gui = new SellAllAdminGUI(p);
                 gui.open();
 
@@ -987,7 +995,8 @@ public class ListenersPrisonManager implements Listener {
 
             case "AutoSell-Disabled":{
 
-                Bukkit.dispatchCommand(p, "Sellall autosell true");
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
+                Bukkit.dispatchCommand(p, registeredCmd + " true");
                 SellAllAdminGUI gui = new SellAllAdminGUI(p);
                 gui.open();
 
@@ -1011,7 +1020,8 @@ public class ListenersPrisonManager implements Listener {
             case "AutoSell":{
 
                 if (e.getClick().isRightClick()){
-                    Bukkit.dispatchCommand(p, "sellall autosell false");
+                	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
+                    Bukkit.dispatchCommand(p, registeredCmd + " false");
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1024,7 +1034,8 @@ public class ListenersPrisonManager implements Listener {
             case "AutoSell-Disabled":{
 
                 if (e.getClick().isRightClick()){
-                    Bukkit.dispatchCommand(p, "sellall autosell true");
+                	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
+                    Bukkit.dispatchCommand(p, registeredCmd + " true");
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1036,7 +1047,8 @@ public class ListenersPrisonManager implements Listener {
             case "Delay-Enabled":{
 
                 if (e.getClick().isRightClick()){
-                    Bukkit.dispatchCommand(p, "sellall delay false");
+                	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
+                    Bukkit.dispatchCommand(p, registeredCmd + " false");
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1061,7 +1073,8 @@ public class ListenersPrisonManager implements Listener {
             case "Delay-Disabled":{
 
                 if (e.getClick().isRightClick()){
-                    Bukkit.dispatchCommand(p, "sellall delay true");
+                	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
+                    Bukkit.dispatchCommand(p, registeredCmd + " true");
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1421,7 +1434,8 @@ public class ListenersPrisonManager implements Listener {
 
         if (e.isRightClick()){
 
-            Bukkit.dispatchCommand(p, "sellall delete " + buttonNameMain);
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delete" );
+            Bukkit.dispatchCommand(p, registeredCmd + " " + buttonNameMain);
             p.closeInventory();
 
         } else if (e.isLeftClick()){
@@ -2585,12 +2599,13 @@ public class ListenersPrisonManager implements Listener {
     private void sellAllCurrencyChat(AsyncPlayerChatEvent e, Player p, String message) {
 
         // Check message and do the action
+    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set currency" );
         if (message.equalsIgnoreCase("cancel")){
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllCurrencyEditCancelled")));
         } else if (message.equalsIgnoreCase("default")){
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency default"));
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, registeredCmd + " default"));
         } else {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "sellall set currency " + message));
+            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, registeredCmd + " " + message));
         }
 
         // Cancel event.

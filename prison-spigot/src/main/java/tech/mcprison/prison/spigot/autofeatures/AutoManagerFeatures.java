@@ -582,8 +582,8 @@ public class AutoManagerFeatures
 							if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
 								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
-
-							Bukkit.dispatchCommand(player, "sellall sell");
+							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+							Bukkit.dispatchCommand(player, registeredCmd);
 							return;
 						}
 					}
@@ -591,8 +591,8 @@ public class AutoManagerFeatures
 					if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
 						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
-
-					Bukkit.dispatchCommand(player, "sellall sell");
+					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+					Bukkit.dispatchCommand(player, registeredCmd);
 					return;
 				}
 			}

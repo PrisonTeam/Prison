@@ -19,6 +19,17 @@ that you need.
 
 # v3.2.5-alpha.2 2021-03-06
 
+* **Using command translation to the registered command for /sellall.**
+This helps to eliminate conflicts with other sellall plugins.
+
+
+* **Hook up the larger set of default values (about 88) to the sellall function to setup the default values.**
+This reuses the same data values that are used when building the /ranks autoConfigure.
+
+
+* **Using command translation to the registered command for /backpack.**
+This helps to eliminate conflicts with other backpack plugins.
+
 
 * **Setup a CommandHandler to translate and lookup prison commands to get their registered command.**
 This is important to ensure that internally the commands can be ran and they are running the prison version of the command.
