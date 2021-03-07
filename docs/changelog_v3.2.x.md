@@ -17,7 +17,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.2 2021-03-06
+# v3.2.5-alpha.3 2021-03-06
+
+
+
+**v3.2.5-alpha.3 2021-03-06**
+
 
 * **Using command translation to the registered command for /sellall.**
 This helps to eliminate conflicts with other sellall plugins.

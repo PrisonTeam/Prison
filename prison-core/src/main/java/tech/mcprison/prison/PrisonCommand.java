@@ -752,7 +752,11 @@ public class PrisonCommand {
     
     
     @Command(identifier = "prison findCmd", 
-    		description = "For internal use only. Do not use.", 
+    		description = "For internal use only. Do not use.  This command is used by internal code to look up " +
+    				"a command to get the registered command.  Example would be when prison is registering  the " +
+    				"command '/backpack' and it's already been registered, bukkit would then try to register prison's " +
+    				"version as '/prison:backpack'.  This information is used to ensure that internal calls go to the " +
+    				"correct prison commands instead of another plugin's.", 
     		onlyPlayers = false, permissions = "prison.debug" )
     public void findCommand(CommandSender sender,
     		@Arg(name = "command", description = "The command to search for" ) String command
