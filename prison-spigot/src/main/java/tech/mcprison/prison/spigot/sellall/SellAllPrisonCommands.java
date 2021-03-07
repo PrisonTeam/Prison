@@ -1088,17 +1088,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 // ItemID
                 String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
 
-                // Check if per-block permission's enabled and if player has permission.
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))){
-                    String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
-                    if (itemID != null) {
-                        permission = permission + itemID;
-                    }
-                    if (permission != null && !p.hasPermission(permission)){
-                        return 0;
-                    }
-                }
-
                 // Flag variable and XMaterials.
                 boolean hasError = false;
                 XMaterial itemMaterial = null;
@@ -1109,6 +1098,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 } catch (IllegalArgumentException ex){
                     hasError = true;
                 }
+
+
 
                 // Get value
                 double value = 0;
@@ -1128,12 +1119,24 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 // Check if the item from the player inventory's on the config of items sellable
                 // So it gets the amount and then remove it from the inventory
                 if (!hasError && itemMaterial == invMaterial) {
+
+                    // Check if per-block permission's enabled and if player has permission.
+                    if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))){
+                        String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+                        permission = permission + invMaterial.name();
+
+                        // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
+                        if (!p.hasPermission(permission)){
+                            return 0;
+                        }
+                    }
+
                     amount = itemStack.getAmount();
                     if (removeItems) {
                         if (mode == inventorySellMode.PlayerInventory) {
                             p.getInventory().remove(itemStack);
                         } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
-                        	IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                            IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
                         } else if (mode == inventorySellMode.PrisonBackPack){
                             BackpacksUtil.get().removeItem(p, itemStack);
                         }
