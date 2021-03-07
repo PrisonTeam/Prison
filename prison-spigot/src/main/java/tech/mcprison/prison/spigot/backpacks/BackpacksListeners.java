@@ -41,14 +41,15 @@ public class BackpacksListeners implements Listener {
     @EventHandler
     public void onPlayerBackpackEdit(InventoryClickEvent e){
 
-        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-        String title = compat.getGUITitle(e);
-        if (title != null && title.substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")){
-            BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+        if (BackpacksUtil.openBackpacks.contains(e.getWhoClicked().getName())) {
+            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+            String title = compat.getGUITitle(e);
+            if (title != null && title.substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
+                BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+            }
         }
 
     }
-
 
     @EventHandler
     public void onPlayerClickBackpackItem(PlayerInteractEvent e){
