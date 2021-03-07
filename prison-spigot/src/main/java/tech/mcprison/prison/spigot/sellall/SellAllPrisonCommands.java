@@ -597,6 +597,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                }
                 conf.save(sellAllFile);
             } catch (IOException e) {
                 Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
@@ -620,7 +623,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
      * @param blockAdd
      * @param value
      */
-    public void sellAllAddCommand( XMaterial blockAdd, Double value){
+    public void sellAllAddCommand(XMaterial blockAdd, Double value){
 
     	String itemID = blockAdd.name();
     	
@@ -634,6 +637,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         	FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
         	conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
         	conf.set("Items." + itemID + ".ITEM_VALUE", value);
+        	if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+            }
         	conf.save(sellAllFile);
         } catch (IOException e) {
         	Output.get().logError( SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")), e);
@@ -662,8 +668,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", null);
-            conf.set("Items." + itemID + ".ITEM_VALUE", null);
             conf.set("Items." + itemID, null);
             conf.save(sellAllFile);
         } catch (IOException e) {
@@ -713,6 +717,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
                 conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                }
                 conf.save(sellAllFile);
             } catch (IOException e) {
                 Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
@@ -1016,42 +1023,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 			sellAllAddCommand( xMatCost.getBlock(), xMatCost.getPrice() );
 		}
 
-        
-		/*
-        valueSaver("COBBLESTONE", 50, sender);
-        valueSaver("STONE", 50, sender);
-        valueSaver("COAL",50, sender);
-        valueSaver("COAL_BLOCK", 450, sender);
-        valueSaver("IRON_INGOT",75, sender);
-        valueSaver("IRON_BLOCK",600, sender);
-        valueSaver("REDSTONE", 101, sender);
-        valueSaver("REDSTONE_BLOCK", 909, sender);
-        valueSaver("GOLD_INGOT", 122, sender);
-        valueSaver("GOLD_BLOCK", 1100, sender);
-        valueSaver("DIAMOND", 200, sender);
-        valueSaver("DIAMOND_BLOCK", 1800, sender);
-        valueSaver("EMERALD", 300, sender);
-        valueSaver("EMERALD_BLOCK", 2700, sender);
-        valueSaver("LAPIS_LAZULI", 70, sender);
-        valueSaver("LAPIS_BLOCK", 630, sender);
-        */
-
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultSuccess")));
     }
 
-//    private void valueSaver(String material, int value, CommandSender sender){
-//        Material materialM = Material.matchMaterial(material);
-//        if (materialM == null){
-//            return;
-//        } else {
-//            material = materialM.name();
-//        }
-//        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall add" );
-//        sender.dispatchCommand( registeredCmd + " " + material + " " + value);
-//    }
-
     private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
 
+        // Money to give value
         double moneyToGive = 0;
 
         // Get the player inventory
@@ -1063,9 +1040,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
         }
 
-        if ( IntegrationMinepacksPlugin.getInstance().isEnabled() && 
+        // Check option and if enabled.
+        if (IntegrationMinepacksPlugin.getInstance().isEnabled() &&
         			getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"))) {
 
+            // Set mode and get backpack
             mode = inventorySellMode.MinesBackPack;
             Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
 
@@ -1078,9 +1057,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
+        // Check if enabled Prison backpacks and sellall on it.
         if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
                 getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))){
 
+            // Set mode and get Prison Backpack inventory
             mode = inventorySellMode.PrisonBackPack;
             Inventory backPack = BackpacksUtil.get().getBackpack(p);
 
@@ -1091,7 +1072,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                     }
                 }
             }
-
         }
 
         return moneyToGive;
@@ -1105,12 +1085,26 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             // Get the items strings from config and for each of them get the Material and value.
             for (String key : items) {
 
+                // ItemID
+                String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+
+                // Check if per-block permission's enabled and if player has permission.
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))){
+                    String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+                    if (itemID != null) {
+                        permission = permission + itemID;
+                    }
+                    if (permission != null && !p.hasPermission(permission)){
+                        return 0;
+                    }
+                }
+
                 // Flag variable and XMaterials.
                 boolean hasError = false;
                 XMaterial itemMaterial = null;
                 XMaterial invMaterial = null;
                 try {
-                    itemMaterial = XMaterial.valueOf(sellAllConfig.getString("Items." + key + ".ITEM_ID"));
+                    itemMaterial = XMaterial.valueOf(itemID);
                     invMaterial = XMaterial.matchXMaterial(itemStack);
                 } catch (IllegalArgumentException ex){
                     hasError = true;

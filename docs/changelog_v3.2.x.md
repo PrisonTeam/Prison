@@ -20,6 +20,24 @@ that you need.
 # v3.2.5-alpha.3 2021-03-07
 
 
+* **Per block sellall permission:**
+You can now enable a permission in the `sellallconfig.yml` to sell blocks,
+  if enabled a player will need the permission `prison.sellall.<blockname>`, for example
+  for `COAL_ORE` the permission's going to be `prison.sellall.COAL_ORE`,
+  to make sure you're adding the right permission, add again your sellall items and check
+  it in the sellallconfig.yml next to the the item you've added.
+  
+NOTE: You can also edit an already existing item after enabling the per-block permission,
+  and you'll see the right permission next to the edited sellall item, remember that if you edit
+  this permission, it's going to do nothing because it isn't actually the one in use, so
+  this permission isn't fully editable, you can only edit the <`prison.sellall.`>.
+  
+Option to enable this feature in the sellallconfig.yml:
+`Sell_Per_Block_Permission_Enabled: true`
+
+Structure of permission: `prison.sellall.<blockName>`.
+
+
 * **Changes to prevent a concurrent modification exception when mining gravel and it is trying to add flint to the drops.**
 
 
