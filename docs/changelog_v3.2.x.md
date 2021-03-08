@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.4 2021-03-07
 
 
+* **Design changes to AutoFeatures GUI when disabled.**
+Edited design, to apply new lores you should delete the module_conf/lang/EN_US.YML file and restart your server.
+
 
 * **v3.2.5-alpha.4 2021-03-07**
 

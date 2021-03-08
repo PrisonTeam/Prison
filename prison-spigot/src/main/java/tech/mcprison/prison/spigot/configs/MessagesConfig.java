@@ -114,7 +114,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ContainsNoCommands"," &3contains no commands.");
         dataConfig("Lore.DelaySellAll", "&3Delay: &8");
         dataConfig("Lore.DisableNotifications","&8Disable notifications.");
-        dataConfig("Lore.DisabledAll","&aAll features OFF");
+        dataConfig("Lore.DisabledAll","&3All features &cOFF&3.");
         dataConfig("Lore.EnabledAll","&aAll features ON");
         dataConfig("Lore.EmptyMultiplier", "&c[!] There aren't multipliers!");
         dataConfig("Lore.FullSoundEnabled","&aFull Inv., notify with sound ON");
@@ -156,7 +156,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.RanksButton","&8Ranks GUI manager.");
         dataConfig("Lore.ResetButton","&8Resets the mine.");
         dataConfig("Lore.RightClickToCancel","&cRight-Click to cancel.");
-        dataConfig("Lore.RightClickToEnable","&aRight-Click to enable.");
+        dataConfig("Lore.RightClickToEnable","&cRight-Click to &aenable&c.");
         dataConfig("Lore.RightClickToDisable", "&cRight-Click to disable.");
         dataConfig("Lore.RightClickToToggle","&3Right click to toggle.");
         dataConfig("Lore.RightClickToDelete", "&cRight-Click to delete.");
