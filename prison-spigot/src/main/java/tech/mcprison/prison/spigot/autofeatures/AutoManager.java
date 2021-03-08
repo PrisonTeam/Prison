@@ -246,14 +246,14 @@ public class AutoManager
 				isAutoSmelt ){
 			
 			// Smelting needs to change the source to the smelted target so auto block will work:
-			source = autoFeatureSmelt( block, player, itemInHand, source );
+			source = autoFeatureSmelt( block, player, source );
 		}
 		
 		// AutoBlock
 		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
 				isAutoBlock ) {
 			
-			autoFeatureBlock( block, player, itemInHand, source );
+			autoFeatureBlock( block, player, source );
 		}
 		
 		

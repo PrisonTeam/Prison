@@ -3,8 +3,10 @@ package tech.mcprison.prison.spigot.autofeatures;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -248,26 +250,46 @@ public class AutoManagerFeatures
 			// Adds in additional drop items:
 			calculateDropAdditions( itemInHand, drops );
 
+			
 			if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
 					hasSilkTouch( itemInHand )) {
 
 				calculateSilkTouch( itemInHand, drops );
 			}
 
-			// Drop the items where the origional block was located:
+			
+			// calculate fortune before smelting and blocking:
 			for ( SpigotItemStack itemStack : drops ) {
 
 				if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
 					calculateFortune( itemStack, fortuneLevel );
 				}
+			}
+			
+			
+			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
+				
+				normalDropSmelt( drops );
+			}
+			
+			
+			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
+				
+				normalDropBlock( drops );
+				
+			}
+			
+			
+			// Drop the items where the origional block was located:
+			for ( SpigotItemStack itemStack : drops ) {
+
 
 				count += itemStack.getAmount();
 				
+				
 				dropAtBlock( itemStack, block );
 				
-//				dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
-//				dropExtra( player.getInventory().addItem(itemStack), player, block );
 			}
 
 			
@@ -930,7 +952,7 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected XMaterial autoFeatureSmelt( SpigotBlock block, Player p, SpigotItemStack itemInHand, XMaterial source )
+	protected XMaterial autoFeatureSmelt( SpigotBlock block, Player p, XMaterial source )
 	{
 		XMaterial results = source;
 		
@@ -1005,7 +1027,7 @@ public class AutoManagerFeatures
 		return results;
 	}
 
-	protected void autoFeatureBlock( SpigotBlock block, Player p, SpigotItemStack itemInHand, XMaterial source  ) {
+	protected void autoFeatureBlock( SpigotBlock block, Player p, XMaterial source  ) {
 
 		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
 
@@ -1099,6 +1121,199 @@ public class AutoManagerFeatures
 //
 //		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
 	}
+
+	
+	protected void normalDropSmelt( Collection<SpigotItemStack> drops ) {
+		
+		Set<XMaterial> xMats = new HashSet<>();
+		for ( SpigotItemStack sItemStack : drops ) {
+			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
+			
+			if ( !xMats.contains( source  ) ) {
+				xMats.add( source );
+			}
+		}
+		
+		
+		for ( XMaterial source : xMats ) {
+			
+			switch ( source )
+			{
+				case GOLD_ORE:
+				case NETHER_GOLD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+					break;
+					
+				case IRON_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+					break;
+					
+				case COAL_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+					break;
+					
+				case DIAMOND_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+					break;
+					
+				case EMERALD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+					break;
+					
+				case LAPIS_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+					break;
+					
+				case REDSTONE_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+					break;
+					
+				case NETHER_QUARTZ_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+					break;
+					
+				case ANCIENT_DEBRIS:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+					break;
+
+				// v1.17 !!
+//				case COPPER_ORE:
+//					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+//					break;
+					
+				default:
+					break;
+			}
+		}
+		
+	}
+
+	
+	protected void normalDropBlock( Collection<SpigotItemStack> drops ) {
+		
+		Set<XMaterial> xMats = new HashSet<>();
+		for ( SpigotItemStack sItemStack : drops ) {
+			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
+			
+			if ( !xMats.contains( source  ) ) {
+				xMats.add( source );
+			}
+		}
+		
+		
+		for ( XMaterial source : xMats ) {
+			
+			switch ( source )
+			{
+				case GOLD_INGOT:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
+					
+					break;
+					
+				case IRON_INGOT:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
+					
+					break;
+
+				case COAL:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
+					
+					break;
+					
+				case DIAMOND:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
+					
+					break;
+					
+				case REDSTONE:
+					SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
+					
+					break;
+					
+				case EMERALD:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
+					
+					break;
+					
+				case QUARTZ:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
+					
+					break;
+					
+				case PRISMARINE_SHARD:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
+					
+					break;
+					
+				case SNOW_BLOCK:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
+					
+					break;
+					
+				case GLOWSTONE_DUST:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
+					
+					break;
+					
+				case LAPIS_LAZULI:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 1 );
+					
+					
+					
+					
+				
+				
+				
+				
+				case GOLD_ORE:
+				case NETHER_GOLD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+					break;
+					
+				case IRON_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+					break;
+					
+				case COAL_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+					break;
+					
+				case DIAMOND_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+					break;
+					
+				case EMERALD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+					break;
+					
+				case LAPIS_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+					break;
+					
+				case REDSTONE_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+					break;
+					
+				case NETHER_QUARTZ_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+					break;
+					
+				case ANCIENT_DEBRIS:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+					break;
+
+				// v1.17 !!
+//				case COPPER_ORE:
+//					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+//					break;
+					
+				default:
+					break;
+			}
+		}
+		
+	}
+
 
 	/**
 	 * <p>This adds a lore counter to the tool if it is enabled.
@@ -1386,6 +1601,7 @@ public class AutoManagerFeatures
 
 		switch (blockName.toLowerCase()) {
 			case "coal_ore":
+			case "coal":
 				xp = getRandom().nextInt( 2 );
 				break;
 

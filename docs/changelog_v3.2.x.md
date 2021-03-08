@@ -20,6 +20,18 @@ that you need.
 # v3.2.5-alpha.3 2021-03-07
 
 
+* **Hook up the support for normal drop smelting and normal drop blocking.**
+Fixed an issue with XP drops for coal.  Plus a few other fixes and improvements.
+
+
+* **Added similar functions to the inventory add and replace to work on collections of stacks outside of the inventory of players.**  
+These would be used for normal drops since the manipulations will have to occur before anything enters their inventory.
+
+
+* **For auto features, added a new section for normal drops to include the ability to smelt and block.**
+These may not alway appear to work since they only apply to the current drop (single block or whole explosion) so if they don't have enough to block (4 or 9 drops) then the cannot.  Inventory is ignored with normal drops for smelting and blocking.
+
+
 * **Changes to get both backpacks working!  Fixed some issues with smelting and blocking too.**
 Appears to be working much better now.
 
