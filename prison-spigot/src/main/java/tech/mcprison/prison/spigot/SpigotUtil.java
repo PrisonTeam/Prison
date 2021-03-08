@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -353,7 +354,7 @@ public class SpigotUtil {
 			removed += IntegrationMinepacksPlugin.getInstance().itemStackRemoveAll(player, xMat);
 		}
 	
-	return removed;
+		return removed;
 	}
 
 	/**
@@ -402,6 +403,81 @@ public class SpigotUtil {
 		return count;
 	}
 
+	
+	/**
+	 * <p>This version of itemStackReplaceItems is focused on replacing items within 
+	 * the stacks collection only.  It serves as the source and the target locations for the
+	 * conversions.
+	 * </p>
+	 * 
+	 * @param stacks
+	 * @param source
+	 * @param target
+	 * @param ratio
+	 */
+	public static void itemStackReplaceItems( Collection<SpigotItemStack> stacks,
+											XMaterial source, XMaterial target, int ratio ) {
+
+		// Removes all of the specified source types from all inventories:
+		int sourceRemoved = itemStackRemoveAll( source, stacks );
+		
+		// The number of sources that need to be added back since it's the remainder:
+		int sourceAdd = sourceRemoved % ratio;
+		
+		int targetCount = sourceRemoved / ratio;
+		
+		
+		if ( sourceAdd > 0 ) {
+			itemStackAddAll( stacks, source, sourceAdd );
+		}
+		
+		
+		if ( targetCount > 0 ) {
+			itemStackAddAll( stacks, target, targetCount );
+		}
+		
+	}
+	
+	
+	private static void itemStackAddAll( Collection<SpigotItemStack> stacks, XMaterial source, int amount ) {
+		ItemStack iStack = source.parseItem();
+		iStack.setAmount( amount );
+		
+		SpigotItemStack sItemStack = new SpigotItemStack( iStack );
+		stacks.add( sItemStack );
+	}
+
+	public static int itemStackRemoveAll( XMaterial xMat, Collection<SpigotItemStack> stacks ) {
+		int count = 0;
+		if ( xMat != null && stacks != null ) {
+//			ItemStack testStack = xMat.parseItem();
+			
+			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
+			List<SpigotItemStack> deleteHolder = new ArrayList<>();
+//			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
+			
+			for (SpigotItemStack is : stacks ) {
+				if ( is != null ) {
+//					if ( is != null && is.isSimilar( testStack ) ) {
+					
+					XMaterial invXMat = XMaterial.matchXMaterial( is.getBukkitStack() );
+					if ( xMat == invXMat ) {
+						
+						count += is.getAmount();
+						deleteHolder.add( is );
+					}
+					
+				}
+			}
+			
+			// Now remove the items stacks from the inventory:
+			for ( SpigotItemStack itemStack : deleteHolder ) {
+				stacks.remove( itemStack );
+			}
+			
+		}
+		return count;
+	}
 
 	
 	/**
