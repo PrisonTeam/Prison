@@ -29,6 +29,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -676,6 +677,13 @@ public class ListenersPrisonManager implements Listener {
 
                 // Call the method
                 playerMinesGUI(p, e);
+            } else if (title.equalsIgnoreCase(p.getName() + " -> Backpacks")){
+
+                if (buttonNameMain.equalsIgnoreCase("Backpack")){
+                    BackpacksUtil.get().openBackpack(p);
+                } else {
+                    BackpacksUtil.get().openBackpack(p, buttonNameMain.substring(9));
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -158,12 +159,32 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
+     * Get Prison backpack of a Player + ID, because a player can have more than one Inventory.
+     *
+     * @param p - Player
+     * @param id - String ID
+     * */
+    public Inventory getBackpack(Player p, String id){
+        return getBackpackByID(p, id);
+    }
+
+    /**
      * Open backpack.
      *
      * @param p - Player
      * */
     public void openBackpack(Player p){
         openBackpackDefault(p);
+    }
+
+    /**
+     * Open backpack by ID.
+     *
+     * @param p - Player
+     * @param id - String ID
+     * */
+    public void openBackpack(Player p, String id){
+        openBackpackByID(p, id);
     }
 
     /**
@@ -192,6 +213,17 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
+     * Merge another inventory into the backpack inventory by ID.
+     *
+     * @param p - Player
+     * @param inv - Inventory
+     * @param id - String ID
+     * */
+    public void setInventory(Player p, Inventory inv, String id){
+        saveInventoryByID(p, inv, id);
+    }
+
+    /**
      * Add an item to the backpack inventory
      * NOT TESTED!
      *
@@ -208,11 +240,37 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - player
      * @param item - itemstack
+     *
+     * @return HashMap with items that didn't fit.
      * */
     public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item){
         return addItemToBackpack(p, item);
     }
 
+    /**
+     * Add an item to the backpack inventory
+     * NOT TESTED!
+     *
+     * RECOMMENDED WAY:
+     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
+     * modify your inventory as you'd usually with spigot inventories,
+     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
+     *
+     * EXAMPLE for adding item:
+     * Inventory inv = BackPacksUtil.getInventory(p);
+     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
+     * inv.addItem(item);
+     * BackPacksUtil.setInventory(inv);
+     *
+     * @param p - player
+     * @param item - itemstack
+     * @param id - String id
+     *
+     * @return HashMap with items that didn't fit.
+     * */
+    public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item, String id){
+        return addItemToBackpackByID(p, item, id);
+    }
 
     /**
      * Remove item from backpack
@@ -231,9 +289,36 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - player
      * @param item - itemstack
+     *
+     * @return HashMap with items that couldn't be removed.
      * */
     public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item){
         return removeItemFromBackpack(p, item);
+    }
+
+    /**
+     * Remove item from backpack
+     * NOT TESTED!
+     *
+     * RECOMMENDED WAY:
+     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
+     * modify your inventory as you'd usually with spigot inventories,
+     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
+     *
+     * EXAMPLE for removing item:
+     * Inventory inv = BackPacksUtil.getInventory(p);
+     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
+     * inv.removeItem(item);
+     * BackPacksUtil.setInventory(inv);
+     *
+     * @param p - player
+     * @param item - itemstack
+     * @param id - String ID
+     *
+     * @return HashMap with items that couldn't be removed.
+     * */
+    public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item, String id){
+        return removeItemFromBackpakByID(p, item, id);
     }
 
     /**
@@ -263,6 +348,32 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * */
     public void playOpenBackpackSound(Player p) {
         playOpenBackpackSoundToPlayer(p);
+    }
+
+    /**
+     * Get an array of backpacks of a player.
+     *
+     * @param p - Player
+     * */
+    public List<String> getBackpacksIDs(Player p){
+
+        List<String> backpacksIDs = new ArrayList<>();
+
+        // Items
+        //
+        updateCachedBackpack();
+
+        // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
+        // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
+        for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)){
+            if (!key.equalsIgnoreCase("Items")){
+                backpacksIDs.add(key.substring(6));
+            } else {
+                backpacksIDs.add(null);
+            }
+        }
+
+        return backpacksIDs;
     }
 
     /**
@@ -457,9 +568,43 @@ public class BackpacksUtil extends SpigotConfigComponents {
         return inv;
     }
 
+    @NotNull
+    private Inventory getBackpackByID(Player p, String id) {
+        updateCachedBackpack();
+
+        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
+
+        // Get the Items config section
+        Set<String> slots;
+        try {
+            slots = backpacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId() + ".Items-" + id).getKeys(false);
+        } catch (NullPointerException ex){
+            return inv;
+        }
+        if (slots.size() != 0) {
+            for (String slot : slots) {
+                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories. " + p.getUniqueId() + ".Items-" + id + "." + slot + ".ITEMSTACK");
+                if (finalItem != null) {
+                    inv.setItem(Integer.parseInt(slot), finalItem);
+                }
+            }
+        }
+
+        return inv;
+    }
+
     private void openBackpackDefault(Player p) {
         playOpenBackpackSound(p);
         Inventory inv = getBackpack(p);
+        p.openInventory(inv);
+        if (!openBackpacks.contains(p.getName())){
+            openBackpacks.add(p.getName());
+        }
+    }
+
+    private void openBackpackByID(Player p, String id) {
+        playOpenBackpackSound(p);
+        Inventory inv = getBackpack(p, id);
         p.openInventory(inv);
         if (!openBackpacks.contains(p.getName())){
             openBackpacks.add(p.getName());
@@ -534,6 +679,50 @@ public class BackpacksUtil extends SpigotConfigComponents {
         updateCachedBackpack();
     }
 
+    private void saveInventoryByID(Player p, Inventory inv, String id) {
+        updateCachedBackpack();
+
+        if (inv.getContents() != null){
+            int slot = 0;
+
+            try {
+                backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id, null);
+                backpacksDataConfig.save(backpacksFile);
+            } catch (IOException ex){
+                ex.printStackTrace();
+                return;
+            }
+
+            updateCachedBackpack();
+
+            for (ItemStack item : inv.getContents()){
+                if (item != null){
+
+                    backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id + "." + slot + ".ITEMSTACK", item);
+
+                    slot++;
+                }
+            }
+            if (slot != 0){
+                try {
+                    backpacksDataConfig.save(backpacksFile);
+                } catch (IOException ex){
+                    ex.printStackTrace();
+                }
+            }
+        } else {
+            // If it's null just delete the whole stored inventory.
+            try {
+                backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id, null);
+                backpacksDataConfig.save(backpacksFile);
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }
+        }
+
+        updateCachedBackpack();
+    }
+
     private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item) {
         Inventory inv = getBackpack(p);
         HashMap<Integer, ItemStack> overflow = inv.addItem(item);
@@ -541,10 +730,26 @@ public class BackpacksUtil extends SpigotConfigComponents {
         return overflow;
     }
 
+    @NotNull
+    private HashMap<Integer, ItemStack> addItemToBackpackByID(Player p, ItemStack item, String id) {
+        Inventory inv = getBackpack(p, id);
+        HashMap<Integer, ItemStack> overflow = inv.addItem(item);
+        setInventory(p, inv, id);
+        return overflow;
+    }
+
     private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item) {
         Inventory inv = getBackpack(p);
         HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
         setInventory(p, inv);
+        return underflow;
+    }
+
+    @NotNull
+    private HashMap<Integer, ItemStack> removeItemFromBackpakByID(Player p, ItemStack item, String id) {
+        Inventory inv = getBackpack(p, id);
+        HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
+        setInventory(p, inv, id);
         return underflow;
     }
 

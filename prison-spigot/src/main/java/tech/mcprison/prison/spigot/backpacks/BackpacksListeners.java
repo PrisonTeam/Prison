@@ -16,6 +16,8 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 
 public class BackpacksListeners implements Listener {
 
+    Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+
     @EventHandler
     public void onPlayerJoinBackpack(PlayerJoinEvent e){
         Player p = e.getPlayer();
@@ -44,7 +46,6 @@ public class BackpacksListeners implements Listener {
     @EventHandler
     public void onPlayerBackpackEdit(InventoryClickEvent e){
         if (BackpacksUtil.openBackpacks.contains(e.getWhoClicked().getName())) {
-            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
             String title = compat.getGUITitle(e);
             if (title != null && title.substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
                 BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
