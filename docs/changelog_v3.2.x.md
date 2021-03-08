@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.4 2021-03-07
+# v3.2.5-alpha.4 2021-03-08
+
+
+* **Added a new feature that will prevent prestige from resetting the default ladder.**
+In the config file, plugins/Prison/config.yml, set prestige.resetDefaultLadder: true (will have to add it).
 
 
 * **Design changes to AutoFeatures GUI when disabled.**

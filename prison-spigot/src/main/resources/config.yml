@@ -42,6 +42,7 @@ prestiges: true
 prestige:
   enabled: true
   resetMoney: true
+  resetDefaultLadder: true
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can

@@ -22,13 +22,12 @@ import java.util.List;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -199,44 +198,55 @@ public class RankUpCommand
 
         	
         	// Prestige method
-        	prestigePlayer(player, rankPlayer, pRank, pRankAfter, lm, willPrestige, rankupWithSuccess);
+        	prestigePlayer( sender, player, rankPlayer, pRank, pRankAfter, lm, willPrestige, rankupWithSuccess);
         }
 	}
 
-	private void prestigePlayer(Player player, RankPlayer rankPlayer, Rank pRank, Rank pRankAfter, 
+	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
+						Rank pRank, Rank pRankAfter, 
 								LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
 		
-		// Get the player rank after, just to check if it has success
-    	Rank pRankSecond;
-    	// Conditions
-		if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
-			// Set the player rank to the first one of the default ladder
-			PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-											lm.getLadder("default").getLowestRank().get().getName() + " default");
-			// Get that rank
-			pRankSecond = rankPlayer.getRank("default");
-			// Check if the ranks match
-			if (pRankSecond == lm.getLadder("default").getLowestRank().get()) {
-				// Get economy
-				EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		Platform platform = Prison.get().getPlatform();
+		boolean resetBalance = platform.getConfigBooleanTrue( "prestige.resetMoney" );
+		boolean resetDefaultLadder = platform.getConfigBooleanTrue( "prestige.resetDefaultLadder" );
+		
+		boolean success = true;
+		
+		if ( resetDefaultLadder ) {
+			
+			// Get the player rank after, just to check if it has success Conditions
+			if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
+				// Set the player rank to the first one of the default ladder
 				
-				boolean resetBalance = Prison.get().getPlatform().getConfigBooleanTrue( "prestige.resetMoney" );
+				// Call the function directly and skip using dispatch commands:
+				setRank( sender, player.getName(), lm.getLadder("default").getLowestRank().get().getName(), "default" );
 				
-				if ( economy != null || !resetBalance ) {
-					
-					if ( resetBalance ) {
-						// Set the player balance to 0 (reset)
-						economy.setBalance(player, 0);
-					}
-						
-					// Send a message to the player because he did prestige!
-					player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
-				}
-				else {
-					player.sendMessage( "&3No economy is available.  Cannot perform action." );
+//				PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
+//						lm.getLadder("default").getLowestRank().get().getName() + " default");
+				// Get that rank
+				Rank pRankSecond = rankPlayer.getRank("default");
+				// Check if the ranks match
+
+				if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
+					player.sendMessage( "&7Unable to reset your rank on the default ladder." );
+					success = false;
 				}
 			}
 		}
+		
+		if ( success && resetBalance ) {
+			
+			// set the player's balance to zero:
+			rankPlayer.setBalance( 0 );
+			
+			player.sendMessage( "&7Your balance has been set to zero." );
+		}
+		
+		if ( success ) {
+			// Send a message to the player because he did prestige!
+			player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
+		}
+
 	}
 
 
