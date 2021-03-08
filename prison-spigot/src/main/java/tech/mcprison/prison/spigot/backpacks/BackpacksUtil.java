@@ -356,24 +356,18 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param p - Player
      * */
     public List<String> getBackpacksIDs(Player p){
+        return getBackpacksIDsList(p);
+    }
 
-        List<String> backpacksIDs = new ArrayList<>();
-
-        // Items
-        //
-        updateCachedBackpack();
-
-        // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
-        // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
-        for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)){
-            if (!key.equalsIgnoreCase("Items")){
-                backpacksIDs.add(key.substring(6));
-            } else {
-                backpacksIDs.add(null);
-            }
-        }
-
-        return backpacksIDs;
+    /**
+     * Get number of backpacks own by player.
+     *
+     * @param p - Player
+     *
+     * @return int - Integer number of backpacks own.
+     * */
+    public int getNumberOwnedBackpacks(Player p){
+        return getNumberOfBackpacksOwnedByPlayer(p);
     }
 
     /**
@@ -808,6 +802,43 @@ public class BackpacksUtil extends SpigotConfigComponents {
             } catch (IllegalArgumentException ignored){}
             p.playSound(p.getLocation(), sound,3, 1);
         }
+    }
+
+    @NotNull
+    private List<String> getBackpacksIDsList(Player p) {
+        List<String> backpacksIDs = new ArrayList<>();
+
+        // Items
+        //
+        updateCachedBackpack();
+
+        // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
+        // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
+        for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)){
+            if (!key.equalsIgnoreCase("Items")){
+                backpacksIDs.add(key.substring(6));
+            } else {
+                backpacksIDs.add(null);
+            }
+        }
+
+        return backpacksIDs;
+    }
+
+    private int getNumberOfBackpacksOwnedByPlayer(Player p) {
+        int backpacksNumber = 0;
+
+        // Items
+        //
+        updateCachedBackpack();
+
+        // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
+        // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
+        for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)){
+            backpacksNumber++;
+        }
+
+        return backpacksNumber;
     }
 
 }
