@@ -97,49 +97,8 @@ public class AutoManagerFeatures
 
 	private void setup() {
 
-//		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
-
 	}
 
-//	/**
-//     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
-//     * the file is loaded from the file system only one time and only when it is first
-//     * used.  This ensures that if it is never used, it is never loaded in to memory.
-//     * </p>
-//     *
-//     * @return
-//     */
-//    private FileConfiguration getAutoFeaturesConfig() {
-//    	if ( this.autoFeaturesConfig == null ) {
-//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-//    		this.autoFeaturesConfig = afc.getConfig();
-//
-//    	}
-//        return autoFeaturesConfig;
-//    }
-
-
-//    /**
-//     * <p>This change in this function, to move it in to this class, allows the
-//     * reloading of the parameters that controls all of the behaviors whenever
-//     * the data is saved.
-//     * </p>
-//     *
-//     * @return
-//     */
-//    public boolean saveAutoFeaturesConfig() {
-//    	boolean success = false;
-//    	FileConfiguration afConfig = getAutoFeaturesConfig();
-//
-//    	if ( afConfig != null ) {
-//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-//    		success = afc.saveConf(afConfig);
-//
-//    		// reload the internal settings:
-//    		setup();
-//    	}
-//    	return success;
-//    }
 
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
@@ -189,9 +148,9 @@ public class AutoManagerFeatures
 		int count = 0;
 		if (autoPickup) {
 
-			// The following is not the correct drops:
+			// The following may not be the correct drops for all versions of spigot,
+			// plus there are some extra items, such as flint, that will never be dropped.
 			Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
-//			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
 
 
 			if (drops != null && drops.size() > 0 ) {
@@ -234,11 +193,10 @@ public class AutoManagerFeatures
 	
 	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
 		int count = 0;
-		
 
-		// The following is not the correct drops:
+		// The following may not be the correct drops for all versions of spigot,
+		// plus there are some extra items, such as flint, that will never be dropped.
 		Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
-//		Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
 
 
 		if (drops != null && drops.size() > 0 ) {
@@ -322,9 +280,6 @@ public class AutoManagerFeatures
 		// Process mine block break events:
 		SpigotPlayer sPlayer = new SpigotPlayer( player );
 		
-//		SpigotBlock spigotBlock = new SpigotBlock()
-
-		// spigotBlock is generally air so don't use it.
 		
 		// Calculate XP on block break if enabled:
 		calculateAndGivePlayerXP( sPlayer, targetBlockName, count );
@@ -351,8 +306,6 @@ public class AutoManagerFeatures
 		mine.incrementBlockMiningCount( targetBlockName );
 		
 		
-		// move in to the loop when blocks are tracked?... ??? 
-//				String blockName = spigotBlock.getPrisonBlock().getBlockName();
 		mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
 	}
 	
@@ -386,53 +339,16 @@ public class AutoManagerFeatures
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
 			dropExtra( overflow, p, block );
 
-//			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-//			XMaterial target = SpigotUtil.getXMaterial( targetStr );
-
-//			if ( source != null && target != null ) {
-//				HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
-//				dropExtra( overflow, p, block );
-//			}
-			
-//			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
-//			SpigotItemStack destStack = new SpigotItemStack( target.parseItem() );
-//			
-//			if ( sourceStack != null && destStack != null &&
-//					SpigotUtil.playerInventoryContainsAtLeast( p, sourceStack, 1 ) ) {
-//
-//				int count = itemCount(source, p);
-//				if ( count > 0 ) {
-//					sourceStack.setAmount( count );
-//					destStack.setAmount( count );
-//
-//					SpigotUtil.playerInventoryRemoveItem( p, sourceStack );
-//
-//					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, destStack );
-//					
-//					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
-//						extras.putAll( IntegrationMinepacksPlugin.getInstance().smeltItems( p, source, destStack));
-//						
-//						// After smelting items may stack better in their inventory so try to add it all back:
-//						extras = IntegrationMinepacksPlugin.getInstance().addItems( p, extras );
-////						
-////						for ( SpigotItemStack iStack : extras.values() )
-////						{
-////							SpigotUtil.addItemToPlayerInventory( p, iStack );
-////							
-////						}
-//					}
-//					
-//					dropExtra( extras, p, block );
-//				}
-//			}
-
 		}
 	}
+	
+	
 	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target,
 							  Player p, SpigotBlock block  ) {
 		autoBlock(autoBlock, source, target, 9, p, block );
 	}
 
+	
 	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target,
 							  int ratio, Player p, SpigotBlock block  ) {
 
@@ -440,136 +356,10 @@ public class AutoManagerFeatures
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
 			dropExtra( overflow, p, block );
 			
-//			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-//			XMaterial target = SpigotUtil.getXMaterial( targetStr );
-			
-//			if ( source != null && target != null ) {
-//				HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
-//				dropExtra( overflow, p, block );
-//			}
-
-			
-//			int count = itemCount(source, p);
-//			if ( count >= targetCount ) {
-//				int mult = count / targetCount;
-//
-//				p.getInventory().removeItem(SpigotUtil.getItemStack(source, mult * targetCount));
-//
-//				SpigotItemStack itemStack = SpigotUtil.getSpigotItemStack(destination, mult);
-//				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, itemStack );
-////				HashMap<Integer, ItemStack> extras = p.getInventory().addItem(SpigotUtil.getItemStack(destination, mult));
-//				dropExtra( extras, p, block);
-//			}
 		}
 	}
 
-//	/**
-//	 * <p>Lapis is really dyed ink sacks, so need to have special processing to ensure we process the
-//	 * correct material, and not just any ink sack.
-//	 * </p>
-//	 *
-//	 * <p><b>Warning:</b> this will not work with minecraft 1.15.x since magic numbers have been
-//	 * 						eliminated.
-//	 * </p>
-//	 *
-//	 * @param autoBlock
-//	 * @param player
-//	 */
-//	protected void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
-//		if ( autoBlock ) {
-//			// ink_sack = 351:4
-//
-//			Material mat = Material.matchMaterial( "INK_SACK" );
-//			short typeId = 4;
-//
-//			// try both methods to get lapis:
-//
-//			try {
-//				convertLapisBlock( player, block, mat, typeId );
-//			}
-//			catch ( Exception e ) {
-//				// Ignore exception.
-//			}
-//
-//			mat = Material.matchMaterial( "lapis_lazuli" );
-//			if ( mat != null ) {
-//
-//				try {
-//					convertLapisBlock( player, block, mat );
-//				}
-//				catch ( Exception e ) {
-//					// Ignore exception.
-//				}
-//			}
-//
-//		}
-//	}
 
-
-//	private void convertLapisBlock( Player player, Block block, Material mat, int typeId ) {
-//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
-//		int count = itemCount(xMat, typeId, player);
-//
-//		if ( count >= 9 ) {
-//			int mult = count / 9;
-//
-//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-//			removeLapisItemStack.setAmount( mult * 9 );
-//
-////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
-//			player.getInventory().removeItem(removeLapisItemStack);
-//
-//			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-//
-//		}
-//	}
-
-//	private void convertLapisBlock( Player player, Block block, Material mat ) {
-//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
-//		int count = itemCount(xMat, player);
-//
-//		if ( count >= 9 ) {
-//			int mult = count / 9;
-//
-//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-//			removeLapisItemStack.setAmount( mult * 9 );
-//
-////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
-//			player.getInventory().removeItem(removeLapisItemStack);
-//
-//			dropExtra( player.getInventory().addItem(
-//					new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-//		}
-//	}
-
-//	private int itemCount(XMaterial source, Player player) {
-//		int count = 0;
-//		if ( source != null ) {
-//			ItemStack testStack = source.parseItem();
-//
-//			PlayerInventory inv = player.getInventory();
-//			for (ItemStack is : inv.getContents() ) {
-//				if ( is != null && is.isSimilar( testStack ) ) {
-//					count += is.getAmount();
-//				}
-//			}
-//		}
-//		return count;
-//	}
-
-
-//	private int itemCount(Material source, int typeId, Player player) {
-//		int count = 0;
-//		PlayerInventory inv = player.getInventory();
-//
-//		for (ItemStack is : inv.getContents()) {
-//
-//			if ( is != null && is.getType() != null && is.getType().compareTo( source ) == 0 ) {
-//				count += is.getAmount();
-//			}
-//		}
-//		return count;
-//	}
 
 	/**
 	 * <p>If the player does not have any more inventory room for the current items, then
@@ -848,10 +638,6 @@ public class AutoManagerFeatures
 	 */
 	protected int autoFeaturePickup( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
 
-
-//		Material brokenBlock = e.getBlock().getType();
-//		String blockName = brokenBlock.toString().toLowerCase();
-//		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( p );
 		int count = 0;
 		
 		// Use this is a block name list based upon the following:  blockType:blockName if not minecraft, or blockName
@@ -1020,9 +806,6 @@ public class AutoManagerFeatures
 			}
 		}
 		
-//		autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltGoldOre ), "GOLD_ORE", "GOLD_INGOT", p, block);
-//
-//		autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), "IRON_ORE", "IRON_INGOT", p, block);
 		
 		return results;
 	}
@@ -1031,7 +814,6 @@ public class AutoManagerFeatures
 
 		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
 
-//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
 		if ( source != null ) {
 			
 			// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
@@ -1099,30 +881,16 @@ public class AutoManagerFeatures
 			}
 		}
 
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGoldBlock ), "GOLD_INGOT", "GOLD_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockIronBlock ), "IRON_INGOT", "IRON_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCoalBlock ), "COAL", "COAL_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockDiamondBlock ), "DIAMOND", "DIAMOND_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), "REDSTONE","REDSTONE_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), "EMERALD", "EMERALD_BLOCK", p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockQuartzBlock ), "QUARTZ", "QUARTZ_BLOCK", 4, p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), "PRISMARINE_SHARD", "PRISMARINE", 4, p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), "SNOW_BALL", "SNOW_BLOCK", 4, p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGlowstone ), "GLOWSTONE_DUST", "GLOWSTONE", 4, p, block);
-//
-//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
 	}
 
 	
+	/**
+	 * <p>This processes the normal drop smelting if it's enabled.  Only the 
+	 * collection of SpigotItemStacks are needed.
+	 * </p>
+	 * 
+	 * @param drops
+	 */
 	protected void normalDropSmelt( Collection<SpigotItemStack> drops ) {
 		
 		Set<XMaterial> xMats = new HashSet<>();
@@ -1188,7 +956,14 @@ public class AutoManagerFeatures
 		
 	}
 
-	
+
+	/**
+	 * <p>This processed the normal drops for blocking.  Only the collection of 
+	 * SpigotItemStacks are needed since everything else is self contained.
+	 * </p>
+	 * 
+	 * @param drops
+	 */
 	protected void normalDropBlock( Collection<SpigotItemStack> drops ) {
 		
 		Set<XMaterial> xMats = new HashSet<>();
@@ -1258,54 +1033,6 @@ public class AutoManagerFeatures
 				case LAPIS_LAZULI:
 					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 1 );
 					
-					
-					
-					
-				
-				
-				
-				
-				case GOLD_ORE:
-				case NETHER_GOLD_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
-					break;
-					
-				case IRON_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
-					break;
-					
-				case COAL_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
-					break;
-					
-				case DIAMOND_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
-					break;
-					
-				case EMERALD_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
-					break;
-					
-				case LAPIS_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
-					break;
-					
-				case REDSTONE_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
-					break;
-					
-				case NETHER_QUARTZ_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
-					break;
-					
-				case ANCIENT_DEBRIS:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
-					break;
-
-				// v1.17 !!
-//				case COPPER_ORE:
-//					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
-//					break;
 					
 				default:
 					break;
@@ -1769,82 +1496,6 @@ public class AutoManagerFeatures
 			blocks.setAmount( count );
 		}
 
-
-
-		// cannot use switches with dynamic Material types:
-//		switch ( blocks.getType() ){
-//
-//			case COAL:
-//			case DIAMOND:
-//			case EMERALD:
-//			case LAPIS_BLOCK:
-//			case GOLD_BLOCK:
-//			case QUARTZ_BLOCK:
-//			case COAL_ORE:
-//			case DIAMOND_ORE:
-//			case EMERALD_ORE:
-//			case LAPIS_ORE:
-//			case GOLD_ORE:
-//			case QUARTZ_ORE:
-//
-//				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
-//
-//				// multiply the multiplier:
-//				count *= multiplier;
-//				break;
-//
-//			case GLOWSTONE:
-//			case GLOWSTONE_DUST:
-//			case REDSTONE:
-//			case SEA_LANTERN:
-//			case GLOWING_REDSTONE_ORE:
-//			case PRISMARINE:
-//
-//			case BEETROOT_SEEDS:
-//			case CARROT:
-//			case MELON:
-//			case MELON_SEEDS:
-//			case NETHER_WARTS:
-//			case POTATO:
-//			case GRASS:
-//			case WHEAT:
-//
-//				multiplier = getRandom().nextInt( fortuneLevel );
-//
-//				switch ( blocks.getType() )
-//				{
-//					// limits slightly greater than standard:
-//					case GLOWSTONE:
-//						// standard: 4
-//						if ( multiplier > 5 ) {
-//							multiplier = 5;
-//						}
-//						break;
-//					case SEA_LANTERN:
-//						// standard: 5
-//						if ( multiplier > 6 ) {
-//							multiplier = 6;
-//						}
-//						break;
-//					case MELON:
-//						// standard: 9
-//						if ( multiplier > 11 ) {
-//							multiplier = 11;
-//						}
-//
-//					default:
-//						break;
-//				}
-//
-//				// add the multiplier to the count:
-//				count += multiplier;
-//
-//			default:
-//				break;
-//		}
-
-//		// The count has the final value so set it as the amount:
-//		blocks.setAmount( count );
 	}
 
 

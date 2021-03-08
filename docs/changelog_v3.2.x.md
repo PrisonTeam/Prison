@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.3 2021-03-07
 
 
+* **Cleaned up some of the auto manager source code by deleting a lot of commented out stuff.**
+
+
 * **Hook up the support for normal drop smelting and normal drop blocking.**
 Fixed an issue with XP drops for coal.  Plus a few other fixes and improvements.
 

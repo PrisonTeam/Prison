@@ -109,8 +109,6 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 public class OnBlockBreakEventListener 
 	implements Listener {
 
-//	private final TreeMap<Long, Mine> playerCache;
-	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
 	
@@ -131,7 +129,6 @@ public class OnBlockBreakEventListener
 		
 		this.autoFeatureWrapper = AutoFeaturesWrapper.getInstance();
 		
-//		this.playerCache = new TreeMap<>();
 		this.prisonMineManager = null;
 		
 		this.teExplosionTriggerEnabled = true;
@@ -725,13 +722,6 @@ public class OnBlockBreakEventListener
 										itemInHand );
 					
 					
-//					// move in to the loop when blocks are tracked?... ??? 
-////					String blockName = spigotBlock.getPrisonBlock().getBlockName();
-//					String triggered = null;
-//					mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
-//							triggered );
-
-
 	    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
 	    				
 	    				e.setCancelled( true );
@@ -759,12 +749,6 @@ public class OnBlockBreakEventListener
 									itemInHand );
 
 				
-//				// Process mine block break events:
-//				SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-////				String blockName = spigotBlock.getPrisonBlock().getBlockName();
-//				String triggered = null;
-//				mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.blockBreak, triggered );
-
 				
     			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
     				
@@ -775,20 +759,6 @@ public class OnBlockBreakEventListener
 			
 			aMan.checkZeroBlockReset( mine );
 			
-//			boolean isAir = block == null || block.getType() != null && block.getType() == BlockType.AIR;
-//			
-//			// Register the block broken within the mine:
-//			if ( !isAir && !mine.incrementBlockCount( block.getPrisonBlock() ) ) {
-//				Output.get().logInfo( "OnBlockBreak: BlockBreakEvent: cannot increment block count. " +
-//						"Cannot map to a block. [%s][%s]", 
-//						(block.getPrisonBlock() == null ? "---" : block.getPrisonBlock().getBlockName()),
-//						(block.getType() == null ? "--" : block.getType().name()) );
-//			}
-			
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			//mine.checkZeroBlockReset();
 		}
 	}
 	
@@ -867,16 +837,6 @@ public class OnBlockBreakEventListener
 								itemInHand );
 						
 						
-//						// Process mine block break events:
-//						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-//						
-//						
-//						// move in to the loop when blocks are tracked?... ??? 
-////						String blockName = spigotBlock.getPrisonBlock().getBlockName();
-//						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.TEXplosion,
-//								triggered );
-
-						
 					}
 					
 					aMan.checkZeroBlockReset( mine );
@@ -886,43 +846,18 @@ public class OnBlockBreakEventListener
 				if ( totalCount > 0 ) {
 					
 					
-//					// Override blockCount to be exactly the blocks within the mine:
-//					int blockCount = teExplosiveBlocks.size();
-//					
-//					mine.addBlockBreakCount( blockCount );
-//					mine.addTotalBlocksMined( blockCount );
-					
-					
 					// Set the broken block to AIR and cancel the event
 	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
 	    				
 	    				e.setCancelled( true );
 	    			}
 
-					
-					// The block should be set to air already:
-					//e.getBlock().setType(Material.AIR);
-					
-					// Maybe needed to prevent drop side effects:
-					//e.getBlock().getDrops().clear();
-					
 				}
 				
 			}
 			
 		}
 	}
-	
-//	public void checkZeroBlockReset( Mine mine ) {
-//		if ( mine != null ) {
-//			
-//			// Checks to see if the mine ran out of blocks, and if it did, then
-//			// it will reset the mine:
-//			mine.checkZeroBlockReset();
-//		}
-//	}
-	
-	
 	
 
 	
@@ -986,36 +921,14 @@ public class OnBlockBreakEventListener
 								itemInHand );
 						
 						
-//						// Process mine block break events:
-//						SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-//						
-//						
-//						// move in to the loop when blocks are tracked?... ??? 
-////						String blockName = spigotBlock.getPrisonBlock().getBlockName();
-//						mine.processBlockBreakEventCommands( targetBlockName, player, BlockEventType.CEXplosion, null );
-
 					}
 				}
 				
 				
 				if ( totalCount > 0 ) {
 					
-					
-//					// Override blockCount to be exactly the blocks within the mine:
-//					int blockCount = blastBlocks.size();
-//					
-//					mine.addBlockBreakCount( blockCount );
-//					mine.addTotalBlocksMined( blockCount );
-					
-					
 					// Set the broken block to AIR and cancel the event
 					e.setCancelled(true);
-					
-					// The block should be set to air already:
-					//e.getBlock().setType(Material.AIR);
-					
-					// Maybe needed to prevent drop side effects:
-					//e.getBlock().getDrops().clear();
 					
 				}
 				
@@ -1076,63 +989,11 @@ public class OnBlockBreakEventListener
 		}
 	}
 	
-//	/**
-//	 * This function should not be used since it really needs to report 
-//	 * the actual block that is being used.
-//	 * 
-//	 * @param mine
-//	 * @param e
-//	 * @param blockCount
-//	 */
-//	public void doAction( Mine mine, BlastUseEvent e, int blockCount ) {
-//		if ( mine != null ) {
-//			
-//			// Need to wrap in a Prison block so it can be used with the mines:
-//			SpigotBlock block = new SpigotBlock(blk);
-//			
-//			
-//			???
-//					
-//			mine.incrementBlockCount( spigotBlock.getPrisonBlock() );
-//			
-//			// Other possible processing:
-//			
-//			String triggered = null;
-//			
-//			// Process mine block break events:
-//			SpigotPlayer player = new SpigotPlayer( e.getPlayer() );
-//			mine.processBlockBreakEventCommands( blockCount, player, BlockEventType.TEXplosion,
-//					triggered );
-//			
-//			
-//			// Checks to see if the mine ran out of blocks, and if it did, then
-//			// it will reset the mine:
-//			mine.checkZeroBlockReset();
-//		}
-//	}
 	
 	private Mine findMineLocation( SpigotBlock block ) {
 		return getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	
-//    /**
-//     * <p>Search all mines to find if the given block is located within any
-//     * of the mines. If not, then return a null.
-//     * </p>
-//     * 
-//     * @param block
-//     * @return
-//     */
-//	private Mine findMineLocation( SpigotBlock block ) {
-//		Mine mine = null;
-//		for ( Mine m : getPrisonMineManager().getMines() ) {
-//			if ( m.isInMine( block.getLocation() ) ) {
-//				mine = m;
-//				break;
-//			}
-//		}
-//		return mine;
-//	}
 
 	private TreeMap<Long, Mine> getPlayerCache() {
 		return getPrisonMineManager().getPlayerCache();
