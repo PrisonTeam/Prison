@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.3 2021-03-07
 
 
+* **Changes to get both backpacks working!  Fixed some issues with smelting and blocking too.**
+Appears to be working much better now.
+
+
 * **Backpack open and close sound**
 It's now enabled by default a sound when opening a backpack or closing it.
   You can disable it from the backpacksconfig.yml and also edit the sound.

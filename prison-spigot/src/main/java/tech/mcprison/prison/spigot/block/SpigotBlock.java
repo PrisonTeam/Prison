@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
@@ -149,7 +151,12 @@ public class SpigotBlock implements Block {
 		this.prisonBlockTypes = prisonBlockTypes;
 	}
 
-	public void setPrisonBlock( PrisonBlock prisonBlock ) {
+    public void setPrisonBlock( XMaterial xMat ) {
+    	setPrisonBlock( SpigotUtil.getPrisonBlock( xMat.name() ) );
+		
+	}
+
+    public void setPrisonBlock( PrisonBlock prisonBlock ) {
     	
     	switch ( prisonBlock.getBlockType() )
 		{

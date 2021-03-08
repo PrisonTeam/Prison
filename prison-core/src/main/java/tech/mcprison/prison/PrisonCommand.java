@@ -752,9 +752,9 @@ public class PrisonCommand {
     	display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
     									afw.isBoolean( AutoFeatures.autoPickupEnabled ));
     	
-    	display.addText( "&b   options.autoSmelt.isAutoManagerEnabled %s", 
+    	display.addText( "&b   options.autoSmelt.autoSmeltEnabled %s", 
     									afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
-    	display.addText( "&b   options.autoBlock.isAutoManagerEnabled %s", 
+    	display.addText( "&b   options.autoBlock.autoBlockEnabled %s", 
     									afw.isBoolean( AutoFeatures.autoBlockEnabled ));
     	
     	

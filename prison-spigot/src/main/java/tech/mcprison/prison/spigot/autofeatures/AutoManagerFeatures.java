@@ -18,7 +18,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -38,7 +37,6 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -295,14 +293,19 @@ public class AutoManagerFeatures
 	
 	
 
-	public void processBlockBreakage( SpigotBlock spigotBlock, Mine mine, Player player, String targetBlockName, int count,
-			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
+	public void processBlockBreakage( SpigotBlock spigotBlock, 
+						Mine mine, Player player, String targetBlockName, int count,
+						BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
 	{
 		// Process mine block break events:
 		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+//		SpigotBlock spigotBlock = new SpigotBlock()
 
+		// spigotBlock is generally air so don't use it.
+		
 		// Calculate XP on block break if enabled:
-		calculateAndGivePlayerXP( sPlayer, spigotBlock, count );
+		calculateAndGivePlayerXP( sPlayer, targetBlockName, count );
 
 		// calculate durability impact: Include item durability resistance.
 		if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
@@ -354,69 +357,87 @@ public class AutoManagerFeatures
 
 	
 
-	protected void autoSmelt( boolean autoSmelt, String sourceStr, String destinationStr, Player p, SpigotBlock block  ) {
+	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p, SpigotBlock block  ) {
 
-		if ( autoSmelt ) {
-			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-			XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
+		if ( autoSmelt && source != null && target != null ) {
+			
+			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
+			dropExtra( overflow, p, block );
 
-			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
-			SpigotItemStack destStack = new SpigotItemStack( destination.parseItem() );
+//			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
+//			XMaterial target = SpigotUtil.getXMaterial( targetStr );
 
-			if ( sourceStack != null && destStack != null &&
-					SpigotUtil.playerInventoryContainsAtLeast( p, sourceStack, 1 ) ) {
-
-				int count = itemCount(source, p);
-				if ( count > 0 ) {
-					sourceStack.setAmount( count );
-					destStack.setAmount( count );
-
-					SpigotUtil.playerInventoryRemoveItem( p, sourceStack );
-
-					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, destStack );
-					
-					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
-						extras.putAll( IntegrationMinepacksPlugin.getInstance().smeltItems( p, source, destStack));
-						
-						// After smelting items may stack better in their inventory so try to add it all back:
-						extras = IntegrationMinepacksPlugin.getInstance().addItems( p, extras );
+//			if ( source != null && target != null ) {
+//				HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
+//				dropExtra( overflow, p, block );
+//			}
+			
+//			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
+//			SpigotItemStack destStack = new SpigotItemStack( target.parseItem() );
+//			
+//			if ( sourceStack != null && destStack != null &&
+//					SpigotUtil.playerInventoryContainsAtLeast( p, sourceStack, 1 ) ) {
+//
+//				int count = itemCount(source, p);
+//				if ( count > 0 ) {
+//					sourceStack.setAmount( count );
+//					destStack.setAmount( count );
+//
+//					SpigotUtil.playerInventoryRemoveItem( p, sourceStack );
+//
+//					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, destStack );
+//					
+//					if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+//						extras.putAll( IntegrationMinepacksPlugin.getInstance().smeltItems( p, source, destStack));
 //						
-//						for ( SpigotItemStack iStack : extras.values() )
-//						{
-//							SpigotUtil.addItemToPlayerInventory( p, iStack );
-//							
-//						}
-					}
-					
-					dropExtra( extras, p, block );
-				}
-			}
+//						// After smelting items may stack better in their inventory so try to add it all back:
+//						extras = IntegrationMinepacksPlugin.getInstance().addItems( p, extras );
+////						
+////						for ( SpigotItemStack iStack : extras.values() )
+////						{
+////							SpigotUtil.addItemToPlayerInventory( p, iStack );
+////							
+////						}
+//					}
+//					
+//					dropExtra( extras, p, block );
+//				}
+//			}
 
 		}
 	}
-	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr,
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target,
 							  Player p, SpigotBlock block  ) {
-		autoBlock(autoBlock, sourceStr, destinationStr, 9, p, block );
+		autoBlock(autoBlock, source, target, 9, p, block );
 	}
 
-	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr,
-							  int targetCount, Player p, SpigotBlock block  ) {
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target,
+							  int ratio, Player p, SpigotBlock block  ) {
 
-		if ( autoBlock ) {
-			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-			XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
+		if ( autoBlock && source != null && target != null ) {
+			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
+			dropExtra( overflow, p, block );
 			
-			int count = itemCount(source, p);
-			if ( count >= targetCount ) {
-				int mult = count / targetCount;
+//			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
+//			XMaterial target = SpigotUtil.getXMaterial( targetStr );
+			
+//			if ( source != null && target != null ) {
+//				HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
+//				dropExtra( overflow, p, block );
+//			}
 
-				p.getInventory().removeItem(SpigotUtil.getItemStack(source, mult * targetCount));
-
-				SpigotItemStack itemStack = SpigotUtil.getSpigotItemStack(destination, mult);
-				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, itemStack );
-//				HashMap<Integer, ItemStack> extras = p.getInventory().addItem(SpigotUtil.getItemStack(destination, mult));
-				dropExtra( extras, p, block);
-			}
+			
+//			int count = itemCount(source, p);
+//			if ( count >= targetCount ) {
+//				int mult = count / targetCount;
+//
+//				p.getInventory().removeItem(SpigotUtil.getItemStack(source, mult * targetCount));
+//
+//				SpigotItemStack itemStack = SpigotUtil.getSpigotItemStack(destination, mult);
+//				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, itemStack );
+////				HashMap<Integer, ItemStack> extras = p.getInventory().addItem(SpigotUtil.getItemStack(destination, mult));
+//				dropExtra( extras, p, block);
+//			}
 		}
 	}
 
@@ -499,20 +520,20 @@ public class AutoManagerFeatures
 //		}
 //	}
 
-	private int itemCount(XMaterial source, Player player) {
-		int count = 0;
-		if ( source != null ) {
-			ItemStack testStack = source.parseItem();
-
-			PlayerInventory inv = player.getInventory();
-			for (ItemStack is : inv.getContents() ) {
-				if ( is != null && is.isSimilar( testStack ) ) {
-					count += is.getAmount();
-				}
-			}
-		}
-		return count;
-	}
+//	private int itemCount(XMaterial source, Player player) {
+//		int count = 0;
+//		if ( source != null ) {
+//			ItemStack testStack = source.parseItem();
+//
+//			PlayerInventory inv = player.getInventory();
+//			for (ItemStack is : inv.getContents() ) {
+//				if ( is != null && is.isSimilar( testStack ) ) {
+//					count += is.getAmount();
+//				}
+//			}
+//		}
+//		return count;
+//	}
 
 
 //	private int itemCount(Material source, int typeId, Player player) {
@@ -609,7 +630,7 @@ public class AutoManagerFeatures
 
 		// Play sound when full
 		if (isBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {
-			Prison.get().getMinecraftVersion() ;
+//	not used:		Prison.get().getMinecraftVersion() ;
 
 			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
 			Sound sound;
@@ -909,43 +930,174 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected void autoFeatureSmelt( SpigotBlock block, Player p, SpigotItemStack itemInHand )
+	protected XMaterial autoFeatureSmelt( SpigotBlock block, Player p, SpigotItemStack itemInHand, XMaterial source )
 	{
-//		Block block = e.getBlock();
+		XMaterial results = source;
+		
+		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+		
+//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
+		if ( source != null ) {
+			
+			switch ( source )
+			{
+				case GOLD_ORE:
+				case NETHER_GOLD_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltGoldOre ), source, XMaterial.GOLD_INGOT, p, block);
+					results = XMaterial.GOLD_INGOT;
+					break;
+					
+				case IRON_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.IRON_INGOT, p, block);
+					results = XMaterial.IRON_INGOT;
+					break;
+					
+				case COAL_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltCoalOre ), source, XMaterial.COAL, p, block);
+					results = XMaterial.COAL;
+					break;
+					
+				case DIAMOND_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltDiamondlOre ), source, XMaterial.DIAMOND, p, block);
+					results = XMaterial.DIAMOND;
+					break;
+					
+				case EMERALD_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltEmeraldOre ), source, XMaterial.EMERALD, p, block);
+					results = XMaterial.EMERALD;
+					break;
+					
+				case LAPIS_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p, block);
+					results = XMaterial.LAPIS_LAZULI;
+					break;
+					
+				case REDSTONE_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltRedstoneOre ), source, XMaterial.REDSTONE, p, block);
+					results = XMaterial.REDSTONE;
+					break;
+					
+				case NETHER_QUARTZ_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltNetherQuartzOre ), source, XMaterial.QUARTZ, p, block);
+					results = XMaterial.QUARTZ;
+					break;
+					
+				case ANCIENT_DEBRIS:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p, block);
+					results = XMaterial.NETHERITE_SCRAP;
+					break;
 
-		autoSmelt(isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltGoldOre ), "GOLD_ORE", "GOLD_INGOT", p, block);
-
-		autoSmelt(isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltIronOre ), "IRON_ORE", "IRON_INGOT", p, block);
+				// v1.17 !!
+//				case COPPER_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.COPPER_INGOT, p, block);
+//					results = XMaterial.COPPER_INGOT;
+//					break;
+					
+				default:
+					break;
+			}
+		}
+		
+//		autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltGoldOre ), "GOLD_ORE", "GOLD_INGOT", p, block);
+//
+//		autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), "IRON_ORE", "IRON_INGOT", p, block);
+		
+		return results;
 	}
 
-	protected void autoFeatureBlock( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
+	protected void autoFeatureBlock( SpigotBlock block, Player p, SpigotItemStack itemInHand, XMaterial source  ) {
 
-//		Block block = e.getBlock();
+		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
 
-		// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
-		// checks within each block type's function call.  So in one pass, could hit on more
-		// than one of these for multiple times too.
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockGoldBlock ), "GOLD_INGOT", "GOLD_BLOCK", p, block);
+//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
+		if ( source != null ) {
+			
+			// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
+			// checks within each block type's function call.  So in one pass, could hit on more
+			// than one of these for multiple times too.
+			switch ( source )
+			{
+				case GOLD_INGOT:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGoldBlock ), source, XMaterial.GOLD_BLOCK, p, block);
+					
+					break;
+					
+				case IRON_INGOT:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockIronBlock ), source, XMaterial.IRON_BLOCK, p, block);
+					
+					break;
 
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockIronBlock ), "IRON_INGOT", "IRON_BLOCK", p, block);
+				case COAL:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCoalBlock ), source, XMaterial.COAL_BLOCK, p, block);
+					
+					break;
+					
+				case DIAMOND:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p, block);
+					
+					break;
+					
+				case REDSTONE:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p, block);
+					
+					break;
+					
+				case EMERALD:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p, block);
+					
+					break;
+					
+				case QUARTZ:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p, block);
+					
+					break;
+					
+				case PRISMARINE_SHARD:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p, block);
+					
+					break;
+					
+				case SNOW_BLOCK:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p, block);
+					
+					break;
+					
+				case GLOWSTONE_DUST:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGlowstone ), source, XMaterial.GLOWSTONE, 4, p, block);
+					
+					break;
+					
+				case LAPIS_LAZULI:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p, block);
+					
+					break;
+					
+				default:
+					break;
+			}
+		}
 
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockCoalBlock ), "COAL", "COAL_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockDiamondBlock ), "DIAMOND", "DIAMOND_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), "REDSTONE","REDSTONE_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), "EMERALD", "EMERALD_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockQuartzBlock ), "QUARTZ", "QUARTZ_BLOCK", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), "PRISMARINE_SHARD", "PRISMARINE", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockSnowBlock ), "SNOW_BALL", "SNOW_BLOCK", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockGlowstone ), "GLOWSTONE_DUST", "GLOWSTONE", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGoldBlock ), "GOLD_INGOT", "GOLD_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockIronBlock ), "IRON_INGOT", "IRON_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCoalBlock ), "COAL", "COAL_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockDiamondBlock ), "DIAMOND", "DIAMOND_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), "REDSTONE","REDSTONE_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), "EMERALD", "EMERALD_BLOCK", p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockQuartzBlock ), "QUARTZ", "QUARTZ_BLOCK", 4, p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), "PRISMARINE_SHARD", "PRISMARINE", 4, p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), "SNOW_BALL", "SNOW_BLOCK", 4, p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGlowstone ), "GLOWSTONE_DUST", "GLOWSTONE", 4, p, block);
+//
+//		autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
 	}
 
 	/**
@@ -1184,11 +1336,11 @@ public class AutoManagerFeatures
 		}
 	}
 
-	protected void calculateAndGivePlayerXP(SpigotPlayer player, SpigotBlock block, int count) {
+	protected void calculateAndGivePlayerXP(SpigotPlayer player, String blockName, int count) {
 
-		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && block != null ) {
+		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && blockName != null ) {
 
-			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
+//			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
 
 			if ( blockName != null ) {
 

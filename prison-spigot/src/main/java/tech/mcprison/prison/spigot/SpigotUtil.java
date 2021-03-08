@@ -18,7 +18,10 @@
 
 package tech.mcprison.prison.spigot;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -285,6 +288,50 @@ public class SpigotUtil {
 		return count;
 	}
 	
+	
+	public static  HashMap<Integer, SpigotItemStack> itemStackAddAll( Player player, 
+												XMaterial source, int count ) {
+		
+		ItemStack sourceItems = source.parseItem();
+		sourceItems.setAmount( count );
+
+		SpigotItemStack sourceItemStack = new SpigotItemStack( sourceItems );
+		
+		return addItemToPlayerInventory( player, sourceItemStack );
+	}
+	
+	
+	public static HashMap<Integer, SpigotItemStack> itemStackReplaceItems( Player player, 
+							XMaterial source, XMaterial target, int ratio ) {
+		
+		HashMap<Integer, SpigotItemStack> overflow = new HashMap<>();
+		
+		// Removes all of the specified source types from all inventories:
+		int sourceRemoved = itemStackRemoveAll( player, source );
+		
+		// The number of sources that need to be added back since it's the remainder:
+		int sourceAdd = sourceRemoved % ratio;
+		
+		int targetCount = sourceRemoved / ratio;
+		
+		
+		if ( sourceAdd > 0 ) {
+			for ( SpigotItemStack sItemStack : itemStackAddAll( player, source, sourceAdd ).values() ) {
+				overflow.put( Integer.valueOf( overflow.size() ), sItemStack );
+			}
+		}
+
+		
+		if ( targetCount > 0 ) {
+			for ( SpigotItemStack sItemStack : itemStackAddAll( player, target, targetCount ).values() ) {
+				overflow.put( Integer.valueOf( overflow.size() ), sItemStack );
+			}
+		}
+		
+
+		return overflow;
+	}
+	
 	public static int itemStackRemoveAll(Player player, XMaterial xMat ) {
 		int removed = 0;
 
@@ -297,6 +344,7 @@ public class SpigotUtil {
 		
 			Inventory inv = BackpacksUtil.get().getBackpack(player);
 			removed += itemStackRemoveAll( xMat, inv );
+			BackpacksUtil.get().setInventory( player, inv );
 		}
 		
 		
@@ -320,29 +368,40 @@ public class SpigotUtil {
 	public static int itemStackRemoveAll( XMaterial xMat, Inventory inv ) {
 		int count = 0;
 		if ( xMat != null && inv != null ) {
-			ItemStack testStack = xMat.parseItem();
+//			ItemStack testStack = xMat.parseItem();
 			
 			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
-			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
+			List<ItemStack> deleteHolder = new ArrayList<>();
+//			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
 			
 			for (ItemStack is : inv.getContents() ) {
-				if ( is != null && is.isSimilar( testStack ) ) {
-					count += is.getAmount();
-					Integer key = Integer.valueOf( is.getAmount() );
-					if ( !deleteHolder.containsKey( key )) {
-						deleteHolder.put( key, is );
+				if ( is != null ) {
+//					if ( is != null && is.isSimilar( testStack ) ) {
+					
+					XMaterial invXMat = XMaterial.matchXMaterial( is );
+					if ( xMat == invXMat ) {
+						
+						count += is.getAmount();
+						deleteHolder.add( is );
 					}
+					
+					
+//					Integer key = Integer.valueOf( is.getAmount() );
+//					if ( !deleteHolder.containsKey( key )) {
+//						deleteHolder.put( key, is );
+//					}
 				}
 			}
 			
 			// Now remove the items stacks from the inventory:
-			for ( ItemStack itemStack : deleteHolder.values() ) {
+			for ( ItemStack itemStack : deleteHolder ) {
 				inv.remove( itemStack );
 			}
 			
 		}
 		return count;
 	}
+
 
 	
 	/**
@@ -498,6 +557,22 @@ public class SpigotUtil {
 			results = new PrisonBlock( blockName );
 			results.setValid( false );
 		}
+		return results;
+	}
+	
+	public static PrisonBlock getPrisonBlock( XMaterial xMat ) {
+		
+		PrisonBlock results = null;
+		
+		if ( xMat != null ) {
+			results = new PrisonBlock( xMat.name() );
+			
+		}
+		
+		if ( results == null ) {
+			results = getPrisonBlock( xMat.name() );
+		}
+		
 		return results;
 	}
 	

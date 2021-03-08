@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
@@ -17,6 +18,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 
@@ -232,25 +234,36 @@ public class AutoManager
 				isAutoPickup ) {
 			
 			count = autoFeaturePickup( block, player, itemInHand );
-			autoPickupCleanup( block, count );
-			
+
+			// Cannot set to air yet, or auto smelt and auto block will only get AIR:
+//			autoPickupCleanup( block, count );
 		}
+		
+		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
 		
 		// AutoSmelt
 		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
 				isAutoSmelt ){
 			
-			autoFeatureSmelt( block, player, itemInHand );
+			// Smelting needs to change the source to the smelted target so auto block will work:
+			source = autoFeatureSmelt( block, player, itemInHand, source );
 		}
 		
 		// AutoBlock
 		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
 				isAutoBlock ) {
 			
-			autoFeatureBlock( block, player, itemInHand );
+			autoFeatureBlock( block, player, itemInHand, source );
 		}
 		
 		
+		// AutoPickup - Clean up (set block to air)
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+				isAutoPickup ) {
+			
+			autoPickupCleanup( block, count );
+			
+		}
 
 //			
 //			// A block was broke... so record that event on the tool:	

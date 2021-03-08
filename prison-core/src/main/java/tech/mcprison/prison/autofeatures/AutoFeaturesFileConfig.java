@@ -108,6 +108,13 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	autoSmeltGoldOre(autoSmelt, true),
 		    	autoSmeltIronOre(autoSmelt, true),
+		    	autoSmeltCoalOre(autoSmelt, true),
+		    	autoSmeltDiamondlOre(autoSmelt, true),
+		    	autoSmeltEmeraldOre(autoSmelt, true),
+		    	autoSmeltLapisOre(autoSmelt, true),
+		    	autoSmeltRedstoneOre(autoSmelt, true),
+		    	autoSmeltNetherQuartzOre(autoSmelt, true),
+		    	autoSmeltAncientDebris(autoSmelt, true),
 	   
 	    	
 	    	autoBlock(options),
