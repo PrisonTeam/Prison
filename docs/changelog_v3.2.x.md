@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.3 2021-03-07
+# v3.2.5-alpha.4 2021-03-07
+
+
+
+* **v3.2.5-alpha.4 2021-03-07**
 
 
 * **Cleaned up some of the auto manager source code by deleting a lot of commented out stuff.**
