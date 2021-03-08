@@ -32,11 +32,11 @@ public class AutoFeaturesFileConfig {
     	
     	options,
     	
-    		isProcessNormalDropsEvents(options, true),
 	    	isProcessTokensEnchantExplosiveEvents(options, true),
 	    	isProcessCrazyEnchantsBlockExplodeEvents(options, true),
 	    	
 	    	isProcessMcMMOBlockBreakEvents(options, true),
+	    	
 	    	
 	    	general(options),
 	    	
@@ -76,6 +76,15 @@ public class AutoFeaturesFileConfig {
 				
 				loreDurabiltyResistance(lore, false),
 				loreDurabiltyResistanceName(lore, "&dDurability Resistance&7"),
+				
+				
+			
+			normalDrop(options),
+			
+    			isProcessNormalDropsEvents(normalDrop, true),
+    			normalDropSmelt(normalDrop, true),
+    			normalDropBlock(normalDrop, true),
+    			
 				
 	    	autoPickup(options),
 		    	autoPickupEnabled(autoPickup, true),
