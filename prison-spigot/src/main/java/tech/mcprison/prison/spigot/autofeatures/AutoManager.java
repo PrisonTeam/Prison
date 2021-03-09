@@ -21,6 +21,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import zedly.zenchantments.BlockShredEvent;
 
 
 /**
@@ -96,6 +97,20 @@ public class AutoManager
     public void onBlockBreak(BlockBreakEvent e) {
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 
+    		genericBlockEvent( e, false );
+    	}
+    }
+    
+    /**
+     * <p>The use of e.getBlock != null is added to "use" the BlockShredEvent to prevent
+     * the complier from falsely triggering a Not Used warning.
+     * </p>
+     */
+    @Override
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onBlockShredBreak(BlockShredEvent e) {
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) {
+    		 
     		genericBlockEvent( e, false );
     	}
     }

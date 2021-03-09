@@ -19,8 +19,8 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -29,6 +29,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import zedly.zenchantments.BlockShredEvent;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -192,6 +193,11 @@ public class OnBlockBreakEventListener
     }
     
     @EventHandler(priority=EventPriority.MONITOR) 
+    public void onBlockShredBreakMonitor(BlockShredEvent e) {
+    	genericBlockEventMonitor( e );
+    }
+    
+    @EventHandler(priority=EventPriority.MONITOR) 
     public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
     
     	genericBlockExplodeEventMonitor( e );
@@ -208,6 +214,11 @@ public class OnBlockBreakEventListener
     public void onBlockBreak(BlockBreakEvent e) {
 
     	genericBlockEvent( e );
+    }
+    
+    @EventHandler(priority=EventPriority.LOW) 
+    public void onBlockShredBreak(BlockShredEvent e) {
+    	genericBlockEvent( e, false );
     }
     
     

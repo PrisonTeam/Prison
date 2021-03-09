@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.4 2021-03-08
 
 
+* **Setup support for Zenchantments.**
+This should possibly support their explosion enchantments, since they fire this custom event for every block.  This has not been tested yet.
+
+
 * **Fixed an issue with the synch mine resets not updating the reset counter.**
 
 
