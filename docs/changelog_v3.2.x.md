@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.4 2021-03-08
+# v3.2.5-alpha.5 2021-03-08
+
+
+
+* **v3.2.5-alpha.5 2021-03-08**
 
 
 * **Setup support for Zenchantments.**
