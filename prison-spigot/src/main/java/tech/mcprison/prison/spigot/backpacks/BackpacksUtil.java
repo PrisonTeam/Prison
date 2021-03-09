@@ -90,7 +90,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     /**
      * Check if player own backpack at first join
      *
-     * @param p - Playerù
+     * @param p - Player
      *
      * @return boolean - true/false
      * */
@@ -105,6 +105,16 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * */
     public void setDefaultBackpackPlayer(Player p) {
         setDefaultBackpack(p);
+    }
+
+    /**
+     * Set default backpack for new players by ID.
+     *
+     * @param p - Player
+     * @param id - String id
+     * */
+    public void setDefaultBackpackPlayer(Player p, String id) {
+        setDefaultBackpack(p, id);
     }
 
     /**
@@ -148,6 +158,18 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * */
     public int getBackpackSize(Player p){
         return getSize(p);
+    }
+
+    /**
+     * Get a backpack size depending on the owner.
+     *
+     * @param p - Player
+     * @param id - String ID
+     *
+     * @return backPackSize - Integer
+     * */
+    public int getBackpackSize(Player p, String id){
+        return getSize(p, id);
     }
 
     /**
@@ -487,7 +509,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
                     backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
                     backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
                     backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
-                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Size", size);
+                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.Size", size);
                     backpacksDataConfig.save(backpacksFile);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -499,6 +521,35 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         if (getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
         	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack item" );
+            Bukkit.dispatchCommand(p, registeredCmd);
+        }
+    }
+
+    private void setDefaultBackpack(Player p, String id) {
+        if (!isPlayerOwningBackpack(p)) {
+            int size = 54;
+            try {
+                size = Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size"));
+            } catch (NumberFormatException ignored) {
+            }
+
+            if (backpacksConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null) {
+                try {
+                    backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+                    backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
+                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
+                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", size);
+                    backpacksDataConfig.save(backpacksFile);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    return;
+                }
+            }
+            updateCachedBackpack();
+        }
+
+        if (getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
+            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack item" );
             Bukkit.dispatchCommand(p, registeredCmd);
         }
     }
@@ -541,7 +592,27 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         updateCachedBackpack();
 
-        backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Size", size);
+        backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.Size", size);
+
+        try {
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        updateCachedBackpack();
+    }
+
+    private void backpackResize(Player p, int size, String id) {
+        updateCachedBackpack();
+
+        // Must be multiple of 9.
+        if (size % 9 != 0 || size > 54){
+            return;
+        }
+
+        updateCachedBackpack();
+
+        backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", size);
 
         try {
             backpacksDataConfig.save(backpacksFile);
@@ -557,7 +628,18 @@ public class BackpacksUtil extends SpigotConfigComponents {
         int backPackSize = 0;
 
         try {
-            backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Size"));
+            backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.Size"));
+        } catch (NumberFormatException ignored){}
+        return backPackSize;
+    }
+
+    private int getSize(Player p, String id) {
+        updateCachedBackpack();
+
+        int backPackSize = 0;
+
+        try {
+            backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size"));
         } catch (NumberFormatException ignored){}
         return backPackSize;
     }
@@ -592,7 +674,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     private Inventory getBackpackByID(Player p, String id) {
         updateCachedBackpack();
 
-        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
+        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p, id), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
 
         // Get the Items config section
         Set<String> slots;

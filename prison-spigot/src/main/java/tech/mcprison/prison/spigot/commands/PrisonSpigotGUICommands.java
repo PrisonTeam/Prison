@@ -4,6 +4,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
@@ -157,7 +158,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
 
     @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
-    private void backpackGUIOpenCommand(CommandSender sender){
+    private void backpackGUIOpenCommand(CommandSender sender,
+    @Arg(name = "Backpack-ID", def = "null", description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
 
         Player p = getSpigotPlayer(sender);
 
@@ -166,7 +168,12 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        BackpacksUtil.get().openBackpack(p);
+        // New method.
+        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+            BackpacksUtil.get().openBackpack(p, id);
+        } else {
+            BackpacksUtil.get().openBackpack(p);
+        }
     }
 
 }

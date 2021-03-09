@@ -29,9 +29,26 @@ public class BackpacksListeners implements Listener {
         if (BackpacksUtil.openBackpacks.contains(e.getPlayer().getName())){
             BackpacksUtil.get().removeFromOpenBackpacks((Player) e.getPlayer());
             BackpacksUtil.get().playBackpackCloseSound(((Player) e.getPlayer()));
-            if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())){
-                BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory());
-                BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+            String title = compat.getGUITitle(e);
+            String id = null;
+            if (title != null){
+                title = title.substring(2);
+            }
+            try {
+                if (title != null) {
+                    id = title.substring(e.getPlayer().getName().length() + 13);
+                }
+            } catch (IndexOutOfBoundsException ignored){}
+            if (id != null){
+                if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())){
+                    BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory(), id);
+                    BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+                }
+            } else {
+                if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())) {
+                    BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory());
+                    BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+                }
             }
         }
     }
@@ -40,6 +57,7 @@ public class BackpacksListeners implements Listener {
     public void onDeadBackPack(PlayerDeathEvent e){
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
             BackpacksUtil.get().resetBackpack(e.getEntity());
+            // TODO reset backpack for all IDs.
         }
     }
 
@@ -47,8 +65,23 @@ public class BackpacksListeners implements Listener {
     public void onPlayerBackpackEdit(InventoryClickEvent e){
         if (BackpacksUtil.openBackpacks.contains(e.getWhoClicked().getName())) {
             String title = compat.getGUITitle(e);
-            if (title != null && title.substring(2).equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
-                BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+            String id = null;
+            if (title != null){
+                title = title.substring(2);
+            }
+            try {
+                if (title != null) {
+                    id = title.substring(e.getWhoClicked().getName().length() + 13);
+                }
+            } catch (IndexOutOfBoundsException ignored){}
+            if (id != null){
+                if (title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack-" + id)){
+                    BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+                }
+            } else {
+                if (title != null && title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
+                    BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+                }
             }
         }
 

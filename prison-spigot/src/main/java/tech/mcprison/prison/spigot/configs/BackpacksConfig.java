@@ -65,7 +65,8 @@ public class BackpacksConfig extends SpigotConfigComponents{
         dataConfig("Options.BackPack_Open_Sound", "BLOCK_CHEST_OPEN");
         dataConfig("Options.BackPack_Close_Sound_Enabled", "true");
         dataConfig("Options.BackPack_Close_Sound", "BLOCK_CHEST_CLOSE");
-
+        dataConfig("Options.Multiple-BackPacks-For-Player-Enabled", "false");
+        dataConfig("Options.Multiple-NackPacks-For-Player", "2");
     }
 
     public FileConfiguration getFileBackpacksConfig(){
