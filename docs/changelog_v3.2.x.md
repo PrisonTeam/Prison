@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.4 2021-03-08
 
 
+* **Fixed an issue with the synch mine resets not updating the reset counter.**
+
+
 * **Fixed an issue with setting up the initial block counts when using the old block model.**
 
 

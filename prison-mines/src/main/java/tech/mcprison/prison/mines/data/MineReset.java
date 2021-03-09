@@ -397,6 +397,7 @@ public abstract class MineReset
 //			// free up memory:
 //			getRandomizedBlocks().clear();
 			
+			incrementResetCount();
 			
 			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
 				
