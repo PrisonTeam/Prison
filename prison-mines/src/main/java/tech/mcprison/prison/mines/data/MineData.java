@@ -673,16 +673,32 @@ public abstract class MineData
     	PrisonBlockStatusData results = null;
     	
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
-
+    		
     		if ( !getBlockStats().containsKey( blockName ) ) {
-    			for ( PrisonBlock block : getPrisonBlocks() ) {
-    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-    					getBlockStats().put( block.getBlockName(), block );
-    					
-    					results = block;
-    					break;
+
+    			if ( isUseNewBlockModel() ) {
+    				
+    				for ( PrisonBlock block : getPrisonBlocks() ) {
+    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+    						getBlockStats().put( block.getBlockName(), block );
+    						
+    						results = block;
+    						break;
+    					}
     				}
     			}
+    			else {
+    				
+    				for ( BlockOld block : getBlocks() ) {
+    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+    						getBlockStats().put( block.getBlockName(), block );
+    						
+    						results = block;
+    						break;
+    					}
+    				}
+    			}
+    			
     		}
     		else {
     			

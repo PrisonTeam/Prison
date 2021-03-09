@@ -20,6 +20,12 @@ that you need.
 # v3.2.5-alpha.4 2021-03-08
 
 
+* **Fixed an issue with setting up the initial block counts when using the old block model.**
+
+
+* **Added a new field to the MineData class for useNewBlockModel to set it when the mine is loaded so as to reduce all the config checks.**
+
+
 * **Added a new feature that will prevent prestige from resetting the default ladder.**
 In the config file, plugins/Prison/config.yml, set prestige.resetDefaultLadder: true (will have to add it).
 
