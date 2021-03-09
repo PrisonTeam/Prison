@@ -629,7 +629,7 @@ public abstract class MineReset
 		
 		
 		
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+//        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
 		
 //		// Reset the mineAirBlocks to all false values:
@@ -649,7 +649,7 @@ public abstract class MineReset
 					
 //					MineTargetBlock mtb = null;
 					
-					if ( useNewBlockModel ) {
+					if ( isUseNewBlockModel() ) {
 						
 						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 						
@@ -964,7 +964,7 @@ public abstract class MineReset
 		else {
 			World world = getBounds().getCenter().getWorld();
 			
-	        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+//	        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
 
 			
@@ -986,7 +986,7 @@ public abstract class MineReset
 				
 //				if (!isFillMode || isFillMode && targetBlock.getBlockAt().isEmpty()) {
 //				} 
-				if ( useNewBlockModel ) {
+				if ( isUseNewBlockModel() ) {
 //					MineTargetPrisonBlock pbTarget = (MineTargetPrisonBlock) target;
 					
 					targetBlock.getBlockAt().setPrisonBlock( (PrisonBlock) target.getPrisonBlock() );
@@ -1082,7 +1082,7 @@ public abstract class MineReset
      */
 	protected void refreshAirCountAsyncTask()
 	{
-    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -1094,7 +1094,7 @@ public abstract class MineReset
 							"Ensure world exists. mine= %s ", 
 							getName()  ));
 		}
-		else if ( useNewBlockModel &&
+		else if ( isUseNewBlockModel() &&
 				getPrisonBlocks().size() == 1 && 
 				getPrisonBlocks().get( 0 ).equals( PrisonBlock.IGNORE ) ) {
 		
@@ -1104,7 +1104,7 @@ public abstract class MineReset
 			// not registered and tracked within prison, and hence will report incorrect errors.
 			setAirCount( 0 );
 		}
-		else if ( !useNewBlockModel &&
+		else if ( !isUseNewBlockModel() &&
 				getBlocks().size() == 1 && 
 				getBlocks().get( 0 ).getType() == BlockType.IGNORE ) {
 			
@@ -1137,7 +1137,7 @@ public abstract class MineReset
 							Location targetBlock = new Location(world, x, y, z);
 							Block tBlock = targetBlock.getBlockAt();
 							
-							if ( useNewBlockModel ) {
+							if ( isUseNewBlockModel() ) {
 								
 								PrisonBlock pBlock = tBlock.getPrisonBlock();
 
@@ -1397,18 +1397,18 @@ public abstract class MineReset
 	
 	private void constraintsApplyMin() {
 		
-    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
-    	if ( useNewBlockModel ) {
+    	if ( isUseNewBlockModel() ) {
     		
     		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
-    			constraintsApplyMin( block, useNewBlockModel );
+    			constraintsApplyMin( block, isUseNewBlockModel() );
     		}
     	}
     	else {
     		
     		for ( PrisonBlockStatusData block : getBlocks() ) {
-    			constraintsApplyMin( block, useNewBlockModel );
+    			constraintsApplyMin( block, isUseNewBlockModel() );
     		}
     	}
 	}

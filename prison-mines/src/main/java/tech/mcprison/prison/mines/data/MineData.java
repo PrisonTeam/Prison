@@ -42,6 +42,8 @@ public abstract class MineData
 	private boolean enabled = false;
 	private boolean virtual = false;
 	
+	private boolean useNewBlockModel = false;
+	
 	/**
 	 * A sortOrder of -1 means it should be excluded from most mine listings.
 	 * An example would be for private mines or child mines where you only want the
@@ -194,6 +196,16 @@ public abstract class MineData
         this.blockEvents = new ArrayList<>();
         
         this.linerData = new MineLinerData();
+    	
+        
+		if ( Prison.get().getPlatform() == null ) {
+			// For unit testing purposes:
+			this.useNewBlockModel = false;
+		}
+		else {
+			this.useNewBlockModel = Prison.get().getPlatform()
+								.getConfigBooleanFalse( "use-new-prison-block-model" );
+		}
     }
 
     /**
@@ -263,7 +275,11 @@ public abstract class MineData
     }
     
     
-    /**
+    public boolean isUseNewBlockModel() {
+		return useNewBlockModel;
+	}
+
+	/**
      * Mines do not use an id.  So these will always
      * return a -1 and will ignore any value that is
      * set.  An id is forced by Ranks and Ladders.
@@ -495,11 +511,11 @@ public abstract class MineData
     public boolean hasBlock( String blockName ) {
     	boolean results = false;
     	
-    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
     		
-    		if ( useNewBlockModel ) {
+    		if ( isUseNewBlockModel() ) {
     			results = getPrisonBlock( blockName ) != null;
     		}
     		else {
