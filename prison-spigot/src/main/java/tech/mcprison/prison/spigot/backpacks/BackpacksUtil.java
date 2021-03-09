@@ -108,10 +108,22 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
-     * Reset a player's inventory.
+     * Reset a player's backpack.
+     *
+     * @param p - Player
      * */
     public void resetBackpack(Player p) {
         resetBackpackMethod(p);
+    }
+    
+    /**
+     * Reset a player's backpack by ID.
+     *
+     * @param p - Player
+     * @param id - String ID
+     * */
+    public void resetBackpack(Player p, String id){
+        resetBackpackMethod(p, id);
     }
 
     /**
@@ -496,6 +508,20 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         try {
             backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
+
+        updateCachedBackpack();
+    }
+
+    private void resetBackpackMethod(Player p, String id) {
+        updateCachedBackpack();
+
+        try {
+            backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id, null);
             backpacksDataConfig.save(backpacksFile);
         } catch (IOException ex){
             ex.printStackTrace();
