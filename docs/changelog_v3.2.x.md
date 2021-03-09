@@ -19,6 +19,11 @@ that you need.
 
 # v3.2.5-alpha.5 2021-03-08
 
+* **Fix issue with fortune "doubling".**
+Some versions of spigot/bukkit are unable to provide a suggested drop with fortune applied.
+The issue was for the versions that are able to apply fortune to the drops, then prison's fortune calculations was multiplying them to the point that with high level of fortune enchantment that it would produce an excessive amount of drops.
+This controls it by detecting if spigot/bukkit applied a fortune, then it uses that fortune ratio to the number of times the tool's fortune enchantment is above the max vanilla level of 3.  So if the enchantment is 300, then it will multiply the drop quantity from spigot/bukkit by 100.
+To try to temper larger drops that will potentially result from these calculations, the adjusted fortune multiplier is multiplied by a random number between 0.7 (decreases) to 1.1 (increases) the drop.
 
 
 * **v3.2.5-alpha.5 2021-03-08**

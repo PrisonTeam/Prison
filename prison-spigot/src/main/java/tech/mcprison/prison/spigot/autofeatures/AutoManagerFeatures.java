@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -155,6 +156,11 @@ public class AutoManagerFeatures
 
 			if (drops != null && drops.size() > 0 ) {
 
+				
+				// Merge drops so each item is only represented once, but has counts.
+				drops = mergeDrops( drops );
+				
+
 				// Need better drop calculation that is not using the getDrops function.
 				short fortuneLevel = getFortune(itemInHand);
 
@@ -162,6 +168,7 @@ public class AutoManagerFeatures
 				// Adds in additional drop items:
 				calculateDropAdditions( itemInHand, drops );
 
+				
 				if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
 						hasSilkTouch( itemInHand )) {
 
@@ -201,9 +208,13 @@ public class AutoManagerFeatures
 
 		if (drops != null && drops.size() > 0 ) {
 
+			
+			// Merge drops so each item is only represented once, but has counts.
+			drops = mergeDrops( drops );
+			
+			
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune(itemInHand);
-
 
 			// Adds in additional drop items:
 			calculateDropAdditions( itemInHand, drops );
@@ -257,6 +268,37 @@ public class AutoManagerFeatures
 		
 		return count;
 	}
+
+	
+	/**
+	 * <p>The collection of drops must have only one ItemStack per block type (name).
+	 * This function combines multiple occurrences together and adds up their 
+	 * counts to properly represent the total quantity in the original drops collection
+	 * that had duplicate entries.
+	 * </p>
+	 * 
+	 * @param Collection of SpigotItemStack drops with duplicate entries
+	 * @return Collection of SpigotItemStack drops without duplicates
+	 */
+	private Collection<SpigotItemStack> mergeDrops( Collection<SpigotItemStack> drops )
+	{
+		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
+
+		for ( SpigotItemStack drop : drops ) {
+			String key = drop.getName();
+			if ( !results.containsKey( key ) ) {
+				results.put( key, drop );
+			}
+			else {
+				SpigotItemStack sItemStack = results.get( key );
+				
+				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+			}
+		}
+		
+		return results.values();
+	}
+
 
 	protected void autoPickupCleanup( SpigotBlock block, int count )
 	{
@@ -1362,8 +1404,14 @@ public class AutoManagerFeatures
 	}
 
 	/**
+	 * <p>NOTE that the calculations of calculateBukkitExtendedFortuneBlockCount()
+	 * will override the fortune calculations below.
+	 * </p>
+	 * 
+	 * 
 	 * <p>This function is based upon the following wiki page.
 	 * </p>
+	 * 
 	 * https://minecraft.gamepedia.com/Fortune
 	 *
 	 * <p>"<b>Ore:</b> For coal ore, diamond ore, emerald ore, lapis lazuli ore,
@@ -1399,6 +1447,13 @@ public class AutoManagerFeatures
 	 */
 	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevel) {
 
+		
+		// If the bukkit fortune was applied (amount > 1) then extend it to the full
+		// range of the fortune enchantment.  Otherwise this value will be zero.
+		// This value represents the final number of block amount.
+		int bukkitExtendedFortuneBlockCount = 
+				calculateBukkitExtendedFortuneBlockCount( blocks, fortuneLevel );
+		
 		if (fortuneLevel > 0) {
 			
 			int maxFortuneLevel = getInteger( AutoFeatures.maxFortuneLevel );
@@ -1448,10 +1503,16 @@ public class AutoManagerFeatures
 					block == BlockType.SNOW_BLOCK
 					) {
 
-				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
-
-				// multiply the multiplier:
-				count *= multiplier;
+				if ( bukkitExtendedFortuneBlockCount == 0 ) {
+					multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
+					
+					// multiply the multiplier:
+					count *= multiplier;
+				}
+				else {
+					count = bukkitExtendedFortuneBlockCount;
+				}
+				
 			} else if ( block == BlockType.GLOWSTONE ||
 					block == BlockType.GLOWSTONE_DUST ||
 					block == BlockType.REDSTONE ||
@@ -1489,13 +1550,76 @@ public class AutoManagerFeatures
 				}
 
 				// add the multiplier to the count:
-				count += multiplier;
+				if ( bukkitExtendedFortuneBlockCount == 0 ) {
+					count += multiplier;
+				}
+				else {
+					count = bukkitExtendedFortuneBlockCount;
+				}
+
 			}
 
 			// The count has the final value so set it as the amount:
 			blocks.setAmount( count );
 		}
 
+	}
+
+
+	/**
+	 * <p>This function detects if bukkit applied a fortune to the drop that it supplied by
+	 * checking to see if the block amount is grater than 1.
+	 * If it is, and the fortune level of the tool is greater than the vanilla max fortune 
+	 * level of 3, then it calculates a fortune multiplier based upon the how far above the
+	 * max level of 3.
+	 * </p>
+	 * 
+	 * <p>To help prevent excessive number of results, the calculated fortune multiplier is 
+	 * then randomly adjusted between 0.70 (reduction) to 1.10 (increase) in the fortune
+	 * multiplier.
+	 * </p>
+	 * 
+	 * <p>A returned value of zero indicates no fortune was able to be calculated and 
+	 * this should be ignored.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param fortuneLevel
+	 * @return
+	 */
+	private int calculateBukkitExtendedFortuneBlockCount( SpigotItemStack blocks, int fortuneLevel )
+	{
+		int bukkitExtendedFortuneBlockCount = 0;
+		
+		if ( fortuneLevel > 0 && blocks.getAmount() > 1 ) {
+			// Note: fortune has already been applied by bukkit, but it may have been
+			//       capped at fortune 3.
+			
+			if ( fortuneLevel > 3 ) {
+				
+				// First calculate the fortune multiplier, which is simply the fortunelevel
+				// divided by the max normal fortune level which is always three.
+				double fortuneMultiplier = fortuneLevel / 3;
+				
+				// Next calculate the random factor.  It will be applied to the multiplier to 
+				// adjust the fortune results slightly.  The range will be 0.7 to 1.1 so the 
+				// the average result would be to reduce the generated quantity.
+				double randomFactor = ( 0.4D / getRandom().nextDouble() ) + 0.7D;
+				
+				
+				// The adjusted fortune multiplier is to be applied to the number of blocks
+				// and represents a close approximation to what bukkit's fortune may produce
+				// if it wre to be extended to enchantment levels greater than 3 for fortune.
+				double adjustedFortuneMultiplier = fortuneMultiplier * randomFactor;
+				
+				bukkitExtendedFortuneBlockCount = 
+								(int) Math.floor( 
+										Math.round( blocks.getAmount() * adjustedFortuneMultiplier ));
+			}
+			
+		}
+		
+		return bukkitExtendedFortuneBlockCount;
 	}
 
 
