@@ -19,6 +19,9 @@ that you need.
 
 # v3.2.5-alpha.5 2021-03-09
 
+* **Fixed a problem where /rankup would fail, but would eliminate the player's balance.**
+It was hitting the prestige function when it shouldn't have.
+
 
 * **Finalize fix on calculating fortune that is greater than 3 and when spigot tries to apply fortune to the getDrops() function.**
 This prevents wildly huge drops, and is more line with the original fortune randomized calculations.

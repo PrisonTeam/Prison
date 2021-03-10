@@ -142,7 +142,7 @@ public class RankUpCommand
 		Rank pRankSecond = rankPlayer.getRank("default"); 
 		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
-		boolean willPrestige = false;
+		boolean canPrestige = false;
 
 		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
 		if (ladder.equalsIgnoreCase("prestiges")) {
@@ -168,8 +168,10 @@ public class RankUpCommand
 				sender.sendMessage("&cYou aren't at the last rank!");
 				return;
 			}
-			// IF everything's ready, this will be true and the prestige method will start
-			willPrestige = true;
+			
+			// IF everything's ready, this will be true if and only if pRank is not null,
+			// and the prestige method will start
+			canPrestige = true;
 		}
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
@@ -197,14 +199,42 @@ public class RankUpCommand
         	pRankAfter = rankPlayer.getRank(ladder);
 
         	
-        	// Prestige method
-        	prestigePlayer( sender, player, rankPlayer, pRank, pRankAfter, lm, willPrestige, rankupWithSuccess);
+        	// Prestige method if canPrestige and a successful rankup. pRank cannot be the same as pRankAfter:
+        	if ( canPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter ) {
+        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
+        	}
+        	else if ( canPrestige ) {
+        		player.sendMessage("&7[&3Sorry&7] &3You were not able to &6Prestige!");
+
+        	}
+        	
         }
 	}
 
+    /**
+     * <p>Perform the final prestige actions if prestige is requested (canPrestige) and if the 
+     * rankup was successful.  It also assumes that pRankAfter is not null and not the same
+     * as pRank, which would indicate something went wrong with the rankup.
+     * </p>
+     * 
+     * <p>This function will reset the player's default ladder, if the configuration setting
+     * 'prestige.resetDefaultLadder' has been enabled.  Otherwise the default ladder is not 
+     * modified.
+     * </p>
+     * 
+     * <p>This function will also reset the player's balance if the configuration 
+     * 'prestige.resetMoney' is enabled.
+     * </p>
+     * 
+     * 
+     * @param sender
+     * @param player
+     * @param rankPlayer
+     * @param pRankAfter
+     * @param lm
+     */
 	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
-						Rank pRank, Rank pRankAfter, 
-								LadderManager lm, boolean willPrestige, boolean rankupWithSuccess) {
+						Rank pRankAfter, LadderManager lm ) {
 		
 		Platform platform = Prison.get().getPlatform();
 		boolean resetBalance = platform.getConfigBooleanTrue( "prestige.resetMoney" );
@@ -215,7 +245,7 @@ public class RankUpCommand
 		if ( resetDefaultLadder ) {
 			
 			// Get the player rank after, just to check if it has success Conditions
-			if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
+//			if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 				// Set the player rank to the first one of the default ladder
 				
 				// Call the function directly and skip using dispatch commands:
@@ -231,7 +261,7 @@ public class RankUpCommand
 					player.sendMessage( "&7Unable to reset your rank on the default ladder." );
 					success = false;
 				}
-			}
+//			}
 		}
 		
 		if ( success && resetBalance ) {
@@ -245,6 +275,10 @@ public class RankUpCommand
 		if ( success ) {
 			// Send a message to the player because he did prestige!
 			player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
+		}
+		else {
+			
+			player.sendMessage("&7[&3Sorry&7] &3You were not able to &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
 		}
 
 	}
