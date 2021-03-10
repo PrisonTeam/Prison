@@ -20,6 +20,11 @@ that you need.
 # v3.2.5-alpha.5 2021-03-09
 
 
+* **New Backpaks list GUI if multiple backpacks are enabled**
+new /gui backpackslist or /backpack list to see a list of own backpacks
+  in a GUI.
+
+
 * **Max number of Prison backpacks each player can own limit**
 You can now add a limit of backpacks that each Player can own by editing this option:
   `Options.Multiple-BackPacks-For-Player: 2` by default you can own max 2 backpacks.
