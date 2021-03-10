@@ -57,7 +57,11 @@ public class BackpacksListeners implements Listener {
     public void onDeadBackPack(PlayerDeathEvent e){
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
             BackpacksUtil.get().resetBackpack(e.getEntity());
-            // TODO reset backpack for all IDs.
+            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
+                for (String id : BackpacksUtil.get().getBackpacksIDs(e.getEntity())) {
+                    BackpacksUtil.get().resetBackpack(e.getEntity(), id);
+                }
+            }
         }
     }
 
