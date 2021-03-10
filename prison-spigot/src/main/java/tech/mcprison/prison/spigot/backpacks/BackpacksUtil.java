@@ -185,10 +185,10 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - player
      *
-     * @return inv - Inventory
+     * @return inv - Inventory/Backpack.
      * */
     public Inventory getBackpack(Player p){
-        return getBackpackDefault(p);
+        return getBackpackOwn(p);
     }
 
     /**
@@ -196,9 +196,11 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - Player
      * @param id - String ID
+     *
+     * @return inv - Inventory/Backpack.
      * */
     public Inventory getBackpack(Player p, String id){
-        return getBackpackByID(p, id);
+        return getBackpackOwn(p, id);
     }
 
     /**
@@ -302,7 +304,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @return HashMap with items that didn't fit.
      * */
     public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item, String id){
-        return addItemToBackpackByID(p, item, id);
+        return addItemToBackpack(p, item, id);
     }
 
     /**
@@ -351,7 +353,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @return HashMap with items that couldn't be removed.
      * */
     public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item, String id){
-        return removeItemFromBackpakByID(p, item, id);
+        return removeItemFromBackpak(p, item, id);
     }
 
     /**
@@ -387,6 +389,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * Get an array of backpacks of a player.
      *
      * @param p - Player
+     *
+     * @return List<String> with IDs.
      * */
     public List<String> getBackpacksIDs(Player p){
         return getBackpacksIDsList(p);
@@ -644,7 +648,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     @NotNull
-    private Inventory getBackpackDefault(Player p) {
+    private Inventory getBackpackOwn(Player p) {
 
         updateCachedBackpack();
 
@@ -670,7 +674,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     @NotNull
-    private Inventory getBackpackByID(Player p, String id) {
+    private Inventory getBackpackOwn(Player p, String id) {
         updateCachedBackpack();
 
         Inventory inv = Bukkit.createInventory(p, getBackpackSize(p, id), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
@@ -844,7 +848,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     @NotNull
-    private HashMap<Integer, ItemStack> addItemToBackpackByID(Player p, ItemStack item, String id) {
+    private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> overflow = inv.addItem(item);
         setInventory(p, inv, id);
@@ -859,7 +863,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     @NotNull
-    private HashMap<Integer, ItemStack> removeItemFromBackpakByID(Player p, ItemStack item, String id) {
+    private HashMap<Integer, ItemStack> removeItemFromBackpak(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
         setInventory(p, inv, id);
