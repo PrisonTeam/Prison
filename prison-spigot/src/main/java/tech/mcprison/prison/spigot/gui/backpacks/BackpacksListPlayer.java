@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -29,11 +31,16 @@ public class BackpacksListPlayer extends SpigotGUIComponents {
           messages.getString("Lore.ClickToOpen")
         );
 
+        if (BackpacksUtil.get().getBackpacksIDs(p).isEmpty()){
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackDoNotOwnAny")));
+            return;
+        }
+
         for (String id : BackpacksUtil.get().getBackpacksIDs(p)){
             if (id != null){
-                inv.addItem(createButton(XMaterial.CHEST.parseItem(), lore, "Backpack-" + id));
+                inv.addItem(createButton(XMaterial.CHEST.parseItem(), lore, SpigotPrison.format("&3Backpack-" + id)));
             } else {
-                inv.addItem(createButton(XMaterial.CHEST.parseItem(), lore, "Backpack"));
+                inv.addItem(createButton(XMaterial.CHEST.parseItem(), lore, SpigotPrison.format("&3Backpack")));
             }
         }
 

@@ -14,16 +14,18 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "backpack", description = "Backpacks", onlyPlayers = false)
     private void backpackMainCommand(CommandSender sender,
-                                     @Arg(name = "Backpack ID", def = "null", description = "Open a backpack by ID if you've more than one.") String id){
+    @Arg(name = "ID", def = "null", description = "Leave empty if you want to open your main backpack, add an ID if you've more than one.") String id){
 
         if (sender.hasPermission("prison.admin") || sender.isOp()){
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack help" );
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("backpack help");
             sender.dispatchCommand(registeredCmd);
             return;
         }
 
-        if (id.equalsIgnoreCase("null")) {
+        if (!getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
             sender.dispatchCommand("gui backpack");
+        } else if (id.equalsIgnoreCase("null")){
+            sender.dispatchCommand("gui backpackslist");
         } else {
             sender.dispatchCommand("gui backpack " + id);
         }
@@ -42,4 +44,18 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         BackpacksUtil.get().giveBackpackToPlayer(p);
     }
 
+    @Command(identifier = "backpack list", description = "Open backpacks list if multi-backpacks's enabled.", onlyPlayers = true)
+    private void backpacksListCommand(CommandSender sender){
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantGiveItemFromConsole")));
+            return;
+        }
+
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
+            sender.dispatchCommand("gui backpackslist");
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.backpacks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,8 @@ public class BackpacksListeners implements Listener {
     @EventHandler
     public void onPlayerJoinBackpack(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        BackpacksUtil.get().setDefaultBackpackPlayer(p);
+        BackpacksUtil.get().setDefaultDataConfig();
+        BackpacksUtil.get().giveBackpackItem(p);
     }
 
     @EventHandler
@@ -102,7 +104,11 @@ public class BackpacksListeners implements Listener {
 
         if (materialConf != null && inHandItem != null && inHandItem.getType() == materialConf.getType() && inHandItem.hasItemMeta() && inHandItem.getItemMeta().hasDisplayName()
                 && inHandItem.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Item_Title")))) {
-            BackpacksUtil.get().openBackpack(p);
+            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+                Bukkit.dispatchCommand(p, "gui backpackslist");
+            } else {
+                Bukkit.dispatchCommand(p, "gui backpack");
+            }
             e.setCancelled(true);
         }
     }

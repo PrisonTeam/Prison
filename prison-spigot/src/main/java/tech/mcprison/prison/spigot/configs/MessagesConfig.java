@@ -203,6 +203,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
         dataConfig("Message.BackPackNeedPlayer", "Please add a playername.");
         dataConfig("Message.BackPackPlayerNotFound", "Player not found.");
+        dataConfig("Message.BackPackDoNotOwnAny", "Sorry but you don't own any inventory, please use /backpack <AnIdYouWant> to make one.");
+        dataConfig("Message.BackPackOwnLimitReached", "Sorry but you already have the max amount of backpacks allowed for Player!");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
         dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");

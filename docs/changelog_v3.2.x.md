@@ -19,6 +19,19 @@ that you need.
 
 # v3.2.5-alpha.5 2021-03-09
 
+
+* **Max number of Prison backpacks each player can own limit**
+You can now add a limit of backpacks that each Player can own by editing this option:
+  `Options.Multiple-BackPacks-For-Player: 2` by default you can own max 2 backpacks.
+
+
+* **Prison Backpacks new feature, you can now own more than one backpack**
+There's a new option in the backpacks config that you can enable to use more than
+  one backpack for each player, this will also enable the command /backpack list and
+  /backpack <id> instead of the /backpack only.
+  Option name by default disabled: `Multiple-BackPacks-For-Player-Enabled: false`
+
+
 * **Fixed a problem where /rankup would fail, but would eliminate the player's balance.**
 It was hitting the prestige function when it shouldn't have.
 

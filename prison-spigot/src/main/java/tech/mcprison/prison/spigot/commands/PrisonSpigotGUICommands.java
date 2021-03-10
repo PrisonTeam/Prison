@@ -11,6 +11,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksListPlayer;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -168,11 +169,32 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p)) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id)){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.BackPackOwnLimitReached") + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
+            return;
+        }
+
         // New method.
         if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
             BackpacksUtil.get().openBackpack(p, id);
         } else {
             BackpacksUtil.get().openBackpack(p);
+        }
+    }
+
+    @Command(identifier = "gui backpackslist", description = "Backpack as a GUI", onlyPlayers = true)
+    private void backpackListGUICommand(CommandSender sender){
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
+        // New method.
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+            BackpacksListPlayer gui = new BackpacksListPlayer(p);
+            gui.open();
         }
     }
 
