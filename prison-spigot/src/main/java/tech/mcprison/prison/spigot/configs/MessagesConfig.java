@@ -53,23 +53,8 @@ public class MessagesConfig extends SpigotConfigComponents{
     private void dataConfig(String key, String value){
 
         String originalString = conf.getString(key);
-        boolean gotConverted = false;
 
-        // "Converter".
-        if (originalString != null) {
-            if (originalString.contains("&7[&3PRISON&7] &3")) {
-                value = originalString.substring(17);
-                gotConverted = true;
-            } else if (originalString.contains("&7[&3PRISON INFO&7] &a") || originalString.contains("&7[&3PRISON INFO&7] &c") || originalString.contains("&7[&3PRISON INFO&7] &3") || value.contains("&7[&3PRISON WARN&7] &c") || value.contains("&7[&3PRISON WARN&7] &3")) {
-                value = originalString.substring(22);
-                gotConverted = true;
-            } else if (originalString.contains("&7[&3PRISON ERROR&7] &3")) {
-                value = originalString.substring(23);
-                gotConverted = true;
-            }
-        }
-
-        if (originalString == null || gotConverted) {
+        if (originalString == null) {
             conf.set(key, value);
             changeCount++;
         }

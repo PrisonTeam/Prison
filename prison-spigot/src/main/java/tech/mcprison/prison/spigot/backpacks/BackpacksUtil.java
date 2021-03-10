@@ -21,13 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 public class BackpacksUtil extends SpigotConfigComponents {
@@ -208,7 +206,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param p - Player
      * */
     public void openBackpack(Player p){
-        openBackpackDefault(p);
+        openBackpackMethod(p);
     }
 
     /**
@@ -218,7 +216,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param id - String ID
      * */
     public void openBackpack(Player p, String id){
-        openBackpackByID(p, id);
+        openBackpackMethod(p, id);
     }
 
     /**
@@ -352,7 +350,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @return HashMap with items that couldn't be removed.
      * */
     public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item, String id){
-        return removeItemFromBackpak(p, item, id);
+        return removeItemFromBackpack(p, item, id);
     }
 
     /**
@@ -660,7 +658,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
         return inv;
     }
 
-    private void openBackpackDefault(Player p) {
+    private void openBackpackMethod(Player p) {
         playOpenBackpackSound(p);
         Inventory inv = getBackpack(p);
         p.openInventory(inv);
@@ -669,7 +667,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
         }
     }
 
-    private void openBackpackByID(Player p, String id) {
+    private void openBackpackMethod(Player p, String id) {
         playOpenBackpackSound(p);
         Inventory inv = getBackpack(p, id);
         p.openInventory(inv);
@@ -833,7 +831,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     @NotNull
-    private HashMap<Integer, ItemStack> removeItemFromBackpak(Player p, ItemStack item, String id) {
+    private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
         setInventory(p, inv, id);
