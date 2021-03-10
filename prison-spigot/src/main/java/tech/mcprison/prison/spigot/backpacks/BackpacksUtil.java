@@ -10,7 +10,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -254,7 +253,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param id - String ID
      * */
     public void setInventory(Player p, Inventory inv, String id){
-        saveInventoryByID(p, inv, id);
+        saveInventory(p, inv, id);
     }
 
     /**
@@ -751,6 +750,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
                 return;
             }
 
+            // Set dimensions if null or error.
+            boolean needToSetNewDimensions = checkDimensionError(p);
+            if (needToSetNewDimensions){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items" + ".Size", backpacksConfig.getString("Options.BackPack_Default_Size"));
+            }
+
             updateCachedBackpack();
 
             for (ItemStack item : inv.getContents()){
@@ -781,7 +786,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
         updateCachedBackpack();
     }
 
-    private void saveInventoryByID(Player p, Inventory inv, String id) {
+    private void saveInventory(Player p, Inventory inv, String id) {
         updateCachedBackpack();
 
         if (inv.getContents() != null){
@@ -793,6 +798,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
             } catch (IOException ex){
                 ex.printStackTrace();
                 return;
+            }
+
+            // Set dimensions if null or error.
+            boolean needToSetNewDimensions = checkDimensionError(p, id);
+            if (needToSetNewDimensions){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", backpacksConfig.getString("Options.BackPack_Default_Size"));
             }
 
             updateCachedBackpack();
@@ -947,6 +958,32 @@ public class BackpacksUtil extends SpigotConfigComponents {
         }
 
         return backpacksNumber;
+    }
+
+    private boolean checkDimensionError(Player p) {
+        boolean needToSetNewDimensions = false;
+        try{
+            if (backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items" + ".Size") == null){
+                needToSetNewDimensions = true;
+            }
+            Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items" + ".Size"));
+        } catch (NumberFormatException ex){
+            needToSetNewDimensions = true;
+        }
+        return needToSetNewDimensions;
+    }
+
+    private boolean checkDimensionError(Player p, String id) {
+        boolean needToSetNewDimensions = false;
+        try{
+            if (backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size") == null){
+                needToSetNewDimensions = true;
+            }
+            Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size"));
+        } catch (NumberFormatException ex){
+            needToSetNewDimensions = true;
+        }
+        return needToSetNewDimensions;
     }
 
 }
