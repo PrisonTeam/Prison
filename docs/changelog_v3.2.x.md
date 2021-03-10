@@ -17,7 +17,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.5 2021-03-08
+# v3.2.5-alpha.5 2021-03-09
+
+
+* **Finalize fix on calculating fortune that is greater than 3 and when spigot tries to apply fortune to the getDrops() function.**
+This prevents wildly huge drops, and is more line with the original fortune randomized calculations.
+
 
 * **Fix issue with fortune "doubling".**
 Some versions of spigot/bukkit are unable to provide a suggested drop with fortune applied.

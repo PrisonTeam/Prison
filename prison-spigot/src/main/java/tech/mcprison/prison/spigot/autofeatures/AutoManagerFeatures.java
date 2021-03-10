@@ -1604,7 +1604,7 @@ public class AutoManagerFeatures
 				// Next calculate the random factor.  It will be applied to the multiplier to 
 				// adjust the fortune results slightly.  The range will be 0.7 to 1.1 so the 
 				// the average result would be to reduce the generated quantity.
-				double randomFactor = ( 0.4D / getRandom().nextDouble() ) + 0.7D;
+				double randomFactor = ( 0.4D * getRandom().nextDouble() ) + 0.7D;
 				
 				
 				// The adjusted fortune multiplier is to be applied to the number of blocks
