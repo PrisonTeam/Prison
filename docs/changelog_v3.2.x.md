@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **These are a couple of API jars that are not ready yet to be moved in to the project.**
+Storing them for later possible use if these plugins fix their issues.
+
+
 * **Adjustments on how the blocks are tracked and counted.**
   This resolves some of the problems with explosions counting a block more than once. 
 The MineTargetPrisonBlock now tracks when it's been counted so it will not be counted twice, plus it can be used to quickly rule out checking the actual block if it's be set to air or counted.
