@@ -10,13 +10,53 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
+**CMI currency is not working correctly with vault and prison (Monzter)**
+- /ranks set currency  may not be able to remove custom currencies
+- Need to test and may need to add a remove
+
+
+**Block Counts Refresh - (ExtraSean)**
+- His enchantment plugin does not have an explosion event
+- Provide a way to update block counts using TargetBlockList
+- Delay 4 to 10 seconds based upon percent remaining
+- Submitted after a blockBreakEvent
+- This is a new feature that has to be enabled for each mine
+
+
+- Prison Utils
+  - potions - need to work on that!!
+  
+  
+
+- Add new placeholders:
+  - Top-n - Blocks mined for mines
+  - Top-n - Most active mines (based upon blocks mined)
+  - Update papi's wiki
+  - Track stats on placeholders?  Could be useful in tracking down expensive stats.
+  
+  
+- Add blocks mined for players
+  - 
+  
+Review the chat hander in the spigot module. It was rewritten a few weeks ago to fix some issues and to optimize how things are handled.  The issue is that the new code (way of handling things) needs to be extended to other areas.  So review the SpigotPlaceholders class and see how it can be updated.  Then end result will be less code and less potential issues.
+
+  
+- Update /prison autofeatures to include new settings.
+
+
+- Could make /prison autofeatures reload happen. Alias: /prison reload autofeatures
+
+
 Not sure if the following is fixed?
 old block model - block constraint - excludeTop - not allowing block counts to be shown
    - air block count fixed and working
 
 
+- DONE: Add /prison utils smelt
+- DONE: Add /prison utils block
 
-- Block breaking in auto manager
+
+- DONE: Block breaking in auto manager
   - Just thought of this... if using the target block list to record block breakage,
     then can still double up the counts if more than one explosion event includes the
     same block.  Need to add to the target block class a boolean to indicate that the
@@ -35,7 +75,12 @@ old block model - block constraint - excludeTop - not allowing block counts to b
 
 - /mines set size <mineName> walls 0 is not refreshing.
   - NOTE: Cannot refresh liners if size is 0. The reason for this is that a liner may not always fill the full edge.  Therefore, a value of 0 cannot tell if there should be a liner block in that position. Normally a liner only replaces existing block when applying the liner, or it forces it so it fills the whole edge.  If it's not normally forced, then it cannot be done.
+  - NOTE: See the next comment. That may be the best option since anything else will never be perfect anyway and it will also be overly complex.  The following is a simple and clear way of repairing the liners.
 
+- Mine liner data - Is there any way to capture what blocks were set so a "repair" can work?
+  - Only real option appears to be to +1 it, then -1 it to force the repair.
+  - Or when running the repair state something like:
+    "Repair can only update blocks that are in place in the liner. If one is missing, then OP yourself, then fill in the voids with any blocks (cobblestone) then run the repair again."
 
    
 - Future Block Constraints:
