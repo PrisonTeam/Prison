@@ -10,19 +10,23 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
-- minepacks plugin - NoClassDefFoundError - pcgamingfreaks/Minepacks/bukkit/API/MinepacksPlugin
-  - Not an issue: I think this was a non-related issue that someone else was happening. They later reported it was woring well.
-
-- DONE: ranks autoConfigure 
-  - DONE: add blocks that are assigned to the mines to sellall
-     - add a block price to the blocks - base upon essentialsX?
-  - DONE: enable sellall
-
-- DONE: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
+Not sure if the following is fixed?
+old block model - block constraint - excludeTop - not allowing block counts to be shown
+   - air block count fixed and working
 
 
 
-- DONE: /prison utils message - add ability to send message to player or broadcast
+- Block breaking in auto manager
+  - Just thought of this... if using the target block list to record block breakage,
+    then can still double up the counts if more than one explosion event includes the
+    same block.  Need to add to the target block class a boolean to indicate that the
+    block has been broken, or at least already counted.  That way duplicate use of that
+    block won't result in over counting the breaks.
+    
+
+- auto manager - add support for mending enchantment on tools.
+
+
 
 
 - Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
@@ -52,7 +56,8 @@ issues, and/or to serve as items that should be added, or fixed.
 - Add a prestiges config option to auto add a zero rank entry for prestige ranks.
 
 
-- Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+- DONE: Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+  - The AutoFeaturesConfig is not a singleton, but there is now a wrapper that is.
 
 
 - Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
@@ -85,7 +90,7 @@ issues, and/or to serve as items that should be added, or fixed.
   - PrisonBlock - add "price" - Maybe keyed by "shop".
     - custom currency support like ranks?
     - shop, currency, price, item
-  - RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
+  - DONE: RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
   - Hook startup for PrisonBlock to sellall to preload the price 
   - PrisonBlock - add quantity
   - Add a utility method for converting a PrisonBlock to ItemStack
@@ -124,10 +129,11 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 * **Prestige Options**
- - Reset money on prestige - boolean option
+ - DONE: Reset money on prestige - boolean option
+ - DONE: Prevent reset of default ladder on prestiging.
  - Auto Prestige - server setting or player setting?
  - prestigemax - keep applying prestiges until run out of funds
- - rankmax - keep applying rankups until run out of funds
+ - DONE: rankmax - keep applying rankups until run out of funds
  - Eliminate prestige ranks - (optional)
    * Would need ladder commands
    * Need to define an upper limit of how many
@@ -204,27 +210,6 @@ Add new placeholders for ladder commands to be able to have generic ladder comma
 * **Rank Commands - Edit and delete**
 Add line numbers and enable the ability to edit and delete by line number.
 
-
-
-
-GABRYCAToday at 3:46 PM
-3.2.1 -> Nothing to fix 
-
-3.3.0 before -> 
-Bug: Bug fixes which will be reported by the user, if nothing will be reported in a month, then some of the next planned features will be integrated within this:
-New:
-- Add Ranks, Mines, Prestiges and RankupCommands presets
-- Add a walktrough GUI and Command to set up Prison presets on first start in the server
-- <rank>, <rank_next>, <prestige>, <prestige_next> placeholders for RankupCommands
-
-3.3.0 ->
-New:
-- Add close GUI Button 
-- Next page button for ranks, ladders, rankupcommands and mines
-- Eventually add some features which are missing in the GUIs
-- Enhanced GUI listeners and management system (I'll need this for the next feature)
-- Tracker and "cache" of the previous open GUI (will be deleted if there aren't Open GUIs... to sort this out)
--  Go Back button to go to the previous GUI
 
 
 
@@ -319,8 +304,8 @@ This is put on hold for the v3.2.2 release.
 
 
 
-* **Upon startup validate all Blocks that are defined in the mines**
-
+* DONE:  **Upon startup validate all Blocks that are defined in the mines**
+\
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
 
@@ -397,6 +382,28 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+
+- DONE:  /rankup states the player does not have enough money, then takes what they do have.
+
+
+- DONE:  Auto manager drops - fortune - if spigot applies fortune to the drops (item != 1) then use a different calculations for generating the extra drops.
+
+
+- DONE: minepacks plugin - NoClassDefFoundError - pcgamingfreaks/Minepacks/bukkit/API/MinepacksPlugin
+  - Not an issue: I think this was a non-related issue that someone else was happening. They later reported it was woring well.
+
+
+- DONE: ranks autoConfigure 
+  - DONE: add blocks that are assigned to the mines to sellall
+     - add a block price to the blocks - base upon essentialsX?
+  - DONE: enable sellall
+
+- DONE: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
+
+
+- DONE: /prison utils message - add ability to send message to player or broadcast
 
 
 
