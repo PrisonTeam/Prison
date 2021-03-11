@@ -31,6 +31,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -316,39 +317,49 @@ public class AutoManagerFeatures
 	
 
 	public void processBlockBreakage( SpigotBlock spigotBlock, 
-						Mine mine, Player player, String targetBlockName, int count,
+						Mine mine, Player player, int count,
 						BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
 	{
-		// Process mine block break events:
-		SpigotPlayer sPlayer = new SpigotPlayer( player );
-		
-		
-		// Calculate XP on block break if enabled:
-		calculateAndGivePlayerXP( sPlayer, targetBlockName, count );
+		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
 
-		// calculate durability impact: Include item durability resistance.
-		if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
-
-			// value of 0 = normal durability. Value 100 = never calculate durability.
-			int durabilityResistance = 0;
-			if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-				durabilityResistance = getDurabilityResistance( itemInHand,
-						getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+		// If this block is not in the mine (if null) and it has not been broke before
+		// and wasn't originally air, then process the breakage:
+		if ( targetBlock != null && !targetBlock.isAirBroke() ) {
+			
+			String targetBlockName = targetBlock.getPrisonBlock().getBlockName();
+			
+			// Process mine block break events:
+			SpigotPlayer sPlayer = new SpigotPlayer( player );
+			
+			
+			// Calculate XP on block break if enabled:
+			calculateAndGivePlayerXP( sPlayer, targetBlockName, count );
+			
+			// calculate durability impact: Include item durability resistance.
+			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
+				
+				// value of 0 = normal durability. Value 100 = never calculate durability.
+				int durabilityResistance = 0;
+				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
+					durabilityResistance = getDurabilityResistance( itemInHand,
+							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
+				}
+				
+				calculateAndApplyDurability( player, itemInHand, durabilityResistance );
 			}
-
-			calculateAndApplyDurability( player, itemInHand, durabilityResistance );
+			
+			
+			// A block was broke... so record that event on the tool:	
+			itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
+			
+			
+			// Record the block break:
+			mine.incrementBlockMiningCount( targetBlock );
+//		mine.incrementBlockMiningCount( targetBlockName );
+			
+			
+			mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
 		}
-		
-		
-		// A block was broke... so record that event on the tool:	
-		itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
-		
-		
-		// Record the block break before it is changed to AIR:
-		mine.incrementBlockMiningCount( targetBlockName );
-		
-		
-		mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
 	}
 	
 	public void checkZeroBlockReset( Mine mine ) {

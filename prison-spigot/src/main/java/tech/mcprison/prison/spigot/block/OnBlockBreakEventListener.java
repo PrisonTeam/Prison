@@ -708,7 +708,6 @@ public class OnBlockBreakEventListener
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
 			boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
 			
-			String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
 
 			if ( isProcessNormalDropsEnabled ) {
 
@@ -723,14 +722,11 @@ public class OnBlockBreakEventListener
 				
 				if ( drop > 0 ) {
 					
-					// Record the block break before it is changed to AIR:
-					mine.incrementBlockMiningCount( targetBlockName );
-					
 					
 					Player player = e.getPlayer();
 					
-					aMan.processBlockBreakage( spigotBlock, mine, player, targetBlockName, drop, BlockEventType.blockBreak, null,
-										itemInHand );
+					aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak,
+											null, itemInHand );
 					
 					
 	    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
@@ -748,17 +744,13 @@ public class OnBlockBreakEventListener
 //						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
 //						);
 				
-				
-				mine.incrementBlockMiningCount( targetBlockName );
-
 				// Other possible processing:
 				
 				
 				Player player = e.getPlayer();
 				
-				aMan.processBlockBreakage( spigotBlock, mine, player, targetBlockName, 1, BlockEventType.blockBreak, null,
-									itemInHand );
-
+				aMan.processBlockBreakage( spigotBlock, mine, player, 1, BlockEventType.blockBreak, null,
+										itemInHand );
 				
 				
     			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
@@ -805,16 +797,11 @@ public class OnBlockBreakEventListener
 				// The teExplosiveBlocks list have already been validated as being within the mine:
 				for ( SpigotBlock spigotBlock : explodedBlocks ) {
 					
-					String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
-					
 					// Drop the contents of the individual block breaks
 					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 					totalCount += drop;
 					
 					if ( drop > 0 ) {
-						
-						// Record the block break before it is changed to AIR:
-						mine.incrementBlockMiningCount( targetBlockName );
 						
 						
 						String triggered = null;
@@ -843,7 +830,7 @@ public class OnBlockBreakEventListener
 						}
 						
 						
-						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), targetBlockName, drop, 
+						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), drop, 
 								BlockEventType.TEXplosion, triggered,
 								itemInHand );
 						
@@ -915,22 +902,14 @@ public class OnBlockBreakEventListener
 				// The CrazyEnchants block list have already been validated as being within the mine:
 				for ( SpigotBlock spigotBlock : explodedBlocks ) {
 					
-					String targetBlockName = mine.getTargetPrisonBlockName( spigotBlock );
-
-					
 					// Drop the contents of the individual block breaks
 					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 					totalCount += drop;
 					
 					if ( drop > 0 ) {
 						
-						// Record the block break before it is changed to AIR:
-						mine.incrementBlockMiningCount( targetBlockName );
-						
-						
-						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), targetBlockName, drop, BlockEventType.CEXplosion, null,
-								itemInHand );
-						
+						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), drop, BlockEventType.CEXplosion, null,
+												itemInHand );
 						
 					}
 				}

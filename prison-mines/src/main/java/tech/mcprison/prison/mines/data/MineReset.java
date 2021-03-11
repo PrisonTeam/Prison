@@ -1614,27 +1614,28 @@ public abstract class MineReset
 	}
 	
 	
-	public String getTargetPrisonBlockName( Block block ) {
-		String results = "AIR";
-		
-		if ( block != null ) {
-			PrisonBlock pBlock = block.getPrisonBlock();
-			if ( pBlock != null ) {
-				
-				results = pBlock.getBlockName();
-			}
-			
-			if ( "AIR".equalsIgnoreCase( results ) ) {
-				MineTargetPrisonBlock targetBlock = getTargetPrisonBlock( block );
-				
-				if ( targetBlock != null ) {
-					results = targetBlock.getPrisonBlock().getBlockName();
-				}
-			}
-		}
-		
-		return results;
-	}
+	
+//	public String getTargetPrisonBlockName( Block block ) {
+//		String results = "AIR";
+//		
+//		if ( block != null ) {
+//			PrisonBlock pBlock = block.getPrisonBlock();
+//			if ( pBlock != null ) {
+//				
+//				results = pBlock.getBlockName();
+//			}
+//			
+//			if ( "AIR".equalsIgnoreCase( results ) ) {
+//				MineTargetPrisonBlock targetBlock = getTargetPrisonBlock( block );
+//				
+//				if ( targetBlock != null ) {
+//					results = targetBlock.getPrisonBlock().getBlockName();
+//				}
+//			}
+//		}
+//		
+//		return results;
+//	}
 	
 
 //	public boolean[] getMineAirBlocksOriginal()

@@ -121,7 +121,7 @@ public class RankUpCommand
         
         Player player = getPlayer( sender, null );
         
-       if ( !sender.isPlayer() ) {
+        if ( !sender.isPlayer() ) {
         	
         	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
         	return;

@@ -17,7 +17,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.6 2021-03-10
+# v3.2.5-alpha.6 2021-03-11
+
+
+* **Adjustments on how the blocks are tracked and counted.**
+  This resolves some of the problems with explosions counting a block more than once. 
+The MineTargetPrisonBlock now tracks when it's been counted so it will not be counted twice, plus it can be used to quickly rule out checking the actual block if it's be set to air or counted.
 
 
 * **Removed a lot of color codes to reduce the server log file mess when viewing.**

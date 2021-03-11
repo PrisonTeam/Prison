@@ -526,79 +526,132 @@ public abstract class MineData
         return results;
     }
     
-    public boolean incrementBlockMiningCount( Block block ) {
-    	
-    	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
-
-    	// If the block is AIR get the original block:
-    	if ( block.getPrisonBlock().isAir() ) {
-    		MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
-    		
-    		if ( targetPrisonBlock != null ) {
-
-    			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
-    			blockName = targetBlockName;
-    			
-    		}
-    		
-//    		Output.get().logInfo( "#### MineData.incrementBlockCount: " +
-//    							"oBlock= AIR  tBlock= %s  target= [%s]", blockName,
-//    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
-    	}
-    	
-    	return incrementBlockMiningCount( blockName );
-    }
+//    public boolean incrementBlockMiningCount( Block block ) {
+//    	boolean results = false;
+//    	
+//    	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
+//
+//    	// Need to always get the target block so it can be marked as counted:
+//    	MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
+//
+//    	if ( targetPrisonBlock != null && targetPrisonBlock.isAirBroke() ) {
+//    		// If this targetPrisonBlock was originally air or already counted
+//    		// then skip so it is not double counted:
+//    		results = false;
+//    	}
+//    	else if ( targetPrisonBlock != null ){
+//    		
+//    		// If the block is AIR get the original block name:
+//    		if ( block.getPrisonBlock().isAir() ) {
+//    			
+//    			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
+//    			blockName = targetBlockName;
+//    		}
+//    		
+////    		Output.get().logInfo( "#### MineData.incrementBlockCount: " +
+////    							"oBlock= AIR  tBlock= %s  target= [%s]", blockName,
+////    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
+//
+//    		// Set the targetPrisonBlock's airBroke to true to indicate it is being
+//    		// counted during this transaction so it won't be counted again:
+//    		targetPrisonBlock.setAirBroke( true );
+//    		
+//    		results = incrementBlockMiningCount( blockName );
+//    	}
+//    	
+//    	return results;
+//    }
     
-    public boolean incrementBlockMiningCount( BlockOld block ) {
-    	String blockName = block.getType().name().toLowerCase();
-    	return incrementBlockMiningCount( blockName );
-    }
+//    public boolean incrementBlockMiningCount( BlockOld block ) {
+//    	String blockName = block.getType().name().toLowerCase();
+//    	return incrementBlockMiningCount( blockName );
+//    }
+    
+    
     
     // MineTargetPrisonBlock getTargetPrisonBlock( Block block )
     
+//    /**
+//     * <p>This function is not as obvious it appears. Basically when this function 
+//     * should be called, it may be too late to get the correct block value before 
+//     * it is lost (set to AIR).  So it is critical that getTargetPrisonBlockName( Block block )
+//     * is called first before the original block is processed (broke or auto picked up).
+//     * </p>
+//     * 
+//     * <p>The end result of calling getTargetPrisonBlockName( Block block ) first is that
+//     * the block name will have already been resolved to the correct original block name.
+//     * There is also a higher chance that the block name extracted then, may never
+//     * be AIR to begin with.
+//     * </p> 
+//     * 
+//     * <p>Keep in mind, that if the original block was AIR before being processed for
+//     * a natural break, or auto pickup, then it may not have been properly mined since
+//     * AIR cannot be mined.  That said, if another process intercepted prison's 
+//     * event handlers, then the targetBlocks will not exist until the mine is reset 
+//     * for the first time when the server starts up.  So server startups will
+//     * have higher risk of not being able to resolve the correct block type to 
+//     * report.
+//     * </p>
+//     * 
+//     * @param blockName
+//     * @return
+//     */
+//    private boolean incrementBlockMiningCount( String targetBlockName ) {
+//    	boolean results = false;
+//    	
+//		incrementBlockBreakCount();
+//		incrementTotalBlocksMined();
+//
+//    	PrisonBlockStatusData sBlock = getBlockStats( targetBlockName );
+//    	if ( sBlock != null ) {
+//    		
+//    		sBlock.incrementMiningBlockCount();
+//    	}
+//    	
+//    	return results;
+//    }
+    
     /**
-     * <p>This function is not as obvious it appears. Basically when this function 
-     * should be called, it may be too late to get the correct block value before 
-     * it is lost (set to AIR).  So it is critical that getTargetPrisonBlockName( Block block )
-     * is called first before the original block is processed (broke or auto picked up).
+     * <p>This is actually the more correct way to count a block that has been mined
+     * since it is using the positional MineTargetPrisonBlock that has been either
+     * resolved to a specific block in the mine, or it is null (not within the mine).
+     * If the mineTargetPrisonBlock is not null, then it will already have a reference
+     * to the mine's block that just needs to be incremented.
      * </p>
      * 
-     * <p>The end result of calling getTargetPrisonBlockName( Block block ) first is that
-     * the block name will have already been resolved to the correct original block name.
-     * There is also a higher chance that the block name extracted then, may never
-     * be AIR to begin with.
-     * </p> 
-     * 
-     * <p>Keep in mind, that if the original block was AIR before being processed for
-     * a natural break, or auto pickup, then it may not have been properly mined since
-     * AIR cannot be mined.  That said, if another process intercepted prison's 
-     * event handlers, then the targetBlocks will not exist until the mine is reset 
-     * for the first time when the server starts up.  So server startups will
-     * have higher risk of not being able to resolve the correct block type to 
-     * report.
+     * <p>The MineTargetPrisonBlock keeps track if the original block was air, or if
+     * the block has already been broke.  The isAirBroke() field.  This prevents 
+     * the same block from being counted twice.
      * </p>
      * 
-     * @param blockName
-     * @return
+     * @param targetPrisonBlock
      */
-    public boolean incrementBlockMiningCount( String targetBlockName ) {
-    	boolean results = false;
+    public void incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
     	
-		incrementBlockBreakCount();
-		incrementTotalBlocksMined();
-
-    	PrisonBlockStatusData sBlock = getBlockStats( targetBlockName );
-    	if ( sBlock != null ) {
+    	// Only count the block as being broke if it was not originally air and
+    	// and it has not been broke before:
+    	if ( targetPrisonBlock != null && !targetPrisonBlock.isAirBroke() ) {
     		
-    		sBlock.incrementMiningBlockCount();
+    		incrementBlockBreakCount();
+    		incrementTotalBlocksMined();
+    		
+    		targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+    		
+    		targetPrisonBlock.setAirBroke( true );
     	}
-    	
-    	return results;
     }
-        
+    
+//    public void incrementBlockMiningCount( Block block ) {
+//    	
+//    	MineTargetPrisonBlock targetBlock = getTargetPrisonBlock( block );
+//    	incrementBlockMiningCount( targetBlock );
+//  
+//    }
+    
+    
     abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
     
-    abstract public String getTargetPrisonBlockName( Block block );
+//    abstract public String getTargetPrisonBlockName( Block block );
     
     
     
