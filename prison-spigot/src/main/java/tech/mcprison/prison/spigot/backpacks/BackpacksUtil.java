@@ -43,7 +43,14 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * Check if BackPacks's enabled.
      * */
     public static boolean isEnabled(){
-        return SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
+        return get().getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"));
+    }
+
+    /**
+     * Check if multiple backpacks's enabled.
+     * */
+    public boolean isMultipleBackpacksEnabled(){
+        return getBoolean(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player-Enabled"));
     }
 
     private void backpacksConfigUpdater(){

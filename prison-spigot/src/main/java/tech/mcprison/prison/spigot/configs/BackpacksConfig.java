@@ -56,6 +56,7 @@ public class BackpacksConfig extends SpigotConfigComponents{
         dataConfig("Options.BackPack_Use_Permission_Enabled", "false");
         dataConfig("Options.BackPack_Use_Permission", "prison.backpack");
         dataConfig("Options.BackPack_Default_Size", "54");
+        dataConfig("Options.BackPack_AutoPickup_Usable", "false");
         dataConfig("Options.Back_Pack_GUI_Opener_Item", "true");
         dataConfig("Options.BackPack_Item", "CHEST");
         dataConfig("Options.BackPack_Item_Title", "&3Backpack");

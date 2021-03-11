@@ -228,11 +228,26 @@ public class SpigotUtil {
 
 		
 		// Insert overflow in to Prison's backpack:
-		if (overflow.size() > 0 && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
-//			BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable");
-			Inventory inv = BackpacksUtil.get().getBackpack(player);
-			overflow = inv.addItem( overflow.values().toArray( new ItemStack[0] ) );
-			BackpacksUtil.get().setInventory(player, inv);
+		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+			if (BackpacksUtil.get().isMultipleBackpacksEnabled()){
+				for (String id : BackpacksUtil.get().getBackpacksIDs(player)){
+					if (overflow.size() > 0){
+						if (id == null){
+							Inventory inv = BackpacksUtil.get().getBackpack(player);
+							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+							BackpacksUtil.get().setInventory(player, inv);
+						} else {
+							Inventory inv = BackpacksUtil.get().getBackpack(player, id);
+							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+							BackpacksUtil.get().setInventory(player, inv, id);
+						}
+					}
+				}
+			} else {
+				Inventory inv = BackpacksUtil.get().getBackpack(player);
+				overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+				BackpacksUtil.get().setInventory(player, inv);
+			}
 		}
 
 		
@@ -522,8 +537,6 @@ public class SpigotUtil {
 	 * but it does not represent the correct block types in lower versions, 
 	 * such as with 1.8.x. This has everything to do with magic numbers.
 	 * Instead convert it to an ItemStack.
-	 * 
-	 * @param blockTypes
 	 */
 	public static List<PrisonBlock> getAllPlatformBlockTypes() {
 		List<PrisonBlock> blockTypes = new ArrayList<>();
