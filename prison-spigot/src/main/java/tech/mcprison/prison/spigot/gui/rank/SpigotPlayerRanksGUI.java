@@ -159,9 +159,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
+                    " ",
+                    "&8-------------------------------------------------------------",
+                    " ",
                     messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.getCost()
-            );
+                    messages.getString("Lore.Price3") + rank.getCost(),
+                    " ",
+                    "&8-------------------------------------------------------------"
+                    );
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {

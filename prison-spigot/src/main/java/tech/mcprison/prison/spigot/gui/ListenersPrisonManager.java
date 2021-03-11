@@ -2333,7 +2333,7 @@ public class ListenersPrisonManager implements Listener {
         AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
-        String buttonname = parts[0];
+        String buttonName = parts[0];
         String mode = parts[1];
         
         boolean enabled = mode.equalsIgnoreCase("Enabled");
@@ -2342,17 +2342,17 @@ public class ListenersPrisonManager implements Listener {
         if ( enabled && e.isRightClick() && e.isShiftClick() ||
                 !enabled && e.isRightClick()){
 
-            if (buttonname.equalsIgnoreCase("Full_Inv_Play_Sound")){
+            if (buttonName.equalsIgnoreCase("Full-Inventory-Sound")){
                 afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, !enabled );
                 saveConfigAutoFeatures(e, p);
             }
 
-            if (buttonname.equalsIgnoreCase("Full_Inv_Hologram")){
+            if (buttonName.equalsIgnoreCase("Full-Inventory-Hologram")){
                 afConfig.setFeature(AutoFeatures.hologramIfInventoryIsFull, !enabled);
                 saveConfigAutoFeatures(e,p);
             }
 
-            if (buttonname.equalsIgnoreCase("All")){
+            if (buttonName.equalsIgnoreCase("All")){
                 afConfig.setFeature(AutoFeatures.isAutoManagerEnabled, !enabled);
                 saveConfigAutoFeatures(e,p);
             }
@@ -2361,7 +2361,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the clickType and do the actions
         if (enabled && e.isRightClick() && e.isShiftClick() || !enabled && e.isRightClick() || enabled && e.isLeftClick()){
-            if (buttonname.equalsIgnoreCase("AutoPickup")){
+            if (buttonName.equalsIgnoreCase("AutoPickup")){
                 if (e.isLeftClick()){
                     SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
                     gui.open();
@@ -2371,7 +2371,7 @@ public class ListenersPrisonManager implements Listener {
                 saveConfigAutoFeatures(e,p);
             }
 
-            if (buttonname.equalsIgnoreCase("AutoSmelt")){
+            if (buttonName.equalsIgnoreCase("AutoSmelt")){
                 if (e.isLeftClick()){
                     SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
                     gui.open();
@@ -2381,7 +2381,7 @@ public class ListenersPrisonManager implements Listener {
                 saveConfigAutoFeatures(e,p);
             }
 
-            if (buttonname.equalsIgnoreCase("AutoBlock")){
+            if (buttonName.equalsIgnoreCase("AutoBlock")){
                 if (e.isLeftClick()){
                     SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
                     gui.open();

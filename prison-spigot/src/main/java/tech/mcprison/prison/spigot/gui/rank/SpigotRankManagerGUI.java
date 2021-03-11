@@ -60,9 +60,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         // Create the lore
         List<String> rankupCommandsLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                "",
-                messages.getString("Lore.Info")
+                messages.getString("Lore.ClickToOpen")
         );
 
         // SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
@@ -71,15 +69,23 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         List<String> editPriceLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
+                "&8-------------------------------------------------------------",
+                " ",
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Price") + rank.getCost()
-        );
+                messages.getString("Lore.Price") + rank.getCost(),
+                " ",
+                "&8-------------------------------------------------------------"
+                );
         List<String> editTagLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
+                "&8-------------------------------------------------------------",
+                " ",
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Tag") + rank.getTag()
-        );
+                messages.getString("Lore.Tag") + rank.getTag(),
+                " ",
+                "&8-------------------------------------------------------------"
+                );
 
         // Create the button
         Material commandMinecart = Material.matchMaterial( "command_minecart" );
