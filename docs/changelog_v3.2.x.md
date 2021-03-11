@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **Auto Features: Realized that a block parameter was being passed in many functions when it was never used, so got rid of it.**
+
+
 * **This fixes a few startup issues where it now uses the mine's stats block in the MineTargetPrisonBlock** so when the blocks are broken they have access to the correct stats block to increment.
 
 
