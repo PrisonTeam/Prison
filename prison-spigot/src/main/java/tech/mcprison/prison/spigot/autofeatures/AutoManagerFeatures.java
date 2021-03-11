@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,8 +30,8 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -152,7 +151,7 @@ public class AutoManagerFeatures
 
 			// The following may not be the correct drops for all versions of spigot,
 			// plus there are some extra items, such as flint, that will never be dropped.
-			Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
+			List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 
 
 			if (drops != null && drops.size() > 0 ) {
@@ -164,7 +163,6 @@ public class AutoManagerFeatures
 
 				// Need better drop calculation that is not using the getDrops function.
 				short fortuneLevel = getFortune(itemInHand);
-
 
 				// Adds in additional drop items:
 				calculateDropAdditions( itemInHand, drops );
@@ -204,7 +202,7 @@ public class AutoManagerFeatures
 
 		// The following may not be the correct drops for all versions of spigot,
 		// plus there are some extra items, such as flint, that will never be dropped.
-		Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
+		List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 
 
 		if (drops != null && drops.size() > 0 ) {
@@ -220,7 +218,6 @@ public class AutoManagerFeatures
 			// Adds in additional drop items:
 			calculateDropAdditions( itemInHand, drops );
 
-			
 			if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
 					hasSilkTouch( itemInHand )) {
 
@@ -236,6 +233,7 @@ public class AutoManagerFeatures
 					calculateFortune( itemStack, fortuneLevel );
 				}
 			}
+			
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
@@ -318,16 +316,16 @@ public class AutoManagerFeatures
 	}
 	
 	/**
-	 * <p>The collection of drops must have only one ItemStack per block type (name).
+	 * <p>The List of drops must have only one ItemStack per block type (name).
 	 * This function combines multiple occurrences together and adds up their 
 	 * counts to properly represent the total quantity in the original drops collection
 	 * that had duplicate entries.
 	 * </p>
 	 * 
-	 * @param Collection of SpigotItemStack drops with duplicate entries
-	 * @return Collection of SpigotItemStack drops without duplicates
+	 * @param List of SpigotItemStack drops with duplicate entries
+	 * @return List of SpigotItemStack drops without duplicates
 	 */
-	private Collection<SpigotItemStack> mergeDrops( Collection<SpigotItemStack> drops )
+	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
 	{
 		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
 
@@ -343,7 +341,7 @@ public class AutoManagerFeatures
 			}
 		}
 		
-		return results.values();
+		return new ArrayList<>( results.values() );
 	}
 
 
@@ -983,12 +981,12 @@ public class AutoManagerFeatures
 	
 	/**
 	 * <p>This processes the normal drop smelting if it's enabled.  Only the 
-	 * collection of SpigotItemStacks are needed.
+	 * List of SpigotItemStacks are needed.
 	 * </p>
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropSmelt( Collection<SpigotItemStack> drops ) {
+	protected void normalDropSmelt( List<SpigotItemStack> drops ) {
 		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
@@ -1001,6 +999,7 @@ public class AutoManagerFeatures
 		
 		
 		for ( XMaterial source : xMats ) {
+			
 			
 			switch ( source )
 			{
@@ -1055,13 +1054,13 @@ public class AutoManagerFeatures
 
 
 	/**
-	 * <p>This processed the normal drops for blocking.  Only the collection of 
+	 * <p>This processed the normal drops for blocking.  Only the List of 
 	 * SpigotItemStacks are needed since everything else is self contained.
 	 * </p>
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropBlock( Collection<SpigotItemStack> drops ) {
+	protected void normalDropBlock( List<SpigotItemStack> drops ) {
 		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
@@ -1870,7 +1869,7 @@ public class AutoManagerFeatures
 	 * @param drops
 	 */
 	@SuppressWarnings( "unused" )
-	private void calculateSilkTouch(SpigotItemStack itemInHand, Collection<SpigotItemStack> drops) {
+	private void calculateSilkTouch(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
 
 		for (SpigotItemStack itemStack : drops) {
 
@@ -1901,7 +1900,7 @@ public class AutoManagerFeatures
 	 * @param itemInHand
 	 * @param drops
 	 */
-	private void calculateDropAdditions(SpigotItemStack itemInHand, Collection<SpigotItemStack> drops) {
+	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
 		for (SpigotItemStack itemStack : drops) {
@@ -1931,8 +1930,9 @@ public class AutoManagerFeatures
 	 * @param itemStack
 	 * @param drops
 	 */
-	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, SpigotItemStack itemStack,
-												   Collection<SpigotItemStack> drops ) {
+	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, 
+											SpigotItemStack itemStack,
+												   List<SpigotItemStack> drops ) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
 		if (itemStack.getMaterial() == BlockType.GRAVEL && !hasSilkTouch(itemInHand)) {

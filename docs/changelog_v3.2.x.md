@@ -19,6 +19,9 @@ that you need.
 
 # v3.2.5-alpha.6 2021-03-11
 
+* **Eliminate the use of Collection since not all sources could support addAll()**.
+Default to List and ArrayList.
+
 
 * **SellAll and AutoPickup multiple Prison Backpacks support.**
 

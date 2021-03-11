@@ -3,7 +3,6 @@ package tech.mcprison.prison.mines.features;
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;

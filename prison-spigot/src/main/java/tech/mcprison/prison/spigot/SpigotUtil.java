@@ -19,7 +19,6 @@
 package tech.mcprison.prison.spigot;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -430,9 +429,8 @@ public class SpigotUtil {
 	 * @param target
 	 * @param ratio
 	 */
-	public static void itemStackReplaceItems( Collection<SpigotItemStack> stacks,
+	public static void itemStackReplaceItems( List<SpigotItemStack> stacks,
 											XMaterial source, XMaterial target, int ratio ) {
-
 		// Removes all of the specified source types from all inventories:
 		int sourceRemoved = itemStackRemoveAll( source, stacks );
 		
@@ -454,7 +452,7 @@ public class SpigotUtil {
 	}
 	
 	
-	private static void itemStackAddAll( Collection<SpigotItemStack> stacks, XMaterial source, int amount ) {
+	private static void itemStackAddAll( List<SpigotItemStack> stacks, XMaterial source, int amount ) {
 		ItemStack iStack = source.parseItem();
 		iStack.setAmount( amount );
 		
@@ -462,7 +460,7 @@ public class SpigotUtil {
 		stacks.add( sItemStack );
 	}
 
-	public static int itemStackRemoveAll( XMaterial xMat, Collection<SpigotItemStack> stacks ) {
+	public static int itemStackRemoveAll( XMaterial xMat, List<SpigotItemStack> stacks ) {
 		int count = 0;
 		if ( xMat != null && stacks != null ) {
 //			ItemStack testStack = xMat.parseItem();
