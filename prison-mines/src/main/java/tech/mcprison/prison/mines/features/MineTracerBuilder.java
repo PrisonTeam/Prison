@@ -2,7 +2,6 @@ package tech.mcprison.prison.mines.features;
 
 import java.util.Optional;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
@@ -63,8 +62,6 @@ public class MineTracerBuilder
 			}
 			
 			
-			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 			Optional<World> worldOptional = mine.getWorld();
@@ -108,7 +105,7 @@ public class MineTracerBuilder
 						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 										 yEdge && zEdge;
 						
-						if ( useNewBlockModel ) {
+						if ( mine.isUseNewBlockModel() ) {
 							
 							targetBlock.getBlockAt().setPrisonBlock( 
 									tracer && isEdge ? blockRedPB : blockAirPB );

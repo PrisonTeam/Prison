@@ -433,7 +433,7 @@ public class Mine
 		}
 
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) && 
+        if ( isUseNewBlockModel() && 
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
@@ -642,7 +642,7 @@ public class Mine
 	{
 		StringBuilder sb = new StringBuilder();
 
-       if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+       if ( isUseNewBlockModel() ) {
         	for ( PrisonBlock block : getPrisonBlocks()) {
         		if ( sb.length() > 0 ) {
         			sb.append( ", " );

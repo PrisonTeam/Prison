@@ -441,10 +441,9 @@ public class MinesCommands
 //        	return;
 //        }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
@@ -525,7 +524,7 @@ public class MinesCommands
         		.withReplacements(block, mineName).sendTo(sender);
         }
 
-        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
+        getBlocksList(m, null, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
     }
@@ -609,9 +608,8 @@ public class MinesCommands
 //        	return;
 //        }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -731,7 +729,7 @@ public class MinesCommands
         }
         
         
-        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
+        getBlocksList(m, null, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
 
@@ -826,9 +824,8 @@ public class MinesCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -873,7 +870,7 @@ public class MinesCommands
         	deleteBlock( sender, pMines, m, blockType );
         }
         
-        getBlocksList(m, null, useNewBlockModel, true).send(sender);
+        getBlocksList(m, null, true).send(sender);
     }
 
     /**
@@ -1126,19 +1123,18 @@ public class MinesCommands
       		chatDisplay.addComponent( row );
       	}
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-        
-        int blockSize = 0;
+
+      	int blockSize = 0;
 
 
         chatDisplay.addText("&3Blocks:");
         chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        		(useNewBlockModel ? ".." : ""));
+        		(m.isUseNewBlockModel() ? ".." : ""));
         
-        BulletedListComponent list = getBlocksList(m, null, useNewBlockModel, true );
+        BulletedListComponent list = getBlocksList(m, null, true );
         chatDisplay.addComponent(list);
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	blockSize =  m.getPrisonBlocks().size();
         }
         else {
@@ -1222,12 +1218,10 @@ public class MinesCommands
         }
         
         
-    	boolean useNewBlockModel = Prison.get().getPlatform()
-    										.getConfigBooleanFalse( "use-new-prison-block-model" );
         
     	PrisonBlockStatusData block = null;
     	
-    	if ( useNewBlockModel ) {
+    	if ( m.isUseNewBlockModel() ) {
     		block = m.getPrisonBlock( blockName );
     	}
     	else {
@@ -1413,7 +1407,7 @@ public class MinesCommands
         CommandPagedData cmdPageData = null;
         
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	cmdPageData = new CommandPagedData(
         			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
@@ -1693,23 +1687,22 @@ public class MinesCommands
         	
         }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
         int blockSize = 0;
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
         	if ( cmdPageData.isDebug() ) {
         		chatDisplay.addText( "&7Block model: &3%s", 
-        				( useNewBlockModel ? "New" : "Old") );
+        				( m.isUseNewBlockModel() ? "New" : "Old") );
         	}
         	chatDisplay.addText("&3Blocks:");
         	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        			(useNewBlockModel ? ".." : ""));
+        			(m.isUseNewBlockModel() ? ".." : ""));
         	
-        	BulletedListComponent list = getBlocksList(m, cmdPageData, useNewBlockModel, true );
+        	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
         }
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	blockSize =  m.getPrisonBlocks().size();
         }
         else {
@@ -1723,7 +1716,7 @@ public class MinesCommands
     }
 
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, 
-    							boolean useNewBlockModel, boolean includeTotals ) {
+    							boolean includeTotals ) {
        
     	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
@@ -1734,7 +1727,7 @@ public class MinesCommands
         
         PrisonBlock totals = new PrisonBlock("Totals");
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
 
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -1750,8 +1743,8 @@ public class MinesCommands
         		}
         	}
         }
-        if ( !useNewBlockModel || 
-        		!useNewBlockModel && cmdPageData != null && cmdPageData.isDebug() ) {
+        if ( !m.isUseNewBlockModel() || 
+        		!m.isUseNewBlockModel() && cmdPageData != null && cmdPageData.isDebug() ) {
         	
         	for (BlockOld block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;

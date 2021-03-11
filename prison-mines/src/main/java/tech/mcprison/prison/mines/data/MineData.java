@@ -511,8 +511,6 @@ public abstract class MineData
     public boolean hasBlock( String blockName ) {
     	boolean results = false;
     	
-//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-        
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
     		
     		if ( isUseNewBlockModel() ) {

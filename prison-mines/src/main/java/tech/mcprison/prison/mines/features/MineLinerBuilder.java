@@ -194,8 +194,6 @@ public class MineLinerBuilder {
 	private void generatePattern( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
 		try {
 			
-			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 //			Output.get().logInfo( "### MineLinerBuilder - xMin=%d, xMax=%d, yMin=%d, yMax=%d, zMin=%d, zMax=%d ",
@@ -286,7 +284,7 @@ public class MineLinerBuilder {
 //								tBlockPlus2.getLocation().toBlockCoordinates(), 
 //									x, y, z,  nextBlockName);
 						
-						if ( useNewBlockModel ) {
+						if ( getMine().isUseNewBlockModel() ) {
 							
 							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 								

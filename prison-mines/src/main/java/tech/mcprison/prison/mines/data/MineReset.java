@@ -225,8 +225,6 @@ public abstract class MineReset
 			// Generate the target block list first:
 			
 			
-//			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 //			Optional<World> worldOptional = getWorld();
@@ -630,9 +628,6 @@ public abstract class MineReset
 		
 		
 		
-//        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
-		
 //		// Reset the mineAirBlocks to all false values:
 //		boolean[] mAirBlocks = new boolean[ getBounds().getTotalBlockCount() ];
 //		// Arrays.fill(  mAirBlocks, false ); // redundant but prevents nulls if were Boolean
@@ -965,9 +960,6 @@ public abstract class MineReset
 		else {
 			World world = getBounds().getCenter().getWorld();
 			
-//	        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
-
 			
 			long start = System.currentTimeMillis();
 			
@@ -1087,7 +1079,6 @@ public abstract class MineReset
      */
 	protected void refreshAirCountAsyncTask()
 	{
-//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -1398,8 +1389,6 @@ public abstract class MineReset
 	
 	private void constraintsApplyMin() {
 		
-//    	boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-
     	if ( isUseNewBlockModel() ) {
     		
     		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
