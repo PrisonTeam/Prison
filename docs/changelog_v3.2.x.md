@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **SellAll and AutoPickup multiple Prison Backpacks support.**
+
+
 * **Cleaned up a lot of use of mines and the reference to the new block model config option.**
 Mines now has an internal variable isUseNewBlockModel which is set when the mine first loads.  This will reduce a lot of overhead with always looking up the configuration value and will also reduce and clean up code.  This cleanup has only been applied to the mines module.
 
