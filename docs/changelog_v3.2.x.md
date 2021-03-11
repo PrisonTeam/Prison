@@ -17,10 +17,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.5 2021-03-09
+# v3.2.5-alpha.6 2021-03-10
 
 
-* **New Backpaks list GUI if multiple backpacks are enabled**
+* **Removed a lot of color codes to reduce the server log file mess when viewing.**
+There are still some color codes, but they no longer are hiding the data.
+
+
+* **v3.2.5-alpha.6 2021-03-09**
+
+
+* **New Backpacks list GUI if multiple backpacks are enabled**
 new /gui backpackslist or /backpack list to see a list of own backpacks
   in a GUI.
 
@@ -36,6 +43,7 @@ There's a new option in the backpacks config that you can enable to use more tha
   /backpack <id> instead of the /backpack only.
   Option name by default disabled: `Multiple-BackPacks-For-Player-Enabled: false`
 
+* **Note: alpha.6 was generated at this point: v3.2.5-alpha.6 2021-03-10**
 
 * **Fixed a problem where /rankup would fail, but would eliminate the player's balance.**
 It was hitting the prestige function when it shouldn't have.

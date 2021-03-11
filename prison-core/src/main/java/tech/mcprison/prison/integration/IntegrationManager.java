@@ -195,6 +195,10 @@ public class IntegrationManager {
     	
         for ( IntegrationType integrationType : IntegrationType.values() )
 		{
+			if ( integrationType == IntegrationType.WORLDGUARD ) {
+				// Skip this integration type:
+				break;
+			} 
         	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integrationType.name() ) ));
 
         	// Generates the placeholder list for the /prison version command, printing
@@ -214,14 +218,14 @@ public class IntegrationManager {
 						"is not an error." ));
 			} 
 			else if ( plugins == null || plugins.size() == 0 ) {
-				results.add( new TextComponent( "    &e&onone" ));
+				results.add( new TextComponent( "&e    none" ));
 			} 
 			else {
 				for ( Integration plugin : plugins ) {
 					String pluginUrl = plugin.getPluginSourceURL();
-					String msg = String.format( "    &a%s &7<%s&7> %s", plugin.getDisplayName(),
-							( plugin.hasIntegrated() ? "&aActive" : "&cInactive"),
-							( pluginUrl == null ? "" : "&7[&eURL&7]"));
+					String msg = String.format( "&a    %s <%s> %s", plugin.getDisplayName(),
+							( plugin.hasIntegrated() ? "Active" : "Inactive"),
+							( pluginUrl == null ? "" : "&7[URL]"));
 					FancyMessage fancy = new FancyMessage( msg );
 			 		if ( pluginUrl != null ) {
 			 			fancy.command( pluginUrl ).tooltip( "Click to open URL for this plugin.", pluginUrl );
@@ -250,7 +254,7 @@ public class IntegrationManager {
 						}
 						
 						if ( sb.length() > 0 ) {
-							results.add( new TextComponent( "      &3Currencies: &7" + sb.toString() ));
+							results.add( new TextComponent( "      &3Currencies: " + sb.toString() ));
 						}
 					}
 				}

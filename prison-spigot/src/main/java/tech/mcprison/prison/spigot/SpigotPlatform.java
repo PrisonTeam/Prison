@@ -640,7 +640,7 @@ public class SpigotPlatform
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
         	String name = plugin.getName();
         	String version = plugin.getDescription().getVersion();
-        	String value = "&7" + name + " &3(&a" + version + "&3)";
+        	String value = " " + name + " (" + version + ")";
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );
@@ -651,7 +651,7 @@ public class SpigotPlatform
 		}
         
         if ( isPlugManPresent ) {
-        	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
+        	ChatDisplay chatDisplay = new ChatDisplay("&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *");
         	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
         	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
         	chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
@@ -661,7 +661,7 @@ public class SpigotPlatform
         	chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
         	chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
         	chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
-        	chatDisplay.addText( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	chatDisplay.addText( "&d* *&5 WARNING &d* *&5 WARNING &d* *&5 WARNING &d* *" );
         	
         	chatDisplay.sendtoOutputLogInfo();;
         }

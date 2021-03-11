@@ -35,7 +35,8 @@ public class Output {
     // Fields
     private static Output instance;
     
-    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
+    private String PREFIX_TEMPLATE = "| %s | &7";
+//    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
     public String INFO_PREFIX = gen("Info");
     public String WARNING_PREFIX = gen("Warning");
     public String ERROR_PREFIX = gen("Error");
@@ -130,7 +131,7 @@ public class Output {
     	} else {
     		try {
 				Prison.get().getPlatform().log(
-						gen("&3Prison") + " " + 
+						gen("Prison") + " " + 
 						getLogColorCode(level) +
 						String.format(message, args));
 			}
@@ -145,7 +146,7 @@ public class Output {
 				}
 				
 				Prison.get().getPlatform().logCore(
-						gen("&3Prison") + " " + 
+						gen("Prison") + " " + 
 						getLogColorCode(LogLevel.ERROR) +
 						"Failure to generate log message due to incorrect number of parameters: [" + 
 						e.getMessage() + "] :: Original raw message [" + message + "] " +

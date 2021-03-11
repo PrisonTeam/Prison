@@ -209,30 +209,30 @@ public class PrisonCommand {
     public ChatDisplay displayVersion() {
     	
         ChatDisplay display = new ChatDisplay("/prison version");
-        display.addText("&7Prison Version: &3%s", Prison.get().getPlatform().getPluginVersion());
+        display.addText("&7Prison Version: %s", Prison.get().getPlatform().getPluginVersion());
 
-        display.addText("&7Running on Platform: &3%s", Prison.get().getPlatform().getClass().getName());
-        display.addText("&7Minecraft Version: &3%s", Prison.get().getMinecraftVersion());
+        display.addText("&7Running on Platform: %s", Prison.get().getPlatform().getClass().getName());
+        display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
 
         display.addText("");
         
-        display.addText("&7Commands: &2/prison");
+        display.addText("&7Commands: /prison");
         
         for ( Module module : Prison.get().getModuleManager().getModules() ) {
         	
-        	display.addText( "&7Module: &3%s&3 : %s %s", module.getName(), 
+        	display.addText( "&7Module: %s : %s %s", module.getName(), 
         			module.getStatus().getStatusText(),
         			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
-        						"&d[" + module.getStatus().getMessage() + "&d]" : "")
+        						"[" + module.getStatus().getMessage() + "]" : "")
         			);
-        	display.addText( "    &7Base Commands: %s", module.getBaseCommands() );
+        	display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
         }
         
         List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
         if ( disabledModules.size() > 0 ) {
         	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
         	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-        		display.addText( "&a    &cDisabled Module: &7%s&a. Related commands and placeholders are non-functional. ",
+        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
         				disabledModule );
         	}
         }
@@ -244,15 +244,15 @@ public class PrisonCommand {
         IntegrationManager im = Prison.get().getIntegrationManager();
         String permissions =
         		(im.hasForType(IntegrationType.PERMISSION) ?
-                "&a" + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
-                "&cNone");
+                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+                "None");
 
         display.addText(Text.tab("&7Permissions: " + permissions));
 
         String economy =
         		(im.hasForType(IntegrationType.ECONOMY) ?
-                "&a" + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
-                "&cNone");
+                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+                "None");
 
         display.addText(Text.tab("&7Economy: " + economy));
         

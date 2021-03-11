@@ -67,7 +67,7 @@ public class PrisonRanks
 
     @Override
     public String getBaseCommands() {
-    	return "&7/&2ranks &7/&2rankup &7/&2rankupMax &7/&2prestige &7/&2prestiges";
+    	return "/ranks /rankup /rankupMax /prestige /prestiges";
     }
     
     /*
