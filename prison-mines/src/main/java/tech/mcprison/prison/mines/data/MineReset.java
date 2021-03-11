@@ -1068,6 +1068,10 @@ public abstract class MineReset
     	}
     }
     
+//    protected void resetAirCountStartupAsyncTask() {
+//    	refreshAirCountAsyncTask( false );
+//    }
+    
     /**
      * <p>This function performs the air count and should be ran as an async task.
      * </p>
@@ -1143,9 +1147,7 @@ public abstract class MineReset
 								PrisonBlock pBlock = tBlock.getPrisonBlock();
 
 								// Increment the mine's block count. This block is one of the control blocks:
-								incrementResetBlockCount( pBlock );
-								
-								addMineTargetPrisonBlock( pBlock, x, y, z );
+								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z );
 								
 								
 								if ( pBlock == null ||
@@ -1158,9 +1160,7 @@ public abstract class MineReset
 								BlockOld oBlock = new BlockOld( tBlock.getType() );
 
 								// Increment the mine's block count. This block is one of the control blocks:
-								incrementResetBlockCount( oBlock );
-								
-								addMineTargetPrisonBlock( oBlock, x, y, z );
+								addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z );
 								
 								
 								if ( tBlock.getType() == BlockType.AIR ) {

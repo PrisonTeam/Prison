@@ -22,7 +22,7 @@ public class MineTargetPrisonBlock
 		
 		this.prisonBlock = prisonBlock;
 		
-		if ( prisonBlock.isAir() ) {
+		if ( prisonBlock == null || prisonBlock.isAir() ) {
 			this.airBroke = true;
 		}
 	}

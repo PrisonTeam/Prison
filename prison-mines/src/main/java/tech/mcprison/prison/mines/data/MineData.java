@@ -708,7 +708,7 @@ public abstract class MineData
      * 
      * @param statsBlock
      */
-    public void incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
+    public PrisonBlockStatusData incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
     	
     	PrisonBlockStatusData sBlock = getBlockStats( statsBlock );
     	if ( sBlock != null ) {
@@ -716,6 +716,7 @@ public abstract class MineData
     		sBlock.incrementResetBlockCount();
     	}
     			
+    	return sBlock;
     }
     
     public PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {

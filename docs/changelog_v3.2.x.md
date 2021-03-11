@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **This fixes a few startup issues where it now uses the mine's stats block in the MineTargetPrisonBlock** so when the blocks are broken they have access to the correct stats block to increment.
+
+
 * **These are a couple of API jars that are not ready yet to be moved in to the project.**
 Storing them for later possible use if these plugins fix their issues.
 
