@@ -271,6 +271,52 @@ public class AutoManagerFeatures
 	}
 
 	
+	public void playerSmelt( SpigotPlayer player ) {
+		
+		List<XMaterial> smelts = new ArrayList<>();
+		
+		smelts.add( XMaterial.GOLD_ORE );
+		smelts.add( XMaterial.NETHER_GOLD_ORE );
+		smelts.add( XMaterial.IRON_ORE );
+		smelts.add( XMaterial.COAL_ORE );
+		smelts.add( XMaterial.DIAMOND_ORE );
+		smelts.add( XMaterial.EMERALD_ORE );
+		smelts.add( XMaterial.LAPIS_ORE );
+		smelts.add( XMaterial.REDSTONE_ORE );
+		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
+		smelts.add( XMaterial.ANCIENT_DEBRIS );
+//		smelts.add( XMaterial.COPPER_ORE );
+		
+		
+		for ( XMaterial xMat : smelts ) {
+			autoFeatureSmelt( player.getWrapper(), xMat );
+		}
+
+	}
+	
+	public void playerBlock( SpigotPlayer player ) {
+		
+		List<XMaterial> blocks = new ArrayList<>();
+		
+		blocks.add( XMaterial.GOLD_INGOT );
+		blocks.add( XMaterial.IRON_INGOT );
+		blocks.add( XMaterial.COAL );
+		blocks.add( XMaterial.DIAMOND );
+		blocks.add( XMaterial.REDSTONE );
+		blocks.add( XMaterial.EMERALD );
+		blocks.add( XMaterial.QUARTZ );
+		blocks.add( XMaterial.PRISMARINE_SHARD );
+		blocks.add( XMaterial.SNOW_BLOCK );
+		blocks.add( XMaterial.GLOWSTONE_DUST );
+		blocks.add( XMaterial.LAPIS_LAZULI );
+		
+		
+		for ( XMaterial xMat : blocks ) {
+			autoFeatureBlock( player.getWrapper(), xMat );
+		}
+		
+	}
+	
 	/**
 	 * <p>The collection of drops must have only one ItemStack per block type (name).
 	 * This function combines multiple occurrences together and adds up their 

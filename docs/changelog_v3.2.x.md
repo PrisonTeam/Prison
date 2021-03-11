@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **Added some new Prison Utils that will smelt and block a player's inventory.** 
+
+
 * **Auto Features: Realized that a block parameter was being passed in many functions when it was never used, so got rid of it.**
 
 

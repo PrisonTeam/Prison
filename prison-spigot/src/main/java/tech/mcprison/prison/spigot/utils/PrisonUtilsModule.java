@@ -52,6 +52,17 @@ public class PrisonUtilsModule
 				
 			}
 			
+			if ( isEnabled( "utils.mining.enabled", true ) ) {
+				
+				PrisonUtilsMining utils = new PrisonUtilsMining();
+				
+				utils.setEnableMiningSmelt( isEnabled( "utils.mining.smelt", true ) );
+				utils.setEnableMiningBlock( isEnabled( "utils.mining.block", true ) );
+				
+				Prison.get().getCommandHandler().registerCommands( utils );
+				
+			}
+			
 			
 			
 		}
