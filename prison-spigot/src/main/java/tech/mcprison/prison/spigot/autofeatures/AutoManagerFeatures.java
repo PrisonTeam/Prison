@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -30,15 +29,12 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
@@ -58,33 +54,6 @@ import tech.mcprison.prison.util.Text;
 public class AutoManagerFeatures
 		extends OnBlockBreakEventListener {
 
-	public enum ItemLoreCounters {
-
-		// NOTE: the String value must include a trailing space!
-
-		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
-				ChatColor.GRAY + " "),
-
-		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
-				ChatColor.GRAY + " ");
-
-
-		private final String lore;
-		ItemLoreCounters( String lore ) {
-			this.lore = lore;
-		}
-		public String getLore() {
-			return lore;
-		}
-
-	}
-
-	public enum ItemLoreEnablers {
-		Pickup,
-		Smelt,
-		Block
-		;
-	}
 
 	private Random random = new Random();
 
@@ -360,51 +329,7 @@ public class AutoManagerFeatures
 	
 	
 
-	public void processBlockBreakage( SpigotBlock spigotBlock, 
-						Mine mine, Player player, int count,
-						BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
-	{
-		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
 
-		// If this block is not in the mine (if null) and it has not been broke before
-		// and wasn't originally air, then process the breakage:
-		if ( targetBlock != null && !targetBlock.isAirBroke() ) {
-			
-			String targetBlockName = targetBlock.getPrisonBlock().getBlockName();
-			
-			// Process mine block break events:
-			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			
-			
-			// Calculate XP on block break if enabled:
-			calculateAndGivePlayerXP( sPlayer, targetBlockName, count );
-			
-			// calculate durability impact: Include item durability resistance.
-			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
-				
-				// value of 0 = normal durability. Value 100 = never calculate durability.
-				int durabilityResistance = 0;
-				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-					durabilityResistance = getDurabilityResistance( itemInHand,
-							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-				}
-				
-				calculateAndApplyDurability( player, itemInHand, durabilityResistance );
-			}
-			
-			
-			// A block was broke... so record that event on the tool:	
-			itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
-			
-			
-			// Record the block break:
-			mine.incrementBlockMiningCount( targetBlock );
-//		mine.incrementBlockMiningCount( targetBlockName );
-			
-			
-			mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
-		}
-	}
 	
 	public void checkZeroBlockReset( Mine mine ) {
 		if ( mine != null ) {
@@ -1138,134 +1063,6 @@ public class AutoManagerFeatures
 	}
 
 
-	/**
-	 * <p>This adds a lore counter to the tool if it is enabled.
-	 * </p>
-	 * 
-	 * @param itemInHand
-	 * @param itemLore
-	 * @param blocks
-	 */
-	protected void itemLoreCounter( SpigotItemStack itemInHand, String itemLore, int blocks) {
-
-		// A block was broke... so record that event on the tool:	
-		if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) ) {
-
-			if (itemInHand.getBukkitStack().hasItemMeta()) {
-				
-				List<String> lore = new ArrayList<>();
-				itemLore = itemLore.trim() + " ";
-				itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
-				ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
-				
-//			String prisonBlockBroken = itemLore.getLore();
-				
-				
-				if (meta.hasLore()) {
-					lore = meta.getLore();
-					boolean found = false;
-					
-					for( int i = 0; i < lore.size(); i++ ) {
-						if ( lore.get( i ).startsWith( itemLore ) ) {
-							String val = lore.get( i ).replace( itemLore, "" ).trim();
-							int count = blocks;
-							
-							try {
-								count += Integer.parseInt(val);
-							} catch (NumberFormatException e1) {
-								Output.get().logError("AutoManager: tool counter failure. lore= [" + lore.get(i) + "] val= [" + val + "] error: " + e1.getMessage());								}
-							
-							lore.set(i, itemLore + count);
-							found = true;
-							
-							break;
-						}
-					}
-					
-					if ( !found ) {
-						lore.add(itemLore + 1);
-					}
-					
-				} else {
-					lore.add(itemLore + 1);
-				}
-				
-				meta.setLore(lore);
-				itemInHand.getBukkitStack().setItemMeta(meta);
-				
-				// incrementCounterInName( itemInHand, meta );
-				
-			}
-		}
-		
-	}
-
-	/**
-	 * <p>This function will search for the loreDurabiltyResistanceName within the
-	 * item in the hand, if found it will return the number if it exists.  If not
-	 * found, then it will return a value of zero, indicating that no special resistance
-	 * exists, and that durability should be applied as normal.
-	 * </p>
-	 *
-	 * <p>If there is no value after the lore name, then the default is 100 %.
-	 * If a value follows the lore name, then it must be an integer.
-	 * If it is less than 0, then 0. If it is greater than 100, then 100.
-	 * </p>
-	 *
-	 * @param itemInHand
-	 * @param itemLore
-	 * @return
-	 */
-	protected int getDurabilityResistance(SpigotItemStack itemInHand, String itemLore) {
-		int results = 0;
-
-		if ( itemInHand.getBukkitStack().hasItemMeta() ) {
-
-			List<String> lore = new ArrayList<>();
-
-			itemLore = itemLore.trim() + " ";
-
-			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
-
-//			String prisonBlockBroken = itemLore.getLore();
-
-			ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
-
-			if (meta.hasLore()) {
-				lore = meta.getLore();
-
-				for (String s : lore) {
-					if (s.startsWith(itemLore)) {
-
-						// It has the durability resistance lore, so set the results to 100.
-						// If a value is set, then it will be replaced.
-						results = 100;
-
-						String val = s.replace(itemLore, "").trim();
-
-						try {
-							results += Integer.parseInt(val);
-						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool durability failure. lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
-						}
-
-						break;
-					}
-				}
-			}
-
-			if ( results > 100d ) {
-				results = 100;
-			}
-			else if ( results < 0 ) {
-				results = 0;
-			}
-
-		}
-
-		return results;
-	}
-
 
 	protected void incrementCounterInName( ItemStack itemInHand, ItemMeta meta ) {
 		String name = meta.getDisplayName();
@@ -1301,160 +1098,6 @@ public class AutoManagerFeatures
 			meta.setDisplayName( name );
 			itemInHand.setItemMeta( meta );
 		}
-	}
-
-	/**
-	 * <p>This should calculate and apply the durability consumption on the tool.
-	 * </p>
-	 *
-	 * <p>The damage is calculated as a value of one durability, but all damage can be
-	 * skipped if the tool has a durability enchantment.  If it does, then there is a
-	 * percent chance of 1 in (1 + durabilityLevel).  So if a tool has a durability level
-	 * of 1, then there is a 50% chance. Level of 2, then a 66.6% chance. Level of 3 has
-	 * a 75% chance. And a level of 9 has a 90% chance. There are no upper limits on
-	 * durability enchantment levels.
-	 * </p>
-	 *
-	 * <p>Some blocks may have a damage of greater than 1, but for now, this
-	 * does not take that in to consideration. If hooking up in the future, just
-	 * set the initial damage to the correct value based upon block type that was mined.
-	 * </p>
-	 *
-	 * <p>The parameter durabilityResistance is optional, to disable use a value of ZERO.
-	 * This is a percentage and is calculated first.  If random value is equal to the parameter
-	 * or less, then it will skip the durability calculations for the current event.
-	 * </p>
-	 *
-	 * <p>Based upon the following URL.  See Tool Durability.
-	 * </p>
-	 * https://minecraft.gamepedia.com/Item_durability
-	 *
-	 * @param player
-	 * @param itemInHand - Should be the tool they used to mine or dig the block
-	 * @param durabilityResistance - Chance to prevent durability wear being applied.
-	 * 			Zero always disables this calculation and allows normal durability calculations
-	 * 			to be performed. 100 always prevents wear.
-	 */
-	protected void calculateAndApplyDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
-
-		short damage = 1;  // Generally 1 unless instant break block then zero.
-
-		if ( durabilityResistance >= 100 ) {
-			damage = 0;
-		} else if ( durabilityResistance > 0 ) {
-			if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
-				damage = 0;
-			}
-		}
-
-		if (damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-			int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
-
-			// the chance of losing durability is 1 in (1+level)
-			// So if the random int == 0, then take damage, otherwise none.
-			if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
-				damage = 0;
-			}
-		}
-
-		if (damage > 0) {
-
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-			int maxDurability = compat.getDurabilityMax( itemInHand );
-			int durability = compat.getDurability( itemInHand );
-			int newDurability = durability + damage;
-
-			if (newDurability > maxDurability) {
-				// Item breaks! ;(
-				compat.breakItemInMainHand( player );
-			} else {
-				compat.setDurability( itemInHand, newDurability );
-			}
-			player.updateInventory();
-		}
-	}
-
-	protected void calculateAndGivePlayerXP(SpigotPlayer player, String blockName, int count) {
-
-		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && blockName != null ) {
-
-//			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
-
-			if ( blockName != null ) {
-
-				int xp = 0;
-				for ( int i = 0; i < count; i++ ) {
-					xp += calculateXP( blockName );
-				}
-
-				if (xp > 0) {
-
-					if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
-
-						player.dropXPOrbs( xp );
-//						tech.mcprison.prison.util.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-//						((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
-					}
-					else {
-						player.giveExp( xp );
-					}
-				}
-			}
-		}
-	}
-	/**
-	 * <p>This calculate xp based upon the block that is broken.
-	 * Fortune does not increase XP that a block drops.
-	 * </p>
-	 *
-	 * <ul>
-	 *   <li>Coal Ore: 0 - 2</li>
-	 *   <li>Nether Gold Ore: 0 - 1</li>
-	 *   <li>Diamond Ore, Emerald Ore: 3 - 7</li>
-	 *   <li>Lapis Luzuli Ore, Nether Quartz Ore: 2 - 5</li>
-	 *   <li>Redstone Ore: 1 - 5</li>
-	 *   <li>Monster Spawner: 15 - 43</li>
-	 * </ul>
-	 *
-	 * @param Block
-	 * @return
-	 */
-	private int calculateXP( String blockName ) {
-		int xp = 0;
-
-		switch (blockName.toLowerCase()) {
-			case "coal_ore":
-			case "coal":
-				xp = getRandom().nextInt( 2 );
-				break;
-
-			case "nether_gold_ore":
-				xp = getRandom().nextInt( 1 );
-				break;
-
-			case "diamond_ore":
-			case "emerald_ore":
-				xp = getRandom().nextInt( 4 ) + 3;
-				break;
-
-			case "lapis_ore":
-			case "nether_quartz_ore":
-				xp = getRandom().nextInt( 3 ) + 2;
-				break;
-
-			case "redstone_ore":
-				xp = getRandom().nextInt( 4 ) + 1;
-				break;
-
-			case "spawn":
-				xp = getRandom().nextInt( 28 ) + 15;
-				break;
-
-			default:
-				break;
-		}
-
-		return xp;
 	}
 
 	/**

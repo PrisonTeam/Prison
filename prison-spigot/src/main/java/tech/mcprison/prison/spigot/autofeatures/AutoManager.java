@@ -405,7 +405,7 @@ public class AutoManager
 	
 	
 	private void applyAutoEvents( BlastUseEvent e, Mine mine, 
-										List<SpigotBlock> teExplosiveBlocks ) {
+										List<SpigotBlock> explosiveBlocks ) {
 		
 		Player player = e.getPlayer();
 		
@@ -418,7 +418,7 @@ public class AutoManager
 			
 			
 			// The teExplosiveBlocks list have already been validated as being within the mine:
-			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
+			for ( SpigotBlock spigotBlock : explosiveBlocks ) {
 //				
 				int count = applyAutoEvents( player, spigotBlock, mine );
 
