@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-11
 
 
+* **Start to setup a function that will calculate changed blocks so it can count and apply them to the mine's block counts.**
+This is the code that performs the checks, but the infrastructure to hook it up and running still needs to be added.
+
 
 * **Fixed logic error with setting up the backpacks that was resulting in a stack overflow exception as soon as a player would join the server.**
 

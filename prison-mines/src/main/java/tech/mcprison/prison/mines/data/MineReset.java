@@ -129,6 +129,8 @@ public abstract class MineReset
 	private long statsResetPageMs = 0;
 	
 	
+	private List<Long> statsUpdateBlockCountsTaskMs;
+	
 	public MineReset() {
 		super();
 		
@@ -137,6 +139,8 @@ public abstract class MineReset
 		this.mineTargetPrisonBlocks = new ArrayList<>();
 		this.mineTargetPrisonBlocksMap = new TreeMap<>();
 		
+		this.statsUpdateBlockCountsTaskMs = new ArrayList<>();
+
 		this.currentJob = null;
 		
 	}
@@ -1205,6 +1209,55 @@ public abstract class MineReset
 		}
 		
 	}
+	
+	
+	/**
+	 * <p>This function should ONLY be used if an enchantment plugin is being used that cannot
+	 * provide a working explosion event to monitor, and the plugin is breaking more blocks than what
+	 * is being reported with the BlockBreakEvent.  
+	 * </p>
+	 * 
+	 * <p>This function ignores previously counted blocks, which is indicated with isAirBroke().
+	 * Since it only processes blocks that have not been identified as being broke, then whenever
+	 * it encounters an air block (block.isEmpty()) then it is understood that block was just 
+	 * broke and needs to be counted then the related targetBlock needs to be set as <b>air</b> and as
+	 * have been <b>broke</b>.
+	 * </p>
+	 */
+	public void updateBlockCountsTask() {
+		
+		World world = getBounds().getCenter().getWorld();
+		if ( world != null ) {
+
+			long start = System.currentTimeMillis();
+			
+			for ( MineTargetPrisonBlock targetBlock : getMineTargetPrisonBlocks() ) {
+				
+				if ( targetBlock != null && !targetBlock.isAirBroke() ) {
+					MineTargetBlockKey key = targetBlock.getBlockKey();
+					Location blockLocation = new Location( world, key.getX(), key.getY(), key.getZ() );
+					
+					Block block = world.getBlockAt( blockLocation );
+					if ( block.isEmpty() ) {
+						
+						targetBlock.getPrisonBlock().incrementMiningBlockCount();
+						targetBlock.setAirBroke( true );
+					}
+				}
+			}
+
+			long stop = System.currentTimeMillis();
+			long elapsed = start - stop;
+			
+			getStatsUpdateBlockCountsTaskMs().add( elapsed );
+			
+			if ( getStatsUpdateBlockCountsTaskMs().size() > 10 ) {
+				getStatsUpdateBlockCountsTaskMs().remove( 0 );
+			}
+		}
+		
+	}
+	
     
 	public int getRemainingBlockCount() {
 		int remainingBlocks = getBounds().getTotalBlockCount() - getBlockBreakCount();
@@ -1821,6 +1874,13 @@ public abstract class MineReset
 	}
 	public void setStatsResetPageMs( long statsResetPageMs ) {
 		this.statsResetPageMs = statsResetPageMs;
+	}
+
+	public List<Long> getStatsUpdateBlockCountsTaskMs() {
+		return statsUpdateBlockCountsTaskMs;
+	}
+	public void setStatsUpdateBlockCountsTaskMs( List<Long> statsUpdateBlockCountsTaskMs ) {
+		this.statsUpdateBlockCountsTaskMs = statsUpdateBlockCountsTaskMs;
 	}
     
 }
