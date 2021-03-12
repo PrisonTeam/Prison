@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **try to clean up this sellall stuff in auto manager a bit.**
+Realized there is a loss of overflow/extra items that will have to be fixed.
+
+
 * **Setup auto manager to work outside of the mine.**
 
 
