@@ -19,6 +19,12 @@ that you need.
 
 # v3.2.5-alpha.6 2021-03-12
 
+
+* **Fixed an issue where the removal of a rank from a player was not being saved**, 
+so the changes would be reverted when the server restared unless some other rank command caused a save to the rank data.
+
+
+
 * **Potential issue with not rejecting canceled events when the listener is not at the MONITOR priority** (monitor should never process block breaks, but is used to log blocks mined as a fall-back stop gap attempt to update counts).
 
 
