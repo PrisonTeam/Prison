@@ -17,8 +17,14 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.6 2021-03-11
+# v3.2.5-alpha.6 2021-03-12
 
+
+* **Added more details to /ranks set currency and now supports removal of a custom currency.**
+It is now able to remove a previously set currency too. Mostly importantly, more detailed information has been provided to better explain what its purpose is for.
+
+
+* **Reworked some of the auto manager functions to move them to the OnBlockBreakEventListener since hooking up Crazy Enchantment injector is needing to have access to some of the core features.**
 
 
 * **Crazy Enchants has a pickaxe enchantment for bonus xp that is not called when prison handles the block break event.**

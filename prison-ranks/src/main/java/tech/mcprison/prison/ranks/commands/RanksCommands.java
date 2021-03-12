@@ -713,11 +713,18 @@ public class RanksCommands
     }
     
     // set commands
-    @Command(identifier = "ranks set currency", description = "Modifies a ranks currency", 
+    @Command(identifier = "ranks set currency", description = "Modifies a rank's currency to use an alternative " +
+    		"(custom) currency.  This is the currency that they player will have to pay with to rank up to this " +
+    		"rank. This does not change how sellall, or any other aspect of prison will operate.  " +
+    		"Few economy plugins support custom currencies; Gems Economy is one " +
+    		"that is support by prison.  " +
+    		"To use the default currency, this must not be set.", 
     													onlyPlayers = false, permissions = "ranks.set")
     public void setCurrency(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
-    		@Arg(name = "currency", description = "The currency to use with this rank.") String currency){
+    		@Arg(name = "currency", 
+    			description = "The custom currency to use with this rank, " +
+    					"or 'none' to remove a custom currency.") String currency){
     	
     	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
     	if ( rank == null ) {
@@ -727,31 +734,42 @@ public class RanksCommands
     	
     	
     	if ( currency == null || currency.trim().length() == 0 ) {
-    		Output.get().sendError(sender, "A currency name must be specified. '%s' is invalid.", currency);
+    		Output.get().sendError(sender, "A currency name must be specified, or must be " +
+    				"'none'. '%s' is invalid.", currency);
     		return;
     	}
     	
-    	
-    	EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-				.getEconomyForCurrency( currency );
-    	if ( currencyEcon == null ) {
-    		Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
-    		return;
+    	if ( "none".equalsIgnoreCase( currency ) && rank.getCurrency() == null ) {
+
+    		Output.get().sendInfo(sender,"The rank '%s' does not have a currency that " +
+    								"can be cleared. ", rankName);
+    		
     	}
-    	
-    	
-    	rank.setCurrency( currency );
-    	
-    	// Save the rank
-//    	try {
+    	else if ( "none".equalsIgnoreCase( currency ) ) {
+    		rank.setCurrency( null );
+    		
+    		PrisonRanks.getInstance().getRankManager().saveRank(rank);
+    		
+    		Output.get().sendInfo(sender,"Successfully cleared the currency for the rank '%s'. " +
+    				"This rank no longer has a custom currency. ", rankName);
+    		
+    	}
+    	else {
+    		
+    		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+    				.getEconomyForCurrency( currency );
+    		if ( currencyEcon == null ) {
+    			Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
+    			return;
+    		}
+    		
+    		rank.setCurrency( currency );
+    		
     		PrisonRanks.getInstance().getRankManager().saveRank(rank);
     		
     		Output.get().sendInfo(sender,"Successfully set the currency for the rank '%s' to %s", rankName, currency);
-//    	} catch (IOException e) {
-//    		Output.get().sendError(sender,
-//    				"The rank could not be saved to disk. The change in rank currency has not been saved. Check the console for details.");
-//    		Output.get().logError("Rank could not be written to disk (setCurrency).", e);
-//    	}
+    	}
+    	
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
