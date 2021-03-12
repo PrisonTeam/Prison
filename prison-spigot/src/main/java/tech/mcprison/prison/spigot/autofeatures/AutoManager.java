@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.autofeatures;
 
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -178,7 +177,6 @@ public class AutoManager
     }
 
 
-	//TODO Use the SpigotBlock within these functions so it can use the new block model and the custom blocks if they exist
 	private void applyAutoEvents( SpigotBlock spigotBlock, BlockBreakEvent e, Mine mine) {
 
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled() && 
@@ -197,30 +195,28 @@ public class AutoManager
 
 			int count = applyAutoEvents( player, spigotBlock, mine );
 			
-			
 			if ( count > 0 ) {
 				
 				
 				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
 										null, itemInHand );
 
-
-				// Set the broken block to AIR and cancel the event
     			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
     				
     				e.setCancelled( true );
     			}
-				e.getBlock().setType(Material.AIR);
-
-				// Maybe needed to prevent drop side effects:
-				e.getBlock().getDrops().clear();
-
+    			
+    			// Setting to air is set in processBlockBreakage:
+//				e.getBlock().setType(Material.AIR);
+//				// Maybe needed to prevent drop side effects:
+//				e.getBlock().getDrops().clear();
 			}
 			
-			checkZeroBlockReset( mine );
+			if ( mine != null ) {
+				checkZeroBlockReset( mine );
+			}
 	
 		}
-		
 	}
 
 
@@ -377,14 +373,15 @@ public class AutoManager
 					
 
 	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-	    				
 	    				e.setCancelled( true );
 	    			}
 				}
 
 			}
 			
-			checkZeroBlockReset( mine );
+			if ( mine != null ) {
+				checkZeroBlockReset( mine );
+			}
 			
 			
 //			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
@@ -394,13 +391,7 @@ public class AutoManager
 //					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
 			
 			
-			
-//			if (e.isCancelled()) {
-//				// The event was canceled, so the block was successfully broke, so increment the name counter:
-//				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
-//			}
 		}
-		
 	}
 	
 	
@@ -422,17 +413,21 @@ public class AutoManager
 //				
 				int count = applyAutoEvents( player, spigotBlock, mine );
 
-				
 				if ( count > 0 ) {
-					
 					
 					processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.CEXplosion,
 											null, itemInHand );
+					
 				}
-
 			}
 			
-			checkZeroBlockReset( mine );
+			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+				e.setCancelled( true );
+			}
+			
+			if ( mine != null ) {
+				checkZeroBlockReset( mine );
+			}
 			
 			
 //			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
@@ -441,12 +436,6 @@ public class AutoManager
 //					"  blocks remaining= " + mine.getRemainingBlockCount() + 
 //					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
 			
-			
-			
-//			if (e.isCancelled()) {
-//				// The event was canceled, so the block was successfully broke, so increment the name counter:
-//				itemLoreCounter(itemInHand, getMessage(AutoFeatures.loreBlockExplosionCountName), totalCount);
-//			}
 		}
 		
 	}

@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **Setup auto manager to work outside of the mine.**
+
+
 * **Added more details to /ranks set currency and now supports removal of a custom currency.**
 It is now able to remove a previously set currency too. Mostly importantly, more detailed information has been provided to better explain what its purpose is for.
 

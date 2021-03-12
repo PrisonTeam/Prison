@@ -385,6 +385,13 @@ public class OnBlockBreakEventListener
     				}
     					
     			}
+    			else if ( mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines ) ) {
+    				
+    				// check mcmmo
+    				checkMCMMO( e );
+    				
+    				doAction( block, mine, e );
+    			}
     				
     			// future change to allow auto features outside of mines:
 //    			doAction( block, mine, e );
@@ -484,7 +491,8 @@ public class OnBlockBreakEventListener
 //    		}
 
     		// now process all blocks:
-    		if ( mine != null ) {
+//    		if ( mine != null )
+    		{
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -501,7 +509,7 @@ public class OnBlockBreakEventListener
     					// Need to wrap in a Prison block so it can be used with the mines:
     					SpigotBlock block = new SpigotBlock(blk);
     					
-    					if ( mine.isInMineExact( block.getLocation() ) ) {
+    					if ( mine == null || mine.isInMineExact( block.getLocation() ) ) {
 
     						explodedBlocks.add( block );
     						
@@ -525,14 +533,14 @@ public class OnBlockBreakEventListener
     			}
     		}
     			
-    		else {
-    			
-    			// targeted block was not in the mine, so cancel it:
-    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-    				
-    				e.setCancelled( true );
-    			}
-    		}
+//    		else {
+//    			
+//    			// targeted block was not in the mine, so cancel it:
+//    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+//    				
+//    				e.setCancelled( true );
+//    			}
+//    		}
     		
     	}
 	}
@@ -638,7 +646,8 @@ public class OnBlockBreakEventListener
     		}
 
 			// now process all blocks:
-    		else if ( mine != null ) {
+    		else // if ( mine != null ) 
+    		{
 				
 				
 				// have to go through all blocks since some blocks may be outside the mine.
@@ -656,7 +665,7 @@ public class OnBlockBreakEventListener
     					// Need to wrap in a Prison block so it can be used with the mines:
     					SpigotBlock block = new SpigotBlock(blk);
     					
-    					if ( !block.isEmpty() && mine.isInMineExact( block.getLocation() ) ) {
+    					if ( mine == null || !block.isEmpty() && mine.isInMineExact( block.getLocation() ) ) {
 
     						explodedBlocks.add( block );
     						
@@ -710,10 +719,10 @@ public class OnBlockBreakEventListener
 //					
 //				}
 			}
-			else {
-				// targeted block was not in the mine, so cancel it:
-				e.setCancelled( true );
-			}
+//			else {
+//				// targeted block was not in the mine, so cancel it:
+//				e.setCancelled( true );
+//			}
 			
 			
 			
@@ -737,72 +746,70 @@ public class OnBlockBreakEventListener
 	
 	
 	public void doAction( SpigotBlock spigotBlock, Mine mine, BlockBreakEvent e ) {
-		if ( mine != null ) {
-			
-			
-			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
-			
-			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 
-			
-			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
+		
+		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+		
+		
+		// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
+		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
+		
+		
+		if ( isProcessNormalDropsEnabled ) {
 			
-
-			if ( isProcessNormalDropsEnabled ) {
-
 //				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: normal drop :: " + mine.getName() + "  " + 
 //						"  blocks remaining= " + 
 //						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
 //						);
 			
-				
-				// Drop the contents of the individual block breaks
-				int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
-				
-				if ( drop > 0 ) {
-					
-					
-					Player player = e.getPlayer();
-					
-					aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak,
-											null, itemInHand );
-					
-					
-	    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-	    				
-	    				e.setCancelled( true );
-	    			}
-	    			
-				}
-				
-			}
-			else {
-				
-//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: no drop :: " + mine.getName() + "  " + 
-//						"  blocks remaining= " + 
-//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
-//						);
-				
-				// Other possible processing:
+			
+			// Drop the contents of the individual block breaks
+			int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
+			
+			if ( drop > 0 ) {
 				
 				
 				Player player = e.getPlayer();
 				
-				aMan.processBlockBreakage( spigotBlock, mine, player, 1, BlockEventType.blockBreak, null,
-										itemInHand );
+				aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak,
+						null, itemInHand );
 				
 				
-    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-    				
-    				e.setCancelled( true );
-    			}
-
+				if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+					
+					e.setCancelled( true );
+				}
+				
 			}
 			
-			aMan.checkZeroBlockReset( mine );
+		}
+		else {
 			
+//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: no drop :: " + mine.getName() + "  " + 
+//						"  blocks remaining= " + 
+//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
+//						);
+			
+			// Other possible processing:
+			
+			
+			Player player = e.getPlayer();
+			
+			aMan.processBlockBreakage( spigotBlock, mine, player, 1, BlockEventType.blockBreak, null,
+					itemInHand );
+			
+			
+			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+				
+				e.setCancelled( true );
+			}
+			
+		}
+		
+		if ( mine != null ) {
+			aMan.checkZeroBlockReset( mine );
 		}
 	}
 	
@@ -819,7 +826,7 @@ public class OnBlockBreakEventListener
 	 */
 	public void doAction( Mine mine, TEBlockExplodeEvent e, List<SpigotBlock> explodedBlocks ) {
 	
-		if ( mine != null && !e.isCancelled() ) {
+		if ( mine == null || mine != null && !e.isCancelled() ) {
 			
 			int totalCount = 0;
 			
@@ -877,10 +884,11 @@ public class OnBlockBreakEventListener
 						
 						
 					}
-					
-					aMan.checkZeroBlockReset( mine );
 				}
 				
+				if ( mine != null ) {
+					aMan.checkZeroBlockReset( mine );
+				}
 				
 				if ( totalCount > 0 ) {
 					
@@ -890,7 +898,6 @@ public class OnBlockBreakEventListener
 	    				
 	    				e.setCancelled( true );
 	    			}
-
 				}
 				
 			}
@@ -912,7 +919,7 @@ public class OnBlockBreakEventListener
 	 */
 	public void doAction( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
 	
-		if ( mine != null && !e.isCancelled() ) {
+		if ( mine == null || mine != null && !e.isCancelled() ) {
 			
 			int totalCount = 0;
 			
@@ -955,6 +962,9 @@ public class OnBlockBreakEventListener
 					}
 				}
 				
+				if ( mine != null ) {
+					aMan.checkZeroBlockReset( mine );
+				}
 				
 				if ( totalCount > 0 ) {
 					
@@ -983,13 +993,20 @@ public class OnBlockBreakEventListener
 			Mine mine, Player player, int count,
 			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
 	{
-		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
+		MineTargetPrisonBlock targetBlock = null;
+		
+		if ( mine != null ) {
+			targetBlock = mine.getTargetPrisonBlock( spigotBlock );
+		}
+		
 		
 		// If this block is not in the mine (if null) and it has not been broke before
 		// and wasn't originally air, then process the breakage:
-		if ( targetBlock != null && !targetBlock.isAirBroke() ) {
+		if ( mine == null || targetBlock != null && !targetBlock.isAirBroke() ) {
 		
-			String targetBlockName = targetBlock.getPrisonBlock().getBlockName();
+			String targetBlockName =  mine == null ? 
+							spigotBlock.getBlockName()
+								: targetBlock.getPrisonBlock().getBlockName();
 			
 			// Process mine block break events:
 			SpigotPlayer sPlayer = new SpigotPlayer( player );
@@ -1018,12 +1035,13 @@ public class OnBlockBreakEventListener
 			itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );
 			
 			
-			// Record the block break:
-			mine.incrementBlockMiningCount( targetBlock );
-			//mine.incrementBlockMiningCount( targetBlockName );
+			if ( mine != null ) {
+				// Record the block break:
+				mine.incrementBlockMiningCount( targetBlock );
+				
+				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+			}
 			
-			
-			mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
 		}
 	}
 	
