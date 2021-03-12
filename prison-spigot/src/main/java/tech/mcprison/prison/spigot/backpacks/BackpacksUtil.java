@@ -72,7 +72,6 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * Check if player reached limit of own backpacks.
      * */
     public boolean reachedBackpacksLimit(Player p){
-
         return getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p));
     }
 
@@ -192,6 +191,25 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * @param id - String ID
      * */
     public void resetBackpack(Player p, String id){
+        resetBackpackMethod(p, id);
+    }
+
+    /**
+     * Reset a player's backpack.
+     *
+     * @param p - OfflinePlayer
+     * */
+    public void resetBackpack(OfflinePlayer p) {
+        resetBackpackMethod(p);
+    }
+
+    /**
+     * Reset a player's backpack by ID.
+     *
+     * @param p - OfflinePlayer
+     * @param id - String ID
+     * */
+    public void resetBackpack(OfflinePlayer p, String id){
         resetBackpackMethod(p, id);
     }
 
@@ -589,6 +607,34 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     private void resetBackpackMethod(Player p, String id) {
+        updateCachedBackpack();
+
+        try {
+            backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id, null);
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
+
+        updateCachedBackpack();
+    }
+
+    private void resetBackpackMethod(OfflinePlayer p) {
+        updateCachedBackpack();
+
+        try {
+            backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
+
+        updateCachedBackpack();
+    }
+
+    private void resetBackpackMethod(OfflinePlayer p, String id) {
         updateCachedBackpack();
 
         try {
