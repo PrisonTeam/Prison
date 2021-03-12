@@ -19,6 +19,11 @@ that you need.
 
 # v3.2.5-alpha.6 2021-03-11
 
+
+
+* **Fixed logic error with setting up the backpacks that was resulting in a stack overflow exception as soon as a player would join the server.**
+
+
 * **Eliminate the use of Collection since not all sources could support addAll()**.
 Default to List and ArrayList.
 

@@ -31,6 +31,8 @@ import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 public class BackpacksUtil extends SpigotConfigComponents {
 
     private static BackpacksUtil instance;
+    private static Boolean enabled = null;
+    
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
     private File backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
@@ -38,12 +40,17 @@ public class BackpacksUtil extends SpigotConfigComponents {
     public static List<String> openBackpacks = new ArrayList<>();
     public static List<String> backpackEdited = new ArrayList<>();
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+   
 
     /**
      * Check if BackPacks's enabled.
      * */
     public static boolean isEnabled(){
-        return get().getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"));
+    	if ( enabled == null ) {
+    		String backpackEnabled = SpigotPrison.getInstance().getConfig().getString("backpacks");
+    		enabled = backpackEnabled != null && backpackEnabled.equalsIgnoreCase( "true" );
+    	}
+        return enabled;
     }
 
     /**
@@ -473,13 +480,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
             return false;
         }
 
-        if (string.equalsIgnoreCase("true")){
-            return true;
-        } else if (string.equalsIgnoreCase("false")){
-            return false;
-        }
-
-        return false;
+        return string.equalsIgnoreCase("true");
     }
 
     private void backpackConfigUpdater() {
