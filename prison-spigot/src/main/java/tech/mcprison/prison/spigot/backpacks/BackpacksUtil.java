@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -67,6 +68,14 @@ public class BackpacksUtil extends SpigotConfigComponents {
     public void updateCachedBackpack(){
         backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
         backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
+    }
+
+    /**
+     * Check if player reached limit of own backpacks.
+     * */
+    public boolean reachedBackpacksLimit(Player p){
+
+        return getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p));
     }
 
     /**

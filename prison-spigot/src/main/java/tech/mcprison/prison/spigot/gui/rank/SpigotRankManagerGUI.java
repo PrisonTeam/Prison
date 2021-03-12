@@ -69,22 +69,22 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         List<String> editPriceLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
-                "&8-------------------------------------------------------------",
+                "&8-----------------------",
                 " ",
                 messages.getString("Lore.Info"),
                 messages.getString("Lore.Price") + rank.getCost(),
                 " ",
-                "&8-------------------------------------------------------------"
+                "&8-----------------------"
                 );
         List<String> editTagLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
-                "&8-------------------------------------------------------------",
+                "&8-----------------------",
                 " ",
                 messages.getString("Lore.Info"),
                 messages.getString("Lore.Tag") + rank.getTag(),
                 " ",
-                "&8-------------------------------------------------------------"
+                "&8-----------------------"
                 );
 
         // Create the button

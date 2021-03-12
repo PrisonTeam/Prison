@@ -20,6 +20,16 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **It's now possible to add a backpack from the backpacksList GUI**
+When multiple Prison Backpacks are enabled, it's now possible to add
+  a backpack directly from the GUI following the instruction of the "new" 
+  button.
+  Also added close GUI button.
+
+* **Fixed new design changes for GUIs**
+Lores got fixed.
+
+
 * **try to clean up this sellall stuff in auto manager a bit.**
 Realized there is a loss of overflow/extra items that will have to be fixed.
 

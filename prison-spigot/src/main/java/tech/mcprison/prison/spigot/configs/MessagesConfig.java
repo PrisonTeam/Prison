@@ -70,6 +70,11 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.BlockType","&3BlockType: ");
         dataConfig("Lore.Blocks","&3Blocks:");
         dataConfig("Lore.Blocks2","&8Manage blocks of the Mine.");
+        dataConfig("Lore.ClickToAddBackpack", "&8Click to add backpack.");
+        dataConfig("Lore.ClickToAddBackpackInst0", "&3Instructions: ");
+        dataConfig("Lore.ClickToAddBackpackInst1", "&8Remember to add an item");
+        dataConfig("Lore.ClickToAddBackpackInst2", "&8Inside the backpack to");
+        dataConfig("Lore.ClickToAddBackpackInst3", "&8Save it");
         dataConfig("Lore.ClickToChoose","&8Click to choose.");
         dataConfig("Lore.ClickToConfirm","&8Click to confirm.");
         dataConfig("Lore.ClickToCancel","&8Click to cancel.");
@@ -85,7 +90,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToRankup","&8Click to rankup");
         dataConfig("Lore.ClickToEditBlock", "&8Click to edit percentage.");
         dataConfig("Lore.ClickToEdit", "&8Click to edit.");
-        dataConfig("Lore.ClickToClose", "&cClick to close the GUI.");
+        dataConfig("Lore.ClickToClose", "&8Click to close the GUI.");
         dataConfig("Lore.ClickToPriorPage", "&aClick to see the prior page.");
         dataConfig("Lore.ClickToNextPage", "&aClick to see the next page.");
         dataConfig("Lore.ClickToStartBlockSetup", "&aClick to setup block.");

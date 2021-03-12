@@ -160,12 +160,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             List<String> ranksLore = createLore(
                     " ",
-                    "&8-------------------------------------------------------------",
+                    "&8-----------------------",
                     " ",
                     messages.getString("Lore.Info"),
                     messages.getString("Lore.Price3") + rank.getCost(),
                     " ",
-                    "&8-------------------------------------------------------------"
+                    "&8-----------------------"
                     );
 
             if (placeholderAPINotNull) {

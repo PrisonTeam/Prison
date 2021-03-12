@@ -679,12 +679,40 @@ public class ListenersPrisonManager implements Listener {
                 playerMinesGUI(p, e);
             } else if (title.equalsIgnoreCase(p.getName() + " -> Backpacks")){
 
-                if (buttonNameMain.equalsIgnoreCase("Backpack")){
-                    BackpacksUtil.get().openBackpack(p);
-                } else {
-                    BackpacksUtil.get().openBackpack(p, buttonNameMain.substring(9));
-                }
+                backpacksList(p, buttonNameMain, parts);
             }
+        }
+    }
+
+    private void backpacksList(Player p, String buttonNameMain, String[] parts) {
+        if (parts[0].equalsIgnoreCase("New")){
+
+            int freeID = 0;
+            if (!BackpacksUtil.get().reachedBackpacksLimit(p)){
+
+                boolean foundFreeID = false;
+
+                while (!foundFreeID) {
+                    boolean freeIDHasChanged = false;
+                    for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
+                        if (String.valueOf(freeID).equalsIgnoreCase(id)) {
+                            freeIDHasChanged = true;
+                            freeID++;
+                        }
+                    }
+                    if (!freeIDHasChanged){
+                        foundFreeID = true;
+                    }
+                }
+
+                String finalID = String.valueOf(freeID);
+                Bukkit.dispatchCommand(p, "gui backpack " + finalID);
+            }
+
+        } else if (buttonNameMain.equalsIgnoreCase("Backpack")){
+            BackpacksUtil.get().openBackpack(p);
+        } else {
+            BackpacksUtil.get().openBackpack(p, buttonNameMain.substring(9));
         }
     }
 
