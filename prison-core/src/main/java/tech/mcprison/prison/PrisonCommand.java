@@ -703,6 +703,7 @@ public class PrisonCommand {
     	display.addText( "&7   Auto smelt - &aItems that can be smelted will be smelted automatically.");
     	display.addText( "&7   Auto block - &aConverts ores to blocks.");
     	display.addText( "&7   Tool lore starts with: Pickup, Smelt, or Block. Only one per line." );
+    	display.addText( "&7   Tool lore names can be customize in config file, but color codes could be an issue." );
     	display.addText( "&7   Tool lore 100 percent with just name. Can have value 0.001 to 100.0 percent." );
     	display.addText( "&7   Tool lore examples: Pickup, Pickup 7.13, Smelt 55, Block 75.123" );
     	
@@ -721,29 +722,34 @@ public class PrisonCommand {
     	StringBuilder sb = new StringBuilder();
     	for ( AutoFeatures af : afs ) {
 			if ( sb.length() > 0 ) {
-				sb.append( " " );
+				sb.append( "  " );
 			}
 			sb.append( af.getMessage() );
 		}
     	display.addText( "&3Permissions:" );
     	display.addText( "&b   %s", sb.toString() );
+    	display.addText( "&7 NOTE: Permissions enables that feature even if disabled for mines." );
+    	display.addText( " " );
 
     	
     	
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
     	
-    	display.addText( "&b   " );
-    	display.addText( "&b   options.isProcessNormalDropsEvents =  %s", 
+    	display.addText( "&3Selected Settings from &bplugins/Prison/autoFeaturesConfigs.yml&3:" );
+    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
+    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
     									afw.isBoolean( AutoFeatures.isProcessNormalDropsEvents ) );
-    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents =   %s", 
+    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
     									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents =   %s", 
+    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
     									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
 
-    	display.addText( "&b " );
     	
+    	display.addText( "&b " );
     	display.addText( "&b   options.general.isAutoManagerEnabled %s", 
     									afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    	display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
+    	display.addText( "&7        pickup, smelt, and block when they are turned off." );
     	
     	
     	display.addText( "&b " );
@@ -758,10 +764,49 @@ public class PrisonCommand {
     									afw.isBoolean( AutoFeatures.autoBlockEnabled ));
     	
     	
+
+    	display.addText( "&b " );
+    	display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
+    	display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
+    	display.addText( "&b   options.general.isCalculateFortuneOnAllBlocksEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ));
+    	display.addText( "&b   options.general.isCalculateXPEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
+    	display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
+    									afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
+    	display.addText( "&b   options.general.maxFortuneLevel %s", 
+    									afw.getMessage( AutoFeatures.maxFortuneLevel ));
+
+    	display.addText( "&b " );
+    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents %s", 
+    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ));
+    	display.addText( "&b   options.isProcessCrazyEnchantsBlockExplodeEvents %s", 
+    									afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ));
+    	display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
+    									afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
+    	display.addText( "&b " );
+    	
+    	
+    	display.addText( "&b " );
     	display.addText( "&b   options.lore.isLoreEnabled %s", 
 										afw.isBoolean( AutoFeatures.isLoreEnabled ));
-
-
+    	display.addText( "&b   options.lore.loreTrackBlockBreakCount %s", 
+    									afw.isBoolean( AutoFeatures.loreTrackBlockBreakCount ));
+    	display.addText( "&b   options.lore.loreBlockBreakCountName %s", 
+    									afw.getMessage( AutoFeatures.loreBlockBreakCountName ));
+    	
+    	display.addText( "&b   options.lore.loreBlockExplosionCountName %s", 
+    									afw.getMessage( AutoFeatures.loreBlockExplosionCountName ));
+    	display.addText( "&b   options.lore.loreDurabiltyResistance %s", 
+    									afw.isBoolean( AutoFeatures.loreDurabiltyResistance ));
+    	display.addText( "&b   options.lore.loreDurabiltyResistanceName %s", 
+    									afw.getMessage( AutoFeatures.loreDurabiltyResistanceName ));
+    	display.addText( "&b " );
+    	
+    	
+    	
     	display.send(sender);
     	
     	// altPermissions are now a part of this command.

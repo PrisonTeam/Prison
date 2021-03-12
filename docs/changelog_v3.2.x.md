@@ -20,13 +20,19 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **Add more information to the /prison autoFeatures command.**
+
+
+* **Fixed issue with xp.  Used the wrong block for the name so it was not getting any hits on the xp lookups.**
+Found that the blockNameSearch value was being used on auto pickup... changed it to just blockName for consistency.  When custom items are used by players, then it would be worth reviewing to make sure everything is working correctly.
+
+
 * **Auto features: More refactoring to simplify a lot of code and now the code for TokenEnchants explosions and Crazy Enchantments blast events are using the same code now!**
 This is to eventually allow auto features to work outside of the mine.  But that may not be a great idea to use this outside of the mines due to possible exploits on placing blocks then mining them for the fortune gains.  Prison does not have the database support to manage the tracking of all player based blocks.
 
 
 * **Fixed an issue where the removal of a rank from a player was not being saved**, 
-so the changes would be reverted when the server restared unless some other rank command caused a save to the rank data.
-
+so the changes would be reverted when the server restarted unless some other rank command caused a save to the rank data.
 
 
 * **Potential issue with not rejecting canceled events when the listener is not at the MONITOR priority** (monitor should never process block breaks, but is used to log blocks mined as a fall-back stop gap attempt to update counts).
