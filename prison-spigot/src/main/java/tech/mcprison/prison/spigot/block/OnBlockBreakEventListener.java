@@ -334,7 +334,8 @@ public class OnBlockBreakEventListener
      */
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( getPrisonMineManager() != null ) 
+    	if ( getPrisonMineManager() != null && 
+    			(!monitor && !e.isCancelled() || monitor) ) 
     	{
     		
     		// long startNano = System.nanoTime();
@@ -421,7 +422,9 @@ public class OnBlockBreakEventListener
 	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( (monitor || !e.isCancelled()) && getPrisonMineManager() != null ) {
+
+    	if ( getPrisonMineManager() != null && 
+    			(!monitor && !e.isCancelled() || monitor) ) {
     		
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 
@@ -562,9 +565,10 @@ public class OnBlockBreakEventListener
 	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-		if ( (monitor || !e.isCancelled()) &&  getPrisonMineManager() != null && 
+    	if ( getPrisonMineManager() != null && 
+    			(!monitor && !e.isCancelled() || monitor) && 
 				e.getBlockList().size() > 0 ) {
-    		
+		
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 
 			

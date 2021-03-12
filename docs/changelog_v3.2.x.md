@@ -19,6 +19,8 @@ that you need.
 
 # v3.2.5-alpha.6 2021-03-12
 
+* **Potential issue with not rejecting canceled events when the listener is not at the MONITOR priority** (monitor should never process block breaks, but is used to log blocks mined as a fall-back stop gap attempt to update counts).
+
 
 * **Some permissions appear to have % symbols so % is now being escaped so they do not cause issues with Java's String.format() command.**
 
