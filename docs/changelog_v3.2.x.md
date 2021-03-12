@@ -20,6 +20,12 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **PrisonSpigotAPI now inclused Prison backpacks.**
+You can now use the getPrisonBackpacks method included within PrisonSpigotAPI to getù
+  the BackpacksUtil class, which's the core of Prison Backpacks, essentially full API
+  access.
+
+
 * **/backpack delete for admins command**
 New `/backpack delete` command for admins, usage's `/backpack delete <playerName>` or
   `/backpack <playerName> <Id>`, both are valid, the IDs required only if multiple Prison backpacks support
