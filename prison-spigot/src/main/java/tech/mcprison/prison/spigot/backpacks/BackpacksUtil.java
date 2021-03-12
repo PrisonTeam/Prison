@@ -149,7 +149,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
-     * Check if player own backpack at first join
+     * Check if player owns backpack for single backpack mode (default).
      *
      * @param p - Player
      *
@@ -158,6 +158,19 @@ public class BackpacksUtil extends SpigotConfigComponents {
     public boolean isPlayerOwningBackpack(Player p){
         return checkOwnBackpack(p);
     }
+
+    /**
+     * Check if player owns backpack for multiple backpacks mode.
+     *
+     * @param p - Player
+     *
+     * @return boolean - true or false
+     * */
+    public boolean isPlayerOwningBackpacksMultipleMode(Player p){
+        return checkOwnBackpackMultiples(p);
+    }
+
+
 
     /**
      * Set default backpack config file.
@@ -179,9 +192,11 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * Reset a player's backpack.
      *
      * @param p - Player
+     *
+     * @return success - true or false
      * */
-    public void resetBackpack(Player p) {
-        resetBackpackMethod(p);
+    public boolean resetBackpack(Player p) {
+        return resetBackpackMethod(p);
     }
     
     /**
@@ -189,18 +204,22 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - Player
      * @param id - String ID
+     *
+     * @return success - true or false
      * */
-    public void resetBackpack(Player p, String id){
-        resetBackpackMethod(p, id);
+    public boolean resetBackpack(Player p, String id){
+        return resetBackpackMethod(p, id);
     }
 
     /**
      * Reset a player's backpack.
      *
      * @param p - OfflinePlayer
+     *
+     * @return success - true or false
      * */
-    public void resetBackpack(OfflinePlayer p) {
-        resetBackpackMethod(p);
+    public boolean resetBackpack(OfflinePlayer p) {
+        return resetBackpackMethod(p);
     }
 
     /**
@@ -208,9 +227,11 @@ public class BackpacksUtil extends SpigotConfigComponents {
      *
      * @param p - OfflinePlayer
      * @param id - String ID
+     *
+     * @return success - true of false
      * */
-    public void resetBackpack(OfflinePlayer p, String id){
-        resetBackpackMethod(p, id);
+    public boolean resetBackpack(OfflinePlayer p, String id){
+        return resetBackpackMethod(p, id);
     }
 
     /**
@@ -567,8 +588,14 @@ public class BackpacksUtil extends SpigotConfigComponents {
     private boolean checkOwnBackpack(Player p) {
         updateCachedBackpack();
 
-        String playerName = backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Playername");
+        String playerName = backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items.Playername");
         return playerName != null;
+    }
+
+    private boolean checkOwnBackpackMultiples(Player p){
+        updateCachedBackpack();
+
+        return getNumberOwnedBackpacks(p) != 0;
     }
 
     private void setDefaultBackpackDataConfigMethod() {
@@ -592,64 +619,80 @@ public class BackpacksUtil extends SpigotConfigComponents {
         }
     }
 
-    private void resetBackpackMethod(Player p) {
-        updateCachedBackpack();
-
-        try {
-            backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
-            backpacksDataConfig.save(backpacksFile);
-        } catch (IOException ex){
-            ex.printStackTrace();
-            return;
-        }
-
-        updateCachedBackpack();
-    }
-
-    private void resetBackpackMethod(Player p, String id) {
-        updateCachedBackpack();
-
-        try {
-            backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
-            backpacksDataConfig.save(backpacksFile);
-        } catch (IOException ex){
-            ex.printStackTrace();
-            return;
-        }
-
-        updateCachedBackpack();
-    }
-
-    private void resetBackpackMethod(OfflinePlayer p) {
+    private boolean resetBackpackMethod(Player p) {
         updateCachedBackpack();
 
         try {
             try {
                 backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
-            } catch (NullPointerException ignore){}
+            } catch (NullPointerException ex){
+                return false;
+            }
         } catch (IOException ex){
             ex.printStackTrace();
-            return;
+            return false;
         }
 
         updateCachedBackpack();
+        return true;
     }
 
-    private void resetBackpackMethod(OfflinePlayer p, String id) {
+    private boolean resetBackpackMethod(Player p, String id) {
         updateCachedBackpack();
 
         try {
             try {
                 backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
                 backpacksDataConfig.save(backpacksFile);
-            } catch (NullPointerException ignore){}
+            } catch (NullPointerException ex){
+                return false;
+            }
         } catch (IOException ex){
             ex.printStackTrace();
-            return;
+            return false;
         }
 
         updateCachedBackpack();
+        return true;
+    }
+
+    private boolean resetBackpackMethod(OfflinePlayer p) {
+        updateCachedBackpack();
+
+        try {
+            try {
+                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
+                backpacksDataConfig.save(backpacksFile);
+            } catch (NullPointerException ex){
+                return false;
+            }
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return false;
+        }
+
+        updateCachedBackpack();
+        return true;
+    }
+
+    private boolean resetBackpackMethod(OfflinePlayer p, String id) {
+        updateCachedBackpack();
+
+        try {
+            try {
+                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
+                backpacksDataConfig.save(backpacksFile);
+            } catch (NullPointerException ex){
+                return false;
+            }
+        } catch (IOException ex){
+            ex.printStackTrace();
+            return false;
+        }
+
+        updateCachedBackpack();
+        return true;
     }
 
     private void backpackResize(Player p, int size) {
@@ -1061,7 +1104,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
         // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
         // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
         try {
-            for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId().toString()).getKeys(false)) {
+            for (String ignored : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId().toString()).getKeys(false)) {
                 backpacksNumber++;
             }
         } catch (NullPointerException ignored){}

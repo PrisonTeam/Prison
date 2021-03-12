@@ -70,20 +70,25 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        boolean success;
         boolean isOnlinePlayer = Bukkit.getPlayerExact(name) != null;
         if (id.equalsIgnoreCase("null")) {
             if (isOnlinePlayer) {
-                BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name));
+                success = BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name));
             } else {
-                BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name));
+                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name));
             }
         } else {
             if (isOnlinePlayer) {
-                BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name), id);
+                success = BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name), id);
             } else {
-                BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
+                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
             }
         }
-        Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackDeleteDeleteOperation")));
+        if (success) {
+            Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackDeleteOperationSuccess")));
+        } else {
+            Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackDeleteOperationFail")));
+        }
     }
 }

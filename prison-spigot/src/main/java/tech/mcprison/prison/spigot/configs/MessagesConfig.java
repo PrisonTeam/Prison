@@ -192,7 +192,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
         dataConfig("Message.BackPackNeedPlayer", "Please add a playername.");
-        dataConfig("Message.BackPackDeleteDeleteOperation", "The backpack should've been deleted with success!");
+        dataConfig("Message.BackPackDeleteOperationSuccess", "The backpack should've been deleted with success!");
+        dataConfig("Message.BackPackDeleteOperationFail", "Can't find the backpack or something went wrong...?");
         dataConfig("Message.BackPackPlayerNotFound", "Player not found.");
         dataConfig("Message.BackPackDoNotOwnAny", "Sorry but you don't own any inventory, please use /backpack <AnIdYouWant> to make one.");
         dataConfig("Message.BackPackOwnLimitReached", "Sorry but you already have the max amount of backpacks allowed for Player!");
