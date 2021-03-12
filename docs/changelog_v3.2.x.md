@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.6 2021-03-12
+# v3.2.5-alpha.7 2021-03-12
+
+
+
+* **v3.2.5-alpha.7 2021-03-12**
 
 
 * **Add more information to the /prison autoFeatures command.**

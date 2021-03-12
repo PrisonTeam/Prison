@@ -10,9 +10,18 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
-**CMI currency is not working correctly with vault and prison (Monzter)**
-- /ranks set currency  may not be able to remove custom currencies
-- Need to test and may need to add a remove
+DONE: CMI currency is not working correctly with vault and prison (Monzter)
+- Unable to test since it is a premium plugin. :(
+- Turned out the CMI version of vault he downloaded didn't work. Had to use the injector.
+
+
+
+- DONE: /ranks set currency may not be able to remove custom currencies
+  - able to remove custom currencies if they are set
+
+
+
+Auto features not working outside of the mines.
 
 
 **Block Counts Refresh - (ExtraSean)**
