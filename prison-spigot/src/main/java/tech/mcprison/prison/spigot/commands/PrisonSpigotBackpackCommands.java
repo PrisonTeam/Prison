@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
@@ -57,5 +58,32 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
             sender.dispatchCommand("gui backpackslist");
         }
+    }
+
+    @Command(identifier = "backpack delete", description = "Delete a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
+    private void deleteBackpackCommand(CommandSender sender,
+    @Arg(name = "Backpack Owner", description = "The backpack owner name", def = "null") String name,
+                                       @Arg(name = "id", description = "The backpack ID optional", def = "null") String id){
+
+        if (name.equalsIgnoreCase("null")){
+            Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackNeedPlayer")));
+            return;
+        }
+
+        boolean isOnlinePlayer = Bukkit.getPlayerExact(name) != null;
+        if (id.equalsIgnoreCase("null")) {
+            if (isOnlinePlayer) {
+                BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name));
+            } else {
+                BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name));
+            }
+        } else {
+            if (isOnlinePlayer) {
+                BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name), id);
+            } else {
+                BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
+            }
+        }
+        Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackDeleteDeleteOperation")));
     }
 }

@@ -20,11 +20,19 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **/backpack delete for admins command**
+New `/backpack delete` command for admins, usage's `/backpack delete <playerName>` or
+  `/backpack <playerName> <Id>`, both are valid, the IDs required only if multiple Prison backpacks support
+  is enabled.
+  The permission's `prison.admin` for now.
+
+
 * **It's now possible to add a backpack from the backpacksList GUI**
 When multiple Prison Backpacks are enabled, it's now possible to add
   a backpack directly from the GUI following the instruction of the "new" 
   button.
   Also added close GUI button.
+
 
 * **Fixed new design changes for GUIs**
 Lores got fixed.
