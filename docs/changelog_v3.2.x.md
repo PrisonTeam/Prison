@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.6 2021-03-12
 
 
+* **Some permissions appear to have % symbols so % is now being escaped so they do not cause issues with Java's String.format() command.**
+
+
 * **PrisonSpigotAPI now inclused Prison backpacks.**
 You can now use the getPrisonBackpacks method included within PrisonSpigotAPI to getù
   the BackpacksUtil class, which's the core of Prison Backpacks, essentially full API

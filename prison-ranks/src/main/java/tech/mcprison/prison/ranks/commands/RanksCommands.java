@@ -1293,14 +1293,14 @@ public class RanksCommands
 			
 			if ( sb.length() > 70 ) {
 				String message = String.format( "    &7* (%s) &3%s", 
-						prefix, sb.toString());
+						prefix, sb.toString().replace( "%", "%%" ));
 				sendToPlayerAndConsole( sender, message );
 				sb.setLength( 0 );
 			}
 		}
 		if ( sb.length() > 0 ) {
 			String message = String.format( "    &7* (%s) &3%s", 
-					prefix, sb.toString());
+					prefix, sb.toString().replace( "%", "%%" ));
 			sendToPlayerAndConsole( sender, message );
 			sb.setLength( 0 );
 		}
