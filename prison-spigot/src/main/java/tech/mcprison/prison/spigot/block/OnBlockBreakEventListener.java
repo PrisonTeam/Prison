@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -331,6 +330,8 @@ public class OnBlockBreakEventListener
      * </p>
      * 
      * @param e
+     * @param montior Identifies that a monitor event called this function.  A monitor should only record
+     * 					block break counts.
      */
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
@@ -338,71 +339,57 @@ public class OnBlockBreakEventListener
     			(!monitor && !e.isCancelled() || monitor) ) 
     	{
     		
-    		// long startNano = System.nanoTime();
+//    		boolean isAir = e.getBlock().getType() == null || e.getBlock().getType() == Material.AIR;
+
+    		// Need to wrap in a Prison block so it can be used with the mines:
+    		SpigotBlock block = new SpigotBlock(e.getBlock());
     		
-    		boolean isAir = e.getBlock().getType() == null || e.getBlock().getType() == Material.AIR;
-
-    		// If canceled it must be AIR, otherwise if it is not canceled then 
-    		// count it since it will be a normal drop
-    		if ( monitor && e.isCancelled() && isAir || 
-    				!monitor && !e.isCancelled() ) {
-
-    			// Need to wrap in a Prison block so it can be used with the mines:
-    			SpigotBlock block = new SpigotBlock(e.getBlock());
+    		Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
+    		
+    		// Get the cached mine, if it exists:
+    		Mine mine = getPlayerCache().get( playerUUIDLSB );
+    		
+    		if ( mine == null || !mine.isInMineExact( block.getLocation() ) ) {
+    			// Look for the correct mine to use. 
+    			// Set mine to null so if cannot find the right one it will return a null:
+    			mine = findMineLocation( block );
     			
-    			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
-
-    			// Get the cached mine, if it exists:
-    			Mine mine = getPlayerCache().get( playerUUIDLSB );
-    			
-    			if ( mine == null || !mine.isInMineExact( block.getLocation() ) ) {
-    				// Look for the correct mine to use. 
-    				// Set mine to null so if cannot find the right one it will return a null:
-    				mine = findMineLocation( block );
-    				
-    				// Store the mine in the player cache if not null:
-    				if ( mine != null ) {
-    					getPlayerCache().put( playerUUIDLSB, mine );
-    				}
-    			}
-    			
-    			// This is where the processing actually happens:
+    			// Store the mine in the player cache if not null:
     			if ( mine != null ) {
-    				
-    				// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
-    				// Needed since processing of the block will lose track of which mine it came from.
-    				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
-
-    				if ( monitor ) {
-
-    					doActionMonitor( block, mine, e );
-    				}
-    				else {
-    					
-    					// check mcmmo
-    					checkMCMMO( e );
-    					
-    					doAction( block, mine, e );
-    				}
-    					
+    				getPlayerCache().put( playerUUIDLSB, mine );
     			}
-    			else if ( mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines ) ) {
-    				
-    				// check mcmmo
-    				checkMCMMO( e );
-    				
-    				doAction( block, mine, e );
-    			}
-    				
-    			// future change to allow auto features outside of mines:
-//    			doAction( block, mine, e );
     		}
     		
-    		// for debug use: Uncomment to use.
-//    		String message = incrementUses(System.nanoTime() - startNano);
-//    		if ( message != null ) {
-//    			e.getPlayer().sendMessage( message );
-//    		}
+    		if ( monitor && mine == null ) {
+    			// bypass all processing since the block break is outside any mine:
+    			
+    		}
+    		else if ( monitor && mine != null ) {
+    			
+    			doActionMonitor( block, mine );
+    			
+    		}
+    		
+    		// This is where the processing actually happens:
+    		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines ) ) {
+    			
+    			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
+    			// Needed since processing of the block will lose track of which mine it came from.
+    			if ( mine != null ) {
+    				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
+    			}
+    			
+    			// check mcmmo
+    			checkMCMMO( e );
+    			
+    			// doAction returns a boolean that indicates if the event should be canceled or not:
+    			if ( doAction( block, mine, e.getPlayer() ) &&
+    					!isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+    				
+    				e.setCancelled( true );
+    			}
+    			
+    		}
     	}
 	}
 
@@ -428,6 +415,8 @@ public class OnBlockBreakEventListener
     		
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 
+			// Need to wrap in a Prison block so it can be used with the mines:
+			SpigotBlock block = new SpigotBlock(e.getBlock());
     		
     		// long startNano = System.nanoTime();
     		Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
@@ -435,10 +424,8 @@ public class OnBlockBreakEventListener
     		// Get the cached mine, if it exists:
     		Mine mine = getPlayerCache().get( playerUUIDLSB );
     		
-    		if ( mine == null ) {
+    		if ( mine == null || !mine.isInMineExact( block.getLocation() ) ) {
     			
-				// Need to wrap in a Prison block so it can be used with the mines:
-				SpigotBlock block = new SpigotBlock(e.getBlock());
 				
 				// Look for the correct mine to use. 
 				// Set mine to null so if cannot find the right one it will return a null:
@@ -451,101 +438,100 @@ public class OnBlockBreakEventListener
 					// we found the mine!
 				}
     			
-//    			// have to go through all blocks since some blocks may be outside the mine.
-//    			// but terminate search upon first find:
-//    			for ( Block blk : e.blockList() ) {
-//    				// Need to wrap in a Prison block so it can be used with the mines:
-//    				SpigotBlock block = new SpigotBlock(blk);
-//    				
-//    				// Look for the correct mine to use. 
-//    				// Set mine to null so if cannot find the right one it will return a null:
-//    				mine = findMineLocation( block );
-//    				
-//    				// Store the mine in the player cache if not null:
-//    				if ( mine != null ) {
-//    					getPlayerCache().put( playerUUIDLSB, mine );
-//    					
-//    					// we found the mine!
-//    					break;
-//    				}
-//    			}
     		}
-    		else if ( mine != null ) {
-    			
-    			// NOTE: Just because the mine is not null, does not mean that the block was tested to be
-    			//       within the mine.  The block must be tested.
-    			
-    			// Need to wrap in a Prison block so it can be used with the mines:
-				SpigotBlock block = new SpigotBlock(e.getBlock());
-				
-				// Add the block to be processed, just in case it's within a mine:
-				explodedBlocks.add( block );
-				
-				// Set mine to null so if cannot find the right one it will return a null:
-				mine = findMineLocation( block );
-    		}
-    		
-    		
-//    		if ( mine != null && monitor ) {
-//    			// Monitor:
-//				// Log block break events and BlockEvents:
-//				doActionMonitor( mine, e, explodedBlocks );
-//				
-//    		}
 
-    		// now process all blocks:
-//    		if ( mine != null )
-    		{
+    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+    		
+    		if ( monitor && mine == null ) {
+    			// bypass all processing since the block break is outside any mine:
+    			
+    		}
+    		else if ( monitor && mine != null ) {
+
+    			// Initial block that was hit:
+    			doActionMonitor( block, mine );
+    			
+    			// All other blocks in the explosion:
+    			for ( Block blk : e.blockList() ) {
+    				
+    				// Need to wrap in a Prison block so it can be used with the mines.
+    				// Since this is a monitor, there is no need to check to see if the
+    				// block is in a mine since the getTargetPrisonBlock function will 
+    				// perform that check indirectly.
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				doActionMonitor( sBlock, mine );
+    			}
+    		}
+
+    		
+    		// now process all blocks (non-monitor):
+    		else if ( isTEExplosiveEnabled && 
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
    			
     			for ( Block blk : e.blockList() ) {
-    				boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
+    				//boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
     				
-    				// If canceled it must be AIR, otherwise if it is not canceled then 
-    				// count it since it will be a normal drop
-    				if ( monitor && e.isCancelled() && isAir || 
-    					!monitor && !e.isCancelled() && !isAir ) {
-//    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
+    				// Need to wrap in a Prison block so it can be used with the mines:
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
-    					// Need to wrap in a Prison block so it can be used with the mines:
-    					SpigotBlock block = new SpigotBlock(blk);
-    					
-    					if ( mine == null || mine.isInMineExact( block.getLocation() ) ) {
-
-    						explodedBlocks.add( block );
-    						
-    					}
-    					
+    					explodedBlocks.add( sBlock );
     				}
+    				
     			}
+    			
     			if ( explodedBlocks.size() > 0 ) {
     				
-//    				if ( !monitor ) {
-    					// This is where the processing actually happens:
-    					doAction( mine, e, explodedBlocks );
-//    				}
-//
-//    				else {
-//    					// Monitor:
-//    					// Log block break events and BlockEvents:
-//    					doActionMonitor( mine, e, explodedBlocks );
-//    					
-//    				}
+					String triggered = checkCEExplosionTriggered( e );
+    				
+    				// This is where the processing actually happens:
+    				if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) && 
+    							!isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+    					
+    					e.setCancelled( true );
+    				}
     			}
-    		}
+   			}
     			
-//    		else {
-//    			
-//    			// targeted block was not in the mine, so cancel it:
-//    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-//    				
-//    				e.setCancelled( true );
-//    			}
-//    		}
-    		
+
     	}
+	}
+
+
+
+	private String checkCEExplosionTriggered( TEBlockExplodeEvent e )
+	{
+		String triggered = null;
+		
+		// Please be aware:  This function is named the same as the auto features setting, but this is 
+		// not related.  This is only trying to get the name of the enchantment that triggered the event.
+		if ( isTeExplosionTriggerEnabled() ) {
+			
+			try {
+				triggered = e.getTrigger();
+			}
+			catch ( Exception | NoSuchMethodError ex ) {
+				// Only print the error the first time, then suppress the error:
+				String error = ex.getMessage();
+				
+				Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+						"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+						"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+						"The Prison BlockEvents can be filtered by this triggered value. " +
+						error );
+				
+				// Disable collecting the trigger.
+				setTeExplosionTriggerEnabled( false );
+				
+			}
+		}
+		
+		return triggered;
 	}
 
 	
@@ -572,7 +558,6 @@ public class OnBlockBreakEventListener
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 
 			
-
 			// long startNano = System.nanoTime();
 			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
 			
@@ -581,21 +566,10 @@ public class OnBlockBreakEventListener
 			
 			if ( mine == null ) {
 				
-//				// The first block is considered the block that the player actually mined.
-//				// not so clear about that though, but have to choose one.
-//				SpigotBlock block = new SpigotBlock(e.getBlockList().get( 0 ));
-//				
-//				// Look for the correct mine to use. 
-//				// Set mine to null so if cannot find the right one it will return a null:
-//				mine = findMineLocation( block );
-//				
-//				// Store the mine in the player cache if not null:
-//				if ( mine != null ) {
-//					getPlayerCache().put( playerUUIDLSB, mine );
-//					
-//					// we found the mine!
-//				}
 
+				// NOTE: The crazy enchantment's blast use event does not identify the block that
+				//       was hit, so will have to check them all.
+				
 				// have to go through all blocks since some blocks may be outside the mine.
 				// but terminate search upon first find:
 				for ( Block blk : e.getBlockList() ) {
@@ -615,10 +589,11 @@ public class OnBlockBreakEventListener
 					}
 				}
 			}
-    		else if ( mine != null ) {
+    		else {
     			
     			// NOTE: Just because the mine is not null, does not mean that the block was tested to be
-    			//       within the mine.  The block must be tested.
+    			//       within the mine. The mine from the player cache could be a different mine
+    			//       altogether.  The block must be tested.
     			
 				// have to go through all blocks since some blocks may be outside the mine.
 				// but terminate search upon first find:
@@ -640,107 +615,76 @@ public class OnBlockBreakEventListener
 				}
 
     		}
-			
-			
-    		if ( mine != null && monitor ) {
-    			// Monitor:
-				// Log block break events and BlockEvents:
-				doActionMonitor( mine, e, explodedBlocks );
-				
+
+			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    		
+    		if ( monitor && mine == null ) {
+    			// bypass all processing since the block break is outside any mine:
+    			
+    		}
+    		else if ( monitor && mine != null ) {
+
+    			// Initial block that was hit:  CrazyE does not have the main block:
+    			// doActionMonitor( block, mine );
+    			
+    			// All other blocks in the explosion:
+    			for ( Block blk : e.getBlockList() ) {
+    				
+    				// Need to wrap in a Prison block so it can be used with the mines.
+    				// Since this is a monitor, there is no need to check to see if the
+    				// block is in a mine since the getTargetPrisonBlock function will 
+    				// perform that check indirectly.
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				doActionMonitor( sBlock, mine );
+    			}
     		}
 
-			// now process all blocks:
-    		else // if ( mine != null ) 
-    		{
-				
-				
-				// have to go through all blocks since some blocks may be outside the mine.
-				// but terminate search upon first find:
-				
+    		// now process all blocks (non-monitor):
+    		else if ( isCEBlockExplodeEnabled && 
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
+    			
+    			// have to go through all blocks since some blocks may be outside the mine.
+    			// but terminate search upon first find:
+   			
     			for ( Block blk : e.getBlockList() ) {
-    				boolean isAir = blk.getType() == null || blk.getType() == Material.AIR;
     				
-    				// If canceled it must be AIR, otherwise if it is not canceled then 
-    				// count it since it will be a normal drop
-    				if ( // monitor && e.isCancelled() && isAir || 
-    					!monitor && !e.isCancelled() && !isAir ) {
-//    				if ( e.isCancelled() && isAir || !e.isCancelled() ) {
+    				// Need to wrap in a Prison block so it can be used with the mines:
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
-    					// Need to wrap in a Prison block so it can be used with the mines:
-    					SpigotBlock block = new SpigotBlock(blk);
-    					
-    					if ( mine == null || !block.isEmpty() && mine.isInMineExact( block.getLocation() ) ) {
-
-    						explodedBlocks.add( block );
-    						
-    					}
-    					
+    					explodedBlocks.add( sBlock );
     				}
+    				
     			}
-				
     			if ( explodedBlocks.size() > 0 ) {
     				
-//    				if ( !monitor ) {
-    					// This is where the processing actually happens:
-    					doAction( mine, e, explodedBlocks );
-//    				}
-//
-//    				else {
-//    					// Monitor:
-//    					// Log block break events and BlockEvents:
-//    					doActionMonitor( mine, e, explodedBlocks );
-//    					
-//    				}
+					String triggered = null;
+    				
+    				// This is where the processing actually happens:
+    				if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
+    							!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
+    					
+    					e.setCancelled( true );
+    				}
     			}
+    		}
+			
 
-				
-//				
-//				// have to go through all blocks since some blocks may be outside the mine.
-//				// but terminate search upon first find:
-//				
-//				int blockCount = 0;
-//				for ( Block blk : e.getBlockList() ) {
-//					boolean isAir = blk == null || blk.getType() != null && blk.getType() == Material.AIR;
-//					
-//					// If canceled it must be AIR, otherwise if it is not canceled then 
-//					// count it since it will be a normal drop
-//					if ( e.isCancelled() && isAir || !e.isCancelled() ) {
-//						
-//						// Need to wrap in a Prison block so it can be used with the mines:
-//						SpigotBlock block = new SpigotBlock(blk);
-//						
-//						if ( !mine.isInMineExact( block.getLocation() ) ) {
-//							
-//							blockCount++;
-//						}
-//						
-//					}
-//				}
-//				if ( blockCount > 0 ) {
-//					
-//					// This is where the processing actually happens:
-//					doAction( mine, e, blockCount );
-//					
-//				}
-			}
-//			else {
-//				// targeted block was not in the mine, so cancel it:
-//				e.setCancelled( true );
-//			}
-			
-			
-			
-			// for debug use: Uncomment to use.
-//    		String message = incrementUses(System.nanoTime() - startNano);
-//    		if ( message != null ) {
-//    			e.getPlayer().sendMessage( message );
-//    		}
 		}
 	}
 	
 	
-	public void doActionMonitor( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
+	public void doActionMonitor( SpigotBlock block, Mine mine ) {
 		if ( mine != null ) {
+			
+			// Good chance the block was already counted, but just in case it wasn't:
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( block );
+			// Record the block break:
+			mine.incrementBlockMiningCount( targetBlock );
+
+			// Never process BlockEvents in a monitor.
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
 			// it will reset the mine:
@@ -749,9 +693,10 @@ public class OnBlockBreakEventListener
 	}
 	
 	
-	public void doAction( SpigotBlock spigotBlock, Mine mine, BlockBreakEvent e ) {
-
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
+	public boolean doAction( SpigotBlock spigotBlock, Mine mine, Player player ) {
+		boolean cancel = false;
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 		
@@ -763,58 +708,31 @@ public class OnBlockBreakEventListener
 		
 		if ( isProcessNormalDropsEnabled ) {
 			
-//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: normal drop :: " + mine.getName() + "  " + 
-//						"  blocks remaining= " + 
-//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
-//						);
-			
-			
 			// Drop the contents of the individual block breaks
 			int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 			
 			if ( drop > 0 ) {
 				
-				
-				Player player = e.getPlayer();
-				
 				aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak,
 						null, itemInHand );
 				
-				
-				if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-					
-					e.setCancelled( true );
-				}
-				
+				cancel = true;
 			}
 			
 		}
 		else {
 			
-//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlockBreakEvent: no drop :: " + mine.getName() + "  " + 
-//						"  blocks remaining= " + 
-//						mine.getRemainingBlockCount() + " [" + spigotBlock.toString() + "]"
-//						);
-			
-			// Other possible processing:
-			
-			
-			Player player = e.getPlayer();
-			
 			aMan.processBlockBreakage( spigotBlock, mine, player, 1, BlockEventType.blockBreak, null,
 					itemInHand );
 			
-			
-			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-				
-				e.setCancelled( true );
-			}
-			
+			cancel = true;
 		}
 		
 		if ( mine != null ) {
 			aMan.checkZeroBlockReset( mine );
 		}
+		
+		return cancel;
 	}
 	
 	
@@ -828,168 +746,124 @@ public class OnBlockBreakEventListener
 	 * @param e
 	 * @param teExplosiveBlocks
 	 */
-	public void doAction( Mine mine, TEBlockExplodeEvent e, List<SpigotBlock> explodedBlocks ) {
+	public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
+									BlockEventType blockEventType, String triggered ) {
+		boolean cancel = false;
 	
-		if ( mine == null || mine != null && !e.isCancelled() ) {
+		int totalCount = 0;
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		
+		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+		
+		
+		// The explodedBlocks list have already been validated as being within the mine:
+		for ( SpigotBlock spigotBlock : explodedBlocks ) {
 			
-			int totalCount = 0;
+			// Drop the contents of the individual block breaks
+			int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
+			totalCount += drop;
 			
-			
-			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
-			
-			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-			
-			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
-//			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-			
-			
-			if ( isTEExplosiveEnabled ) {
+			if ( drop > 0 ) {
 				
-				// The teExplosiveBlocks list have already been validated as being within the mine:
-				for ( SpigotBlock spigotBlock : explodedBlocks ) {
-					
-					// Drop the contents of the individual block breaks
-					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
-					totalCount += drop;
-					
-					if ( drop > 0 ) {
-						
-						
-						String triggered = null;
-						
-						// Please be aware:  This function is named the same as the auto features setting, but this is 
-						// not related.  This is only trying to get the name of the enchantment that triggered the event.
-						if ( isTeExplosionTriggerEnabled() ) {
-							
-							try {
-								triggered = e.getTrigger();
-							}
-							catch ( Exception | NoSuchMethodError ex ) {
-								// Only print the error the first time, then suppress the error:
-								String error = ex.getMessage();
-								
-								Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
-										"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
-										"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
-										"The Prison BlockEvents can be filtered by this triggered value. " +
-										error );
-								
-								// Disable collecting the trigger.
-								setTeExplosionTriggerEnabled( false );
-								
-							}
-						}
-						
-						
-						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), drop, 
-								BlockEventType.TEXplosion, triggered,
-								itemInHand );
-						
-						
-					}
-				}
-				
-				if ( mine != null ) {
-					aMan.checkZeroBlockReset( mine );
-				}
-				
-				if ( totalCount > 0 ) {
-					
-					
-					// Set the broken block to AIR and cancel the event
-	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-	    				
-	    				e.setCancelled( true );
-	    			}
-				}
+				aMan.processBlockBreakage( spigotBlock, mine, player, drop, 
+						blockEventType, triggered, itemInHand );
 				
 			}
-			
 		}
+		
+		if ( mine != null ) {
+			aMan.checkZeroBlockReset( mine );
+		}
+		
+		if ( totalCount > 0 ) {
+			cancel = true;
+		}
+		
+		return cancel;
 	}
 	
 
 	
-	/**
-	 * <p>This function is processed when auto manager is disabled and process crazy enchant explosions
-	 * is enabled.  This function is overridden in AutoManager when auto manager is enabled.
-	 * </p>
-	 * 
-	 * 
-	 * @param mine
-	 * @param e
-	 * @param teExplosiveBlocks
-	 */
-	public void doAction( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
+//	/**
+//	 * <p>This function is processed when auto manager is disabled and process crazy enchant explosions
+//	 * is enabled.  This function is overridden in AutoManager when auto manager is enabled.
+//	 * </p>
+//	 * 
+//	 * 
+//	 * @param mine
+//	 * @param e
+//	 * @param teExplosiveBlocks
+//	 */
+//	public void doAction( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
+//	
+//		if ( mine == null || mine != null && !e.isCancelled() ) {
+//			
+//			int totalCount = 0;
+//			
+//			
+//			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
+//			
+//			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
+//			
+//			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
+////			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
+//			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+//			
+//			
+//			if ( isCEBlockExplodeEnabled ) {
+//				
+////				StringBuilder sb = new StringBuilder();
+////				for ( SpigotBlock spigotBlock : explodedBlocks )
+////				{
+////					sb.append( spigotBlock.toString() ).append( " " );
+////				}
+//				
+////				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlastUseEvent: :: " + mine.getName() + "  e.blocks= " + 
+////						e.getBlockList().size() + "  blockSize : " + explodedBlocks.size() + 
+////						"  blocks remaining= " + 
+////						mine.getRemainingBlockCount() + " [" + sb.toString() + "]"
+////						);
+//				
+//				// The CrazyEnchants block list have already been validated as being within the mine:
+//				for ( SpigotBlock spigotBlock : explodedBlocks ) {
+//					
+//					// Drop the contents of the individual block breaks
+//					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
+//					totalCount += drop;
+//					
+//					if ( drop > 0 ) {
+//						
+//						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), drop, BlockEventType.CEXplosion, null,
+//												itemInHand );
+//						
+//					}
+//				}
+//				
+//				if ( mine != null ) {
+//					aMan.checkZeroBlockReset( mine );
+//				}
+//				
+//				if ( totalCount > 0 ) {
+//					
+//					// Set the broken block to AIR and cancel the event
+//					e.setCancelled(true);
+//					
+//				}
+//				
+//			}
+//			
+//		}
+//	}
 	
-		if ( mine == null || mine != null && !e.isCancelled() ) {
-			
-			int totalCount = 0;
-			
-			
-			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( e.getPlayer() );
-			
-			AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-			
-			// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
-//			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-			
-			
-			if ( isCEBlockExplodeEnabled ) {
-				
-				StringBuilder sb = new StringBuilder();
-				for ( SpigotBlock spigotBlock : explodedBlocks )
-				{
-					sb.append( spigotBlock.toString() ).append( " " );
-				}
-				
-//				Output.get().logInfo( "#### OnBlockBreakEventListener.doAction: BlastUseEvent: :: " + mine.getName() + "  e.blocks= " + 
-//						e.getBlockList().size() + "  blockSize : " + explodedBlocks.size() + 
-//						"  blocks remaining= " + 
-//						mine.getRemainingBlockCount() + " [" + sb.toString() + "]"
-//						);
-				
-				// The CrazyEnchants block list have already been validated as being within the mine:
-				for ( SpigotBlock spigotBlock : explodedBlocks ) {
-					
-					// Drop the contents of the individual block breaks
-					int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
-					totalCount += drop;
-					
-					if ( drop > 0 ) {
-						
-						aMan.processBlockBreakage( spigotBlock, mine, e.getPlayer(), drop, BlockEventType.CEXplosion, null,
-												itemInHand );
-						
-					}
-				}
-				
-				if ( mine != null ) {
-					aMan.checkZeroBlockReset( mine );
-				}
-				
-				if ( totalCount > 0 ) {
-					
-					// Set the broken block to AIR and cancel the event
-					e.setCancelled(true);
-					
-				}
-				
-			}
-			
-		}
-	}
-	
-	private void doActionMonitor( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
-		if ( mine != null ) {
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
+//	private void doActionMonitor( Mine mine, BlastUseEvent e, List<SpigotBlock> explodedBlocks ) {
+//		if ( mine != null ) {
+//			
+//			// Checks to see if the mine ran out of blocks, and if it did, then
+//			// it will reset the mine:
+//			mine.checkZeroBlockReset();
+//		}
+//	}
 	
 
 	

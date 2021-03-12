@@ -15,7 +15,6 @@ import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -31,7 +30,7 @@ public class AutoManager
 	extends AutoManagerFeatures
 	implements Listener {
 	
-	private boolean teExplosionTriggerEnabled;
+//	private boolean teExplosionTriggerEnabled;
 	
 	public AutoManager() {
         super();
@@ -145,9 +144,9 @@ public class AutoManager
     
     
     @Override
-	public void doAction( SpigotBlock block, Mine mine, BlockBreakEvent e ) {
+	public boolean doAction( SpigotBlock block, Mine mine, Player player ) {
     	
-    	applyAutoEvents( block, e, mine );
+    	return applyAutoEvents( block, player, mine );
 	}
     
     
@@ -158,58 +157,45 @@ public class AutoManager
      * 
      */
     @Override
-    public void doAction( Mine mine, TEBlockExplodeEvent e, 
-    				List<SpigotBlock> teExplosiveBlocks ) {
-    	applyAutoEvents( e, mine, teExplosiveBlocks );
+    public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
+    								BlockEventType blockEventType, String triggered ) {
+    	return applyAutoEvents( player, mine, explodedBlocks, blockEventType, triggered );
     }
     
     
-    /**
-     * <p>This function overrides the doAction in OnBlockBreakEventListener and
-     * this is only enabled when auto manager is enabled.
-     * </p>
-     * 
-     */
-    @Override
-    public void doAction( Mine mine, BlastUseEvent e, 
-    		List<SpigotBlock> teExplosiveBlocks ) {
-    	applyAutoEvents( e, mine, teExplosiveBlocks );
-    }
+//    /**
+//     * <p>This function overrides the doAction in OnBlockBreakEventListener and
+//     * this is only enabled when auto manager is enabled.
+//     * </p>
+//     * 
+//     */
+//    @Override
+//    public void doAction( Mine mine, BlastUseEvent e, 
+//    		List<SpigotBlock> teExplosiveBlocks ) {
+//    	applyAutoEvents( e, mine, teExplosiveBlocks );
+//    }
 
 
-	private void applyAutoEvents( SpigotBlock spigotBlock, BlockBreakEvent e, Mine mine) {
-
-		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !e.isCancelled() && 
+	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine) {
+		boolean cancel = false;
+		
+		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
 			!spigotBlock.isEmpty() ) {
-			
 			
 //			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
 //					"  blocks remaining= " + 
 //					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
 //					);
-			
-			Player player = e.getPlayer();
 
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
-
 
 			int count = applyAutoEvents( player, spigotBlock, mine );
 			
 			if ( count > 0 ) {
-				
-				
 				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
 										null, itemInHand );
 
-    			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-    				
-    				e.setCancelled( true );
-    			}
-    			
-    			// Setting to air is set in processBlockBreakage:
-//				e.getBlock().setType(Material.AIR);
-//				// Maybe needed to prevent drop side effects:
-//				e.getBlock().getDrops().clear();
+    			cancel = true;
 			}
 			
 			if ( mine != null ) {
@@ -217,6 +203,8 @@ public class AutoManager
 			}
 	
 		}
+		
+		return cancel;
 	}
 
 
@@ -320,132 +308,92 @@ public class AutoManager
 	 * @param e
 	 * @param mine
 	 */
-	private void applyAutoEvents( TEBlockExplodeEvent e, Mine mine, 
-						List<SpigotBlock> teExplosiveBlocks ) {
+	private boolean applyAutoEvents( Player player, Mine mine, 
+									List<SpigotBlock> explodedBlocks, BlockEventType blockEventType, 
+										String triggered ) {
+		boolean cancel = false;
 		
-		Player player = e.getPlayer();
-		
+		int totalCount = 0;
+
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
-		// Auto manager is enabled if it's going to hit this function so no need to double check:
-//		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
-		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 		
-		if ( isTEExplosiveEnabled ) {
-
+		// The explodedBlocks list have already been validated as being within the mine:
+		for ( SpigotBlock spigotBlock : explodedBlocks ) {
 			
-			// The teExplosiveBlocks list have already been validated as being within the mine:
-			for ( SpigotBlock spigotBlock : teExplosiveBlocks ) {
+			int drop = applyAutoEvents( player, spigotBlock, mine );
+			totalCount += drop;
+			
+			if ( drop > 0 ) {
 				
-				int count = applyAutoEvents( player, spigotBlock, mine );
-
-				
-				if ( count > 0 ) {
-					
-					String triggered = null;
-					
-					// Please be aware:  This function is named the same as the auto features setting, but this is 
-					// not related.  This is only trying to get the name of the enchantment that triggered the event.
-					if ( isTeExplosionTriggerEnabled() ) {
-						
-						try {
-							triggered = e.getTrigger();
-						}
-						catch ( Exception | NoSuchMethodError ex ) {
-							// Only print the error the first time, then suppress the error:
-							String error = ex.getMessage();
-							
-							Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
-									"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
-									"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
-									"The Prison BlockEvents can be filtered by this triggered value. " +
-									error );
-							
-							// Disable collecting the trigger.
-							setTeExplosionTriggerEnabled( false );
-							
-						}
-					}
-					
-					
-					processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.TEXplosion, triggered, 
-									itemInHand );
-					
-
-	    			if ( isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-	    				e.setCancelled( true );
-	    			}
-				}
-
+				processBlockBreakage( spigotBlock, mine, player, drop, 
+											blockEventType, triggered, itemInHand );
 			}
-			
-			if ( mine != null ) {
-				checkZeroBlockReset( mine );
-			}
-			
-			
-//			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
-//					e.blockList().size() + "  processed : " +
-//					teExplosiveBlocks.size() + "  " + totalCount + 
-//					"  blocks remaining= " + mine.getRemainingBlockCount() + 
-//					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
-			
-			
-		}
-	}
-	
-	
-	private void applyAutoEvents( BlastUseEvent e, Mine mine, 
-										List<SpigotBlock> explosiveBlocks ) {
-		
-		Player player = e.getPlayer();
-		
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
-		
-		// Auto manager is enabled if it's going to hit this function so no need to double check:
-		boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-		
-		if ( isCEBlockExplodeEnabled ) {
-			
-			
-			// The teExplosiveBlocks list have already been validated as being within the mine:
-			for ( SpigotBlock spigotBlock : explosiveBlocks ) {
-//				
-				int count = applyAutoEvents( player, spigotBlock, mine );
-
-				if ( count > 0 ) {
-					
-					processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.CEXplosion,
-											null, itemInHand );
-					
-				}
-			}
-			
-			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-				e.setCancelled( true );
-			}
-			
-			if ( mine != null ) {
-				checkZeroBlockReset( mine );
-			}
-			
-			
-//			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
-//					e.blockList().size() + "  processed : " +
-//					teExplosiveBlocks.size() + "  " + totalCount + 
-//					"  blocks remaining= " + mine.getRemainingBlockCount() + 
-//					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
-			
 		}
 		
+		if ( mine != null ) {
+			checkZeroBlockReset( mine );
+		}
+		
+		if ( totalCount > 0 ) {
+			cancel = true;
+		}
+		
+		return cancel;
 	}
 	
-	private boolean isTeExplosionTriggerEnabled() {
-		return teExplosionTriggerEnabled;
-	}
-
-	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
-		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
-	}
+	
+//	private void applyAutoEvents( BlastUseEvent e, Mine mine, 
+//										List<SpigotBlock> explosiveBlocks ) {
+//		
+//		Player player = e.getPlayer();
+//		
+//		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+//		
+//		// Auto manager is enabled if it's going to hit this function so no need to double check:
+//		boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+//		
+//		if ( isCEBlockExplodeEnabled ) {
+//			
+//			
+//			// The teExplosiveBlocks list have already been validated as being within the mine:
+//			for ( SpigotBlock spigotBlock : explosiveBlocks ) {
+////				
+//				int count = applyAutoEvents( player, spigotBlock, mine );
+//
+//				if ( count > 0 ) {
+//					
+//					processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.CEXplosion,
+//											null, itemInHand );
+//					
+//				}
+//			}
+//			
+//			if ( isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+//				e.setCancelled( true );
+//			}
+//			
+//			if ( mine != null ) {
+//				checkZeroBlockReset( mine );
+//			}
+//			
+//			
+////			Output.get().logInfo( "#### AutoManager: TEBlockExplodeEvent:: " + mine.getName() + "  e.blocks= " + 
+////					e.blockList().size() + "  processed : " +
+////					teExplosiveBlocks.size() + "  " + totalCount + 
+////					"  blocks remaining= " + mine.getRemainingBlockCount() + 
+////					" (" + (teExplosiveBlocks.size() + mine.getRemainingBlockCount()) + ")");
+//			
+//		}
+//		
+//	}
+	
+//	private boolean isTeExplosionTriggerEnabled() {
+//		return teExplosionTriggerEnabled;
+//	}
+//
+//	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
+//		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
+//	}
 
 }

@@ -146,7 +146,8 @@ public class AutoFeaturesFileConfig {
 		    	
 	    	debug(options),
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
-	    		isDebugSupressOnTEExplodeEventCancels(debug, false)
+	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
+	    		isDebugSupressOnCEBlastUseEventCancels(debug, false)
 
     	;
 
