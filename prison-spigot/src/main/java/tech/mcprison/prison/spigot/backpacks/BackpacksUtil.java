@@ -2,12 +2,10 @@ package tech.mcprison.prison.spigot.backpacks;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import org.jetbrains.annotations.Nullable;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -94,6 +92,52 @@ public class BackpacksUtil extends SpigotConfigComponents {
         if (!backpackEdited.contains(p.getName())){
             backpackEdited.add(p.getName());
         }
+    }
+
+    /**
+     * Get Backpack OfflinePlayer Player by name.
+     *
+     * @param name - PlayerName.
+     *
+     * @return OfflinePlayer
+     * */
+    public OfflinePlayer getBackpackOwnerOffline(String name){
+        return getOfflinePlayer(name);
+    }
+
+    /**
+     * Get Backpack owner OfflinePlayer by name and backpack ID.
+     *
+     * @param name - PlayerName
+     * @param id - InventoryID
+     *
+     * @return OfflinePlayer
+     * */
+    public OfflinePlayer getBackpackOwnerOffline(String name, String id){
+        return getOfflinePlayer(name, id);
+    }
+
+    /**
+     * Get Backpack Player by name.
+     *
+     * @param name - Playername
+     *
+     * @return Player
+     * */
+    public Player getBackpackOwnerOnline(String name){
+        return getOnlinePlayer(name);
+    }
+
+    /**
+     * Get Backpack Player by name and Backpack id.
+     *
+     * @param name - Playername
+     * @param id - BackpackID
+     *
+     * @return Player
+     * */
+    public Player getBackpackOwnerOnline(String name, String id){
+        return getOnlinePlayer(name, id);
     }
 
     /**
@@ -718,6 +762,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         // Set dimensions if null or error.
         boolean needToSetNewDimensions = checkDimensionError(p);
+        boolean needToSetNewOwner = checkBackpackOwnerMissing(p);
+        boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p);
 
         if (inv.getContents() != null){
             int slot = 0;
@@ -734,6 +780,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
             if (needToSetNewDimensions){
                 backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items" + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
+            }
+            if (needToSetNewOwner){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.PlayerName", p.getName());
+            }
+            if (needToSetNewOwnerID){
+                backpacksDataConfig.set("Intentories." + p.getUniqueId() + ".Items.UniqueID", p.getUniqueId());
             }
 
             for (ItemStack item : inv.getContents()){
@@ -756,6 +808,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
             if (needToSetNewDimensions){
                 backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items" + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
             }
+            if (needToSetNewOwner){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.PlayerName", p.getName());
+            }
+            if (needToSetNewOwnerID){
+                backpacksDataConfig.set("Intentories." + p.getUniqueId() + ".Items.UniqueID", p.getUniqueId());
+            }
             try {
                 backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
@@ -772,6 +830,8 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         // Set dimensions if null or error.
         boolean needToSetNewDimensions = checkDimensionError(p, id);
+        boolean needToSetNewOwner = checkBackpackOwnerMissing(p, id);
+        boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p, id);
 
         if (inv.getContents() != null){
             int slot = 0;
@@ -788,6 +848,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
             if (needToSetNewDimensions){
                 backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
+            }
+            if (needToSetNewOwner){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".PlayerName", p.getName());
+            }
+            if (needToSetNewOwnerID){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".UniqueID", p.getUniqueId());
             }
 
             for (ItemStack item : inv.getContents()){
@@ -809,6 +875,12 @@ public class BackpacksUtil extends SpigotConfigComponents {
             // If it's null just delete the whole stored inventory.
             if (needToSetNewDimensions){
                 backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
+            }
+            if (needToSetNewOwner){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".PlayerName", p.getName());
+            }
+            if (needToSetNewOwnerID){
+                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".UniqueID", p.getUniqueId());
             }
             try {
                 backpacksDataConfig.set("Inventories. " + p.getUniqueId() + ".Items-" + id, null);
@@ -969,6 +1041,86 @@ public class BackpacksUtil extends SpigotConfigComponents {
             return true;
         }
         return false;
+    }
+
+    private boolean checkBackpackOwnerMissing(Player p) {
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.PlayerName") == null;
+    }
+
+    private boolean checkBackpackOwnerMissing(Player p, String id) {
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".PlayerName") == null;
+    }
+
+    private boolean checkBackpackOwnerIDMissing(Player p) {
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.UniqueID") == null;
+    }
+
+    private boolean checkBackpackOwnerIDMissing(Player p, String id) {
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".UniqueID") == null;
+    }
+
+    @Nullable
+    private OfflinePlayer getOfflinePlayer(String name) {
+        if (name != null) {
+            updateCachedBackpack();
+            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
+                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID") != null) {
+                        return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID")));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private OfflinePlayer getOfflinePlayer(String name, String id) {
+        if (name != null) {
+            updateCachedBackpack();
+            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
+                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID") != null){
+                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName").equalsIgnoreCase(name)){
+                            return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID")));
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private Player getOnlinePlayer(String name) {
+        if (name != null) {
+            updateCachedBackpack();
+            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
+                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID") != null) {
+                        return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID")));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private Player getOnlinePlayer(String name, String id) {
+        if (name != null) {
+            updateCachedBackpack();
+            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
+                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID") != null){
+                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName").equalsIgnoreCase(name)){
+                            return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID")));
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }
