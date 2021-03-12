@@ -883,7 +883,7 @@ public class OnBlockBreakEventListener
 		if ( mine == null || targetBlock != null && !targetBlock.isAirBroke() ) {
 		
 			String targetBlockName =  mine == null ? 
-							spigotBlock.getBlockName()
+							spigotBlock.getPrisonBlock().getBlockName()
 								: targetBlock.getPrisonBlock().getBlockName();
 			
 			// Process mine block break events:
