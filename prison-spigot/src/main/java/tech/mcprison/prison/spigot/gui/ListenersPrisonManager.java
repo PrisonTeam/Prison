@@ -172,14 +172,20 @@ public class ListenersPrisonManager implements Listener {
                     Set<String> items = null;
                     try {
                         items = sellAllConfig.getConfigurationSection("ShiftAndRightClickSellAll.Items").getKeys(false);
-                    } catch (NullPointerException ignored) {
-                    }
+                    } catch (NullPointerException ignored) {}
                     if (items != null && items.size() != 0) {
                         for (String itemID : items) {
                             XMaterial xMaterialConf = SpigotUtil.getXMaterial(sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID"));
-                            XMaterial inHandXMaterial = SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType());
-                            if (xMaterialConf == inHandXMaterial) {
+                            XMaterial inHandXMaterial = null;
+                            if (e.getItem() != null){
+                                inHandXMaterial = SpigotUtil.getXMaterial(e.getItem().getType());
+                            }
+                            if (inHandXMaterial != null && xMaterialConf == inHandXMaterial) {
                             	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+                                Bukkit.dispatchCommand(p, registeredCmd);
+                                return;
+                            } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())){
+                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
                                 Bukkit.dispatchCommand(p, registeredCmd);
                                 return;
                             }
