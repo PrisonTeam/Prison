@@ -393,26 +393,29 @@ public class AutoManagerFeatures
 
 		if ( extra != null && extra.size() > 0 ) {
 
+			
+			// WARNING: The following will result in everything within the extra variable being lost:
 			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
-			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
-				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+			if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell") ) {
+				if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_perUserToggleable") ){
 
 					UUID playerUUID = player.getUniqueId();
 
-					if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
-						if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
-							if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					if (isBoolean( sellAllConfig, "Users." + playerUUID + ".isEnabled") ) {
+						
+							if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
+								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
+										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
 							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 							Bukkit.dispatchCommand(player, registeredCmd);
 							return;
-						}
 					}
 				} else {
-					if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
+						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
+								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
 					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 					Bukkit.dispatchCommand(player, registeredCmd);
@@ -435,6 +438,11 @@ public class AutoManagerFeatures
 				}
 			}
 		}
+	}
+	
+	private boolean isBoolean( Configuration sellAllConfig, String config ) {
+		String configValue = sellAllConfig.getString( config );
+		return configValue != null && configValue.equalsIgnoreCase( "true" );
 	}
 	
 	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {

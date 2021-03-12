@@ -1,13 +1,8 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.entity.Player;
-
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 
 /**
  * @author RoyalBlueRanger
