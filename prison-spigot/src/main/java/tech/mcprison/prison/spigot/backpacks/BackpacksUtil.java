@@ -873,7 +873,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
                 backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.PlayerName", p.getName());
             }
             if (needToSetNewOwnerID){
-                backpacksDataConfig.set("Intentories." + p.getUniqueId().toString() + ".Items.UniqueID", p.getUniqueId().toString());
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.UniqueID", p.getUniqueId().toString());
             }
 
             for (ItemStack item : inv.getContents()){
@@ -900,7 +900,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
                 backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.PlayerName", p.getName());
             }
             if (needToSetNewOwnerID){
-                backpacksDataConfig.set("Intentories." + p.getUniqueId().toString() + ".Items.UniqueID", p.getUniqueId().toString());
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.UniqueID", p.getUniqueId().toString());
             }
             try {
                 backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
