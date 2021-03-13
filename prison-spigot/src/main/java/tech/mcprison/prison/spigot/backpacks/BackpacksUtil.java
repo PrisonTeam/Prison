@@ -563,12 +563,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
      * Java getBoolean's broken so I made my own.
      * */
     public boolean getBoolean(String string){
-
-        if (string == null){
-            return false;
-        }
-
-        return string.equalsIgnoreCase("true");
+        return string != null && string.equalsIgnoreCase("true");
     }
 
     private void backpackConfigUpdater() {

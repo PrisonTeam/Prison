@@ -119,7 +119,7 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // Check if the feature's enabled
-        if (!(sellAllConfig.getString("Options.SellAll_Sign_Enabled").equalsIgnoreCase("true"))){
+        if (!getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"))){
             return;
         }
 
@@ -194,17 +194,14 @@ public class ListenersPrisonManager implements Listener {
                 }
             }
 
-            // Check if the feature's enabled
+            // Check if the feature's enabled.
             boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
             if (sellAllSignEnabled) {
 
-                Material clickedBlock;
-
-                // Check if the clickedBlock's a block
-                try {
+                // Get clicked block.
+                Material clickedBlock = null;
+                if (e.getClickedBlock() != null){
                     clickedBlock = e.getClickedBlock().getType();
-                } catch (NullPointerException ex) {
-                    return;
                 }
 
                 // Check if the clicked block's a sign
@@ -252,8 +249,7 @@ public class ListenersPrisonManager implements Listener {
                                 String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
                                 Bukkit.dispatchCommand(p, registeredCmd);
                             }
-                        } catch (IndexOutOfBoundsException ignored) {
-                        }
+                        } catch (IndexOutOfBoundsException ignored) {}
                     }
                 }
             }
@@ -282,7 +278,7 @@ public class ListenersPrisonManager implements Listener {
     }
 
     /**
-     * Add a Player to the GuiBlocker, so he won't be able to pickup items or do thing in that Inventory.
+     * Add a Player to the GuiBlocker, so he won't be able to pickup items or do things in that Inventory.
      * */
     public void addToGUIBlocker(Player p){
 
@@ -347,18 +343,7 @@ public class ListenersPrisonManager implements Listener {
      * Java getBoolean's broken so I made my own.
      * */
     public boolean getBoolean(String string){
-
-        if (string == null){
-            return false;
-        }
-
-        if (string.equalsIgnoreCase("true")){
-            return true;
-        } else if (string.equalsIgnoreCase("false")){
-            return false;
-        }
-
-        return false;
+        return string != null && string.equalsIgnoreCase("true");
     }
 
     // Cancel the events of the active GUI opened from the player.
@@ -413,7 +398,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
-            String playerPrestigesTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
+            String playerPrestigeTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
             String minesPlayerTitle = guiConfig.getString("Options.Titles.PlayerMinesGUI").substring(2);
 
             // Check if the GUI have the right title and do the actions.
@@ -675,7 +660,7 @@ public class ListenersPrisonManager implements Listener {
 
                 // Call the method.
                 playerRanksGUI(e, p, buttonNameMain);
-            } else if (title.equalsIgnoreCase(playerPrestigesTitle)){
+            } else if (title.equalsIgnoreCase(playerPrestigeTitle)){
 
                 // Call the method.
                 playerPrestigesGUI(e, p, buttonNameMain);
