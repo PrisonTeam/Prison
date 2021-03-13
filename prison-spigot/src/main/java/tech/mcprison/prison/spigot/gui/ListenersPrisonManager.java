@@ -2419,9 +2419,6 @@ public class ListenersPrisonManager implements Listener {
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
-
-
-
         String mode = parts[1];
 
         boolean enabled = mode.equalsIgnoreCase("Enabled");
@@ -2429,69 +2426,74 @@ public class ListenersPrisonManager implements Listener {
         // Check the click and do the actions, also the buttonName
         if ( enabled && e.isRightClick() && e.isShiftClick() ||
         		!enabled && e.isRightClick() ){
-        	
-        	if (buttonname.equalsIgnoreCase("All_Blocks")){
-        		afConfig.setFeature( AutoFeatures.autoPickupAllBlocks, !enabled );
-        		saveConfigPickup(e, p);
-        	}
 
-        	if (buttonname.equalsIgnoreCase("Cobblestone")){
-        	    afConfig.setFeature(AutoFeatures.autoPickupCobbleStone, !enabled);
-        	    saveConfigPickup(e,p);
+            switch (buttonname){
+                case "All_Blocks":{
+                    afConfig.setFeature( AutoFeatures.autoPickupAllBlocks, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Cobblestone":{
+                    afConfig.setFeature(AutoFeatures.autoPickupCobbleStone, !enabled);
+                    saveConfigPickup(e,p);
+                    break;
+                }
+                case "Gold_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupGoldOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Iron_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupIronOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Coal_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupCoalOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Diamond_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupDiamondOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Redstone_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupRedStoneOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Emerald_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupEmeraldOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Quartz_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupQuartzOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Lapis_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoPickupLapisOre, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Snow_Ball":{
+                    afConfig.setFeature( AutoFeatures.autoPickupSnowBall, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                case "Glowstone_Dust":{
+                    afConfig.setFeature( AutoFeatures.autoPickupGlowstoneDust, !enabled );
+                    saveConfigPickup(e, p);
+                    break;
+                }
+                default:{
+                    break;
+                }
+
             }
-        	
-        	if (buttonname.equalsIgnoreCase("Gold_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupGoldOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Iron_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupIronOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Coal_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupCoalOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Diamond_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupDiamondOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Redstone_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupRedStoneOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Emerald_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupEmeraldOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Quartz_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupQuartzOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Lapis_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoPickupLapisOre, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Snow_Ball")){
-        		afConfig.setFeature( AutoFeatures.autoPickupSnowBall, !enabled );
-        		saveConfigPickup(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Glowstone_Dust")){
-        		afConfig.setFeature( AutoFeatures.autoPickupGlowstoneDust, !enabled );
-        		saveConfigPickup(e, p);
-        	}
         }
-
-
     }
 
     private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
@@ -2508,22 +2510,27 @@ public class ListenersPrisonManager implements Listener {
         // Check the clickType and do the actions
         if ( enabled && e.isRightClick() && e.isShiftClick() ||
         		!enabled && e.isRightClick()){
-        	
-        	if (buttonname.equalsIgnoreCase("Gold_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoSmeltGoldOre, !enabled );
-        		saveConfigSmelt(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Iron_Ore")){
-        		afConfig.setFeature( AutoFeatures.autoSmeltIronOre, !enabled );
-        		saveConfigSmelt(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("All_Ores")){
-        		afConfig.setFeature( AutoFeatures.autoSmeltAllBlocks, !enabled );
-        		saveConfigSmelt(e, p);
-        	}
-        	
+
+            switch (buttonname){
+                case "Gold_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoSmeltGoldOre, !enabled );
+                    saveConfigSmelt(e, p);
+                    break;
+                }
+                case "Iron_Ore":{
+                    afConfig.setFeature( AutoFeatures.autoSmeltIronOre, !enabled );
+                    saveConfigSmelt(e, p);
+                    break;
+                }
+                case "All_Ores":{
+                    afConfig.setFeature( AutoFeatures.autoSmeltAllBlocks, !enabled );
+                    saveConfigSmelt(e, p);
+                    break;
+                }
+                default:{
+                    break;
+                }
+            }
         }
     }
 
@@ -2541,85 +2548,98 @@ public class ListenersPrisonManager implements Listener {
         // Check the clickType and do the actions
         if ( enabled && e.isRightClick() && e.isShiftClick() ||
         		!enabled && e.isRightClick()){
-        	
-        	if (buttonname.equalsIgnoreCase("Gold_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockGoldBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Iron_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockIronBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Coal_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockCoalBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Diamond_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockDiamondBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Redstone_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockRedstoneBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Emerald_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockEmeraldBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Quartz_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockQuartzBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Prismarine_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockPrismarineBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Lapis_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockLapisBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Snow_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockSnowBlock, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("Glowstone_Block")){
-        		afConfig.setFeature( AutoFeatures.autoBlockGlowstone, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
-        	if (buttonname.equalsIgnoreCase("All_Blocks")){
-        		afConfig.setFeature( AutoFeatures.autoBlockAllBlocks, !enabled );
-        		saveConfigBlock(e, p);
-        	}
-        	
+
+            switch (buttonname){
+                case "Gold_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockGoldBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Iron_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockIronBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Coal_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockCoalBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Diamond_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockDiamondBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Redstone_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockRedstoneBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Emerald_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockEmeraldBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Quartz_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockQuartzBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Prismarine_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockPrismarineBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Lapis_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockLapisBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Snow_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockSnowBlock, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "Glowstone_Block":{
+                    afConfig.setFeature( AutoFeatures.autoBlockGlowstone, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                case "All_Blocks":{
+                    afConfig.setFeature( AutoFeatures.autoBlockAllBlocks, !enabled );
+                    saveConfigBlock(e, p);
+                    break;
+                }
+                default:{
+                    break;
+                }
+            }
         }
 
     }
 
 
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the mode
-        if (mode == null) {
-            // If the mode's prestige will execute this
-        } else if (mode == ChatMode.Prestige){
-            prestigeAction(e, p, message);
-        } else if (mode == ChatMode.SellAll_Currency){
-            sellAllCurrencyChat(e, p, message);
-        } else if (mode == ChatMode.RankName){
-            rankAction(e, p, message);
-        } else if (mode == ChatMode.MineName){
-            mineAction(e, p, message);
+        switch(mode){
+            case Prestige:{
+                prestigeAction(e, p, message);
+                break;
+            }
+            case SellAll_Currency:{
+                sellAllCurrencyChat(e, p, message);
+                break;
+            }
+            case RankName:{
+                rankAction(e, p, message);
+                break;
+            }
+            case MineName:{
+                mineAction(e, p, message);
+                break;
+            }
+            default:{
+                break;
+            }
         }
     }
 
