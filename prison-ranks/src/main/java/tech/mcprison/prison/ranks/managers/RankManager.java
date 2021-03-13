@@ -442,24 +442,22 @@ public class RankManager {
     		
     		if ( includeAll || !includeAll && players > 0 ) {
     			if ( sb.length() > 0 ) {
-    				sb.append( "&2, " );
+    				sb.append( ", " );
     			}
     			
     			
-    			sb.append( " &3" );
-    			sb.append( rank.getName() );
+    			sb.append( " " ).append( rank.getName() );
     			
     			if ( players > 0 ) {
     				
-    				sb.append( " &7" );
-    				sb.append( players );
+    				sb.append( " (" ).append( players ).append( " )" );
     			}
     		}
 		}
     	
-    	sb.insert( 0, "&b: " );
+    	sb.insert( 0, ": " );
     	sb.insert( 0, ladderName );
-    	sb.insert( 0, "  &7" );
+    	sb.insert( 0, "&7  " );
     	
     	return sb.toString();
     }

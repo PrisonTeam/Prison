@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.7 2021-03-12
 
 
+* **Removed color codes from the ladder and rank listings since the numerous use of color codes were resulting in a mess when the log files are unable to decode the color codes.**
+
+
 * **Updates to the prison util potions.**
 Works but not sure if I'm going to release it like this since I am not happy with how the params are setup.  once it is released then it will be difficult to change since people may be using them.
 
