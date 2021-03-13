@@ -9,12 +9,19 @@ mines: true
 
 utils:
   enabled: true
+  messages:
+    enabled: true
+    msg: true
+    broadcast: true
+  mining:
+    enabled: true
+    smelt: true
+    block: true
+  potions:
+    enabled: true
+    potionEffects: true
   repair:
     enabled: true
     repairAll: true
     repairHand: true
-  potions:
-    enabled: true
-    potionEffects: true
-    potions: true
     

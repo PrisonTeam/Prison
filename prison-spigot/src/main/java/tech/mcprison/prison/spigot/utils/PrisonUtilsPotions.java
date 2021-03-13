@@ -19,7 +19,7 @@ public class PrisonUtilsPotions
 {
 
 	private boolean enablePotionEffects = false;
-	private boolean enablePotions = false;
+//	private boolean enablePotions = false;
 	
 	private List<String> potionEffectsList;
 	
@@ -67,7 +67,7 @@ public class PrisonUtilsPotions
 	}
 	
 	
-	@Command(identifier = "prison utils potion", 
+	@Command(identifier = "prison utils potionEffect", 
 			description = "Apply a potion effect to a player",
 		onlyPlayers = false, 
 		permissions = "prison.utils.potion",
@@ -77,10 +77,10 @@ public class PrisonUtilsPotions
 			@Arg(name = "potionName", description = "A potion effect name. Use 'list' to " +
 					"get a list of availble potions.", def = "list") String potionName,
 			
-			@Arg(name = "amplifier", description = "Amplifier of a potion. " +
-					"Optional. Default strength of 100.", def = "100") String amplifier,
 			@Arg(name = "duration", description = "Duration of a potion in ticks. " +
-					"Optional. Default 5 seconds.", def = "100") String duration
+					"Optional. Default 5 seconds.", def = "100") String duration,
+			@Arg(name = "amplifier", description = "Amplifier of a potion. " +
+					"Optional. Default strength of 100.", def = "100") String amplifier
 			
 //			,
 //			@Wildcard(join=true)
@@ -125,8 +125,8 @@ public class PrisonUtilsPotions
 				// if potion was in playerName, then need to shift all parameters
 				// over by one.
 //				options = options == null ? duration : options + " " + duration;
-				duration = amplifier;
-				amplifier = potionName;
+				amplifier = duration;
+				duration = potionName;
 				potionName = playerName;
 				playerName = null;
 			}
@@ -146,9 +146,10 @@ public class PrisonUtilsPotions
 			/**
 			 * The duration is in ticks, at 20 per second, and last for 50 milliseconds
 			 * each under ideal conditions.  Lag can drop the TPS so a value of 20 is
-			 * never guaranteed to be exactly 1 second.
+			 * never guaranteed to be exactly 1 second.  The range of valid values is 0
+			 * to 72,000 ticks, which is one hour.
 			 */
-			int durationTicks = intValue( duration, 100, 0, 64000 );
+			int durationTicks = intValue( duration, 100, 0, 72000 );
 			
 			
 			/**
@@ -157,8 +158,10 @@ public class PrisonUtilsPotions
 			 * values above 128 (or negative) may never be predictable. Values outside
 			 * the range of 0 to 256 just wraps around (high order bits are ignored) and
 			 * maybe be unpredictable.
+			 * Valid range for this parser is -256 through 1024 although 0 through 256 may
+			 * be identical.
 			 */
-			int ampliferValue = intValue( amplifier, 0, 0, 256 );
+			int ampliferValue = intValue( amplifier, -256, 0, 1024 );
 			
 			
 //			List<PotionEffectOptions> effects = new ArrayList<>();
@@ -264,11 +267,11 @@ public class PrisonUtilsPotions
 		this.enablePotionEffects = enablePotionEffects;
 	}
 
-	public boolean isEnablePotions() {
-		return enablePotions;
-	}
-	public void setEnablePotions( boolean enablePotions ) {
-		this.enablePotions = enablePotions;
-	}
+//	public boolean isEnablePotions() {
+//		return enablePotions;
+//	}
+//	public void setEnablePotions( boolean enablePotions ) {
+//		this.enablePotions = enablePotions;
+//	}
 
 }

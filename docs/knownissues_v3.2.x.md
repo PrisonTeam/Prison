@@ -16,6 +16,14 @@ DONE: CMI currency is not working correctly with vault and prison (Monzter)
 
 
 
+- /prison utils mining
+  - Add XP direct and ORBs
+
+Add potion effects to prison mines.  
+ - The potion effects should only last a short duration with auto renewal
+ -   
+
+
 - DONE: /ranks set currency may not be able to remove custom currencies
   - able to remove custom currencies if they are set
 

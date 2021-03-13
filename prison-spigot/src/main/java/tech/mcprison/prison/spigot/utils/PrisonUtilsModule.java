@@ -67,16 +67,16 @@ public class PrisonUtilsModule
 			
 		}
 		
-//		if ( isEnabled( "utils.potions.enabled", true ) ) {
-//			
-//			PrisonUtilsPotions utils = new PrisonUtilsPotions();
-//			
-//			utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects.enabled", true ) );
-//			utils.setEnablePotions( isEnabled( "utils.potions.potions.enabled", true ) );
-//			
-//			Prison.get().getCommandHandler().registerCommands( utils );
-//			
-//		}
+		if ( isEnabled( "utils.potions.enabled", true ) ) {
+			
+			PrisonUtilsPotions utils = new PrisonUtilsPotions();
+			
+			utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects.enabled", true ) );
+			// utils.setEnablePotions( isEnabled( "utils.potions.potions.enabled", true ) );
+			
+			Prison.get().getCommandHandler().registerCommands( utils );
+			
+		}
 		
 	}
 

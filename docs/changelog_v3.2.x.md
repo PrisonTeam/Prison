@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.7 2021-03-12
 
 
+* **Enable potion effects for the /prison utils potionEffects.**  Works well.
+
+
 * **Removed color codes from the ladder and rank listings since the numerous use of color codes were resulting in a mess when the log files are unable to decode the color codes.**
 
 
