@@ -20,6 +20,8 @@ that you need.
 # v3.2.5-alpha.7 2021-03-12
 
 
+* **For the command /ranks player: Had to double escape the % since there are a few layers of String.format() that it goes through, so one just did not work out well.**
+
 
 * **v3.2.5-alpha.7 2021-03-12**
 
@@ -45,10 +47,8 @@ so the changes would be reverted when the server restarted unless some other ran
 * **Some permissions appear to have % symbols so % is now being escaped so they do not cause issues with Java's String.format() command.**
 
 
-* **PrisonSpigotAPI now inclused Prison backpacks.**
-You can now use the getPrisonBackpacks method included within PrisonSpigotAPI to getù
-  the BackpacksUtil class, which's the core of Prison Backpacks, essentially full API
-  access.
+* **PrisonSpigotAPI now include Prison backpacks.**
+You can now use the getPrisonBackpacks method included within PrisonSpigotAPI to get the BackpacksUtil class, which's the core of Prison Backpacks, essentially full API access.
 
 
 * **/backpack delete for admins command**
