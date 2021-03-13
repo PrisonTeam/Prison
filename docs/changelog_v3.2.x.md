@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.7 2021-03-12
 
 
+* **Updates to the prison util potions.**
+Works but not sure if I'm going to release it like this since I am not happy with how the params are setup.  once it is released then it will be difficult to change since people may be using them.
+
+
 * **For the command /ranks player: Had to double escape the % since there are a few layers of String.format() that it goes through, so one just did not work out well.**
 
 

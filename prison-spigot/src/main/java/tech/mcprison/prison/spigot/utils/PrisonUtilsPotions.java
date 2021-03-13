@@ -3,13 +3,13 @@ package tech.mcprison.prison.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -26,8 +26,9 @@ public class PrisonUtilsPotions
 	public enum PotionEffectOptions {
 		ambient,
 		particles, 
-		icon,
-		forceConfictRemoval;
+		icon
+//		forceConfictRemoval
+		;
 		
 		public static PotionEffectOptions fromString( String value ) {
 			PotionEffectOptions results = null;
@@ -76,15 +77,17 @@ public class PrisonUtilsPotions
 			@Arg(name = "potionName", description = "A potion effect name. Use 'list' to " +
 					"get a list of availble potions.", def = "list") String potionName,
 			
-			@Arg(name = "duration", description = "Duration of a potion in ticks. " +
-					"Optional. Default 5 seconds.", def = "100") String duration,
 			@Arg(name = "amplifier", description = "Amplifier of a potion. " +
-					"Optional. Default 5 seconds.", def = "100") String amplifier,
+					"Optional. Default strength of 100.", def = "100") String amplifier,
+			@Arg(name = "duration", description = "Duration of a potion in ticks. " +
+					"Optional. Default 5 seconds.", def = "100") String duration
 			
-			@Wildcard(join=true)
-			@Arg(name = "options", 
-					description = "Options [ambient particles icon forceConfictRemoval]", 
-					def = "") String options ) {
+//			,
+//			@Wildcard(join=true)
+//			@Arg(name = "options", 
+//					description = "Options [ambient particles icon forceConfictRemoval]", 
+//					def = "") String options 
+			) {
 		
 		if ( !isEnablePotionEffects() ) {
 			
@@ -121,9 +124,9 @@ public class PrisonUtilsPotions
 			else {
 				// if potion was in playerName, then need to shift all parameters
 				// over by one.
-				options = options == null ? amplifier : options + " " + amplifier;
-				amplifier = duration;
-				duration = potionName;
+//				options = options == null ? duration : options + " " + duration;
+				duration = amplifier;
+				amplifier = potionName;
 				potionName = playerName;
 				playerName = null;
 			}
@@ -139,6 +142,15 @@ public class PrisonUtilsPotions
 			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
 									"prison.utils.potion", "prison.utils.potion.others" );
 			
+			
+			/**
+			 * The duration is in ticks, at 20 per second, and last for 50 milliseconds
+			 * each under ideal conditions.  Lag can drop the TPS so a value of 20 is
+			 * never guaranteed to be exactly 1 second.
+			 */
+			int durationTicks = intValue( duration, 100, 0, 64000 );
+			
+			
 			/**
 			 * An amplifier value ranges from 0 to 256. Anything above 128 is the same as 
 			 * negative values.  Values above around 100 may not behave as expected, and 
@@ -149,47 +161,73 @@ public class PrisonUtilsPotions
 			int ampliferValue = intValue( amplifier, 0, 0, 256 );
 			
 			
-			/**
-			 * The duration is in ticks, at 20 per second, and last for 50 milliseconds
-			 * each under ideal conditions.  Lag can drop the TPS so a value of 20 is
-			 * never guarenteed to be exactly 1 second.
-			 */
-			int durationTicks = intValue( duration, 100, 0, 64000 );
+//			List<PotionEffectOptions> effects = new ArrayList<>();
+//			
+//			if ( options != null && options.trim().isEmpty() ) {
+//				String[] opts = options.trim().split( " " );
+//				for ( String opt : opts ) {
+//					PotionEffectOptions effect = PotionEffectOptions.fromString( opt );
+//					
+//					if ( effect != null ) {
+//						effects.add( effect );
+//					}
+//				}
+//			}
+//			
 			
 			
+//			boolean isAmbient = effects.contains( PotionEffectOptions.ambient );
+//			boolean isParticles = effects.contains( PotionEffectOptions.particles );
+//			boolean isIcon = effects.contains( PotionEffectOptions.icon );
 			
-			List<PotionEffectOptions> effects = new ArrayList<>();
+//			boolean isForceConfictRemoval = effects.contains( PotionEffectOptions.forceConfictRemoval );
 			
-			if ( options != null && options.trim().isEmpty() ) {
-				String[] opts = options.trim().split( " " );
-				for ( String opt : opts ) {
-					PotionEffectOptions effect = PotionEffectOptions.fromString( opt );
-					
-					if ( effect != null ) {
-						effects.add( effect );
-					}
-				}
-			}
+			LivingEntity entity = player.getWrapper();
 			
+			addPotion( entity, potion, durationTicks, ampliferValue );
 			
-			boolean isAmbient = effects.contains( PotionEffectOptions.ambient );
-			boolean isParticles = effects.contains( PotionEffectOptions.particles );
-			boolean isIcon = effects.contains( PotionEffectOptions.icon );
-			
-			boolean isForceConfictRemoval = effects.contains( PotionEffectOptions.forceConfictRemoval );
-			
-			PotionEffect potionEffect = new PotionEffect( potion, durationTicks, ampliferValue, 
-					isAmbient, isParticles, isIcon );
-
-			if ( potionEffect != null ) {
-				player.getWrapper().addPotionEffect( potionEffect, isForceConfictRemoval );
-			}
+//			PotionEffect potionEffect = new PotionEffect( potion, durationTicks, ampliferValue, 
+//					isAmbient, isParticles, isIcon );
+//
+//			if ( potionEffect != null ) {
+//				player.getWrapper().addPotionEffect( potionEffect, isForceConfictRemoval );
+//			}
 			
 		}
 	}
 	
 
+	/**
+	 * <p>This is based upon https://github.com/Geolykt/EnchantmentsPlus 
+	 * </p>
+	 * 
+	 * @param entity
+	 * @param potion
+	 * @param length
+	 * @param intensity
+	 */
+	public static void addPotion( LivingEntity entity, PotionEffectType potion, int length, int intensity
+//			 							, boolean isAmbient, boolean isParticles, boolean isIcon 
+			 							) {
+		 
+		// If the player already has the potion, then renew it:
+		for ( PotionEffect pEffect : entity.getActivePotionEffects() ) {
+			if ( pEffect.getType().equals( potion ) ) {
+				if ( pEffect.getAmplifier() > intensity || pEffect.getDuration() > length ) {
+					return;
+				}
+				else {
+					entity.removePotionEffect( potion );
+					break;
+				}
+			}
+			
+		}
+		
+		entity.addPotionEffect( new PotionEffect( potion, length, intensity ) );
+	}
 
+	
 	private PotionEffectType potionFromString( String potionName ) {
 		PotionEffectType results = null;
 		
@@ -208,7 +246,11 @@ public class PrisonUtilsPotions
 			potionEffectsList = new ArrayList<>();
 			
 			for ( PotionEffectType potion : PotionEffectType.values() ) {
-				potionEffectsList.add( potion.getName() );
+				
+				if ( potion != null && potion.getName() != null ) {
+					
+					potionEffectsList.add( potion.getName() );
+				}
 			}
 		}
 		return potionEffectsList;
