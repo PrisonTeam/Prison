@@ -253,40 +253,47 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
 
-    	genericBlockEvent( e );
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		genericBlockEvent( e );
+    	}
     }
     
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
-    	genericBlockEvent( e, false );
+
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		genericBlockEvent( e, false );
+    	}
     }
     
     
     @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-    
-		boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
-		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-		
-		if ( !isAutoManagerEnabled && isTEExplosiveEnabled ) {
-			
-			genericBlockExplodeEvent( e );
-		}
 
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    		
+    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+    		
+    		if ( isTEExplosiveEnabled ) {
+    			
+    			genericBlockExplodeEvent( e );
+    		}
+    	}
     }
     
     
     @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	
-    	boolean isAutoManagerEnabled = isBoolean( AutoFeatures.isAutoManagerEnabled );
-    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-    	
-    	if ( !isAutoManagerEnabled && isTEExplosiveEnabled ) {
+    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
     		
-    		genericBlockExplodeEvent( e );
+    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    		
+    		if ( isTEExplosiveEnabled ) {
+    			
+    			genericBlockExplodeEvent( e );
+    		}
     	}
-    	
     }
     
     
@@ -335,8 +342,9 @@ public class OnBlockBreakEventListener
      */
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor ) {
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( getPrisonMineManager() != null && 
-    			(!monitor && !e.isCancelled() || monitor) ) 
+		
+		// NOTE that check for auto manager has happened prior to accessing this function.
+    	if ( !monitor && !e.isCancelled() || monitor ) 
     	{
     		
 //    		boolean isAir = e.getBlock().getType() == null || e.getBlock().getType() == Material.AIR;
@@ -408,10 +416,9 @@ public class OnBlockBreakEventListener
 	 */
 	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor )
 	{
-		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
 
-    	if ( getPrisonMineManager() != null && 
-    			(!monitor && !e.isCancelled() || monitor) ) {
+		// NOTE that check for auto manager has happened prior to accessing this function.
+    	if ( !monitor && !e.isCancelled() || monitor ) {
     		
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 
@@ -551,8 +558,9 @@ public class OnBlockBreakEventListener
 	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
-    	if ( getPrisonMineManager() != null && 
-    			(!monitor && !e.isCancelled() || monitor) && 
+		
+		// NOTE that check for auto manager has happened prior to accessing this function.
+    	if ( (!monitor && !e.isCancelled() || monitor) && 
 				e.getBlockList().size() > 0 ) {
 		
 			List<SpigotBlock> explodedBlocks = new ArrayList<>();

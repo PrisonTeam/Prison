@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.7 2021-03-12
+# v3.2.5-alpha.7 2021-03-13
+
+
+* **FIne tuned how auto features behaves when it is disabled.**
+Only the monitor event is allowed to get through so the block counts could be updated.  When options.general.isAutoManagerEnabled is set to false, auto features will be fully shutdown now.
 
 
 * **Enable potion effects for the /prison utils potionEffects.**  Works well.
