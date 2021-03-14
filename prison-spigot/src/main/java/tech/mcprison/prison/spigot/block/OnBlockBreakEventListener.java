@@ -340,6 +340,11 @@ public class OnBlockBreakEventListener
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly ) {
 		
 		
+		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
+		// then it will just bypass the registration. It will only be processed only once.
+		registerMCMMO();
+		
+		
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) 
     	{
@@ -418,8 +423,12 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly )
-	{
+	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly ) {
+
+		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
+		// then it will just bypass the registration. It will only be processed only once.
+		registerMCMMO();
+		
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) {
@@ -514,6 +523,8 @@ public class OnBlockBreakEventListener
     				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
+    					
+    					checkMCMMO( e.getPlayer(), blk );
     				}
     				
     			}
@@ -581,10 +592,13 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly )
-	{
-		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
+	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly ) {
+
+		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
+		// then it will just bypass the registration. It will only be processed only once.
+		registerMCMMO();
 		
+
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( (!monitor && !e.isCancelled() || monitor) && 
 				e.getBlockList().size() > 0 ) {
@@ -708,6 +722,8 @@ public class OnBlockBreakEventListener
     				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
+    					
+    					checkMCMMO( e.getPlayer(), blk );
     				}
     				
     			}
@@ -1301,16 +1317,16 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	private void checkMCMMO( BlockBreakEvent e ) {
+	private void registerMCMMO() {
 		
 		if ( !isMCMMOChecked ) {
 			
-//	    	AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 	    	boolean isProcessMcMMOBlockBreakEvents = isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
 
 			if ( isProcessMcMMOBlockBreakEvents ) {
 				
-				for ( RegisteredListener rListener : e.getHandlers().getRegisteredListeners() ) {
+				for ( RegisteredListener rListener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+					
 					if ( rListener.getPlugin().isEnabled() && 
 							rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
 						
@@ -1322,7 +1338,16 @@ public class OnBlockBreakEventListener
 			
 			isMCMMOChecked = true;
 		}
-		
+	}
+	
+	private void checkMCMMO( Player player, Block block ) {
+		if ( registeredListenerMCMMO != null ) {
+			BlockBreakEvent eMcMMO = new BlockBreakEvent( block, player );
+			checkMCMMO( eMcMMO );
+		}
+	}
+	
+	private void checkMCMMO( BlockBreakEvent e ) {
 		if ( registeredListenerMCMMO != null ) {
 			
 			try {
@@ -1333,6 +1358,8 @@ public class OnBlockBreakEventListener
 			}
 		}
 	}
+	
+	
 	
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;

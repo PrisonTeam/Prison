@@ -10,6 +10,13 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
+
+DONE - fixed - BlockEvents don't not run unless auto features are enabled
+
+
+DONE - Hook mcMMO up to the explosion events
+
+
 DONE: CMI currency is not working correctly with vault and prison (Monzter)
 - Unable to test since it is a premium plugin. :(
 - Turned out the CMI version of vault he downloaded didn't work. Had to use the injector.
@@ -40,7 +47,7 @@ Auto features not working outside of the mines.
 - This is a new feature that has to be enabled for each mine
 
 
-- Prison Utils
+DONE - Prison Utils
   - potions - need to work on that!!
   
   

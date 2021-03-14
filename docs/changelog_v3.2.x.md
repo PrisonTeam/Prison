@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.7 2021-03-14
 
 
+* **Hook up mcMMO to be registered and used through the TE explode event and the CE Block Blast event.**
+
+
 * **Enabled the non-auto manager use of the block events.**
 These are only called when auto features are turned off, and if the blocks that are actually broken are in the mines.
 
