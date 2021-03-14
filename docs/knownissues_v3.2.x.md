@@ -11,6 +11,10 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 
+- Hook up block filters on the block events.
+
+
+
 DONE - fixed - BlockEvents don't not run unless auto features are enabled
 
 

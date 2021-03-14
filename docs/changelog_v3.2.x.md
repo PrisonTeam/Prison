@@ -17,7 +17,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.7 2021-03-14
+# v3.2.5-alpha.8 2021-03-14
+
+
+
+
+* **v3.2.5-alpha.8 2021-03-14**
 
 
 * **Hook up mcMMO to be registered and used through the TE explode event and the CE Block Blast event.**
