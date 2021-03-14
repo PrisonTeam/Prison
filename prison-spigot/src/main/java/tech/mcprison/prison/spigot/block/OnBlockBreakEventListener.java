@@ -262,7 +262,10 @@ public class OnBlockBreakEventListener
     public void onBlockShredBreak(BlockShredEvent e) {
 
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		genericBlockEvent( e, false );
+    		genericBlockEvent( e, false, false );
+    	}
+    	else {
+    		genericBlockEvent( e, false, true );
     	}
     }
     
@@ -270,14 +273,11 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
 
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+    	
+    	if ( isTEExplosiveEnabled ) {
     		
-    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-    		
-    		if ( isTEExplosiveEnabled ) {
-    			
-    			genericBlockExplodeEvent( e );
-    		}
+    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
@@ -285,42 +285,39 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	
+    	if ( isTEExplosiveEnabled ) {
     		
-    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-    		
-    		if ( isTEExplosiveEnabled ) {
-    			
-    			genericBlockExplodeEvent( e );
-    		}
+    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
     
     
     protected void genericBlockEventMonitor( BlockBreakEvent e ) {
-    	genericBlockEvent( e, true );
+    	genericBlockEvent( e, true, false );
     }
     
     protected void genericBlockEvent( BlockBreakEvent e ) {
-    	genericBlockEvent( e, false );
+    	genericBlockEvent( e, false, false );
     }
 
 	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
-		genericBlockExplodeEvent( e, true );
+		genericBlockExplodeEvent( e, true, false );
 	}
 	
-	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e ) {
-		genericBlockExplodeEvent( e, false );
+	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, false, blockEventsOnly );
 	}
 	
 
 	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
-		genericBlockExplodeEvent( e, true );
+		genericBlockExplodeEvent( e, true, false );
 	}
 	
-	protected void genericBlockExplodeEvent( BlastUseEvent e ) {
-		genericBlockExplodeEvent( e, false );
+	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, false, blockEventsOnly );
 	}
 
     /**
@@ -340,8 +337,8 @@ public class OnBlockBreakEventListener
      * @param montior Identifies that a monitor event called this function.  A monitor should only record
      * 					block break counts.
      */
-	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor ) {
-		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
+	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly ) {
+		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) 
@@ -368,7 +365,14 @@ public class OnBlockBreakEventListener
     			}
     		}
     		
-    		if ( monitor && mine == null ) {
+    		
+    		if ( blockEventsOnly ) {
+    			
+    			String triggered = null;
+    			
+    			doActionBlockEventOnly( block, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+    		}
+    		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
     		}
@@ -414,7 +418,7 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor )
+	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly )
 	{
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
@@ -449,7 +453,29 @@ public class OnBlockBreakEventListener
 
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( monitor && mine == null ) {
+    		if ( blockEventsOnly ) {
+    			
+    			if ( mine != null ) {
+    				
+    				String triggered = null;
+    				
+    				doActionBlockEventOnly( block, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+    				
+    	   			// All other blocks in the explosion:
+        			for ( Block blk : e.blockList() ) {
+        				
+        				// Need to wrap in a Prison block so it can be used with the mines.
+        				// Since this is a monitor, there is no need to check to see if the
+        				// block is in a mine since the getTargetPrisonBlock function will 
+        				// perform that check indirectly.
+        				SpigotBlock sBlock = new SpigotBlock(blk);
+        				
+        				doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+        			}
+
+    			}
+    		}
+    		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
     		}
@@ -555,7 +581,7 @@ public class OnBlockBreakEventListener
 	 * 
 	 * @param e
 	 */
-	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor )
+	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly )
 	{
 		// Fast fail: If the prison's mine manager is not loaded, then no point in processing anything.
 		
@@ -626,7 +652,26 @@ public class OnBlockBreakEventListener
 
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
-    		if ( monitor && mine == null ) {
+			if ( blockEventsOnly ) {
+    			
+				if ( mine != null ) {
+					
+					String triggered = null;
+		   			
+	    			// All other blocks in the explosion:
+	    			for ( Block blk : e.getBlockList() ) {
+	    				
+	    				// Need to wrap in a Prison block so it can be used with the mines.
+	    				// Since this is a monitor, there is no need to check to see if the
+	    				// block is in a mine since the getTargetPrisonBlock function will 
+	    				// perform that check indirectly.
+	    				SpigotBlock sBlock = new SpigotBlock(blk);
+	    				
+	    				doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
+	    			}
+				}
+    		}
+    		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
     		}
@@ -701,6 +746,24 @@ public class OnBlockBreakEventListener
 			// Checks to see if the mine ran out of blocks, and if it did, then
 			// it will reset the mine:
 			mine.checkZeroBlockReset();
+		}
+	}
+	
+	public void doActionBlockEventOnly( SpigotBlock spigotBlock, Mine mine, Player player, 
+													BlockEventType blockEventType, String triggered ) {
+		if ( mine != null ) {
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
+			
+			String targetBlockName =  mine == null ? 
+					spigotBlock.getPrisonBlock().getBlockName()
+						: targetBlock.getPrisonBlock().getBlockName();
+	
+			// Process mine block break events:
+			SpigotPlayer sPlayer = new SpigotPlayer( player );
+			
+				
+			mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
 		}
 	}
 	

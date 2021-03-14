@@ -93,10 +93,8 @@ public class AutoManager
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 
-    		genericBlockEvent( e, false );
-    	}
+    	genericBlockEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     }
     
     /**
@@ -107,27 +105,25 @@ public class AutoManager
     @Override
     @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) {
-    		 
-    		genericBlockEvent( e, false );
-    	}
+
+    	genericBlockEvent( e, false, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
     }
     
     @Override
     @EventHandler(priority=EventPriority.LOW) 
-    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
-    	if ( !e.isCancelled() && isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+    	if ( !e.isCancelled() ) {
     	    
-    		genericBlockExplodeEvent( e );
+    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
     
     @Override
     @EventHandler(priority=EventPriority.LOW) 
-    public void onCrazyEnchantsBlockExplodeMonitor(BlastUseEvent e) {
-    	if ( !e.isCancelled() && isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		genericBlockExplodeEvent( e );
+    public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    	if ( !e.isCancelled() ) {
+    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     

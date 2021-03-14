@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.7 2021-03-13
+# v3.2.5-alpha.7 2021-03-14
+
+
+* **Enabled the non-auto manager use of the block events.**
+These are only called when auto features are turned off, and if the blocks that are actually broken are in the mines.
 
 
 * **Backpack permission option**
