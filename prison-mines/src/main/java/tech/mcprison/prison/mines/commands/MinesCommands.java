@@ -3089,6 +3089,55 @@ public class MinesCommands
         } 
     }
 
+
+    @Command(identifier = "mines set mineSweeper", permissions = "mines.set", 
+    		description = "Enable the Mine Sweeper task that is used to update the block counts " +
+    				"in the mine if there is another plugin that is breaking blocks and " +
+    				"prison is unable to integrate with that process to get an accurate block " +
+    				"update in real time. WARNING: This task should never be used unless it is a last " +
+    				"resort. With each block that broke, prison will 'try' to submit this task, but " +
+    				"it can only submit the task every 2 to 10 seconds, no matter how many blocks " +
+    				"are broke or how quickly. The fewer blocks that remain in the mine, the shorter " +
+    				"the submission delay will be. Enable '/mines stats' to monitor run time of " +
+    				"the sweep, then use '/mines info' to view them.")
+    public void setMineSweeperCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineSweeper", def="disabled", 
+        		description = "Enable or disable the mineSweeper tasks [disable, enable]") 
+    					String mineSweeper
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+//            if ( !m.isEnabled() ) {
+//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//            	return;
+//            }
+        	
+            if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
+            									!"enable".equalsIgnoreCase( mineSweeper ) ) {
+            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
+            	return;
+            }
+            
+            if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isUsePagingOnReset() ) {
+            	m.setMineSweeperEnabled( false );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Sweeper has been disabled for mine %s.", m.getTag()) );
+            }
+            else if ( "enable".equalsIgnoreCase( mineSweeper ) && !m.isUsePagingOnReset() ) {
+            	m.setMineSweeperEnabled( true );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Sweeper has been enabled for mine %s.", m.getTag()) );
+            }
+        	
+        } 
+    }
+
     
 
     @Command(identifier = "mines tp", description = "TP to the mine.", 

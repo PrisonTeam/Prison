@@ -694,6 +694,10 @@ public class OnBlockBreakEventListener
 
 			// Never process BlockEvents in a monitor.
 			
+			// submit a mine sweeper task.  It will only run if it is enabled and another 
+			// mine sweeper task has not been submitted.
+			mine.submitMineSweeperTask();
+
 			// Checks to see if the mine ran out of blocks, and if it did, then
 			// it will reset the mine:
 			mine.checkZeroBlockReset();

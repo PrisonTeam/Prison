@@ -590,12 +590,13 @@ public abstract class MineScheduler
 					}
 					
 					
-//							PrisonAPI.dispatchCommand(formatted);
+//					PrisonAPI.dispatchCommand(formatted);
 				}
 			}
 		}
 	}
 	
+	@Override
 	public boolean checkZeroBlockReset() {
 		boolean reset = false;
 		

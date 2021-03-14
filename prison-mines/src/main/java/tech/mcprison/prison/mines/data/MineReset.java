@@ -1065,6 +1065,16 @@ public abstract class MineReset
 			if ( getStatsMineSweeperTaskMs().size() > 10 ) {
 				getStatsMineSweeperTaskMs().remove( 0 );
 			}
+			
+			
+			// Unlock this task so more can be submitted:
+			synchronized ( MineSweeperTask.class ) {
+				setMineSweeperSubmitted( false );
+			}
+			
+			
+			// Check to see if a mine reset is needed:
+			checkZeroBlockReset();
 		}
 		
 	}

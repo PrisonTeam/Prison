@@ -19,6 +19,10 @@ that you need.
 
 # v3.2.5-alpha.7 2021-03-13
 
+'
+* **Hook up the mine sweeper task so it will run upon block breakage.**
+Also the command has been added to toggle it on and off.  Still needs some work to be done, such as hooking up to /mines info and some other stats tracking.
+
 
 * **Setup a mine sweeper task that will refresh the block counts.**
 This would be used when an enchantment plugin is not supported, or cannot be supported.  It's not ideal, but it could help minimize the problems of incompatibility.

@@ -657,6 +657,7 @@ public abstract class MineData
     
 //    abstract public String getTargetPrisonBlockName( Block block );
     
+    abstract public boolean checkZeroBlockReset();
     
     
     public boolean hasUnsavedBlockCounts() {
