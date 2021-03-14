@@ -20,6 +20,14 @@ that you need.
 # v3.2.5-alpha.7 2021-03-13
 
 
+* **Backpack permission option**
+It's now possible to enable a permission to use backpacks from the backpacks config.
+  Just turn this option to true: `BackPack_Use_Permission_Enabled: false`.
+  The permission by default that you need to give to a player
+  after enabling this option's visible in the backpacks config
+  `BackPack_Use_Permission: prison.backpack`
+
+
 * **More mine sweeper improvements.**
 Added the tracking of blocks changed so as to get a feeling if its even doinig anything.
 

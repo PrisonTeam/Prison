@@ -315,7 +315,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
                                                   @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
 
-
         if (!isEnabled()) return;
 
         if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){

@@ -22,7 +22,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
  */
 public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final Configuration messages = getMessages();
 
     /**
      * NOTE: onlyPlayers needs to be false so players can use /gui help on the command, even from console.
@@ -174,6 +174,11 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+            return;
+        }
+
         // New method.
         if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
             BackpacksUtil.get().openBackpack(p, id);
@@ -193,6 +198,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
         // New method.
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+                 return;
+            }
             BackpacksListPlayer gui = new BackpacksListPlayer(p);
             gui.open();
         }
